@@ -55,7 +55,13 @@ jobs:
           installed=0
           for attempt in 1 2 3; do
             echo "system-image install attempt ${attempt}/3"
-            if yes | "$sdkmanager_bin" --install "$package" --channel=0; then
+            set +e
+            set +o pipefail
+            yes | "$sdkmanager_bin" --install "$package" --channel=0
+            install_rc=${PIPESTATUS[1]}
+            set -o pipefail
+            set -e
+            if [ "$install_rc" -eq 0 ]; then
               installed=1
               break
             fi
