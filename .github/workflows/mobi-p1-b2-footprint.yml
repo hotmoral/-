@@ -1,0 +1,159 @@
+name: Mobi P1-B2.2 Footprint Geometry Evidence
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-b2-geometry-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/footprint_v1.py'
+      - 'mobi/p1-b2/geometry/run_footprint_matrix.py'
+      - 'mobi/p1-b2/geometry/test_footprint_v1.py'
+      - '.github/workflows/mobi-p1-b2-footprint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-b2-footprint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-b2/footprint-evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-b2/footprint-evidence/environment.txt
+
+      - name: Verify private-canonical source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object metrics_v2.py)" = "322219f434d51ff30197c1beb136d1a506cdc2f3"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
+          test "$(git hash-object footprint_v1.py)" = "337004ce61614a261222beae42274157adfe9287"
+          test "$(git hash-object run_footprint_matrix.py)" = "120306a1956106db21be2edd75da9abb7b4e2dac"
+          test "$(git hash-object test_footprint_v1.py)" = "6631b34003db8ee7e26aced4e298021a209b955e"
+          git hash-object model.py candidates_v2.py motions_v2.py metrics_v2.py orientation_v2.py turn_2p5d.py footprint_v1.py run_footprint_matrix.py test_footprint_v1.py | tee ../footprint-evidence/git_blob_shas.txt
+          sha256sum model.py candidates_v2.py motions_v2.py metrics_v2.py orientation_v2.py turn_2p5d.py footprint_v1.py run_footprint_matrix.py test_footprint_v1.py | tee ../footprint-evidence/source_sha256.txt
+          echo "P1-B2.2 footprint source blob parity PASS"
+
+      - name: Run footprint regression tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_footprint_v1.py 2>&1 | tee ../footprint-evidence/unittest.txt
+
+      - name: Run full footprint matrix twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+          from run_footprint_matrix import run_matrix, summarize
+
+          out = Path('../footprint-evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          def canonical_bytes(records):
+              return json.dumps(records, sort_keys=True, separators=(',', ':')).encode('utf-8')
+
+          first = run_matrix(occupancy_grid=32)
+          second = run_matrix(occupancy_grid=32)
+          first_bytes = canonical_bytes(first)
+          second_bytes = canonical_bytes(second)
+          if first_bytes != second_bytes:
+              raise SystemExit('footprint determinism mismatch')
+
+          failures = sum(1 for record in first if not record['assertions']['pass'])
+          if failures:
+              raise SystemExit(f'footprint structural failures={failures}')
+
+          summary = summarize(first)
+          digest = hashlib.sha256(first_bytes).hexdigest()
+          summary['canonicalResultsSha256'] = digest
+          summary['deterministicRepeatExact'] = True
+          summary['occupancyGrid'] = 32
+
+          schemes = ('F0_SINGLE_ALL','F1_CORE_TAIL','F2_CORE_FORE_HIND_TAIL','F3_ADAPTIVE_LOWER_BOUND')
+
+          def aggregate(records):
+              result = {}
+              for scheme in schemes:
+                  reductions = [r['schemes'][scheme]['meanAreaReductionVsF0'] for r in records]
+                  occupancy = [r['schemes'][scheme]['meanEffectiveOccupancy'] for r in records]
+                  areas = [r['schemes'][scheme]['meanBlockingAreaDp2'] for r in records]
+                  windows = [r['schemes'][scheme]['meanWindowCount'] for r in records]
+                  result[scheme] = {
+                      'recordCount': len(records),
+                      'meanAreaReductionVsF0': sum(reductions)/len(reductions),
+                      'minAreaReductionVsF0': min(reductions),
+                      'maxAreaReductionVsF0': max(reductions),
+                      'meanEffectiveOccupancy': sum(occupancy)/len(occupancy),
+                      'meanBlockingAreaDp2': sum(areas)/len(areas),
+                      'meanWindowCount': sum(windows)/len(windows),
+                      'maxWindowCount': max(r['schemes'][scheme]['maxWindowCount'] for r in records),
+                  }
+              return result
+
+          by_size = {}
+          for size in (48,64,80,96,112):
+              subset = [r for r in first if r['sizeDp'] == size]
+              by_size[str(size)] = aggregate(subset)
+
+          by_candidate = {}
+          for candidate in ('BM_A','BM_B','BM_C'):
+              subset = [r for r in first if r['candidate'] == candidate]
+              by_candidate[candidate] = aggregate(subset)
+
+          by_case = {}
+          for case_id in sorted({r['caseId'] for r in first}):
+              subset = [r for r in first if r['caseId'] == case_id]
+              by_case[case_id] = aggregate(subset)
+
+          f3_selected = defaultdict(int)
+          for record in first:
+              for key, value in record['schemes']['F3_ADAPTIVE_LOWER_BOUND']['selectedSchemeCounts'].items():
+                  f3_selected[key] += value
+
+          breakdown = {
+              'bySize': by_size,
+              'byCandidate': by_candidate,
+              'byCase': by_case,
+              'f3SelectedSchemeSampleCounts': dict(sorted(f3_selected.items())),
+          }
+
+          (out / 'results.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'breakdown.json').write_text(json.dumps(breakdown, indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          print(json.dumps({'practicalSizeBreakdown': {k: by_size[k] for k in ('64','80','96')}, 'f3SelectedSchemeSampleCounts': dict(sorted(f3_selected.items()))}, indent=2, sort_keys=True))
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-b2/footprint-evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json summary.json breakdown.json | tee SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-b2-footprint-${{ github.run_id }}
+          path: mobi/p1-b2/footprint-evidence/
+          if-no-files-found: error
+          retention-days: 30
