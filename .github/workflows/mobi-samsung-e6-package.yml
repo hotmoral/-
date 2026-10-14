@@ -1,0 +1,82 @@
+name: Mobi Samsung E6 Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - mobi/run-t0-env-20261014
+    paths:
+      - 'mobi/harness/**'
+      - 'mobi/tools/run_samsung_e6.sh'
+      - 'mobi/e6-package/**'
+      - '.github/workflows/mobi-samsung-e6-package.yml'
+
+concurrency:
+  group: mobi-samsung-e6-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-samsung-e6-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+          cache-disabled: true
+
+      - name: Ensure Android API 35 build platform
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager_bin="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$sdkmanager_bin" --licenses >/dev/null 2>&1 || true
+          "$sdkmanager_bin" --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
+
+      - name: Build synthetic E6 APKs
+        run: |
+          gradle --no-daemon -p mobi/harness :overlayprobe:assembleDebug :hostprobe:assembleDebug
+
+      - name: Assemble Samsung E6 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          out=mobi/output/samsung-e6-package
+          rm -rf "$out"
+          mkdir -p "$out/apks"
+          cp mobi/harness/overlayprobe/build/outputs/apk/debug/overlayprobe-debug.apk "$out/apks/overlayprobe-debug.apk"
+          cp mobi/harness/hostprobe/build/outputs/apk/debug/hostprobe-debug.apk "$out/apks/hostprobe-debug.apk"
+          cp mobi/tools/run_samsung_e6.sh "$out/run_samsung_e6.sh"
+          cp mobi/e6-package/run.sh "$out/run.sh"
+          cp mobi/e6-package/README.md "$out/README.md"
+          chmod +x "$out/run.sh" "$out/run_samsung_e6.sh"
+          {
+            echo "git_commit=$(git rev-parse HEAD)"
+            echo "java=$(java -version 2>&1 | head -n 1)"
+            echo "gradle=$(gradle --version | awk '/^Gradle / {print $2; exit}')"
+          } > "$out/BUILD_IDENTITY.txt"
+          (
+            cd "$out"
+            sha256sum \
+              apks/overlayprobe-debug.apk \
+              apks/hostprobe-debug.apk \
+              run.sh \
+              run_samsung_e6.sh \
+              README.md \
+              BUILD_IDENTITY.txt \
+              > PACKAGE_SHA256.txt
+          )
+
+      - name: Upload Samsung E6 package
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-artifact-t0-samsung-e6-${{ github.run_id }}
+          path: mobi/output/samsung-e6-package
+          if-no-files-found: error
