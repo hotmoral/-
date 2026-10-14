@@ -1,0 +1,138 @@
+name: Mobi P1-B2 Orientation v0.2 Evidence
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-b2-geometry-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/orientation_v2.py'
+      - 'mobi/p1-b2/geometry/turn_2p5d.py'
+      - 'mobi/p1-b2/geometry/run_orientation_v2.py'
+      - 'mobi/p1-b2/geometry/test_orientation_v2.py'
+      - '.github/workflows/mobi-p1-b2-orientation-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-b2-orientation-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-b2/orientation-evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-b2/orientation-evidence/environment.txt
+
+      - name: Verify private-canonical source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object metrics_v2.py)" = "322219f434d51ff30197c1beb136d1a506cdc2f3"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
+          test "$(git hash-object run_orientation_v2.py)" = "3837bc53e31b84b648cd66f933e64ec26b06f3bd"
+          test "$(git hash-object test_orientation_v2.py)" = "62a13b59483dcc31e297244e956fd0c76d863b58"
+          git hash-object model.py metrics_v2.py orientation_v2.py turn_2p5d.py run_orientation_v2.py test_orientation_v2.py | tee ../orientation-evidence/git_blob_shas.txt
+          sha256sum model.py metrics_v2.py orientation_v2.py turn_2p5d.py run_orientation_v2.py test_orientation_v2.py | tee ../orientation-evidence/source_sha256.txt
+          echo "P1 orientation v0.2 source blob parity PASS"
+
+      - name: Run orientation v0.2 regression tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_orientation_v2.py 2>&1 | tee ../orientation-evidence/unittest.txt
+
+      - name: Run orientation matrix twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+          from run_orientation_v2 import run_orientation_matrix
+
+          out = Path('../orientation-evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          def canonical_bytes(records):
+              return json.dumps(records, sort_keys=True, separators=(',', ':')).encode('utf-8')
+
+          first = run_orientation_matrix()
+          second = run_orientation_matrix()
+          first_bytes = canonical_bytes(first)
+          second_bytes = canonical_bytes(second)
+          if first_bytes != second_bytes:
+              raise SystemExit('orientation determinism mismatch')
+
+          (out / 'results.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          digest = hashlib.sha256(first_bytes).hexdigest()
+
+          failures = sum(1 for record in first if not record['assertions']['pass'])
+          max_drift = max(record['contactMetrics']['maxPlantedPawDriftDp'] for record in first)
+          max_zero = max(record['contactMetrics']['zeroSupportSampleCount'] for record in first)
+          max_body_step = max(record['orientationMetrics']['maxAdjacentBodyReferenceStepDp'] for record in first)
+          min_front_ratio = min(record['orientationMetrics']['frontToProfileVisualWidthRatio'] for record in first)
+          min_occ = min(record['occupancyMetrics']['minSilhouetteOccupancyRatio'] for record in first)
+
+          by_candidate_front = defaultdict(list)
+          by_candidate_occ = defaultdict(list)
+          for record in first:
+              by_candidate_front[record['candidate']].append(record['orientationMetrics']['frontToProfileVisualWidthRatio'])
+              by_candidate_occ[record['candidate']].append(record['occupancyMetrics']['minSilhouetteOccupancyRatio'])
+
+          summary = {
+              'schemaVersion': 'P1_ORIENTATION_V02_PUBLIC_EVIDENCE_V01',
+              'records': len(first),
+              'failures': failures,
+              'maxPlantedPawDriftDp': max_drift,
+              'maxZeroSupportSampleCount': max_zero,
+              'maxAdjacentBodyReferenceStepDp': max_body_step,
+              'minFrontToProfileVisualWidthRatio': min_front_ratio,
+              'minSilhouetteOccupancyRatio': min_occ,
+              'canonicalResultsSha256': digest,
+              'deterministicRepeatExact': True,
+              'candidateMinFrontToProfileRatio': {
+                  key: min(values) for key, values in sorted(by_candidate_front.items())
+              },
+              'candidateMinOccupancy': {
+                  key: min(values) for key, values in sorted(by_candidate_occ.items())
+              },
+          }
+          (out / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(summary, indent=2, sort_keys=True))
+
+          if failures != 0:
+              raise SystemExit('orientation structural validation failure')
+          if max_zero != 0:
+              raise SystemExit('orientation zero-support failure')
+          if max_drift >= 1e-6:
+              raise SystemExit('orientation planted-paw drift failure')
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-b2/orientation-evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json summary.json | tee SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-b2-orientation-v2-${{ github.run_id }}
+          path: mobi/p1-b2/orientation-evidence/
+          if-no-files-found: error
+          retention-days: 30
