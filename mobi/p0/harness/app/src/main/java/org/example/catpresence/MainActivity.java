@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public final class MainActivity extends Activity {
+    public static final String EXTRA_QA_COMMAND = "p0_qa_command";
+
     private TextView statusView;
 
     @Override
@@ -27,6 +29,7 @@ public final class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         QaState.appendEvent(this, "activity_create");
         buildUi();
+        handleQaCommand(getIntent());
     }
 
     private void buildUi() {
@@ -124,6 +127,34 @@ public final class MainActivity extends Activity {
         Intent intent = new Intent(this, PresenceService.class).setAction(action);
         startService(intent);
         statusView.postDelayed(this::refreshStatus, 300L);
+    }
+
+    private void handleQaCommand(Intent intent) {
+        if (intent == null) return;
+        String command = intent.getStringExtra(EXTRA_QA_COMMAND);
+        if (command == null || command.isEmpty()) return;
+
+        QaState.appendEvent(this, "qa_command " + command);
+        switch (command) {
+            case "start":
+                startPresence();
+                break;
+            case "move_a_to_b":
+                sendIfActive(PresenceService.ACTION_MOVE_A_TO_B);
+                break;
+            case "move_b_to_a":
+                sendIfActive(PresenceService.ACTION_MOVE_B_TO_A);
+                break;
+            case "reset":
+                sendIfActive(PresenceService.ACTION_RESET);
+                break;
+            case "stop":
+                sendCommand(PresenceService.ACTION_STOP);
+                break;
+            default:
+                QaState.appendEvent(this, "qa_command_unknown " + command);
+                break;
+        }
     }
 
     private void requestNotificationPermissionIfNeeded() {
