@@ -46,8 +46,12 @@ jobs:
           emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -gpu swiftshader_indirect -no-metrics
           pre-emulator-launch-script: gradle --no-daemon -p mobi/harness :overlayprobe:assembleDebug :hostprobe:assembleDebug
           script: |
-            bash mobi/tools/run_overlay_probe.sh
-            bash mobi/tools/verify_rotation.sh
+            cd mobi/harness
+            bash ../tools/run_overlay_probe.sh
+            bash ../tools/verify_rotation.sh
+            mkdir -p ../output
+            rm -rf ../output/overlay-probe
+            mv evidence/overlay-probe ../output/overlay-probe
 
       - name: Upload Mobi public execution evidence
         if: always()
