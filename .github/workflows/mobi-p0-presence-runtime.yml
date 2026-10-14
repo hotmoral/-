@@ -1,0 +1,62 @@
+name: Mobi P0 Presence Runtime Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - mobi/run-p0-presence-20261014
+    paths:
+      - 'mobi/p0/**'
+      - '.github/workflows/mobi-p0-presence-runtime.yml'
+
+concurrency:
+  group: mobi-p0-presence-runtime-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  api35-p0-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+          cache-disabled: true
+
+      - name: Install emulator runtime libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libpulse0
+
+      - name: Enable KVM access
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm || true
+
+      - name: Build and run API 35 P0 smoke
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -gpu swiftshader_indirect -no-metrics
+          pre-emulator-launch-script: gradle --no-daemon -p mobi/p0/harness :app:assembleDebug
+          script: bash mobi/p0/tools/run_emulator_smoke.sh
+
+      - name: Upload P0 runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-artifact-p0-presence-runtime-${{ github.run_id }}
+          path: mobi/output/p0-presence-runtime
+          if-no-files-found: warn
