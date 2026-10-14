@@ -1,217 +1,109 @@
 package org.example.catpresence;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public final class MainActivity extends Activity {
-    public static final String EXTRA_QA_COMMAND = "p0_qa_command";
-
-    private TextView statusView;
+    public static final String EXTRA_QA_COMMAND = "p1_qa_command";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        QaState.appendEvent(this, "activity_create");
-        buildUi();
-        handleQaCommand(getIntent());
+        setContentView(new HostSurfaceView());
+        QaState.appendEvent(this, "p1_activity_create");
+        handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        QaState.appendEvent(this, "activity_new_intent");
-        handleQaCommand(intent);
-    }
-
-    private void buildUi() {
-        int pad = dp(16);
-        ScrollView scroll = new ScrollView(this);
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(pad, pad, pad, pad);
-        scroll.addView(root, new ScrollView.LayoutParams(
-                ScrollView.LayoutParams.MATCH_PARENT,
-                ScrollView.LayoutParams.WRAP_CONTENT
-        ));
-
-        TextView title = new TextView(this);
-        title.setText("Cat Presence P0 — ABOVE IME technical prototype");
-        title.setTextSize(22f);
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        root.addView(title);
-
-        TextView note = new TextView(this);
-        note.setText("P0 v2 validates a bounded cat Window that can live above Samsung Keyboard. ABOVE_IME is the Mobi-default capability; UNDER_IME remains a fallback. Tapping the cat while it overlaps a docked IME triggers a QA-only move-clear motion using IME geometry.");
-        note.setTextSize(15f);
-        note.setPadding(0, dp(8), 0, dp(12));
-        root.addView(note);
-
-        addButton(root, "1. Grant / inspect overlay permission", v -> openOverlaySettings());
-        addButton(root, "2. Start Presence", v -> startPresence());
-        addButton(root, "Keyboard layer: ABOVE IME (Mobi default)", v -> sendIfActive(PresenceService.ACTION_SET_ABOVE_IME));
-        addButton(root, "Keyboard layer: UNDER IME (fallback)", v -> sendIfActive(PresenceService.ACTION_SET_UNDER_IME));
-        addButton(root, "Move clear of keyboard (QA)", v -> sendIfActive(PresenceService.ACTION_MOVE_CLEAR_OF_IME));
-        addButton(root, "Move A → B", v -> sendIfActive(PresenceService.ACTION_MOVE_A_TO_B));
-        addButton(root, "Move B → A", v -> sendIfActive(PresenceService.ACTION_MOVE_B_TO_A));
-        addButton(root, "Reset Position", v -> sendIfActive(PresenceService.ACTION_RESET));
-        addButton(root, "Refresh QA State", v -> refreshStatus());
-        addButton(root, "Copy QA Report", v -> copyReport());
-        addButton(root, "Stop Presence", v -> sendCommand(PresenceService.ACTION_STOP));
-
-        TextView guide = new TextView(this);
-        guide.setText("Galaxy check: Start Presence → open another app → show Samsung Keyboard → drag the cat onto the keyboard and confirm it stays visibly ABOVE the keyboard → type on keys outside the cat Window → tap the cat while it overlaps the keyboard and confirm the QA-only move-clear motion moves it just above the IME → rotate once → screen off/on → Copy QA Report → Stop Presence. The tap-to-clear motion is technical evidence, not final cat behavior.");
-        guide.setTextSize(14f);
-        guide.setPadding(0, dp(12), 0, dp(12));
-        root.addView(guide);
-
-        statusView = new TextView(this);
-        statusView.setTypeface(Typeface.MONOSPACE);
-        statusView.setTextSize(12f);
-        statusView.setTextIsSelectable(true);
-        statusView.setGravity(Gravity.START);
-        root.addView(statusView);
-
-        setContentView(scroll);
-        refreshStatus();
-    }
-
-    private void addButton(LinearLayout root, String label, View.OnClickListener listener) {
-        Button button = new Button(this);
-        button.setText(label);
-        button.setAllCaps(false);
-        button.setOnClickListener(listener);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        lp.bottomMargin = dp(6);
-        root.addView(button, lp);
-    }
-
-    private void openOverlaySettings() {
-        Intent intent = new Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + getPackageName())
-        );
-        startActivity(intent);
-    }
-
-    private void startPresence() {
-        if (!Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, "Grant 'Display over other apps' first.", Toast.LENGTH_LONG).show();
-            openOverlaySettings();
-            return;
-        }
-        requestNotificationPermissionIfNeeded();
-        Intent intent = new Intent(this, PresenceService.class).setAction(PresenceService.ACTION_START);
-        startForegroundService(intent);
-        Toast.makeText(this, "Presence start requested. ABOVE_IME is the default unless you selected fallback earlier.", Toast.LENGTH_SHORT).show();
-        statusView.postDelayed(this::refreshStatus, 500L);
-    }
-
-    private void sendIfActive(String action) {
-        if (!QaState.getBoolean(this, "serviceActive", false)) {
-            Toast.makeText(this, "Start Presence first.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        sendCommand(action);
-    }
-
-    private void sendCommand(String action) {
-        Intent intent = new Intent(this, PresenceService.class).setAction(action);
-        startService(intent);
-        statusView.postDelayed(this::refreshStatus, 300L);
-    }
-
-    private void handleQaCommand(Intent intent) {
-        if (intent == null) return;
-        String command = intent.getStringExtra(EXTRA_QA_COMMAND);
-        if (command == null || command.isEmpty()) return;
-
-        QaState.appendEvent(this, "qa_command " + command);
-        switch (command) {
-            case "start":
-                startPresence();
-                break;
-            case "above_ime":
-                sendIfActive(PresenceService.ACTION_SET_ABOVE_IME);
-                break;
-            case "under_ime":
-                sendIfActive(PresenceService.ACTION_SET_UNDER_IME);
-                break;
-            case "ime_clear":
-                sendIfActive(PresenceService.ACTION_MOVE_CLEAR_OF_IME);
-                break;
-            case "move_a_to_b":
-                sendIfActive(PresenceService.ACTION_MOVE_A_TO_B);
-                break;
-            case "move_b_to_a":
-                sendIfActive(PresenceService.ACTION_MOVE_B_TO_A);
-                break;
-            case "reset":
-                sendIfActive(PresenceService.ACTION_RESET);
-                break;
-            case "stop":
-                sendCommand(PresenceService.ACTION_STOP);
-                break;
-            default:
-                QaState.appendEvent(this, "qa_command_unknown " + command);
-                break;
-        }
-    }
-
-    private void requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT >= 33
-                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 200);
-        }
-    }
-
-    private void copyReport() {
-        String report = QaState.buildReport(this);
-        ClipboardManager clipboard = getSystemService(ClipboardManager.class);
-        clipboard.setPrimaryClip(ClipData.newPlainText("P0 QA Report", report));
-        Toast.makeText(this, "QA report copied.", Toast.LENGTH_SHORT).show();
-        refreshStatus();
-    }
-
-    private void refreshStatus() {
-        if (statusView != null) {
-            statusView.setText(QaState.buildReport(this));
-        }
+        handleIntent(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        QaState.appendEvent(this, "activity_resume");
-        refreshStatus();
+        QaState.appendEvent(this, "p1_activity_resume");
     }
 
-    @Override
-    protected void onPause() {
-        QaState.appendEvent(this, "activity_pause");
-        super.onPause();
+    private void handleIntent(Intent intent) {
+        if (intent == null) return;
+        String command = intent.getStringExtra(EXTRA_QA_COMMAND);
+        if (command == null || command.isEmpty()) return;
+        QaState.putString(this, "lastQaCommand", command);
+        QaState.appendEvent(this, "qa_command " + command);
+
+        String action = null;
+        switch (command) {
+            case "start_f0": action = PresenceService.ACTION_START_F0; break;
+            case "start_f1": action = PresenceService.ACTION_START_F1; break;
+            case "start_f2": action = PresenceService.ACTION_START_F2; break;
+            case "set_f0": action = PresenceService.ACTION_SET_F0; break;
+            case "set_f1": action = PresenceService.ACTION_SET_F1; break;
+            case "set_f2": action = PresenceService.ACTION_SET_F2; break;
+            case "move_stress": action = PresenceService.ACTION_MOVE_STRESS; break;
+            case "stop": action = PresenceService.ACTION_STOP; break;
+            case "reset_counts":
+                QaState.putInt(this, "hostTouchCount", 0);
+                QaState.putInt(this, "overlayTouchCount", 0);
+                QaState.putInt(this, "touch_ALL", 0);
+                QaState.putInt(this, "touch_CORE", 0);
+                QaState.putInt(this, "touch_FORE", 0);
+                QaState.putInt(this, "touch_HIND", 0);
+                QaState.putInt(this, "touch_TAIL", 0);
+                QaState.appendEvent(this, "touch_counts_reset");
+                return;
+            default:
+                QaState.appendEvent(this, "qa_command_unknown " + command);
+                return;
+        }
+
+        Intent serviceIntent = new Intent(this, PresenceService.class).setAction(action);
+        if (PresenceService.ACTION_STOP.equals(action)) {
+            startService(serviceIntent);
+        } else {
+            startForegroundService(serviceIntent);
+        }
     }
 
-    private int dp(int dp) {
-        return Math.round(dp * getResources().getDisplayMetrics().density);
+    private final class HostSurfaceView extends View {
+        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        HostSurfaceView() {
+            super(MainActivity.this);
+            setBackgroundColor(Color.rgb(245, 245, 245));
+            setFocusable(true);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            paint.setColor(Color.rgb(30, 30, 30));
+            paint.setTextSize(36f);
+            canvas.drawText("Mobi P1-B2.2 footprint host", 36f, 72f, paint);
+            paint.setTextSize(26f);
+            canvas.drawText("Overlay permission=" + Settings.canDrawOverlays(MainActivity.this), 36f, 116f, paint);
+            canvas.drawText("Tap-through host surface", 36f, 156f, paint);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                QaState.increment(MainActivity.this, "hostTouchCount");
+                QaState.putInt(MainActivity.this, "lastHostX", Math.round(event.getX()));
+                QaState.putInt(MainActivity.this, "lastHostY", Math.round(event.getY()));
+                QaState.appendEvent(MainActivity.this,
+                        "host_touch x=" + Math.round(event.getX()) + " y=" + Math.round(event.getY()));
+            }
+            return true;
+        }
     }
 }
