@@ -2,6 +2,12 @@ name: Mobi P0 Presence Build
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - mobi/run-p0-presence-20261014
+    paths:
+      - 'mobi/p0/**'
+      - '.github/workflows/mobi-p0-presence.yml'
 
 concurrency:
   group: mobi-p0-presence-${{ github.ref }}

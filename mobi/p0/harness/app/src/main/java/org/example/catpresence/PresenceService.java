@@ -17,6 +17,7 @@ import android.content.res.Configuration;
 import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -78,7 +79,17 @@ public final class PresenceService extends Service {
         QaState.putBoolean(this, "serviceActive", true);
         QaState.appendEvent(this, "service_create");
 
-        windowContext = createWindowContext(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, null);
+        DisplayManager displayManager = getSystemService(DisplayManager.class);
+        Display primaryDisplay = displayManager == null ? null : displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+        if (primaryDisplay == null) {
+            QaState.appendEvent(this, "primary_display_unavailable");
+            throw new IllegalStateException("Primary display unavailable for overlay WindowContext");
+        }
+        Context displayContext = createDisplayContext(primaryDisplay);
+        windowContext = displayContext.createWindowContext(
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                null
+        );
         windowManager = windowContext.getSystemService(WindowManager.class);
         windowSizePx = dp(112);
         marginPx = dp(12);
