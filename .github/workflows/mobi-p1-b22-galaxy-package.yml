@@ -1,0 +1,128 @@
+name: Mobi P1-B2.2 Galaxy Manual Package
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-b2-geometry-20261015'
+    paths:
+      - '.github/workflows/mobi-p1-b22-galaxy-package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  galaxy-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+          cache-disabled: true
+
+      - name: Verify accepted private-canonical source parity
+        working-directory: mobi/p1-b2/android-footprint
+        run: |
+          set -euo pipefail
+          test "$(git hash-object build.gradle)" = "5b7ccba7c566afb5057eaea1b10b99b083851fe4"
+          test "$(git hash-object settings.gradle)" = "b610b35bf5875d7a9c95caacb29501fccf104d7a"
+          test "$(git hash-object gradle.properties)" = "ed2d02acdd57b96d06bba03e812cb4bb053be633"
+          test "$(git hash-object app/build.gradle)" = "ef624bee12cc7beeae5b99e6fc67dff1ee34d5df"
+          test "$(git hash-object app/src/main/AndroidManifest.xml)" = "eae9e41876423a206e7e428a64824ad8104f6bf4"
+          test "$(git hash-object app/src/main/java/org/example/mobifootprint/MainActivity.java)" = "58e6e5d3df5479d781b0a0196ea944d226b9011e"
+          test "$(git hash-object app/src/main/java/org/example/mobifootprint/MultiWindowService.java)" = "640d85da08b0b9d9e6ecc8d9513346f1c07bc25a"
+          test "$(git hash-object app/src/main/java/org/example/mobifootprint/FootprintPartView.java)" = "b1db53929aa1f18b477cfa3c9b9c8218886958c1"
+          test "$(git hash-object app/src/main/java/org/example/mobifootprint/QaState.java)" = "43bfa1ad7860d6a93fabbd4fffd9af2042c90146"
+          echo "Accepted P1-B2.2 Android source parity PASS"
+
+      - name: Enforce capability firewall
+        working-directory: mobi/p1-b2/android-footprint
+        run: |
+          set -euo pipefail
+          manifest=app/src/main/AndroidManifest.xml
+          for forbidden in BIND_ACCESSIBILITY_SERVICE PACKAGE_USAGE_STATS READ_SMS READ_CONTACTS ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION READ_CALL_LOG RECORD_AUDIO CAMERA; do
+            if grep -q "$forbidden" "$manifest"; then
+              echo "Forbidden capability present: $forbidden"
+              exit 20
+            fi
+          done
+          grep -q 'SYSTEM_ALERT_WINDOW' "$manifest"
+          grep -q 'FOREGROUND_SERVICE_SPECIAL_USE' "$manifest"
+
+      - name: Build exact Galaxy manual APK
+        run: |
+          set -euo pipefail
+          gradle --no-daemon -p mobi/p1-b2/android-footprint :app:assembleDebug
+
+      - name: Assemble manual package
+        run: |
+          set -euo pipefail
+          SRC=mobi/p1-b2/android-footprint
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=mobi/output/p1-b22-galaxy-package
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+          cp "$APK" "$OUT/mobi-p1-b22-footprint-debug.apk"
+          unzip -t "$OUT/mobi-p1-b22-footprint-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+          sha256sum "$OUT/mobi-p1-b22-footprint-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo "package=org.example.mobifootprint"
+            echo "prototype=P1_B2_2_MULTI_WINDOW_V01"
+            echo "package_mode=galaxy_manual_mobile_only"
+            echo "public_package_commit=${GITHUB_SHA}"
+            echo "accepted_generic_runtime_commit=c5524a51d6722acc88c513375ecb3684f2eb2d0e"
+            echo "accepted_generic_runtime_run=38656217295"
+            echo "accepted_generic_apk_sha256=13a0c2bac2bdb9c00a89083227923e32c0dec649db3b20cfc026214a9475efaf"
+            echo "java=$(java -version 2>&1 | head -1)"
+            echo "gradle=$(gradle --version | awk '/^Gradle /{print $2; exit}')"
+            echo "compile_sdk=35"
+            echo "target_sdk=35"
+          } > "$OUT/BUILD_IDENTITY.txt"
+          (
+            cd "$SRC"
+            sha256sum \
+              build.gradle settings.gradle gradle.properties app/build.gradle app/src/main/AndroidManifest.xml \
+              app/src/main/java/org/example/mobifootprint/MainActivity.java \
+              app/src/main/java/org/example/mobifootprint/MultiWindowService.java \
+              app/src/main/java/org/example/mobifootprint/FootprintPartView.java \
+              app/src/main/java/org/example/mobifootprint/QaState.java
+          ) > "$OUT/SOURCE_SHA256.txt"
+          cat > "$OUT/README_KO.md" <<'EOF'
+          # Mobi P1-B2.2 Galaxy 실기기 검증 패키지
+
+          이 APK는 최종 Mobi 디자인이 아닙니다. F0/F1/F2의 실제 Android 터치 footprint와 다중 overlay Window 동작을 검증하는 저충실도 기술 프로토타입입니다.
+
+          ## 핵심 검증 대상
+
+          - F2에서 CORE / FORE / HIND / TAIL 4개 bounded overlay Window가 함께 존재하는지
+          - 색 블록 사이 실제 빈틈에서는 아래 앱 터치가 통과하는지
+          - 색 블록 자체를 누르면 overlay가 터치를 소비하는지
+          - CORE를 드래그할 때 4개가 함께 이동하는지
+          - Samsung Keyboard 위에서도 4개가 유지되는지
+          - 회전 / 화면 끄기-켜기 후에도 유지되는지
+          - Stop 시 모든 파트가 사라지는지
+
+          ## 주의
+
+          - 이 사각형은 캐릭터 디자인 제안이 아닙니다.
+          - Accessibility, Usage Stats, 위치, 카메라, 마이크, OCR/스크린 읽기를 사용하지 않습니다.
+          - 실제 각 Window의 직사각형은 해당 영역의 foreground touch를 막을 수 있습니다. 이것이 이번 검증의 대상입니다.
+          EOF
+          sha256sum "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt "$OUT"/APK_SHA256.txt "$OUT"/README_KO.md > "$OUT/PACKAGE_SHA256.txt"
+          cat "$OUT/APK_SHA256.txt"
+
+      - name: Upload Galaxy manual package
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-b22-galaxy-manual-${{ github.run_id }}
+          path: mobi/output/p1-b22-galaxy-package/
+          if-no-files-found: error
+          retention-days: 30
