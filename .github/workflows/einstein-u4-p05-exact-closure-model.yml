@@ -1,0 +1,34 @@
+name: Einstein U4 P05 Exact Closure Public Model
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: einstein-u4-p05-exact-closure-model-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exact-closure-model:
+    name: Einstein P05 public abstract model
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout approved public branch
+        uses: actions/checkout@v4
+
+      - name: Run deterministic 25-control suite
+        run: python3 einstein/tools/u4_p05_exact_closure/run.py
+
+      - name: Upload Einstein-only report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: einstein-u4-p05-model-report
+          path: |
+            einstein/output/u4_p05_exact_closure/report.json
+            einstein/output/u4_p05_exact_closure/sha256.txt
+          if-no-files-found: error
+          retention-days: 7
