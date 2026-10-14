@@ -1,71 +1,191 @@
 package com.example.touchhost;
 
 import android.app.Activity;
-import android.graphics.Canvas;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.Insets;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
+import android.os.SystemClock;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
 public final class MainActivity extends Activity {
-    private int touchCount;
+    private static final String ACTION_COMMAND = "com.example.touchhost.COMMAND";
+
+    private LinearLayout root;
+    private EditText editor;
+    private TextView status;
+    private BroadcastReceiver commandReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        touchCount = 0;
-        writeCount();
-        setContentView(new TouchSurface(this));
-    }
 
-    private void recordTouch() {
-        touchCount++;
-        writeCount();
-    }
+        root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setGravity(Gravity.CENTER_HORIZONTAL);
+        root.setPadding(48, 96, 48, 48);
+        root.setBackgroundColor(Color.rgb(245, 247, 250));
+        root.setFocusableInTouchMode(true);
 
-    private void writeCount() {
-        try (FileOutputStream out = openFileOutput("host_count.txt", MODE_PRIVATE)) {
-            out.write((Integer.toString(touchCount) + "\n").getBytes(StandardCharsets.UTF_8));
-        } catch (Exception ignored) {
-        }
-    }
+        TextView title = new TextView(this);
+        title.setText("Synthetic IME Host");
+        title.setTextSize(26f);
+        title.setTextColor(Color.rgb(35, 40, 50));
+        root.addView(title, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
 
-    private final class TouchSurface extends View {
-        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        TextView explanation = new TextView(this);
+        explanation.setText("Test-only editor. No real user content is used.");
+        explanation.setTextSize(16f);
+        explanation.setTextColor(Color.rgb(70, 75, 85));
+        root.addView(explanation, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        TouchSurface(Activity context) {
-            super(context);
-            setBackgroundColor(Color.rgb(245, 247, 250));
-            paint.setTextAlign(Paint.Align.CENTER);
-        }
+        editor = new EditText(this);
+        editor.setHint("Synthetic editor for keyboard visibility testing");
+        editor.setText("fixture");
+        editor.setSelection(editor.length());
+        editor.setTextSize(20f);
+        editor.setSingleLine(false);
+        editor.setMinLines(4);
+        root.addView(editor, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                recordTouch();
-                invalidate();
+        status = new TextView(this);
+        status.setTextSize(16f);
+        status.setTextColor(Color.rgb(45, 50, 60));
+        root.addView(status, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        setContentView(root);
+        root.requestFocus();
+
+        getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
+            writeInsetsSnapshot("apply", insets);
+            return insets;
+        });
+
+        commandReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String mode = intent == null ? null : intent.getStringExtra("mode");
+                handleCommand(mode);
             }
-            return true;
+        };
+        IntentFilter filter = new IntentFilter(ACTION_COMMAND);
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(commandReceiver, filter, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(commandReceiver, filter);
         }
 
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            paint.setColor(Color.rgb(40, 45, 55));
-            paint.setTextSize(52f);
-            canvas.drawText("Touch Host", getWidth() * 0.5f, getHeight() * 0.45f, paint);
-            paint.setTextSize(38f);
-            canvas.drawText("touches=" + touchCount, getWidth() * 0.5f, getHeight() * 0.52f, paint);
+        root.post(() -> writeCurrentSnapshot("created"));
+    }
 
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(4f);
-            paint.setColor(Color.rgb(120, 130, 150));
-            canvas.drawRect(24f, 24f, getWidth() - 24f, getHeight() - 24f, paint);
-            paint.setStyle(Paint.Style.FILL);
+    @Override
+    protected void onDestroy() {
+        if (commandReceiver != null) {
+            unregisterReceiver(commandReceiver);
+            commandReceiver = null;
+        }
+        super.onDestroy();
+    }
+
+    private void handleCommand(String mode) {
+        if ("show".equals(mode)) {
+            editor.requestFocus();
+            editor.postDelayed(() -> {
+                WindowInsetsController controller = editor.getWindowInsetsController();
+                if (controller != null) {
+                    controller.show(WindowInsets.Type.ime());
+                }
+                writeCurrentSnapshot("show_requested");
+            }, 250L);
+        } else if ("hide".equals(mode)) {
+            WindowInsetsController controller = getWindow().getDecorView().getWindowInsetsController();
+            if (controller != null) {
+                controller.hide(WindowInsets.Type.ime());
+            }
+            editor.clearFocus();
+            root.requestFocus();
+            root.postDelayed(() -> writeCurrentSnapshot("hide_requested"), 250L);
+        } else {
+            writeCurrentSnapshot("capture");
+        }
+    }
+
+    private void writeCurrentSnapshot(String reason) {
+        WindowInsets insets = getWindow().getDecorView().getRootWindowInsets();
+        writeInsetsSnapshot(reason, insets);
+    }
+
+    private void writeInsetsSnapshot(String reason, WindowInsets insets) {
+        boolean imeVisible = false;
+        Insets ime = Insets.NONE;
+        Insets statusBars = Insets.NONE;
+        Insets navigationBars = Insets.NONE;
+        Insets gestures = Insets.NONE;
+        String insetState = "UNKNOWN";
+
+        if (insets != null) {
+            imeVisible = insets.isVisible(WindowInsets.Type.ime());
+            ime = insets.getInsets(WindowInsets.Type.ime());
+            statusBars = insets.getInsets(WindowInsets.Type.statusBars());
+            navigationBars = insets.getInsets(WindowInsets.Type.navigationBars());
+            gestures = insets.getInsets(WindowInsets.Type.systemGestures());
+            insetState = "OBSERVED";
+        }
+
+        Display display = getDisplay();
+        int rotation = display == null ? -1 : display.getRotation();
+        int displayState = display == null ? Display.STATE_UNKNOWN : display.getState();
+        boolean hasWindowFocus = getWindow().getDecorView().hasWindowFocus();
+        boolean editorFocus = editor.hasFocus();
+
+        String snapshot =
+                "reason=" + reason + "\n"
+                        + "elapsedRealtimeMs=" + SystemClock.elapsedRealtime() + "\n"
+                        + "insetState=" + insetState + "\n"
+                        + "imeVisible=" + imeVisible + "\n"
+                        + "imeInsets=" + formatInsets(ime) + "\n"
+                        + "statusBars=" + formatInsets(statusBars) + "\n"
+                        + "navigationBars=" + formatInsets(navigationBars) + "\n"
+                        + "systemGestures=" + formatInsets(gestures) + "\n"
+                        + "windowFocus=" + hasWindowFocus + "\n"
+                        + "editorFocus=" + editorFocus + "\n"
+                        + "rotation=" + rotation + "\n"
+                        + "displayState=" + displayState + "\n";
+
+        writeText("host_ime_latest.txt", snapshot, false);
+        writeText("host_ime_events.txt", "---\n" + snapshot, true);
+        status.setText("IME visible=" + imeVisible + "  insets=" + formatInsets(ime));
+    }
+
+    private static String formatInsets(Insets insets) {
+        return insets.left + "," + insets.top + "," + insets.right + "," + insets.bottom;
+    }
+
+    private void writeText(String file, String value, boolean append) {
+        try (FileOutputStream out = openFileOutput(file, append ? MODE_APPEND : MODE_PRIVATE)) {
+            out.write(value.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception ignored) {
         }
     }
 }
