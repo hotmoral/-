@@ -14,6 +14,13 @@ bash ../tools/verify_rotation.sh
 rotation_rc=$?
 set -e
 
+if [ -d "$HARNESS/evidence/overlay-probe" ]; then
+  sha256sum \
+    ../tools/run_all.sh \
+    ../../.github/workflows/mobi-overlay-probe.yml \
+    >> "$HARNESS/evidence/overlay-probe/source_sha256.txt" 2>/dev/null || true
+fi
+
 mkdir -p "$ROOT/mobi/output"
 rm -rf "$OUTPUT"
 if [ -d "$HARNESS/evidence/overlay-probe" ]; then
