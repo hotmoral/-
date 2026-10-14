@@ -43,20 +43,36 @@ pref_int() {
   read_prefs | sed -n "s#.*<int name=\"${name}\" value=\"\([0-9-]*\)\".*#\1#p" | tail -1
 }
 
-rect_for() {
+# Return actual global screen frame as left,top,right,bottom.
+# LayoutParams x/y are relative to the overlay parent frame on API 35, so
+# touch evidence must use WindowManager's realized frame rather than requested x/y.
+frame_for() {
   local part="$1"
-  pref_string geometry | tr ';' '\n' | grep "^${part}=" | cut -d= -f2
+  local dump block frame
+  dump="$(adb shell dumpsys window windows)"
+  block="$(printf '%s\n' "$dump" | sed -n "/Window #[0-9][0-9]* Window{.*MobiP1B22-${part}}:/,/Frames:/p" | head -40)"
+  frame="$(printf '%s\n' "$block" | sed -n 's/.* frame=\[\([-0-9][0-9-]*\),\([-0-9][0-9-]*\)\]\[\([-0-9][0-9-]*\),\([-0-9][0-9-]*\)\].*/\1,\2,\3,\4/p' | tail -1)"
+  if [ -z "$frame" ]; then
+    echo "Missing realized frame for $part" >&2
+    return 1
+  fi
+  printf '%s\n' "$frame"
 }
 
 tap_part() {
   local part="$1"
-  local rect x y w h cx cy
-  rect="$(rect_for "$part")"
-  IFS=',' read -r x y w h <<< "$rect"
-  cx=$((x + w / 2))
-  cy=$((y + h / 2))
+  local frame l t r b cx cy
+  frame="$(frame_for "$part")"
+  IFS=',' read -r l t r b <<< "$frame"
+  cx=$(((l + r) / 2))
+  cy=$(((t + b) / 2))
   adb shell input tap "$cx" "$cy"
-  wait_pref "<string name=\"lastHit\">${part}</string>" 40
+  if ! wait_pref "<string name=\"lastHit\">${part}</string>" 40; then
+    read_prefs > "$OUT/tap_${part}_failed.xml"
+    adb shell dumpsys window windows > "$OUT/tap_${part}_failed_windows.txt"
+    log "FAIL: direct realized-frame tap did not reach child $part"
+    return 1
+  fi
 }
 
 window_count() {
@@ -121,21 +137,19 @@ done
 log "PASS F2: four child Windows and each child consumes its direct hit"
 
 log "F2 real gap must pass through to foreground Activity"
-CORE_RECT="$(rect_for CORE)"
-HIND_RECT="$(rect_for HIND)"
-FORE_RECT="$(rect_for FORE)"
-TAIL_RECT="$(rect_for TAIL)"
-IFS=',' read -r cx cy cw ch <<< "$CORE_RECT"
-IFS=',' read -r hx hy hw hh <<< "$HIND_RECT"
-IFS=',' read -r fx fy fw fh <<< "$FORE_RECT"
-IFS=',' read -r tx ty tw th <<< "$TAIL_RECT"
-gap_x=$(((hx + hw + fx) / 2))
-core_bottom=$((cy + ch))
-tail_bottom=$((ty + th))
-if [ "$tail_bottom" -gt "$core_bottom" ]; then lower="$tail_bottom"; else lower="$core_bottom"; fi
+CORE_FRAME="$(frame_for CORE)"
+HIND_FRAME="$(frame_for HIND)"
+FORE_FRAME="$(frame_for FORE)"
+TAIL_FRAME="$(frame_for TAIL)"
+IFS=',' read -r cl ct cr cb <<< "$CORE_FRAME"
+IFS=',' read -r hl ht hr hb <<< "$HIND_FRAME"
+IFS=',' read -r fl ft fr fb <<< "$FORE_FRAME"
+IFS=',' read -r tl tt tr tb <<< "$TAIL_FRAME"
+gap_x=$(((hr + fl) / 2))
+if [ "$tb" -gt "$cb" ]; then lower="$tb"; else lower="$cb"; fi
 gap_y=$((lower + 12))
-if [ "$gap_y" -ge $((hy + hh)) ] || [ "$gap_y" -ge $((fy + fh)) ]; then
-  log "FAIL: computed gap probe escaped fore/hind vertical band"
+if [ "$gap_x" -le "$hr" ] || [ "$gap_x" -ge "$fl" ] || [ "$gap_y" -ge "$hb" ] || [ "$gap_y" -ge "$fb" ]; then
+  log "FAIL: computed realized-frame gap probe is not inside declared gap"
   exit 32
 fi
 host_before="$(pref_int hostTapCount)"
@@ -148,6 +162,7 @@ sleep 0.5
 host_after="$(pref_int hostTapCount)"
 if [ "$host_after" -ne $((host_before + 1)) ]; then
   read_prefs > "$OUT/04_gap_failed.xml"
+  adb shell dumpsys window windows > "$OUT/04_gap_failed_windows.txt"
   log "FAIL: declared inter-Window gap did not reach foreground Activity"
   exit 33
 fi
@@ -162,12 +177,10 @@ done
 log "PASS F2: uncovered gap truthfully passes input to foreground host"
 
 log "Sibling overlap dispatch must be deterministic: TAIL is topmost"
-overlap_left=$(( tx > cx ? tx : cx ))
-overlap_top=$(( ty > cy ? ty : cy ))
-overlap_right_a=$((tx + tw)); overlap_right_b=$((cx + cw))
-if [ "$overlap_right_a" -lt "$overlap_right_b" ]; then overlap_right="$overlap_right_a"; else overlap_right="$overlap_right_b"; fi
-overlap_bottom_a=$((ty + th)); overlap_bottom_b=$((cy + ch))
-if [ "$overlap_bottom_a" -lt "$overlap_bottom_b" ]; then overlap_bottom="$overlap_bottom_a"; else overlap_bottom="$overlap_bottom_b"; fi
+overlap_left=$(( tl > cl ? tl : cl ))
+overlap_top=$(( tt > ct ? tt : ct ))
+if [ "$tr" -lt "$cr" ]; then overlap_right="$tr"; else overlap_right="$cr"; fi
+if [ "$tb" -lt "$cb" ]; then overlap_bottom="$tb"; else overlap_bottom="$cb"; fi
 if [ "$overlap_right" -le "$overlap_left" ] || [ "$overlap_bottom" -le "$overlap_top" ]; then
   log "FAIL: CORE/TAIL overlap geometry missing"
   exit 35
@@ -188,6 +201,7 @@ log "Synchronized A→B move must preserve every child relative offset"
 read_prefs > "$OUT/06_move_before.xml"
 qa move_b
 wait_pref 'name="moveErrorPx" value="0"' 80
+sleep 0.35
 read_prefs > "$OUT/06_move_after.xml"
 python3 - "$OUT/06_move_before.xml" "$OUT/06_move_after.xml" <<'PY'
 import sys, xml.etree.ElementTree as ET
