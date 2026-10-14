@@ -2,13 +2,6 @@ name: Mobi P0 Galaxy Mobile Package
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - mobi/run-p0-presence-20261014
-    paths:
-      - 'mobi/p0/harness/**'
-      - 'mobi/p0/mobile-package/**'
-      - '.github/workflows/mobi-p0-mobile-package.yml'
 
 concurrency:
   group: mobi-p0-mobile-package-${{ github.ref }}
