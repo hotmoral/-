@@ -41,6 +41,28 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm || true
 
+      - name: Preinstall API 35 emulator image with bounded retry
+        shell: bash
+        run: |
+          set -euo pipefail
+          package='system-images;android-35;google_apis;x86_64'
+          installed=0
+          for attempt in 1 2 3; do
+            echo "system-image install attempt ${attempt}/3"
+            if yes | sdkmanager --install "$package" --channel=0; then
+              installed=1
+              break
+            fi
+            rm -rf "$ANDROID_SDK_ROOT/system-images/android-35/google_apis/x86_64" || true
+            rm -rf "$HOME/.android/cache" || true
+            sleep 5
+          done
+          if [ "$installed" -ne 1 ]; then
+            echo "API 35 google_apis x86_64 system image failed after 3 attempts" >&2
+            exit 1
+          fi
+          sdkmanager --list_installed | grep -F "$package"
+
       - name: Build and run public-safe API 35 environment probe
         uses: reactivecircus/android-emulator-runner@v2
         with:
