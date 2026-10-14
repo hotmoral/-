@@ -40,7 +40,7 @@ def _points(points):
 def _shape_svg(shape):
     kind = shape["type"]
     role = escape(str(shape.get("role", "")))
-    common = f'data-role="{role}" fill="black" stroke="black"'
+    common = f'data-role="{role}" fill="black"'
     if kind == "ellipse":
         return (
             f'<ellipse {common} cx="{shape["cx"]:.4f}" cy="{shape["cy"]:.4f}" '
