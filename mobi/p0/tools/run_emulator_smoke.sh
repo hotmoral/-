@@ -44,6 +44,23 @@ PY
   adb shell input tap "$x" "$y"
 }
 
+read_prefs() {
+  adb shell run-as "$PKG" cat shared_prefs/p0_qa_state.xml 2>/dev/null || true
+}
+
+wait_pref_event() {
+  local needle="$1"
+  local attempts="${2:-40}"
+  local i
+  for ((i=1; i<=attempts; i++)); do
+    if read_prefs | grep -q "$needle"; then
+      return 0
+    fi
+    sleep 0.25
+  done
+  return 1
+}
+
 log "Installing APK"
 adb install -r "$APK" > "$OUT/install.txt"
 adb shell appops set "$PKG" SYSTEM_ALERT_WINDOW allow
@@ -58,7 +75,7 @@ tap_text "Start Presence"
 sleep 2
 adb shell dumpsys window windows > "$OUT/01_after_start_window.txt"
 adb shell dumpsys activity services "$PKG" > "$OUT/01_after_start_services.txt"
-adb shell run-as "$PKG" cat shared_prefs/p0_qa_state.xml > "$OUT/01_after_start_prefs.xml"
+read_prefs > "$OUT/01_after_start_prefs.xml"
 if ! grep -q 'CatPresenceP0Window' "$OUT/01_after_start_window.txt"; then
   log "FAIL: overlay Window not present after start"
   exit 21
@@ -85,7 +102,7 @@ adb shell am start -W -n "$PKG/.MainActivity" >/dev/null
 sleep 1
 tap_text "Move A"
 sleep 2
-adb shell run-as "$PKG" cat shared_prefs/p0_qa_state.xml > "$OUT/03_after_move_prefs.xml"
+read_prefs > "$OUT/03_after_move_prefs.xml"
 adb shell dumpsys window windows > "$OUT/03_after_move_window.txt"
 adb exec-out screencap -p > "$OUT/03_after_move.png"
 if ! grep -q 'errorPx=0' "$OUT/03_after_move_prefs.xml"; then
@@ -100,7 +117,7 @@ USERROT=$(adb shell settings get system user_rotation | tr -d '\r')
 adb shell settings put system accelerometer_rotation 0
 adb shell settings put system user_rotation 1
 sleep 3
-adb shell run-as "$PKG" cat shared_prefs/p0_qa_state.xml > "$OUT/04_rotation90_prefs.xml"
+read_prefs > "$OUT/04_rotation90_prefs.xml"
 adb shell dumpsys window windows > "$OUT/04_rotation90_window.txt"
 adb exec-out screencap -p > "$OUT/04_rotation90.png"
 if ! grep -q 'name="rotation" value="1"' "$OUT/04_rotation90_prefs.xml"; then
@@ -123,15 +140,19 @@ log "PASS: overlay survives controlled rotation"
 
 log "Testing screen off/on process-alive lifecycle"
 adb shell input keyevent 26
-sleep 2
-adb shell input keyevent 26
-adb shell input keyevent 82 || true
-sleep 2
-adb shell run-as "$PKG" cat shared_prefs/p0_qa_state.xml > "$OUT/05_screen_cycle_prefs.xml"
-if ! grep -q 'screen_off' "$OUT/05_screen_cycle_prefs.xml" || ! grep -q 'screen_on' "$OUT/05_screen_cycle_prefs.xml"; then
-  log "FAIL: screen off/on events not both recorded"
+if ! wait_pref_event 'screen_off' 40; then
+  read_prefs > "$OUT/05_screen_cycle_prefs.xml"
+  log "FAIL: screen_off event was not recorded"
   exit 27
 fi
+adb shell input keyevent 224
+adb shell input keyevent 82 || true
+if ! wait_pref_event 'screen_on' 60; then
+  read_prefs > "$OUT/05_screen_cycle_prefs.xml"
+  log "FAIL: screen_on event was not recorded after explicit wake"
+  exit 27
+fi
+read_prefs > "$OUT/05_screen_cycle_prefs.xml"
 log "PASS: screen off/on events recorded while service alive"
 
 log "Testing explicit stop/removal"
@@ -141,7 +162,7 @@ tap_text "Stop Presence"
 sleep 2
 adb shell dumpsys window windows > "$OUT/06_after_stop_window.txt"
 adb shell dumpsys activity services "$PKG" > "$OUT/06_after_stop_services.txt"
-adb shell run-as "$PKG" cat shared_prefs/p0_qa_state.xml > "$OUT/06_after_stop_prefs.xml"
+read_prefs > "$OUT/06_after_stop_prefs.xml"
 if grep -q 'CatPresenceP0Window' "$OUT/06_after_stop_window.txt"; then
   log "FAIL: overlay still present after explicit stop"
   exit 28
