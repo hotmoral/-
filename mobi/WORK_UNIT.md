@@ -1,6 +1,6 @@
 # Public execution work unit
 
-Status: **T0-3 E6 PACKAGE BUILT / OEM RUNTIME PENDING / WORKFLOWS PARKED**
+Status: **T0-3 E6 MOBILE PACKAGE BUILT / OEM RUNTIME PENDING / WORKFLOWS PARKED**
 
 This public branch is a generic Android execution harness only. It is not the canonical Mobi repository.
 
@@ -23,7 +23,7 @@ This public branch is a generic Android execution harness only. It is not the ca
 
 The private canonical Mobi repository reviewed and recorded the generic result. It does not constitute Samsung/One UI evidence.
 
-## Samsung / One UI E6 execution package
+## Samsung / One UI E6 desktop/RTL package
 
 A public-safe package for one real Samsung Galaxy + Samsung Keyboard run was built successfully.
 
@@ -34,9 +34,31 @@ A public-safe package for one real Samsung Galaxy + Samsung Keyboard run was bui
 - artifact ID: `11876298146`
 - artifact digest: `sha256:83cfd0c09a0223c5a698d05a2374227c595d2e57167b046228a042205f3e608b`
 
-The package build is not E6 runtime evidence. E6 remains pending until the package is executed on a real Samsung/One UI device with Samsung Keyboard active and the resulting evidence is reviewed in private `hotmoral/Mobi`.
+## Samsung / One UI E6 mobile-only package
 
-All Mobi workflows on this branch should remain manual-only unless a concrete new evidence need justifies another run.
+A second public-safe package was built for PC-free execution on the same Galaxy through Termux + Android Wireless debugging + adb.
+
+- package source/build commit: `cd7c6ecb3ee3ca6d38a8a5eb7b0de813010016f5`
+- workflow run: `38531492273`
+- job: `115744188730`
+- conclusion: `SUCCESS`
+- artifact ID: `11877439165`
+- artifact digest: `sha256:8494e059719e58ead1465817bcef1c24898631a5aa205588cca5725d25bf83dd`
+- package mode: `termux_wireless_adb_same_device`
+- package verification: shell syntax PASS, internal SHA-256 manifest PASS, both APK ZIP containers PASS
+
+The mobile package includes:
+
+- two synthetic debug APKs
+- `setup_termux.sh`
+- `pair_connect.sh`
+- `run.sh`
+- the unchanged Samsung E6 evidence runner
+- Korean step-by-step instructions
+
+Neither package build is E6 runtime evidence. E6 remains pending until one package is actually executed on a real Samsung/One UI device with Samsung Keyboard active and the resulting evidence is reviewed in private `hotmoral/Mobi`.
+
+All Mobi workflows on this branch are manual-only after package construction. Do not trigger another run merely for redundancy.
 
 ## Rules
 
