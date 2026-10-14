@@ -41,6 +41,21 @@ jobs:
           test "$(wc -l < ../scorecards/MANIFEST.txt)" -eq 90
           echo "scorecard_count=90" | tee -a ../scorecards_generation.txt
 
+      - name: Parse all SVG scorecards as XML
+        working-directory: mobi/p1-b2
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          files = sorted(Path('scorecards').glob('*.svg'))
+          if len(files) != 90:
+              raise SystemExit(f'expected 90 svg files, got {len(files)}')
+          for path in files:
+              ET.parse(path)
+          print(f'xml_parse_pass={len(files)}')
+          PY
+
       - name: Hash scorecards
         working-directory: mobi/p1-b2
         run: |
