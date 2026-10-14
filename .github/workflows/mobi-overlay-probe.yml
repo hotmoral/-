@@ -2,12 +2,6 @@ name: Mobi Android Overlay Probe
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - mobi/run-t0-overlay-20261014
-    paths:
-      - 'mobi/**'
-      - '.github/workflows/mobi-overlay-probe.yml'
 
 concurrency:
   group: mobi-overlay-probe-${{ github.ref }}
