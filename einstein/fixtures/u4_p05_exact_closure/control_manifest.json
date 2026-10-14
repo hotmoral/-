@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "purpose": "Public-safe synthetic control manifest for Einstein U4/P05 abstract exact-closure validation. Contains no private puzzle/source/state data.",
+  "controls": [
+    {"id":"G009_VALID_CLOSURE_ABSENCE","expected":{"admissibility":"ADMISSIBLE","closure":"PROVED","absence":"PROVED"}},
+    {"id":"G010_OMITTED_OUTGOING_EDGE","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G011_OMITTED_SOLVED_TERMINAL","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G012_GUARD_MISCLASSIFIED_STALLED","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G013_UNSUPPORTED_CYCLE","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G016_PROFILE_MISMATCH","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G035_HISTORY_SENSITIVE_LAUNDERING","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G037_SELF_CONSISTENT_FORGED_HASH","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"G047_UNRESOLVED_FRONTIER","expected":{"admissibility":"ADMISSIBLE","closure":"INCOMPLETE","absence":"UNKNOWN"}},
+    {"id":"P001_CLOSURE_ONLY_NULL_TARGET","expected":{"admissibility":"ADMISSIBLE","closure":"PROVED","absence":"NOT_APPLICABLE"}},
+    {"id":"P002_REACHABLE_SOLVED_REFUTES_ABSENCE","expected":{"admissibility":"ADMISSIBLE","closure":"PROVED","absence":"REFUTED"}},
+    {"id":"M001_EXTRA_EDGE","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M002_REORDERED_COMPLETE_EDGE_MULTISET","expected":{"admissibility":"ADMISSIBLE","closure":"PROVED","absence":"PROVED"}},
+    {"id":"M003_PARALLEL_EDGE_LOSS","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M004_EXACT_STATE_TAMPER","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M005_DESTINATION_TAMPER","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M006_OPPORTUNITY_TAMPER","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M007_HUMAN_STEP_TAMPER","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M008_FALSE_STALLED","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M009_STALE_ROOT","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M010_STALE_PROFILE","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M011_STALE_ASSIST","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M012_STALE_VERSION","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M013_TARGET_RESULT_TAMPER","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}},
+    {"id":"M014_NONDECREASING_RANK_INJECTION","expected":{"admissibility":"REJECTED","closure":"UNPROVED","absence":"UNKNOWN"}}
+  ]
+}
