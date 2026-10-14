@@ -6,6 +6,8 @@ on:
     branches:
       - mobi/run-p0-presence-20261014
     paths:
+      - 'mobi/p0/harness/**'
+      - 'mobi/p0/mobile-package/**'
       - '.github/workflows/mobi-p0-mobile-package.yml'
 
 concurrency:
@@ -78,7 +80,7 @@ jobs:
             echo "compile_sdk=35"
             echo "target_sdk=35"
             echo "package_mode=galaxy_manual_mobile_only"
-            echo "prototype=P0_PROTO_V1"
+            echo "prototype=P0_PROTO_V2_ABOVE_IME"
           } > "$out/BUILD_IDENTITY.txt"
           (
             cd "$out"

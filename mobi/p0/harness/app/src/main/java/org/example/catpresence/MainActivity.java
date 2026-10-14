@@ -52,28 +52,31 @@ public final class MainActivity extends Activity {
         ));
 
         TextView title = new TextView(this);
-        title.setText("Cat Presence P0 — technical prototype");
+        title.setText("Cat Presence P0 — ABOVE IME technical prototype");
         title.setTextSize(22f);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
 
         TextView note = new TextView(this);
-        note.setText("This build validates bounded overlay presence, touch footprint, A↔B movement, keyboard coexistence, owner control, and lifecycle evidence. It is not final art or behavior AI.");
+        note.setText("P0 v2 validates a bounded cat Window that can live above Samsung Keyboard. ABOVE_IME is the Mobi-default capability; UNDER_IME remains a fallback. Tapping the cat while it overlaps a docked IME triggers a QA-only move-clear motion using IME geometry.");
         note.setTextSize(15f);
         note.setPadding(0, dp(8), 0, dp(12));
         root.addView(note);
 
         addButton(root, "1. Grant / inspect overlay permission", v -> openOverlaySettings());
         addButton(root, "2. Start Presence", v -> startPresence());
-        addButton(root, "Stop Presence", v -> sendCommand(PresenceService.ACTION_STOP));
+        addButton(root, "Keyboard layer: ABOVE IME (Mobi default)", v -> sendIfActive(PresenceService.ACTION_SET_ABOVE_IME));
+        addButton(root, "Keyboard layer: UNDER IME (fallback)", v -> sendIfActive(PresenceService.ACTION_SET_UNDER_IME));
+        addButton(root, "Move clear of keyboard (QA)", v -> sendIfActive(PresenceService.ACTION_MOVE_CLEAR_OF_IME));
         addButton(root, "Move A → B", v -> sendIfActive(PresenceService.ACTION_MOVE_A_TO_B));
         addButton(root, "Move B → A", v -> sendIfActive(PresenceService.ACTION_MOVE_B_TO_A));
         addButton(root, "Reset Position", v -> sendIfActive(PresenceService.ACTION_RESET));
         addButton(root, "Refresh QA State", v -> refreshStatus());
         addButton(root, "Copy QA Report", v -> copyReport());
+        addButton(root, "Stop Presence", v -> sendCommand(PresenceService.ACTION_STOP));
 
         TextView guide = new TextView(this);
-        guide.setText("Real-device check: Start Presence → leave this app → use another app normally → tap/drag the cat → open Samsung Keyboard and type → rotate once → screen off/on → return here → Copy QA Report → Stop Presence.");
+        guide.setText("Galaxy check: Start Presence → open another app → show Samsung Keyboard → drag the cat onto the keyboard and confirm it stays visibly ABOVE the keyboard → type on keys outside the cat Window → tap the cat while it overlaps the keyboard and confirm the QA-only move-clear motion moves it just above the IME → rotate once → screen off/on → Copy QA Report → Stop Presence. The tap-to-clear motion is technical evidence, not final cat behavior.");
         guide.setTextSize(14f);
         guide.setPadding(0, dp(12), 0, dp(12));
         root.addView(guide);
@@ -119,7 +122,7 @@ public final class MainActivity extends Activity {
         requestNotificationPermissionIfNeeded();
         Intent intent = new Intent(this, PresenceService.class).setAction(PresenceService.ACTION_START);
         startForegroundService(intent);
-        Toast.makeText(this, "Presence start requested.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Presence start requested. ABOVE_IME is the default unless you selected fallback earlier.", Toast.LENGTH_SHORT).show();
         statusView.postDelayed(this::refreshStatus, 500L);
     }
 
@@ -146,6 +149,15 @@ public final class MainActivity extends Activity {
         switch (command) {
             case "start":
                 startPresence();
+                break;
+            case "above_ime":
+                sendIfActive(PresenceService.ACTION_SET_ABOVE_IME);
+                break;
+            case "under_ime":
+                sendIfActive(PresenceService.ACTION_SET_UNDER_IME);
+                break;
+            case "ime_clear":
+                sendIfActive(PresenceService.ACTION_MOVE_CLEAR_OF_IME);
                 break;
             case "move_a_to_b":
                 sendIfActive(PresenceService.ACTION_MOVE_A_TO_B);

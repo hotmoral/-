@@ -59,7 +59,11 @@ if ! grep -q 'PresenceService' "$OUT/01_after_start_services.txt"; then
   log "FAIL: PresenceService not active after start"
   exit 22
 fi
-log "PASS: bounded overlay Window and service active"
+if ! grep -q '<string name="imeLayerMode">ABOVE_IME</string>' "$OUT/01_after_start_prefs.xml"; then
+  log "FAIL: P0 v2 did not default to ABOVE_IME"
+  exit 30
+fi
+log "PASS: bounded overlay Window/service active; ABOVE_IME default recorded"
 
 log "Switching to Settings while overlay remains"
 adb shell am start -W -a android.settings.SETTINGS > "$OUT/settings_start.txt"
@@ -71,6 +75,23 @@ if ! grep -q 'CatPresenceP0Window' "$OUT/02_settings_window.txt"; then
   exit 23
 fi
 log "PASS: overlay remains across ordinary app switch"
+
+log "Checking dynamic IME z-order mode controls"
+qa_command under_ime
+if ! wait_pref_event '<string name="imeLayerMode">UNDER_IME</string>' 40; then
+  read_prefs > "$OUT/02b_under_ime_prefs.xml"
+  log "FAIL: UNDER_IME fallback command was not applied"
+  exit 31
+fi
+read_prefs > "$OUT/02b_under_ime_prefs.xml"
+qa_command above_ime
+if ! wait_pref_event '<string name="imeLayerMode">ABOVE_IME</string>' 40; then
+  read_prefs > "$OUT/02c_above_ime_prefs.xml"
+  log "FAIL: ABOVE_IME command was not restored"
+  exit 32
+fi
+read_prefs > "$OUT/02c_above_ime_prefs.xml"
+log "PASS: ABOVE_IME / UNDER_IME runtime mode switching works"
 
 log "Running deterministic A to B movement"
 qa_command move_a_to_b
@@ -156,4 +177,4 @@ log "PASS: explicit stop removes overlay and service"
 adb shell getprop > "$OUT/device_getprop.txt"
 adb shell dumpsys package "$PKG" > "$OUT/package.txt"
 sha256sum "$APK" > "$OUT/apk_sha256.txt"
-log "P0 generic emulator smoke PASS"
+log "P0 v2 generic emulator smoke PASS"

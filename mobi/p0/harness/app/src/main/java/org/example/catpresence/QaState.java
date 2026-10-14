@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class QaState {
     private static final String PREFS = "p0_qa_state";
-    private static final int MAX_EVENTS = 28;
+    private static final int MAX_EVENTS = 36;
 
     private QaState() {}
 
@@ -78,7 +78,7 @@ public final class QaState {
     public static String buildReport(Context context) {
         StringBuilder sb = new StringBuilder();
         sb.append("P0 Cat Presence QA Report\n");
-        sb.append("prototype=P0_PROTO_V1\n");
+        sb.append("prototype=P0_PROTO_V2_ABOVE_IME\n");
         sb.append("package=").append(context.getPackageName()).append('\n');
         sb.append("device=").append(Build.MANUFACTURER).append(' ').append(Build.MODEL).append('\n');
         sb.append("android=").append(Build.VERSION.RELEASE).append(" sdk=").append(Build.VERSION.SDK_INT).append('\n');
@@ -86,6 +86,7 @@ public final class QaState {
         sb.append("userEnabled=").append(getBoolean(context, "userEnabled", false)).append('\n');
         sb.append("serviceActive=").append(getBoolean(context, "serviceActive", false)).append('\n');
         sb.append("overlayAttached=").append(getBoolean(context, "overlayAttached", false)).append('\n');
+        sb.append("imeLayerMode=").append(getString(context, "imeLayerMode", "unknown")).append('\n');
         sb.append("globalBounds=").append(getString(context, "globalBounds", "unknown")).append('\n');
         sb.append("windowScreen=")
                 .append(getInt(context, "windowX", -1)).append(',')
@@ -98,11 +99,14 @@ public final class QaState {
         sb.append("touchFootprintRule=actual_window_rectangle\n");
         sb.append("tapCount=").append(getInt(context, "tapCount", 0)).append('\n');
         sb.append("dragCount=").append(getInt(context, "dragCount", 0)).append('\n');
+        sb.append("imeClearCount=").append(getInt(context, "imeClearCount", 0)).append('\n');
         sb.append("lastMove=").append(getString(context, "lastMove", "none")).append('\n');
         sb.append("rotation=").append(getInt(context, "rotation", -1)).append('\n');
         sb.append("orientation=").append(getInt(context, "orientation", -1)).append('\n');
         sb.append("imeVisibleNow=").append(getBoolean(context, "imeVisible", false)).append('\n');
         sb.append("imeBottomNow=").append(getInt(context, "imeBottom", 0)).append('\n');
+        sb.append("imeTopNow=").append(getInt(context, "imeTop", -1)).append('\n');
+        sb.append("windowOverlapsImeNow=").append(getBoolean(context, "windowOverlapsIme", false)).append('\n');
         sb.append("imeEverVisible=").append(getBoolean(context, "imeEverVisible", false)).append('\n');
         sb.append("maxImeBottomObserved=").append(getInt(context, "maxImeBottom", 0)).append('\n');
         sb.append("lastSampleReason=").append(getString(context, "sampleReason", "none")).append('\n');

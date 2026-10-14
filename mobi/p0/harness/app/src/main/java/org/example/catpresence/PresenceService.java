@@ -36,6 +36,12 @@ public final class PresenceService extends Service {
     public static final String ACTION_MOVE_A_TO_B = "org.example.catpresence.action.MOVE_A_TO_B";
     public static final String ACTION_MOVE_B_TO_A = "org.example.catpresence.action.MOVE_B_TO_A";
     public static final String ACTION_RESET = "org.example.catpresence.action.RESET";
+    public static final String ACTION_SET_ABOVE_IME = "org.example.catpresence.action.SET_ABOVE_IME";
+    public static final String ACTION_SET_UNDER_IME = "org.example.catpresence.action.SET_UNDER_IME";
+    public static final String ACTION_MOVE_CLEAR_OF_IME = "org.example.catpresence.action.MOVE_CLEAR_OF_IME";
+
+    public static final String MODE_ABOVE_IME = "ABOVE_IME";
+    public static final String MODE_UNDER_IME = "UNDER_IME";
 
     private static final String CHANNEL_ID = "p0_presence";
     private static final int NOTIFICATION_ID = 1001;
@@ -48,6 +54,7 @@ public final class PresenceService extends Service {
     private boolean overlayAttached;
     private boolean receiverRegistered;
     private ValueAnimator moveAnimator;
+    private String imeLayerMode = MODE_ABOVE_IME;
 
     private float pointerDownRawX;
     private float pointerDownRawY;
@@ -78,6 +85,12 @@ public final class PresenceService extends Service {
         super.onCreate();
         QaState.putBoolean(this, "serviceActive", true);
         QaState.appendEvent(this, "service_create");
+
+        imeLayerMode = QaState.getString(this, "imeLayerMode", MODE_ABOVE_IME);
+        if (!MODE_UNDER_IME.equals(imeLayerMode)) {
+            imeLayerMode = MODE_ABOVE_IME;
+        }
+        QaState.putString(this, "imeLayerMode", imeLayerMode);
 
         DisplayManager displayManager = getSystemService(DisplayManager.class);
         Display primaryDisplay = displayManager == null ? null : displayManager.getDisplay(Display.DEFAULT_DISPLAY);
@@ -135,7 +148,13 @@ public final class PresenceService extends Service {
         ensureForeground();
         ensureOverlay();
 
-        if (ACTION_MOVE_A_TO_B.equals(action)) {
+        if (ACTION_SET_ABOVE_IME.equals(action)) {
+            setImeLayerMode(MODE_ABOVE_IME);
+        } else if (ACTION_SET_UNDER_IME.equals(action)) {
+            setImeLayerMode(MODE_UNDER_IME);
+        } else if (ACTION_MOVE_CLEAR_OF_IME.equals(action)) {
+            moveClearOfIme("IME_CLEAR_COMMAND");
+        } else if (ACTION_MOVE_A_TO_B.equals(action)) {
             animateTo(targetB(), "A_TO_B");
         } else if (ACTION_MOVE_B_TO_A.equals(action)) {
             animateTo(targetA(), "B_TO_A");
@@ -191,19 +210,24 @@ public final class PresenceService extends Service {
         }
     }
 
+    private int overlayFlagsForMode(String mode) {
+        int result = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+        if (MODE_UNDER_IME.equals(mode)) {
+            result |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+        }
+        return result;
+    }
+
     private void ensureOverlay() {
         if (overlayAttached) return;
-
-        int flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-                | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
 
         layoutParams = new WindowManager.LayoutParams(
                 windowSizePx,
                 windowSizePx,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                flags,
+                overlayFlagsForMode(imeLayerMode),
                 PixelFormat.TRANSLUCENT
         );
         layoutParams.gravity = Gravity.TOP | Gravity.START;
@@ -249,11 +273,15 @@ public final class PresenceService extends Service {
                     QaState.increment(PresenceService.this, "dragCount");
                     persistWindowState();
                     QaState.appendEvent(PresenceService.this, "drag_end x=" + layoutParams.x + " y=" + layoutParams.y);
+                    sampleEnvironment("drag_end");
                 } else {
                     QaState.increment(PresenceService.this, "tapCount");
                     QaState.appendEvent(PresenceService.this, "cat_tap");
+                    sampleEnvironment("cat_tap");
+                    if (MODE_ABOVE_IME.equals(imeLayerMode) && overlapsDockedIme()) {
+                        moveClearOfIme("IME_CLEAR_TAP");
+                    }
                 }
-                sampleEnvironment("pointer_up");
             }
 
             @Override
@@ -271,9 +299,66 @@ public final class PresenceService extends Service {
         windowManager.addView(catView, layoutParams);
         overlayAttached = true;
         QaState.putBoolean(this, "overlayAttached", true);
-        QaState.appendEvent(this, "overlay_added x=" + layoutParams.x + " y=" + layoutParams.y);
+        QaState.putString(this, "imeLayerMode", imeLayerMode);
+        QaState.appendEvent(this, "overlay_added mode=" + imeLayerMode + " x=" + layoutParams.x + " y=" + layoutParams.y);
         persistWindowState();
         catView.post(this::persistWindowState);
+    }
+
+    private void setImeLayerMode(String mode) {
+        String normalized = MODE_UNDER_IME.equals(mode) ? MODE_UNDER_IME : MODE_ABOVE_IME;
+        imeLayerMode = normalized;
+        QaState.putString(this, "imeLayerMode", normalized);
+        if (overlayAttached && layoutParams != null && catView != null) {
+            layoutParams.flags = overlayFlagsForMode(normalized);
+            try {
+                windowManager.updateViewLayout(catView, layoutParams);
+            } catch (IllegalArgumentException ignored) {
+                return;
+            }
+        }
+        QaState.appendEvent(this, "ime_layer_mode " + normalized);
+        sampleEnvironment("ime_layer_mode");
+    }
+
+    private boolean overlapsDockedIme() {
+        if (!overlayAttached || layoutParams == null || windowManager == null) return false;
+        try {
+            WindowMetrics metrics = windowManager.getCurrentWindowMetrics();
+            WindowInsets wi = metrics.getWindowInsets();
+            if (!wi.isVisible(WindowInsets.Type.ime())) return false;
+            Insets ime = wi.getInsets(WindowInsets.Type.ime());
+            if (ime.bottom <= 0) return false;
+            Rect bounds = metrics.getBounds();
+            int imeTop = bounds.bottom - ime.bottom;
+            return layoutParams.y + windowSizePx > imeTop;
+        } catch (RuntimeException ignored) {
+            return false;
+        }
+    }
+
+    private void moveClearOfIme(String label) {
+        if (!overlayAttached || layoutParams == null || windowManager == null) return;
+        try {
+            WindowMetrics metrics = windowManager.getCurrentWindowMetrics();
+            WindowInsets wi = metrics.getWindowInsets();
+            Insets ime = wi.getInsets(WindowInsets.Type.ime());
+            if (!wi.isVisible(WindowInsets.Type.ime()) || ime.bottom <= 0) {
+                QaState.appendEvent(this, "ime_clear_unavailable visible=" + wi.isVisible(WindowInsets.Type.ime()) + " bottom=" + ime.bottom);
+                sampleEnvironment("ime_clear_unavailable");
+                return;
+            }
+            Rect bounds = metrics.getBounds();
+            int imeTop = bounds.bottom - ime.bottom;
+            int targetY = imeTop - windowSizePx - marginPx;
+            int[] safe = safeRegion();
+            targetY = Math.max(safe[1], Math.min(targetY, safe[3]));
+            int targetX = Math.max(safe[0], Math.min(layoutParams.x, safe[2]));
+            QaState.increment(this, "imeClearCount");
+            animateTo(new int[]{targetX, targetY}, label);
+        } catch (RuntimeException e) {
+            QaState.appendEvent(this, "ime_clear_error " + e.getClass().getSimpleName());
+        }
     }
 
     private void animateTo(int[] requestedTarget, String label) {
@@ -403,10 +488,15 @@ public final class PresenceService extends Service {
             WindowInsets wi = metrics.getWindowInsets();
             boolean imeVisible = wi.isVisible(WindowInsets.Type.ime());
             Insets ime = wi.getInsets(WindowInsets.Type.ime());
+            int imeTop = imeVisible && ime.bottom > 0 ? bounds.bottom - ime.bottom : -1;
+            boolean overlapsIme = imeTop >= 0 && layoutParams != null && layoutParams.y + windowSizePx > imeTop;
 
             QaState.putString(this, "globalBounds", bounds.left + "," + bounds.top + "," + bounds.right + "," + bounds.bottom);
             QaState.putBoolean(this, "imeVisible", imeVisible);
             QaState.putInt(this, "imeBottom", ime.bottom);
+            QaState.putInt(this, "imeTop", imeTop);
+            QaState.putBoolean(this, "windowOverlapsIme", overlapsIme);
+            QaState.putString(this, "imeLayerMode", imeLayerMode);
             if (imeVisible) {
                 QaState.putBoolean(this, "imeEverVisible", true);
                 int priorMax = QaState.getInt(this, "maxImeBottom", 0);
