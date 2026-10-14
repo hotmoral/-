@@ -12,14 +12,15 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.WindowManager;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public final class MultiWindowService extends Service implements FootprintPartView.DragDelegate {
@@ -34,7 +35,9 @@ public final class MultiWindowService extends Service implements FootprintPartVi
     private static final int NOTIFICATION_ID = 2202;
 
     private final LinkedHashMap<String, Child> children = new LinkedHashMap<>();
+    private Context windowContext;
     private WindowManager windowManager;
+    private Display primaryDisplay;
     private float density;
     private int groupX;
     private int groupY;
@@ -71,8 +74,19 @@ public final class MultiWindowService extends Service implements FootprintPartVi
     @Override
     public void onCreate() {
         super.onCreate();
-        density = getResources().getDisplayMetrics().density;
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        DisplayManager dm = getSystemService(DisplayManager.class);
+        primaryDisplay = dm == null ? null : dm.getDisplay(Display.DEFAULT_DISPLAY);
+        if (primaryDisplay == null) {
+            throw new IllegalStateException("Primary display unavailable for P1-B2.2 overlay WindowContext");
+        }
+        Context displayContext = createDisplayContext(primaryDisplay);
+        windowContext = displayContext.createWindowContext(
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, null);
+        density = windowContext.getResources().getDisplayMetrics().density;
+        windowManager = windowContext.getSystemService(WindowManager.class);
+        if (windowManager == null) {
+            throw new IllegalStateException("WindowManager unavailable for P1-B2.2 overlay WindowContext");
+        }
         createNotificationChannel();
         startForeground(NOTIFICATION_ID, buildNotification());
         QaState.recordService(this, true);
@@ -105,7 +119,7 @@ public final class MultiWindowService extends Service implements FootprintPartVi
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        clampAndUpdate(0);
+        clampAndUpdate();
         QaState.recordRotation(this, getDisplayRotation());
     }
 
@@ -113,7 +127,7 @@ public final class MultiWindowService extends Service implements FootprintPartVi
     public void onDragBy(float dx, float dy) {
         groupX += Math.round(dx);
         groupY += Math.round(dy);
-        clampAndUpdate(0);
+        clampAndUpdate();
     }
 
     private void attachVariant(String next) {
@@ -122,7 +136,7 @@ public final class MultiWindowService extends Service implements FootprintPartVi
         groupX = dp(80f);
         groupY = dp(220f);
         for (Spec spec : specs(next)) addChild(spec);
-        clampAndUpdate(0);
+        clampAndUpdate();
         QaState.recordVariant(this, variant, children.size());
         QaState.recordRotation(this, getDisplayRotation());
     }
@@ -151,7 +165,7 @@ public final class MultiWindowService extends Service implements FootprintPartVi
     }
 
     private void addChild(Spec spec) {
-        FootprintPartView view = new FootprintPartView(this, spec.part, spec.color, this);
+        FootprintPartView view = new FootprintPartView(windowContext, spec.part, spec.color, this);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 dp(spec.wDp),
                 dp(spec.hDp),
@@ -173,12 +187,12 @@ public final class MultiWindowService extends Service implements FootprintPartVi
         int targetY = dp(yDp);
         groupX = targetX;
         groupY = targetY;
-        clampAndUpdate(0);
+        clampAndUpdate();
         int error = Math.abs(groupX - clampX(targetX)) + Math.abs(groupY - clampY(targetY));
         QaState.recordGroup(this, groupX, groupY, error);
     }
 
-    private void clampAndUpdate(int ignored) {
+    private void clampAndUpdate() {
         groupX = clampX(groupX);
         groupY = clampY(groupY);
         for (Child child : children.values()) {
@@ -255,7 +269,7 @@ public final class MultiWindowService extends Service implements FootprintPartVi
     }
 
     private int getDisplayRotation() {
-        return getDisplay() == null ? -1 : getDisplay().getRotation();
+        return primaryDisplay == null ? -1 : primaryDisplay.getRotation();
     }
 
     private void createNotificationChannel() {
@@ -281,7 +295,7 @@ public final class MultiWindowService extends Service implements FootprintPartVi
                     QaState.recordScreen(MultiWindowService.this, false);
                 } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
                     QaState.recordScreen(MultiWindowService.this, true);
-                    clampAndUpdate(0);
+                    clampAndUpdate();
                 }
             }
         };
