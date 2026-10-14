@@ -46,10 +46,16 @@ jobs:
         run: |
           set -euo pipefail
           package='system-images;android-35;google_apis;x86_64'
+          sdkmanager_bin="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$sdkmanager_bin" ]; then
+            echo "sdkmanager not found at $sdkmanager_bin" >&2
+            find "$ANDROID_SDK_ROOT/cmdline-tools" -maxdepth 3 -type f -name sdkmanager -print || true
+            exit 1
+          fi
           installed=0
           for attempt in 1 2 3; do
             echo "system-image install attempt ${attempt}/3"
-            if yes | sdkmanager --install "$package" --channel=0; then
+            if yes | "$sdkmanager_bin" --install "$package" --channel=0; then
               installed=1
               break
             fi
@@ -61,7 +67,7 @@ jobs:
             echo "API 35 google_apis x86_64 system image failed after 3 attempts" >&2
             exit 1
           fi
-          sdkmanager --list_installed | grep -F "$package"
+          "$sdkmanager_bin" --list_installed | grep -F "$package"
 
       - name: Build and run public-safe API 35 environment probe
         uses: reactivecircus/android-emulator-runner@v2
