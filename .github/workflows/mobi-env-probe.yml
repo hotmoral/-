@@ -2,12 +2,6 @@ name: Mobi Environment Signal Probe
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - mobi/run-t0-env-20261014
-    paths:
-      - 'mobi/**'
-      - '.github/workflows/mobi-env-probe.yml'
 
 concurrency:
   group: mobi-env-probe-${{ github.ref }}
