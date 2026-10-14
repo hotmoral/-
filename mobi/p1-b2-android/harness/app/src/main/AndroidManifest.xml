@@ -8,7 +8,7 @@
 
     <application
         android:allowBackup="false"
-        android:label="Cat Presence P0"
+        android:label="Mobi P1 Footprint QA"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
@@ -28,7 +28,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="bounded user-enabled on-screen companion presence prototype" />
+                android:value="bounded multi-window companion interaction-footprint feasibility prototype" />
         </service>
     </application>
 
