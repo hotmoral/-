@@ -1,12 +1,6 @@
 name: Mobi P1-B2.1 Structural Scorecards
 
 on:
-  push:
-    branches:
-      - 'mobi/run-p1-b2-geometry-20261015'
-    paths:
-      - 'mobi/p1-b2/geometry/render_scorecards.py'
-      - '.github/workflows/mobi-p1-b2-scorecards.yml'
   workflow_dispatch:
 
 permissions:
