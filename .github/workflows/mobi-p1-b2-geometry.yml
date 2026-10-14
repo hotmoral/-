@@ -1,12 +1,6 @@
 name: Mobi P1-B2 Geometry Evidence
 
 on:
-  push:
-    branches:
-      - 'mobi/run-p1-b2-geometry-20261015'
-    paths:
-      - 'mobi/p1-b2/geometry/**'
-      - '.github/workflows/mobi-p1-b2-geometry.yml'
   workflow_dispatch:
 
 permissions:
