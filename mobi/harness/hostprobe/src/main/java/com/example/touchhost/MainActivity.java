@@ -176,6 +176,7 @@ public final class MainActivity extends Activity {
                         + "windowFocus=" + hasWindowFocus + "\n"
                         + "editorFocus=" + editorFocus + "\n"
                         + "editorText=" + editorText + "\n"
+                        + "editorLength=" + editorText.length() + "\n"
                         + "rotation=" + rotation + "\n"
                         + "displayState=" + displayState + "\n";
 
