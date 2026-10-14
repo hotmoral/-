@@ -43,7 +43,7 @@ jobs:
           test "$(git hash-object app/build.gradle)" = "ef624bee12cc7beeae5b99e6fc67dff1ee34d5df"
           test "$(git hash-object app/src/main/AndroidManifest.xml)" = "eae9e41876423a206e7e428a64824ad8104f6bf4"
           test "$(git hash-object app/src/main/java/org/example/mobifootprint/MainActivity.java)" = "0942d9c5fb1e63270ba4318abc2b6a019a524dc4"
-          test "$(git hash-object app/src/main/java/org/example/mobifootprint/MultiWindowService.java)" = "973bf7718b345aa9eec8419aab3eb0ff45e4bd38"
+          test "$(git hash-object app/src/main/java/org/example/mobifootprint/MultiWindowService.java)" = "640d85da08b0b9d9e6ecc8d9513346f1c07bc25a"
           test "$(git hash-object app/src/main/java/org/example/mobifootprint/FootprintPartView.java)" = "b1db53929aa1f18b477cfa3c9b9c8218886958c1"
           test "$(git hash-object app/src/main/java/org/example/mobifootprint/QaState.java)" = "43bfa1ad7860d6a93fabbd4fffd9af2042c90146"
           git hash-object build.gradle settings.gradle gradle.properties app/build.gradle app/src/main/AndroidManifest.xml app/src/main/java/org/example/mobifootprint/*.java
