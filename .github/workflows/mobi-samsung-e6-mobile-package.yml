@@ -2,14 +2,6 @@ name: Mobi Samsung E6 Mobile Package
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - mobi/run-t0-env-20261014
-    paths:
-      - 'mobi/harness/**'
-      - 'mobi/tools/run_samsung_e6.sh'
-      - 'mobi/e6-mobile-package/**'
-      - '.github/workflows/mobi-samsung-e6-mobile-package.yml'
 
 concurrency:
   group: mobi-samsung-e6-mobile-package-${{ github.ref }}
