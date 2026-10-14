@@ -5,39 +5,47 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ServiceInfo;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.TimeZone;
 
 public final class OverlayService extends Service {
     public static final String ACTION_SMALL = "com.example.overlayprobe.SMALL";
     public static final String ACTION_REMOVE = "com.example.overlayprobe.REMOVE";
-    public static final String ACTION_MOVE_TEST = "com.example.overlayprobe.MOVE_TEST";
 
     private static final String TAG = "OverlayProbe";
     private static final String CHANNEL_ID = "overlay_probe_channel";
     private static final int NOTIFICATION_ID = 1001;
-    private static final int MOVEMENT_FRAMES = 300;
-    private static final long MOVEMENT_INTERVAL_MS = 33L;
 
     private static volatile OverlayService instance;
 
@@ -46,9 +54,9 @@ public final class OverlayService extends Service {
     private View overlayView;
     private WindowManager.LayoutParams params;
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private BroadcastReceiver screenReceiver;
+    private String currentMode = "A";
     private int overlayTapCount;
-    private int movementFrame;
-    private Runnable movementRunnable;
 
     static OverlayService getInstance() {
         return instance;
@@ -77,8 +85,26 @@ public final class OverlayService extends Service {
         windowContext = createDisplayContext(display)
                 .createWindowContext(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, null);
         windowManager = windowContext.getSystemService(WindowManager.class);
-        writeText("overlay_count.txt", "0\n");
-        writeText("movement_result.txt", "not_started\n");
+        writeText("overlay_count.txt", "0\n", false);
+        writeText("env_events.txt", "", false);
+
+        screenReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent == null ? "null" : intent.getAction();
+                appendEvent("screenBroadcast=" + action);
+                handler.postDelayed(() -> captureEnvironment("broadcast_" + action), 150L);
+            }
+        };
+        IntentFilter screenFilter = new IntentFilter();
+        screenFilter.addAction(Intent.ACTION_SCREEN_ON);
+        screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(screenReceiver, screenFilter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(screenReceiver, screenFilter);
+        }
+
         Log.i(TAG, "SERVICE_CREATED canDrawOverlays=" + Settings.canDrawOverlays(this));
     }
 
@@ -91,10 +117,8 @@ public final class OverlayService extends Service {
         }
         if (ACTION_REMOVE.equals(action)) {
             removeOverlay();
-        } else if (ACTION_MOVE_TEST.equals(action)) {
-            startMovementTest();
         } else {
-            showSmall();
+            showSmall(false, false);
         }
         return START_STICKY;
     }
@@ -103,18 +127,29 @@ public final class OverlayService extends Service {
         handler.post(() -> {
             if ("remove".equals(mode)) {
                 removeOverlay();
-            } else if ("move".equals(mode)) {
-                startMovementTest();
+            } else if ("modeA".equals(mode)) {
+                showSmall(false, false);
+            } else if ("modeB".equals(mode)) {
+                showSmall(true, false);
+            } else if ("modeA_bottom".equals(mode)) {
+                showSmall(false, true);
+            } else if ("modeB_bottom".equals(mode)) {
+                showSmall(true, true);
+            } else if ("capture".equals(mode)) {
+                captureEnvironment("command_capture");
             } else {
-                showSmall();
+                showSmall(false, false);
             }
         });
     }
 
     @Override
     public void onDestroy() {
-        stopMovement();
         removeOverlay();
+        if (screenReceiver != null) {
+            unregisterReceiver(screenReceiver);
+            screenReceiver = null;
+        }
         instance = null;
         Log.i(TAG, "SERVICE_DESTROYED");
         super.onDestroy();
@@ -125,31 +160,53 @@ public final class OverlayService extends Service {
         return null;
     }
 
-    private void showSmall() {
-        stopMovement();
+    private void showSmall(boolean altFocusableIm, boolean bottom) {
         removeOverlay();
+        currentMode = altFocusableIm ? "B_ALT_FOCUSABLE_IM" : "A_NOT_FOCUSABLE_ONLY";
 
-        ProbeShapeView view = new ProbeShapeView(windowContext);
+        ProbeShapeView view = new ProbeShapeView(windowContext, altFocusableIm ? "B" : "A");
         int size = dp(92);
+        int flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+        if (altFocusableIm) {
+            flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+        }
+
         params = new WindowManager.LayoutParams(
                 size,
                 size,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                flags,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP | Gravity.START;
-        params.x = dp(48);
-        params.y = dp(160);
+
+        Rect bounds = windowManager.getCurrentWindowMetrics().getBounds();
+        if (bottom) {
+            params.x = Math.max(0, (bounds.width() - size) / 2);
+            params.y = Math.max(0, bounds.height() - size - dp(110));
+        } else {
+            params.x = dp(48);
+            params.y = dp(160);
+        }
         params.alpha = 1.0f;
-        params.setTitle("OverlayProbeWindow");
+        params.setTitle("OverlayProbeWindow-" + currentMode);
 
         view.setOnTouchListener(new DragTouchListener());
+        view.setOnApplyWindowInsetsListener((v, insets) -> {
+            writeViewInsets("apply", insets);
+            handler.post(() -> captureEnvironment("view_insets_apply"));
+            return insets;
+        });
+
         overlayView = view;
         windowManager.addView(view, params);
-        view.post(this::writeGeometry);
-        Log.i(TAG, "SMALL_OVERLAY_ADDED sizeDp=92");
+        view.post(() -> {
+            writeGeometry();
+            view.requestApplyInsets();
+            captureEnvironment("overlay_added");
+        });
+        Log.i(TAG, "SMALL_OVERLAY_ADDED mode=" + currentMode + " bottom=" + bottom);
     }
 
     private void removeOverlay() {
@@ -161,92 +218,175 @@ public final class OverlayService extends Service {
             }
             overlayView = null;
             params = null;
-            writeText("geometry.txt", "detached\n");
+            writeText("geometry.txt", "detached\n", false);
             Log.i(TAG, "OVERLAY_REMOVED");
         }
     }
 
-    private void startMovementTest() {
-        showSmall();
-        movementFrame = 0;
-        writeText("movement_result.txt", "running\n");
+    private void captureEnvironment(String reason) {
+        if (windowManager == null || windowContext == null) {
+            return;
+        }
 
-        movementRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (overlayView == null || params == null) {
-                    writeText("movement_result.txt", "aborted_detached frame=" + movementFrame + "\n");
-                    Log.e(TAG, "MOVEMENT_ABORTED frame=" + movementFrame);
-                    return;
-                }
+        WindowMetrics metrics = windowManager.getCurrentWindowMetrics();
+        Rect bounds = metrics.getBounds();
+        WindowInsets metricsInsets = metrics.getWindowInsets();
+        WindowInsets rootInsets = overlayView == null ? null : overlayView.getRootWindowInsets();
 
-                int cycle = movementFrame % 120;
-                int wave = cycle <= 60 ? cycle : 120 - cycle;
-                params.x = dp(32) + dp(4) * wave;
-                params.y = dp(150) + dp(2) * ((movementFrame * 3) % 120);
-                try {
-                    windowManager.updateViewLayout(overlayView, params);
-                } catch (RuntimeException e) {
-                    writeText("movement_result.txt", "update_failed frame=" + movementFrame + " error=" + e.getClass().getSimpleName() + "\n");
-                    Log.e(TAG, "MOVEMENT_UPDATE_FAILED frame=" + movementFrame, e);
-                    return;
-                }
+        Insets status = metricsInsets.getInsets(WindowInsets.Type.statusBars());
+        Insets nav = metricsInsets.getInsets(WindowInsets.Type.navigationBars());
+        Insets cutout = metricsInsets.getInsets(WindowInsets.Type.displayCutout());
+        Insets gestures = metricsInsets.getInsets(WindowInsets.Type.systemGestures());
+        Insets mandatory = metricsInsets.getInsets(WindowInsets.Type.mandatorySystemGestures());
+        Insets tappable = metricsInsets.getInsets(WindowInsets.Type.tappableElement());
+        Insets systemOverlays = Insets.NONE;
+        if (Build.VERSION.SDK_INT >= 34) {
+            systemOverlays = metricsInsets.getInsets(WindowInsets.Type.systemOverlays());
+        }
 
-                if (movementFrame % 30 == 0) {
-                    Log.i(TAG, "MOVEMENT_FRAME frame=" + movementFrame + " x=" + params.x + " y=" + params.y);
-                }
-                movementFrame++;
+        boolean metricsImeVisible = metricsInsets.isVisible(WindowInsets.Type.ime());
+        Insets metricsIme = metricsInsets.getInsets(WindowInsets.Type.ime());
+        String metricsImeState = classifyIme(metricsImeVisible, metricsIme, true);
 
-                if (movementFrame >= MOVEMENT_FRAMES) {
-                    boolean attached = overlayView.isAttachedToWindow();
-                    writeGeometry();
-                    writeText(
-                            "movement_result.txt",
-                            "completed frames=" + MOVEMENT_FRAMES + " attached=" + attached + "\n");
-                    Log.i(TAG, "MOVEMENT_DONE frames=" + MOVEMENT_FRAMES + " attached=" + attached);
-                    movementRunnable = null;
-                } else {
-                    handler.postDelayed(this, MOVEMENT_INTERVAL_MS);
-                }
-            }
-        };
-        handler.post(movementRunnable);
+        String rootState = "UNKNOWN";
+        boolean rootImeVisible = false;
+        Insets rootIme = Insets.NONE;
+        if (rootInsets != null) {
+            rootState = "OBSERVED";
+            rootImeVisible = rootInsets.isVisible(WindowInsets.Type.ime());
+            rootIme = rootInsets.getInsets(WindowInsets.Type.ime());
+        }
+        String rootImeState = classifyIme(rootImeVisible, rootIme, rootInsets != null);
+
+        Display display = windowContext.getDisplay();
+        int rotation = display == null ? -1 : display.getRotation();
+        int displayState = display == null ? Display.STATE_UNKNOWN : display.getState();
+        Configuration config = windowContext.getResources().getConfiguration();
+
+        PowerManager powerManager = getSystemService(PowerManager.class);
+        boolean interactive = powerManager != null && powerManager.isInteractive();
+        BatteryManager batteryManager = getSystemService(BatteryManager.class);
+        boolean charging = batteryManager != null && batteryManager.isCharging();
+        int batteryLevel = batteryManager == null
+                ? Integer.MIN_VALUE
+                : batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
+        String geometry = "detached";
+        if (overlayView != null && overlayView.isAttachedToWindow()) {
+            int[] location = new int[2];
+            overlayView.getLocationOnScreen(location);
+            geometry = location[0] + "," + location[1] + ","
+                    + overlayView.getWidth() + "," + overlayView.getHeight();
+        }
+
+        String snapshot =
+                "reason=" + reason + "\n"
+                        + "elapsedRealtimeMs=" + SystemClock.elapsedRealtime() + "\n"
+                        + "wallClockMs=" + System.currentTimeMillis() + "\n"
+                        + "timezone=" + TimeZone.getDefault().getID() + "\n"
+                        + "mode=" + currentMode + "\n"
+                        + "overlayGeometry=" + geometry + "\n"
+                        + "windowBounds=" + formatRect(bounds) + "\n"
+                        + "density=" + metrics.getDensity() + "\n"
+                        + "rotation=" + rotation + "\n"
+                        + "orientation=" + config.orientation + "\n"
+                        + "displayState=" + displayState + "\n"
+                        + "interactive=" + interactive + "\n"
+                        + "charging=" + charging + "\n"
+                        + "batteryLevel=" + batteryLevel + "\n"
+                        + "statusBars=" + formatInsets(status) + "\n"
+                        + "navigationBars=" + formatInsets(nav) + "\n"
+                        + "displayCutout=" + formatInsets(cutout) + "\n"
+                        + "systemGestures=" + formatInsets(gestures) + "\n"
+                        + "mandatoryGestures=" + formatInsets(mandatory) + "\n"
+                        + "tappableElement=" + formatInsets(tappable) + "\n"
+                        + "systemOverlays=" + formatInsets(systemOverlays) + "\n"
+                        + "metricsImeVisible=" + metricsImeVisible + "\n"
+                        + "metricsImeInsets=" + formatInsets(metricsIme) + "\n"
+                        + "metricsImeState=" + metricsImeState + "\n"
+                        + "rootInsetState=" + rootState + "\n"
+                        + "rootImeVisible=" + rootImeVisible + "\n"
+                        + "rootImeInsets=" + formatInsets(rootIme) + "\n"
+                        + "rootImeState=" + rootImeState + "\n";
+
+        writeText("env_latest.txt", snapshot, false);
+        writeText("env_events.txt", "---\n" + snapshot, true);
+        Log.i(TAG, "ENV_SNAPSHOT reason=" + reason
+                + " mode=" + currentMode
+                + " metricsImeVisible=" + metricsImeVisible
+                + " metricsIme=" + formatInsets(metricsIme)
+                + " rootImeVisible=" + rootImeVisible
+                + " rootIme=" + formatInsets(rootIme));
     }
 
-    private void stopMovement() {
-        if (movementRunnable != null) {
-            handler.removeCallbacks(movementRunnable);
-            movementRunnable = null;
+    private void writeViewInsets(String reason, WindowInsets insets) {
+        boolean visible = insets.isVisible(WindowInsets.Type.ime());
+        Insets ime = insets.getInsets(WindowInsets.Type.ime());
+        String value =
+                "reason=" + reason + "\n"
+                        + "elapsedRealtimeMs=" + SystemClock.elapsedRealtime() + "\n"
+                        + "mode=" + currentMode + "\n"
+                        + "imeVisible=" + visible + "\n"
+                        + "imeInsets=" + formatInsets(ime) + "\n"
+                        + "imeState=" + classifyIme(visible, ime, true) + "\n";
+        writeText("overlay_view_insets_latest.txt", value, false);
+        writeText("overlay_view_insets_events.txt", "---\n" + value, true);
+    }
+
+    private static String classifyIme(boolean visible, Insets insets, boolean sourceAvailable) {
+        if (!sourceAvailable) {
+            return "UNKNOWN";
         }
+        if (!visible) {
+            return "OBSERVED_HIDDEN";
+        }
+        if (insets.left != 0 || insets.top != 0 || insets.right != 0 || insets.bottom != 0) {
+            return "OBSERVED_DOCKED_OR_EDGE_INSETTING";
+        }
+        return "PARTIAL_VISIBLE_NO_EDGE_INSET";
     }
 
     private void writeGeometry() {
         if (overlayView == null || !overlayView.isAttachedToWindow()) {
-            writeText("geometry.txt", "detached\n");
+            writeText("geometry.txt", "detached\n", false);
             return;
         }
         int[] location = new int[2];
         overlayView.getLocationOnScreen(location);
         String value = location[0] + " " + location[1] + " "
                 + overlayView.getWidth() + " " + overlayView.getHeight() + "\n";
-        writeText("geometry.txt", value);
+        writeText("geometry.txt", value, false);
         Log.i(TAG, "GEOMETRY " + value.trim());
     }
 
     private void recordOverlayTap(MotionEvent event) {
         overlayTapCount++;
-        writeText("overlay_count.txt", Integer.toString(overlayTapCount) + "\n");
+        writeText("overlay_count.txt", Integer.toString(overlayTapCount) + "\n", false);
         Log.i(TAG, "OVERLAY_TAP count=" + overlayTapCount
                 + " localX=" + Math.round(event.getX())
                 + " localY=" + Math.round(event.getY()));
     }
 
-    private void writeText(String file, String value) {
-        try (FileOutputStream out = openFileOutput(file, MODE_PRIVATE)) {
+    private void appendEvent(String value) {
+        writeText("env_events.txt",
+                "---\nreason=event\nelapsedRealtimeMs=" + SystemClock.elapsedRealtime() + "\n" + value + "\n",
+                true);
+    }
+
+    private void writeText(String file, String value, boolean append) {
+        try (FileOutputStream out = openFileOutput(file, append ? MODE_APPEND : MODE_PRIVATE)) {
             out.write(value.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             Log.e(TAG, "write failed file=" + file, e);
         }
+    }
+
+    private static String formatInsets(Insets insets) {
+        return insets.left + "," + insets.top + "," + insets.right + "," + insets.bottom;
+    }
+
+    private static String formatRect(Rect rect) {
+        return rect.left + "," + rect.top + "," + rect.right + "," + rect.bottom;
     }
 
     private int dp(int value) {
@@ -270,8 +410,8 @@ public final class OverlayService extends Service {
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new Notification.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_menu_view)
-                .setContentTitle("Overlay probe active")
-                .setContentText("Generic foreground-service runtime test")
+                .setContentTitle("Environment probe active")
+                .setContentText("Generic structural-signal runtime test")
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .build();
@@ -303,7 +443,10 @@ public final class OverlayService extends Service {
                     return true;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    v.post(OverlayService.this::writeGeometry);
+                    v.post(() -> {
+                        writeGeometry();
+                        captureEnvironment("touch_end");
+                    });
                     return true;
                 default:
                     return true;
@@ -313,9 +456,11 @@ public final class OverlayService extends Service {
 
     private static final class ProbeShapeView extends View {
         private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final String label;
 
-        ProbeShapeView(Context context) {
+        ProbeShapeView(Context context, String label) {
             super(context);
+            this.label = label;
             setBackgroundColor(Color.TRANSPARENT);
         }
 
@@ -324,12 +469,12 @@ public final class OverlayService extends Service {
             super.onDraw(canvas);
             float w = getWidth();
             float h = getHeight();
-            paint.setColor(Color.rgb(70, 135, 220));
+            paint.setColor("B".equals(label) ? Color.rgb(65, 165, 105) : Color.rgb(70, 135, 220));
             canvas.drawCircle(w * 0.5f, h * 0.5f, Math.min(w, h) * 0.36f, paint);
             paint.setColor(Color.WHITE);
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTextSize(Math.min(w, h) * 0.18f);
-            canvas.drawText("P", w * 0.5f, h * 0.56f, paint);
+            canvas.drawText(label, w * 0.5f, h * 0.56f, paint);
         }
     }
 }
