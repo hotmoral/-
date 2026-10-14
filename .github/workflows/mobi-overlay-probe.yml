@@ -1,0 +1,58 @@
+name: Mobi Android Overlay Probe
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: mobi-overlay-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  api35-overlay-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+          cache-disabled: true
+
+      - name: Install emulator runtime libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libpulse0
+
+      - name: Enable KVM access
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm || true
+
+      - name: Build and run public-safe API 35 probe
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -gpu swiftshader_indirect -no-metrics
+          pre-emulator-launch-script: gradle --no-daemon -p mobi/harness :overlayprobe:assembleDebug :hostprobe:assembleDebug
+          script: |
+            bash mobi/tools/run_overlay_probe.sh
+            bash mobi/tools/verify_rotation.sh
+
+      - name: Upload Mobi public execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-artifact-t0-overlay-api35-${{ github.run_id }}
+          path: mobi/output/overlay-probe
+          if-no-files-found: warn
