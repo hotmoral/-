@@ -32,6 +32,14 @@ public final class MainActivity extends Activity {
         handleQaCommand(getIntent());
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        QaState.appendEvent(this, "activity_new_intent");
+        handleQaCommand(intent);
+    }
+
     private void buildUi() {
         int pad = dp(16);
         ScrollView scroll = new ScrollView(this);
