@@ -60,7 +60,7 @@ tap_part() {
 }
 
 window_count() {
-  adb shell dumpsys window windows | grep -c 'MobiP1B22-' || true
+  adb shell dumpsys window windows | grep -Ec '^[[:space:]]+Window #[0-9]+ Window\{.*MobiP1B22-' || true
 }
 
 assert_window_count() {
