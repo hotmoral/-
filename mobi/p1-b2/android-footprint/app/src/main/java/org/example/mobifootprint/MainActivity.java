@@ -46,18 +46,20 @@ public final class MainActivity extends Activity {
         refreshReport();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            QaState.recordHostHit(this, event.getRawX(), event.getRawY());
+            refreshReport();
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
     private void buildUi() {
         LinearLayout column = new LinearLayout(this);
         column.setOrientation(LinearLayout.VERTICAL);
         column.setPadding(28, 28, 28, 60);
         column.setBackgroundColor(Color.rgb(245, 245, 245));
-        column.setOnTouchListener((v, event) -> {
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                QaState.recordHostHit(this, event.getRawX(), event.getRawY());
-                refreshReport();
-            }
-            return false;
-        });
 
         TextView title = new TextView(this);
         title.setText("Mobi P1-B2.2 Multi-Window Footprint\nLow-fidelity technical comparator");
@@ -89,7 +91,7 @@ public final class MainActivity extends Activity {
         });
 
         TextView probe = new TextView(this);
-        probe.setText("HOST PASS-THROUGH PROBE AREA\nTap blank space here. If no overlay child covers the point, HOST must receive it.");
+        probe.setText("HOST PASS-THROUGH PROBE AREA\nAny screen point not covered by an overlay child must still reach this Activity.");
         probe.setTextSize(18f);
         probe.setGravity(Gravity.CENTER);
         probe.setTextColor(Color.DKGRAY);
