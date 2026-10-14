@@ -3,6 +3,7 @@ set -euo pipefail
 
 PROBE=com.example.overlayprobe
 HOST=com.example.touchhost
+LAUNCHER=com.google.android.apps.nexuslauncher
 OUT=evidence/overlay-probe
 mkdir -p "$OUT"
 : > "$OUT/summary.txt"
@@ -84,25 +85,37 @@ check_overlay_window() {
 
 ensure_host_focus() {
   local label="$1"
-  local attempt
-  for attempt in $(seq 1 5); do
+  local attempt current_focus
+  for attempt in $(seq 1 6); do
     capture_focus "host_focus_${label}_${attempt}"
-    if grep -q "$HOST" "$OUT/host_focus_${label}_${attempt}_focus.txt"; then
-      log "PASS: different-UID host has input focus before $label"
+    current_focus=$(grep 'mCurrentFocus=' "$OUT/host_focus_${label}_${attempt}_focus.txt" | head -n 1 || true)
+
+    # Only the actual focused Window is authoritative. mFocusedApp alone is not
+    # sufficient because a system dialog may sit above the host activity.
+    if [[ "$current_focus" == *"$HOST"* ]]; then
+      log "PASS: different-UID host is the actual focused window before $label"
       return 0
     fi
 
-    # A system ANR/error dialog can steal input on a freshly booted emulator.
-    # Preserve evidence, dismiss the transient UI, and restore the host before
-    # making a touch-dispatch claim.
     adb exec-out screencap -p > "$OUT/host_focus_${label}_${attempt}.png" || true
-    adb shell input keyevent KEYCODE_BACK >/dev/null 2>&1 || true
-    sleep 1
+
+    # The hosted Google API 35 image can raise a Pixel Launcher ANR unrelated to
+    # the probe. Remove that contaminating system dialog/process, then restore
+    # the host. Record the recovery so the run never hides the environment issue.
+    if [[ "$current_focus" == *"Application Not Responding: $LAUNCHER"* ]]; then
+      log "ENVIRONMENT RECOVERY: Pixel Launcher ANR owned current focus before $label; force-stopping launcher before retry"
+      adb shell am force-stop "$LAUNCHER" >/dev/null 2>&1 || true
+      sleep 1
+    else
+      adb shell input keyevent KEYCODE_BACK >/dev/null 2>&1 || true
+      sleep 1
+    fi
+
     adb shell am start -W -n "$HOST/.MainActivity" >> "$OUT/host_focus_relaunch.txt" 2>&1 || true
     sleep 2
   done
 
-  mark_fail "different-UID host never became focused before $label; touch result would be contaminated"
+  mark_fail "different-UID host never became the actual focused window before $label; touch assertion skipped"
   return 1
 }
 
@@ -113,7 +126,9 @@ point_inside_overlay() {
 
 test_host_control_point() {
   local x="$1" y="$2" label="$3"
-  ensure_host_focus "$label" || return 0
+  if ! ensure_host_focus "$label"; then
+    return 0
+  fi
   local before after
   before=$(host_count)
   adb shell input tap "$x" "$y"
@@ -189,13 +204,12 @@ adb shell am start -W -n "$HOST/.MainActivity" > "$OUT/start_host_activity.txt"
 sleep 2
 ensure_host_focus "touch_preflight" || true
 
-# Capture any system ANR/error evidence before touch assertions. A prior legacy
-# run was contaminated by a Pixel Launcher ANR dialog, so this is now an
-# explicit environment diagnostic rather than being misclassified as overlay
-# pass-through failure.
+# Capture any system ANR/error evidence before touch assertions. A Pixel Launcher
+# ANR is an emulator-environment deviation, not overlay behavior, and must be
+# retained even if focus recovery succeeds.
 adb logcat -d > "$OUT/logcat_before_touch.txt"
 if grep -Eq 'ANR in com\.google\.android\.apps\.nexuslauncher|AppNotRespondingDialog' "$OUT/logcat_before_touch.txt"; then
-  log "ENVIRONMENT NOTE: launcher ANR evidence observed; host focus recovery was required before touch assertions"
+  log "ENVIRONMENT NOTE: launcher ANR evidence observed in the emulator log; touch claims require actual-host-focus checks"
 fi
 adb exec-out screencap -p > "$OUT/02_overlay_over_host.png"
 
@@ -222,46 +236,49 @@ test_host_control_point "$control1_x" "$control1_y" "outside control point A"
 test_host_control_point "$control2_x" "$control2_y" "outside control point B"
 
 # Center touch: must remain in the overlay and not reach the host.
-ensure_host_focus "inside_overlay" || true
-center_x=$((gx + gw / 2))
-center_y=$((gy + gh / 2))
-h_before=$(host_count)
-p_before=$(overlay_count)
-adb shell input tap "$center_x" "$center_y"
-sleep 1
-h_after=$(host_count)
-p_after=$(overlay_count)
-expect_delta "$h_before" "$h_after" 0 "center touch inside overlay does not reach host"
-expect_delta "$p_before" "$p_after" 1 "center touch is received by overlay"
+if ensure_host_focus "inside_overlay"; then
+  center_x=$((gx + gw / 2))
+  center_y=$((gy + gh / 2))
+  h_before=$(host_count)
+  p_before=$(overlay_count)
+  adb shell input tap "$center_x" "$center_y"
+  sleep 1
+  h_after=$(host_count)
+  p_after=$(overlay_count)
+  expect_delta "$h_before" "$h_after" 0 "center touch inside overlay does not reach host"
+  expect_delta "$p_before" "$p_after" 1 "center touch is received by overlay"
+fi
 
 # Transparent corner inside the rectangular overlay bounds. The view draws only
 # a central circle, so this proves that visual transparency is not equivalent to
 # an input hole.
-ensure_host_focus "transparent_corner" || true
-corner_x=$((gx + 10))
-corner_y=$((gy + 10))
-h_before=$(host_count)
-p_before=$(overlay_count)
-adb shell input tap "$corner_x" "$corner_y"
-sleep 1
-h_after=$(host_count)
-p_after=$(overlay_count)
-expect_delta "$h_before" "$h_after" 0 "transparent pixel area inside rectangular overlay still occupies input space"
-expect_delta "$p_before" "$p_after" 1 "transparent-corner touch is received by overlay window"
+if ensure_host_focus "transparent_corner"; then
+  corner_x=$((gx + 10))
+  corner_y=$((gy + 10))
+  h_before=$(host_count)
+  p_before=$(overlay_count)
+  adb shell input tap "$corner_x" "$corner_y"
+  sleep 1
+  h_after=$(host_count)
+  p_after=$(overlay_count)
+  expect_delta "$h_before" "$h_after" 0 "transparent pixel area inside rectangular overlay still occupies input space"
+  expect_delta "$p_before" "$p_after" 1 "transparent-corner touch is received by overlay window"
+fi
 
 # Just outside the right edge: validates that the rectangular input footprint
 # ends at the window boundary.
-ensure_host_focus "near_edge" || true
-edge_x=$((gx + gw + 8))
-edge_y=$((gy + gh / 2))
-if (( edge_x >= screen_w - 1 )); then
-  edge_x=$((gx - 8))
+if ensure_host_focus "near_edge"; then
+  edge_x=$((gx + gw + 8))
+  edge_y=$((gy + gh / 2))
+  if (( edge_x >= screen_w - 1 )); then
+    edge_x=$((gx - 8))
+  fi
+  h_before=$(host_count)
+  adb shell input tap "$edge_x" "$edge_y"
+  sleep 1
+  h_after=$(host_count)
+  expect_delta "$h_before" "$h_after" 1 "near-edge touch just outside overlay reaches host"
 fi
-h_before=$(host_count)
-adb shell input tap "$edge_x" "$edge_y"
-sleep 1
-h_after=$(host_count)
-expect_delta "$h_before" "$h_after" 1 "near-edge touch just outside overlay reaches host"
 
 log "Starting bounded automatic movement cadence test"
 command_mode move
