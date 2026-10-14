@@ -126,6 +126,10 @@ public final class MainActivity extends Activity {
             editor.clearFocus();
             root.requestFocus();
             root.postDelayed(() -> writeCurrentSnapshot("hide_requested"), 250L);
+        } else if ("reset".equals(mode)) {
+            editor.setText("fixture");
+            editor.setSelection(editor.length());
+            writeCurrentSnapshot("reset");
         } else {
             writeCurrentSnapshot("capture");
         }
@@ -158,6 +162,7 @@ public final class MainActivity extends Activity {
         int displayState = display == null ? Display.STATE_UNKNOWN : display.getState();
         boolean hasWindowFocus = getWindow().getDecorView().hasWindowFocus();
         boolean editorFocus = editor.hasFocus();
+        String editorText = editor.getText() == null ? "" : editor.getText().toString();
 
         String snapshot =
                 "reason=" + reason + "\n"
@@ -170,6 +175,7 @@ public final class MainActivity extends Activity {
                         + "systemGestures=" + formatInsets(gestures) + "\n"
                         + "windowFocus=" + hasWindowFocus + "\n"
                         + "editorFocus=" + editorFocus + "\n"
+                        + "editorText=" + editorText + "\n"
                         + "rotation=" + rotation + "\n"
                         + "displayState=" + displayState + "\n";
 
