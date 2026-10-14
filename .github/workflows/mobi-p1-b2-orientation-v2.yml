@@ -1,15 +1,6 @@
 name: Mobi P1-B2 Orientation v0.2 Evidence
 
 on:
-  push:
-    branches:
-      - 'mobi/run-p1-b2-geometry-20261015'
-    paths:
-      - 'mobi/p1-b2/geometry/orientation_v2.py'
-      - 'mobi/p1-b2/geometry/turn_2p5d.py'
-      - 'mobi/p1-b2/geometry/run_orientation_v2.py'
-      - 'mobi/p1-b2/geometry/test_orientation_v2.py'
-      - '.github/workflows/mobi-p1-b2-orientation-v2.yml'
   workflow_dispatch:
 
 permissions:
