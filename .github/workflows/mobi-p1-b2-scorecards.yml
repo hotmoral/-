@@ -1,0 +1,61 @@
+name: Mobi P1-B2.1 Structural Scorecards
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-b2-geometry-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/render_scorecards.py'
+      - '.github/workflows/mobi-p1-b2-scorecards.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-b2-scorecards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify private-canonical blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
+          test "$(git hash-object render_scorecards.py)" = "455466d787c3a01cf1d8803461b98495f3d42912"
+          echo "P1-B2.1 scorecard source parity PASS"
+
+      - name: Generate structural scorecards
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../scorecards
+          python3 render_scorecards.py ../scorecards | tee ../scorecards_generation.txt
+          test "$(wc -l < ../scorecards/MANIFEST.txt)" -eq 90
+          echo "scorecard_count=90" | tee -a ../scorecards_generation.txt
+
+      - name: Hash scorecards
+        working-directory: mobi/p1-b2
+        run: |
+          set -euo pipefail
+          find scorecards -type f -print0 | sort -z | xargs -0 sha256sum > SCORECARD_SHA256SUMS.txt
+          sha256sum SCORECARD_SHA256SUMS.txt scorecards_generation.txt > SCORECARD_PACKAGE_SHA256.txt
+
+      - name: Upload scorecards
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-b2-scorecards-${{ github.run_id }}
+          path: |
+            mobi/p1-b2/scorecards/
+            mobi/p1-b2/scorecards_generation.txt
+            mobi/p1-b2/SCORECARD_SHA256SUMS.txt
+            mobi/p1-b2/SCORECARD_PACKAGE_SHA256.txt
+          if-no-files-found: error
+          retention-days: 30
