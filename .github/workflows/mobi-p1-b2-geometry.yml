@@ -1,0 +1,125 @@
+name: Mobi P1-B2 Geometry Evidence
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-b2-geometry-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/**'
+      - '.github/workflows/mobi-p1-b2-geometry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-b2-geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-b2/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-b2/evidence/environment.txt
+
+      - name: Verify private-canonical source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object metrics_v2.py)" = "322219f434d51ff30197c1beb136d1a506cdc2f3"
+          test "$(git hash-object run_b2_matrix.py)" = "309b897deedddf565dd896dd2619edc10d8029be"
+          test "$(git hash-object test_b2.py)" = "7a454ecd7b6374ea656e3140cdae7841c7496b9a"
+          git hash-object model.py candidates_v2.py motions_v2.py metrics_v2.py run_b2_matrix.py test_b2.py | tee ../evidence/git_blob_shas.txt
+          sha256sum model.py candidates_v2.py motions_v2.py metrics_v2.py run_b2_matrix.py test_b2.py | tee ../evidence/source_sha256.txt
+          echo "P1-B2 source blob parity PASS"
+
+      - name: Run B2 regression tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_b2.py 2>&1 | tee ../evidence/unittest.txt
+
+      - name: Run full deterministic matrix twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+          from run_b2_matrix import run_matrix
+
+          out = Path('../evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          def canonical_bytes(records):
+              return json.dumps(records, sort_keys=True, separators=(',', ':')).encode('utf-8')
+
+          first = run_matrix()
+          second = run_matrix()
+          first_bytes = canonical_bytes(first)
+          second_bytes = canonical_bytes(second)
+          if first_bytes != second_bytes:
+              raise SystemExit('determinism mismatch')
+
+          (out / 'results.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          digest = hashlib.sha256(first_bytes).hexdigest()
+
+          failures = sum(1 for record in first if not record['assertions']['pass'])
+          max_drift = max(record['contactMetrics']['maxPlantedPawDriftDp'] for record in first)
+          max_zero = max(record['contactMetrics']['zeroSupportSampleCount'] for record in first)
+          min_occ = min(record['occupancyMetrics']['minSilhouetteOccupancyRatio'] for record in first)
+
+          by_candidate = defaultdict(list)
+          for record in first:
+              by_candidate[record['candidate']].append(record['occupancyMetrics']['minSilhouetteOccupancyRatio'])
+
+          summary = {
+              'schemaVersion': 'P1_B2_PUBLIC_EVIDENCE_V01',
+              'records': len(first),
+              'failures': failures,
+              'maxPlantedPawDriftDp': max_drift,
+              'maxZeroSupportSampleCount': max_zero,
+              'minSilhouetteOccupancyRatio': min_occ,
+              'canonicalResultsSha256': digest,
+              'deterministicRepeatExact': True,
+              'candidateMinOccupancy': {
+                  key: min(values) for key, values in sorted(by_candidate.items())
+              },
+              'candidateMeanOfRecordMinimumOccupancy': {
+                  key: sum(values) / len(values) for key, values in sorted(by_candidate.items())
+              },
+          }
+          (out / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(summary, indent=2, sort_keys=True))
+
+          if failures != 0 or max_zero != 0 or max_drift >= 1e-6:
+              raise SystemExit('P1-B2 structural gate failure')
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-b2/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json summary.json | tee SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-b2-geometry-${{ github.run_id }}
+          path: mobi/p1-b2/evidence/
+          if-no-files-found: error
+          retention-days: 30
