@@ -68,6 +68,16 @@ public final class MainActivity extends Activity {
         title.setPadding(0, 0, 0, 20);
         column.addView(title);
 
+        TextView probe = new TextView(this);
+        probe.setText("HOST PASS-THROUGH PROBE AREA\nOverlay children are intentionally positioned over this non-actionable area. Any uncovered gap must reach this Activity without triggering a QA control.");
+        probe.setTextSize(18f);
+        probe.setGravity(Gravity.CENTER);
+        probe.setTextColor(Color.DKGRAY);
+        probe.setBackgroundColor(Color.rgb(226, 238, 246));
+        probe.setMinHeight(900);
+        column.addView(probe, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 900));
+
         addButton(column, "Grant / inspect overlay permission", v -> {
             Intent i = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
@@ -89,16 +99,6 @@ public final class MainActivity extends Activity {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setPrimaryClip(ClipData.newPlainText("P1-B2.2 QA", report.getText()));
         });
-
-        TextView probe = new TextView(this);
-        probe.setText("HOST PASS-THROUGH PROBE AREA\nAny screen point not covered by an overlay child must still reach this Activity.");
-        probe.setTextSize(18f);
-        probe.setGravity(Gravity.CENTER);
-        probe.setTextColor(Color.DKGRAY);
-        probe.setBackgroundColor(Color.rgb(226, 238, 246));
-        probe.setMinHeight(520);
-        column.addView(probe, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 520));
 
         report = new TextView(this);
         report.setTextSize(13f);
