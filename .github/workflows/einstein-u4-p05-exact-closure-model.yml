@@ -2,14 +2,6 @@ name: Einstein U4 P05 Exact Closure Public Model
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - einstein/test-u4-p05-exact-closure-model-v1
-    paths:
-      - 'einstein/harness/u4_p05_exact_closure/**'
-      - 'einstein/fixtures/u4_p05_exact_closure/**'
-      - 'einstein/tools/u4_p05_exact_closure/**'
-      - '.github/workflows/einstein-u4-p05-exact-closure-model.yml'
 
 permissions:
   contents: read
