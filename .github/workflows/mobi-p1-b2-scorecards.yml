@@ -1,6 +1,12 @@
 name: Mobi P1-B2.1 Structural Scorecards
 
 on:
+  push:
+    branches:
+      - 'mobi/run-p1-b2-geometry-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/render_scorecards.py'
+      - '.github/workflows/mobi-p1-b2-scorecards.yml'
   workflow_dispatch:
 
 permissions:
@@ -23,7 +29,7 @@ jobs:
           test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
           test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
           test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
-          test "$(git hash-object render_scorecards.py)" = "455466d787c3a01cf1d8803461b98495f3d42912"
+          test "$(git hash-object render_scorecards.py)" = "765fc38ed1d4335cd70bbc9881710f1253f23bd3"
           echo "P1-B2.1 scorecard source parity PASS"
 
       - name: Generate structural scorecards
