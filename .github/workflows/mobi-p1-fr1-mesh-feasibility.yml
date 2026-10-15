@@ -6,6 +6,7 @@ on:
       - 'mobi/run-p1-fr1-mesh-feasibility-20261015'
     paths:
       - 'mobi/p1-b2/geometry/p1_fr1_mesh_probe.py'
+      - 'mobi/p1-b2/geometry/p1_fr1_mesh_probe_v2.py'
       - 'mobi/p1-b2/geometry/run_p1_fr1_mesh_feasibility.py'
       - 'mobi/p1-b2/geometry/test_p1_fr1_mesh_feasibility.py'
       - '.github/workflows/mobi-p1-fr1-mesh-feasibility.yml'
@@ -51,14 +52,16 @@ jobs:
           test "$(git hash-object e_v0_renderer_adapter.py)" = "257f2ec2647b326dbf528146a79f5b2a98f18c37"
           test "$(git hash-object test_e_v0_structural.py)" = "97b32bb571e1dabec8297955f0cd20207205c5ab"
           test "$(git hash-object p1_fr1_mesh_probe.py)" = "009bf23dc8100abd192c4179cef0c14b56b6de3d"
-          test "$(git hash-object run_p1_fr1_mesh_feasibility.py)" = "7da4f30df477ded4892b972b6a5abf2be6a80f5f"
-          test "$(git hash-object test_p1_fr1_mesh_feasibility.py)" = "f11aacc5e0fa7cd6332259d795a74d40e153ff91"
+          test "$(git hash-object p1_fr1_mesh_probe_v2.py)" = "7c8370f843723795e8c77e4374180b2f5eccb210"
+          test "$(git hash-object run_p1_fr1_mesh_feasibility.py)" = "f7278e1eb6d9fb31312afc195e84beef46a78187"
+          test "$(git hash-object test_p1_fr1_mesh_feasibility.py)" = "2286c31f5503e8e6980390fc440fef1db5ddb188"
           git hash-object \
             model.py candidates_v2.py motions_v2.py orientation_v2.py \
             c3_semantic.py c3_renderer_view_resolved_v4.py \
             c4_hard_motion_fixture_adapter.py c4_renderer_adapter.py h6n_stepped_turn_v2.py \
             e_v0_profiles.py e_v0_fixture_adapter.py e_v0_renderer_adapter.py test_e_v0_structural.py \
-            p1_fr1_mesh_probe.py run_p1_fr1_mesh_feasibility.py test_p1_fr1_mesh_feasibility.py \
+            p1_fr1_mesh_probe.py p1_fr1_mesh_probe_v2.py \
+            run_p1_fr1_mesh_feasibility.py test_p1_fr1_mesh_feasibility.py \
             | tee ../../p1-fr1/evidence/git_blob_shas.txt
           echo "P1-FR1 private/public parity PASS; accepted structural inputs frozen PASS"
 
