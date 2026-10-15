@@ -4,175 +4,139 @@ Updated: 2026-10-16 KST
 
 ## 0. Restart contract
 
-Do not reconstruct ReceiptLedger state from old chat memory. GitHub is the source of truth.
+GitHub is canonical. Do not reconstruct execution state from chat memory before reading current ReceiptLedger documents and verifying refs.
 
 Read in this order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CATALOG_DOMAIN_V2_PLAN.md`
-4. `receiptledger/CATALOG_DOMAIN_V2_CONSISTENCY_REVIEW.md`
-5. `receiptledger/CATALOG_DOMAIN_V2_GOLDEN_VECTORS.md`
+3. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+4. `receiptledger/CATALOG_DOMAIN_V2_PLAN.md`
+5. `receiptledger/CATALOG_DOMAIN_V2_CONSISTENCY_REVIEW.md`
 6. `receiptledger/PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
 7. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-8. `receiptledger/README.md`
-9. `receiptledger/WORK_UNIT.md`
-10. current catalog source/test/workflow only when required
+8. `receiptledger/CP20_PRODUCT_REBASELINE_DEPENDENCY_GATES.md`
+9. `receiptledger/CP20_PRODUCT_REBASELINE_RISK_REGISTER.md`
+10. `receiptledger/README.md`
+11. `receiptledger/WORK_UNIT.md`
 
-Then verify the current branch against the frozen CP21 implementation HEAD below. Any later handoff/status commits must be documentation-only until the user authorizes CP22.
+## 1. Latest executable checkpoint
 
-## 1. Latest completed checkpoint
-
-**CP21 — Catalog Domain V2**
+**CP21 — Catalog Domain V2 — PASS / COMPLETE**
 
 - branch: `receiptledger/run-v1-catalog-domain-v2-20261016`
-- predecessor CP20 handoff HEAD: `3149beb339a2d541a61a694fb1f052556a95c8c1`
-- frozen CP21 implementation HEAD: `8596106c370e172161ef00e8d460dc78667bf80d`
-- canonical Actions run: `38808985222` — SUCCESS
+- frozen implementation HEAD: `8596106c370e172161ef00e8d460dc78667bf80d`
+- canonical Actions: `38808985222` — SUCCESS
 - artifact ID: `12008555521`
 - artifact digest: `sha256:d4b84972d05d61941f08565fcc5537579bc7126798adb8c3771a442dca2ae8e9`
-- debug APK SHA-256: `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
+- APK SHA-256: `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
+- CatalogDomainV2Test: 15/15 PASS
 - lint: 0 errors / 0 warnings
-- CatalogDomainV2Test: 15 tests, 0 failures, 0 errors, 0 skipped
-- result: **PASS / COMPLETE**
+- versionName `1.0.19-catalog-domain-v2`, versionCode 20
 
-## 2. Current executable/build contract
+CP21 did not change persistence schema, normal UI/navigation, OCR behavior, manifest, permission model or legacy exact-alias authority.
 
-- application ID: `com.receiptledger.v1`
-- versionName: `1.0.19-catalog-domain-v2`
-- versionCode: 20
-- AGP 8.11.1
-- Gradle 8.13
-- JDK / Java 17
-- compileSdk 36
-- targetSdk 36
-- minSdk 23
-- Korean ML Kit remains bundled/local
-- legacy product schema remains version 1
+## 2. Latest planning amendment
 
-CP21 did not change persistence schema, normal UI/navigation, OCR behavior, exact-alias runtime authority, manifest, or permission model.
+Client-requirement alignment review is canonical at:
 
-## 3. CP21 domain contract
+`60f40f1eba0792bbcb5a3c08aa6724b4010297bd`
 
-New V2 catalog domain is additive and storage-independent.
+Document:
+`CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 
-### Catalog kinds
+This is documentation-only and does not supersede the frozen CP21 implementation boundary.
 
-- `STANDARD_PRODUCT`: exact repeatable packaged/manufactured commercial identity.
-- `NON_STANDARD_COMMODITY`: semantic commodity/item that may contain multiple raw purchase forms.
-- legacy `UNCLASSIFIED`: unresolved state; it is not a V2 catalog entity.
+## 3. Product essence
 
-### Identity authority
+ReceiptLedger exists to make personal purchase-price memory automatic and trustworthy.
 
-Catalog entity equality is stable ID only.
+Target experience:
 
-Two rows with different IDs remain distinct even if brand/name/specification fields match. Structured similarity is candidate evidence for later resolver work, not merge authority.
+`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색 -> 과거 가격과 현재 가격 판단`
 
-Category and merchant/store are not SKU identity.
+A receipt is evidence/input. Product and commodity price history are the primary user destination.
 
-### Legacy migration rule
+## 4. CP21 semantics that CP22 must not reinterpret
 
-`LegacyCatalogAdapter` preserves existing:
+- stable catalog ID is catalog identity/equality authority;
+- legacy product IDs/names/types migrate without semantic guessing;
+- UNCLASSIFIED remains unresolved rather than a V2 entity;
+- category is not identity proof;
+- merchant context scopes aliases but does not define SKU identity;
+- HIGH confidence != CONFIRMED;
+- unknown != invented default;
+- exact physical units may canonicalize only when mathematically exact;
+- BAG/PACK/BOX/BUNDLE do not get guessed physical conversion;
+- NON_STANDARD grouping != price comparability;
+- price truth remains traceable to saved receipt evidence.
 
-- product ID;
-- classified STANDARD/NON_STANDARD meaning;
-- canonical name;
-- creation time.
+## 5. Downstream amendments now mandatory
 
-It does not parse brand/specification/category, invent units, or merge similar rows.
+### Identity quality
 
-### Evidence state
+CP24 must measure both false merge and false split/identity fragmentation. False merge remains more dangerous, but fragmented same-product history is also a core failure.
 
-Catalog fields keep independent:
+### Automation quality
 
-- source;
-- confidence;
-- confirmation.
+CP23–CP26 must measure relevant automatic-success, review-required and repeat-confirmation reuse behavior locally. Accuracy alone is not enough if the user must repeatedly relink known products.
 
-`HIGH confidence != CONFIRMED`.
+### Comparison-price contract
 
-### Units / package specification
+CP27 must define the canonical comparison price before statistics or price labels. Quantity > 1, line total vs one purchased unit/package, item discounts, unallocated receipt-level discounts/coupons, provenance and invalid observations must be explicit.
 
-Exact physical package equivalence is allowed for:
+### UI order
 
-- kg <-> g
-- L <-> mL
-- exact count
+Future order is:
 
-Package-form units such as BAG/PACK/BOX/BUNDLE do not have guessed physical conversion.
+CP29 Search/Browse
+-> CP30 Design System Foundation
+-> CP31 Product Detail
+-> CP32 Commodity Detail
+-> CP33 Capture/Review UX V2
+-> CP34 Commercial UI Shell.
 
-Missing pack count remains unknown; it is not silently converted to `1`.
+Do not build final-looking detail screens before CP30 visual foundations.
 
-### NON_STANDARD
+## 6. Next planned implementation checkpoint
 
-One commodity ID can group forms such as:
+**CP22 — Persistence V2**
 
-- 1봉
-- 1kg
-- 5개
-- 1상자
+Before schema writes:
 
-Grouping does not imply those prices are directly comparable.
+1. inventory current receipt/product DB schemas and lifecycle;
+2. preserve all existing product IDs and item links;
+3. design fail-closed migration sequencing across separate DBs;
+4. store merchant alias context and CP21 structured semantics without duplicating receipt price truth;
+5. design indexes for future resolver/search/history requirements;
+6. decide direct SQLite vs Room from actual evidence;
+7. write migration regression vectors before irreversible operations.
 
-### Purchase observation
+CP22 is not authorized merely because it is planned.
 
-`PurchaseObservationV2` is a logical receipt-linked projection with raw item evidence, store/date, value origins, link source and receipt validation. CP21 does not create a second persisted price truth table.
+## 7. Group discipline
 
-## 4. Existing foundations that remain authoritative
+For every checkpoint:
 
-Preserve:
+- recover canonical state;
+- restate essence/non-goals;
+- inspect materially affected contradictions and risks;
+- fix cheap contract problems before implementation;
+- avoid unrelated cleanup and ritual re-audits;
+- implement the smallest coherent proof;
+- run ReceiptLedger-scoped CI/evidence when executable changes exist;
+- freeze exact refs;
+- synchronize handoff/status material;
+- stop before the next unauthorized group.
 
-- external-camera/system-picker privacy model;
-- EXIF/document correction;
-- local Korean OCR;
-- source-coordinate preservation;
-- geometry-based layout reconstruction;
-- item extraction and numeric provenance;
-- arithmetic validation / contradiction preservation;
-- bounded OCR recovery / conservative merge;
-- review/edit before save;
-- app-private receipt/image storage;
-- receipt list/detail/delete;
-- merchant/store evidence;
-- exact confirmed alias reuse only;
-- receipt-derived price history;
-- MISMATCH/INCOMPLETE exclusion from normal comparable history;
-- API36/lint/permission firewall.
+## 8. Security/public boundary
 
-## 5. CP22 gate
+Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows.
 
-Next planned checkpoint: **CP22 — Persistence V2**.
+Never use other project namespaces or commit secrets, signing material, real private receipt photos, real purchase databases/backups, personal identifiers or uncleared assets.
 
-Before schema implementation, CP22 must inspect current receipt/product schemas and freeze a migration plan that preserves:
+APK permission firewall remains no CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permission unless separately authorized.
 
-1. every existing catalog product ID;
-2. item links and receipt traceability;
-3. canonical names/types without semantic guessing;
-4. separate receipt/product DB consistency;
-5. merchant alias namespace semantics;
-6. unknown values as unknown;
-7. category non-authority;
-8. grouping != comparability;
-9. source/confidence/confirmation distinctions.
+## 9. Stop condition
 
-CP22 must decide direct SQLite vs Room from actual migration/query requirements, not from aesthetic preference.
-
-CP22 must not begin automatically. Wait for explicit user authorization.
-
-## 6. Scope/security boundary
-
-ReceiptLedger may modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows.
-
-Do not use other project namespaces.
-
-Never commit/upload secrets, signing material, real private receipt photos, real purchase DBs/backups, personal identifiers, or uncleared assets.
-
-Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE.
-
-## 7. Infrastructure notes
-
-CP21 CI succeeded. Node-action runtime and future Gradle-9 deprecation notices were observed and recorded as non-blocking infrastructure notes; do not expand them into CP22 unless they materially affect that checkpoint.
-
-## 8. Stop condition
-
-**CP21 is complete. Await explicit authorization for CP22.**
+**CP21 is complete. Client-requirement alignment amendment is synchronized. Await explicit authorization for CP22.**
