@@ -59,7 +59,7 @@ jobs:
           test "$(git hash-object test_p1f_perceptual_evidence.py)" = "666dac6fd1f6530bd9f17b01c03516be64c5aaee"
           test "$(git hash-object p1_fr2_layered_view_prototype.py)" = "39050b80c460fa8f7bb193975a765ab4552de49b"
           test "$(git hash-object run_p1_fr2_perceptual_revision.py)" = "7756e71a10f908f866b8db4b714255c4c1f7f8bb"
-          test "$(git hash-object test_p1_fr2_perceptual_revision.py)" = "0ac6b75225f4dd5309483210902226f98583b92b"
+          test "$(git hash-object test_p1_fr2_perceptual_revision.py)" = "7e813aef00e2d67c0068ee6fad5ffdb2df83016f"
           git hash-object \
             model.py candidates_v2.py motions_v2.py orientation_v2.py \
             c3_semantic.py c3_renderer_view_resolved_v4.py \
@@ -106,45 +106,31 @@ jobs:
           import json
           import xml.etree.ElementTree as ET
           from pathlib import Path
-
           summary = json.loads(Path('summary.json').read_text())
           if not summary['structuralPass']:
               raise SystemExit(summary)
-          if summary['recordCount'] != 1770:
-              raise SystemExit(('recordCount', summary['recordCount']))
-          if summary['topologySignatureCount'] != 1:
-              raise SystemExit(('topologySignatureCount', summary['topologySignatureCount']))
-          if summary['semanticMutationCount'] != 0:
-              raise SystemExit(('semanticMutationCount', summary['semanticMutationCount']))
-          if summary['coreSelfIntersectionCount'] != 0:
-              raise SystemExit(('coreSelfIntersectionCount', summary['coreSelfIntersectionCount']))
-          if summary['correctionUseCount'] != 0:
-              raise SystemExit(('correctionUseCount', summary['correctionUseCount']))
-          if summary['meshDomainCounts'] != [6]:
-              raise SystemExit(('meshDomainCounts', summary['meshDomainCounts']))
+          if summary['recordCount'] != 1770 or summary['topologySignatureCount'] != 1:
+              raise SystemExit(summary)
+          if summary['semanticMutationCount'] != 0 or summary['coreSelfIntersectionCount'] != 0:
+              raise SystemExit(summary)
+          if summary['correctionUseCount'] != 0 or summary['meshDomainCounts'] != [6]:
+              raise SystemExit(summary)
           if summary['maxPawPinError'] > 1e-9:
-              raise SystemExit(('maxPawPinError', summary['maxPawPinError']))
+              raise SystemExit(summary)
           svgs = sorted(Path('debug').glob('*.svg'))
-          if len(svgs) != 6:
-              raise SystemExit(('fr2SvgCount', len(svgs)))
           baseline_svgs = sorted(Path('frozen_p1f_baseline').glob('*.svg'))
-          if not baseline_svgs:
-              raise SystemExit('missing frozen P1-F baseline SVGs')
+          if len(svgs) != 6 or not baseline_svgs:
+              raise SystemExit((len(svgs), len(baseline_svgs)))
           for svg in svgs + baseline_svgs:
               ET.parse(svg)
           print(json.dumps(summary, indent=2, sort_keys=True))
-          print(f'p1_fr2_debug_svg_xml_valid={len(svgs)}/{len(svgs)}')
-          print(f'frozen_p1f_svg_xml_valid={len(baseline_svgs)}/{len(baseline_svgs)}')
           PY
 
       - name: Hash evidence files
         working-directory: mobi/p1-fr2/evidence
         run: |
           set -euo pipefail
-          sha256sum \
-            environment.txt git_blob_shas.txt unittest.txt \
-            summary.json manifest.json records.json files.sha256 deterministic.txt \
-            | tee EVIDENCE_SHA256SUMS.txt
+          sha256sum environment.txt git_blob_shas.txt unittest.txt summary.json manifest.json records.json files.sha256 deterministic.txt | tee EVIDENCE_SHA256SUMS.txt
 
       - name: Upload evidence
         uses: actions/upload-artifact@v4
