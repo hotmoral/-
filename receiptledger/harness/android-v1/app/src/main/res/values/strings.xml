@@ -1,20 +1,14 @@
 <resources>
     <string name="app_name">ReceiptLedger V1</string>
-    <string name="document_title">ReceiptLedger · Document Core</string>
-    <string name="document_body">사진 촬영 또는 이미지 선택 → 영수증 영역 검출 → 원근 보정. OCR은 다음 체크포인트에서 추가합니다.</string>
-    <string name="capture">사진 촬영</string>
-    <string name="gallery">이미지 선택</string>
-    <string name="correct">원근 보정</string>
-    <string name="original">원본 보기</string>
-    <string name="showing_original">원본과 검출 사각형을 표시 중입니다.</string>
-    <string name="loading">이미지를 안전한 크기로 디코딩하고 영수증 영역을 분석 중입니다.</string>
-    <string name="correcting">검출된 사각형을 기준으로 원근 보정 중입니다.</string>
+    <string name="document_title">ReceiptLedger · OCR Core</string>
+    <string name="ocr_body">사진을 불러온 뒤 원본 또는 원근 보정 결과에서 한국어 OCR을 실행합니다. 파싱·DB는 아직 포함하지 않습니다.</string>
+    <string name="capture">촬영</string><string name="gallery">선택</string><string name="correct">보정</string><string name="original">원본</string><string name="run_ocr">OCR</string>
+    <string name="showing_original">원본과 검출 사각형을 표시 중입니다.</string><string name="loading">이미지 디코딩 및 영수증 영역 분석 중입니다.</string><string name="correcting">원근 보정 중입니다.</string>
     <string name="detected">영수증 후보 검출 · confidence %.2f · %d×%d · EXIF %d</string>
-    <string name="not_detected">자동 검출 보류(%1$s) · %2$d×%3$d. 배경과 종이 경계가 더 잘 보이게 촬영하면 유리합니다.</string>
-    <string name="corrected">원근 보정 결과 %1$d×%2$d · 좌표 역변환 계약 보존</string>
-    <string name="load_failed">이미지 처리 실패: %1$s</string>
-    <string name="correction_failed">원근 보정 실패: %1$s</string>
-    <string name="no_camera">사용 가능한 카메라 앱이 없습니다.</string>
-    <string name="foundation_title">ReceiptLedger V1 Foundation</string>
-    <string name="foundation_body">Foundation ID: %1$s</string>
+    <string name="not_detected">자동 검출 보류(%1$s) · %2$d×%3$d. 원본 OCR은 계속 실행할 수 있습니다.</string>
+    <string name="corrected">원근 보정 결과 %1$d×%2$d · OCR 좌표는 원본으로 역변환됩니다.</string>
+    <string name="ocr_running">Bundled ML Kit Korean OCR 실행 중입니다.</string>
+    <string name="ocr_done">OCR 완료 · block %1$d · line %2$d · element %3$d · text %4$d chars</string>
+    <string name="ocr_failed">OCR 실패: %1$s</string><string name="load_failed">이미지 처리 실패: %1$s</string><string name="correction_failed">원근 보정 실패: %1$s</string><string name="no_camera">사용 가능한 카메라 앱이 없습니다.</string>
+    <string name="foundation_title">ReceiptLedger V1 Foundation</string><string name="foundation_body">Foundation ID: %1$s</string>
 </resources>
