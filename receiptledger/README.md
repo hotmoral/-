@@ -4,8 +4,6 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 ## Start here
 
-Read in order:
-
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
 3. `CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
@@ -18,21 +16,29 @@ Read in order:
 
 GitHub is canonical; verify refs before relying on old chat context.
 
-## Current completed boundary
+## Current boundary
 
 **CP21 — Catalog Domain V2 — COMPLETE**
 
-- frozen implementation HEAD: `8596106c370e172161ef00e8d460dc78667bf80d`
-- canonical Actions: `38808985222` — SUCCESS
-- artifact ID: `12008555521`
-- artifact digest: `sha256:d4b84972d05d61941f08565fcc5537579bc7126798adb8c3771a442dca2ae8e9`
-- APK SHA-256: `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
+- frozen implementation HEAD `8596106c370e172161ef00e8d460dc78667bf80d`
+- canonical implementation Actions `38808985222` — SUCCESS
+- artifact ID `12008555521`
+- artifact digest `sha256:d4b84972d05d61941f08565fcc5537579bc7126798adb8c3771a442dca2ae8e9`
+- APK SHA-256 `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
 - tests 15/15 PASS
 - lint 0 errors / 0 warnings
 - version `1.0.19-catalog-domain-v2`, versionCode 20
 
-Latest docs-only client-alignment amendment commit:
+Client-requirement alignment amendment:
 `60f40f1eba0792bbcb5a3c08aa6724b4010297bd`
+
+CI scope/trigger maintenance:
+`94de4de3bef32e0165fd33810c9460ff6356b243`
+
+Verification run:
+`38812273375` — SUCCESS.
+
+Runs `38811970256` and `38812118401` were stale-scope guard failures on the new docs before tests/build and are not app regressions.
 
 ## Product direction
 
@@ -42,18 +48,15 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-Key safety/product rules:
+Current governing additions:
 
-- wrong merge is worse than unresolved identity;
-- false split/identity fragmentation is also a measured product failure;
-- repeated confirmed purchases should require progressively less review;
-- grouping NON_STANDARD forms does not make them directly comparable;
-- no guessed conversion;
-- comparison price must be explicitly defined and receipt-traceable;
-- category is browse metadata, not identity proof;
-- offline/private posture remains the default.
+- measure false split as well as false merge;
+- repeated confirmed products should reduce review burden;
+- define the canonical comparison-price basis before price statistics;
+- prevent fake cross-unit comparison;
+- establish Design System before final commercial detail screens.
 
-## Revised roadmap order
+## Revised roadmap
 
 Next: **CP22 — Persistence V2**.
 
@@ -74,7 +77,9 @@ CP23 Receipt Product Semantics
 -> CP35 Real Receipt Evaluation
 -> CP36 Performance / Reliability.
 
-The amendment requires local quality measurement in CP23–CP26, canonical comparison-price definition in CP27, and Design System before final commercial detail screens.
+## CI efficiency rule
+
+CP21 automatic workflow triggers are now limited to CP21 code/test/audit/workflow paths. Normal handoff/status markdown edits no longer trigger a full Android build. Manual dispatch remains available for explicit validation.
 
 ## Privacy/security
 
@@ -89,7 +94,7 @@ ReceiptLedger work may modify only:
 - `receiptledger/**`
 - explicitly approved `.github/workflows/receiptledger-*.yml`
 
-Do not read/use/modify/depend/cache/artifact from other project namespaces or change repository-wide settings without separate approval.
+Do not use other project namespaces or alter repo-wide settings without separate approval.
 
 ## Stop condition
 
