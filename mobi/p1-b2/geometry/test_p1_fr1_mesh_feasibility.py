@@ -7,7 +7,7 @@ from pathlib import Path
 
 from e_v0_fixture_adapter import H1, H4, H6N, build_e_fixture
 from e_v0_profiles import M0, MORPHOLOGIES
-from p1_fr1_mesh_probe import (
+from p1_fr1_mesh_probe_v2 import (
     CORE_VERTEX_IDS,
     PROBE_VERSION,
     build_probe,
@@ -36,7 +36,7 @@ class P1FR1MeshFeasibilityTests(unittest.TestCase):
             for case_id, t in ((H1, 0.0), (H4, 0.5)):
                 fixture = build_e_fixture(morphology, case_id, 80, t, +1)
                 result = build_probe(fixture, +1)
-                self.assertEqual(PROBE_VERSION, PROBE_VERSION)
+                self.assertIn("SMOOTH_SKINNING", PROBE_VERSION)
                 self.assertEqual(expected_topology, result.topology_signature)
                 self.assertEqual(result.semantic_anchor_hash_before, result.semantic_anchor_hash_after)
                 self.assertLessEqual(result.paw_pin_error_max, 1e-9)
@@ -44,9 +44,12 @@ class P1FR1MeshFeasibilityTests(unittest.TestCase):
                 self.assertEqual((), result.correction_families)
                 self.assertEqual(CORE_VERTEX_IDS, tuple(item[0] for item in result.core_vertices))
 
-    def test_h6n_direction_swaps_anatomical_near_far_order_without_identity_swap(self):
-        positive = build_probe(build_e_fixture(M0, H6N, 80, 1.0, +1), +1)
-        negative = build_probe(build_e_fixture(M0, H6N, 80, 1.0, -1), -1)
+    def test_h6n_near_front_swaps_anatomical_near_far_order_without_identity_swap(self):
+        # At exact front the anatomical sides are legitimately depth-tied under
+        # orthographic projection. Test near-front where painter ordering must be
+        # distinguishable, rather than treating an exact-front tie as failure.
+        positive = build_probe(build_e_fixture(M0, H6N, 80, 0.75, +1), +1)
+        negative = build_probe(build_e_fixture(M0, H6N, 80, 0.75, -1), -1)
 
         def depths(result, kind):
             return {
