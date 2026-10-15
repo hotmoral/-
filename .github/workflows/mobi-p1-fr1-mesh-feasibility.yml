@@ -1,0 +1,140 @@
+name: Mobi P1-FR1 Mesh Feasibility
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr1-mesh-feasibility-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_fr1_mesh_probe.py'
+      - 'mobi/p1-b2/geometry/run_p1_fr1_mesh_feasibility.py'
+      - 'mobi/p1-b2/geometry/test_p1_fr1_mesh_feasibility.py'
+      - '.github/workflows/mobi-p1-fr1-mesh-feasibility.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-fr1-feasibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-fr1/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-fr1/evidence/environment.txt
+
+      - name: Verify private-public parity and frozen structural inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object c3_renderer_view_resolved_v4.py)" = "87e48c4789a4b2e8c9dd6aebd16b090b22f2b1e0"
+          test "$(git hash-object c4_hard_motion_fixture_adapter.py)" = "90ccccde16623073f13fc986cebc238c74aa9c13"
+          test "$(git hash-object c4_renderer_adapter.py)" = "1cec4470d6e458a1a3a9c6b1d9f6a44b4483af6e"
+          test "$(git hash-object h6n_stepped_turn_v2.py)" = "8903145739c5eb0a21b87d192c27cfdab6fc48b0"
+          test "$(git hash-object e_v0_profiles.py)" = "087826028fa7a2ad5a9a042ec188f335c9ff18cc"
+          test "$(git hash-object e_v0_fixture_adapter.py)" = "96bb5351208c157003ce0a50f828075537c5edb5"
+          test "$(git hash-object e_v0_renderer_adapter.py)" = "257f2ec2647b326dbf528146a79f5b2a98f18c37"
+          test "$(git hash-object test_e_v0_structural.py)" = "97b32bb571e1dabec8297955f0cd20207205c5ab"
+          test "$(git hash-object p1_fr1_mesh_probe.py)" = "009bf23dc8100abd192c4179cef0c14b56b6de3d"
+          test "$(git hash-object run_p1_fr1_mesh_feasibility.py)" = "7da4f30df477ded4892b972b6a5abf2be6a80f5f"
+          test "$(git hash-object test_p1_fr1_mesh_feasibility.py)" = "f11aacc5e0fa7cd6332259d795a74d40e153ff91"
+          git hash-object \
+            model.py candidates_v2.py motions_v2.py orientation_v2.py \
+            c3_semantic.py c3_renderer_view_resolved_v4.py \
+            c4_hard_motion_fixture_adapter.py c4_renderer_adapter.py h6n_stepped_turn_v2.py \
+            e_v0_profiles.py e_v0_fixture_adapter.py e_v0_renderer_adapter.py test_e_v0_structural.py \
+            p1_fr1_mesh_probe.py run_p1_fr1_mesh_feasibility.py test_p1_fr1_mesh_feasibility.py \
+            | tee ../../p1-fr1/evidence/git_blob_shas.txt
+          echo "P1-FR1 private/public parity PASS; accepted structural inputs frozen PASS"
+
+      - name: Run retained structural regression and FR1 tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            test_c4_hard_motion.py \
+            test_e_v0_structural.py \
+            test_p1_fr1_mesh_feasibility.py \
+            2>&1 | tee ../../p1-fr1/evidence/unittest.txt
+
+      - name: Generate deterministic FR1 evidence across hash seeds
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-fr1/run1 ../../p1-fr1/run2
+          PYTHONHASHSEED=1 python3 run_p1_fr1_mesh_feasibility.py --output-dir ../../p1-fr1/run1
+          PYTHONHASHSEED=777 python3 run_p1_fr1_mesh_feasibility.py --output-dir ../../p1-fr1/run2
+          cmp ../../p1-fr1/run1/records.json ../../p1-fr1/run2/records.json
+          cmp ../../p1-fr1/run1/summary.json ../../p1-fr1/run2/summary.json
+          cmp ../../p1-fr1/run1/manifest.json ../../p1-fr1/run2/manifest.json
+          (cd ../../p1-fr1/run1 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr1/run1.sha256
+          (cd ../../p1-fr1/run2 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr1/run2.sha256
+          cmp ../../p1-fr1/run1.sha256 ../../p1-fr1/run2.sha256
+          cp -R ../../p1-fr1/run1/. ../../p1-fr1/evidence/
+          cp ../../p1-fr1/run1.sha256 ../../p1-fr1/evidence/files.sha256
+          echo "hash_seed_repeat_exact=PASS" > ../../p1-fr1/evidence/deterministic.txt
+
+      - name: Validate FR1 evidence bundle
+        working-directory: mobi/p1-fr1/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          summary = json.loads(Path('summary.json').read_text())
+          if not summary['pass']:
+              raise SystemExit(summary)
+          if summary['recordCount'] != 1770:
+              raise SystemExit(('recordCount', summary['recordCount']))
+          if summary['topologySignatureCount'] != 1:
+              raise SystemExit(('topologySignatureCount', summary['topologySignatureCount']))
+          if summary['semanticMutationCount'] != 0:
+              raise SystemExit(('semanticMutationCount', summary['semanticMutationCount']))
+          if summary['coreSelfIntersectionCount'] != 0:
+              raise SystemExit(('coreSelfIntersectionCount', summary['coreSelfIntersectionCount']))
+          if summary['correctionUseCount'] != 0:
+              raise SystemExit(('correctionUseCount', summary['correctionUseCount']))
+          if summary['maxPawPinError'] > 1e-9:
+              raise SystemExit(('maxPawPinError', summary['maxPawPinError']))
+          svgs = sorted(Path('debug').glob('*.svg'))
+          if len(svgs) != 3:
+              raise SystemExit(('svgCount', len(svgs)))
+          for svg in svgs:
+              ET.parse(svg)
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          print('p1_fr1_debug_svg_xml_valid=3/3')
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-fr1/evidence
+        run: |
+          set -euo pipefail
+          sha256sum \
+            environment.txt git_blob_shas.txt unittest.txt \
+            summary.json manifest.json records.json files.sha256 deterministic.txt \
+            | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-fr1-mesh-feasibility-${{ github.run_id }}
+          path: mobi/p1-fr1/evidence/
+          if-no-files-found: error
+          retention-days: 30
