@@ -22,17 +22,21 @@ if grep -RInE --exclude='audit_public_tree.sh' \
   exit 21
 fi
 
-if git rev-parse --verify main >/dev/null 2>&1; then
-  mapfile -t changed < <(git diff --name-only main...HEAD)
-  for path in "${changed[@]}"; do
-    case "$path" in
-      receiptledger/*|.github/workflows/receiptledger-*.yml) ;;
-      *)
-        echo "ReceiptLedger isolation violation: $path"
-        exit 22
-        ;;
-    esac
-  done
+base_ref="origin/main"
+if ! git rev-parse --verify "$base_ref" >/dev/null 2>&1; then
+  echo "Missing required isolation baseline: $base_ref"
+  exit 22
 fi
+
+mapfile -t changed < <(git diff --name-only "$base_ref"...HEAD)
+for path in "${changed[@]}"; do
+  case "$path" in
+    receiptledger/*|.github/workflows/receiptledger-*.yml) ;;
+    *)
+      echo "ReceiptLedger isolation violation: $path"
+      exit 23
+      ;;
+  esac
+done
 
 echo "ReceiptLedger public-tree audit PASS"
