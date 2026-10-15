@@ -1,37 +1,109 @@
 # ReceiptLedger public execution work unit
 
-Purpose: establish an isolated, public-safe GitHub Actions workspace for ReceiptLedger Android/OCR development, build verification, and future APK packaging.
+## Current stage
 
-Current stage: structure initialization only. No production app source, real receipt image, personal purchase data, signing material, secret, APK, or workflow run is included in this staging step.
+The original staging-only work unit is complete. ReceiptLedger V1 now has a working public Android vertical slice with OCR, parsing, validation, review/edit, persistence, receipt library, product identity, price history, OCR recovery, cross-pass merge, and build/lint hygiene.
 
-Rules:
-- Treat every pushed file, workflow log, cache key, artifact name, and generated report as permanently public.
-- Do not include signing keystores, signing passwords, API credentials, private tokens, personal data, real receipt photos, real purchase-history databases, or private backups.
-- Use synthetic fixtures or data explicitly approved for public exposure.
-- Do not use source, fixtures, caches, artifacts, reports, workflow output, or generated data from `mobi/*`, `einstein/*`, `linkline/*`, or any other project namespace.
-- Do not modify other projects' branches or `.github/workflows/*` files.
-- Do not modify repository visibility, repository-wide Actions permissions, Allowed Actions policy, rulesets/branch protection, shared repository secrets/variables, or global artifact retention without separate user approval.
-- Actual Actions workflows must use `.github/workflows/receiptledger-*.yml`.
-- Workflow names, jobs, concurrency groups, caches, artifacts, and generated output paths must use a ReceiptLedger-specific prefix.
-- Cache restore keys must never fall back to another project's cache namespace.
-- Public build jobs should produce debug or unsigned APKs by default. Release signing requires a separately approved private signing path.
-- Any future import of existing ReceiptLedger source must first pass a public-material audit for secrets, personal data, signing material, proprietary/private assets, and accidental receipt samples.
-- Any APK generated here is a public build artifact and must contain no embedded secret or personal data.
+Current completed implementation boundary:
 
-Before the first real Android source upload or Actions execution, record:
-1. exact branch and source baseline,
-2. exact public material being exposed,
-3. workflow purpose and trigger,
-4. permissions, cache behavior, artifact names, and retention,
-5. package/application ID strategy,
-6. signing mode,
-7. private-material scan result,
-8. acceptance/stop conditions.
+- checkpoint: **V1 Build Hygiene Core**
+- frozen implementation HEAD: `53d03fc219d4b15bf09cebbc368ae6af6a55053a`
+- Actions run: `38755847381` — SUCCESS
+- lint: `0 errors / 1 warning`
+- remaining warning: `OldTargetApi`
 
-Staging completion criteria:
-- ReceiptLedger branch namespace exists.
-- ReceiptLedger directory namespace exists.
-- README and work-unit rules exist.
-- reserved subdirectories exist.
-- no ReceiptLedger workflow exists yet.
-- no other project namespace is modified.
+Next work unit:
+
+**V1 Target API 36 Core**
+
+Reserved branch:
+`receiptledger/run-v1-target-api36-core-20261015`
+
+At handoff, implementation of this next work unit has not started. Documentation-only commits may exist on the reserved branch after the frozen Build Hygiene implementation HEAD.
+
+## Required first reads
+
+1. `PROJECT_STATUS_LATEST.md`
+2. `SESSION_HANDOFF.md`
+3. `TARGET_API36_CORE_PLAN.md`
+4. this file
+
+## Public repository rules
+
+Treat every pushed file, workflow log, cache key, artifact name, generated report, and APK as permanently public.
+
+Never include:
+
+- signing keystores or signing passwords
+- API credentials, OAuth secrets, private tokens
+- real receipt photos unless explicitly approved as sanitized public fixtures
+- personal purchase databases or private backups
+- personal identifiers
+- private/proprietary assets not cleared for public release
+
+Use synthetic fixtures or data explicitly approved for public exposure.
+
+## Namespace rules
+
+Use only `receiptledger/*` branches for ReceiptLedger work.
+
+Modify only:
+
+- `receiptledger/**`
+- explicitly approved `.github/workflows/receiptledger-*.yml`
+
+Do not use source, fixtures, caches, artifacts, reports, workflow output, or generated data from:
+
+- `mobi/*`
+- `einstein/*`
+- `linkline/*`
+- any other project namespace
+
+Do not modify repository visibility, repository-wide Actions permissions, Allowed Actions policy, rulesets/branch protection, shared repository secrets/variables, or global artifact retention without separate user approval.
+
+Workflow names, jobs, concurrency groups, caches, artifacts, and generated output paths must use a ReceiptLedger-specific prefix. Cache restore keys must never fall back to another project's namespace.
+
+## Build/signing policy
+
+Public jobs produce debug or unsigned APKs only.
+
+Release signing is a separate private concern and must not expose:
+
+- release keystore
+- key passwords
+- signing passwords
+- signing secrets
+
+Any APK generated here must contain no embedded secret or personal data.
+
+## Current privacy firewall
+
+The built APK must not request:
+
+- CAMERA
+- READ_MEDIA_IMAGES
+- READ_EXTERNAL_STORAGE
+- WRITE_EXTERNAL_STORAGE
+- MANAGE_EXTERNAL_STORAGE
+- INTERNET
+- ACCESS_NETWORK_STATE
+
+Camera capture remains delegated to an external camera application using a constrained content URI. Gallery/image selection remains delegated to the system picker. OCR remains bundled/local.
+
+## Next work unit acceptance boundary
+
+Target API 36 Core must be kept narrow:
+
+- migrate compileSdk/targetSdk to 36
+- use an API-36-compatible AGP/Gradle/JDK toolchain
+- preserve minSdk 23
+- add correct system-bar inset handling for Android 16 edge-to-edge behavior
+- audit predictive back without unnecessary interception
+- preserve all current app/domain contracts
+- keep lint at 0 errors and eliminate `OldTargetApi` by real migration, not suppression
+- preserve forbidden-permission firewall
+- pass tests + lint + assembleDebug + APK integrity + evidence packaging
+
+Do not start unrelated OCR/parser/product/database/UI feature expansion inside this work unit.
+
+On completion, update `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md` before moving to another group.
