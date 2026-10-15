@@ -8,7 +8,7 @@ from xml.sax.saxutils import escape
 
 from e_v0_fixture_adapter import H1, H4, H6N, build_e_fixture, iter_invariant_fixtures
 from e_v0_profiles import M0, MORPHOLOGIES
-from p1_fr1_mesh_probe_v2 import PROBE_VERSION, build_probe, result_dict
+from p1_fr1_mesh_probe_v3 import PROBE_VERSION, build_probe, result_dict
 
 
 RUN_VERSION = "P1_FR1_FEASIBILITY_MATRIX_V1"
@@ -19,7 +19,6 @@ def canonical_bytes(value) -> bytes:
 
 
 def _round_record(record: dict) -> dict:
-    # Canonicalize float leaves to avoid irrelevant repr drift in evidence.
     def walk(value):
         if isinstance(value, float):
             return round(value, 10)
@@ -92,21 +91,18 @@ def _mesh_group_svg(fixture, probe, x_offset: float, y_offset: float):
     items.append(
         f'<polygon points="{_points_attr(core_points)}" fill="#ececec" stroke="#111" stroke-width="0.7"/>'
     )
-
     ordered = sorted(
         list(probe.limb_meshes) + [probe.tail_mesh],
         key=lambda mesh: (mesh.get("viewDepth", 0.0), mesh["id"]),
     )
     for mesh in ordered:
         vertices = mesh["vertices"]
-        # Ribbon vertex ordering is L0,R0,L1,R1,...; trace a perimeter.
         left = [vertices[i] for i in range(0, len(vertices), 2)]
         right = [vertices[i] for i in range(1, len(vertices), 2)][::-1]
         perimeter = left + right
         items.append(
             f'<polygon points="{_points_attr(perimeter)}" fill="#d8d8d8" stroke="#333" stroke-width="0.45"/>'
         )
-
     for name in ("BODY_ROOT", "FOREQUARTER_REF", "PELVIS_REF", "HEAD_ROOT"):
         p = fixture.state.anchors[name]
         items.append(f'<circle cx="{p.x:.4f}" cy="{p.y:.4f}" r="1.15" fill="none" stroke="#777" stroke-width="0.35"/>')
@@ -190,10 +186,7 @@ def main():
         "version": RUN_VERSION,
         "summary": summary,
         "debugSvgs": [
-            {
-                "file": path.name,
-                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            }
+            {"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
             for path in sorted(svg_files)
         ],
     }
