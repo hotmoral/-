@@ -1,0 +1,93 @@
+name: Mobi P1-C3P H6N Phase Origin
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3p-phase-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/run_h6n_phase_origin_analysis.py'
+      - '.github/workflows/mobi-p1-c3p-phase.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3p-phase-origin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3p/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3p/evidence/environment.txt
+
+      - name: Verify private/public source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object h6n_stepped_turn.py)" = "62ee60e58120b4db537cb8247f507d7ede67afcb"
+          test "$(git hash-object run_h6n_phase_origin_analysis.py)" = "442a53fc8c7e2c6df4144566bfd6862e42330191"
+          git hash-object model.py orientation_v2.py h6n_stepped_turn.py run_h6n_phase_origin_analysis.py | tee ../../p1-c3p/evidence/git_blob_shas.txt
+          sha256sum model.py orientation_v2.py h6n_stepped_turn.py run_h6n_phase_origin_analysis.py | tee ../../p1-c3p/evidence/source_sha256.txt
+          echo "P1-C3P private/public source parity PASS"
+
+      - name: Run phase-origin analysis twice and verify determinism
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from run_h6n_phase_origin_analysis import canonical_bytes, run_analysis
+
+          out = Path('../../p1-c3p/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first = run_analysis()
+          second = run_analysis()
+          if canonical_bytes(first) != canonical_bytes(second):
+              raise SystemExit('C3P deterministic repeat mismatch')
+          if len(first['records']) != 36:
+              raise SystemExit(f"expected 36 cases, got {len(first['records'])}")
+          if first['globallyRootShiftFeasiblePhases'] != [3]:
+              raise SystemExit(f"expected unique globally feasible phase [3], got {first['globallyRootShiftFeasiblePhases']}")
+          summaries = {row['phaseIndex']: row for row in first['phaseSummary']}
+          if any(summaries[index]['globalRootShiftFeasible'] for index in (0, 1, 2)):
+              raise SystemExit('unexpected feasible non-phase3 candidate')
+          if not summaries[3]['globalRootShiftFeasible']:
+              raise SystemExit('phase3 global root-shift interval unexpectedly empty')
+          if summaries[3]['worstFinalAnatomicalSideMismatchCount'] > 1:
+              raise SystemExit('phase3 side mismatch worse than bounded expectation')
+
+          first['deterministicRepeatExact'] = True
+          (out / 'analysis.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'phase_summary.json').write_text(json.dumps(first['phaseSummary'], indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(first['phaseSummary'], indent=2, sort_keys=True))
+          print(f"canonicalAnalysisSha256={first['canonicalAnalysisSha256']}")
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3p/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt analysis.json phase_summary.json | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3p-phase-${{ github.run_id }}
+          path: mobi/p1-c3p/evidence/
+          if-no-files-found: error
+          retention-days: 30
