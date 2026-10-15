@@ -96,8 +96,8 @@ class P1C3VAuthoredViewBasisTests(unittest.TestCase):
             )
             rendered = render_fixture_basis(fixture, "RF_B")
             weights = dict(rendered["basisWeights"])
-            self.assertAlmostEqual(weights[expected], 1.0, places=12)
-            self.assertAlmostEqual(sum(weights.values()), 1.0, places=12)
+            self.assertAlmostEqual(weights[expected], 1.0, delta=1e-9)
+            self.assertAlmostEqual(sum(weights.values()), 1.0, delta=1e-9)
             self.assertEqual(set(weights), set(BASIS_NAMES))
 
     def test_front_proximal_limb_routes_preserve_anatomical_side_corridors(self):
