@@ -15,22 +15,22 @@ public final class SystemBarInsetHelper {
         final int baseRight = content.getPaddingRight();
         final int baseBottom = content.getPaddingBottom();
 
-        if (Build.VERSION.SDK_INT < 30) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             return;
         }
 
-        activity.getWindow().setDecorFitsSystemWindows(false);
         content.setOnApplyWindowInsetsListener((view, windowInsets) -> {
-            Insets systemBars = windowInsets.getInsets(WindowInsets.Type.systemBars());
+            Insets safeInsets = windowInsets.getInsets(
+                    WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
             int[] padding = resolvePadding(
                     baseLeft,
                     baseTop,
                     baseRight,
                     baseBottom,
-                    systemBars.left,
-                    systemBars.top,
-                    systemBars.right,
-                    systemBars.bottom);
+                    safeInsets.left,
+                    safeInsets.top,
+                    safeInsets.right,
+                    safeInsets.bottom);
             view.setPadding(padding[0], padding[1], padding[2], padding[3]);
             return windowInsets;
         });
