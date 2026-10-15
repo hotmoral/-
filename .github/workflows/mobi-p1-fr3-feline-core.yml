@@ -37,6 +37,9 @@ jobs:
           test "$(git hash-object p1_fr3_feline_core_topology_v2.py)" = "3e5c2216544f7a942d41aeda99592a71c67eeacd"
           test "$(git hash-object run_p1_fr3_feline_core_topology_v2.py)" = "cad23ff90d9b838512f7ed7b6471c1e7cf5c6e31"
           test "$(git hash-object test_p1_fr3_feline_core_topology_v2.py)" = "1dc765f39b9929ca42264fd6039f5aebe2fce267"
+          test "$(git hash-object p1_fr3_feline_core_topology_v3.py)" = "e1875449d9acf354fa1169cb9ba31ce6a9c708ab"
+          test "$(git hash-object run_p1_fr3_feline_core_topology_v3.py)" = "80235c771bfe335769a76499a08eea74563ef0bf"
+          test "$(git hash-object test_p1_fr3_feline_core_topology_v3.py)" = "bf3a416d3a610044b0195be0ff91f185fbb1f034"
           test "$(git hash-object p1_fr2_layered_view_prototype_v5.py)" = "dc153ae1fff3d0ae4bd3ba02ca31ba9182dcd608"
           test "$(git hash-object run_p1_fr2_perceptual_revision_v5.py)" = "7fbb3e31d21db9804e69aadb0bcc73cb65ada9d9"
           test "$(git hash-object test_p1_fr2_perceptual_revision_v5.py)" = "2a6c877383863a679ffdac6f78c06308a4bf8fe9"
@@ -46,21 +49,21 @@ jobs:
           test "$(git hash-object e_v0_profiles.py)" = "087826028fa7a2ad5a9a042ec188f335c9ff18cc"
           test "$(git hash-object e_v0_fixture_adapter.py)" = "96bb5351208c157003ce0a50f828075537c5edb5"
           test "$(git hash-object run_p1f_perceptual_evidence.py)" = "e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25"
-          git hash-object p1_fr3_feline_core_topology.py p1_fr3_feline_core_topology_v2.py run_p1_fr3_feline_core_topology_v2.py test_p1_fr3_feline_core_topology_v2.py p1_fr2_layered_view_prototype_v5.py p1_fr1_mesh_probe_v3.py e_v0_fixture_adapter.py e_v0_profiles.py run_p1f_perceptual_evidence.py | tee ../../p1-fr3/evidence/git_blob_shas.txt
+          git hash-object p1_fr3_feline_core_topology.py p1_fr3_feline_core_topology_v2.py p1_fr3_feline_core_topology_v3.py run_p1_fr3_feline_core_topology_v3.py test_p1_fr3_feline_core_topology_v3.py p1_fr2_layered_view_prototype_v5.py p1_fr1_mesh_probe_v3.py e_v0_fixture_adapter.py e_v0_profiles.py run_p1f_perceptual_evidence.py | tee ../../p1-fr3/evidence/git_blob_shas.txt
 
-      - name: Run retained regression and FR3 V2 tests
+      - name: Run retained regression and FR3 V3 tests
         working-directory: mobi/p1-b2/geometry
         run: |
           set -euo pipefail
-          python3 -m unittest -v test_c4_hard_motion.py test_e_v0_structural.py test_p1_fr1_mesh_feasibility.py test_p1f_perceptual_evidence.py test_p1_fr2_perceptual_revision_v5.py test_p1_fr3_feline_core_topology_v2.py 2>&1 | tee ../../p1-fr3/evidence/unittest.txt
+          python3 -m unittest -v test_c4_hard_motion.py test_e_v0_structural.py test_p1_fr1_mesh_feasibility.py test_p1f_perceptual_evidence.py test_p1_fr2_perceptual_revision_v5.py test_p1_fr3_feline_core_topology_v3.py 2>&1 | tee ../../p1-fr3/evidence/unittest.txt
 
-      - name: Generate deterministic FR3 V2 evidence
+      - name: Generate deterministic FR3 V3 evidence
         working-directory: mobi/p1-b2/geometry
         run: |
           set -euo pipefail
           rm -rf ../../p1-fr3/run1 ../../p1-fr3/run2
-          PYTHONHASHSEED=1 python3 run_p1_fr3_feline_core_topology_v2.py --output-dir ../../p1-fr3/run1
-          PYTHONHASHSEED=777 python3 run_p1_fr3_feline_core_topology_v2.py --output-dir ../../p1-fr3/run2
+          PYTHONHASHSEED=1 python3 run_p1_fr3_feline_core_topology_v3.py --output-dir ../../p1-fr3/run1
+          PYTHONHASHSEED=777 python3 run_p1_fr3_feline_core_topology_v3.py --output-dir ../../p1-fr3/run2
           (cd ../../p1-fr3/run1 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr3/run1.sha256
           (cd ../../p1-fr3/run2 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr3/run2.sha256
           cmp ../../p1-fr3/run1.sha256 ../../p1-fr3/run2.sha256
@@ -68,7 +71,7 @@ jobs:
           cp ../../p1-fr3/run1.sha256 ../../p1-fr3/evidence/files.sha256
           echo "hash_seed_repeat_exact=PASS" > ../../p1-fr3/evidence/deterministic.txt
 
-      - name: Validate FR3 V2 evidence
+      - name: Validate FR3 V3 evidence
         working-directory: mobi/p1-fr3/evidence
         run: |
           set -euo pipefail
@@ -99,7 +102,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: mobi-p1-fr3-feline-core-v2-${{ github.run_id }}
+          name: mobi-p1-fr3-feline-core-v3-${{ github.run_id }}
           path: mobi/p1-fr3/evidence/
           if-no-files-found: error
           retention-days: 30
