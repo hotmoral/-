@@ -1,0 +1,7 @@
+package com.receiptledger.v1.product;
+import org.junit.Test;import static org.junit.Assert.*;
+public class ProductCatalogStoreTest {
+ @Test public void confirmedAliasCanExactAutoLinkButSpacingVariantCannot(){InMemoryProductCatalogStore s=new InMemoryProductCatalogStore();IdentityResolution a=s.confirm("r1",0,"서울우유 1L",ProductType.STANDARD,"서울우유 1L",1);assertEquals(LinkSource.USER_CONFIRMED,a.source);IdentityResolution b=s.resolveAndLinkExact("r2",0,"  서울우유   1l ");assertTrue(b.classified());assertEquals(LinkSource.EXACT_ALIAS,b.source);assertFalse(s.resolveAndLinkExact("r3",0,"서울우유1L").classified());}
+ @Test public void canonicalTypeConflictAndAliasCollisionFailClosed(){InMemoryProductCatalogStore s=new InMemoryProductCatalogStore();s.confirm("r1",0,"왕교자 1.05kg",ProductType.STANDARD,"비비고 왕교자 1.05kg",1);try{s.confirm("r2",0,"새별칭",ProductType.NON_STANDARD,"비비고 왕교자 1.05kg",2);fail();}catch(IllegalStateException expected){}s.confirm("r2",0,"감자 1봉",ProductType.NON_STANDARD,"감자 봉",2);try{s.confirm("r3",0,"감자 1봉",ProductType.STANDARD,"다른상품",3);fail();}catch(IllegalStateException expected){}}
+ @Test public void unlinkReceiptKeepsReusableCatalog(){InMemoryProductCatalogStore s=new InMemoryProductCatalogStore();s.confirm("r1",0,"신라면5입",ProductType.STANDARD,"신라면 5입",1);s.unlinkReceipt("r1");assertFalse(s.itemResolution("r1",0).classified());assertTrue(s.resolveAndLinkExact("r2",0,"신라면5입").classified());assertEquals(1,s.listProducts().size());}
+}

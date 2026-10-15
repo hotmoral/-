@@ -1,0 +1,10 @@
+package com.receiptledger.v1.product;
+
+import android.app.*;import android.content.Context;import android.view.*;import android.widget.*;import com.receiptledger.v1.R;
+
+public final class ProductIdentityDialog {
+ public interface Callback{void onConfirm(ProductType type,String canonicalName);void onUnclassify();}
+ private ProductIdentityDialog(){}
+ public static void show(Activity a,String raw,IdentityResolution current,Callback cb){int p=dp(a,12);LinearLayout box=new LinearLayout(a);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(p,p,p,p);TextView rawView=new TextView(a);rawView.setText(a.getString(R.string.identity_raw,raw));box.addView(rawView);EditText canonical=new EditText(a);canonical.setHint(R.string.identity_canonical_hint);canonical.setSingleLine(true);canonical.setText(current.classified()?current.product.canonicalName:raw);box.addView(canonical);Spinner type=new Spinner(a);ArrayAdapter<String> adapter=new ArrayAdapter<>(a,android.R.layout.simple_spinner_dropdown_item,new String[]{ProductType.STANDARD.name(),ProductType.NON_STANDARD.name()});type.setAdapter(adapter);if(current.classified()&&current.product.type==ProductType.NON_STANDARD)type.setSelection(1);box.addView(type);AlertDialog.Builder b=new AlertDialog.Builder(a).setTitle(R.string.identity_title).setView(box).setNegativeButton(android.R.string.cancel,null).setPositiveButton(R.string.identity_confirm,null);if(current.classified())b.setNeutralButton(R.string.identity_unclassify,(d,w)->cb.onUnclassify());AlertDialog dialog=b.create();dialog.setOnShowListener(x->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v->{String name=canonical.getText().toString().trim();if(name.isEmpty()){Toast.makeText(a,R.string.identity_name_required,Toast.LENGTH_SHORT).show();return;}cb.onConfirm(type.getSelectedItemPosition()==0?ProductType.STANDARD:ProductType.NON_STANDARD,name);dialog.dismiss();}));dialog.show();}
+ private static int dp(Context c,int v){return Math.round(v*c.getResources().getDisplayMetrics().density);}
+}
