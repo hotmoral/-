@@ -1,0 +1,30 @@
+name: Mobi P1-FR4 V1 Patch Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr4-internal-core-scaffold-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/diagnose_p1_fr4_v1_patch_intersections.py'
+      - '.github/workflows/mobi-p1-fr4-v1-patch-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact diagnostic and candidate parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object diagnose_p1_fr4_v1_patch_intersections.py)" = "f343283edb8d2887f4297f29ea2141e0ff0caa38"
+          test "$(git hash-object p1_fr4_internal_core_scaffold.py)" = "4c46d9b0cccc64a834fcc446e96caeae363f08a1"
+          test "$(git hash-object p1_fr3_feline_core_topology_v5.py)" = "67a139d126822ba81a9c3e96e6c55ca559b6b71c"
+      - name: Diagnose full matrix patch crossings
+        working-directory: mobi/p1-b2/geometry
+        run: python3 diagnose_p1_fr4_v1_patch_intersections.py
