@@ -62,6 +62,9 @@ class P1FR1MeshFeasibilityTests(unittest.TestCase):
             self.assertEqual({"L", "R"}, set(neg))
             self.assertGreater(abs(pos["L"] - pos["R"]), 1e-6)
             self.assertGreater(abs(neg["L"] - neg["R"]), 1e-6)
+            # Accepted H6N mirror semantics swap the corresponding mirrored paw
+            # role while yaw sign reverses view depth. Anatomical IDs themselves
+            # remain L/R; no semantic identity swap is performed by the renderer.
             self.assertAlmostEqual(pos["L"], -neg["R"], places=12)
             self.assertAlmostEqual(pos["R"], -neg["L"], places=12)
 
