@@ -1,0 +1,19 @@
+# ReceiptLedger V1 — CP20 Canonical Navigation
+
+Updated: 2026-10-16 KST
+Checkpoint: `RL_V1_PRODUCT_REBASELINE_01`
+
+## Read order for this checkpoint
+
+1. `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
+2. `PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
+3. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+4. `CP20_PRODUCT_REBASELINE_DECISIONS.md`
+5. `CP20_PRODUCT_REBASELINE_RISK_REGISTER.md`
+6. `CP20_PRODUCT_REBASELINE_DEPENDENCY_GATES.md`
+7. `CP20_PRODUCT_REBASELINE_SCOPE_AUDIT.md`
+8. `CP20_PRODUCT_REBASELINE_ACCEPTANCE.md`
+9. `CP20_PRODUCT_REBASELINE_EVIDENCE.md`
+10. `CP20_PRODUCT_REBASELINE_CLOSEOUT.md`
+
+A future session normally does not need to read every CP20 supporting file. Start from `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md`; use the list above only when a product/domain decision needs its detailed rationale.
