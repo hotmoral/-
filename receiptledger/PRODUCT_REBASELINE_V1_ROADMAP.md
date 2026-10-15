@@ -25,36 +25,39 @@ Canonical Actions:
 
 CP21 froze Product/Commodity boundary, stable-ID identity, structured STANDARD fields, exact physical package measures, raw purchase forms, CategoryRef non-authority, global/merchant AliasContext, source/confidence/confirmation separation, logical PurchaseObservation, and fail-closed legacy adaptation.
 
-Persistence schema remains V1 and migration has not started.
+### CP22 — Persistence V2 — COMPLETE
 
-## 2. Stage B — Storage and migration
+Frozen implementation HEAD:
+`449896c7580fb3412f41c9b58d1ab9412d13d84d`
 
-### CP22 — Persistence V2 — NEXT PLANNED
+Canonical Actions:
+`38816200340` — SUCCESS
 
-Goal: migration-safe storage for CP21 semantics.
+CP22 froze/implemented:
 
-Must include:
+- product DB V1 -> V2 migration while preserving DB filename;
+- legacy product IDs and item links unchanged;
+- legacy aliases -> GLOBAL contextual aliases;
+- merchant-scoped alias persistence;
+- catalog semantic field evidence persistence;
+- exact product specification persistence;
+- stable category-reference persistence;
+- linked PurchaseForm semantic persistence without duplicate price truth;
+- receipt DB remains schema V1 and authoritative for price/date/store/validation;
+- direct SQLite retained; Room deferred based on scope/risk evidence;
+- deterministic real-SQLite migration verification.
 
-- exact legacy schema/data inventory;
-- schema version/migration plan;
-- product ID and item-link preservation;
-- no semantic guessing from legacy canonical names;
-- merchant alias context storage;
-- specification/category/purchase-form representation;
-- indexes needed for later identity/search/history;
-- separate-DB sequencing and fail-closed behavior;
-- deterministic migration regression fixtures;
-- direct SQLite vs Room decision based on concrete evidence.
+Migration vectors: 15/15 PASS. Persistence V2 focused tests: 7/7 PASS. Lint: 0/0.
 
-Non-goals: semantic parsing, resolver V2, price judgment, commercial UI.
+## 2. Stage C — Receipt-to-product understanding
 
-## 3. Stage C — Receipt-to-product understanding
-
-### CP23 — Receipt Product Semantics
+### CP23 — Receipt Product Semantics — NEXT PLANNED
 
 Parse brand/product/variant/specification/pack/sales-unit candidates from raw receipt item text with confidence/reason/provenance and without inventing identity.
 
 Local quality evidence must include materially relevant parsing accuracy/coverage and review-required rate. Do not defer all semantic quality measurement to CP35.
+
+Storage target is the CP22 V2 catalog metadata contract. Parser output must not mutate stable IDs or gain product-merge authority.
 
 ### CP24 — Identity Resolver V2
 
@@ -85,7 +88,7 @@ Make mixed raw forms such as 봉/팩/kg/개/상자 first-class while preserving 
 
 Measure commodity grouping correctness, false grouping/splitting, raw-unit preservation and review burden locally.
 
-## 4. Stage D — Price intelligence
+## 3. Stage D — Price intelligence
 
 ### CP27 — Price Intelligence V2
 
@@ -110,7 +113,7 @@ Default principle: compare the price actually attributable to one purchased unit
 
 Define explicit data-sufficiency, time-window and threshold rules for cheap/normal/expensive labels. Sparse data yields `데이터 부족`.
 
-## 5. Stage E — Find and inspect
+## 4. Stage E — Find and inspect
 
 ### CP29 — Search / Browse
 
@@ -118,7 +121,7 @@ Global search and browse by product/commodity, brand, safe aliases, category, sp
 
 This checkpoint freezes data access and interaction behavior; it does not need final commercial visual polish.
 
-## 6. Stage F — Commercial UX foundation and screens
+## 5. Stage F — Commercial UX foundation and screens
 
 ### CP30 — Design System Foundation
 
@@ -148,7 +151,7 @@ Acceptance must include review burden and repeat-use automation behavior, not on
 
 Product-centric home/navigation/search/category/product/commodity/receipt/settings integration without gratuitous domain rewrite.
 
-## 7. Stage G — Validation and hardening
+## 6. Stage G — Validation and hardening
 
 ### CP35 — Real Receipt Evaluation
 
@@ -162,11 +165,11 @@ CP35 aggregates earlier local metrics; it is not the first point where false spl
 
 Verify startup, OCR memory/latency, large catalog/history, alias/search queries, aggregation, charts, migration, archive reconciliation and failure recovery at representative scale.
 
-## 8. Dependency gates
+## 7. Dependency gates
 
-- CP21 Domain V2 remains frozen before CP22 persistence semantics are implemented.
-- CP22 precedes production consumers of new stored fields.
+- CP21 domain meanings and CP22 persistence semantics remain frozen before production semantic consumers expand.
 - CP23 semantic parsing precedes CP24 resolver authority.
+- CP23 must write only evidence-backed candidate semantics into the CP22 storage shape and must not reinterpret legacy migration gaps.
 - CP24 must measure both false merge and false split and prove repeat-use automation behavior.
 - CP27 canonical comparison-price semantics precede CP28 price judgment.
 - CP29 data access precedes commercial shell dependencies.
@@ -174,7 +177,7 @@ Verify startup, OCR memory/latency, large catalog/history, alias/search queries,
 - CP25 and CP26 may partially overlap only after shared CP21/22 contracts are stable.
 - CP33 must not bypass identity/provenance rules for convenience.
 
-## 9. Every checkpoint must ask, only where materially relevant
+## 8. Every checkpoint must ask, only where materially relevant
 
 - Does this change the meaning of stored data?
 - Can it create a false product merge?
@@ -189,7 +192,7 @@ Verify startup, OCR memory/latency, large catalog/history, alias/search queries,
 
 Avoid ritual re-audits of unrelated proven work, speculative abstractions, unrelated architecture cleanup, and scope expansion into budgeting/banking/cloud/e-commerce before the core loop is complete.
 
-## 10. Handoff discipline
+## 9. Handoff discipline
 
 At each completed group:
 
@@ -200,10 +203,10 @@ At each completed group:
 5. verify post-boundary handoff changes are documentation-only;
 6. stop before the next unauthorized group.
 
-## 11. Current boundary
+## 10. Current boundary
 
-CP21 is complete. The client-requirement alignment amendment is canonical and documentation-only.
+CP22 — Persistence V2 is complete.
 
-The next planned implementation checkpoint is **CP22 — Persistence V2**.
+The next planned implementation checkpoint is **CP23 — Receipt Product Semantics**.
 
-Planning existence does not equal execution authorization. Do not start CP22 until the user explicitly directs it.
+Planning existence does not equal execution authorization. Do not start CP23 until the user explicitly directs it.

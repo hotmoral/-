@@ -10,79 +10,38 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-4. `receiptledger/CATALOG_DOMAIN_V2_PLAN.md`
-5. `receiptledger/CATALOG_DOMAIN_V2_CONSISTENCY_REVIEW.md`
-6. `receiptledger/PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
-7. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-8. `receiptledger/CP20_PRODUCT_REBASELINE_DEPENDENCY_GATES.md`
-9. `receiptledger/CP20_PRODUCT_REBASELINE_RISK_REGISTER.md`
-10. `receiptledger/README.md`
-11. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP22_PERSISTENCE_V2_CLOSEOUT.md`
+4. `receiptledger/CP22_PERSISTENCE_V2_EVIDENCE.md`
+5. `receiptledger/PERSISTENCE_V2_PLAN.md`
+6. `receiptledger/PERSISTENCE_V2_CONSISTENCY_REVIEW.md`
+7. `receiptledger/PERSISTENCE_V2_GOLDEN_VECTORS.md`
+8. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+9. `receiptledger/CATALOG_DOMAIN_V2_PLAN.md`
+10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+11. `receiptledger/README.md`
+12. `receiptledger/WORK_UNIT.md`
 
 ## 1. Latest executable checkpoint
 
-**CP21 — Catalog Domain V2 — PASS / COMPLETE**
+**CP22 — Persistence V2 — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-catalog-domain-v2-20261016`
-- frozen implementation HEAD: `8596106c370e172161ef00e8d460dc78667bf80d`
-- canonical implementation Actions: `38808985222` — SUCCESS
-- artifact ID: `12008555521`
-- artifact digest: `sha256:d4b84972d05d61941f08565fcc5537579bc7126798adb8c3771a442dca2ae8e9`
-- APK SHA-256: `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
+- branch: `receiptledger/run-v1-persistence-v2-20261016`
+- predecessor handoff HEAD: `dc62d7adb650ced200fe5058aaf20f23d23fb34c`
+- frozen implementation HEAD: `449896c7580fb3412f41c9b58d1ab9412d13d84d`
+- canonical Actions run: `38816200340` — SUCCESS
+- job: `116701369902` — SUCCESS
+- artifact ID: `12010832560`
+- artifact digest: `sha256:6b27c9e8aa9541346d9a3f5844c12a2f0dacd26841e869bd5b4834d7cb67bea1`
+- debug APK SHA-256: `1cddd2f19c70b8ab883a97630c3dbc10e8971d75a3c9e4ec62be72eb69328884`
+- migration vectors: 15/15 PASS
 - CatalogDomainV2Test: 15/15 PASS
+- CatalogPersistenceContractV2Test: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionName `1.0.19-catalog-domain-v2`, versionCode 20
+- versionName `1.0.20-persistence-v2`, versionCode 21
 
-CP21 app/source/schema/runtime semantics remain frozen at this boundary.
+The implementation/evidence boundary remains `449896c...` even after later documentation-only handoff commits.
 
-## 2. Client requirement alignment amendment
-
-Canonical amendment commit:
-`60f40f1eba0792bbcb5a3c08aa6724b4010297bd`
-
-Document:
-`CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-
-Finding:
-**current direction matches the client's requirement; no rollback/rewrite is required.**
-
-Mandatory downstream corrections:
-
-- CP24 measures false merge and false split/identity fragmentation;
-- CP23–CP26 measure automatic-success, review-required and repeat-confirmation reuse where relevant;
-- CP27 defines canonical comparison-price semantics before statistics/labels;
-- final commercial screen work follows CP30 Design System Foundation.
-
-## 3. CI governance maintenance
-
-Two amendment/handoff pushes initially failed because the frozen CP21 scope allowlist did not know the new canonical docs:
-
-- `38811970256` — FAILURE at scope guard; first rejected path `CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`;
-- `38812118401` — FAILURE for the same stale-scope class.
-
-Tests/build were skipped, so these are not app regressions.
-
-Minimal workflow maintenance commit:
-`94de4de3bef32e0165fd33810c9460ff6356b243`
-
-It only:
-
-1. adds the amendment/gate/risk docs to CP21 scope audit;
-2. narrows automatic push triggers to CP21 code/test/audit/workflow paths so docs-only handoff edits stop causing unnecessary Android builds.
-
-Verification:
-
-- run `38812273375` — **SUCCESS**
-- scope/public-tree audit PASS
-- unit test PASS
-- lint PASS
-- assembleDebug PASS
-- permission/evidence packaging PASS
-
-Do not replace canonical implementation evidence `38808985222` with this governance verification run.
-
-## 4. Product essence
+## 2. Product essence
 
 ReceiptLedger is a personal purchase-price memory and comparison system.
 
@@ -90,84 +49,139 @@ Target experience:
 
 `영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색 -> 과거 가격과 현재 가격 판단`
 
-Receipt is evidence/input; product/commodity history is the main destination.
+Receipt is evidence/input; product/commodity history and price judgment are the destination.
 
-## 5. CP21 semantics CP22 must preserve
+## 3. CP22 persistence contract
 
-- stable catalog ID = catalog identity/equality authority;
-- legacy product IDs/names/types migrate without semantic guessing;
-- UNCLASSIFIED remains unresolved, not a V2 entity;
-- category is not identity proof;
-- merchant scope contextualizes aliases but does not define SKU identity;
+### Product database
+
+File remains:
+`receipt-products-v1.db`
+
+Schema is now version 2.
+
+Migration preserves in place:
+
+- product ID;
+- type;
+- canonical name/key;
+- creation timestamp;
+- every item link and link source.
+
+Legacy aliases migrate one-for-one to GLOBAL context.
+
+V2 storage now supports:
+
+- GLOBAL / MERCHANT alias namespaces;
+- BRAND / PRODUCT_NAME / VARIANT fields with source/confidence/confirmation;
+- exact package specification;
+- stable category reference;
+- linked observation PurchaseForm semantics.
+
+### Receipt database
+
+File remains:
+`receiptledger-v1.db`
+
+Schema remains version 1 and source is unchanged.
+
+Authoritative receipt facts remain there:
+
+- raw item name;
+- quantity / unit price / line amount and provenance;
+- purchase date;
+- store;
+- receipt validation.
+
+Do not create a duplicate price truth from CP22 metadata.
+
+## 4. Critical migration guardrails
+
+CP23 and later checkpoints must not reinterpret these facts:
+
+1. stable ID remains identity authority;
+2. migrated legacy rows are not semantically parsed by migration;
+3. separate old IDs remain separate;
+4. V1 aliases are GLOBAL, not guessed merchant aliases;
+5. merchant scope is contextual alias knowledge, not SKU identity;
+6. PurchaseForm persistence is semantic overlay only;
+7. PurchaseForm storage does not prove cross-unit comparability;
+8. receipt price/date/store/validation remain authoritative;
+9. unsupported catalog migration paths fail closed;
+10. receipt DB was not migrated.
+
+## 5. Direct SQLite / Room decision
+
+CP22 deliberately retains `SQLiteOpenHelper`.
+
+Reason: schema migration correctness and data preservation were the checkpoint's risk center. Simultaneously migrating to Room would add architecture churn without advancing the core product outcome.
+
+Room remains a future option if later search/query complexity or maintainability evidence justifies it. Do not reopen this choice ritualistically in CP23.
+
+## 6. CP21 / client-alignment invariants still governing
+
+- STANDARD_PRODUCT vs NON_STANDARD_COMMODITY;
+- UNCLASSIFIED remains unresolved;
+- category is not identity authority;
 - HIGH confidence != CONFIRMED;
 - unknown != invented default;
-- exact unit canonicalization only where mathematically/physically exact;
+- exact physical unit equivalence only where mathematically defensible;
 - BAG/PACK/BOX/BUNDLE have no guessed conversion;
 - grouping != comparability;
-- price truth remains receipt-traceable.
+- false merge remains higher severity but false split is also a product failure;
+- repeat confirmed use should reduce review burden;
+- CP27 defines canonical comparison-price semantics before price statistics;
+- CP30 Design System Foundation precedes final commercial detail-screen polish.
 
-## 6. Downstream acceptance amendments
+## 7. Next planned checkpoint
 
-### Identity
+**CP23 — Receipt Product Semantics**
 
-CP24 must report both false merge and false split. False merge remains more severe, but split histories are also failure.
+Purpose:
+parse structured semantic candidates from raw receipt item text:
 
-### Automation
+- brand;
+- product/family name;
+- variant;
+- net quantity/unit;
+- pack count / inner content when evidenced;
+- purchase/sales-unit candidate where evidenced.
 
-Repeated confirmed use should reduce review burden. Local quality evidence begins in CP23–CP26 rather than waiting until CP35.
+Required behavior:
 
-### Price basis
+- output confidence/reason/provenance;
+- preserve ambiguity;
+- no automatic product merge authority;
+- no invented missing fields;
+- local parsing coverage/accuracy and review-required metrics;
+- prepare evidence for CP24 without doing CP24's resolver job.
 
-CP27 must explicitly define the comparable price per purchase observation, including quantity > 1, line total vs per-unit/package amount, item discount, unallocated receipt-level discount/coupon, provenance and invalid/incomplete data.
+CP23 must not start automatically. Explicit user authorization is required.
 
-### UI order
+## 8. Existing foundations to preserve
 
-CP29 Search/Browse
--> CP30 Design System Foundation
--> CP31 Product Detail
--> CP32 Commodity Detail
--> CP33 Capture/Review UX V2
--> CP34 Commercial UI Shell.
+- external camera/system picker privacy model;
+- local Korean OCR;
+- EXIF/document correction;
+- coordinate preservation;
+- geometry-based layout reconstruction;
+- item extraction with provenance;
+- arithmetic validation / contradiction preservation;
+- bounded OCR recovery / conservative merge;
+- review/edit before save;
+- app-private receipt/image storage;
+- merchant/store evidence;
+- receipt-derived price history;
+- API36/lint/permission firewall.
 
-## 7. Next planned implementation checkpoint
-
-**CP22 — Persistence V2**
-
-Before schema writes:
-
-1. inventory current receipt/product DB schemas and lifecycle;
-2. preserve every existing product ID and item link;
-3. design fail-closed migration sequencing across separate DBs;
-4. store merchant alias scope and CP21 structured semantics without duplicating receipt price truth;
-5. design indexes for later resolver/search/history work;
-6. decide direct SQLite vs Room from concrete requirements;
-7. create migration regression vectors before irreversible operations.
-
-CP22 is planned, not automatically authorized.
-
-## 8. Group discipline
-
-For every group:
-
-- recover canonical state;
-- state essence/non-goals;
-- inspect materially relevant contradictions/risk only;
-- fix cheap contract problems before implementation;
-- avoid unrelated cleanup and ritual re-audits;
-- implement the smallest coherent proof;
-- run ReceiptLedger-scoped CI/evidence where executable changes exist;
-- freeze exact refs;
-- synchronize handoff/status materials;
-- stop before the next unauthorized checkpoint.
-
-## 9. Security/public boundary
+## 9. Public/security boundary
 
 Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows.
 
-Never use other project namespaces or commit secrets, signing material, real private receipt photos, personal purchase databases/backups, personal identifiers or uncleared assets.
+Do not use other project namespaces. Never commit secrets, release signing material, real private receipt photos, personal purchase DBs/backups, personal identifiers or uncleared assets.
 
-APK permission firewall remains no CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permission unless separately authorized.
+Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE unless separately authorized.
 
 ## 10. Stop condition
 
-**CP21 plus the client-requirement alignment amendment are complete and synchronized. Await explicit authorization for CP22.**
+**CP22 is complete and handoff-synchronized. Await explicit authorization for CP23.**
