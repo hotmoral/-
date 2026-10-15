@@ -1,0 +1,112 @@
+name: Mobi P1-FR2 Perceptual Revision V5
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr2-perceptual-revision-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_fr2_layered_view_prototype_v5.py'
+      - 'mobi/p1-b2/geometry/run_p1_fr2_perceptual_revision_v5.py'
+      - 'mobi/p1-b2/geometry/test_p1_fr2_perceptual_revision_v5.py'
+      - '.github/workflows/mobi-p1-fr2-perceptual-revision-v5.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-fr2-v5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-fr2-v5/evidence
+          { echo "git_commit=${GITHUB_SHA}"; echo "runner=ubuntu-latest"; python3 --version; } | tee mobi/p1-fr2-v5/evidence/environment.txt
+
+      - name: Verify exact source parity and frozen upstream inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object c3_renderer_view_resolved_v4.py)" = "87e48c4789a4b2e8c9dd6aebd16b090b22f2b1e0"
+          test "$(git hash-object c4_hard_motion_fixture_adapter.py)" = "90ccccde16623073f13fc986cebc238c74aa9c13"
+          test "$(git hash-object c4_renderer_adapter.py)" = "1cec4470d6e458a1a3a9c6b1d9f6a44b4483af6e"
+          test "$(git hash-object h6n_stepped_turn_v2.py)" = "8903145739c5eb0a21b87d192c27cfdab6fc48b0"
+          test "$(git hash-object e_v0_profiles.py)" = "087826028fa7a2ad5a9a042ec188f335c9ff18cc"
+          test "$(git hash-object e_v0_fixture_adapter.py)" = "96bb5351208c157003ce0a50f828075537c5edb5"
+          test "$(git hash-object e_v0_renderer_adapter.py)" = "257f2ec2647b326dbf528146a79f5b2a98f18c37"
+          test "$(git hash-object test_e_v0_structural.py)" = "97b32bb571e1dabec8297955f0cd20207205c5ab"
+          test "$(git hash-object p1_fr1_mesh_probe.py)" = "009bf23dc8100abd192c4179cef0c14b56b6de3d"
+          test "$(git hash-object p1_fr1_mesh_probe_v2.py)" = "7c8370f843723795e8c77e4374180b2f5eccb210"
+          test "$(git hash-object p1_fr1_mesh_probe_v3.py)" = "530accae24cea3aad75dac73b30fa1592a53d03e"
+          test "$(git hash-object run_p1_fr1_mesh_feasibility.py)" = "f60d762202eefb9e815f6d57cc9c315b262fa8d7"
+          test "$(git hash-object test_p1_fr1_mesh_feasibility.py)" = "9e4b74336b2014ab677149eb073e29327bec2680"
+          test "$(git hash-object run_p1f_perceptual_evidence.py)" = "e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25"
+          test "$(git hash-object test_p1f_perceptual_evidence.py)" = "666dac6fd1f6530bd9f17b01c03516be64c5aaee"
+          test "$(git hash-object p1_fr2_layered_view_prototype_v5.py)" = "dc153ae1fff3d0ae4bd3ba02ca31ba9182dcd608"
+          test "$(git hash-object run_p1_fr2_perceptual_revision_v5.py)" = "7fbb3e31d21db9804e69aadb0bcc73cb65ada9d9"
+          test "$(git hash-object test_p1_fr2_perceptual_revision_v5.py)" = "2a6c877383863a679ffdac6f78c06308a4bf8fe9"
+          git hash-object p1_fr2_layered_view_prototype_v5.py run_p1_fr2_perceptual_revision_v5.py test_p1_fr2_perceptual_revision_v5.py p1_fr1_mesh_probe_v3.py e_v0_fixture_adapter.py e_v0_profiles.py run_p1f_perceptual_evidence.py | tee ../../p1-fr2-v5/evidence/git_blob_shas.txt
+
+      - name: Run retained regression and V5 tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_c4_hard_motion.py test_e_v0_structural.py test_p1_fr1_mesh_feasibility.py test_p1f_perceptual_evidence.py test_p1_fr2_perceptual_revision_v5.py 2>&1 | tee ../../p1-fr2-v5/evidence/unittest.txt
+
+      - name: Generate deterministic V5 evidence
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-fr2-v5/run1 ../../p1-fr2-v5/run2
+          PYTHONHASHSEED=1 python3 run_p1_fr2_perceptual_revision_v5.py --output-dir ../../p1-fr2-v5/run1
+          PYTHONHASHSEED=777 python3 run_p1_fr2_perceptual_revision_v5.py --output-dir ../../p1-fr2-v5/run2
+          (cd ../../p1-fr2-v5/run1 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr2-v5/run1.sha256
+          (cd ../../p1-fr2-v5/run2 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr2-v5/run2.sha256
+          cmp ../../p1-fr2-v5/run1.sha256 ../../p1-fr2-v5/run2.sha256
+          cp -R ../../p1-fr2-v5/run1/. ../../p1-fr2-v5/evidence/
+          cp ../../p1-fr2-v5/run1.sha256 ../../p1-fr2-v5/evidence/files.sha256
+          echo "hash_seed_repeat_exact=PASS" > ../../p1-fr2-v5/evidence/deterministic.txt
+
+      - name: Validate V5 evidence
+        working-directory: mobi/p1-fr2-v5/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, xml.etree.ElementTree as ET
+          from pathlib import Path
+          s=json.loads(Path('summary.json').read_text())
+          assert s['structuralPass'] is True, s
+          assert s['recordCount']==1770, s
+          assert s['topologySignatureCount']==1, s
+          assert s['semanticMutationCount']==0, s
+          assert s['coreSelfIntersectionCount']==0, s
+          assert s['correctionUseCount']==0, s
+          assert s['meshDomainCounts']==[6], s
+          assert s['maxPawPinError']<=1e-9, s
+          svgs=sorted(Path('debug').glob('*.svg'))
+          baseline=sorted(Path('frozen_p1f_baseline').glob('*.svg'))
+          assert len(svgs)==6, len(svgs)
+          assert len(baseline)==22, len(baseline)
+          for p in svgs+baseline: ET.parse(p)
+          print(json.dumps(s,indent=2,sort_keys=True))
+          PY
+
+      - name: Hash evidence
+        working-directory: mobi/p1-fr2-v5/evidence
+        run: sha256sum environment.txt git_blob_shas.txt unittest.txt summary.json manifest.json records.json files.sha256 deterministic.txt | tee EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-fr2-perceptual-revision-v5-${{ github.run_id }}
+          path: mobi/p1-fr2-v5/evidence/
+          if-no-files-found: error
+          retention-days: 30
