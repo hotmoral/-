@@ -13,6 +13,15 @@ CELL_H = 125.0
 MARGIN = 8.0
 
 
+def _is_exact_profile(probe) -> bool:
+    weights = dict(probe.view_weights)
+    return (
+        abs(float(weights.get("PROFILE", 0.0)) - 1.0) <= 1e-12
+        and abs(float(weights.get("THREE_QUARTER", 0.0))) <= 1e-12
+        and abs(float(weights.get("FRONT", 0.0))) <= 1e-12
+    )
+
+
 class P1FR5CoreMassSilhouetteV1Tests(unittest.TestCase):
     def test_contract_coefficients_and_influence_topology_are_exact(self):
         self.assertEqual(
@@ -80,6 +89,7 @@ class P1FR5CoreMassSilhouetteV1Tests(unittest.TestCase):
         count = 0
         signatures = set()
         changed = 0
+        exact_profile_count = 0
         for _, _, _, direction, fixture in iter_invariant_fixtures():
             result = fr5.build_probe(fixture, direction)
             probe = result.base
@@ -88,6 +98,9 @@ class P1FR5CoreMassSilhouetteV1Tests(unittest.TestCase):
             signatures.add(result.integration_signature)
             if probe.core_vertices != control.core_vertices:
                 changed += 1
+            if _is_exact_profile(probe):
+                exact_profile_count += 1
+                self.assertEqual(probe.core_vertices, control.core_vertices)
             self.assertEqual(tuple(v[0] for v in probe.core_vertices), fr3_v5.CORE_VERTEX_IDS)
             self.assertEqual(probe.topology_signature, fr3_v5.topology_signature())
             self.assertEqual(probe.semantic_anchor_hash_before, probe.semantic_anchor_hash_after)
@@ -106,6 +119,7 @@ class P1FR5CoreMassSilhouetteV1Tests(unittest.TestCase):
         self.assertEqual(count, 1770)
         self.assertEqual(signatures, {fr5.integration_signature()})
         self.assertGreater(changed, 0)
+        self.assertGreater(exact_profile_count, 0)
 
     def test_required_visual_samples_fit_normalized_cells(self):
         samples = []

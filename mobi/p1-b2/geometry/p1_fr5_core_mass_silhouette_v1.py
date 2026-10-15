@@ -123,9 +123,22 @@ def _layer_scale(layer_id: str, view_weights: Dict[str, float]) -> float:
     return sum(float(view_weights.get(view, 0.0)) * scales[view] for view in scales)
 
 
+def _is_exact_profile(view_weights: Dict[str, float]) -> bool:
+    return (
+        abs(float(view_weights.get("PROFILE", 0.0)) - 1.0) <= 1e-12
+        and abs(float(view_weights.get("THREE_QUARTER", 0.0))) <= 1e-12
+        and abs(float(view_weights.get("FRONT", 0.0))) <= 1e-12
+    )
+
+
 def build_integrated_core(fixture, control_core):
     yaw = float(fixture.payload.get("orientation", {}).get("yawRad", 0.0))
     view_weights = fr3_v5.canonical_view_weights(yaw)
+    # PROFILE exactness is a contractual identity rule, not merely a geometric
+    # near-equality. Avoid the axis-decompose/recompose round-trip entirely so
+    # PROFILE stays byte-for-byte equal to the FR3 V5 control.
+    if _is_exact_profile(view_weights):
+        return tuple(control_core)
     frames = _layer_frames(fixture)
     integrated = []
     for vertex_id, x, y in control_core:
@@ -160,7 +173,7 @@ def integration_signature() -> str:
         "viewScales": VIEW_SCALES,
         "influenceWeights": INFLUENCE_WEIGHTS,
         "transform": "PERPENDICULAR_COMPONENT_ONLY",
-        "profileRule": "ALL_LAYER_SCALES_1_0",
+        "profileRule": "EXACT_CONTROL_CORE_BYPASS",
         "externalMeshDomains": ("CORE", "FORE_L", "FORE_R", "HIND_L", "HIND_R", "TAIL"),
         "semanticState": "EXISTING_ANCHORS_DERIVED_READ_ONLY",
     }

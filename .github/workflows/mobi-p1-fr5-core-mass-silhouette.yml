@@ -36,9 +36,9 @@ jobs:
           import subprocess
 
           expected = {
-              'p1_fr5_core_mass_silhouette_v1.py': '6ebca8b01c37554ca91863aaac2e3ff20fbb2314',
+              'p1_fr5_core_mass_silhouette_v1.py': 'fab2789d36c94ac859dabfd31ad4d4ff72c098b8',
               'run_p1_fr5_core_mass_silhouette_v1.py': '502a7e1e17d1dccc4b130294ef44b613aac674d9',
-              'test_p1_fr5_core_mass_silhouette_v1.py': '8ad91c502779794cd9d3b591633f694b00fdac9d',
+              'test_p1_fr5_core_mass_silhouette_v1.py': 'b38df8324d89dac8c572d3c3200c856479ef7a65',
               'p1_fr4_internal_core_scaffold.py': '4c46d9b0cccc64a834fcc446e96caeae363f08a1',
               'run_p1_fr4_internal_core_scaffold.py': 'ed09cdba5ccc34456ffe94a88a395f48bf961aff',
               'p1_fr4_internal_core_scaffold_v3.py': 'e1f65753f7164a621c43ef3c8b88d37406a688d9',
