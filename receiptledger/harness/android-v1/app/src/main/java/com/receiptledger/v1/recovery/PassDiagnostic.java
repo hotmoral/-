@@ -1,0 +1,2 @@
+package com.receiptledger.v1.recovery;
+public final class PassDiagnostic {public final RecognitionPass pass;public final int score,chars,elements,items;public final String validation;public PassDiagnostic(RecognitionCandidate c){pass=c.pass;score=c.score;chars=c.signals.chars;elements=c.signals.elements;items=c.signals.itemCount;validation=c.signals.validation.name();}@Override public String toString(){return pass+" score="+score+" chars="+chars+" elements="+elements+" items="+items+" validation="+validation;}}
