@@ -1,11 +1,8 @@
 <resources>
-    <string name="app_name">ReceiptLedger V1</string>
-    <string name="document_title">ReceiptLedger · Persistence Core</string>
-    <string name="persistence_body">OCR→행 재구성→구조→상품 tuple→검증 결과를 앱 내부 SQLite에 저장합니다. 원본 이미지는 아직 저장하지 않습니다.</string>
+    <string name="app_name">ReceiptLedger V1</string><string name="document_title">ReceiptLedger · Image Archive Core</string>
+    <string name="archive_body">영수증 구조/검증 DB와 함께 EXIF 정규화 원본을 앱 내부 JPEG로 보존합니다. 외부 저장소나 네트워크는 사용하지 않습니다.</string>
     <string name="capture">촬영</string><string name="gallery">선택</string><string name="correct">보정</string><string name="original">원본</string><string name="run_ocr">OCR</string><string name="save_receipt">저장</string>
-    <string name="showing_original">원본과 검출 사각형을 표시 중입니다.</string><string name="loading">이미지 디코딩 및 영수증 영역 분석 중입니다.</string><string name="correcting">원근 보정 중입니다.</string>
-    <string name="detected">영수증 후보 검출 · confidence %.2f · %d×%d · EXIF %d</string><string name="not_detected">자동 검출 보류(%1$s) · %2$d×%3$d. 원본 OCR은 계속 실행할 수 있습니다.</string><string name="corrected">원근 보정 결과 %1$d×%2$d · OCR 좌표는 원본으로 역변환됩니다.</string>
-    <string name="ocr_running">Bundled ML Kit Korean OCR 실행 중입니다.</string><string name="persistence_ready">저장 준비 · validation=%1$s · items=%2$d · diff=%3$s</string><string name="saving_receipt">영수증과 상품/검증 메타데이터를 transaction으로 저장 중입니다.</string><string name="saved_receipt">저장 완료 · 로컬 영수증 %1$d건</string><string name="save_failed">저장 실패: %1$s</string>
-    <string name="ocr_failed">OCR 실패: %1$s</string><string name="load_failed">이미지 처리 실패: %1$s</string><string name="correction_failed">원근 보정 실패: %1$s</string><string name="no_camera">사용 가능한 카메라 앱이 없습니다.</string>
-    <string name="foundation_title">ReceiptLedger V1 Foundation</string><string name="foundation_body">Foundation ID: %1$s</string>
+    <string name="showing_original">원본과 검출 사각형을 표시 중입니다.</string><string name="loading">이미지 디코딩 및 영수증 영역 분석 중입니다.</string><string name="correcting">원근 보정 중입니다.</string><string name="detected">영수증 후보 검출 · confidence %.2f · %d×%d · EXIF %d</string><string name="not_detected">자동 검출 보류(%1$s) · %2$d×%3$d. 원본 OCR은 계속 실행할 수 있습니다.</string><string name="corrected">원근 보정 결과 %1$d×%2$d · OCR 좌표는 원본으로 역변환됩니다.</string>
+    <string name="ocr_running">Bundled ML Kit Korean OCR 실행 중입니다.</string><string name="archive_ready">저장 준비 · validation=%1$s · items=%2$d · diff=%3$s</string><string name="saving_receipt">앱 내부 이미지 archive를 확정한 뒤 DB transaction을 저장 중입니다.</string><string name="saved_receipt">저장 완료 · %1$d건 · image %2$d bytes · sha256 %3$s…</string><string name="save_failed">저장 실패: %1$s</string>
+    <string name="ocr_failed">OCR 실패: %1$s</string><string name="load_failed">이미지 처리 실패: %1$s</string><string name="correction_failed">원근 보정 실패: %1$s</string><string name="no_camera">사용 가능한 카메라 앱이 없습니다.</string><string name="foundation_title">ReceiptLedger V1 Foundation</string><string name="foundation_body">Foundation ID: %1$s</string>
 </resources>
