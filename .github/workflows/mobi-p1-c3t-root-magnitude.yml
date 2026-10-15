@@ -1,0 +1,105 @@
+name: Mobi P1-C3T Root Shift Magnitude
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3t-root-magnitude-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/run_h6n_root_shift_magnitude_analysis.py'
+      - '.github/workflows/mobi-p1-c3t-root-magnitude.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3t-root-magnitude:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3t/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3t/evidence/environment.txt
+
+      - name: Verify private/public source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object run_h6n_phase_origin_analysis.py)" = "442a53fc8c7e2c6df4144566bfd6862e42330191"
+          test "$(git hash-object run_h6n_root_shift_timing_analysis.py)" = "b029de06cd7cdf1de8c35ab1b19458f1f8df52ad"
+          test "$(git hash-object run_h6n_root_shift_magnitude_analysis.py)" = "9d87475fe2e9889f6ff3cba124b02853652a480a"
+          git hash-object orientation_v2.py run_h6n_phase_origin_analysis.py run_h6n_root_shift_timing_analysis.py run_h6n_root_shift_magnitude_analysis.py | tee ../../p1-c3t/evidence/git_blob_shas.txt
+          sha256sum orientation_v2.py run_h6n_phase_origin_analysis.py run_h6n_root_shift_timing_analysis.py run_h6n_root_shift_magnitude_analysis.py | tee ../../p1-c3t/evidence/source_sha256.txt
+          echo "P1-C3T private/public source parity PASS"
+
+      - name: Run magnitude analysis twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from run_h6n_phase_origin_analysis import canonical_bytes
+          from run_h6n_root_shift_magnitude_analysis import run_analysis
+
+          out = Path('../../p1-c3t/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first = run_analysis()
+          second = run_analysis()
+          if canonical_bytes(first) != canonical_bytes(second):
+              raise SystemExit('C3T deterministic repeat mismatch')
+
+          lower, upper = first['globalShiftIntervalNormalized']
+          if abs(lower - 0.06470292210167919) > 1e-12:
+              raise SystemExit(f'lower interval drift: {lower}')
+          if abs(upper - 0.2878914206844067) > 1e-12:
+              raise SystemExit(f'upper interval drift: {upper}')
+
+          summaries = {row['candidate']: row for row in first['candidateSummary']}
+          if set(summaries) != {'T-L', 'T-M', 'T-U'}:
+              raise SystemExit(f"unexpected candidates: {sorted(summaries)}")
+          if any(row['casesWithFinalMismatch'] != 0 for row in summaries.values()):
+              raise SystemExit('mandatory candidate produced final mismatch')
+          if not summaries['T-L']['eligibleForSelection']:
+              raise SystemExit('lower bound unexpectedly ineligible')
+          if not summaries['T-M']['eligibleForSelection']:
+              raise SystemExit('midpoint unexpectedly ineligible')
+          if summaries['T-U']['gateBStalenessGuard']:
+              raise SystemExit('upper bound unexpectedly passed staleness guard')
+          if first['selection']['decision'] != 'MIDPOINT_SELECTED':
+              raise SystemExit(f"unexpected decision: {first['selection']}")
+
+          first['deterministicRepeatExact'] = True
+          (out / 'analysis.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'candidate_summary.json').write_text(json.dumps(first['candidateSummary'], indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'selection.json').write_text(json.dumps(first['selection'], indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(first['candidateSummary'], indent=2, sort_keys=True))
+          print(json.dumps(first['selection'], indent=2, sort_keys=True))
+          print(f"canonicalAnalysisSha256={first['canonicalAnalysisSha256']}")
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3t/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt analysis.json candidate_summary.json selection.json | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3t-root-magnitude-${{ github.run_id }}
+          path: mobi/p1-c3t/evidence/
+          if-no-files-found: error
+          retention-days: 30
