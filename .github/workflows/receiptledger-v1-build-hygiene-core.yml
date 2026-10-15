@@ -28,7 +28,17 @@ jobs:
           grep -q "versionCode 18" receiptledger/harness/android-v1/app/build.gradle
           grep -q "1.0.17-build-hygiene-core" receiptledger/harness/android-v1/app/build.gradle
       - name: Test lint and build
-        run: gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+        run: |
+          set +e
+          gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+          status=$?
+          REPORT=receiptledger/harness/android-v1/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
+          if [ -f "$REPORT" ]; then
+            echo '===== COMPLETE ANDROID LINT REPORT ====='
+            cat "$REPORT"
+            echo '===== END ANDROID LINT REPORT ====='
+          fi
+          exit "$status"
       - name: Package evidence
         run: |
           set -euo pipefail
