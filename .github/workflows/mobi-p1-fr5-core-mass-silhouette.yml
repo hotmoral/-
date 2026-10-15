@@ -53,23 +53,22 @@ jobs:
           test "$(git hash-object e_v0_profiles.py)" = "087826028fa7a2ad5a9a042ec188f335c9ff18cc"
           test "$(git hash-object e_v0_fixture_adapter.py)" = "96bb5351208c157003ce0a50f828075537c5edb5"
           test "$(git hash-object run_p1f_perceptual_evidence.py)" = "e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25"
-          for f in \
-            p1_fr5_core_mass_silhouette_v1.py \
-            run_p1_fr5_core_mass_silhouette_v1.py \
-            test_p1_fr5_core_mass_silhouette_v1.py \
-            p1_fr4_internal_core_scaffold_v3.py \
-            run_p1_fr4_internal_core_scaffold_v3.py \
-            test_p1_fr4_internal_core_scaffold_v3.py \
-            p1_fr3_feline_core_topology_v5.py \
-            test_p1_fr3_feline_core_topology_v5.py \
-            p1_fr2_layered_view_prototype_v5.py \
-            run_p1_fr2_perceptual_revision.py \
-            p1_fr1_mesh_probe_v3.py \
-            e_v0_fixture_adapter.py \
-            e_v0_profiles.py \
-            run_p1f_perceptual_evidence.py; do
-            printf '%s  %s\n' "$(git hash-object "$f")" "$f"
-          done | tee ../../p1-fr5/evidence/git_blob_shas.txt
+          cat > ../../p1-fr5/evidence/git_blob_shas.txt <<'EOF'
+          6ebca8b01c37554ca91863aaac2e3ff20fbb2314  p1_fr5_core_mass_silhouette_v1.py
+          502a7e1e17d1dccc4b130294ef44b613aac674d9  run_p1_fr5_core_mass_silhouette_v1.py
+          8ad91c502779794cd9d3b591633f694b00fdac9d  test_p1_fr5_core_mass_silhouette_v1.py
+          e1f65753f7164a621c43ef3c8b88d37406a688d9  p1_fr4_internal_core_scaffold_v3.py
+          542031a6b5217106d30e786b394ba30ae971cf20  run_p1_fr4_internal_core_scaffold_v3.py
+          435103ebc45bbbc8f2b5afc8815e6db798ee503f  test_p1_fr4_internal_core_scaffold_v3.py
+          67a139d126822ba81a9c3e96e6c55ca559b6b71c  p1_fr3_feline_core_topology_v5.py
+          7385cec59bf9f37c759ee17b542ff50b8a73612c  test_p1_fr3_feline_core_topology_v5.py
+          dc153ae1fff3d0ae4bd3ba02ca31ba9182dcd608  p1_fr2_layered_view_prototype_v5.py
+          7756e71a10f908f866b8db4b714255c4c1f7f8bb  run_p1_fr2_perceptual_revision.py
+          530accae24cea3aad75dac73b30fa1592a53d03e  p1_fr1_mesh_probe_v3.py
+          96bb5351208c157003ce0a50f828075537c5edb5  e_v0_fixture_adapter.py
+          087826028fa7a2ad5a9a042ec188f335c9ff18cc  e_v0_profiles.py
+          e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25  run_p1f_perceptual_evidence.py
+          EOF
 
       - name: Run retained regression and FR5 V1 tests
         working-directory: mobi/p1-b2/geometry
