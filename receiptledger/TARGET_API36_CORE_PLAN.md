@@ -1,84 +1,74 @@
 # ReceiptLedger V1 — Target API 36 Core Plan
 
-Status at handoff: **NOT STARTED**
-Reserved branch: `receiptledger/run-v1-target-api36-core-20261015`
-Frozen implementation baseline: `53d03fc219d4b15bf09cebbc368ae6af6a55053a`
+Status: **COMPLETED**
+Branch: `receiptledger/run-v1-target-api36-core-20261015`
+Frozen completed implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
+Canonical Actions run: `38800790544` — **SUCCESS**
 
-## 1. Purpose
+## 1. Purpose and result
 
-Remove the final Build Hygiene `OldTargetApi` warning by legitimately migrating the app from Android API 35 to Android 16 / API 36 while preserving the complete existing ReceiptLedger V1 vertical slice and the public privacy boundary.
+This checkpoint legitimately migrated ReceiptLedger from API 35 to Android API 36 while preserving the existing V1 vertical slice and public privacy boundary.
 
-This is a compatibility/toolchain checkpoint, not a feature-development checkpoint.
+The prior Build Hygiene `OldTargetApi` warning was removed by real migration, not suppression.
 
-## 2. Official compatibility facts verified for planning
-
-- Android API level 36 requires Android Gradle Plugin **8.9.1 or newer** according to the Android Developers AGP compatibility table.
-- A conservative stable choice for this checkpoint is **AGP 8.11.1 + Gradle 8.13 + JDK 17**; AGP 8.11 supports API 36 and requires Gradle 8.13.
-- Starting 2026-08-31, Google Play new apps and app updates for normal Android mobile apps must target Android 16 / API 36 or higher.
-- For apps targeting Android 16 / API 36, edge-to-edge enforcement cannot be opted out on Android 16 devices.
-- Predictive back system animations are enabled by default for apps targeting API 36 on Android 16+; existing app code should be audited, but custom back interception must not be added unless behavior actually requires it.
-
-Reference documentation:
-- https://developer.android.com/build/releases/about-agp
-- https://developer.android.com/build/releases/agp-8-11-0-release-notes
-- https://developer.android.com/about/versions/16/behavior-changes-16
-- https://developer.android.com/google/play/requirements/target-sdk
-
-## 3. Intended build-tool target
-
-Preferred migration target unless CI evidence requires a different compatible choice:
+Final build contract:
 
 - AGP: `8.11.1`
 - Gradle: `8.13`
-- JDK: `17`
+- JDK / Java: `17`
 - compileSdk: `36`
 - targetSdk: `36`
-- minSdk: keep `23`
+- minSdk: `23`
+- versionCode: `19`
+- versionName: `1.0.18-target-api36-core`
 
-Do not increase minSdk just to simplify compatibility.
+## 2. Implemented work
 
-## 4. Required implementation work
+### A. Toolchain migration — COMPLETE
 
-### A. Toolchain migration
+- root Android Gradle Plugin moved to 8.11.1
+- CI uses Gradle 8.13
+- CI verifies/installs Android platform 36 when needed
+- compileSdk and targetSdk moved to 36
+- Java 17 retained
+- minSdk 23 retained
+- no unrelated app dependency expansion was introduced
 
-- update root Android Gradle Plugin version
-- update CI Gradle provisioning to 8.13
-- verify Android platform 36 is available in the GitHub runner; install only in the ReceiptLedger job if required
-- update compileSdk and targetSdk to 36
-- keep Java 17
-- do not introduce unnecessary new dependencies
+### B. Edge-to-edge / system bars — COMPLETE
 
-### B. Edge-to-edge / system bars
-
-The app uses programmatic Android Views rather than Compose. Target API 36 means system-bar overlap must be treated as normal behavior.
-
-Create a small reusable inset helper instead of duplicating ad hoc padding code across Activities.
-
-Required Activities to audit/apply:
+ReceiptLedger uses programmatic Android Views. A reusable `SystemBarInsetHelper` was added and applied to:
 
 - `MainActivity`
 - `LibraryActivity`
 - `ReceiptDetailActivity`
 - `PriceHistoryActivity`
 
-Requirements:
+Final contract:
 
-- preserve each screen's existing content padding as base padding
-- add status/navigation bar insets on top of base padding
-- do not accumulate insets on repeated dispatches
-- avoid visual content being hidden under system bars
-- preserve scrolling behavior on long receipt/detail screens
-- do not redesign the UI beyond what API 36 compatibility requires
+- API 23–34: existing framework decor-fitting behavior remains unchanged.
+- API 35+: forced edge-to-edge is handled by adding `systemBars()` + `displayCutout()` insets to original screen padding.
+- base padding is captured once and reused, preventing cumulative padding on repeated inset dispatch.
+- scrolling/detail behavior remains structurally unchanged.
+- deprecated `Window.setDecorFitsSystemWindows(...)` was removed from the final implementation.
+- helper arithmetic has dedicated unit tests.
 
-### C. Predictive back audit
+No visual redesign was performed beyond compatibility handling.
 
-- search for `onBackPressed`, `OnBackPressedDispatcher`, `OnBackInvokedDispatcher`, custom back key handling, or gesture interception
-- if none exists, document that the app relies on standard Activity back navigation and preserve that behavior
-- do not disable predictive back merely to silence compatibility concerns
+### C. Predictive back audit — COMPLETE
 
-### D. Permission/privacy regression
+Source audit found no custom back interception or opt-out:
 
-The final packaged APK must still not request:
+- no `onBackPressed`
+- no `OnBackPressedDispatcher`
+- no `OnBackInvokedDispatcher`
+- no custom back key handling
+- no `enableOnBackInvokedCallback` override
+
+The app therefore continues to rely on standard Activity back navigation. No custom interception was invented merely for API 36.
+
+### D. Permission/privacy regression — PASS
+
+Final packaged APK does not request:
 
 - `android.permission.CAMERA`
 - `android.permission.READ_MEDIA_IMAGES`
@@ -88,38 +78,53 @@ The final packaged APK must still not request:
 - `android.permission.INTERNET`
 - `android.permission.ACCESS_NETWORK_STATE`
 
-ML Kit remains bundled/local. Any dependency-added network permissions must continue to be removed at manifest merge.
+Camera remains delegated to an external camera app with a constrained content URI. Gallery intake remains via the system picker. Korean ML Kit OCR remains bundled/local.
 
-## 5. Tests / verification
+## 3. Verification / evidence
 
-The Target API 36 workflow must require:
+Canonical final run:
+`38800790544` — **SUCCESS**
+
+Artifact:
+
+- ID: `12004666174`
+- name: `receiptledger-v1-target-api36-core-38800790544`
+- digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
+- debug APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
+
+Verified PASS:
 
 1. public namespace audit
 2. exact toolchain/version contract checks
-3. all existing unit tests
-4. new inset helper unit/static contract where feasible
+3. existing unit tests
+4. inset helper tests
 5. `lintDebug`
 6. `assembleDebug`
-7. APK ZIP integrity
-8. packaged permission dump and firewall
-9. manifest exported-state checks
-10. source SHA-256 evidence
-11. APK SHA-256 evidence
-12. artifact upload with ReceiptLedger-prefixed identity
+7. lint result `No issues found.` = 0 errors / 0 warnings
+8. explicit `OldTargetApi` absence
+9. APK ZIP integrity
+10. packaged permission firewall
+11. launcher/exported-state checks
+12. source SHA-256 evidence
+13. APK SHA-256 evidence
+14. ReceiptLedger-prefixed artifact upload
 
-Acceptance:
+Packaged activity state remained:
 
-- build succeeds with API 36
-- lint reports **0 errors**
-- `OldTargetApi` warning is gone
-- no new target-API compatibility errors are introduced
-- no forbidden permissions are added
-- minSdk remains 23
-- all existing ReceiptLedger tests remain green
+- MainActivity exported=true and launchable
+- LibraryActivity exported=false
+- ReceiptDetailActivity exported=false
+- PriceHistoryActivity exported=false
 
-## 6. Scope firewall
+## 4. CI transition note
 
-Do not implement in this checkpoint:
+- `38800168937` succeeded on the initial API 36 implementation.
+- `38800740254` failed only because a helper cleanup commit removed deprecated `setDecorFitsSystemWindows` before the workflow string contract was updated. It is a stale-contract transitional failure, not a production regression.
+- `38800790544` is the final canonical SUCCESS after implementation and workflow contract were aligned.
+
+## 5. Scope firewall result
+
+This checkpoint did **not** implement:
 
 - new OCR passes or image filters
 - parser/structure heuristic expansion
@@ -129,22 +134,16 @@ Do not implement in this checkpoint:
 - release signing
 - Play publishing
 - real receipt fixtures
-- broad UI redesign
+- network services
+- general UI redesign
 
-If an unrelated defect is discovered, document it for a later checkpoint unless it blocks API 36 migration or causes a verified regression.
+Existing receipt/data behavior remains the prior V1 contract.
 
-## 7. Evidence and closeout
+## 6. Closeout
 
-On success, record:
+Target API 36 Core is complete at frozen implementation HEAD:
+`56abeee3bb185cea8dd136d972a9660f243ded27`
 
-- final branch HEAD
-- exact AGP / Gradle / compileSdk / targetSdk / minSdk / JDK
-- Actions run ID and conclusion
-- lint summary
-- APK SHA-256
-- Actions artifact digest
-- packaged permission result
-- edge-to-edge compatibility summary
-- predictive-back audit result
+Status/handoff documentation may advance the branch after that commit, but such post-boundary commits are documentation-only until another checkpoint is explicitly authorized.
 
-Then update `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md` before beginning any subsequent work group.
+**Stop here. No subsequent work group is assigned by this plan.**

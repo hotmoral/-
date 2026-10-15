@@ -2,177 +2,212 @@
 
 Updated: 2026-10-16 KST
 
-## 0. Read this before doing any implementation
+## 0. Restart contract
 
-This file is the restart contract for a new GPT session.
-
-Do **not** reconstruct project state from old chat memory. Do **not** guess what was completed. Use GitHub as the execution source of truth for this public ReceiptLedger workspace.
+Do **not** reconstruct ReceiptLedger state from old chat memory. GitHub is the execution source of truth for this public workspace.
 
 Read in this order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/TARGET_API36_CORE_PLAN.md`
-4. `receiptledger/README.md`
-5. `receiptledger/WORK_UNIT.md`
-6. relevant prior `*_CORE_PLAN.md` files only when needed for a dependency contract
+3. `receiptledger/README.md`
+4. `receiptledger/WORK_UNIT.md`
+5. `receiptledger/TARGET_API36_CORE_PLAN.md`
+6. prior `*_CORE_PLAN.md` only when a dependency contract is needed
 7. current Android source under `receiptledger/harness/android-v1/`
-8. current ReceiptLedger workflows under `.github/workflows/receiptledger-*.yml`
+8. ReceiptLedger workflows under `.github/workflows/receiptledger-*.yml`
 
-After reading, verify exact GitHub refs and the completed Build Hygiene Actions evidence before editing anything.
+Before editing anything, verify exact refs and compare the current handoff branch against the frozen implementation HEAD below.
 
-## 1. Exact handoff state
+## 1. Exact completed state
 
-Repository: `hotmoral/-`
+Latest completed checkpoint:
+**ReceiptLedger V1 Target API 36 Core**
 
-Last fully completed implementation checkpoint:
-**ReceiptLedger V1 Build Hygiene Core**
-
-Frozen implementation baseline:
-`53d03fc219d4b15bf09cebbc368ae6af6a55053a`
-
-Completed branch:
-`receiptledger/run-v1-build-hygiene-core-20261015`
-
-Verified Actions run:
-`38755847381` — SUCCESS
-
-Verified Build Hygiene artifact digest:
-`sha256:903e259ff0f2156cf14b8d5e39a2b3424f54ec97318df4290d31c63046f2ebd2`
-
-Final lint result at that implementation boundary:
-`0 errors, 1 warning`
-
-The remaining warning is `OldTargetApi` because compileSdk/targetSdk are still 35.
-
-## 2. Current working branch for the next GPT
-
-Reserved next branch:
+Branch:
 `receiptledger/run-v1-target-api36-core-20261015`
 
-This branch was created directly from the completed Build Hygiene implementation baseline.
+Frozen completed implementation HEAD:
+`56abeee3bb185cea8dd136d972a9660f243ded27`
 
-At the time of handoff, **Target API 36 production implementation has not started**.
+Canonical successful Actions run:
+`38800790544` — **SUCCESS**
 
-Only handoff/status documentation is allowed to differ from the Build Hygiene source baseline before the next GPT begins implementation. The next GPT must compare the branch against `53d03fc219d4b15bf09cebbc368ae6af6a55053a` and confirm that pre-handoff differences are documentation-only.
+Artifact:
 
-## 3. What is already working
+- ID: `12004666174`
+- name: `receiptledger-v1-target-api36-core-38800790544`
+- digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
+- debug APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
 
-The public V1 app already has a complete first vertical slice:
+Final Android lint:
+`No issues found.` = **0 errors / 0 warnings**
 
-- Android app foundation and GitHub Actions APK generation
+`OldTargetApi` is gone because the app genuinely targets API 36; no lint suppression/baseline was used for that warning.
+
+Post-boundary status/handoff synchronization may advance the branch after the frozen implementation HEAD. Those post-boundary commits must remain documentation-only until the user authorizes a new implementation group.
+
+## 2. Current build/runtime contract
+
+- application ID: `com.receiptledger.v1`
+- AGP: `8.11.1`
+- Gradle: `8.13`
+- JDK / Java: `17`
+- compileSdk: `36`
+- targetSdk: `36`
+- minSdk: `23`
+- versionCode: `19`
+- versionName: `1.0.18-target-api36-core`
+- Korean ML Kit OCR remains bundled/local
+
+Target API 36 Core preserved all existing ReceiptLedger domain/storage behavior.
+
+## 3. What Target API 36 Core changed
+
+### Toolchain / target
+
+- compileSdk 35 → 36
+- targetSdk 35 → 36
+- AGP 8.7.3 → 8.11.1
+- CI Gradle → 8.13
+- Java 17 preserved
+- minSdk 23 preserved
+
+### Android 15/16 edge-to-edge handling
+
+A shared `SystemBarInsetHelper` now protects the content roots for:
+
+- `MainActivity`
+- `LibraryActivity`
+- `ReceiptDetailActivity`
+- `PriceHistoryActivity`
+
+Final behavior:
+
+- API 23–34 keeps the pre-existing framework decor-fitting path.
+- API 35+ uses forced edge-to-edge and adds `WindowInsets.Type.systemBars()` + `WindowInsets.Type.displayCutout()` to each screen's original base padding.
+- Original padding is captured once; repeated inset dispatches do not accumulate padding.
+- Final code deliberately does **not** call deprecated `Window.setDecorFitsSystemWindows(...)`.
+- A pure padding resolver is unit-tested for addition and repeated-dispatch stability.
+
+### Predictive back
+
+Static source audit confirms ReceiptLedger has no custom:
+
+- `onBackPressed`
+- `OnBackPressedDispatcher`
+- `OnBackInvokedDispatcher`
+- `KEYCODE_BACK` interception
+- `enableOnBackInvokedCallback` opt-out
+
+Standard Activity back navigation is preserved. No unnecessary predictive-back interception was added.
+
+## 4. Final verification result
+
+Canonical final run `38800790544` passed:
+
+- API 36 SDK availability/provisioning
+- Gradle 8.13 / JDK 17 setup
+- public namespace audit
+- exact toolchain/API/version contract checks
+- all existing unit tests + new inset helper tests
+- `lintDebug`
+- `assembleDebug`
+- `OldTargetApi` absence check
+- APK ZIP integrity
+- packaged permission firewall
+- launcher/exported-state audit
+- source/APK evidence hashes
+- ReceiptLedger-prefixed artifact upload
+
+Packaged exported-state contract remained:
+
+- `MainActivity`: launcher, exported=true
+- `LibraryActivity`: exported=false
+- `ReceiptDetailActivity`: exported=false
+- `PriceHistoryActivity`: exported=false
+
+The final permission dump contained only the app's generated `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`; none of the ReceiptLedger forbidden permissions were present.
+
+## 5. CI history clarification
+
+There are two earlier Target API 36 workflow records that a future session may notice:
+
+1. `38800168937` — SUCCESS. This validated the initial API 36 implementation before the final deprecated-window-API cleanup.
+2. `38800740254` — FAILURE. This is an expected transitional stale-contract failure: the helper commit removed `setDecorFitsSystemWindows`, while the workflow at that instant still required that string. It failed before the final contract update and does **not** represent an unresolved app regression.
+3. `38800790544` — SUCCESS. This is the canonical final run after the workflow was updated to the final API 35+ system-bar + display-cutout contract.
+
+Use only `38800790544` as the closeout run for this checkpoint.
+
+## 6. Existing vertical slice that must remain preserved
+
+The app already contains:
+
 - external-camera capture without app CAMERA permission
-- system document/image picker without broad storage permission
-- EXIF normalization and bounded bitmap decoding
-- conservative document-region detection
-- perspective correction and coordinate mapping
+- system image/document picker without broad storage permission
+- EXIF normalization and bounded bitmap decode
+- conservative document detection + perspective correction
 - bundled Korean ML Kit OCR
-- OCR source-coordinate contract
-- layout reconstruction from OCR elements
+- source-coordinate preservation
+- geometry-based layout reconstruction
 - receipt structure classification
 - item tuple extraction with provenance
-- receipt arithmetic validation
-- OCR recovery passes with bounded pass budget
-- conservative cross-pass merge
-- user review/edit before save
+- arithmetic validation
+- bounded OCR recovery and conservative cross-pass merge
+- required review/edit before save
 - app-private SQLite persistence
 - app-private receipt image archive
-- receipt list/detail/delete UI
-- conservative merchant/store extraction
-- STANDARD / NON_STANDARD / UNCLASSIFIED product identity model
+- receipt library/list/detail/delete
+- merchant/store handling
+- STANDARD / NON_STANDARD / UNCLASSIFIED product identity
 - exact confirmed alias reuse only
-- price-history derivation from receipt data
-- integrated unit/regression tests
-- Android lint gate
-- debug APK and public evidence packaging
+- derived price history
 
-## 4. Security / privacy boundary
+Do not casually alter these contracts in a compatibility or maintenance task.
+
+## 7. Security / privacy boundary
 
 This repository is public. Assume every pushed byte, workflow log, and artifact is permanently public.
 
-Never commit or upload:
+Never commit/upload:
 
-- release signing keystore
-- signing passwords
-- API keys, OAuth secrets, access tokens
-- real receipt photos unless the user explicitly approves a sanitized public fixture
-- actual personal purchase database
-- personal identifiers
+- release signing keystore/passwords
+- API keys, OAuth secrets, tokens, private credentials
+- real private receipt photos
+- actual personal purchase databases
 - private backups
-- proprietary/private assets not cleared for public release
-
-Do not add network permission casually. The current app intentionally removes `INTERNET` and `ACCESS_NETWORK_STATE` even though ML Kit dependencies may try to merge them.
-
-Public APKs are debug/unsigned-style development artifacts only. Release signing must remain a separate private path.
-
-## 5. Namespace isolation
+- personal identifiers
+- uncleared proprietary/private assets
 
 ReceiptLedger may modify only:
 
 - `receiptledger/**`
-- explicitly ReceiptLedger-prefixed workflows: `.github/workflows/receiptledger-*.yml`
+- `.github/workflows/receiptledger-*.yml`
 
-Do not modify, consume, reuse, cache from, or depend on:
+Do not read from, modify, depend on, cache from, or consume artifacts/output from `mobi/*`, `einstein/*`, `linkline/*`, or any other project namespace.
 
-- `mobi/**`
-- `einstein/**`
-- `linkline/**`
-- other project branches/artifacts/caches/output
+Do not change repository-wide settings, rulesets, Actions permissions, shared secrets/variables, or global artifact retention without explicit user approval.
 
-Do not change repository-wide permissions/rulesets/secrets/settings without explicit user approval.
+Forbidden packaged permissions remain:
 
-## 6. Next task — exact boundary
+- CAMERA
+- READ_MEDIA_IMAGES
+- READ_EXTERNAL_STORAGE
+- WRITE_EXTERNAL_STORAGE
+- MANAGE_EXTERNAL_STORAGE
+- INTERNET
+- ACCESS_NETWORK_STATE
 
-The next task is **V1 Target API 36 Core**, and only that task.
+## 8. Next-task boundary
 
-Primary goals:
+**No next implementation checkpoint is currently assigned.**
 
-1. move `compileSdk` from 35 to 36
-2. move `targetSdk` from 35 to 36
-3. update AGP to an API-36-compatible version (minimum verified direction: AGP 8.9.1 or newer compatible choice)
-4. update Gradle to the compatible version for the selected AGP (AGP 8.9 family requires Gradle 8.11.1+)
-5. preserve Java 17 and minSdk 23
-6. handle Android 16 forced edge-to-edge correctly in programmatic View UIs
-7. audit predictive-back behavior; do not invent custom interception if the app does not need it
-8. preserve all existing functionality and data contracts
-9. retain Android lint at 0 errors
-10. remove the existing `OldTargetApi` warning by legitimately targeting API 36, not by suppression/baseline
-11. preserve permission firewall: no CAMERA, broad storage/media, INTERNET, ACCESS_NETWORK_STATE, MANAGE_EXTERNAL_STORAGE
-12. build a debug APK and publish evidence artifact through a ReceiptLedger-prefixed workflow
+At restart:
 
-## 7. Non-goals for Target API 36 Core
+1. verify the branch ref;
+2. compare it with frozen implementation HEAD `56abeee3bb185cea8dd136d972a9660f243ded27`;
+3. confirm any later handoff commit is documentation-only;
+4. report current state;
+5. wait for explicit user instruction before beginning another implementation group.
 
-Do not mix these into the checkpoint:
-
-- OCR accuracy redesign
-- new parser heuristics
-- new product matching logic
-- DB schema redesign unless API 36 forces it
-- UI redesign/polish beyond system-bar/inset compatibility required by API 36
-- release signing
-- Play Store publishing
-- importing private receipt samples
-- adding network services
-
-## 8. Required verification before closing Target API 36 Core
-
-At minimum:
-
-- exact branch HEAD recorded
-- public-tree namespace audit PASS
-- unit tests PASS
-- `lintDebug` PASS with **0 errors**
-- verify `OldTargetApi` warning is gone
-- `assembleDebug` PASS
-- APK ZIP integrity PASS
-- packaged permissions inspected and forbidden permissions absent
-- launcher + all internal activities remain correctly exported/non-exported
-- API 23 compatibility not regressed
-- edge-to-edge/inset handling code compiled and covered by static/unit contract where feasible
-- evidence artifact uploaded
-- artifact SHA-256/digest recorded
-- update `PROJECT_STATUS_LATEST.md` and this handoff file before moving to the next checkpoint
-
-## 9. Stop condition
-
-Once Target API 36 Core is green and its status/handoff documents are synchronized, stop and report. Do not automatically begin the next feature group unless the user explicitly instructs continuation.
+Do not automatically extend OCR, parser, product identity, database, UI, publishing, signing, or Play Store scope.

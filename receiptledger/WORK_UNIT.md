@@ -2,31 +2,54 @@
 
 ## Current stage
 
-The original staging-only work unit is complete. ReceiptLedger V1 now has a working public Android vertical slice with OCR, parsing, validation, review/edit, persistence, receipt library, product identity, price history, OCR recovery, cross-pass merge, and build/lint hygiene.
+**V1 Target API 36 Core is COMPLETE.**
 
-Current completed implementation boundary:
+Frozen implementation boundary:
 
-- checkpoint: **V1 Build Hygiene Core**
-- frozen implementation HEAD: `53d03fc219d4b15bf09cebbc368ae6af6a55053a`
-- Actions run: `38755847381` — SUCCESS
-- lint: `0 errors / 1 warning`
-- remaining warning: `OldTargetApi`
+- branch: `receiptledger/run-v1-target-api36-core-20261015`
+- implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
+- canonical Actions run: `38800790544` — SUCCESS
+- artifact digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
+- debug APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
+- lint: `No issues found.` = 0 errors / 0 warnings
 
-Next work unit:
+Final build contract:
 
-**V1 Target API 36 Core**
+- AGP 8.11.1
+- Gradle 8.13
+- JDK/Java 17
+- compileSdk 36
+- targetSdk 36
+- minSdk 23
+- versionCode 19
+- versionName `1.0.18-target-api36-core`
 
-Reserved branch:
-`receiptledger/run-v1-target-api36-core-20261015`
+The Target API 36 group is closed. Post-boundary handoff synchronization may advance this branch with documentation-only commits.
 
-At handoff, implementation of this next work unit has not started. Documentation-only commits may exist on the reserved branch after the frozen Build Hygiene implementation HEAD.
+## No next work unit is assigned
 
-## Required first reads
+Do not automatically start another implementation group.
 
-1. `PROJECT_STATUS_LATEST.md`
-2. `SESSION_HANDOFF.md`
-3. `TARGET_API36_CORE_PLAN.md`
-4. this file
+A future session must first:
+
+1. read `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md`;
+2. verify the current branch ref;
+3. compare it with frozen implementation HEAD `56abeee3bb185cea8dd136d972a9660f243ded27`;
+4. confirm any post-boundary changes are documentation-only;
+5. wait for explicit user direction defining the next checkpoint.
+
+## Completed Target API 36 scope
+
+- compileSdk / targetSdk migrated to 36
+- API-36-compatible AGP 8.11.1 + Gradle 8.13 + JDK 17
+- minSdk 23 preserved
+- API 35+ system-bar + display-cutout inset handling for all four programmatic-View activities
+- original base padding preserved; repeated inset dispatch does not accumulate padding
+- predictive-back source audit completed; standard Activity back retained
+- full existing receipt/OCR/data contracts preserved
+- lint 0/0; `OldTargetApi` removed legitimately
+- forbidden packaged-permission firewall preserved
+- unit tests, lint, assembleDebug, APK integrity, exported-state audit, evidence packaging all PASS
 
 ## Public repository rules
 
@@ -36,7 +59,7 @@ Never include:
 
 - signing keystores or signing passwords
 - API credentials, OAuth secrets, private tokens
-- real receipt photos unless explicitly approved as sanitized public fixtures
+- real private receipt photos
 - personal purchase databases or private backups
 - personal identifiers
 - private/proprietary assets not cleared for public release
@@ -44,8 +67,6 @@ Never include:
 Use synthetic fixtures or data explicitly approved for public exposure.
 
 ## Namespace rules
-
-Use only `receiptledger/*` branches for ReceiptLedger work.
 
 Modify only:
 
@@ -61,22 +82,7 @@ Do not use source, fixtures, caches, artifacts, reports, workflow output, or gen
 
 Do not modify repository visibility, repository-wide Actions permissions, Allowed Actions policy, rulesets/branch protection, shared repository secrets/variables, or global artifact retention without separate user approval.
 
-Workflow names, jobs, concurrency groups, caches, artifacts, and generated output paths must use a ReceiptLedger-specific prefix. Cache restore keys must never fall back to another project's namespace.
-
-## Build/signing policy
-
-Public jobs produce debug or unsigned APKs only.
-
-Release signing is a separate private concern and must not expose:
-
-- release keystore
-- key passwords
-- signing passwords
-- signing secrets
-
-Any APK generated here must contain no embedded secret or personal data.
-
-## Current privacy firewall
+## Privacy firewall
 
 The built APK must not request:
 
@@ -90,20 +96,6 @@ The built APK must not request:
 
 Camera capture remains delegated to an external camera application using a constrained content URI. Gallery/image selection remains delegated to the system picker. OCR remains bundled/local.
 
-## Next work unit acceptance boundary
+## CI history note
 
-Target API 36 Core must be kept narrow:
-
-- migrate compileSdk/targetSdk to 36
-- use an API-36-compatible AGP/Gradle/JDK toolchain
-- preserve minSdk 23
-- add correct system-bar inset handling for Android 16 edge-to-edge behavior
-- audit predictive back without unnecessary interception
-- preserve all current app/domain contracts
-- keep lint at 0 errors and eliminate `OldTargetApi` by real migration, not suppression
-- preserve forbidden-permission firewall
-- pass tests + lint + assembleDebug + APK integrity + evidence packaging
-
-Do not start unrelated OCR/parser/product/database/UI feature expansion inside this work unit.
-
-On completion, update `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md` before moving to another group.
+Run `38800740254` is a superseded transitional failure caused by a stale workflow string contract during removal of deprecated `setDecorFitsSystemWindows`. The final implementation/workflow pair is proven by canonical SUCCESS run `38800790544`.
