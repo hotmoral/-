@@ -1,6 +1,6 @@
 # ReceiptLedger public execution namespace
 
-This directory contains public-safe ReceiptLedger Android/OCR development, validation, CI, and debug APK build material.
+This directory contains public-safe ReceiptLedger Android/OCR development, validation, product/domain specifications, CI, and debug APK build material.
 
 ## Start here for a new GPT session
 
@@ -8,44 +8,74 @@ Read in this order:
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `README.md`
-4. `WORK_UNIT.md`
-5. `TARGET_API36_CORE_PLAN.md`
+3. `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
+4. `PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
+5. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+6. `README.md`
+7. `WORK_UNIT.md`
 
 Do not reconstruct state from an old chat transcript before reading those files and verifying GitHub refs.
 
 ## Current completed boundary
 
-Latest completed implementation checkpoint:
-**V1 Target API 36 Core**
+Latest completed checkpoint:
+**CP20 — Product Rebaseline / V1 Master Specification**
 
-Frozen implementation HEAD:
-`56abeee3bb185cea8dd136d972a9660f243ded27`
+CP20 branch:
+`receiptledger/run-v1-product-rebaseline-20261016`
 
-Canonical Actions run:
-`38800790544` — **SUCCESS**
+Frozen CP20 specification boundary:
+`961d64ecfa484478b97e6fcd8e9ffec542be7b51`
 
-Final evidence:
+CP20 result:
+**PASS / COMPLETE — documentation/specification only**
 
+No production source, DB schema, OCR/runtime behavior, permission, or toolchain change was made by CP20.
+
+## Latest executable baseline
+
+The app remains frozen at **V1 Target API 36 Core**:
+
+- implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
+- canonical Actions run: `38800790544` — SUCCESS
 - artifact digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
 - APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
-- lint: **0 errors / 0 warnings** (`No issues found.`)
-- compileSdk / targetSdk: 36 / 36
-- minSdk: 23
+- lint: 0 errors / 0 warnings
+- compileSdk / targetSdk / minSdk: 36 / 36 / 23
 - AGP / Gradle / JDK: 8.11.1 / 8.13 / 17
 
-Target API 36 implementation is complete. Later commits on the same branch may synchronize handoff/status documentation only. A new session must compare the branch with the frozen implementation HEAD before assuming any later implementation exists.
+## Product direction
 
-**No next implementation checkpoint is assigned. Await explicit user instruction.**
+ReceiptLedger is now explicitly productized as a **personal purchase-price memory and comparison system**.
 
-## Current compatibility model
+Primary loop:
 
-- Android API 23–34 retains the previous framework decor-fitting behavior.
-- Android API 35+ forced edge-to-edge is handled by a shared helper using system-bar + display-cutout insets while preserving each screen's base padding.
-- `MainActivity`, `LibraryActivity`, `ReceiptDetailActivity`, and `PriceHistoryActivity` all use the helper.
-- Predictive-back audit found no custom back interception; standard Activity navigation is retained.
+`receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-## Public-safety model
+The receipt is input/evidence. Product and commodity history are the main user destination.
+
+Important principles:
+
+- STANDARD = exact repeatable packaged-product identity;
+- NON_STANDARD = commodity/item identity that may group mixed sales forms without claiming cross-unit comparability;
+- UNCLASSIFIED = unresolved state;
+- wrong product merge is worse than unresolved identity;
+- no guessed unit conversion;
+- confirmed reusable knowledge should reduce future review effort;
+- price truth stays traceable to saved receipt records + links;
+- price judgment must have explicit testable statistics/data-sufficiency rules;
+- commercial UI must not require users to understand OCR internals.
+
+## Roadmap
+
+The product-centric roadmap is documented in `PRODUCT_REBASELINE_V1_ROADMAP.md`.
+
+Next planned checkpoint:
+**CP21 — Catalog Domain V2**
+
+CP21 is planned but not automatically authorized. Wait for explicit user instruction before starting it.
+
+## Current privacy/security model
 
 This is a public repository. Anything pushed here must be safe to remain public permanently.
 
@@ -58,11 +88,7 @@ Never place here:
 - personal identifiers
 - uncleared private/proprietary assets
 
-Public CI produces debug development APK artifacts only. Release signing requires a separate private path.
-
-## Current application privacy invariants
-
-The packaged app intentionally does not request:
+The executable app intentionally does not request:
 
 - CAMERA
 - READ_MEDIA_IMAGES
@@ -72,7 +98,7 @@ The packaged app intentionally does not request:
 - INTERNET
 - ACCESS_NETWORK_STATE
 
-Camera intake uses an external camera app plus a constrained temporary content URI. Gallery intake uses the system picker. Korean ML Kit OCR is bundled/local.
+Camera intake uses an external camera app plus constrained temporary URI. Gallery intake uses the system picker. Korean ML Kit OCR remains bundled/local.
 
 ## Layout
 
@@ -80,11 +106,13 @@ Camera intake uses an external camera app plus a constrained temporary content U
 - `fixtures/`: synthetic or explicitly approved public fixtures only
 - `tools/`: deterministic verification scripts
 - `workflows/`: ReceiptLedger-local workflow support files
-- `.github/workflows/receiptledger-*.yml`: actual ReceiptLedger GitHub Actions workflows
+- `.github/workflows/receiptledger-*.yml`: ReceiptLedger GitHub Actions workflows
 - `output/`: generated public reports/build metadata; not canonical by itself
-- `*_CORE_PLAN.md`: checkpoint design/acceptance/closeout contracts
-- `PROJECT_STATUS_LATEST.md`: current exact status and completed checkpoint chain
-- `SESSION_HANDOFF.md`: restart contract for the next GPT session
+- `*_CORE_PLAN.md`: earlier executable checkpoint contracts
+- `PRODUCT_REBASELINE_V1_*.md`: CP20 product/domain rebaseline
+- `CP20_PRODUCT_REBASELINE_*.md`: CP20 decisions/risk/gates/acceptance/evidence
+- `PROJECT_STATUS_LATEST.md`: current exact status
+- `SESSION_HANDOFF.md`: restart contract
 
 ## Namespace isolation
 
@@ -93,8 +121,10 @@ ReceiptLedger work may modify only:
 - `receiptledger/**`
 - explicitly approved `.github/workflows/receiptledger-*.yml`
 
-Do not read from, modify, depend on, cache from, or consume artifacts/output from `mobi/*`, `einstein/*`, `linkline/*`, or other project namespaces.
+Do not read from, modify, depend on, cache from, or consume artifacts/output from other project namespaces.
 
-Do not alter repository-wide settings, rulesets, Actions permissions, shared secrets/variables, or global artifact retention without separate user approval.
+Do not alter repository visibility, repository-wide Actions permissions, rulesets/branch protection, shared secrets/variables, or global artifact retention without separate user approval.
 
-Project-prefixed workflow, concurrency, cache, artifact, and output identities remain mandatory.
+## Current stop condition
+
+**CP20 is complete. Do not begin CP21 until explicitly authorized.**
