@@ -1,0 +1,135 @@
+name: ReceiptLedger V1 Catalog Domain V2
+on:
+  push:
+    branches: ['receiptledger/run-v1-catalog-domain-v2-20261016']
+    paths: ['receiptledger/**', '.github/workflows/receiptledger-v1-catalog-domain-v2.yml']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency: { group: 'receiptledger-v1-catalog-domain-v2-${{ github.ref }}', cancel-in-progress: false }
+jobs:
+  validate-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: '17' }
+      - name: Ensure Android API 36 SDK
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          if [ ! -d "$ANDROID_HOME/platforms/android-36" ] || [ ! -d "$ANDROID_HOME/build-tools/35.0.0" ]; then
+            yes | "$SDKMANAGER" 'platforms;android-36' 'build-tools;35.0.0' >/dev/null
+          fi
+          test -d "$ANDROID_HOME/platforms/android-36"
+          test -d "$ANDROID_HOME/build-tools/35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.13', cache-disabled: true }
+      - name: Audit public namespace
+        run: bash receiptledger/tools/audit_public_tree.sh
+      - name: Enforce CP21 scope and frozen predecessor contracts
+        run: |
+          set -euo pipefail
+          BASE=3149beb339a2d541a61a694fb1f052556a95c8c1
+          ROOT=receiptledger/harness/android-v1
+          APP="$ROOT/app"
+          git diff --name-only "$BASE" "$GITHUB_SHA" > receiptledger/cp21-changed-files.txt
+          while IFS= read -r f; do
+            case "$f" in
+              .github/workflows/receiptledger-v1-catalog-domain-v2.yml) ;;
+              receiptledger/CATALOG_DOMAIN_V2_*.md) ;;
+              receiptledger/CP21_*.md) ;;
+              receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md) ;;
+              receiptledger/PROJECT_STATUS_LATEST.md|receiptledger/SESSION_HANDOFF.md|receiptledger/README.md|receiptledger/WORK_UNIT.md) ;;
+              receiptledger/harness/android-v1/app/build.gradle) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/catalog/*) ;;
+              receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/catalog/*) ;;
+              '') ;;
+              *) echo "CP21 scope violation: $f"; exit 31 ;;
+            esac
+          done < receiptledger/cp21-changed-files.txt
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/product" || { echo 'Legacy product runtime changed'; exit 32; }
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/persistence" || { echo 'Persistence runtime changed'; exit 33; }
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/AndroidManifest.xml" || { echo 'Manifest changed'; exit 34; }
+          grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
+          grep -Fq "version '8.11.1'" "$ROOT/build.gradle"
+          grep -Fq 'compileSdk 36' "$APP/build.gradle"
+          grep -Fq 'targetSdk 36' "$APP/build.gradle"
+          grep -Fq 'minSdk 23' "$APP/build.gradle"
+          grep -Fq 'JavaVersion.VERSION_17' "$APP/build.gradle"
+          grep -Fq 'versionCode 20' "$APP/build.gradle"
+          grep -Fq "versionName '1.0.19-catalog-domain-v2'" "$APP/build.gradle"
+          grep -Fq 'UNCLASSIFIED is unresolved, not a catalog entity' "$APP/src/main/java/com/receiptledger/v1/catalog/CatalogKind.java"
+          grep -Fq 'return other instanceof CatalogEntryV2 && id.equals' "$APP/src/main/java/com/receiptledger/v1/catalog/CatalogEntryV2.java"
+      - name: Test lint and build
+        run: |
+          set +e
+          gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+          status=$?
+          REPORT=receiptledger/harness/android-v1/app/build/reports/lint-results-debug.txt
+          if [ -f "$REPORT" ]; then
+            echo '===== COMPLETE ANDROID LINT REPORT ====='
+            cat "$REPORT"
+            echo '===== END ANDROID LINT REPORT ====='
+          else
+            echo 'Expected lint text report missing'
+            status=41
+          fi
+          TEST_XML=receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.catalog.CatalogDomainV2Test.xml
+          if [ ! -f "$TEST_XML" ]; then
+            echo 'CP21 catalog domain test result missing'
+            status=42
+          fi
+          exit "$status"
+      - name: Package and verify evidence
+        run: |
+          set -euo pipefail
+          BASE=3149beb339a2d541a61a694fb1f052556a95c8c1
+          SRC=receiptledger/harness/android-v1
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=receiptledger/output/v1-catalog-domain-v2
+          rm -rf "$OUT"; mkdir -p "$OUT"
+          cp "$APK" "$OUT/receiptledger-v1-catalog-domain-v2-debug.apk"
+          unzip -t "$OUT/receiptledger-v1-catalog-domain-v2-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then
+              echo "Forbidden permission packaged: $forbidden"
+              exit 51
+            fi
+          done
+          cp "$SRC/app/build/reports/lint-results-debug.txt" "$OUT/lint-results-debug.txt"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.catalog.CatalogDomainV2Test.xml" "$OUT/CATALOG_DOMAIN_V2_TEST.xml"
+          git diff --name-status "$BASE" "$GITHUB_SHA" > "$OUT/CP21_DIFF.txt"
+          sha256sum "$OUT/receiptledger-v1-catalog-domain-v2-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo 'checkpoint=RL_V1_CATALOG_DOMAIN_V2_01'
+            echo "public_commit=${GITHUB_SHA}"
+            echo "predecessor_cp20=${BASE}"
+            echo 'catalog_contract=2'
+            echo 'legacy_product_schema=1_UNCHANGED'
+            echo 'agp=8.11.1'
+            echo 'gradle=8.13'
+            echo 'jdk=17'
+            echo 'compile_sdk=36'
+            echo 'target_sdk=36'
+            echo 'min_sdk=23'
+            echo 'version_name=1.0.19-catalog-domain-v2'
+            echo 'version_code=20'
+            echo 'persistence_migration=NOT_STARTED'
+            echo 'resolver_v2=NOT_STARTED'
+            echo 'ui_change=NONE'
+            echo 'network_permission=REMOVED'
+            echo 'signing=debug_only'
+          } > "$OUT/BUILD_IDENTITY.txt"
+          (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
+          sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt "$OUT"/APK_PERMISSIONS.txt "$OUT"/CATALOG_DOMAIN_V2_TEST.xml "$OUT"/CP21_DIFF.txt > "$OUT/EVIDENCE_SHA256.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 'receiptledger-v1-catalog-domain-v2-${{ github.run_id }}'
+          path: 'receiptledger/output/v1-catalog-domain-v2/'
+          if-no-files-found: error
+          retention-days: 14
