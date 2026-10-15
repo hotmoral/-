@@ -34,15 +34,17 @@ jobs:
         with: { gradle-version: '8.9', cache-disabled: true }
       - name: Audit public namespace
         run: bash receiptledger/tools/audit_public_tree.sh
-      - name: Enforce OCR dependency and permission firewall
+      - name: Enforce OCR dependency and source permission firewall
         run: |
           set -euo pipefail
           build=receiptledger/harness/android-v1/app/build.gradle
           manifest=receiptledger/harness/android-v1/app/src/main/AndroidManifest.xml
           grep -q "com.google.mlkit:text-recognition-korean:16.0.1" "$build"
           for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE ACCESS_FINE_LOCATION RECORD_AUDIO; do
-            if grep -q "$forbidden" "$manifest"; then echo "Forbidden capability: $forbidden"; exit 30; fi
+            if grep -q "$forbidden" "$manifest"; then echo "Forbidden source capability: $forbidden"; exit 30; fi
           done
+          grep -q 'android.permission.INTERNET.*tools:node="remove"' "$manifest"
+          grep -q 'android.permission.ACCESS_NETWORK_STATE.*tools:node="remove"' "$manifest"
       - name: Test and build OCR Core
         run: gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:assembleDebug
       - name: Package OCR Core evidence
@@ -56,7 +58,9 @@ jobs:
           unzip -t "$OUT/receiptledger-v1-ocr-core-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
           AAPT=$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)
           "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
-          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE; do if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then exit 31; fi; done
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then echo "Forbidden packaged permission: $forbidden"; exit 31; fi
+          done
           sha256sum "$OUT/receiptledger-v1-ocr-core-debug.apk" > "$OUT/APK_SHA256.txt"
           {
             echo 'checkpoint=RL_V1_OCR_CORE_01'
@@ -69,6 +73,7 @@ jobs:
             echo 'runtime_inference_in_ci=NOT_EXECUTED'
             echo 'camera_permission=NOT_REQUESTED'
             echo 'storage_permission=NOT_REQUESTED'
+            echo 'network_permission=REMOVED'
             echo 'signing=debug_only'
           } > "$OUT/BUILD_IDENTITY.txt"
           (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
