@@ -4,63 +4,62 @@ Updated: 2026-10-16 KST
 
 ## Current stage
 
-**CP23 — Receipt Product Semantics is COMPLETE.**
+**CP24 — Identity Resolver V2 is COMPLETE.**
 
-- branch: `receiptledger/run-v1-receipt-product-semantics-20261016`
-- frozen implementation HEAD: `5bffb66bd43814f8d638791b5697f79ff089028b`
-- canonical Actions: `38822100885` — SUCCESS
-- artifact ID: `12013477721`
-- artifact digest: `sha256:fa22d082545adae7c414b0f1c089604174341f7e879c1acd5e4677e1dc2b7195`
-- APK SHA-256: `e4e64f85f9700089b32f9f0b8121eef0a2f565d09b5428599d3717296c1b8324`
-- semantics tests: 7/7 PASS
-- catalog tests: 15/15 PASS
-- persistence tests: 7/7 PASS
+- branch: `receiptledger/run-v1-identity-resolver-v2-20261016`
+- frozen implementation HEAD: `4b556afd4dd52b68cf768e937bb456665ad4c231`
+- canonical Actions: `38824134990` — SUCCESS
+- job: `116727478370` — SUCCESS
+- artifact ID: `12014915453`
+- artifact digest: `sha256:4740590ca2c7d7525842aa3ebe6ec7964911d303322ebad77b5701344ce76867`
+- APK SHA-256: `0656c60110ba7debcb0801ddee048cd2220b959c2119539a79274eebbc05eb6e`
+- identity tests: 8/8 PASS
+- CP23 semantics: 7/7 PASS
+- CP21 catalog: 15/15 PASS
+- CP22 persistence: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionCode 22
-- versionName `1.0.21-receipt-product-semantics`
+- versionCode 23
+- versionName `1.0.22-identity-resolver-v2`
 
-## Frozen CP23 contract
+## Frozen CP24 contract
 
-- parser consumes existing receipt item name only;
-- parser outputs semantic evidence, never catalog identity;
-- parsed fields are `PARSED_FROM_RECEIPT / UNCONFIRMED`;
-- brand requires explicit bracket or caller-supplied known-brand prefix;
-- first-token brand guessing is forbidden;
-- only explicit parenthetical non-numeric variant is separated;
-- explicit pack count/multipack syntax is parsed;
-- standalone physical measure is dual interpretation + review;
-- 봉/상자/단 are preserved raw purchase forms without conversion;
-- 팩/개 are context-sensitive and review-gated;
-- product schema v2 and receipt schema v1 remain unchanged;
+- resolver reuses existing stable IDs only; it never auto-creates or merges entities;
+- authority order: MERCHANT exact alias -> GLOBAL exact alias -> unique strict semantic exact -> suggestion/review -> unresolved;
+- merchant-specific exact alias is more specific than a different GLOBAL mapping;
+- dangling aliases and strong explicit brand/variant/non-ambiguous specification contradictions are review-gated;
+- strict semantic auto-link requires confirmed exact productName + confirmed exact specification and symmetric confirmed brand/variant when applicable;
+- CP23 ambiguity blocks semantic auto-link;
+- category/store/parser confidence do not prove identity;
+- fuzzy/edit-distance/embedding/phonetic similarity is not automatic identity authority;
+- user-confirmed alias learning defaults to merchant scope when merchant context exists;
+- NON_STANDARD semantic grouping remains CP26;
+- product schema v2 and receipt schema v1 are unchanged;
 - receipt-derived price truth remains unchanged.
 
 ## Local quality evidence
 
-`fixtures=26 expected_fields=68 predicted_fields=66 correct_fields=64 precision_ppm=969696 recall_ppm=941176 review_required=13 semantic_ready=13 ambiguous=10 ambiguous_reviewed=10 no_invention_negatives=2`
+`fixtures=24 known_identity=20 auto_links=14 correct_auto_links=14 incorrect_auto_links=0 false_merge=0 false_split=1 review_required=6 unresolved=4 repeat_cases=4 repeat_reused=4`
 
-This deliberately exposes conservative misses instead of hiding them with speculative parsing.
+Important interpretation:
 
-## Superseded CI note
-
-Run `38821795314` failed only on minSdk23 lint compatibility because the first sorting implementation used collection convenience APIs treated as API24+.
-
-Fix: API23-safe sorting only. No minSdk increase, no lint suppression, no domain broadening. Final run `38822100885` is canonical.
+- zero false merges / incorrect automatic decisions;
+- repeat confirmation reuse 100%;
+- one known-product fragmentation-risk fixture = exactly 5%;
+- the fragmentation risk remains visible rather than being hidden by unsafe matching expansion.
 
 ## Next planned work unit
 
-**CP24 — Identity Resolver V2**
+**CP25 — Category System**
 
-Before any new auto-link authority:
+Before implementation:
 
-1. define GLOBAL vs MERCHANT alias precedence;
-2. define exactly which confirmed knowledge may auto-link;
-3. use CP23 semantic candidates only as evidence/ranking input;
-4. fail ambiguous candidates to review;
-5. measure false merge and false split;
-6. measure automatic-link success and incorrect automatic-link rate;
-7. measure review burden;
-8. prove repeat confirmed purchases reduce review burden;
-9. keep category and parser confidence from becoming identity authority.
+1. define the smallest useful V1 taxonomy/hierarchy for client browsing;
+2. determine stable category identity and persistence needs without making category part of product identity;
+3. define assignment/suggestion authority and review boundary;
+4. define user correction and repeat reuse;
+5. verify STANDARD and NON_STANDARD can both carry category metadata without changing their identity semantics;
+6. measure suggestion accuracy and review burden locally;
+7. preserve privacy/offline/schema/price-truth contracts unless a justified minimal persistence change is required.
 
 ## Group discipline
 
@@ -83,4 +82,4 @@ Forbidden APK permissions remain CAMERA, broad media/storage, INTERNET and ACCES
 
 ## Stop condition
 
-**CP23 is complete. Await explicit authorization for CP24.**
+**CP24 is complete. Await explicit authorization for CP25.**

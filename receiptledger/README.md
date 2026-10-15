@@ -6,10 +6,10 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP23_RECEIPT_PRODUCT_SEMANTICS_CLOSEOUT.md`
-4. `CP23_RECEIPT_PRODUCT_SEMANTICS_EVIDENCE.md`
-5. `CP23_RECEIPT_PRODUCT_SEMANTICS_PLAN.md`
-6. `RECEIPT_PRODUCT_SEMANTICS_CONSISTENCY_REVIEW.md`
+3. `CP24_IDENTITY_RESOLVER_V2_CLOSEOUT.md`
+4. `CP24_IDENTITY_RESOLVER_V2_EVIDENCE.md`
+5. `CP24_IDENTITY_RESOLVER_V2_PLAN.md`
+6. `IDENTITY_RESOLVER_V2_CONSISTENCY_REVIEW.md`
 7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
 8. `WORK_UNIT.md`
 
@@ -17,19 +17,20 @@ GitHub is canonical; verify refs before relying on old chat context.
 
 ## Current boundary
 
-**CP23 — Receipt Product Semantics — COMPLETE**
+**CP24 — Identity Resolver V2 — COMPLETE**
 
-- branch `receiptledger/run-v1-receipt-product-semantics-20261016`
-- frozen implementation HEAD `5bffb66bd43814f8d638791b5697f79ff089028b`
-- canonical Actions `38822100885` — SUCCESS
-- artifact ID `12013477721`
-- artifact digest `sha256:fa22d082545adae7c414b0f1c089604174341f7e879c1acd5e4677e1dc2b7195`
-- APK SHA-256 `e4e64f85f9700089b32f9f0b8121eef0a2f565d09b5428599d3717296c1b8324`
-- semantic parser tests 7/7 PASS
-- upstream catalog tests 15/15 PASS
-- upstream persistence tests 7/7 PASS
+- branch `receiptledger/run-v1-identity-resolver-v2-20261016`
+- frozen implementation HEAD `4b556afd4dd52b68cf768e937bb456665ad4c231`
+- canonical Actions `38824134990` — SUCCESS
+- artifact ID `12014915453`
+- artifact digest `sha256:4740590ca2c7d7525842aa3ebe6ec7964911d303322ebad77b5701344ce76867`
+- APK SHA-256 `0656c60110ba7debcb0801ddee048cd2220b959c2119539a79274eebbc05eb6e`
+- identity tests 8/8 PASS
+- semantics tests 7/7 PASS
+- catalog tests 15/15 PASS
+- persistence tests 7/7 PASS
 - lint 0 errors / 0 warnings
-- version `1.0.21-receipt-product-semantics`, versionCode 22
+- version `1.0.22-identity-resolver-v2`, versionCode 23
 
 ## Product direction
 
@@ -39,41 +40,44 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-CP23 converts receipt item text into conservative semantic evidence only. It does not decide catalog identity.
+CP24 converts confirmed alias knowledge and sufficiently strict semantic evidence into deterministic reuse of an **existing** stable catalog ID.
 
-Key current rules:
+Key rules:
 
-- parsed semantics remain unconfirmed evidence;
-- unknown brand is not guessed merely from first-token position;
-- free-form variant is not guessed;
-- standalone kg/g/L/mL is ambiguous between package specification and purchase form and therefore review-gated;
-- explicit pack forms and multipack syntax are parsed when defensible;
-- stable catalog ID remains the only identity authority;
-- false merge and false split are both downstream quality risks;
-- no fake cross-unit comparison;
-- price truth stays receipt-derived.
+- MERCHANT exact alias precedes GLOBAL exact alias;
+- dangling or strongly contradicted confirmed aliases go to REVIEW;
+- strict semantic auto-link requires one unique existing STANDARD candidate with confirmed exact product name and specification, plus confirmed exact brand/variant when applicable;
+- product-name similarity or parser HIGH confidence alone cannot auto-link;
+- fuzzy/edit-distance/embedding-style similarity is not auto-link authority;
+- ambiguity stays review-gated;
+- resolver never auto-creates or merges identities;
+- category is not identity authority;
+- NON_STANDARD semantic grouping remains CP26;
+- price truth remains receipt-derived.
 
-## CP23 local quality
+## CP24 local quality
 
-- field precision 96.9696%
-- field recall 94.1176%
-- ambiguity review-gating 10/10
-- no-invention negatives 2/2
-- review-required 13 / semantic-ready 13 across 26 synthetic fixtures
+- 24 synthetic fixtures / 20 known-identity fixtures
+- automatic links 14, correct 14, incorrect 0
+- false merge 0
+- false split / fragmentation risk 1/20 = 5%
+- review-required 6
+- unresolved 4
+- repeat confirmed reuse 4/4 = 100%
 
-These are parser fixture metrics, not final real-receipt accuracy.
+The false-split risk is deliberately reported rather than eliminated by unsafe resolver broadening. These are local synthetic metrics, not final real-receipt accuracy.
 
 ## Next planned checkpoint
 
-**CP24 — Identity Resolver V2**
+**CP25 — Category System**
 
-CP24 must define merchant-aware/confirmed alias authority and measure false merge, false split, automatic-link success, review burden, incorrect automatic decisions and repeat-confirmation reuse.
+It will define category taxonomy/persistence/assignment/suggestion/correction/reuse for browse and organization. Category remains metadata and must never prove or override product identity.
 
-Do not start CP24 until explicitly authorized.
+Do not start CP25 until explicitly authorized.
 
 ## Privacy/security
 
-This repository is public. Never commit signing secrets, credentials, real private receipt photos, real purchase databases/backups, personal identifiers or uncleared private assets.
+This repository is public. Never commit signing secrets, credentials, real private receipt photos, real purchase databases/backups, personal identifiers or uncleared assets.
 
 The executable app intentionally does not request CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permissions.
 

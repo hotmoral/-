@@ -29,46 +29,54 @@ Product schema v2 stores CP21 semantics while preserving legacy IDs/links. Recei
 
 Frozen implementation: `5bffb66bd43814f8d638791b5697f79ff089028b`; Actions `38822100885` SUCCESS.
 
-CP23 parses receipt item names into conservative unconfirmed semantic evidence without identity authority.
-
-Frozen parsing rules include:
-
-- explicit/known brand evidence only;
-- explicit parenthetical variant only;
-- `입/개입` and multipack parsing;
-- standalone weight/volume remains package-vs-purchase-form ambiguous and review-gated;
-- raw package forms preserved without guessed conversion;
-- parser confidence never grants merge authority.
+CP23 parses receipt item names into conservative unconfirmed semantic evidence without identity authority. Standalone physical measures remain ambiguous/review-gated; parser confidence never grants merge authority.
 
 Local synthetic metrics: precision 96.9696%, recall 94.1176%, ambiguity review-gating 10/10.
 
 ## 2. Stage C — Identity and classification
 
-### CP24 — Identity Resolver V2 — NEXT PLANNED
+### CP24 — Identity Resolver V2 — COMPLETE
 
-Goal: convert safe evidence and confirmed knowledge into deterministic catalog-link decisions while minimizing both false merge and false split.
+Frozen implementation: `4b556afd4dd52b68cf768e937bb456665ad4c231`; Actions `38824134990` SUCCESS.
+
+Frozen resolver contract:
+
+- MERCHANT exact alias precedes GLOBAL exact alias;
+- confirmed alias conflicts/dangling targets are review-gated;
+- unique strict semantic auto-link requires confirmed exact productName and specification plus confirmed symmetric brand/variant when applicable;
+- weaker semantics produce suggestion/review, not forced identity;
+- resolver never auto-creates or merges catalog rows;
+- fuzzy/edit-distance/embedding/phonetic similarity is not auto-link authority;
+- user confirmation learns the narrowest useful alias scope;
+- NON_STANDARD semantic grouping remains deferred to CP26.
+
+Local synthetic metrics:
+
+- known identity 20;
+- auto-links 14, correct 14, incorrect 0;
+- false merge 0;
+- false split / fragmentation risk 1/20 = 5%;
+- repeat confirmed reuse 4/4 = 100%;
+- review-required 6, unresolved 4.
+
+The fragmentation-risk fixture remains visible. It must be reduced through better evidence/review/confirmed knowledge, not by unsafe merge broadening.
+
+### CP25 — Category System — NEXT PLANNED
+
+Goal: make product/commodity browsing useful through stable category metadata while keeping category completely outside identity authority.
 
 Must include:
 
-- exact GLOBAL vs MERCHANT alias precedence;
-- confirmed-decision reuse;
-- deterministic candidate ranking;
-- explicit auto-link authority boundary;
-- ambiguity/review path;
-- false merge rate;
-- false split / identity-fragmentation rate;
-- automatic link success rate;
-- incorrect automatic decision rate;
-- review-required rate;
-- repeat-purchase reuse rate after confirmation.
-
-CP23 parser confidence alone is not identity authority. Fuzzy/semantic similarity remains suggestion evidence unless separately proven safe.
-
-### CP25 — Category System
-
-Taxonomy, persistence, assignment, suggestion, correction and reuse. Category never proves product identity.
-
-Measure category suggestion accuracy and review burden locally.
+- smallest useful V1 taxonomy/hierarchy;
+- stable category identity and persistence;
+- assignment/suggestion rules;
+- explicit confidence/review boundary;
+- user correction;
+- safe confirmed reuse;
+- STANDARD and NON_STANDARD compatibility;
+- deterministic local category suggestion accuracy;
+- review-required burden;
+- no category-driven product merge/link authority.
 
 ### CP26 — Commodity / Non-standard V2
 
@@ -148,8 +156,8 @@ Verify startup, OCR latency/memory, large catalog/history, alias/search queries,
 - CP21 identity semantics remain frozen.
 - CP22 persistence semantics remain frozen unless an explicit amendment is required.
 - CP23 evidence semantics remain unconfirmed and non-authoritative.
-- CP24 must measure both false merge and false split and prove repeat-use automation behavior.
-- CP25 category remains browse metadata, never identity authority.
+- CP24 resolver authority remains frozen; category cannot widen or override it.
+- CP25 category remains browse/classification metadata, never identity authority.
 - CP26 grouping remains distinct from comparability.
 - CP27 comparison-price definition precedes CP28 price judgment.
 - CP29 data access precedes commercial shell dependencies.
@@ -184,4 +192,4 @@ At every completed group:
 
 ## 10. Current boundary
 
-**CP23 is COMPLETE. CP24 — Identity Resolver V2 is the next planned checkpoint and must not start without explicit user authorization.**
+**CP24 is COMPLETE. CP25 — Category System is the next planned checkpoint and must not start without explicit user authorization.**

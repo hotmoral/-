@@ -10,35 +10,37 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_CLOSEOUT.md`
-4. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_EVIDENCE.md`
-5. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_PLAN.md`
-6. `receiptledger/RECEIPT_PRODUCT_SEMANTICS_CONSISTENCY_REVIEW.md`
-7. `receiptledger/RECEIPT_PRODUCT_SEMANTICS_GOLDEN_VECTORS.md`
-8. `receiptledger/CP22_PERSISTENCE_V2_CLOSEOUT.md`
-9. `receiptledger/CP22_PERSISTENCE_V2_EVIDENCE.md`
-10. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-12. `receiptledger/README.md`
-13. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP24_IDENTITY_RESOLVER_V2_CLOSEOUT.md`
+4. `receiptledger/CP24_IDENTITY_RESOLVER_V2_EVIDENCE.md`
+5. `receiptledger/CP24_IDENTITY_RESOLVER_V2_PLAN.md`
+6. `receiptledger/IDENTITY_RESOLVER_V2_CONSISTENCY_REVIEW.md`
+7. `receiptledger/IDENTITY_RESOLVER_V2_GOLDEN_VECTORS.md`
+8. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_CLOSEOUT.md`
+9. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_EVIDENCE.md`
+10. `receiptledger/CP22_PERSISTENCE_V2_CLOSEOUT.md`
+11. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+12. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+13. `receiptledger/README.md`
+14. `receiptledger/WORK_UNIT.md`
 
 ## 1. Latest executable checkpoint
 
-**CP23 — Receipt Product Semantics — PASS / COMPLETE**
+**CP24 — Identity Resolver V2 — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-receipt-product-semantics-20261016`
-- predecessor handoff: `913150c7acb06cb80a18833a10680657213239ec`
-- frozen implementation HEAD: `5bffb66bd43814f8d638791b5697f79ff089028b`
-- canonical Actions: `38822100885` — SUCCESS
-- job: `116720855010` — SUCCESS
-- artifact ID: `12013477721`
-- artifact digest: `sha256:fa22d082545adae7c414b0f1c089604174341f7e879c1acd5e4677e1dc2b7195`
-- APK SHA-256: `e4e64f85f9700089b32f9f0b8121eef0a2f565d09b5428599d3717296c1b8324`
-- semantic parser tests: 7/7 PASS
-- frozen catalog tests: 15/15 PASS
-- frozen persistence tests: 7/7 PASS
+- branch: `receiptledger/run-v1-identity-resolver-v2-20261016`
+- predecessor handoff: `d04667a5dd9f257117f59bcde194d5b702fa1337`
+- frozen implementation HEAD: `4b556afd4dd52b68cf768e937bb456665ad4c231`
+- canonical Actions: `38824134990` — SUCCESS
+- job: `116727478370` — SUCCESS
+- artifact ID: `12014915453`
+- artifact digest: `sha256:4740590ca2c7d7525842aa3ebe6ec7964911d303322ebad77b5701344ce76867`
+- APK SHA-256: `0656c60110ba7debcb0801ddee048cd2220b959c2119539a79274eebbc05eb6e`
+- CP24 identity tests: 8/8 PASS
+- CP23 semantics tests: 7/7 PASS
+- CP21 catalog tests: 15/15 PASS
+- CP22 persistence tests: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionName `1.0.21-receipt-product-semantics`, versionCode 22
+- versionName `1.0.22-identity-resolver-v2`, versionCode 23
 
 Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary.
 
@@ -50,107 +52,103 @@ Target experience:
 
 `영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색 -> 과거 가격과 현재 가격 판단`
 
-The receipt remains evidence/input. Product/commodity history is the destination.
+The same purchased product must accumulate under the correct stable identity. Both wrong merging and identity fragmentation undermine price history.
 
-## 3. CP23 semantic contract
+## 3. CP24 resolver contract
 
-The parser consumes the existing receipt item name and returns unconfirmed evidence candidates only.
+Decision states:
 
-Supported evidence:
+- `AUTO_LINK`
+- `REVIEW`
+- `UNRESOLVED`
 
-- brand: explicit `[brand]` or caller-supplied known-brand longest prefix only;
-- product/family: conservative remaining lexical text;
-- variant: explicit non-numeric parenthetical descriptor only;
-- specification: explicit `입/개입`, exact weight/volume and multipack syntax;
-- purchase form: raw quantity + sales-unit candidate;
-- evidence string, confidence and deterministic reason;
-- ambiguity and review reasons.
+Authority precedence:
 
-Every parsed catalog field is `PARSED_FROM_RECEIPT / UNCONFIRMED`. HIGH confidence is not confirmation.
+1. exact MERCHANT alias;
+2. exact GLOBAL alias;
+3. unique strict semantic exact;
+4. semantic suggestion/review;
+5. unresolved.
 
-CP23 never emits a catalog ID, creates an alias, links an item, merges products or assigns identity authority.
+The resolver only points to existing stable catalog IDs. It does not auto-create or merge entities.
 
-## 4. Essential ambiguity rule
+## 4. Confirmed alias rules
 
-A standalone physical measure is dual-use evidence.
+MERCHANT exact alias is more specific than GLOBAL and is checked first.
 
-Examples:
+A confirmed alias is normally reusable, but a dangling target or strong explicit contradiction in current brand/variant/non-ambiguous specification yields REVIEW instead of silent fallback or automatic linking.
 
-- `왕교자 1.05KG` may be packaged net content;
-- `감자 1KG` may be commodity purchase amount.
+Free lexical product-name differences do not veto an exact alias because abbreviations are a principal reason aliases exist.
 
-Without identity/catalog-kind context, CP23 keeps both readings at MEDIUM confidence and requires review. This ambiguity is intentional and must not be removed merely to improve automation numbers.
+## 5. Strict semantic auto-link rules
 
-Strong package evidence such as `200MLX6` and `5입` is parsed more strongly. Strong raw package forms 봉/상자/단 are preserved without conversion. Context-sensitive 팩/개 remain review-gated.
+STANDARD semantic auto-link requires:
 
-## 5. Canonical local metrics
+- CP23 not review-required and not measure-ambiguous;
+- confirmed exact catalog productName;
+- confirmed exact catalog specification;
+- brand confirmed/present/exact on both sides if either side carries it;
+- variant confirmed/present/exact on both sides if either side carries it;
+- exactly one strict candidate.
 
-`fixtures=26 expected_fields=68 predicted_fields=66 correct_fields=64 precision_ppm=969696 recall_ppm=941176 review_required=13 semantic_ready=13 ambiguous=10 ambiguous_reviewed=10 no_invention_negatives=2`
+Product-name equality, category, store, HIGH parser confidence, fuzzy similarity or partial semantic resemblance are insufficient by themselves.
 
-- precision 96.9696%
-- recall 94.1176%
-- all ambiguity review-gated 10/10
-- no-invention negatives 2/2
+Duplicate strict candidates are review-gated; CP24 does not merge them.
 
-These are deterministic synthetic-fixture metrics, not CP35 real-receipt acceptance.
+## 6. Repeat learning
 
-## 6. Known conservative limitations
+After an explicit user confirmation:
 
-- first token is not automatically a brand;
-- an unseen brand can remain inside product lexical text;
-- free-form flavor/model suffix is not automatically variant;
-- lexical-only items such as `양파` remain review-required because CP23 has no structured evidence beyond the name;
-- parser output alone cannot establish STANDARD vs NON_STANDARD or SKU identity.
+- merchant context -> remember the raw alias in MERCHANT scope by default;
+- explicit global decision or no merchant -> GLOBAL alias.
 
-These limitations are visible by design. CP24 may use confirmed aliases/catalog knowledge to reduce repeat-use burden without weakening CP23 semantics.
+This is least-authority learning. It is intended to make repeat purchases automatic without poisoning other stores' alias namespaces.
 
-## 7. Upstream contracts that remain frozen
+## 7. Canonical local metrics
 
-### CP21
+`fixtures=24 known_identity=20 auto_links=14 correct_auto_links=14 incorrect_auto_links=0 false_merge=0 false_split=1 review_required=6 unresolved=4 repeat_cases=4 repeat_reused=4`
 
-- stable catalog ID = identity/equality authority;
-- UNCLASSIFIED is unresolved;
-- category/store context cannot prove product identity;
-- source/confidence/confirmation are independent;
-- exact unit canonicalization only where defensible;
-- grouping != comparability.
+- automatic-link correctness: 14/14;
+- false merge: 0;
+- incorrect automatic link: 0;
+- false split / fragmentation risk: 1/20 = 5%;
+- repeat confirmed reuse: 4/4 = 100%.
 
-### CP22
+The one fragmentation-risk case is an intentionally weak known-product fixture where the resolver refuses to guess and fails to surface the correct existing identity. Keep this visible. Do not force it to zero by broadening unsafe auto-link rules.
 
+These are bounded synthetic-fixture metrics. CP35 remains the end-to-end real/sanitized receipt evaluation.
+
+## 8. Frozen upstream/storage rules
+
+- CP21 stable catalog ID remains identity authority;
 - product DB `receipt-products-v1.db`, schema 2;
 - receipt DB `receiptledger-v1.db`, schema 1;
-- legacy product IDs/item links preserved;
-- legacy aliases GLOBAL;
-- merchant alias context persistable;
-- receipt price/date/store/validation remain authoritative;
-- direct SQLite retained.
-
-## 8. Superseded failure
-
-Run `38821795314` failed in lint after scope/public-tree guards passed. The initial parser used Java collection sorting convenience APIs classified as API24+ while minSdk is 23.
-
-Fix: API23-safe `Collections.sort` with explicit comparator. No minSdk increase, no suppression, no domain change. Final run `38822100885` passed lint 0/0 and all evidence steps.
+- CP23 parsed fields remain unconfirmed evidence;
+- standalone physical-measure ambiguity remains review-gated;
+- category is not identity proof;
+- NON_STANDARD semantic grouping remains CP26 work;
+- grouping != comparability;
+- price/date/store/validation remain receipt-derived;
+- no permission/network/privacy expansion.
 
 ## 9. Next planned implementation checkpoint
 
-**CP24 — Identity Resolver V2**
+**CP25 — Category System**
 
-Required concerns before authority is added:
+Required direction:
 
-1. exact GLOBAL vs MERCHANT alias precedence;
-2. confirmed knowledge reuse;
-3. deterministic candidate ranking;
-4. ambiguous cases fail to review rather than unsafe auto-link;
-5. false merge and false split both measured;
-6. automatic-link success and incorrect-auto-link rate measured;
-7. repeat purchase after prior confirmation should reduce review burden;
-8. CP23 confidence by itself never authorizes a link.
+- define practical V1 category taxonomy/hierarchy;
+- persist stable category identities/assignments;
+- assign/suggest categories to already-resolved Product/Commodity identities;
+- support user correction and safe repeat reuse;
+- measure category suggestion accuracy and review burden locally;
+- never use category to prove or override CP24 product identity.
 
-CP24 is planned, not automatically authorized.
+CP25 is planned, not automatically authorized.
 
 ## 10. Security/public boundary
 
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Do not use other project namespaces. Never commit secrets, release signing material, private receipts, personal purchase databases/backups, identifiers or uncleared assets.
+Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Do not use other project namespaces. Never commit secrets, signing material, private receipts, personal purchase databases/backups, identifiers or uncleared assets.
 
 Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE unless separately authorized.
 
@@ -160,9 +158,9 @@ For every checkpoint:
 
 - recover canonical state;
 - restate essence/non-goals;
-- inspect only materially relevant consistency risks;
-- resolve cheap contradictions before implementation;
-- avoid unrelated architecture cleanup;
+- inspect only material consistency risks;
+- resolve cheap contradictions first;
+- avoid unrelated cleanup and speculative scope;
 - implement the smallest coherent proof;
 - run scoped CI/evidence;
 - freeze exact executable refs;
@@ -171,4 +169,4 @@ For every checkpoint:
 
 ## 12. Stop condition
 
-**CP23 is complete and handoff-synchronized. Await explicit authorization for CP24.**
+**CP24 is complete and handoff synchronization is the final operation of this group. Await explicit authorization for CP25.**
