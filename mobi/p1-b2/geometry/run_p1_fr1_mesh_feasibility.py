@@ -8,7 +8,7 @@ from xml.sax.saxutils import escape
 
 from e_v0_fixture_adapter import H1, H4, H6N, build_e_fixture, iter_invariant_fixtures
 from e_v0_profiles import M0, MORPHOLOGIES
-from p1_fr1_mesh_probe import PROBE_VERSION, build_probe, result_dict
+from p1_fr1_mesh_probe_v2 import PROBE_VERSION, build_probe, result_dict
 
 
 RUN_VERSION = "P1_FR1_FEASIBILITY_MATRIX_V1"
