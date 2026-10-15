@@ -65,13 +65,19 @@ public final class OcrRecoveryEngine implements AutoCloseable {
                     return;
                 }
                 RecognitionCandidate candidate=pipeline.evaluate(RecognitionPass.CONTRAST,doc);
-                RecognitionCandidate next=pipeline.better(best,candidate);
                 ds.add(new PassDiagnostic(candidate));
-                if(!pipeline.needsRecovery(next)||ds.size()>=MAX_PASSES){
+                RecognitionCandidate next=pipeline.better(best,candidate);
+                RecognitionCandidate merged=pipeline.mergeCandidate(best,candidate);
+                if(merged!=null){
+                    ds.add(new PassDiagnostic(merged));
+                    if(pipeline.shouldAcceptMerged(next,merged))next=merged;
+                }
+                if(!pipeline.needsRecovery(next)||ocrPassCount(ds)>=MAX_PASSES){
                     recycle(prepared.bitmap);
                     deliverSuccess(id,new RecoveryResult(next,ds),cb);
                     return;
                 }
+                RecognitionCandidate finalNext=next;
                 prep.execute(()->{
                     if(id!=sequence.get()){
                         recycle(prepared.bitmap);
@@ -81,10 +87,10 @@ public final class OcrRecoveryEngine implements AutoCloseable {
                         ReceiptImagePreprocessor.adaptiveBinaryInPlace(prepared.bitmap);
                     }catch(OutOfMemoryError|RuntimeException e){
                         recycle(prepared.bitmap);
-                        deliverSuccess(id,new RecoveryResult(next,ds),cb);
+                        deliverSuccess(id,new RecoveryResult(finalNext,ds),cb);
                         return;
                     }
-                    runBinary(id,prepared,next,ds,cb);
+                    runBinary(id,prepared,finalNext,ds,cb);
                 });
             }
 
@@ -118,8 +124,13 @@ public final class OcrRecoveryEngine implements AutoCloseable {
                     return;
                 }
                 RecognitionCandidate candidate=pipeline.evaluate(RecognitionPass.BINARY,doc);
-                RecognitionCandidate next=pipeline.better(best,candidate);
                 ds.add(new PassDiagnostic(candidate));
+                RecognitionCandidate next=pipeline.better(best,candidate);
+                RecognitionCandidate merged=pipeline.mergeCandidate(best,candidate);
+                if(merged!=null){
+                    ds.add(new PassDiagnostic(merged));
+                    if(pipeline.shouldAcceptMerged(next,merged))next=merged;
+                }
                 recycle(prepared.bitmap);
                 deliverSuccess(id,new RecoveryResult(next,ds),cb);
             }
@@ -128,6 +139,12 @@ public final class OcrRecoveryEngine implements AutoCloseable {
                 deliverSuccess(id,new RecoveryResult(best,ds),cb);
             }
         });
+    }
+
+    private static int ocrPassCount(List<PassDiagnostic> diagnostics){
+        int count=0;
+        for(PassDiagnostic d:diagnostics)if(d.pass!=RecognitionPass.MERGED)count++;
+        return count;
     }
 
     private void deliverSuccess(long id,RecoveryResult result,Callback cb){
