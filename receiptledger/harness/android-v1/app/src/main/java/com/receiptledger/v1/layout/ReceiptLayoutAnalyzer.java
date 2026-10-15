@@ -6,7 +6,7 @@ import com.receiptledger.v1.ocr.OcrElement;
 import com.receiptledger.v1.ocr.OcrLine;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 
 public final class ReceiptLayoutAnalyzer {
@@ -22,8 +22,10 @@ public final class ReceiptLayoutAnalyzer {
         for (LayoutToken token : tokens) {
             positioned.add(new Positioned(token, token.centerY - slope * token.centerX));
         }
-        positioned.sort(Comparator.comparingDouble((Positioned p) -> p.correctedY)
-                .thenComparingDouble(p -> p.token.centerX));
+        Collections.sort(positioned, (a,b) -> {
+            int c = Double.compare(a.correctedY, b.correctedY);
+            return c != 0 ? c : Double.compare(a.token.centerX, b.token.centerX);
+        });
 
         double tolerance = Math.max(3.0, medianHeight * 0.62);
         List<RowBuilder> builders = new ArrayList<>();
@@ -42,7 +44,7 @@ public final class ReceiptLayoutAnalyzer {
             }
             best.add(p);
         }
-        builders.sort(Comparator.comparingDouble(RowBuilder::meanY));
+        Collections.sort(builders, (a,b) -> Double.compare(a.meanY(), b.meanY()));
 
         List<ReceiptRow> rows = new ArrayList<>(builders.size());
         for (RowBuilder builder : builders) {
@@ -81,7 +83,7 @@ public final class ReceiptLayoutAnalyzer {
     }
 
     private static double median(List<Double> values) {
-        values.sort(Double::compareTo);
+        Collections.sort(values);
         int n = values.size();
         return (n & 1) == 1 ? values.get(n / 2) : (values.get(n / 2 - 1) + values.get(n / 2)) * 0.5;
     }

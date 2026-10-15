@@ -4,14 +4,14 @@ import com.receiptledger.v1.layout.LayoutToken;
 import com.receiptledger.v1.structure.MoneyCandidate;
 import com.receiptledger.v1.structure.ReceiptStructure;
 import com.receiptledger.v1.structure.StructuredRow;
-import java.util.ArrayList;import java.util.Comparator;import java.util.List;
+import java.util.ArrayList;import java.util.Collections;import java.util.List;
 
 public final class ItemTupleSolver {
     public ItemTupleResult solve(ReceiptStructure structure){List<ItemTuple> out=new ArrayList<>();if(structure!=null)for(StructuredRow row:structure.itemRows)out.add(solveRow(row));return new ItemTupleResult(out);}
 
     private ItemTuple solveRow(StructuredRow row){
-        List<MoneyCandidate> money=new ArrayList<>();for(MoneyCandidate m:row.moneyCandidates)if(m.amount>=0)money.add(m);money.sort(Comparator.comparingDouble(m->m.token.centerX));
-        List<QuantityCandidate> quantities=new ArrayList<>();for(LayoutToken token:row.row.tokens){QuantityCandidate q=QuantityCandidate.parse(token);if(q!=null)quantities.add(q);}quantities.sort(Comparator.comparingDouble(q->q.token.centerX));
+        List<MoneyCandidate> money=new ArrayList<>();for(MoneyCandidate m:row.moneyCandidates)if(m.amount>=0)money.add(m);Collections.sort(money,(a,b)->Double.compare(a.token.centerX,b.token.centerX));
+        List<QuantityCandidate> quantities=new ArrayList<>();for(LayoutToken token:row.row.tokens){QuantityCandidate q=QuantityCandidate.parse(token);if(q!=null)quantities.add(q);}Collections.sort(quantities,(a,b)->Double.compare(a.token.centerX,b.token.centerX));
         MoneyCandidate line=money.isEmpty()?null:money.get(money.size()-1);
         if(line==null)return new ItemTuple(row.index,joinName(row,Double.POSITIVE_INFINITY),null,null,null,ValueOrigin.UNKNOWN,ValueOrigin.UNKNOWN,ValueOrigin.UNKNOWN,ItemResolution.PARTIAL,"NO_LINE_AMOUNT");
 

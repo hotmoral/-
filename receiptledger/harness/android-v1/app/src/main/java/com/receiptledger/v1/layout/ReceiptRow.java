@@ -2,7 +2,6 @@ package com.receiptledger.v1.layout;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public final class ReceiptRow {
@@ -12,7 +11,7 @@ public final class ReceiptRow {
 
     ReceiptRow(List<LayoutToken> source, double correctedCenterY) {
         List<LayoutToken> copy = new ArrayList<>(source);
-        copy.sort(Comparator.comparingDouble(t -> t.centerX));
+        Collections.sort(copy, (a,b) -> Double.compare(a.centerX,b.centerX));
         this.tokens = Collections.unmodifiableList(copy);
         this.correctedCenterY = correctedCenterY;
         this.text = join(copy);
