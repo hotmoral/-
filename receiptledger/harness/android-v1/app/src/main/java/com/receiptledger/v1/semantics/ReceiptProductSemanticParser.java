@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -32,7 +33,13 @@ public final class ReceiptProductSemanticParser {
             String b = norm(brand);
             if (!b.isEmpty() && !knownBrands.contains(b)) knownBrands.add(b);
         }
-        knownBrands.sort(Comparator.comparingInt(String::length).reversed().thenComparing(String::compareTo));
+        Collections.sort(knownBrands, new Comparator<String>() {
+            @Override public int compare(String a, String b) {
+                if (a.length() > b.length()) return -1;
+                if (a.length() < b.length()) return 1;
+                return a.compareTo(b);
+            }
+        });
     }
 
     public static ReceiptProductSemanticParser withoutBrandKnowledge() {
