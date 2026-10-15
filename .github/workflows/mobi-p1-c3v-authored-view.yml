@@ -1,0 +1,137 @@
+name: Mobi P1-C3V Authored View Basis
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3v-authored-view-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/c3_renderer_authored_view_basis_v5.py'
+      - 'mobi/p1-b2/geometry/run_c3v_h6_matrix.py'
+      - 'mobi/p1-b2/geometry/test_c3v_h6_basis.py'
+      - '.github/workflows/mobi-p1-c3v-authored-view.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3v-authored-view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3v/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3v/evidence/environment.txt
+
+      - name: Verify private-canonical source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object c3_renderers.py)" = "19117dfe2e3d093defe8624bb3fc3fb75ccfb63b"
+          test "$(git hash-object c3_renderer_validity_v2.py)" = "a4f8def921434dc3e6134866bce4184ecad82189"
+          test "$(git hash-object c3_renderer_minimal_v3.py)" = "9b4744ad6ce02867d4b4e525316a7d625b5a5f58"
+          test "$(git hash-object c3_renderer_view_resolved_v4.py)" = "87e48c4789a4b2e8c9dd6aebd16b090b22f2b1e0"
+          test "$(git hash-object c3_renderer_authored_view_basis_v5.py)" = "9b7064e19d867ad8af6541f94e81f7c257bf2ce9"
+          test "$(git hash-object run_c3_matrix.py)" = "8668613e8784406d081bb389a60d92eba23df2c1"
+          test "$(git hash-object run_c3_matrix_v2.py)" = "4d78369d38fc9351e652fe3b26f5a6d4ca906908"
+          test "$(git hash-object run_c3_matrix_v3.py)" = "3c1418771f11b14943f27f753af33a7c16204b6c"
+          test "$(git hash-object run_c3r_h6_matrix.py)" = "6e673d072e4525413cb7af63ea1c888c7edad3e4"
+          test "$(git hash-object run_c3v_h6_matrix.py)" = "3d851cbfc67e4845410661c05725bfbdfd5dd204"
+          test "$(git hash-object test_c3.py)" = "0c2532c51d9d0c24cb95ced52853671da9409ed4"
+          test "$(git hash-object test_c3_v2.py)" = "638f01a7e5c66d9964d6c2590d01de038244bfae"
+          test "$(git hash-object test_c3_v3.py)" = "70a692dfe86dd647295153cca6c4705112ed1b03"
+          test "$(git hash-object test_c3r_h6_view.py)" = "334db6ecf8e89fa0876edea186eccf47e6ffae25"
+          test "$(git hash-object test_c3v_h6_basis.py)" = "14e56d24207592797266b32ed7ca8ab4f060d070"
+          git hash-object model.py candidates_v2.py motions_v2.py orientation_v2.py turn_2p5d.py c3_semantic.py c3_renderers.py c3_renderer_validity_v2.py c3_renderer_minimal_v3.py c3_renderer_view_resolved_v4.py c3_renderer_authored_view_basis_v5.py run_c3_matrix.py run_c3_matrix_v2.py run_c3_matrix_v3.py run_c3r_h6_matrix.py run_c3v_h6_matrix.py test_c3.py test_c3_v2.py test_c3_v3.py test_c3r_h6_view.py test_c3v_h6_basis.py | tee ../../p1-c3v/evidence/git_blob_shas.txt
+          sha256sum model.py candidates_v2.py motions_v2.py orientation_v2.py turn_2p5d.py c3_semantic.py c3_renderers.py c3_renderer_validity_v2.py c3_renderer_minimal_v3.py c3_renderer_view_resolved_v4.py c3_renderer_authored_view_basis_v5.py run_c3_matrix.py run_c3_matrix_v2.py run_c3_matrix_v3.py run_c3r_h6_matrix.py run_c3v_h6_matrix.py test_c3.py test_c3_v2.py test_c3_v3.py test_c3r_h6_view.py test_c3v_h6_basis.py | tee ../../p1-c3v/evidence/source_sha256.txt
+          echo "P1-C3V private/public source parity PASS"
+
+      - name: Run accepted regressions plus targeted C3V tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_c3.py test_c3_v2.py test_c3_v3.py test_c3r_h6_view.py test_c3v_h6_basis.py 2>&1 | tee ../../p1-c3v/evidence/unittest.txt
+
+      - name: Run authored view-basis matrix twice and generate scorecards
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from run_c3_matrix import canonical_bytes
+          from run_c3v_h6_matrix import run_matrix, write_scorecards
+
+          out = Path('../../p1-c3v/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first_records, first_summary = run_matrix(sample_count=17)
+          second_records, second_summary = run_matrix(sample_count=17)
+          if canonical_bytes(first_records) != canonical_bytes(second_records):
+              raise SystemExit('C3V record determinism mismatch')
+          if canonical_bytes(first_summary) != canonical_bytes(second_summary):
+              raise SystemExit('C3V summary determinism mismatch')
+          if first_summary['semanticHashMismatchTotal'] != 0:
+              raise SystemExit('C3V semantic mismatch')
+          if first_summary['maxPartitionGroupCount'] > 4:
+              raise SystemExit('C3V partition bound exceeded')
+          if first_summary['records'] != 6:
+              raise SystemExit(f"expected 6 targeted records, got {first_summary['records']}")
+          if first_summary['basisNames'] != ['PROFILE', 'THREE_QUARTER', 'FRONT']:
+              raise SystemExit(f"unexpected basis budget: {first_summary['basisNames']}")
+
+          first_summary['deterministicRepeatExact'] = True
+          (out / 'results.json').write_text(json.dumps(first_records, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'summary.json').write_text(json.dumps(first_summary, indent=2, sort_keys=True), encoding='utf-8')
+          scorecards = write_scorecards(out / 'scorecards')
+          if len(scorecards) != 6:
+              raise SystemExit(f'expected 6 scorecards, got {len(scorecards)}')
+          print(json.dumps(first_summary, indent=2, sort_keys=True))
+          print(f'scorecards={len(scorecards)}')
+          PY
+
+      - name: Parse all scorecards as XML
+        working-directory: mobi/p1-c3v/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          files = sorted(Path('scorecards').glob('*.svg'))
+          if len(files) != 6:
+              raise SystemExit(f'expected 6 SVG scorecards, got {len(files)}')
+          for path in files:
+              ET.parse(path)
+          print(f'xml_parse_pass={len(files)}')
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3v/evidence
+        run: |
+          set -euo pipefail
+          find scorecards -type f -print0 | sort -z | xargs -0 sha256sum > SCORECARD_SHA256SUMS.txt
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json summary.json SCORECARD_SHA256SUMS.txt | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3v-authored-view-${{ github.run_id }}
+          path: mobi/p1-c3v/evidence/
+          if-no-files-found: error
+          retention-days: 30
