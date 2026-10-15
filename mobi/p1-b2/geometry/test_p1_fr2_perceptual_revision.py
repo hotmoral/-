@@ -34,14 +34,15 @@ class P1FR2PerceptualRevisionTests(unittest.TestCase):
         )
         for morphology in MORPHOLOGIES:
             for case_id, t, direction in samples:
-                fixture = build_e_fixture(morphology, case_id, 80, t, direction)
-                probe = build_probe(fixture, direction)
-                self.assertEqual(probe.semantic_anchor_hash_before, probe.semantic_anchor_hash_after)
-                self.assertLessEqual(probe.paw_pin_error_max, 1e-9)
-                self.assertEqual(probe.core_self_intersections, 0)
-                self.assertEqual(len(probe.limb_meshes), 4)
-                self.assertEqual(len(probe.ear_shapes), 2)
-                self.assertFalse(probe.correction_families)
+                with self.subTest(morphology=morphology.id, case=case_id, t=t, direction=direction):
+                    fixture = build_e_fixture(morphology, case_id, 80, t, direction)
+                    probe = build_probe(fixture, direction)
+                    self.assertEqual(probe.semantic_anchor_hash_before, probe.semantic_anchor_hash_after)
+                    self.assertLessEqual(probe.paw_pin_error_max, 1e-9)
+                    self.assertEqual(probe.core_self_intersections, 0)
+                    self.assertEqual(len(probe.limb_meshes), 4)
+                    self.assertEqual(len(probe.ear_shapes), 2)
+                    self.assertFalse(probe.correction_families)
 
     def test_topology_signature_is_shared_across_morphology_and_direction(self):
         signatures = set()
