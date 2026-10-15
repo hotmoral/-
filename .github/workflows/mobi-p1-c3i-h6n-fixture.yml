@@ -1,0 +1,106 @@
+name: Mobi P1-C3I H6N Fixture
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3i-h6n-fixture-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/h6n_stepped_turn.py'
+      - 'mobi/p1-b2/geometry/run_h6n_fixture_matrix.py'
+      - 'mobi/p1-b2/geometry/test_h6n_stepped_turn.py'
+      - '.github/workflows/mobi-p1-c3i-h6n-fixture.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3i-h6n-fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3i/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3i/evidence/environment.txt
+
+      - name: Verify private-canonical source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object h6n_stepped_turn.py)" = "62ee60e58120b4db537cb8247f507d7ede67afcb"
+          test "$(git hash-object run_h6n_fixture_matrix.py)" = "7cfe28847a6b6887ef9f1629b81d27094805b47f"
+          test "$(git hash-object test_h6n_stepped_turn.py)" = "441a74c9c52b3f811eb56114874b151f15da253b"
+          git hash-object model.py orientation_v2.py turn_2p5d.py c3_semantic.py h6n_stepped_turn.py run_h6n_fixture_matrix.py test_h6n_stepped_turn.py | tee ../../p1-c3i/evidence/git_blob_shas.txt
+          sha256sum model.py orientation_v2.py turn_2p5d.py c3_semantic.py h6n_stepped_turn.py run_h6n_fixture_matrix.py test_h6n_stepped_turn.py | tee ../../p1-c3i/evidence/source_sha256.txt
+          echo "P1-C3I private/public source parity PASS"
+
+      - name: Run accepted representation regressions plus H6N fixture tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            test_c3.py \
+            test_c3_v2.py \
+            test_c3_v3.py \
+            test_c3r_h6_view.py \
+            test_c3v_h6_basis.py \
+            test_h6n_stepped_turn.py \
+            2>&1 | tee ../../p1-c3i/evidence/unittest.txt
+
+      - name: Run H6N semantic matrix twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from c3_semantic import canonical_bytes
+          from run_h6n_fixture_matrix import run_matrix
+
+          out = Path('../../p1-c3i/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first_records, first_summary = run_matrix(sample_count=33)
+          second_records, second_summary = run_matrix(sample_count=33)
+          if canonical_bytes(first_records) != canonical_bytes(second_records):
+              raise SystemExit('H6N record determinism mismatch')
+          if canonical_bytes(first_summary) != canonical_bytes(second_summary):
+              raise SystemExit('H6N summary determinism mismatch')
+          if first_summary['records'] != 12:
+              raise SystemExit(f"expected 12 records, got {first_summary['records']}")
+          if first_summary['supportCountMin'] != 3 or first_summary['supportCountMax'] != 4:
+              raise SystemExit(f"unexpected support bounds: {first_summary['supportCountMin']}..{first_summary['supportCountMax']}")
+
+          first_summary['deterministicRepeatExact'] = True
+          (out / 'results.json').write_text(json.dumps(first_records, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'summary.json').write_text(json.dumps(first_summary, indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(first_summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3i/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json summary.json | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3i-h6n-fixture-${{ github.run_id }}
+          path: mobi/p1-c3i/evidence/
+          if-no-files-found: error
+          retention-days: 30
