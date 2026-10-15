@@ -4,5 +4,6 @@ public enum ValueOrigin {
     PRINTED,
     INFERRED_ARITHMETIC,
     DEFAULT_ONE,
+    USER_EDITED,
     UNKNOWN
 }
