@@ -1,0 +1,90 @@
+name: Mobi P1-C3Q Root Shift Timing
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3q-root-shift-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/run_h6n_root_shift_timing_analysis.py'
+      - '.github/workflows/mobi-p1-c3q-root-shift.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3q-root-shift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3q/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3q/evidence/environment.txt
+
+      - name: Verify private/public source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object run_h6n_phase_origin_analysis.py)" = "442a53fc8c7e2c6df4144566bfd6862e42330191"
+          test "$(git hash-object run_h6n_root_shift_timing_analysis.py)" = "b029de06cd7cdf1de8c35ab1b19458f1f8df52ad"
+          git hash-object orientation_v2.py run_h6n_phase_origin_analysis.py run_h6n_root_shift_timing_analysis.py | tee ../../p1-c3q/evidence/git_blob_shas.txt
+          sha256sum orientation_v2.py run_h6n_phase_origin_analysis.py run_h6n_root_shift_timing_analysis.py | tee ../../p1-c3q/evidence/source_sha256.txt
+          echo "P1-C3Q private/public source parity PASS"
+
+      - name: Run root-shift timing analysis twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from run_h6n_phase_origin_analysis import canonical_bytes
+          from run_h6n_root_shift_timing_analysis import run_analysis
+
+          out = Path('../../p1-c3q/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first = run_analysis()
+          second = run_analysis()
+          if canonical_bytes(first) != canonical_bytes(second):
+              raise SystemExit('C3Q deterministic repeat mismatch')
+          if first['globallyFeasibleOnsets'] != [3, 4]:
+              raise SystemExit(f"expected feasible onsets [3,4], got {first['globallyFeasibleOnsets']}")
+          summaries = {row['onsetIndex']: row for row in first['onsetSummary']}
+          for index in (0, 1, 2):
+              if summaries[index]['globalShiftFeasible']:
+                  raise SystemExit(f'onset {index} unexpectedly feasible')
+          for index in (3, 4):
+              if not summaries[index]['globalShiftFeasible']:
+                  raise SystemExit(f'onset {index} unexpectedly infeasible')
+          first['deterministicRepeatExact'] = True
+          (out / 'analysis.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'onset_summary.json').write_text(json.dumps(first['onsetSummary'], indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(first['onsetSummary'], indent=2, sort_keys=True))
+          print(f"canonicalAnalysisSha256={first['canonicalAnalysisSha256']}")
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3q/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt analysis.json onset_summary.json | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3q-root-shift-${{ github.run_id }}
+          path: mobi/p1-c3q/evidence/
+          if-no-files-found: error
+          retention-days: 30
