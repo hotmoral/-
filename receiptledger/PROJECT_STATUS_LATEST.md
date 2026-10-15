@@ -9,7 +9,7 @@ Public namespace: `receiptledger/`
 The latest completed checkpoint is **CP20 — Product Rebaseline / V1 Master Specification**.
 
 - branch: `receiptledger/run-v1-product-rebaseline-20261016`
-- frozen CP20 specification boundary: `961d64ecfa484478b97e6fcd8e9ffec542be7b51`
+- frozen CP20 specification boundary: `5d4cd9d0d33536bbda682914af0275e6edb92a33`
 - checkpoint type: documentation/specification only
 - result: **PASS / COMPLETE**
 - production Android source changed by CP20: **NO**
