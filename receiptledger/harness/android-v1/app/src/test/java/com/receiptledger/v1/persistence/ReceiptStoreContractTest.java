@@ -1,0 +1,9 @@
+package com.receiptledger.v1.persistence;
+
+import com.receiptledger.v1.item.*;import com.receiptledger.v1.validation.*;import org.junit.Test;import java.util.*;import static org.junit.Assert.*;
+
+public class ReceiptStoreContractTest {
+    private static ReceiptRecord record(String id,long time,long total){PersistedItem item=new PersistedItem(0,4,"서울우유 1L",1,total,total,ValueOrigin.DEFAULT_ONE,ValueOrigin.INFERRED_ARITHMETIC,ValueOrigin.PRINTED,ItemResolution.INFERRED,"single amount defaults quantity to one");return new ReceiptRecord(id,time,"2026-10-15",null,"서울우유 1L "+total,total,total,0L,total,0L,ValidationStatus.PASS,1800,2400,false,Collections.singletonList("fixture-issue"),Collections.singletonList(item));}
+    @Test public void saveGetReplaceListDelete(){InMemoryReceiptStore store=new InMemoryReceiptStore();store.save(record("a",10,3200));store.save(record("b",20,4500));assertEquals(2,store.count());assertEquals("b",store.listNewestFirst(10).get(0).id);ReceiptRecord a=store.get("a");assertEquals("2026-10-15",a.purchaseDate);assertEquals(1,a.items.size());assertEquals(Long.valueOf(3200),a.items.get(0).lineAmount);store.save(record("a",30,3300));assertEquals(2,store.count());assertEquals(Long.valueOf(3300),store.get("a").printedTotal);assertEquals("a",store.listNewestFirst(1).get(0).id);assertTrue(store.delete("b"));assertFalse(store.delete("missing"));assertEquals(1,store.count());}
+    @Test public void recordCopiesInputLists(){List<String> issues=new ArrayList<>();issues.add("one");List<PersistedItem> items=new ArrayList<>();items.add(record("x",1,100).items.get(0));ReceiptRecord r=new ReceiptRecord("id",1,null,null,"",null,null,null,null,null,ValidationStatus.INCOMPLETE,1,1,false,issues,items);issues.add("two");items.clear();assertEquals(1,r.issues.size());assertEquals(1,r.items.size());}
+}
