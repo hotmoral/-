@@ -74,6 +74,22 @@ public final class CatalogEntryV2 {
                 category, createdAtMillis, RecordOrigin.NATIVE_V2);
     }
 
+    /** Rehydrates an already-persisted entity without changing CP21 validation semantics. */
+    public static CatalogEntryV2 rehydrate(
+            String id,
+            CatalogKind kind,
+            String canonicalName,
+            CatalogField<String> brand,
+            CatalogField<String> productName,
+            CatalogField<String> variant,
+            CatalogField<ProductSpecification> specification,
+            CategoryRef category,
+            long createdAtMillis,
+            RecordOrigin recordOrigin) {
+        return new CatalogEntryV2(id, kind, canonicalName, brand, productName, variant, specification,
+                category, createdAtMillis, recordOrigin);
+    }
+
     static CatalogEntryV2 legacy(String id, CatalogKind kind, String canonicalName, long createdAtMillis) {
         return new CatalogEntryV2(id, kind, canonicalName,
                 CatalogField.absent(), CatalogField.absent(), CatalogField.absent(), CatalogField.absent(),

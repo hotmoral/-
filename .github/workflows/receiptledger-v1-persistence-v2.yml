@@ -1,0 +1,155 @@
+name: ReceiptLedger V1 Persistence V2
+on:
+  push:
+    branches: ['receiptledger/run-v1-persistence-v2-20261016']
+    paths:
+      - '.github/workflows/receiptledger-v1-persistence-v2.yml'
+      - 'receiptledger/harness/android-v1/app/build.gradle'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/**'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/catalog/CatalogEntryV2.java'
+      - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/product/**'
+      - 'receiptledger/tools/verify_cp22_migration.py'
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency: { group: 'receiptledger-v1-persistence-v2-${{ github.ref }}', cancel-in-progress: false }
+jobs:
+  validate-persistence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: '17' }
+      - name: Ensure Android API 36 SDK
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          if [ ! -d "$ANDROID_HOME/platforms/android-36" ] || [ ! -d "$ANDROID_HOME/build-tools/35.0.0" ]; then
+            yes | "$SDKMANAGER" 'platforms;android-36' 'build-tools;35.0.0' >/dev/null
+          fi
+          test -d "$ANDROID_HOME/platforms/android-36"
+          test -d "$ANDROID_HOME/build-tools/35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.13', cache-disabled: true }
+      - name: Audit public namespace
+        run: bash receiptledger/tools/audit_public_tree.sh
+      - name: Enforce CP22 scope and frozen contracts
+        run: |
+          set -euo pipefail
+          BASE=dc62d7adb650ced200fe5058aaf20f23d23fb34c
+          ROOT=receiptledger/harness/android-v1
+          APP="$ROOT/app"
+          git diff --name-only "$BASE" "$GITHUB_SHA" > receiptledger/cp22-changed-files.txt
+          while IFS= read -r f; do
+            case "$f" in
+              .github/workflows/receiptledger-v1-persistence-v2.yml) ;;
+              receiptledger/CP22_*.md|receiptledger/PERSISTENCE_V2_*.md) ;;
+              receiptledger/harness/android-v1/app/build.gradle) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/catalog/CatalogEntryV2.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/ProductCatalogMigrationPlanV2.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/ProductCatalogMigrationV2.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/CatalogV2PersistenceStore.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/CatalogV2Persistence.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/product/SqliteProductCatalogStore.java) ;;
+              receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/product/CatalogPersistenceContractV2Test.java) ;;
+              receiptledger/tools/verify_cp22_migration.py) ;;
+              '') ;;
+              *) echo "CP22 scope violation: $f"; exit 31 ;;
+            esac
+          done < receiptledger/cp22-changed-files.txt
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/persistence" || { echo 'Receipt persistence runtime changed'; exit 32; }
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/AndroidManifest.xml" || { echo 'Manifest changed'; exit 33; }
+          grep -Fq 'DB_NAME = "receipt-products-v1.db"' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
+          grep -Fq 'VERSION = 2' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
+          grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/persistence/ReceiptSchema.java"
+          grep -Fq 'versionCode 21' "$APP/build.gradle"
+          grep -Fq "versionName '1.0.20-persistence-v2'" "$APP/build.gradle"
+          ! grep -qi 'androidx.room' "$APP/build.gradle"
+          ! grep -Fq 'DROP TABLE products' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogMigrationPlanV2.java"
+          ! grep -Fq 'DROP TABLE item_links' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogMigrationPlanV2.java"
+      - name: Verify SQLite migration vectors
+        run: |
+          set -euo pipefail
+          python3 receiptledger/tools/verify_cp22_migration.py | tee receiptledger/cp22-migration-verification.txt
+      - name: Test lint and build
+        run: |
+          set +e
+          gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+          status=$?
+          REPORT=receiptledger/harness/android-v1/app/build/reports/lint-results-debug.txt
+          if [ -f "$REPORT" ]; then
+            echo '===== COMPLETE ANDROID LINT REPORT ====='
+            cat "$REPORT"
+            echo '===== END ANDROID LINT REPORT ====='
+          else
+            echo 'Expected lint text report missing'
+            status=41
+          fi
+          for TEST_XML in \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.catalog.CatalogDomainV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.product.CatalogPersistenceContractV2Test.xml; do
+            if [ ! -f "$TEST_XML" ]; then
+              echo "Expected test result missing: $TEST_XML"
+              status=42
+            fi
+          done
+          exit "$status"
+      - name: Package and verify evidence
+        run: |
+          set -euo pipefail
+          BASE=dc62d7adb650ced200fe5058aaf20f23d23fb34c
+          SRC=receiptledger/harness/android-v1
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=receiptledger/output/v1-persistence-v2
+          rm -rf "$OUT"; mkdir -p "$OUT"
+          cp "$APK" "$OUT/receiptledger-v1-persistence-v2-debug.apk"
+          cp receiptledger/cp22-migration-verification.txt "$OUT/CP22_MIGRATION_VERIFICATION.txt"
+          cp "$SRC/app/build/reports/lint-results-debug.txt" "$OUT/lint-results-debug.txt"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.catalog.CatalogDomainV2Test.xml" "$OUT/CATALOG_DOMAIN_V2_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.product.CatalogPersistenceContractV2Test.xml" "$OUT/PERSISTENCE_V2_TEST.xml"
+          unzip -t "$OUT/receiptledger-v1-persistence-v2-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
+          "$AAPT" dump badging "$APK" > "$OUT/APK_BADGING.txt"
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then
+              echo "Forbidden permission packaged: $forbidden"
+              exit 51
+            fi
+          done
+          git diff --name-status "$BASE" "$GITHUB_SHA" > "$OUT/CP22_DIFF.txt"
+          sha256sum "$OUT/receiptledger-v1-persistence-v2-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo 'checkpoint=RL_V1_PERSISTENCE_V2_01'
+            echo "public_commit=${GITHUB_SHA}"
+            echo "predecessor_handoff=${BASE}"
+            echo 'product_schema=2'
+            echo 'receipt_schema=1_UNCHANGED'
+            echo 'persistence_engine=SQLITE_OPEN_HELPER'
+            echo 'room_migration=DEFERRED'
+            echo 'legacy_product_ids=PRESERVE'
+            echo 'legacy_item_links=PRESERVE'
+            echo 'legacy_aliases=GLOBAL_CONTEXT'
+            echo 'price_truth=RECEIPT_DERIVED'
+            echo 'agp=8.11.1'
+            echo 'gradle=8.13'
+            echo 'jdk=17'
+            echo 'compile_sdk=36'
+            echo 'target_sdk=36'
+            echo 'min_sdk=23'
+            echo 'version_name=1.0.20-persistence-v2'
+            echo 'version_code=21'
+            echo 'network_permission=REMOVED'
+            echo 'signing=debug_only'
+          } > "$OUT/BUILD_IDENTITY.txt"
+          (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
+          sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt "$OUT"/APK_PERMISSIONS.txt "$OUT"/CP22_MIGRATION_VERIFICATION.txt "$OUT"/PERSISTENCE_V2_TEST.xml "$OUT"/CP22_DIFF.txt > "$OUT/EVIDENCE_SHA256.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 'receiptledger-v1-persistence-v2-${{ github.run_id }}'
+          path: 'receiptledger/output/v1-persistence-v2/'
+          if-no-files-found: error
+          retention-days: 14
