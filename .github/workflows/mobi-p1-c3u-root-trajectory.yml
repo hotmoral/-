@@ -1,0 +1,140 @@
+name: Mobi P1-C3U Root Shift Trajectory
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3u-root-trajectory-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/h6n_stepped_turn_v2.py'
+      - 'mobi/p1-b2/geometry/test_h6n_stepped_turn_v2.py'
+      - 'mobi/p1-b2/geometry/run_h6n_fixture_matrix_v2.py'
+      - '.github/workflows/mobi-p1-c3u-root-trajectory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3u-root-trajectory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3u/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3u/evidence/environment.txt
+
+      - name: Verify private-public source parity and frozen V1
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object turn_2p5d.py)" = "05ca5e26f75b07f53d2d3fee6db38f43fc71314d"
+          test "$(git hash-object h6n_stepped_turn.py)" = "62ee60e58120b4db537cb8247f507d7ede67afcb"
+          test "$(git hash-object test_h6n_stepped_turn.py)" = "441a74c9c52b3f811eb56114874b151f15da253b"
+          test "$(git hash-object run_h6n_fixture_matrix.py)" = "7cfe28847a6b6887ef9f1629b81d27094805b47f"
+          test "$(git hash-object h6n_stepped_turn_v2.py)" = "8903145739c5eb0a21b87d192c27cfdab6fc48b0"
+          test "$(git hash-object test_h6n_stepped_turn_v2.py)" = "6a737a07d7b4f5ad0079bc87a916166794eaa415"
+          test "$(git hash-object run_h6n_fixture_matrix_v2.py)" = "9a55012e45a9b09061836f29c9dd85fae2f525d5"
+          git hash-object model.py orientation_v2.py c3_semantic.py turn_2p5d.py h6n_stepped_turn.py test_h6n_stepped_turn.py run_h6n_fixture_matrix.py h6n_stepped_turn_v2.py test_h6n_stepped_turn_v2.py run_h6n_fixture_matrix_v2.py | tee ../../p1-c3u/evidence/git_blob_shas.txt
+          sha256sum model.py orientation_v2.py c3_semantic.py turn_2p5d.py h6n_stepped_turn.py test_h6n_stepped_turn.py run_h6n_fixture_matrix.py h6n_stepped_turn_v2.py test_h6n_stepped_turn_v2.py run_h6n_fixture_matrix_v2.py | tee ../../p1-c3u/evidence/source_sha256.txt
+          echo "P1-C3U private/public source parity PASS; V1 frozen PASS"
+
+      - name: Run V1 regression and V2 invariant tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            test_h6n_stepped_turn.py \
+            test_h6n_stepped_turn_v2.py \
+            2>&1 | tee ../../p1-c3u/evidence/unittest.txt
+
+      - name: Run V2 semantic matrix twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+          from c3_semantic import canonical_bytes
+          from run_h6n_fixture_matrix_v2 import (
+              EXPECTED_C3T_GLOBAL_MIN_CLEARANCE,
+              run_matrix,
+          )
+
+          out = Path('../../p1-c3u/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first_records, first_sensitivity, first_summary = run_matrix(sample_count=41)
+          second_records, second_sensitivity, second_summary = run_matrix(sample_count=41)
+
+          first = {
+              'records': first_records,
+              'sensitivity': first_sensitivity,
+              'summary': first_summary,
+          }
+          second = {
+              'records': second_records,
+              'sensitivity': second_sensitivity,
+              'summary': second_summary,
+          }
+          if canonical_bytes(first) != canonical_bytes(second):
+              raise SystemExit('C3U deterministic repeat mismatch')
+
+          if first_summary['records'] != 12:
+              raise SystemExit(f"expected 12 primary records, got {first_summary['records']}")
+          if first_summary['samplesPerRecord'] != 41:
+              raise SystemExit('unexpected sample count')
+          if first_summary['supportCountMin'] != 3 or first_summary['supportCountMax'] != 4:
+              raise SystemExit(f"unexpected support bounds {first_summary['supportCountMin']}..{first_summary['supportCountMax']}")
+          if first_summary['maxRootShiftMagnitudeError'] > 1e-12:
+              raise SystemExit(f"root shift magnitude drift {first_summary['maxRootShiftMagnitudeError']}")
+          if first_summary['maxShiftPhasePawDriftDp'] > 1e-12:
+              raise SystemExit(f"planted paw drift during shift {first_summary['maxShiftPhasePawDriftDp']}")
+          if first_summary['maxMirrorCoordinateErrorDp'] > 1e-10:
+              raise SystemExit(f"mirror coordinate error {first_summary['maxMirrorCoordinateErrorDp']}")
+          if first_summary['recordsWithFinalSideMismatch'] != 0:
+              raise SystemExit('primary matrix final side mismatch')
+          if first_summary['sensitivity']['records'] != 18:
+              raise SystemExit('unexpected sensitivity record count')
+          if first_summary['sensitivity']['recordsWithFinalMismatch'] != 0:
+              raise SystemExit('sensitivity final side mismatch')
+          observed = first_summary['sensitivity']['globalMinimumFinalSideClearanceNormalized']
+          if abs(observed - EXPECTED_C3T_GLOBAL_MIN_CLEARANCE) > 1e-12:
+              raise SystemExit(f'C3T clearance parity mismatch {observed}')
+          for record in first_records:
+              if abs(abs(record['finalYawRad']) - math.pi / 2.0) > 1e-10:
+                  raise SystemExit(f"final yaw mismatch {record['finalYawRad']}")
+
+          first_summary['deterministicRepeatExact'] = True
+          (out / 'results.json').write_text(json.dumps(first_records, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'sensitivity.json').write_text(json.dumps(first_sensitivity, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'summary.json').write_text(json.dumps(first_summary, indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(first_summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3u/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json sensitivity.json summary.json | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3u-root-trajectory-${{ github.run_id }}
+          path: mobi/p1-c3u/evidence/
+          if-no-files-found: error
+          retention-days: 30
