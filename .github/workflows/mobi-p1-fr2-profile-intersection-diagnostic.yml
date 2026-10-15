@@ -1,0 +1,39 @@
+name: Mobi P1-FR2 Profile Intersection Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr2-perceptual-revision-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_fr2_profile_intersection_diagnostic.py'
+      - '.github/workflows/mobi-p1-fr2-profile-intersection-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-profile-intersection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify diagnostic parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object p1_fr2_profile_intersection_diagnostic.py)" = "4c2732722ab71119f52cb317e1dbe14944b5f6c8"
+          test "$(git hash-object p1_fr2_layered_view_prototype_v2.py)" = "afe5cd48aea38f870cc41eee9fd7cb61190543c8"
+          test "$(git hash-object p1_fr1_mesh_probe_v3.py)" = "530accae24cea3aad75dac73b30fa1592a53d03e"
+      - name: Run exact edge-pair diagnostic
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          mkdir -p ../../p1-fr2-diagnostic
+          python3 p1_fr2_profile_intersection_diagnostic.py | tee ../../p1-fr2-diagnostic/profile_intersections.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-fr2-profile-intersection-${{ github.run_id }}
+          path: mobi/p1-fr2-diagnostic/profile_intersections.json
+          if-no-files-found: error
+          retention-days: 30
