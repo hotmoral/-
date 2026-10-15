@@ -1,289 +1,172 @@
 # ReceiptLedger V1 — Product-Centric Roadmap
 
 Updated: 2026-10-16 KST
-Checkpoint: `RL_V1_PRODUCT_REBASELINE_01`
 
-## 0. Roadmap purpose
+## 0. Governing objective
 
-This roadmap turns the product rebaseline into bounded, dependency-aware work units. It is not permission to execute all checkpoints automatically. Each checkpoint requires explicit user authorization and must close with status/handoff synchronization.
+Complete the smallest coherent product that lets a user add a receipt with minimal manual work, obtain trustworthy product/commodity identities and purchase prices, find a repeat purchase later, inspect personal historical prices, and judge whether a current price is cheap/normal/expensive without fake normalization of non-standard goods.
 
-## 1. Governing objective
+Each checkpoint requires explicit user authorization and closes with exact evidence plus handoff synchronization.
 
-Complete the smallest coherent product that lets a user:
+## 1. Completed contract stages
 
-1. add a receipt with minimal manual work;
-2. obtain trustworthy product/item identities and purchase prices;
-3. find a repeat purchase later;
-4. see its personal historical prices;
-5. judge whether a current price is cheap, normal, or expensive relative to that history;
-6. do the equivalent for non-standard goods without fake unit normalization.
+### CP20 — Product Rebaseline / V1 Master Specification — COMPLETE
 
-Everything else is secondary.
+Frozen product essence: personal purchase-price memory and comparison.
 
-## 2. Roadmap stages
+### CP21 — Catalog Domain V2 — COMPLETE
 
-### Stage A — Rebaseline and contracts
+Frozen implementation HEAD:
+`8596106c370e172161ef00e8d460dc78667bf80d`
 
-#### CP20 — Product Rebaseline / V1 Master Specification — COMPLETE
+Canonical Actions:
+`38808985222` — SUCCESS
 
-Artifacts:
+CP21 froze:
 
-- `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
-- `PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
-- `PRODUCT_REBASELINE_V1_ROADMAP.md`
+- Product vs Commodity boundary;
+- legacy ProductType compatibility;
+- stable-ID identity/equality rule;
+- Brand/Product/Variant/Specification field contract;
+- exact physical package-measure semantics;
+- raw SalesUnit/PurchaseForm semantics;
+- CategoryRef non-authority;
+- global/merchant AliasContext;
+- independent source/confidence/confirmation;
+- logical PurchaseObservation contract;
+- fail-closed legacy adaptation.
 
-No production implementation changes.
+Persistence schema remains V1 and migration has not started.
 
-#### CP21 — Catalog Domain V2
+## 2. Stage B — Storage and migration
 
-Goal: freeze exact domain contracts before schema code.
+### CP22 — Persistence V2 — NEXT PLANNED
 
-Must define:
-
-- Product vs Commodity boundaries
-- Brand
-- Product specification / variant / pack structure
-- SalesUnit / raw purchase form
-- Category references
-- AliasContext (merchant/global)
-- PurchaseObservation logical contract
-- provenance/confidence/confirmation states
-- legacy ProductType compatibility
-- equality/identity rules
-- serialization/test vectors as appropriate
-
-Acceptance emphasis: domain-level contradictions found before persistence work.
-
-### Stage B — Storage and migration
-
-#### CP22 — Persistence V2
-
-Goal: migration-safe storage for CP21.
+Goal: migration-safe storage for CP21 semantics.
 
 Must include:
 
-- legacy schema inventory
-- schema version plan
-- old-product/link preservation
-- merchant alias context
-- categories/sales forms/specification storage
-- indexes for alias/search/history
-- fail-closed migration
-- migration regression fixtures
-- direct SQLite vs Room decision with evidence, not preference
+- exact legacy schema/data inventory;
+- schema version/migration plan;
+- product ID and item-link preservation;
+- no semantic guessing from legacy canonical names;
+- merchant alias context storage;
+- specification/category/purchase-form representation;
+- indexes needed for later identity/search/history;
+- separate-DB sequencing and fail-closed behavior;
+- deterministic migration regression fixtures;
+- direct SQLite vs Room decision based on concrete evidence.
 
-Non-goal: new commercial UI.
+Non-goals: semantic parsing, resolver V2, price judgment, commercial UI.
 
-### Stage C — Receipt-to-product understanding
+## 3. Stage C — Receipt-to-product understanding
 
-#### CP23 — Receipt Product Semantics
+### CP23 — Receipt Product Semantics
 
-Goal: turn raw receipt item text into structured candidates without inventing identity.
+Parse brand/product/variant/specification/pack/sales-unit candidates from raw receipt item text with confidence/reason/provenance and without inventing identity.
 
-Outputs may include:
+### CP24 — Identity Resolver V2
 
-- brand candidate
-- product/family candidate
-- variant candidate
-- quantity/specification candidate
-- unit candidate
-- pack-count candidate
-- confidence/reason/provenance
+Merchant-aware aliases, deterministic candidate ranking, safe auto-link authority, ambiguous review and confirmed-decision reuse. Fuzzy/semantic similarity remains suggestion evidence unless separately proven safe.
 
-Must preserve raw text.
+### CP25 — Category System
 
-#### CP24 — Identity Resolver V2
+Taxonomy, persistence, assignment, suggestion, user correction and reuse. Category must never become a shortcut for product identity.
 
-Goal: resolve observations safely and reduce repeated user work.
+### CP26 — Commodity / Non-standard V2
 
-Priority evidence:
+Make mixed raw forms such as 봉/팩/kg/개/상자 first-class while preserving grouping != comparability and prohibiting guessed conversion.
 
-- confirmed merchant alias
-- safe confirmed global alias
-- compatible exact structured match
-- semantic/fuzzy suggestions
-- unresolved
+## 4. Stage D — Price intelligence
 
-Fuzzy/semantic evidence is suggestion-oriented unless separately proven safe for automatic authority.
+### CP27 — Price Intelligence V2
 
-#### CP25 — Category System
+Define one canonical comparable-observation layer and deterministic metrics: latest/previous, deltas, min/max, means/medians, period and store-aware views, plus like-unit NON_STANDARD subsets.
 
-Goal: make products/items browseable without making category a product-identity shortcut.
+### CP28 — Price Evaluation
 
-Includes taxonomy contract, persistence, assignment, correction, reuse, suggestion quality tests.
+Define explicit data-sufficiency, time-window and threshold rules for cheap/normal/expensive labels. Sparse data yields `데이터 부족`.
 
-#### CP26 — Commodity / Non-standard V2
+## 5. Stage E — Find and inspect
 
-Goal: make non-standard goods first-class.
+### CP29 — Search / Browse
 
-Includes mixed raw units/forms under one commodity, filters, like-unit comparison, no guessed conversion.
+Global search and browse by product/commodity, brand, safe aliases, category, specification, store, recent/frequent and price change.
 
-### Stage D — Price intelligence
+### CP30 — Product Detail
 
-#### CP27 — Price Intelligence V2
+Commercial STANDARD product price-memory screen with historical graph, store context and source receipt traceability.
 
-Goal: produce one canonical comparable-observation layer and deterministic metrics.
+### CP31 — Commodity Detail
 
-STANDARD target metrics:
+Commercial NON_STANDARD mixed-form history screen without misleading aggregate comparison.
 
-- latest / previous
-- absolute/percent delta
-- min / max
-- recent mean / median
-- period mean / median
-- store-specific views
-- observation count/date range
+## 6. Stage F — Intake UX and visual product quality
 
-NON_STANDARD:
+### CP32 — Capture / Review UX V2
 
-- raw mixed-form history
-- like-unit subsets
-- optional normalized comparison only when explicit evidence supports it
-
-#### CP28 — Price Evaluation
-
-Goal: convert statistics into an understandable judgment without false confidence.
-
-Must define:
-
-- minimum observation counts
-- time-window behavior
-- outlier policy if any
-- thresholds for cheap/normal/expensive labels
-- exact explanation string/data payload
-- `데이터 부족` behavior
-
-### Stage E — Find and inspect
-
-#### CP29 — Search / Browse
-
-Goal: product/item retrieval at realistic history size.
-
-Search dimensions:
-
-- product/commodity name
-- brand
-- aliases where safe
-- category
-- specification
-- store
-
-Browse:
-
-- category
-- recent
-- frequent
-- recent price change
-
-#### CP30 — Product Detail
-
-Goal: STANDARD product price-memory screen.
-
-Includes price summary, graph, store context, chronological observations, source receipt links.
-
-#### CP31 — Commodity Detail
-
-Goal: NON_STANDARD mixed-form history without misleading aggregate comparison.
-
-### Stage F — Intake UX and visual product quality
-
-#### CP32 — Capture / Review UX V2
-
-Goal: replace manual debug sequence with automatic processing + uncertainty-focused review.
-
-Target interaction:
+Move from manual debug sequence toward:
 
 `영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검토 -> 저장`
 
-Preserve debug/evidence access until replacement is proven.
+Retain debug/evidence paths until replacement parity is proven.
 
-#### CP33 — Design System
+### CP33 — Design System
 
-Goal: commercial-quality visual foundation.
+Typography, colors, spacing, shapes, iconography, cards, fields, charts, feedback states and accessibility baseline.
 
-Includes typography, colors, spacing, shapes, elevation, iconography, buttons, cards, list rows, fields, charts, loading/error/empty/success states, accessibility baselines.
+### CP34 — Commercial UI Shell
 
-#### CP34 — Commercial UI Shell
+Product-centric home/navigation/search/category/product/commodity/receipt/settings integration without gratuitous domain rewrite.
 
-Goal: integrate product-centric home/navigation/search/category/product/commodity/receipt/settings into a coherent application.
+## 7. Stage G — Validation and hardening
 
-No gratuitous domain rewrite.
+### CP35 — Real Receipt Evaluation
 
-### Stage G — Validation and hardening
+Measure end-to-end registration correctness using public-safe synthetic or explicitly approved sanitized fixtures. Primary metric is correct purchase registration, not OCR character accuracy alone.
 
-#### CP35 — Real Receipt Evaluation
+### CP36 — Performance / Reliability
 
-Goal: measure end-to-end registration correctness using public-safe/synthetic or explicitly approved sanitized fixtures.
+Verify startup, OCR memory/latency, large catalog/history, alias/search queries, aggregation, charts, migration, archive reconciliation and failure recovery at representative scale.
 
-Primary metric is not OCR character accuracy alone. Measure:
+## 8. Dependency gates
 
-- correct receipt merchant/date
-- correct item boundary
-- correct amount/quantity
-- correct product/commodity resolution
-- correct category
-- correct price-history eligibility
-- number of user interventions required
+- CP21 Domain V2 must remain frozen before CP22 persistence semantics are implemented.
+- CP22 must precede production consumers of new stored fields.
+- CP23 semantic parsing precedes CP24 resolver authority.
+- CP27 statistics precede CP28 price judgment.
+- CP29 data access precedes CP34 shell dependencies.
+- CP25 and CP26 may partially overlap only after shared CP21/22 contracts are stable.
+- CP33 must not force domain/storage rewrites.
 
-#### CP36 — Performance / Reliability
+## 9. Every checkpoint must ask, only where materially relevant
 
-Goal: verify realistic scale and failure recovery.
+- Does this change the meaning of stored data?
+- Can it create a false product merge?
+- Can it make incomparable prices look comparable?
+- Can it bypass provenance/validation?
+- Can it require new permission/network capability?
+- Can it degrade repeat-use automation?
+- Can it create a new performance hot path?
+- Which regression/evidence catches failure?
 
-Areas:
+Avoid ritual re-audits of unrelated proven work, speculative abstractions, unrelated architecture cleanup, and scope expansion into budgeting/banking/cloud/e-commerce before the core loop is complete.
 
-- startup
-- OCR latency and memory
-- large receipt/catalog DB
-- alias/search latency
-- price-history aggregation
-- chart loading
-- migration
-- image archive reconciliation
-- interrupted operations/crash recovery
+## 10. Handoff discipline
 
-## 3. Cross-stage rules
+At each completed group:
 
-### Every checkpoint must ask
+1. freeze exact implementation/spec HEAD;
+2. record CI/artifact/evidence when executable changes exist;
+3. record relevant limitations/superseded failures;
+4. update `PROJECT_STATUS_LATEST.md`, `SESSION_HANDOFF.md`, `README.md`, `WORK_UNIT.md` and roadmap/checkpoint docs;
+5. verify post-boundary handoff changes are documentation-only;
+6. stop before the next unauthorized group.
 
-- Does this change the meaning of previously stored data?
-- Can this create a false product merge?
-- Can this make incomparable prices look comparable?
-- Can this bypass validation/provenance?
-- Can this require a new permission/network capability?
-- Can this degrade repeated-use automation?
-- Can this create a new performance hot path?
-- What existing regression test would detect breakage?
+## 11. Current boundary
 
-Only questions relevant to the actual scope need deep analysis.
+CP21 is complete.
 
-### Every checkpoint must avoid
+The next planned checkpoint is **CP22 — Persistence V2**.
 
-- unrelated architecture cleanup;
-- speculative future abstractions without an immediate contract need;
-- UI work that forces domain rewrites;
-- database migration before the model is frozen;
-- repeated revalidation of unrelated proven checkpoints;
-- expanding into budgeting/banking/cloud/e-commerce before the core loop works.
-
-## 4. Handoff discipline
-
-At the end of every completed group:
-
-1. freeze implementation/spec boundary with exact HEAD;
-2. record CI/evidence where the group has executable changes;
-3. document known non-blocking limitations and superseded failures;
-4. update `PROJECT_STATUS_LATEST.md`;
-5. update `SESSION_HANDOFF.md`;
-6. update `README.md`;
-7. update `WORK_UNIT.md`;
-8. update the active checkpoint document(s);
-9. verify post-boundary handoff changes are documentation-only when applicable;
-10. stop before the next group unless explicitly authorized.
-
-## 5. Current boundary
-
-CP20 is the current completed planning boundary.
-
-The next planned checkpoint is **CP21 — Catalog Domain V2**.
-
-Planning existence does not equal execution authorization. Do not start CP21 until the user explicitly directs the next group to proceed.
+Planning existence does not equal execution authorization. Do not start CP22 until the user explicitly directs it.

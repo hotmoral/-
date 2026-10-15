@@ -8,85 +8,82 @@ Read in this order:
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
-4. `PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
-5. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-6. `README.md`
-7. `WORK_UNIT.md`
+3. `CATALOG_DOMAIN_V2_PLAN.md`
+4. `CATALOG_DOMAIN_V2_CONSISTENCY_REVIEW.md`
+5. `CATALOG_DOMAIN_V2_GOLDEN_VECTORS.md`
+6. `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
+7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+8. `README.md`
+9. `WORK_UNIT.md`
 
-Do not reconstruct state from an old chat transcript before reading those files and verifying GitHub refs.
+Do not reconstruct state from old chat before reading canonical files and verifying refs.
 
 ## Current completed boundary
 
 Latest completed checkpoint:
-**CP20 — Product Rebaseline / V1 Master Specification**
+**CP21 — Catalog Domain V2**
 
-CP20 branch:
-`receiptledger/run-v1-product-rebaseline-20261016`
+Branch:
+`receiptledger/run-v1-catalog-domain-v2-20261016`
 
-Frozen CP20 specification boundary:
-`5d4cd9d0d33536bbda682914af0275e6edb92a33`
+Frozen implementation HEAD:
+`8596106c370e172161ef00e8d460dc78667bf80d`
 
-CP20 result:
-**PASS / COMPLETE — documentation/specification only**
+Canonical Actions:
+`38808985222` — **SUCCESS**
 
-No production source, DB schema, OCR/runtime behavior, permission, or toolchain change was made by CP20.
+Evidence:
 
-## Latest executable baseline
+- artifact ID `12008555521`
+- artifact digest `sha256:d4b84972d05d61941f08565fcc5537579bc7126798adb8c3771a442dca2ae8e9`
+- APK SHA-256 `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
+- catalog-domain tests 15/15 PASS
+- lint 0 errors / 0 warnings
+- version `1.0.19-catalog-domain-v2` / versionCode 20
 
-The app remains frozen at **V1 Target API 36 Core**:
-
-- implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
-- canonical Actions run: `38800790544` — SUCCESS
-- artifact digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
-- APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
-- lint: 0 errors / 0 warnings
-- compileSdk / targetSdk / minSdk: 36 / 36 / 23
-- AGP / Gradle / JDK: 8.11.1 / 8.13 / 17
+Post-boundary commits on this branch may synchronize handoff/status documentation only. Compare the current branch against frozen implementation HEAD before assuming additional implementation exists.
 
 ## Product direction
 
-ReceiptLedger is now explicitly productized as a **personal purchase-price memory and comparison system**.
+ReceiptLedger is a **personal purchase-price memory and comparison system**.
 
 Primary loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-The receipt is input/evidence. Product and commodity history are the main user destination.
+## CP21 domain result
 
-Important principles:
+CP21 added an additive, storage-independent Catalog Domain V2 while preserving the V1 runtime and product DB schema.
 
-- STANDARD = exact repeatable packaged-product identity;
-- NON_STANDARD = commodity/item identity that may group mixed sales forms without claiming cross-unit comparability;
-- UNCLASSIFIED = unresolved state;
-- wrong product merge is worse than unresolved identity;
-- no guessed unit conversion;
-- confirmed reusable knowledge should reduce future review effort;
-- price truth stays traceable to saved receipt records + links;
-- price judgment must have explicit testable statistics/data-sufficiency rules;
-- commercial UI must not require users to understand OCR internals.
+Key rules:
+
+- stable catalog ID is entity equality authority;
+- different IDs never merge merely because semantic fields match;
+- STANDARD and NON_STANDARD legacy meanings are preserved;
+- UNCLASSIFIED remains unresolved, not a catalog entity;
+- category is not product-identity proof;
+- alias context can be global or merchant-scoped;
+- confidence and confirmation are independent;
+- exact physical package equivalence is limited to safe count/weight/volume conversions;
+- package forms such as 봉/팩/박스 remain raw purchase forms without guessed conversion;
+- NON_STANDARD grouping does not imply cross-form comparability;
+- legacy migration must preserve IDs without parsing/merging canonical names;
+- purchase price truth remains receipt-derived.
+
+Legacy `ProductCatalogSchema.VERSION` remains **1**. Persistence migration has not started.
 
 ## Roadmap
 
-The product-centric roadmap is documented in `PRODUCT_REBASELINE_V1_ROADMAP.md`.
+See `PRODUCT_REBASELINE_V1_ROADMAP.md`.
 
 Next planned checkpoint:
-**CP21 — Catalog Domain V2**
+**CP22 — Persistence V2**
 
-CP21 is planned but not automatically authorized. Wait for explicit user instruction before starting it.
+CP22 must implement migration-safe storage for CP21 semantics. It is planned but not automatically authorized.
 
 ## Current privacy/security model
 
-This is a public repository. Anything pushed here must be safe to remain public permanently.
-
-Never place here:
-
-- signing keystores or signing passwords
-- API keys, access tokens, OAuth secrets, private credentials
-- real private receipt photos
-- real purchase-history databases or private backups
-- personal identifiers
-- uncleared private/proprietary assets
+This repository is public. Never place here signing secrets, credentials, real private receipt photos, real purchase-history databases/backups, personal identifiers, or uncleared private/proprietary assets.
 
 The executable app intentionally does not request:
 
@@ -98,21 +95,7 @@ The executable app intentionally does not request:
 - INTERNET
 - ACCESS_NETWORK_STATE
 
-Camera intake uses an external camera app plus constrained temporary URI. Gallery intake uses the system picker. Korean ML Kit OCR remains bundled/local.
-
-## Layout
-
-- `harness/`: Android source and bounded public-safe build/test harness
-- `fixtures/`: synthetic or explicitly approved public fixtures only
-- `tools/`: deterministic verification scripts
-- `workflows/`: ReceiptLedger-local workflow support files
-- `.github/workflows/receiptledger-*.yml`: ReceiptLedger GitHub Actions workflows
-- `output/`: generated public reports/build metadata; not canonical by itself
-- `*_CORE_PLAN.md`: earlier executable checkpoint contracts
-- `PRODUCT_REBASELINE_V1_*.md`: CP20 product/domain rebaseline
-- `CP20_PRODUCT_REBASELINE_*.md`: CP20 decisions/risk/gates/acceptance/evidence
-- `PROJECT_STATUS_LATEST.md`: current exact status
-- `SESSION_HANDOFF.md`: restart contract
+Camera intake uses an external camera app plus a constrained temporary URI. Gallery intake uses the system picker. Korean ML Kit OCR remains bundled/local.
 
 ## Namespace isolation
 
@@ -121,10 +104,8 @@ ReceiptLedger work may modify only:
 - `receiptledger/**`
 - explicitly approved `.github/workflows/receiptledger-*.yml`
 
-Do not read from, modify, depend on, cache from, or consume artifacts/output from other project namespaces.
-
-Do not alter repository visibility, repository-wide Actions permissions, rulesets/branch protection, shared secrets/variables, or global artifact retention without separate user approval.
+Do not read from, modify, depend on, cache from, or consume artifacts/output from other project namespaces. Do not alter repo-wide settings without separate explicit approval.
 
 ## Current stop condition
 
-**CP20 is complete. Do not begin CP21 until explicitly authorized.**
+**CP21 is complete. Do not begin CP22 until explicitly authorized.**

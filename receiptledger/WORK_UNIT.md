@@ -2,147 +2,91 @@
 
 ## Current stage
 
-**CP20 — Product Rebaseline / V1 Master Specification is COMPLETE.**
+**CP21 — Catalog Domain V2 is COMPLETE.**
 
-CP20 branch:
-`receiptledger/run-v1-product-rebaseline-20261016`
-
-Frozen CP20 specification boundary:
-`5d4cd9d0d33536bbda682914af0275e6edb92a33`
-
-Result:
-**PASS / COMPLETE**
-
-Checkpoint type:
-**documentation/specification only**
-
-No production Android source, DB schema, OCR/runtime behavior, permissions, toolchain, APK, or executable CI contract changed in CP20.
-
-## Latest executable baseline remains Target API 36 Core
-
-- implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
-- canonical Actions run: `38800790544` — SUCCESS
-- artifact digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
-- debug APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
+- branch: `receiptledger/run-v1-catalog-domain-v2-20261016`
+- frozen implementation HEAD: `8596106c370e172161ef00e8d460dc78667bf80d`
+- canonical Actions run: `38808985222` — SUCCESS
+- artifact ID: `12008555521`
+- artifact digest: `sha256:d4b84972d05d61941f08565fcc5537579bc7126798adb8c3771a442dca2ae8e9`
+- debug APK SHA-256: `1fa055ead0b207f1404e673541f4a76585c014b3fba0bf2362186adb0180ebd6`
+- catalog-domain tests: 15/15 PASS
 - lint: 0 errors / 0 warnings
-- AGP 8.11.1
-- Gradle 8.13
-- JDK 17
-- compileSdk 36
-- targetSdk 36
-- minSdk 23
-- versionCode 19
-- versionName `1.0.18-target-api36-core`
+- versionCode 20
+- versionName `1.0.19-catalog-domain-v2`
 
-## CP20 essence
+Post-boundary handoff commits must remain documentation-only.
 
-ReceiptLedger is now explicitly defined around:
+## What is now frozen
 
-> trustworthy personal purchase-price memory and comparison
+CP21 defines the V2 meanings that CP22 persistence must implement:
 
-Primary loop:
+- `STANDARD_PRODUCT` vs `NON_STANDARD_COMMODITY`;
+- no V2 catalog row for UNCLASSIFIED;
+- stable catalog ID is entity identity/equality authority;
+- structured semantic fields are not implicit merge authority;
+- legacy IDs/names/types migrate without semantic guessing;
+- category is not identity proof;
+- global and merchant-scoped alias context are distinct namespaces;
+- source/confidence/confirmation are independent;
+- HIGH confidence != CONFIRMED;
+- exact package measurement may safely canonicalize kg/g, L/mL and exact count;
+- package forms BAG/PACK/BOX/BUNDLE have no guessed physical conversion;
+- missing pack count remains unknown;
+- commodity grouping != price comparability;
+- purchase observations remain traceable to saved receipt evidence rather than becoming an independent price truth.
 
-`receipt -> extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
+## Explicitly unchanged
 
-Frozen safety direction:
-
-- preserve provenance and contradictions;
-- wrong identity merge is worse than unresolved identity;
-- exact confirmed knowledge may reduce repeated review;
-- semantic/fuzzy matching is suggestion evidence by default, not silent merge authority;
-- merchant-context alias capability is required in V2;
-- non-standard goods may group mixed sales forms without claiming cross-unit comparability;
-- no guessed unit conversion;
-- price history remains traceable to canonical receipts + links;
-- price labels require explicit deterministic statistics and data sufficiency;
-- tested OCR/validation/privacy/API36 foundations are preserved;
-- commercial UI is introduced incrementally rather than by rewriting proven internals.
-
-## CP20 canonical documents
-
-Primary:
-
-- `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
-- `PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
-- `PRODUCT_REBASELINE_V1_ROADMAP.md`
-
-Supporting records are indexed in:
-
-- `CP20_PRODUCT_REBASELINE_NAVIGATION.md`
-
-## Consistency result
-
-**COMPATIBLE WITH CONTROLLED EXTENSION**
-
-No blocking contradiction requiring a restart/rewrite was found.
-
-Known future gaps:
-
-- Product/Commodity Domain V2
-- brand/specification/pack semantics
-- merchant-aware alias context
-- category system
-- non-standard sales-unit/form model
-- persistence migration
-- semantic product parsing
-- resolver V2
-- richer price statistics and price evaluation
-- search/browse/detail
-- intake/review UX V2
-- commercial design system/UI shell
-- real-receipt evaluation
-- performance/reliability hardening
+- `ProductCatalogSchema.VERSION = 1`
+- legacy `product/**` runtime
+- receipt persistence runtime
+- manifest/permissions
+- OCR/layout/item/validation logic
+- exact alias resolution behavior
+- Activities/UI/navigation
 
 ## Next planned work unit
 
-**CP21 — Catalog Domain V2**
+**CP22 — Persistence V2**
 
 Purpose:
-freeze exact domain contracts for Product, Commodity, Brand, Specification, SalesUnit, Category reference, AliasContext, PurchaseObservation, provenance/confirmation states, identity/equality rules, and legacy compatibility.
+implement migration-safe storage/indexing for the frozen CP21 domain.
 
-Critical gate:
-**CP21 domain semantics must freeze before CP22 persistence migration implementation.**
+Required preflight before schema writes:
 
-CP21 is only planned. Do not start it until explicit user authorization.
+1. inventory current receipt/product DB schema and lifecycle;
+2. map every old product/link into the V2 preservation contract;
+3. design migration sequencing/fail-closed behavior across separate DBs;
+4. define V2 tables/columns/indexes for structured catalog fields and alias context without duplicating receipt price truth;
+5. determine direct SQLite vs Room from migration/query evidence;
+6. write migration regression vectors before destructive/irreversible schema operations.
+
+CP22 must not infer semantic fields from old canonical names as authoritative data and must not collapse separate product IDs.
 
 ## Group discipline
 
-For every future checkpoint:
+For every checkpoint:
 
-1. recover current canonical GitHub state;
+1. recover canonical GitHub state;
 2. state essence/non-goals;
-3. check compatibility with prior contracts;
-4. examine only materially relevant domain/data/UX/privacy/performance/test risks;
-5. avoid unrelated cleanup and repeated audits;
-6. implement the smallest coherent proof of the checkpoint;
-7. run ReceiptLedger-scoped CI/evidence for executable changes;
-8. record exact refs/results;
-9. synchronize handoff/status documents;
+3. inspect only materially affected consistency risks;
+4. resolve cheap contract contradictions before implementation;
+5. avoid unrelated cleanup/architecture churn;
+6. implement the smallest coherent proof;
+7. run ReceiptLedger-scoped CI/evidence;
+8. freeze exact implementation/spec refs;
+9. synchronize status/handoff documents;
 10. stop before the next unauthorized checkpoint.
 
-## Public repository rules
+## Public repository / privacy rules
 
-Modify only:
+Modify only `receiptledger/**` and explicitly approved ReceiptLedger-prefixed workflows.
 
-- `receiptledger/**`
-- explicitly approved `.github/workflows/receiptledger-*.yml`
+Never include release signing secrets, credentials, real private receipt photos, personal purchase DBs/backups, personal identifiers, or uncleared assets.
 
-Never include release signing secrets, credentials, real private receipt photos, personal purchase databases/backups, personal identifiers, or uncleared private assets.
-
-Do not use other project namespaces or change repo-wide settings without separate explicit approval.
-
-## Privacy firewall
-
-The executable APK must continue not to request:
-
-- CAMERA
-- READ_MEDIA_IMAGES
-- READ_EXTERNAL_STORAGE
-- WRITE_EXTERNAL_STORAGE
-- MANAGE_EXTERNAL_STORAGE
-- INTERNET
-- ACCESS_NETWORK_STATE
+The APK must continue not to request CAMERA, broad media/storage, INTERNET, or ACCESS_NETWORK_STATE permission unless explicitly reauthorized later.
 
 ## Current stop condition
 
-**CP20 is closed. Await explicit authorization for CP21.**
+**CP21 is closed. Await explicit authorization for CP22.**
