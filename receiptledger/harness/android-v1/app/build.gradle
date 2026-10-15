@@ -10,9 +10,8 @@ android {
         applicationId 'com.receiptledger.v1'
         minSdk 23
         targetSdk 35
-        versionCode 2
-        versionName '1.0.1-image-document'
-
+        versionCode 3
+        versionName '1.0.2-ocr-core'
         testInstrumentationRunner 'android.test.InstrumentationTestRunner'
     }
 
@@ -23,5 +22,6 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.mlkit:text-recognition-korean:16.0.1'
     testImplementation 'junit:junit:4.13.2'
 }
