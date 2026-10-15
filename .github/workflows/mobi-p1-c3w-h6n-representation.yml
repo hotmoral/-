@@ -1,0 +1,158 @@
+name: Mobi P1-C3W H6N Representation Re-evaluation
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3w-h6n-representation-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/c3w_h6n_fixture_adapter.py'
+      - 'mobi/p1-b2/geometry/c3w_renderer_adapter.py'
+      - 'mobi/p1-b2/geometry/run_c3w_h6n_representation_matrix.py'
+      - 'mobi/p1-b2/geometry/test_c3w_h6n_representation.py'
+      - '.github/workflows/mobi-p1-c3w-h6n-representation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3w-h6n-representation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3w/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3w/evidence/environment.txt
+
+      - name: Verify private-public source parity and frozen accepted sources
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object c3_renderers.py)" = "19117dfe2e3d093defe8624bb3fc3fb75ccfb63b"
+          test "$(git hash-object c3_renderer_validity_v2.py)" = "a4f8def921434dc3e6134866bce4184ecad82189"
+          test "$(git hash-object c3_renderer_minimal_v3.py)" = "9b4744ad6ce02867d4b4e525316a7d625b5a5f58"
+          test "$(git hash-object c3_renderer_view_resolved_v4.py)" = "87e48c4789a4b2e8c9dd6aebd16b090b22f2b1e0"
+          test "$(git hash-object c3_renderer_authored_view_basis_v5.py)" = "9b7064e19d867ad8af6541f94e81f7c257bf2ce9"
+          test "$(git hash-object run_c3_matrix.py)" = "8668613e8784406d081bb389a60d92eba23df2c1"
+          test "$(git hash-object h6n_stepped_turn.py)" = "62ee60e58120b4db537cb8247f507d7ede67afcb"
+          test "$(git hash-object h6n_stepped_turn_v2.py)" = "8903145739c5eb0a21b87d192c27cfdab6fc48b0"
+          test "$(git hash-object test_h6n_stepped_turn.py)" = "441a74c9c52b3f811eb56114874b151f15da253b"
+          test "$(git hash-object test_h6n_stepped_turn_v2.py)" = "6a737a07d7b4f5ad0079bc87a916166794eaa415"
+          test "$(git hash-object c3w_h6n_fixture_adapter.py)" = "fd3a53be0ef18e8ee4085b031cf8e7d2faa18195"
+          test "$(git hash-object c3w_renderer_adapter.py)" = "449a871c1578a9596475f1ede3adcf7faebc4dff"
+          test "$(git hash-object run_c3w_h6n_representation_matrix.py)" = "e91100ba8aae5d60e97fbb04279af4607bd1d0b2"
+          test "$(git hash-object test_c3w_h6n_representation.py)" = "07ff9077323075865b4d1a3790f708f3ee51091e"
+          git hash-object \
+            model.py orientation_v2.py c3_semantic.py c3_renderers.py \
+            c3_renderer_validity_v2.py c3_renderer_minimal_v3.py \
+            c3_renderer_view_resolved_v4.py c3_renderer_authored_view_basis_v5.py \
+            run_c3_matrix.py h6n_stepped_turn.py h6n_stepped_turn_v2.py \
+            test_h6n_stepped_turn.py test_h6n_stepped_turn_v2.py \
+            c3w_h6n_fixture_adapter.py c3w_renderer_adapter.py \
+            run_c3w_h6n_representation_matrix.py test_c3w_h6n_representation.py \
+            | tee ../../p1-c3w/evidence/git_blob_shas.txt
+          sha256sum \
+            model.py orientation_v2.py c3_semantic.py c3_renderers.py \
+            c3_renderer_validity_v2.py c3_renderer_minimal_v3.py \
+            c3_renderer_view_resolved_v4.py c3_renderer_authored_view_basis_v5.py \
+            run_c3_matrix.py h6n_stepped_turn.py h6n_stepped_turn_v2.py \
+            test_h6n_stepped_turn.py test_h6n_stepped_turn_v2.py \
+            c3w_h6n_fixture_adapter.py c3w_renderer_adapter.py \
+            run_c3w_h6n_representation_matrix.py test_c3w_h6n_representation.py \
+            | tee ../../p1-c3w/evidence/source_sha256.txt
+          echo "P1-C3W source parity PASS; C3/C3R/C3V/C3U sources frozen PASS"
+
+      - name: Run targeted representation and H6N regressions
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            test_c3_v3.py \
+            test_c3r_h6_view.py \
+            test_c3v_h6_basis.py \
+            test_h6n_stepped_turn.py \
+            test_h6n_stepped_turn_v2.py \
+            test_c3w_h6n_representation.py \
+            2>&1 | tee ../../p1-c3w/evidence/unittest.txt
+
+      - name: Run deterministic H6N representation matrix twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c3w/run1 ../../p1-c3w/run2
+          python3 run_c3w_h6n_representation_matrix.py --sample-count 41 --output-dir ../../p1-c3w/run1
+          python3 run_c3w_h6n_representation_matrix.py --sample-count 41 --output-dir ../../p1-c3w/run2
+          cmp ../../p1-c3w/run1/results.json ../../p1-c3w/run2/results.json
+          cmp ../../p1-c3w/run1/summary.json ../../p1-c3w/run2/summary.json
+          diff -qr ../../p1-c3w/run1/scorecards ../../p1-c3w/run2/scorecards
+          cp ../../p1-c3w/run1/results.json ../../p1-c3w/evidence/results.json
+          cp ../../p1-c3w/run1/summary.json ../../p1-c3w/evidence/summary.json
+          cp -R ../../p1-c3w/run1/scorecards ../../p1-c3w/evidence/scorecards
+          rm -rf ../../p1-c3w/run1 ../../p1-c3w/run2
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          summary = json.loads(Path('../../p1-c3w/evidence/summary.json').read_text())
+          if summary['records'] != 12:
+              raise SystemExit(f"expected 12 records, got {summary['records']}")
+          if summary['sampleCountPerRecord'] != 41:
+              raise SystemExit('unexpected sample count')
+          if summary['semanticHashMismatchTotal'] != 0:
+              raise SystemExit('semantic mismatch')
+          if any(summary['rfVariantGeometryMismatchTotalByStrategy'].values()):
+              raise SystemExit(f"RF-B/RF-C H6N geometry mismatch: {summary['rfVariantGeometryMismatchTotalByStrategy']}")
+          if any(summary['maxCorrectionFamilyCountByStrategy'].values()):
+              raise SystemExit(f"unexpected H6N correction family: {summary['maxCorrectionFamilyCountByStrategy']}")
+          if any(value > 4 for value in summary['maxPartitionGroupCountByStrategy'].values()):
+              raise SystemExit(f"partition group overflow: {summary['maxPartitionGroupCountByStrategy']}")
+          summary['deterministicRepeatExact'] = True
+          Path('../../p1-c3w/evidence/summary.json').write_text(
+              json.dumps(summary, indent=2, sort_keys=True), encoding='utf-8'
+          )
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Validate scorecards
+        working-directory: mobi/p1-c3w/evidence
+        run: |
+          set -euo pipefail
+          test "$(find scorecards -maxdepth 1 -name '*.svg' | wc -l)" -eq 12
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          paths = sorted(Path('scorecards').glob('*.svg'))
+          if len(paths) != 12:
+              raise SystemExit(len(paths))
+          for path in paths:
+              ET.parse(path)
+          print(f"scorecards_xml_pass={len(paths)}")
+          PY
+          find scorecards -maxdepth 1 -name '*.svg' -print0 | sort -z | xargs -0 sha256sum > scorecard_sha256.txt
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3w/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt unittest.txt results.json summary.json scorecard_sha256.txt | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3w-h6n-representation-${{ github.run_id }}
+          path: mobi/p1-c3w/evidence/
+          if-no-files-found: error
+          retention-days: 30
