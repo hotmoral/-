@@ -53,7 +53,23 @@ jobs:
           test "$(git hash-object e_v0_profiles.py)" = "087826028fa7a2ad5a9a042ec188f335c9ff18cc"
           test "$(git hash-object e_v0_fixture_adapter.py)" = "96bb5351208c157003ce0a50f828075537c5edb5"
           test "$(git hash-object run_p1f_perceptual_evidence.py)" = "e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25"
-          git hash-object p1_fr5_core_mass_silhouette_v1.py run_p1_fr5_core_mass_silhouette_v1.py test_p1_fr5_core_mass_silhouette_v1.py p1_fr4_internal_core_scaffold_v3.py run_p1_fr4_internal_core_scaffold_v3.py test_p1_fr4_internal_core_scaffold_v3.py p1_fr3_feline_core_topology_v5.py test_p1_fr3_feline_core_topology_v5.py p1_fr2_layered_view_prototype_v5.py run_p1_fr2_perceptual_revision.py p1_fr1_mesh_probe_v3.py e_v0_fixture_adapter.py e_v0_profiles.py run_p1f_perceptual_evidence.py | tee ../../p1-fr5/evidence/git_blob_shas.txt
+          for f in \
+            p1_fr5_core_mass_silhouette_v1.py \
+            run_p1_fr5_core_mass_silhouette_v1.py \
+            test_p1_fr5_core_mass_silhouette_v1.py \
+            p1_fr4_internal_core_scaffold_v3.py \
+            run_p1_fr4_internal_core_scaffold_v3.py \
+            test_p1_fr4_internal_core_scaffold_v3.py \
+            p1_fr3_feline_core_topology_v5.py \
+            test_p1_fr3_feline_core_topology_v5.py \
+            p1_fr2_layered_view_prototype_v5.py \
+            run_p1_fr2_perceptual_revision.py \
+            p1_fr1_mesh_probe_v3.py \
+            e_v0_fixture_adapter.py \
+            e_v0_profiles.py \
+            run_p1f_perceptual_evidence.py; do
+            printf '%s  %s\n' "$(git hash-object "$f")" "$f"
+          done | tee ../../p1-fr5/evidence/git_blob_shas.txt
 
       - name: Run retained regression and FR5 V1 tests
         working-directory: mobi/p1-b2/geometry
