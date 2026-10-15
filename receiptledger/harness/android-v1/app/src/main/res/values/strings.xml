@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ReceiptLedger V1</string>
+    <string name="foundation_title">ReceiptLedger V1</string>
+    <string name="foundation_body">Public foundation build\n%1$s\n\nOCR and receipt features are intentionally not enabled yet.</string>
+</resources>
