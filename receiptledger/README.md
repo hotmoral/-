@@ -25,7 +25,7 @@ CP20 branch:
 `receiptledger/run-v1-product-rebaseline-20261016`
 
 Frozen CP20 specification boundary:
-`961d64ecfa484478b97e6fcd8e9ffec542be7b51`
+`5d4cd9d0d33536bbda682914af0275e6edb92a33`
 
 CP20 result:
 **PASS / COMPLETE — documentation/specification only**
