@@ -1,11 +1,11 @@
-name: Mobi P1-FR3 V3 Fold Diagnostic
+name: Mobi P1-FR3 Full Fold Diagnostic
 
 on:
   push:
     branches:
       - 'mobi/run-p1-fr3-feline-core-20261015'
     paths:
-      - 'mobi/p1-b2/geometry/diagnose_p1_fr3_v3_intersections.py'
+      - 'mobi/p1-b2/geometry/diagnose_p1_fr3_v4_full_intersections.py'
       - '.github/workflows/mobi-p1-fr3-v3-diagnostic.yml'
   workflow_dispatch:
 
@@ -23,7 +23,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git hash-object diagnose_p1_fr3_v3_intersections.py)" = "d44d96cd7760829743be3af1fd64ee811a1a08ca"
-          test "$(git hash-object p1_fr3_feline_core_topology_v3.py)" = "e1875449d9acf354fa1169cb9ba31ce6a9c708ab"
-      - name: Diagnose exact crossing pairs
+          test "$(git hash-object diagnose_p1_fr3_v4_full_intersections.py)" = "9d44b956d60dffa4713ac40054921e4475df7024"
+          test "$(git hash-object p1_fr3_feline_core_topology_v4.py)" = "0c738e181097f69fab23eeb0917280b492808e56"
+      - name: Diagnose all V4 crossing records and pairs
         working-directory: mobi/p1-b2/geometry
-        run: python3 diagnose_p1_fr3_v3_intersections.py
+        run: python3 diagnose_p1_fr3_v4_full_intersections.py
