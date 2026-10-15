@@ -34,6 +34,7 @@ jobs:
           set -euo pipefail
           ROOT=receiptledger/harness/android-v1
           APP="$ROOT/app"
+          HELPER="$APP/src/main/java/com/receiptledger/v1/ui/SystemBarInsetHelper.java"
           grep -Fq "version '8.11.1'" "$ROOT/build.gradle"
           grep -Fq 'compileSdk 36' "$APP/build.gradle"
           grep -Fq 'targetSdk 36' "$APP/build.gradle"
@@ -45,8 +46,13 @@ jobs:
             file="$APP/src/main/java/com/receiptledger/v1/${activity}.java"
             grep -Fq 'SystemBarInsetHelper.apply(this,' "$file"
           done
-          grep -Fq 'setDecorFitsSystemWindows(false)' "$APP/src/main/java/com/receiptledger/v1/ui/SystemBarInsetHelper.java"
-          grep -Fq 'WindowInsets.Type.systemBars()' "$APP/src/main/java/com/receiptledger/v1/ui/SystemBarInsetHelper.java"
+          grep -Fq 'Build.VERSION_CODES.VANILLA_ICE_CREAM' "$HELPER"
+          grep -Fq 'WindowInsets.Type.systemBars()' "$HELPER"
+          grep -Fq 'WindowInsets.Type.displayCutout()' "$HELPER"
+          if grep -Fq 'setDecorFitsSystemWindows' "$HELPER"; then
+            echo 'Deprecated setDecorFitsSystemWindows must not be used for API 36 edge-to-edge handling'
+            exit 40
+          fi
           if grep -RInE 'onBackPressed|OnBackPressedDispatcher|OnBackInvokedDispatcher|KEYCODE_BACK|enableOnBackInvokedCallback' "$APP/src/main"; then
             echo 'Unexpected custom back interception found'
             exit 41
@@ -120,7 +126,7 @@ jobs:
             echo 'min_sdk=23'
             echo 'version_name=1.0.18-target-api36-core'
             echo 'version_code=19'
-            echo 'edge_to_edge=SYSTEM_BAR_INSET_HELPER'
+            echo 'edge_to_edge=API35_PLUS_SYSTEM_BAR_AND_CUTOUT_INSETS'
             echo 'predictive_back=STANDARD_ACTIVITY_BACK_ONLY'
             echo 'unit_tests=PASS_REQUIRED'
             echo 'lint_debug=PASS_REQUIRED'
