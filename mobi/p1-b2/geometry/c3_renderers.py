@@ -70,8 +70,11 @@ def _add(point, vector, amount):
     return Vec2(point.x + vector.x * amount, point.y + vector.y * amount)
 
 
-def _lerp(a, b, t):
-    return a * (1.0 - t) + b * t
+def _load_bearing_contact(state, owner):
+    for contact in state.contacts:
+        if contact.owner == owner and contact.load_bearing:
+            return contact
+    return None
 
 
 def _generic_limb(root, paw, kind, side_sign, scale, yaw):
@@ -103,25 +106,28 @@ def _generic_limb(root, paw, kind, side_sign, scale, yaw):
 def _rf_b_core(state, morphology, yaw):
     scale = state.size_dp / 2.0
     anchors = state.anchors
+    body = anchors["BODY_ROOT"]
     fore = anchors["FOREQUARTER_REF"]
     pelvis = anchors["PELVIS_REF"]
     orientation_morph = orientation_morphology_by_id(morphology.id)
 
     fore_rx = scale * _projected_half_extent(
-        .36 * morphology.forequarter_scale,
+        .34 * morphology.forequarter_scale,
         .245 * orientation_morph.thorax_width_scale,
         yaw,
     )
     pelvis_rx = scale * _projected_half_extent(
-        .38 * morphology.pelvis_scale,
+        .37 * morphology.pelvis_scale,
         .265 * orientation_morph.pelvis_width_scale,
         yaw,
     )
-    fore_ry = .315 * scale * morphology.trunk_depth * morphology.forequarter_scale
+    fore_ry = .305 * scale * morphology.trunk_depth * morphology.forequarter_scale
     pelvis_ry = .325 * scale * morphology.trunk_depth * morphology.pelvis_scale
-    bridge_width = .42 * scale * morphology.trunk_depth
+    center_rx = max(.20 * scale, abs(fore.x - pelvis.x) * .38)
+    center_ry = .235 * scale * morphology.trunk_depth
+    bridge_width = .33 * scale * morphology.trunk_depth
 
-    return [
+    shapes = [
         {
             "type": "ellipse",
             "role": "forequarter",
@@ -130,6 +136,15 @@ def _rf_b_core(state, morphology, yaw):
             "cy": fore.y,
             "rx": fore_rx,
             "ry": fore_ry,
+        },
+        {
+            "type": "ellipse",
+            "role": "trunk_mass",
+            "group": "CORE",
+            "cx": body.x,
+            "cy": body.y + .025 * scale,
+            "rx": center_rx,
+            "ry": center_ry,
         },
         {
             "type": "ellipse",
@@ -150,61 +165,112 @@ def _rf_b_core(state, morphology, yaw):
         },
     ]
 
+    haunch = _load_bearing_contact(state, "HAUNCH_CONTACT")
+    if haunch is not None:
+        vertical_span = max(.18 * scale, abs(haunch.point.y - pelvis.y))
+        center = Vec2(
+            pelvis.x - cos(yaw) * .055 * scale,
+            (pelvis.y + haunch.point.y) / 2.0,
+        )
+        shapes.append({
+            "type": "ellipse",
+            "role": "semantic_haunch_support_mass",
+            "group": "CORE",
+            "cx": center.x,
+            "cy": center.y,
+            "rx": .27 * scale * morphology.pelvis_scale,
+            "ry": vertical_span * .62 + .10 * scale,
+        })
+    return shapes
 
-def _rf_c_h4_envelope(state, morphology):
+
+def _rf_c_h4_core(state, morphology, yaw):
     scale = state.size_dp / 2.0
     fore = state.anchors["FOREQUARTER_REF"]
     pelvis = state.anchors["PELVIS_REF"]
-    axis = _normalize(fore - pelvis)
-    normal = Vec2(-axis.y, axis.x)
-    depth = scale * morphology.trunk_depth
+    body = state.anchors["BODY_ROOT"]
+    sit_strength = (1.0 - state.t) ** 2
+    haunch = _load_bearing_contact(state, "HAUNCH_CONTACT")
 
-    rear = _add(pelvis, axis, -.18 * scale * morphology.pelvis_scale)
-    front = _add(fore, axis, .13 * scale * morphology.forequarter_scale)
-    rear_top = _add(rear, normal, -.35 * depth)
-    mid_top = _add(Vec2((pelvis.x + fore.x) / 2.0, (pelvis.y + fore.y) / 2.0), normal, -.30 * depth)
-    front_top = _add(front, normal, -.31 * depth)
-    front_bottom = _add(front, normal, .29 * depth)
-    mid_bottom = _add(Vec2((pelvis.x + fore.x) / 2.0, (pelvis.y + fore.y) / 2.0), normal, .27 * depth)
-    rear_bottom = _add(rear, normal, .38 * depth)
+    if haunch is not None:
+        haunch_y = (pelvis.y + haunch.point.y) / 2.0
+    else:
+        haunch_y = pelvis.y + sit_strength * .16 * scale
 
-    return {
-        "type": "polygon",
-        "role": "h4_authored_core_envelope",
-        "group": "CORE",
-        "points": [rear, rear_top, mid_top, front_top, front, front_bottom, mid_bottom, rear_bottom],
-    }
+    rear_center = Vec2(
+        pelvis.x - cos(yaw) * .055 * scale * sit_strength,
+        haunch_y,
+    )
+    chest_center = Vec2(
+        fore.x + cos(yaw) * .02 * scale,
+        fore.y + .025 * scale,
+    )
+    waist_center = Vec2(
+        body.x,
+        body.y + .06 * scale * sit_strength,
+    )
+
+    return [
+        {
+            "type": "ellipse",
+            "role": "h4_authored_haunch",
+            "group": "CORE",
+            "cx": rear_center.x,
+            "cy": rear_center.y,
+            "rx": (.31 + .04 * sit_strength) * scale * morphology.pelvis_scale,
+            "ry": (.29 + .12 * sit_strength) * scale * morphology.trunk_depth,
+        },
+        {
+            "type": "ellipse",
+            "role": "h4_authored_waist",
+            "group": "CORE",
+            "cx": waist_center.x,
+            "cy": waist_center.y,
+            "rx": .29 * scale * morphology.trunk_length,
+            "ry": (.21 + .03 * sit_strength) * scale * morphology.trunk_depth,
+        },
+        {
+            "type": "ellipse",
+            "role": "h4_authored_chest",
+            "group": "CORE",
+            "cx": chest_center.x,
+            "cy": chest_center.y,
+            "rx": .29 * scale * morphology.forequarter_scale,
+            "ry": .31 * scale * morphology.trunk_depth * morphology.forequarter_scale,
+        },
+        {
+            "type": "line",
+            "role": "h4_authored_back_bridge",
+            "group": "CORE",
+            "p0": rear_center,
+            "p1": chest_center,
+            "width": .29 * scale * morphology.trunk_depth,
+        },
+    ]
 
 
-def _rf_c_h6_envelope(state, morphology, yaw):
+def _rf_c_h6_core(state, morphology, yaw):
+    shapes = _rf_b_core(state, morphology, yaw)
     scale = state.size_dp / 2.0
     body = state.anchors["BODY_ROOT"]
     orientation_morph = orientation_morphology_by_id(morphology.id)
-    long_half = .54 * scale * morphology.trunk_length
+    front_strength = sin(yaw) ** 2
+    long_half = .46 * scale * morphology.trunk_length
     lateral_half = .285 * scale * max(
         orientation_morph.thorax_width_scale,
         orientation_morph.pelvis_width_scale,
     )
-    half_x = _projected_half_extent(long_half, lateral_half, yaw)
-    half_y = .33 * scale * morphology.trunk_depth
-
-    rear_bias = .10 * half_x * cos(yaw)
-    front_bias = .06 * half_x * cos(yaw)
-    return {
-        "type": "polygon",
-        "role": "h6_authored_turn_envelope",
+    projected = _projected_half_extent(long_half, lateral_half, yaw)
+    shapes.append({
+        "type": "ellipse",
+        "role": "h6_authored_front_volume",
         "group": "CORE",
-        "points": [
-            Vec2(body.x - half_x, body.y + rear_bias),
-            Vec2(body.x - .72 * half_x, body.y - .72 * half_y),
-            Vec2(body.x, body.y - half_y),
-            Vec2(body.x + .72 * half_x, body.y - .68 * half_y),
-            Vec2(body.x + half_x, body.y - front_bias),
-            Vec2(body.x + .72 * half_x, body.y + .70 * half_y),
-            Vec2(body.x, body.y + .92 * half_y),
-            Vec2(body.x - .72 * half_x, body.y + .76 * half_y),
-        ],
-    }
+        "cx": body.x,
+        "cy": body.y + .025 * scale,
+        "rx": projected * (.72 + .10 * front_strength),
+        "ry": (.25 + .045 * front_strength) * scale * morphology.trunk_depth,
+    })
+    return shapes
 
 
 def _shared_head_neck(state, morphology, yaw):
@@ -214,15 +280,15 @@ def _shared_head_neck(state, morphology, yaw):
     axis = _normalize(head - fore, fallback=Vec2(1.0, 0.0))
     orientation_morph = orientation_morphology_by_id(morphology.id)
     head_rx = scale * _projected_half_extent(
-        .245 * morphology.head_scale,
-        .225 * orientation_morph.thorax_width_scale,
+        .235 * morphology.head_scale,
+        .215 * orientation_morph.thorax_width_scale,
         yaw,
     )
-    head_ry = .225 * scale * morphology.head_scale
-    muzzle = _add(head, axis, .16 * scale * morphology.head_scale)
+    head_ry = .215 * scale * morphology.head_scale
+    muzzle = _add(head, axis, .15 * scale * morphology.head_scale)
 
-    ear_spread = .09 * scale * morphology.ear_scale
-    ear_height = .17 * scale * morphology.ear_scale
+    ear_spread = .088 * scale * morphology.ear_scale
+    ear_height = .165 * scale * morphology.ear_scale
     ear_base_y = head.y - .52 * head_ry
 
     return [
@@ -232,7 +298,7 @@ def _shared_head_neck(state, morphology, yaw):
             "group": "CORE",
             "p0": fore,
             "p1": head,
-            "width": .28 * scale * morphology.forequarter_scale,
+            "width": .25 * scale * morphology.forequarter_scale,
         },
         {
             "type": "ellipse",
@@ -249,8 +315,8 @@ def _shared_head_neck(state, morphology, yaw):
             "group": "CORE",
             "cx": muzzle.x,
             "cy": muzzle.y + .025 * scale,
-            "rx": .10 * scale * morphology.head_scale,
-            "ry": .062 * scale * morphology.head_scale,
+            "rx": .092 * scale * morphology.head_scale,
+            "ry": .058 * scale * morphology.head_scale,
         },
         {
             "type": "polygon",
@@ -361,10 +427,10 @@ def render_fixture(fixture, variant):
     corrections = []
 
     if variant == "RF_C" and fixture.case_id == "H4_SIT_TO_STAND":
-        core = [_rf_c_h4_envelope(state, morphology)]
+        core = _rf_c_h4_core(state, morphology, yaw)
         corrections.append(CORRECTION_H4)
     elif variant == "RF_C" and fixture.case_id == "H6_CHANGE_FACING_2P5D":
-        core = [_rf_c_h6_envelope(state, morphology, yaw)]
+        core = _rf_c_h6_core(state, morphology, yaw)
         corrections.append(CORRECTION_H6)
     else:
         core = _rf_b_core(state, morphology, yaw)
