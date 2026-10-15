@@ -6,155 +6,190 @@ Public namespace: `receiptledger/`
 
 ## 1. Current completed boundary
 
-The latest fully completed implementation checkpoint is **V1 Target API 36 Core**.
+The latest completed checkpoint is **CP20 — Product Rebaseline / V1 Master Specification**.
 
-- Working/completed branch: `receiptledger/run-v1-target-api36-core-20261015`
-- Frozen completed implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
-- Canonical successful GitHub Actions run: `38800790544` — **SUCCESS**
-- Actions artifact ID: `12004666174`
-- Actions artifact digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
-- Debug APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
-- Android lint: **0 errors / 0 warnings** (`No issues found.`)
-- `OldTargetApi`: **removed by real API 36 migration; not suppressed**
-- Build/test result: unit tests + `lintDebug` + `assembleDebug` + APK/evidence verification all PASS
+- branch: `receiptledger/run-v1-product-rebaseline-20261016`
+- frozen CP20 specification boundary: `961d64ecfa484478b97e6fcd8e9ffec542be7b51`
+- checkpoint type: documentation/specification only
+- result: **PASS / COMPLETE**
+- production Android source changed by CP20: **NO**
+- DB schema/runtime/OCR/permissions/toolchain changed by CP20: **NO**
 
-Current Android build contract:
+The latest executable implementation baseline remains **V1 Target API 36 Core**:
 
-- AGP: `8.11.1`
-- Gradle: `8.13`
-- JDK / Java: `17`
-- compileSdk: `36`
-- targetSdk: `36`
-- minSdk: `23`
-- versionCode: `19`
-- versionName: `1.0.18-target-api36-core`
+- frozen implementation HEAD: `56abeee3bb185cea8dd136d972a9660f243ded27`
+- canonical successful Actions run: `38800790544` — SUCCESS
+- artifact ID: `12004666174`
+- artifact digest: `sha256:338da98a240028a3b06056b0d690a8f2ed6b9ea7d348c9e54b53679af5b75efd`
+- debug APK SHA-256: `272cab6d1d0aea274eb5ba02459d974ac97aaf0d045e79c0072ae2a9dd97f79b`
+- lint: 0 errors / 0 warnings
+- AGP / Gradle / JDK: 8.11.1 / 8.13 / 17
+- compileSdk / targetSdk / minSdk: 36 / 36 / 23
+- version: `1.0.18-target-api36-core` (versionCode 19)
 
-The frozen implementation HEAD above is the code/evidence boundary. Any later commits on the same branch made only to synchronize handoff/status documentation are **documentation-only** and must not be mistaken for additional implementation.
+CP20 does not supersede this executable evidence; it supersedes only the previous statement that no next product plan existed.
 
-No subsequent implementation checkpoint has been assigned yet. **Do not start another feature group without explicit user instruction.**
+## 2. Product definition frozen by CP20
 
-## 2. Completed checkpoint chain
+ReceiptLedger is now explicitly defined as a **personal purchase-price memory and comparison system**.
 
-ReceiptLedger V1 has been built incrementally in this order:
+Primary loop:
 
-1. **Foundation** — minimal Android app + isolated public GitHub Actions debug APK foundation.
-2. **Image Intake / Document Core** — external-camera intake, system picker, EXIF normalization, bounded decoding, receipt quad detection, perspective correction.
-3. **OCR Core** — bundled Korean ML Kit OCR, block/line/element model, source-coordinate preservation, offline permission removal.
-4. **Layout Core** — geometry-based OCR element row reconstruction.
-5. **Structure Core** — receipt row roles, money/date candidates, explicit reasoning.
-6. **Item Tuple Core** — item name / quantity / unit price / line amount with printed/inferred provenance and fail-closed arithmetic.
-7. **Validation Core** — receipt-level arithmetic validation; mismatches are preserved rather than silently repaired.
-8. **Persistence Core** — app-private transactional SQLite persistence.
-9. **Image Archive Core** — app-private receipt image archive and orphan reconciliation.
-10. **Receipt Library Core** — receipt list/detail/delete and bounded detail-image decode.
-11. **Review / Edit Core** — user review required before save; user edits preserve provenance and trigger revalidation.
-12. **Product Identity Core** — STANDARD / NON_STANDARD / UNCLASSIFIED, exact confirmed alias reuse only, no fuzzy auto-merge.
-13. **Price History Core** — price observations derived from persisted receipts/product links; invalid receipts excluded from comparable history.
-14. **OCR Quality / Recovery Core** — original pass first, bounded recovery passes, quality/structure-aware candidate choice.
-15. **Vertical Integration Core** — integrated OCR → layout → structure → item → validation → review → persistence flow.
-16. **Merchant / Store Core** — conservative merchant/store extraction with user-editable store name propagation.
-17. **Conservative Cross-Pass Merge Core** — spatially missing tokens/rows may be supplemented from existing passes only when structure/validation materially improves.
-18. **Build Hygiene Core** — frozen HEAD `53d03fc219d4b15bf09cebbc368ae6af6a55053a`; Actions `38755847381` SUCCESS; lint reduced to 0 errors / 1 `OldTargetApi` warning.
-19. **Target API 36 Core** — frozen HEAD `56abeee3bb185cea8dd136d972a9660f243ded27`; Actions `38800790544` SUCCESS; API 36 toolchain migration, Android 15/16 edge-to-edge inset compatibility, predictive-back audit, lint 0/0, privacy/exported-state/APK evidence PASS.
+`receipt -> trusted extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-## 3. Target API 36 compatibility result
+The receipt is input/evidence. The primary user-facing objects are repeat-purchase products, non-standard commodities/items, and their historical prices.
 
-Target API 36 Core changed compatibility/tooling only; it did not redesign OCR, parsing, products, persistence, or normal UI behavior.
+Key frozen principles:
 
-### Toolchain
+- preserve evidence/provenance and fail closed on ambiguous identity;
+- wrong product merge is worse than leaving an item unresolved;
+- repeat use should become easier through confirmed reusable knowledge;
+- NON_STANDARD goods may be grouped under one commodity while retaining raw unit/form;
+- grouping does not imply cross-unit comparability;
+- no guessed unit conversion;
+- price history remains traceable to canonical saved receipt records + links;
+- price judgments require explicit statistics and data-sufficiency rules;
+- commercial UI hides OCR/debug implementation detail but does not delete proven internals prematurely;
+- V1 remains offline/private by default unless separately authorized.
 
-- `compileSdk` / `targetSdk` moved from 35 to 36.
-- AGP moved from 8.7.3 to 8.11.1.
-- CI Gradle moved to 8.13.
-- Java 17 and minSdk 23 were preserved.
+## 3. CP20 canonical documents
 
-### Edge-to-edge / insets
+Primary:
 
-The app remains programmatic Android Views. A reusable `SystemBarInsetHelper` is applied to:
+1. `PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
+2. `PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
+3. `PRODUCT_REBASELINE_V1_ROADMAP.md`
 
-- `MainActivity`
-- `LibraryActivity`
-- `ReceiptDetailActivity`
-- `PriceHistoryActivity`
+Supporting:
 
-Compatibility contract:
+- `CP20_PRODUCT_REBASELINE_DECISIONS.md`
+- `CP20_PRODUCT_REBASELINE_RISK_REGISTER.md`
+- `CP20_PRODUCT_REBASELINE_DEPENDENCY_GATES.md`
+- `CP20_PRODUCT_REBASELINE_SCOPE_AUDIT.md`
+- `CP20_PRODUCT_REBASELINE_ACCEPTANCE.md`
+- `CP20_PRODUCT_REBASELINE_EVIDENCE.md`
+- `CP20_PRODUCT_REBASELINE_CLOSEOUT.md`
+- `CP20_PRODUCT_REBASELINE_NAVIGATION.md`
 
-- API 23–34: preserve the prior framework decor-fitting behavior.
-- API 35+: account for forced edge-to-edge by applying `systemBars()` + `displayCutout()` insets.
-- Existing per-screen base padding is captured and preserved.
-- Insets are always computed from the original base padding, so repeated dispatch does not accumulate padding.
-- Deprecated `Window.setDecorFitsSystemWindows(...)` is not used in the final implementation.
+## 4. Consistency result
 
-### Predictive back
+CP20 reviewed the completed V1 foundation from domain, data/migration, identity, price-comparison, UX, privacy/security, performance and test/evidence perspectives.
 
-Source audit found no custom `onBackPressed`, `OnBackPressedDispatcher`, `OnBackInvokedDispatcher`, back-key interception, or predictive-back opt-out. ReceiptLedger continues to use standard Activity back navigation.
+Result: **COMPATIBLE WITH CONTROLLED EXTENSION**.
 
-## 4. Current application invariants
+No blocking contradiction requiring a rewrite was found.
 
-- Application ID: `com.receiptledger.v1`
-- Minimum SDK: 23
-- compileSdk / targetSdk: 36
-- Java: 17
-- OCR: bundled Korean Google ML Kit text recognition
-- OCR remains local/offline by design.
-- Camera capture uses an external camera app with a constrained temporary content URI; the app itself does not request CAMERA permission.
-- Gallery intake uses the system picker rather than broad storage/media permission.
-- Public CI produces debug development APK artifacts only. Release signing is a separate private concern.
+Existing foundations to preserve include:
 
-The packaged APK must not request:
+- external-camera/system-picker privacy model
+- EXIF/document correction
+- bundled local Korean OCR
+- source-coordinate preservation
+- geometry layout reconstruction
+- structure/item extraction with provenance
+- arithmetic validation
+- bounded OCR recovery / conservative merge
+- required review/edit before save
+- app-private receipt/image persistence
+- merchant/store handling
+- STANDARD / NON_STANDARD / UNCLASSIFIED base semantics
+- confirmed exact alias reuse / no fuzzy silent auto-merge
+- receipt-derived price history
+- invalid-receipt exclusion from comparable history
+- API36/lint/permission firewall
 
-- `android.permission.CAMERA`
-- `android.permission.READ_MEDIA_IMAGES`
-- `android.permission.READ_EXTERNAL_STORAGE`
-- `android.permission.WRITE_EXTERNAL_STORAGE`
-- `android.permission.MANAGE_EXTERNAL_STORAGE`
-- `android.permission.INTERNET`
-- `android.permission.ACCESS_NETWORK_STATE`
+Known gaps are extensions rather than prior-checkpoint failures:
 
-Final packaged permission audit for the frozen Target API 36 build contained none of the forbidden permissions.
+- structured brand/specification/pack identity
+- merchant-context aliases
+- category taxonomy
+- explicit non-standard sales-unit/form model
+- canonical comparable-observation layer
+- richer statistics / price judgment
+- search/browse/detail product UX
+- commercial capture/review/UI system
 
-## 5. Data / correctness invariants
+## 5. Completed checkpoint chain
 
-- OCR coordinates remain in the normalized source-image coordinate system even when recognition runs on corrected/scaled/preprocessed images.
-- Layout reconstruction uses OCR element geometry rather than trusting upstream line grouping.
-- Arithmetic inference is explicit and provenance-carrying; contradictions are not silently repaired.
-- User review is required before recognized data becomes a saved receipt.
-- User edits are distinguished from printed/inferred values and trigger revalidation.
-- Product aliases remain conservative: exact confirmed aliases may auto-link; fuzzy similarity must not auto-merge products.
-- Price history is derived from persisted receipt/product links rather than copied into a stale duplicate price table.
-- Receipts with `MISMATCH` / `INCOMPLETE` validation are excluded from normal comparable price history.
-- Target API 36 Core made no receipt DB schema or domain-semantics changes.
+1. Foundation
+2. Image Intake / Document Core
+3. OCR Core
+4. Layout Core
+5. Structure Core
+6. Item Tuple Core
+7. Validation Core
+8. Persistence Core
+9. Image Archive Core
+10. Receipt Library Core
+11. Review / Edit Core
+12. Product Identity Core
+13. Price History Core
+14. OCR Quality / Recovery Core
+15. Vertical Integration Core
+16. Merchant / Store Core
+17. Conservative Cross-Pass Merge Core
+18. Build Hygiene Core
+19. Target API 36 Core
+20. **Product Rebaseline / V1 Master Specification — COMPLETE**
 
-## 6. Public repository / namespace firewall
+## 6. Planned dependency-ordered roadmap
+
+The roadmap now defines, but does not automatically authorize:
+
+- CP21 Catalog Domain V2
+- CP22 Persistence V2
+- CP23 Receipt Product Semantics
+- CP24 Identity Resolver V2
+- CP25 Category System
+- CP26 Commodity / Non-standard V2
+- CP27 Price Intelligence V2
+- CP28 Price Evaluation
+- CP29 Search / Browse
+- CP30 Product Detail
+- CP31 Commodity Detail
+- CP32 Capture / Review UX V2
+- CP33 Design System
+- CP34 Commercial UI Shell
+- CP35 Real Receipt Evaluation
+- CP36 Performance / Reliability
+
+Dependency gates are defined in `CP20_PRODUCT_REBASELINE_DEPENDENCY_GATES.md`.
+
+## 7. Next checkpoint boundary
+
+The next planned checkpoint is **CP21 — Catalog Domain V2**.
+
+CP21 should freeze exact Product/Commodity/Specification/SalesUnit/Category/AliasContext/PurchaseObservation contracts and legacy compatibility **before CP22 persistence migration begins**.
+
+Planning existence is not execution authorization. Do not begin CP21 until the user explicitly authorizes the next group.
+
+## 8. Public repository / namespace firewall
 
 ReceiptLedger may modify only:
 
 - `receiptledger/**`
-- explicitly ReceiptLedger-prefixed workflows: `.github/workflows/receiptledger-*.yml`
+- explicitly ReceiptLedger-prefixed `.github/workflows/receiptledger-*.yml`
 
-Do not read from, modify, depend on, cache from, or consume artifacts from `mobi/*`, `einstein/*`, `linkline/*`, or any other project namespace.
+Do not read/use/modify/depend/cache/artifact from other project namespaces.
 
-Never commit/upload signing material, credentials, API keys, real private receipt photos, real purchase databases, private backups, personal identifiers, or uncleared private assets.
+Never commit/upload signing material, credentials, real private receipt photos, actual personal purchase databases, private backups, personal identifiers, or uncleared private assets.
 
-Do not alter repository-wide settings, rulesets, Actions permissions, shared secrets/variables, or global retention without explicit user approval.
+The executable app privacy contract remains no CAMERA / broad media-storage / INTERNET / ACCESS_NETWORK_STATE permission.
 
-## 7. CI history note
+## 9. Restart order
 
-- Run `38800168937` succeeded on the first API 36 implementation before final edge-to-edge cleanup.
-- Run `38800740254` failed during the transitional helper commit because the then-current workflow still required the removed deprecated `setDecorFitsSystemWindows` call. This was a **stale contract failure**, not an app compile/test regression.
-- Run `38800790544` is the canonical final run after the workflow contract was updated to the final API 35+ system-bar + display-cutout implementation. It passed every required step and supersedes the transitional run.
-
-## 8. Restart / next-work boundary
-
-For a new session, use GitHub as source of truth and read:
+For a new session:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/README.md`
-4. `receiptledger/WORK_UNIT.md`
-5. `receiptledger/TARGET_API36_CORE_PLAN.md`
-6. current Android source/workflow only as required
+3. `receiptledger/PRODUCT_REBASELINE_V1_MASTER_SPEC.md`
+4. `receiptledger/PRODUCT_REBASELINE_V1_CONSISTENCY_REVIEW.md`
+5. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+6. `receiptledger/README.md`
+7. `receiptledger/WORK_UNIT.md`
+8. supporting CP20 docs only when detailed rationale is needed
+9. current Android source / prior core plans only when the next checkpoint touches them
 
-Then verify the current branch against frozen implementation HEAD `56abeee3bb185cea8dd136d972a9660f243ded27`. Any post-boundary handoff commit should be documentation-only unless the user has explicitly authorized a new checkpoint.
+At restart verify the CP20 branch against prior handoff HEAD `7008bc28374042c0cd1d8524913e69c455735545` and confirm CP20 changes are ReceiptLedger documentation only.
 
-**Current stop condition: Target API 36 Core is complete. Await explicit user direction for the next checkpoint.**
+**Current stop condition: CP20 is complete. Await explicit authorization before CP21.**
