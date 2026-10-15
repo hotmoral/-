@@ -1,0 +1,93 @@
+name: Mobi P1-C3M Root Shift Magnitude
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c3m-root-shift-mag-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/run_h6n_root_shift_magnitude_analysis.py'
+      - '.github/workflows/mobi-p1-c3m-root-shift-mag.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c3m-root-shift-mag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c3m/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c3m/evidence/environment.txt
+
+      - name: Verify private/public source blob parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object run_h6n_phase_origin_analysis.py)" = "442a53fc8c7e2c6df4144566bfd6862e42330191"
+          test "$(git hash-object run_h6n_root_shift_timing_analysis.py)" = "b029de06cd7cdf1de8c35ab1b19458f1f8df52ad"
+          test "$(git hash-object run_h6n_root_shift_magnitude_analysis.py)" = "144b49b5d4fdcebe27f88dc7b70f5f243b86797c"
+          git hash-object run_h6n_phase_origin_analysis.py run_h6n_root_shift_timing_analysis.py run_h6n_root_shift_magnitude_analysis.py | tee ../../p1-c3m/evidence/git_blob_shas.txt
+          sha256sum run_h6n_phase_origin_analysis.py run_h6n_root_shift_timing_analysis.py run_h6n_root_shift_magnitude_analysis.py | tee ../../p1-c3m/evidence/source_sha256.txt
+          echo "P1-C3M private/public source parity PASS"
+
+      - name: Run magnitude analysis twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from run_h6n_phase_origin_analysis import canonical_bytes
+          from run_h6n_root_shift_magnitude_analysis import run_analysis
+
+          out = Path('../../p1-c3m/evidence')
+          out.mkdir(parents=True, exist_ok=True)
+
+          first = run_analysis()
+          second = run_analysis()
+          if canonical_bytes(first) != canonical_bytes(second):
+              raise SystemExit('C3M deterministic repeat mismatch')
+          summaries = {row['candidateId']: row for row in first['candidateSummary']}
+          if summaries['M_MID']['minimumFinalSideMarginNormalized'] <= 0.0:
+              raise SystemExit('midpoint must have positive global side margin')
+          if abs(summaries['M_LOW']['minimumFinalSideMarginNormalized']) > 1e-10:
+              raise SystemExit('low endpoint margin should be boundary-zero')
+          if abs(summaries['M_HIGH']['minimumFinalSideMarginNormalized']) > 1e-10:
+              raise SystemExit('high endpoint margin should be boundary-zero')
+          if summaries['M_MID']['worstMaxReplantDisplacementNormalized'] >= 1.3273:
+              raise SystemExit('midpoint replant burden exceeds rejected S-A envelope')
+          if summaries['M_MID']['worstMaxPlantedTargetStalenessNormalized'] >= 0.9420:
+              raise SystemExit('midpoint staleness burden exceeds rejected S-A envelope')
+
+          first['deterministicRepeatExact'] = True
+          (out / 'analysis.json').write_text(json.dumps(first, indent=2, sort_keys=True), encoding='utf-8')
+          (out / 'candidate_summary.json').write_text(json.dumps(first['candidateSummary'], indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps(first['candidateSummary'], indent=2, sort_keys=True))
+          print(f"canonicalAnalysisSha256={first['canonicalAnalysisSha256']}")
+          PY
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c3m/evidence
+        run: |
+          set -euo pipefail
+          sha256sum environment.txt git_blob_shas.txt source_sha256.txt analysis.json candidate_summary.json | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c3m-root-shift-mag-${{ github.run_id }}
+          path: mobi/p1-c3m/evidence/
+          if-no-files-found: error
+          retention-days: 30
