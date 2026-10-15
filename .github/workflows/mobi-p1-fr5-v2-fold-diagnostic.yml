@@ -1,0 +1,61 @@
+name: Mobi P1-FR5 V2 Fold Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr5-core-mass-silhouette-v2-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/diagnose_p1_fr5_v2_intersections.py'
+      - '.github/workflows/mobi-p1-fr5-v2-fold-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify diagnostic and frozen candidate identity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+              'diagnose_p1_fr5_v2_intersections.py': '32624c0fa3fa24c948d829f7b4c72491dbb6b777',
+              'diagnose_p1_fr3_v3_intersections.py': 'd44d96cd7760829743be3af1fd64ee811a1a08ca',
+              'p1_fr5_core_mass_silhouette_v2.py': '0ee2c2496680f9215121230cdc7e4b4de078823a',
+              'p1_fr5_core_mass_silhouette_v1.py': 'fab2789d36c94ac859dabfd31ad4d4ff72c098b8',
+          }
+          mismatches=[]
+          for path,wanted in expected.items():
+              actual=subprocess.check_output(['git','hash-object',path], text=True).strip()
+              print(f'{actual}  {path}')
+              if actual != wanted:
+                  mismatches.append((path,wanted,actual))
+          if mismatches:
+              raise SystemExit('blob mismatch: '+repr(mismatches))
+          print('diagnostic_and_candidate_identity=PASS')
+          PY
+
+      - name: Diagnose all 1770 V2 records
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          mkdir -p ../../p1-fr5-v2-diagnostic
+          python3 diagnose_p1_fr5_v2_intersections.py | tee ../../p1-fr5-v2-diagnostic/fold_diagnostic.json
+
+      - name: Hash diagnostic
+        working-directory: mobi/p1-fr5-v2-diagnostic
+        run: sha256sum fold_diagnostic.json | tee SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-fr5-v2-fold-diagnostic-${{ github.run_id }}
+          path: mobi/p1-fr5-v2-diagnostic/
+          if-no-files-found: error
+          retention-days: 30
