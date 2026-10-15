@@ -1,39 +1,35 @@
 # ReceiptLedger public execution namespace
 
-This directory contains public-safe ReceiptLedger Android/OCR development, product/domain specifications, persistence migrations, validation, CI and debug APK evidence.
+This directory contains public-safe ReceiptLedger Android/OCR development, product/domain specifications, validation, CI and debug APK evidence.
 
 ## Start here
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP22_PERSISTENCE_V2_CLOSEOUT.md`
-4. `CP22_PERSISTENCE_V2_EVIDENCE.md`
-5. `PERSISTENCE_V2_PLAN.md`
-6. `PERSISTENCE_V2_CONSISTENCY_REVIEW.md`
-7. `PERSISTENCE_V2_GOLDEN_VECTORS.md`
-8. `CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-9. `CATALOG_DOMAIN_V2_PLAN.md`
-10. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-11. `README.md`
-12. `WORK_UNIT.md`
+3. `CP23_RECEIPT_PRODUCT_SEMANTICS_CLOSEOUT.md`
+4. `CP23_RECEIPT_PRODUCT_SEMANTICS_EVIDENCE.md`
+5. `CP23_RECEIPT_PRODUCT_SEMANTICS_PLAN.md`
+6. `RECEIPT_PRODUCT_SEMANTICS_CONSISTENCY_REVIEW.md`
+7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+8. `WORK_UNIT.md`
 
 GitHub is canonical; verify refs before relying on old chat context.
 
 ## Current boundary
 
-**CP22 — Persistence V2 — COMPLETE**
+**CP23 — Receipt Product Semantics — COMPLETE**
 
-- branch `receiptledger/run-v1-persistence-v2-20261016`
-- frozen implementation HEAD `449896c7580fb3412f41c9b58d1ab9412d13d84d`
-- canonical Actions `38816200340` — SUCCESS
-- artifact ID `12010832560`
-- artifact digest `sha256:6b27c9e8aa9541346d9a3f5844c12a2f0dacd26841e869bd5b4834d7cb67bea1`
-- APK SHA-256 `1cddd2f19c70b8ab883a97630c3dbc10e8971d75a3c9e4ec62be72eb69328884`
-- migration vectors 15/15 PASS
-- CP21 domain tests 15/15 PASS
-- CP22 persistence tests 7/7 PASS
+- branch `receiptledger/run-v1-receipt-product-semantics-20261016`
+- frozen implementation HEAD `5bffb66bd43814f8d638791b5697f79ff089028b`
+- canonical Actions `38822100885` — SUCCESS
+- artifact ID `12013477721`
+- artifact digest `sha256:fa22d082545adae7c414b0f1c089604174341f7e879c1acd5e4677e1dc2b7195`
+- APK SHA-256 `e4e64f85f9700089b32f9f0b8121eef0a2f565d09b5428599d3717296c1b8324`
+- semantic parser tests 7/7 PASS
+- upstream catalog tests 15/15 PASS
+- upstream persistence tests 7/7 PASS
 - lint 0 errors / 0 warnings
-- version `1.0.20-persistence-v2`, versionCode 21
+- version `1.0.21-receipt-product-semantics`, versionCode 22
 
 ## Product direction
 
@@ -43,57 +39,41 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-## Persistence state
+CP23 converts receipt item text into conservative semantic evidence only. It does not decide catalog identity.
 
-Product catalog DB:
+Key current rules:
 
-- file stays `receipt-products-v1.db`;
-- schema is V2;
-- legacy product IDs and item links survive migration;
-- legacy aliases become GLOBAL contextual aliases;
-- merchant alias context, semantic catalog fields, specification, category reference and linked purchase-form metadata can now be persisted.
+- parsed semantics remain unconfirmed evidence;
+- unknown brand is not guessed merely from first-token position;
+- free-form variant is not guessed;
+- standalone kg/g/L/mL is ambiguous between package specification and purchase form and therefore review-gated;
+- explicit pack forms and multipack syntax are parsed when defensible;
+- stable catalog ID remains the only identity authority;
+- false merge and false split are both downstream quality risks;
+- no fake cross-unit comparison;
+- price truth stays receipt-derived.
 
-Receipt DB:
+## CP23 local quality
 
-- remains `receiptledger-v1.db` schema V1;
-- price/date/store/validation evidence remains authoritative there;
-- CP22 does not create a duplicate price truth.
+- field precision 96.9696%
+- field recall 94.1176%
+- ambiguity review-gating 10/10
+- no-invention negatives 2/2
+- review-required 13 / semantic-ready 13 across 26 synthetic fixtures
 
-Direct SQLite / SQLiteOpenHelper remains in use. Room was evaluated and deferred to avoid combining framework migration with data migration without evidence that it is needed.
+These are parser fixture metrics, not final real-receipt accuracy.
 
-## Governing client-alignment requirements
+## Next planned checkpoint
 
-- measure false split as well as false merge in CP24;
-- repeated confirmed products should reduce review burden;
-- CP23–CP26 measure local automation/review quality rather than waiting for CP35;
-- CP27 defines the canonical comparison-price basis before price statistics;
-- prevent fake cross-unit comparison;
-- CP30 Design System Foundation precedes final commercial detail screens.
+**CP24 — Identity Resolver V2**
 
-## Roadmap
+CP24 must define merchant-aware/confirmed alias authority and measure false merge, false split, automatic-link success, review burden, incorrect automatic decisions and repeat-confirmation reuse.
 
-Next planned checkpoint:
-**CP23 — Receipt Product Semantics**.
-
-Then:
-
-CP24 Identity Resolver V2
--> CP25 Category System
--> CP26 Commodity / Non-standard V2
--> CP27 Price Intelligence V2
--> CP28 Price Evaluation
--> CP29 Search / Browse
--> CP30 Design System Foundation
--> CP31 Product Detail
--> CP32 Commodity Detail
--> CP33 Capture / Review UX V2
--> CP34 Commercial UI Shell
--> CP35 Real Receipt Evaluation
--> CP36 Performance / Reliability.
+Do not start CP24 until explicitly authorized.
 
 ## Privacy/security
 
-This repository is public. Never commit signing secrets, credentials, real private receipt photos, real personal purchase databases/backups, personal identifiers or uncleared private assets.
+This repository is public. Never commit signing secrets, credentials, real private receipt photos, real purchase databases/backups, personal identifiers or uncleared private assets.
 
 The executable app intentionally does not request CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permissions.
 
@@ -105,7 +85,3 @@ ReceiptLedger work may modify only:
 - explicitly approved `.github/workflows/receiptledger-*.yml`
 
 Do not use other project namespaces or alter repo-wide settings without separate approval.
-
-## Stop condition
-
-**CP22 is complete. Do not begin CP23 until explicitly authorized.**

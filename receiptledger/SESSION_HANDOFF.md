@@ -10,36 +10,37 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP22_PERSISTENCE_V2_CLOSEOUT.md`
-4. `receiptledger/CP22_PERSISTENCE_V2_EVIDENCE.md`
-5. `receiptledger/PERSISTENCE_V2_PLAN.md`
-6. `receiptledger/PERSISTENCE_V2_CONSISTENCY_REVIEW.md`
-7. `receiptledger/PERSISTENCE_V2_GOLDEN_VECTORS.md`
-8. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-9. `receiptledger/CATALOG_DOMAIN_V2_PLAN.md`
-10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-11. `receiptledger/README.md`
-12. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_CLOSEOUT.md`
+4. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_EVIDENCE.md`
+5. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_PLAN.md`
+6. `receiptledger/RECEIPT_PRODUCT_SEMANTICS_CONSISTENCY_REVIEW.md`
+7. `receiptledger/RECEIPT_PRODUCT_SEMANTICS_GOLDEN_VECTORS.md`
+8. `receiptledger/CP22_PERSISTENCE_V2_CLOSEOUT.md`
+9. `receiptledger/CP22_PERSISTENCE_V2_EVIDENCE.md`
+10. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+12. `receiptledger/README.md`
+13. `receiptledger/WORK_UNIT.md`
 
 ## 1. Latest executable checkpoint
 
-**CP22 — Persistence V2 — PASS / COMPLETE**
+**CP23 — Receipt Product Semantics — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-persistence-v2-20261016`
-- predecessor handoff HEAD: `dc62d7adb650ced200fe5058aaf20f23d23fb34c`
-- frozen implementation HEAD: `449896c7580fb3412f41c9b58d1ab9412d13d84d`
-- canonical Actions run: `38816200340` — SUCCESS
-- job: `116701369902` — SUCCESS
-- artifact ID: `12010832560`
-- artifact digest: `sha256:6b27c9e8aa9541346d9a3f5844c12a2f0dacd26841e869bd5b4834d7cb67bea1`
-- debug APK SHA-256: `1cddd2f19c70b8ab883a97630c3dbc10e8971d75a3c9e4ec62be72eb69328884`
-- migration vectors: 15/15 PASS
-- CatalogDomainV2Test: 15/15 PASS
-- CatalogPersistenceContractV2Test: 7/7 PASS
+- branch: `receiptledger/run-v1-receipt-product-semantics-20261016`
+- predecessor handoff: `913150c7acb06cb80a18833a10680657213239ec`
+- frozen implementation HEAD: `5bffb66bd43814f8d638791b5697f79ff089028b`
+- canonical Actions: `38822100885` — SUCCESS
+- job: `116720855010` — SUCCESS
+- artifact ID: `12013477721`
+- artifact digest: `sha256:fa22d082545adae7c414b0f1c089604174341f7e879c1acd5e4677e1dc2b7195`
+- APK SHA-256: `e4e64f85f9700089b32f9f0b8121eef0a2f565d09b5428599d3717296c1b8324`
+- semantic parser tests: 7/7 PASS
+- frozen catalog tests: 15/15 PASS
+- frozen persistence tests: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionName `1.0.20-persistence-v2`, versionCode 21
+- versionName `1.0.21-receipt-product-semantics`, versionCode 22
 
-The implementation/evidence boundary remains `449896c...` even after later documentation-only handoff commits.
+Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary.
 
 ## 2. Product essence
 
@@ -49,139 +50,125 @@ Target experience:
 
 `영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색 -> 과거 가격과 현재 가격 판단`
 
-Receipt is evidence/input; product/commodity history and price judgment are the destination.
+The receipt remains evidence/input. Product/commodity history is the destination.
 
-## 3. CP22 persistence contract
+## 3. CP23 semantic contract
 
-### Product database
+The parser consumes the existing receipt item name and returns unconfirmed evidence candidates only.
 
-File remains:
-`receipt-products-v1.db`
+Supported evidence:
 
-Schema is now version 2.
+- brand: explicit `[brand]` or caller-supplied known-brand longest prefix only;
+- product/family: conservative remaining lexical text;
+- variant: explicit non-numeric parenthetical descriptor only;
+- specification: explicit `입/개입`, exact weight/volume and multipack syntax;
+- purchase form: raw quantity + sales-unit candidate;
+- evidence string, confidence and deterministic reason;
+- ambiguity and review reasons.
 
-Migration preserves in place:
+Every parsed catalog field is `PARSED_FROM_RECEIPT / UNCONFIRMED`. HIGH confidence is not confirmation.
 
-- product ID;
-- type;
-- canonical name/key;
-- creation timestamp;
-- every item link and link source.
+CP23 never emits a catalog ID, creates an alias, links an item, merges products or assigns identity authority.
 
-Legacy aliases migrate one-for-one to GLOBAL context.
+## 4. Essential ambiguity rule
 
-V2 storage now supports:
+A standalone physical measure is dual-use evidence.
 
-- GLOBAL / MERCHANT alias namespaces;
-- BRAND / PRODUCT_NAME / VARIANT fields with source/confidence/confirmation;
-- exact package specification;
-- stable category reference;
-- linked observation PurchaseForm semantics.
+Examples:
 
-### Receipt database
+- `왕교자 1.05KG` may be packaged net content;
+- `감자 1KG` may be commodity purchase amount.
 
-File remains:
-`receiptledger-v1.db`
+Without identity/catalog-kind context, CP23 keeps both readings at MEDIUM confidence and requires review. This ambiguity is intentional and must not be removed merely to improve automation numbers.
 
-Schema remains version 1 and source is unchanged.
+Strong package evidence such as `200MLX6` and `5입` is parsed more strongly. Strong raw package forms 봉/상자/단 are preserved without conversion. Context-sensitive 팩/개 remain review-gated.
 
-Authoritative receipt facts remain there:
+## 5. Canonical local metrics
 
-- raw item name;
-- quantity / unit price / line amount and provenance;
-- purchase date;
-- store;
-- receipt validation.
+`fixtures=26 expected_fields=68 predicted_fields=66 correct_fields=64 precision_ppm=969696 recall_ppm=941176 review_required=13 semantic_ready=13 ambiguous=10 ambiguous_reviewed=10 no_invention_negatives=2`
 
-Do not create a duplicate price truth from CP22 metadata.
+- precision 96.9696%
+- recall 94.1176%
+- all ambiguity review-gated 10/10
+- no-invention negatives 2/2
 
-## 4. Critical migration guardrails
+These are deterministic synthetic-fixture metrics, not CP35 real-receipt acceptance.
 
-CP23 and later checkpoints must not reinterpret these facts:
+## 6. Known conservative limitations
 
-1. stable ID remains identity authority;
-2. migrated legacy rows are not semantically parsed by migration;
-3. separate old IDs remain separate;
-4. V1 aliases are GLOBAL, not guessed merchant aliases;
-5. merchant scope is contextual alias knowledge, not SKU identity;
-6. PurchaseForm persistence is semantic overlay only;
-7. PurchaseForm storage does not prove cross-unit comparability;
-8. receipt price/date/store/validation remain authoritative;
-9. unsupported catalog migration paths fail closed;
-10. receipt DB was not migrated.
+- first token is not automatically a brand;
+- an unseen brand can remain inside product lexical text;
+- free-form flavor/model suffix is not automatically variant;
+- lexical-only items such as `양파` remain review-required because CP23 has no structured evidence beyond the name;
+- parser output alone cannot establish STANDARD vs NON_STANDARD or SKU identity.
 
-## 5. Direct SQLite / Room decision
+These limitations are visible by design. CP24 may use confirmed aliases/catalog knowledge to reduce repeat-use burden without weakening CP23 semantics.
 
-CP22 deliberately retains `SQLiteOpenHelper`.
+## 7. Upstream contracts that remain frozen
 
-Reason: schema migration correctness and data preservation were the checkpoint's risk center. Simultaneously migrating to Room would add architecture churn without advancing the core product outcome.
+### CP21
 
-Room remains a future option if later search/query complexity or maintainability evidence justifies it. Do not reopen this choice ritualistically in CP23.
+- stable catalog ID = identity/equality authority;
+- UNCLASSIFIED is unresolved;
+- category/store context cannot prove product identity;
+- source/confidence/confirmation are independent;
+- exact unit canonicalization only where defensible;
+- grouping != comparability.
 
-## 6. CP21 / client-alignment invariants still governing
+### CP22
 
-- STANDARD_PRODUCT vs NON_STANDARD_COMMODITY;
-- UNCLASSIFIED remains unresolved;
-- category is not identity authority;
-- HIGH confidence != CONFIRMED;
-- unknown != invented default;
-- exact physical unit equivalence only where mathematically defensible;
-- BAG/PACK/BOX/BUNDLE have no guessed conversion;
-- grouping != comparability;
-- false merge remains higher severity but false split is also a product failure;
-- repeat confirmed use should reduce review burden;
-- CP27 defines canonical comparison-price semantics before price statistics;
-- CP30 Design System Foundation precedes final commercial detail-screen polish.
+- product DB `receipt-products-v1.db`, schema 2;
+- receipt DB `receiptledger-v1.db`, schema 1;
+- legacy product IDs/item links preserved;
+- legacy aliases GLOBAL;
+- merchant alias context persistable;
+- receipt price/date/store/validation remain authoritative;
+- direct SQLite retained.
 
-## 7. Next planned checkpoint
+## 8. Superseded failure
 
-**CP23 — Receipt Product Semantics**
+Run `38821795314` failed in lint after scope/public-tree guards passed. The initial parser used Java collection sorting convenience APIs classified as API24+ while minSdk is 23.
 
-Purpose:
-parse structured semantic candidates from raw receipt item text:
+Fix: API23-safe `Collections.sort` with explicit comparator. No minSdk increase, no suppression, no domain change. Final run `38822100885` passed lint 0/0 and all evidence steps.
 
-- brand;
-- product/family name;
-- variant;
-- net quantity/unit;
-- pack count / inner content when evidenced;
-- purchase/sales-unit candidate where evidenced.
+## 9. Next planned implementation checkpoint
 
-Required behavior:
+**CP24 — Identity Resolver V2**
 
-- output confidence/reason/provenance;
-- preserve ambiguity;
-- no automatic product merge authority;
-- no invented missing fields;
-- local parsing coverage/accuracy and review-required metrics;
-- prepare evidence for CP24 without doing CP24's resolver job.
+Required concerns before authority is added:
 
-CP23 must not start automatically. Explicit user authorization is required.
+1. exact GLOBAL vs MERCHANT alias precedence;
+2. confirmed knowledge reuse;
+3. deterministic candidate ranking;
+4. ambiguous cases fail to review rather than unsafe auto-link;
+5. false merge and false split both measured;
+6. automatic-link success and incorrect-auto-link rate measured;
+7. repeat purchase after prior confirmation should reduce review burden;
+8. CP23 confidence by itself never authorizes a link.
 
-## 8. Existing foundations to preserve
+CP24 is planned, not automatically authorized.
 
-- external camera/system picker privacy model;
-- local Korean OCR;
-- EXIF/document correction;
-- coordinate preservation;
-- geometry-based layout reconstruction;
-- item extraction with provenance;
-- arithmetic validation / contradiction preservation;
-- bounded OCR recovery / conservative merge;
-- review/edit before save;
-- app-private receipt/image storage;
-- merchant/store evidence;
-- receipt-derived price history;
-- API36/lint/permission firewall.
+## 10. Security/public boundary
 
-## 9. Public/security boundary
-
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows.
-
-Do not use other project namespaces. Never commit secrets, release signing material, real private receipt photos, personal purchase DBs/backups, personal identifiers or uncleared assets.
+Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Do not use other project namespaces. Never commit secrets, release signing material, private receipts, personal purchase databases/backups, identifiers or uncleared assets.
 
 Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE unless separately authorized.
 
-## 10. Stop condition
+## 11. Group discipline
 
-**CP22 is complete and handoff-synchronized. Await explicit authorization for CP23.**
+For every checkpoint:
+
+- recover canonical state;
+- restate essence/non-goals;
+- inspect only materially relevant consistency risks;
+- resolve cheap contradictions before implementation;
+- avoid unrelated architecture cleanup;
+- implement the smallest coherent proof;
+- run scoped CI/evidence;
+- freeze exact executable refs;
+- synchronize handoff/status docs;
+- stop before the next unauthorized group.
+
+## 12. Stop condition
+
+**CP23 is complete and handoff-synchronized. Await explicit authorization for CP24.**
