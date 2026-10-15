@@ -7,7 +7,7 @@ from pathlib import Path
 
 from e_v0_fixture_adapter import H1, H4, H6N, build_e_fixture
 from e_v0_profiles import M0, MORPHOLOGIES
-from p1_fr1_mesh_probe_v2 import (
+from p1_fr1_mesh_probe_v3 import (
     CORE_VERTEX_IDS,
     PROBE_VERSION,
     build_probe,
@@ -36,7 +36,7 @@ class P1FR1MeshFeasibilityTests(unittest.TestCase):
             for case_id, t in ((H1, 0.0), (H4, 0.5)):
                 fixture = build_e_fixture(morphology, case_id, 80, t, +1)
                 result = build_probe(fixture, +1)
-                self.assertIn("SMOOTH_SKINNING", PROBE_VERSION)
+                self.assertIn("DIRECTION_CONVENTION", PROBE_VERSION)
                 self.assertEqual(expected_topology, result.topology_signature)
                 self.assertEqual(result.semantic_anchor_hash_before, result.semantic_anchor_hash_after)
                 self.assertLessEqual(result.paw_pin_error_max, 1e-9)
@@ -44,10 +44,7 @@ class P1FR1MeshFeasibilityTests(unittest.TestCase):
                 self.assertEqual((), result.correction_families)
                 self.assertEqual(CORE_VERTEX_IDS, tuple(item[0] for item in result.core_vertices))
 
-    def test_h6n_near_front_swaps_anatomical_near_far_order_without_identity_swap(self):
-        # At exact front the anatomical sides are legitimately depth-tied under
-        # orthographic projection. Test near-front where painter ordering must be
-        # distinguishable, rather than treating an exact-front tie as failure.
+    def test_h6n_near_front_depths_preserve_anatomical_identity_under_direction_mirror(self):
         positive = build_probe(build_e_fixture(M0, H6N, 80, 0.75, +1), +1)
         negative = build_probe(build_e_fixture(M0, H6N, 80, 0.75, -1), -1)
 
@@ -65,7 +62,19 @@ class P1FR1MeshFeasibilityTests(unittest.TestCase):
             self.assertEqual({"L", "R"}, set(neg))
             self.assertGreater(abs(pos["L"] - pos["R"]), 1e-6)
             self.assertGreater(abs(neg["L"] - neg["R"]), 1e-6)
-            self.assertLess((pos["L"] - pos["R"]) * (neg["L"] - neg["R"]), 0.0)
+            self.assertAlmostEqual(pos["L"], -neg["R"], places=12)
+            self.assertAlmostEqual(pos["R"], -neg["L"], places=12)
+
+    def test_exact_front_lateral_depth_tie_is_valid(self):
+        for direction in (+1, -1):
+            result = build_probe(build_e_fixture(M0, H6N, 80, 1.0, direction), direction)
+            for kind in ("FORE", "HIND"):
+                values = {
+                    mesh["side"]: mesh["viewDepth"]
+                    for mesh in result.limb_meshes
+                    if mesh["kind"] == kind
+                }
+                self.assertAlmostEqual(values["L"], values["R"], places=12)
 
     def test_full_matrix_passes_one_topology_no_mutation_no_self_intersection(self):
         records, summary = run_matrix()
