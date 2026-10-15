@@ -66,7 +66,7 @@ class P1C3RH6ViewResolvedTests(unittest.TestCase):
                     self.assertEqual(keys, sorted(keys))
 
     def test_profile_side_order_reverses_without_identity_swap(self):
-        morphology = MORPHOLOGIES[1]
+        morphology = MORPHOLOGIES[1]  # M0 neutral
         size_dp = 80
 
         start = render_fixture_view(
@@ -89,6 +89,10 @@ class P1C3RH6ViewResolvedTests(unittest.TestCase):
         self.assertIn("forelimb_R", start_roles)
         self.assertIn("forelimb_L", end_roles)
         self.assertIn("forelimb_R", end_roles)
+
+        # At yaw=0 anatomical R is the near profile side under the accepted
+        # view-depth convention; at yaw=pi anatomical L becomes near. Identity
+        # is preserved and only painter order changes.
         self.assertLess(
             start_roles.index("forelimb_L"), start_roles.index("forelimb_R")
         )
@@ -128,6 +132,9 @@ class P1C3RH6ViewResolvedTests(unittest.TestCase):
                 new_pelvis = next(
                     shape for shape in new["shapes"] if shape["role"] == "pelvis"
                 )
+                # Representation-level engineering check, not a product-size
+                # threshold: the revision must materially address the exact
+                # frontal mass-collapse mechanism it claims to fix.
                 self.assertGreater(new_fore["rx"], 1.15 * old_fore["rx"])
                 self.assertGreater(new_pelvis["rx"], 1.15 * old_pelvis["rx"])
 
