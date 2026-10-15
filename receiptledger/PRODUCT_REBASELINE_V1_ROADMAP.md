@@ -1,12 +1,13 @@
 # ReceiptLedger V1 — Product-Centric Roadmap
 
 Updated: 2026-10-16 KST
+Amended by: `CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 
 ## 0. Governing objective
 
 Complete the smallest coherent product that lets a user add a receipt with minimal manual work, obtain trustworthy product/commodity identities and purchase prices, find a repeat purchase later, inspect personal historical prices, and judge whether a current price is cheap/normal/expensive without fake normalization of non-standard goods.
 
-Each checkpoint requires explicit user authorization and closes with exact evidence plus handoff synchronization.
+Every checkpoint requires explicit user authorization and closes with exact evidence plus handoff synchronization.
 
 ## 1. Completed contract stages
 
@@ -22,19 +23,7 @@ Frozen implementation HEAD:
 Canonical Actions:
 `38808985222` — SUCCESS
 
-CP21 froze:
-
-- Product vs Commodity boundary;
-- legacy ProductType compatibility;
-- stable-ID identity/equality rule;
-- Brand/Product/Variant/Specification field contract;
-- exact physical package-measure semantics;
-- raw SalesUnit/PurchaseForm semantics;
-- CategoryRef non-authority;
-- global/merchant AliasContext;
-- independent source/confidence/confirmation;
-- logical PurchaseObservation contract;
-- fail-closed legacy adaptation.
+CP21 froze Product/Commodity boundary, stable-ID identity, structured STANDARD fields, exact physical package measures, raw purchase forms, CategoryRef non-authority, global/merchant AliasContext, source/confidence/confirmation separation, logical PurchaseObservation, and fail-closed legacy adaptation.
 
 Persistence schema remains V1 and migration has not started.
 
@@ -65,23 +54,57 @@ Non-goals: semantic parsing, resolver V2, price judgment, commercial UI.
 
 Parse brand/product/variant/specification/pack/sales-unit candidates from raw receipt item text with confidence/reason/provenance and without inventing identity.
 
+Local quality evidence must include materially relevant parsing accuracy/coverage and review-required rate. Do not defer all semantic quality measurement to CP35.
+
 ### CP24 — Identity Resolver V2
 
-Merchant-aware aliases, deterministic candidate ranking, safe auto-link authority, ambiguous review and confirmed-decision reuse. Fuzzy/semantic similarity remains suggestion evidence unless separately proven safe.
+Merchant-aware aliases, deterministic candidate ranking, safe auto-link authority, ambiguous review and confirmed-decision reuse.
+
+Mandatory quality metrics:
+
+- false merge rate;
+- false split / identity-fragmentation rate;
+- automatic link success rate;
+- ambiguous/review-required rate;
+- incorrect automatic decision rate;
+- repeat-purchase reuse rate after prior confirmation.
+
+False merge remains the stricter safety failure, but false split may not be ignored.
+
+Fuzzy/semantic similarity remains suggestion evidence unless separately proven safe.
 
 ### CP25 — Category System
 
 Taxonomy, persistence, assignment, suggestion, user correction and reuse. Category must never become a shortcut for product identity.
 
+Measure category suggestion accuracy and review burden locally.
+
 ### CP26 — Commodity / Non-standard V2
 
 Make mixed raw forms such as 봉/팩/kg/개/상자 first-class while preserving grouping != comparability and prohibiting guessed conversion.
+
+Measure commodity grouping correctness, false grouping/splitting, raw-unit preservation and review burden locally.
 
 ## 4. Stage D — Price intelligence
 
 ### CP27 — Price Intelligence V2
 
 Define one canonical comparable-observation layer and deterministic metrics: latest/previous, deltas, min/max, means/medians, period and store-aware views, plus like-unit NON_STANDARD subsets.
+
+Before statistics, CP27 must define the **canonical comparison price** for an observation.
+
+At minimum the contract must cover:
+
+- line amount vs one purchased unit/package;
+- quantity > 1;
+- item-specific discounts;
+- receipt-level coupons/discounts with unprovable allocation;
+- printed/inferred/user-edited price provenance;
+- invalid/incomplete observations;
+- same-product package identity;
+- like-unit NON_STANDARD comparability.
+
+Default principle: compare the price actually attributable to one purchased unit/package of the same catalog identity when evidence supports it. Do not arbitrarily distribute unallocated receipt-level discounts.
 
 ### CP28 — Price Evaluation
 
@@ -93,17 +116,25 @@ Define explicit data-sufficiency, time-window and threshold rules for cheap/norm
 
 Global search and browse by product/commodity, brand, safe aliases, category, specification, store, recent/frequent and price change.
 
-### CP30 — Product Detail
+This checkpoint freezes data access and interaction behavior; it does not need final commercial visual polish.
 
-Commercial STANDARD product price-memory screen with historical graph, store context and source receipt traceability.
+## 6. Stage F — Commercial UX foundation and screens
 
-### CP31 — Commodity Detail
+### CP30 — Design System Foundation
+
+Freeze typography, colors, spacing, shapes, iconography, cards, fields, chart grammar, feedback states and accessibility baseline **before final detail-screen visual implementation**.
+
+Design System must not force domain/storage rewrites.
+
+### CP31 — Product Detail
+
+Commercial STANDARD product price-memory screen with historical graph, store context, comparison-price explanation and source receipt traceability.
+
+### CP32 — Commodity Detail
 
 Commercial NON_STANDARD mixed-form history screen without misleading aggregate comparison.
 
-## 6. Stage F — Intake UX and visual product quality
-
-### CP32 — Capture / Review UX V2
+### CP33 — Capture / Review UX V2
 
 Move from manual debug sequence toward:
 
@@ -111,9 +142,7 @@ Move from manual debug sequence toward:
 
 Retain debug/evidence paths until replacement parity is proven.
 
-### CP33 — Design System
-
-Typography, colors, spacing, shapes, iconography, cards, fields, charts, feedback states and accessibility baseline.
+Acceptance must include review burden and repeat-use automation behavior, not only visual completion.
 
 ### CP34 — Commercial UI Shell
 
@@ -123,7 +152,11 @@ Product-centric home/navigation/search/category/product/commodity/receipt/settin
 
 ### CP35 — Real Receipt Evaluation
 
-Measure end-to-end registration correctness using public-safe synthetic or explicitly approved sanitized fixtures. Primary metric is correct purchase registration, not OCR character accuracy alone.
+Measure end-to-end purchase-registration correctness using public-safe synthetic or explicitly approved sanitized fixtures.
+
+Primary metric is correct purchase registration, not OCR character accuracy alone.
+
+CP35 aggregates earlier local metrics; it is not the first point where false split, auto-link, category or commodity quality is measured.
 
 ### CP36 — Performance / Reliability
 
@@ -131,24 +164,28 @@ Verify startup, OCR memory/latency, large catalog/history, alias/search queries,
 
 ## 8. Dependency gates
 
-- CP21 Domain V2 must remain frozen before CP22 persistence semantics are implemented.
-- CP22 must precede production consumers of new stored fields.
+- CP21 Domain V2 remains frozen before CP22 persistence semantics are implemented.
+- CP22 precedes production consumers of new stored fields.
 - CP23 semantic parsing precedes CP24 resolver authority.
-- CP27 statistics precede CP28 price judgment.
-- CP29 data access precedes CP34 shell dependencies.
+- CP24 must measure both false merge and false split and prove repeat-use automation behavior.
+- CP27 canonical comparison-price semantics precede CP28 price judgment.
+- CP29 data access precedes commercial shell dependencies.
+- CP30 Design System Foundation precedes final CP31/CP32 commercial visual implementation.
 - CP25 and CP26 may partially overlap only after shared CP21/22 contracts are stable.
-- CP33 must not force domain/storage rewrites.
+- CP33 must not bypass identity/provenance rules for convenience.
 
 ## 9. Every checkpoint must ask, only where materially relevant
 
 - Does this change the meaning of stored data?
 - Can it create a false product merge?
-- Can it make incomparable prices look comparable?
+- Can it create or perpetuate a false product split?
+- Does confirmed repeat use reduce review burden?
+- Is any compared price exactly defined and receipt-traceable?
+- Can incomparable prices look comparable?
 - Can it bypass provenance/validation?
 - Can it require new permission/network capability?
-- Can it degrade repeat-use automation?
 - Can it create a new performance hot path?
-- Which regression/evidence catches failure?
+- Which local regression/evidence catches failure now?
 
 Avoid ritual re-audits of unrelated proven work, speculative abstractions, unrelated architecture cleanup, and scope expansion into budgeting/banking/cloud/e-commerce before the core loop is complete.
 
@@ -165,8 +202,8 @@ At each completed group:
 
 ## 11. Current boundary
 
-CP21 is complete.
+CP21 is complete. The client-requirement alignment amendment is canonical and documentation-only.
 
-The next planned checkpoint is **CP22 — Persistence V2**.
+The next planned implementation checkpoint is **CP22 — Persistence V2**.
 
 Planning existence does not equal execution authorization. Do not start CP22 until the user explicitly directs it.
