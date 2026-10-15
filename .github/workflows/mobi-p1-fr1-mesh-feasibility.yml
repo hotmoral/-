@@ -65,6 +65,34 @@ jobs:
             | tee ../../p1-fr1/evidence/git_blob_shas.txt
           echo "P1-FR1 private/public parity PASS; accepted structural inputs frozen PASS"
 
+      - name: Diagnose residual V2 core folds and H6N depth order
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          python3 - <<'PY'
+          from collections import Counter
+          from e_v0_fixture_adapter import H6N, build_e_fixture, iter_invariant_fixtures
+          from e_v0_profiles import M0
+          from p1_fr1_mesh_probe_v2 import build_probe
+
+          by_case = Counter(); by_morph = Counter(); by_case_morph = Counter(); first = []
+          for case_id, morph, size_dp, direction, fixture in iter_invariant_fixtures():
+              result = build_probe(fixture, direction)
+              if result.core_self_intersections:
+                  by_case[case_id] += result.core_self_intersections
+                  by_morph[morph.id] += result.core_self_intersections
+                  by_case_morph[(case_id, morph.id)] += result.core_self_intersections
+                  if len(first) < 20:
+                      first.append((case_id, morph.id, size_dp, direction, fixture.t, result.yaw_rad, result.core_self_intersections))
+          print('INTERSECTIONS_BY_CASE', sorted(by_case.items()))
+          print('INTERSECTIONS_BY_MORPH', sorted(by_morph.items()))
+          print('INTERSECTIONS_BY_CASE_MORPH', sorted(by_case_morph.items()))
+          print('FIRST_INTERSECTIONS', first)
+          for direction in (+1, -1):
+              fixture = build_e_fixture(M0, H6N, 80, 0.75, direction)
+              result = build_probe(fixture, direction)
+              print('H6N_DEPTH', direction, result.yaw_rad, [(m['id'], m['viewDepth']) for m in result.limb_meshes])
+          PY
+
       - name: Run retained structural regression and FR1 tests
         working-directory: mobi/p1-b2/geometry
         run: |
