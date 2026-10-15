@@ -1,0 +1,152 @@
+name: Mobi P1-C5 Runtime Cost Comparison
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c5-runtime-cost-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/c5_runtime_cost_proxy.py'
+      - 'mobi/p1-b2/geometry/c5_source_cost_audit.py'
+      - 'mobi/p1-b2/geometry/run_c5_runtime_cost.py'
+      - 'mobi/p1-b2/geometry/test_c5_runtime_cost.py'
+      - '.github/workflows/mobi-p1-c5-runtime-cost.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c5-runtime-cost:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c5/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            echo "runner=ubuntu-latest"
+            python3 --version
+          } | tee mobi/p1-c5/evidence/environment.txt
+
+      - name: Verify private-public source parity and frozen inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object model.py)" = "c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b"
+          test "$(git hash-object candidates_v2.py)" = "39bcf9759387800c7da60ace45a528d238d4208f"
+          test "$(git hash-object motions_v2.py)" = "a3d6c1fd0227216fdf2a69e056e3b177dc398c53"
+          test "$(git hash-object orientation_v2.py)" = "33cb9c1e8f3b41f038898345a0aee0642609e812"
+          test "$(git hash-object c3_semantic.py)" = "9ebb7192fbd414f134ecd15991ca252af58bfd62"
+          test "$(git hash-object c3_renderers.py)" = "19117dfe2e3d093defe8624bb3fc3fb75ccfb63b"
+          test "$(git hash-object c3_renderer_validity_v2.py)" = "a4f8def921434dc3e6134866bce4184ecad82189"
+          test "$(git hash-object c3_renderer_minimal_v3.py)" = "9b4744ad6ce02867d4b4e525316a7d625b5a5f58"
+          test "$(git hash-object c3_renderer_view_resolved_v4.py)" = "87e48c4789a4b2e8c9dd6aebd16b090b22f2b1e0"
+          test "$(git hash-object c3w_renderer_adapter.py)" = "449a871c1578a9596475f1ede3adcf7faebc4dff"
+          test "$(git hash-object c3w_h6n_fixture_adapter.py)" = "fd3a53be0ef18e8ee4085b031cf8e7d2faa18195"
+          test "$(git hash-object c4_hard_motion_fixture_adapter.py)" = "90ccccde16623073f13fc986cebc238c74aa9c13"
+          test "$(git hash-object c4_renderer_adapter.py)" = "1cec4470d6e458a1a3a9c6b1d9f6a44b4483af6e"
+          test "$(git hash-object c5_runtime_cost_proxy.py)" = "a954f97b24d5e5aa9d3f767ad940271513bc2bf9"
+          test "$(git hash-object c5_source_cost_audit.py)" = "7d0eb1da56b9c8e75e20a11447d8df274c776f68"
+          test "$(git hash-object run_c5_runtime_cost.py)" = "95d82514578eb5e25253fc492b59a84c00db2644"
+          test "$(git hash-object test_c5_runtime_cost.py)" = "612816f0399f950896b3463a52a486196ed7ffc4"
+          git hash-object \
+            model.py candidates_v2.py motions_v2.py orientation_v2.py \
+            c3_semantic.py c3_renderers.py c3_renderer_validity_v2.py \
+            c3_renderer_minimal_v3.py c3_renderer_view_resolved_v4.py \
+            c3w_renderer_adapter.py c3w_h6n_fixture_adapter.py \
+            c4_hard_motion_fixture_adapter.py c4_renderer_adapter.py \
+            c5_runtime_cost_proxy.py c5_source_cost_audit.py \
+            run_c5_runtime_cost.py test_c5_runtime_cost.py \
+            | tee ../../p1-c5/evidence/git_blob_shas.txt
+          echo "P1-C5 private/public parity PASS; accepted inputs frozen PASS"
+
+      - name: Run targeted regressions and C5 tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            test_c3w_h6n_representation.py \
+            test_c4_hard_motion.py \
+            test_c5_runtime_cost.py \
+            2>&1 | tee ../../p1-c5/evidence/unittest.txt
+
+      - name: Run deterministic C5 report across hash seeds
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c5/run1 ../../p1-c5/run2
+          PYTHONHASHSEED=1 python3 run_c5_runtime_cost.py --out ../../p1-c5/run1
+          PYTHONHASHSEED=777 python3 run_c5_runtime_cost.py --out ../../p1-c5/run2
+          cmp ../../p1-c5/run1/c5_runtime_cost_report.json ../../p1-c5/run2/c5_runtime_cost_report.json
+          cmp ../../p1-c5/run1/c5_source_cost_audit.json ../../p1-c5/run2/c5_source_cost_audit.json
+          cmp ../../p1-c5/run1/summary.json ../../p1-c5/run2/summary.json
+          cp ../../p1-c5/run1/c5_runtime_cost_report.json ../../p1-c5/evidence/
+          cp ../../p1-c5/run1/c5_source_cost_audit.json ../../p1-c5/evidence/
+          cp ../../p1-c5/run1/summary.json ../../p1-c5/evidence/
+          rm -rf ../../p1-c5/run1 ../../p1-c5/run2
+
+      - name: Validate decision proxies
+        working-directory: mobi/p1-c5/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          summary = json.loads(Path('summary.json').read_text())
+          if summary['fixtureSampleCount'] != 912:
+              raise SystemExit(summary['fixtureSampleCount'])
+          if summary['renderSampleCount'] != 2808:
+              raise SystemExit(summary['renderSampleCount'])
+          p = summary['decisionProxies']
+          if p['host']['maximumActiveSemanticPartitionsAcrossReport'] > 4:
+              raise SystemExit('partition overflow')
+          if p['host']['newAndroidWindowMechanismIntroduced']:
+              raise SystemExit('unexpected new window mechanism')
+          if p['host']['idleContinuousUpdateRequiredByRepresentation']:
+              raise SystemExit('unexpected idle churn requirement')
+          h6 = p['h6n']
+          if h6['meanShapeDeltaViewMinusGeneric'] != 0.0:
+              raise SystemExit('H6 shape delta')
+          if h6['meanPointDeltaViewMinusGeneric'] != 0.0:
+              raise SystemExit('H6 point delta')
+          if h6['meanBoundsShapeVisitDelta'] != 0.0:
+              raise SystemExit('H6 bounds scan delta')
+          if h6['viewResolvedMeanSortItems'] <= 0 or h6['genericMeanSortItems'] != 0.0:
+              raise SystemExit('sort proxy mismatch')
+          h4 = p['h4']
+          if h4['sparseHybridMeanShapes'] > h4['baselineMeanShapes']:
+              raise SystemExit('H4 shape burden increased')
+          if h4['sparseHybridMaxCorrectionFamiliesPerSample'] != 1:
+              raise SystemExit('H4 correction budget mismatch')
+          audit = summary['sourceAudit']
+          if not audit['viewResolved']['prototypeFullBasePrerenderForTail']:
+              raise SystemExit('expected prototype prerender not detected')
+          if audit['viewResolved']['fullBasePrerenderIsArchitectureRequired']:
+              raise SystemExit('prototype overhead misclassified as architecture')
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+          echo "hash_seed_repeat_exact=PASS" > deterministic.txt
+
+      - name: Hash evidence files
+        working-directory: mobi/p1-c5/evidence
+        run: |
+          set -euo pipefail
+          sha256sum \
+            environment.txt git_blob_shas.txt unittest.txt \
+            c5_runtime_cost_report.json c5_source_cost_audit.json summary.json deterministic.txt \
+            | tee EVIDENCE_SHA256SUMS.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c5-runtime-cost-${{ github.run_id }}
+          path: mobi/p1-c5/evidence/
+          if-no-files-found: error
+          retention-days: 30
