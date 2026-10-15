@@ -1,3 +1,3 @@
 plugins { id 'com.android.application' }
-android { namespace 'com.receiptledger.v1'; compileSdk 36; defaultConfig { applicationId 'com.receiptledger.v1'; minSdk 23; targetSdk 36; versionCode 22; versionName '1.0.21-receipt-product-semantics'; testInstrumentationRunner 'android.test.InstrumentationTestRunner' }; compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 } }
+android { namespace 'com.receiptledger.v1'; compileSdk 36; defaultConfig { applicationId 'com.receiptledger.v1'; minSdk 23; targetSdk 36; versionCode 23; versionName '1.0.22-identity-resolver-v2'; testInstrumentationRunner 'android.test.InstrumentationTestRunner' }; compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 } }
 dependencies { implementation 'com.google.mlkit:text-recognition-korean:16.0.1'; testImplementation 'junit:junit:4.13.2' }
