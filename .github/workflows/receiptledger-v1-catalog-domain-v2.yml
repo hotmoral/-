@@ -2,7 +2,12 @@ name: ReceiptLedger V1 Catalog Domain V2
 on:
   push:
     branches: ['receiptledger/run-v1-catalog-domain-v2-20261016']
-    paths: ['receiptledger/**', '.github/workflows/receiptledger-v1-catalog-domain-v2.yml']
+    paths:
+      - 'receiptledger/harness/android-v1/app/build.gradle'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/catalog/**'
+      - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/catalog/**'
+      - 'receiptledger/tools/audit_public_tree.sh'
+      - '.github/workflows/receiptledger-v1-catalog-domain-v2.yml'
   workflow_dispatch:
 permissions: { contents: read }
 concurrency: { group: 'receiptledger-v1-catalog-domain-v2-${{ github.ref }}', cancel-in-progress: false }
@@ -41,6 +46,9 @@ jobs:
               .github/workflows/receiptledger-v1-catalog-domain-v2.yml) ;;
               receiptledger/CATALOG_DOMAIN_V2_*.md) ;;
               receiptledger/CP21_*.md) ;;
+              receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md) ;;
+              receiptledger/CP20_PRODUCT_REBASELINE_DEPENDENCY_GATES.md) ;;
+              receiptledger/CP20_PRODUCT_REBASELINE_RISK_REGISTER.md) ;;
               receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md) ;;
               receiptledger/PROJECT_STATUS_LATEST.md|receiptledger/SESSION_HANDOFF.md|receiptledger/README.md|receiptledger/WORK_UNIT.md) ;;
               receiptledger/harness/android-v1/app/build.gradle) ;;
