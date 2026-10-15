@@ -1,0 +1,97 @@
+name: Mobi P1-FR2 Perceptual Revision V3 Normalized
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr2-perceptual-revision-20261015'
+    paths:
+      - 'mobi/p1-b2/geometry/run_p1_fr2_perceptual_revision_v3_normalized.py'
+      - 'mobi/p1-b2/geometry/test_p1_fr2_evidence_framing_v3.py'
+      - '.github/workflows/mobi-p1-fr2-perceptual-revision-v3-normalized.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-fr2-v3-normalized:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-fr2-v3-normalized/evidence
+          { echo "git_commit=${GITHUB_SHA}"; echo "runner=ubuntu-latest"; python3 --version; } | tee mobi/p1-fr2-v3-normalized/evidence/environment.txt
+
+      - name: Verify exact source parity
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          test "$(git hash-object p1_fr2_layered_view_prototype.py)" = "39050b80c460fa8f7bb193975a765ab4552de49b"
+          test "$(git hash-object run_p1_fr2_perceptual_revision.py)" = "7756e71a10f908f866b8db4b714255c4c1f7f8bb"
+          test "$(git hash-object p1_fr2_layered_view_prototype_v2.py)" = "afe5cd48aea38f870cc41eee9fd7cb61190543c8"
+          test "$(git hash-object p1_fr2_layered_view_prototype_v3.py)" = "e4ba00a2a62916561ba14d5b21f2e5590ba1d9ae"
+          test "$(git hash-object run_p1_fr2_perceptual_revision_v3.py)" = "cd8c512f5671c13e319961dfe650f5474a0938ec"
+          test "$(git hash-object test_p1_fr2_perceptual_revision_v3.py)" = "59489013e6842bd9e2a8a572a1e79106ad530e09"
+          test "$(git hash-object run_p1_fr2_perceptual_revision_v3_normalized.py)" = "5bafdf1a899540ebcade9fb63664fc6fc611ff6c"
+          test "$(git hash-object test_p1_fr2_evidence_framing_v3.py)" = "dd0841816af3bf4df95130fa56d29e24d14762a1"
+          test "$(git hash-object p1_fr1_mesh_probe_v3.py)" = "530accae24cea3aad75dac73b30fa1592a53d03e"
+          test "$(git hash-object e_v0_fixture_adapter.py)" = "96bb5351208c157003ce0a50f828075537c5edb5"
+          test "$(git hash-object run_p1f_perceptual_evidence.py)" = "e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25"
+          git hash-object p1_fr2_layered_view_prototype_v3.py run_p1_fr2_perceptual_revision_v3.py run_p1_fr2_perceptual_revision_v3_normalized.py test_p1_fr2_perceptual_revision_v3.py test_p1_fr2_evidence_framing_v3.py p1_fr1_mesh_probe_v3.py e_v0_fixture_adapter.py run_p1f_perceptual_evidence.py | tee ../../p1-fr2-v3-normalized/evidence/git_blob_shas.txt
+
+      - name: Run retained V3 and framing tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_c4_hard_motion.py test_e_v0_structural.py test_p1_fr1_mesh_feasibility.py test_p1f_perceptual_evidence.py test_p1_fr2_perceptual_revision_v3.py test_p1_fr2_evidence_framing_v3.py 2>&1 | tee ../../p1-fr2-v3-normalized/evidence/unittest.txt
+
+      - name: Generate deterministic normalized evidence
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-fr2-v3-normalized/run1 ../../p1-fr2-v3-normalized/run2
+          PYTHONHASHSEED=1 python3 run_p1_fr2_perceptual_revision_v3_normalized.py --output-dir ../../p1-fr2-v3-normalized/run1
+          PYTHONHASHSEED=777 python3 run_p1_fr2_perceptual_revision_v3_normalized.py --output-dir ../../p1-fr2-v3-normalized/run2
+          (cd ../../p1-fr2-v3-normalized/run1 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr2-v3-normalized/run1.sha256
+          (cd ../../p1-fr2-v3-normalized/run2 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr2-v3-normalized/run2.sha256
+          cmp ../../p1-fr2-v3-normalized/run1.sha256 ../../p1-fr2-v3-normalized/run2.sha256
+          cp -R ../../p1-fr2-v3-normalized/run1/. ../../p1-fr2-v3-normalized/evidence/
+          cp ../../p1-fr2-v3-normalized/run1.sha256 ../../p1-fr2-v3-normalized/evidence/files.sha256
+          echo "hash_seed_repeat_exact=PASS" > ../../p1-fr2-v3-normalized/evidence/deterministic.txt
+
+      - name: Validate normalized evidence
+        working-directory: mobi/p1-fr2-v3-normalized/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, xml.etree.ElementTree as ET
+          from pathlib import Path
+          s=json.loads(Path('summary.json').read_text())
+          assert s['structuralPass'] is True, s
+          assert s['recordCount']==1770, s
+          assert s['semanticMutationCount']==0, s
+          assert s['coreSelfIntersectionCount']==0, s
+          assert s['correctionUseCount']==0, s
+          assert s['meshDomainCounts']==[6], s
+          svgs=sorted(Path('debug').glob('*.svg'))
+          baseline=sorted(Path('frozen_p1f_baseline').glob('*.svg'))
+          assert len(svgs)==6, len(svgs)
+          assert len(baseline)==22, len(baseline)
+          for p in svgs+baseline: ET.parse(p)
+          print(json.dumps(s,indent=2,sort_keys=True))
+          PY
+
+      - name: Hash evidence
+        working-directory: mobi/p1-fr2-v3-normalized/evidence
+        run: sha256sum environment.txt git_blob_shas.txt unittest.txt summary.json manifest.json records.json files.sha256 deterministic.txt | tee EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-fr2-perceptual-revision-v3-normalized-${{ github.run_id }}
+          path: mobi/p1-fr2-v3-normalized/evidence/
+          if-no-files-found: error
+          retention-days: 30
