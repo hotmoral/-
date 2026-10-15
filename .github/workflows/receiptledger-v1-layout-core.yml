@@ -1,0 +1,82 @@
+name: ReceiptLedger V1 Layout Core
+
+on:
+  push:
+    branches:
+      - 'receiptledger/run-v1-layout-core-20261015'
+    paths:
+      - 'receiptledger/**'
+      - '.github/workflows/receiptledger-v1-layout-core.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: receiptledger-v1-layout-core-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: '17' }
+      - name: Verify runner Android SDK
+        run: |
+          set -euo pipefail
+          test -d "$ANDROID_HOME/platforms/android-35"
+          test -d "$ANDROID_HOME/build-tools/35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.9', cache-disabled: true }
+      - name: Audit public namespace
+        run: bash receiptledger/tools/audit_public_tree.sh
+      - name: Enforce offline permission firewall
+        run: |
+          set -euo pipefail
+          manifest=receiptledger/harness/android-v1/app/src/main/AndroidManifest.xml
+          grep -q 'android.permission.INTERNET.*tools:node="remove"' "$manifest"
+          grep -q 'android.permission.ACCESS_NETWORK_STATE.*tools:node="remove"' "$manifest"
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE ACCESS_FINE_LOCATION RECORD_AUDIO; do
+            if grep -q "$forbidden" "$manifest"; then echo "Forbidden source capability: $forbidden"; exit 30; fi
+          done
+      - name: Test and build Layout Core
+        run: gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:assembleDebug
+      - name: Package Layout Core evidence
+        run: |
+          set -euo pipefail
+          SRC=receiptledger/harness/android-v1
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=receiptledger/output/v1-layout-core
+          rm -rf "$OUT" && mkdir -p "$OUT"
+          cp "$APK" "$OUT/receiptledger-v1-layout-core-debug.apk"
+          unzip -t "$OUT/receiptledger-v1-layout-core-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+          AAPT=$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)
+          "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then echo "Forbidden packaged permission: $forbidden"; exit 31; fi
+          done
+          sha256sum "$OUT/receiptledger-v1-layout-core-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo 'checkpoint=RL_V1_LAYOUT_CORE_01'
+            echo "public_commit=${GITHUB_SHA}"
+            echo 'application_id=com.receiptledger.v1'
+            echo 'version_name=1.0.3-layout-core'
+            echo 'version_code=4'
+            echo 'layout_input=OCR_ELEMENT_GEOMETRY'
+            echo 'mlkit_line_grouping=NON_CANONICAL'
+            echo 'runtime_inference_in_ci=NOT_EXECUTED'
+            echo 'network_permission=REMOVED'
+            echo 'signing=debug_only'
+          } > "$OUT/BUILD_IDENTITY.txt"
+          (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
+          sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt "$OUT"/APK_PERMISSIONS.txt > "$OUT/EVIDENCE_SHA256.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: receiptledger-v1-layout-core-${{ github.run_id }}
+          path: receiptledger/output/v1-layout-core/
+          if-no-files-found: error
+          retention-days: 14
