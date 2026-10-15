@@ -57,7 +57,7 @@ jobs:
           test "$(git hash-object test_c3_v2.py)" = "638f01a7e5c66d9964d6c2590d01de038244bfae"
           test "$(git hash-object test_c3_v3.py)" = "70a692dfe86dd647295153cca6c4705112ed1b03"
           test "$(git hash-object test_c3r_h6_view.py)" = "334db6ecf8e89fa0876edea186eccf47e6ffae25"
-          test "$(git hash-object test_c3v_h6_basis.py)" = "14e56d24207592797266b32ed7ca8ab4f060d070"
+          test "$(git hash-object test_c3v_h6_basis.py)" = "83eac990517b840cd72962c42525693a969e9d99"
           git hash-object model.py candidates_v2.py motions_v2.py orientation_v2.py turn_2p5d.py c3_semantic.py c3_renderers.py c3_renderer_validity_v2.py c3_renderer_minimal_v3.py c3_renderer_view_resolved_v4.py c3_renderer_authored_view_basis_v5.py run_c3_matrix.py run_c3_matrix_v2.py run_c3_matrix_v3.py run_c3r_h6_matrix.py run_c3v_h6_matrix.py test_c3.py test_c3_v2.py test_c3_v3.py test_c3r_h6_view.py test_c3v_h6_basis.py | tee ../../p1-c3v/evidence/git_blob_shas.txt
           sha256sum model.py candidates_v2.py motions_v2.py orientation_v2.py turn_2p5d.py c3_semantic.py c3_renderers.py c3_renderer_validity_v2.py c3_renderer_minimal_v3.py c3_renderer_view_resolved_v4.py c3_renderer_authored_view_basis_v5.py run_c3_matrix.py run_c3_matrix_v2.py run_c3_matrix_v3.py run_c3r_h6_matrix.py run_c3v_h6_matrix.py test_c3.py test_c3_v2.py test_c3_v3.py test_c3r_h6_view.py test_c3v_h6_basis.py | tee ../../p1-c3v/evidence/source_sha256.txt
           echo "P1-C3V private/public source parity PASS"
