@@ -5,7 +5,7 @@ on:
     branches:
       - 'mobi/run-p1-fr4-internal-core-scaffold-20261016'
     paths:
-      - 'mobi/p1-b2/geometry/diagnose_p1_fr4_v2.py'
+      - 'mobi/p1-b2/geometry/diagnose_p1_fr4_internal_seeds.py'
       - '.github/workflows/mobi-p1-fr4-v1-patch-diagnostic.yml'
   workflow_dispatch:
 
@@ -18,14 +18,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Verify exact V2 diagnostic and candidate parity
+      - name: Verify exact seed diagnostic and frozen candidate parity
         working-directory: mobi/p1-b2/geometry
         run: |
           set -euo pipefail
-          test "$(git hash-object diagnose_p1_fr4_v2.py)" = "1ec51b5ffd608148533e85b037f4574ee1e11fdd"
+          test "$(git hash-object diagnose_p1_fr4_internal_seeds.py)" = "e47016c9ce8e6ebb119e5dfd0f1ae13330bf9b7a"
           test "$(git hash-object p1_fr4_internal_core_scaffold.py)" = "4c46d9b0cccc64a834fcc446e96caeae363f08a1"
-          test "$(git hash-object p1_fr4_internal_core_scaffold_v2.py)" = "8b07dfd256ac144e3331266857dde1708f26fdd3"
           test "$(git hash-object p1_fr3_feline_core_topology_v5.py)" = "67a139d126822ba81a9c3e96e6c55ca559b6b71c"
-      - name: Diagnose V2 full matrix
+      - name: Verify candidate internal seeds over full matrix
         working-directory: mobi/p1-b2/geometry
-        run: python3 diagnose_p1_fr4_v2.py
+        run: python3 diagnose_p1_fr4_internal_seeds.py
