@@ -1,0 +1,146 @@
+name: Mobi P1-FR7 Derived Upper-Body Controls
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-fr7-derived-upper-body-controls-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_fr7_derived_upper_body_controls*.py'
+      - 'mobi/p1-b2/geometry/run_p1_fr7_derived_upper_body_controls*.py'
+      - 'mobi/p1-b2/geometry/test_p1_fr7_derived_upper_body_controls*.py'
+      - '.github/workflows/mobi-p1-fr7-derived-upper-body-controls.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-fr7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-fr7/evidence
+          { echo "git_commit=${GITHUB_SHA}"; echo "runner=ubuntu-latest"; python3 --version; } | tee mobi/p1-fr7/evidence/environment.txt
+
+      - name: Verify exact private parity and frozen upstream inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          expected = {
+              'p1_fr7_derived_upper_body_controls_v1.py': '01b305abe654b4e3cceec06865fe8af88f7e26e6',
+              'run_p1_fr7_derived_upper_body_controls_v1.py': '50b9c093ed163a4234e28a18c0deee20ace53179',
+              'test_p1_fr7_derived_upper_body_controls_v1.py': '8a5d001babc60f83aa6e87488834d8ff64780209',
+              'p1_fr5_core_mass_silhouette_v1.py': 'fab2789d36c94ac859dabfd31ad4d4ff72c098b8',
+              'run_p1_fr5_core_mass_silhouette_v1.py': '502a7e1e17d1dccc4b130294ef44b613aac674d9',
+              'test_p1_fr5_core_mass_silhouette_v1.py': 'b38df8324d89dac8c572d3c3200c856479ef7a65',
+              'p1_fr4_internal_core_scaffold.py': '4c46d9b0cccc64a834fcc446e96caeae363f08a1',
+              'run_p1_fr4_internal_core_scaffold.py': 'ed09cdba5ccc34456ffe94a88a395f48bf961aff',
+              'p1_fr4_internal_core_scaffold_v3.py': 'e1f65753f7164a621c43ef3c8b88d37406a688d9',
+              'run_p1_fr4_internal_core_scaffold_v3.py': '542031a6b5217106d30e786b394ba30ae971cf20',
+              'test_p1_fr4_internal_core_scaffold_v3.py': '435103ebc45bbbc8f2b5afc8815e6db798ee503f',
+              'p1_fr3_feline_core_topology_v5.py': '67a139d126822ba81a9c3e96e6c55ca559b6b71c',
+              'test_p1_fr3_feline_core_topology_v5.py': '7385cec59bf9f37c759ee17b542ff50b8a73612c',
+              'test_p1_fr3_feline_core_topology.py': '58d5cf46cec60c44b8b530eacbb4b6775137b9a1',
+              'p1_fr3_feline_core_topology.py': '3d4c9285d0fb31cd4268420b62c534760ec72af9',
+              'p1_fr3_feline_core_topology_v2.py': '3e5c2216544f7a942d41aeda99592a71c67eeacd',
+              'p1_fr2_layered_view_prototype_v5.py': 'dc153ae1fff3d0ae4bd3ba02ca31ba9182dcd608',
+              'test_p1_fr2_perceptual_revision_v5.py': '2a6c877383863a679ffdac6f78c06308a4bf8fe9',
+              'run_p1_fr2_perceptual_revision.py': '7756e71a10f908f866b8db4b714255c4c1f7f8bb',
+              'p1_fr1_mesh_probe.py': '009bf23dc8100abd192c4179cef0c14b56b6de3d',
+              'p1_fr1_mesh_probe_v2.py': '7c8370f843723795e8c77e4374180b2f5eccb210',
+              'p1_fr1_mesh_probe_v3.py': '530accae24cea3aad75dac73b30fa1592a53d03e',
+              'e_v0_profiles.py': '087826028fa7a2ad5a9a042ec188f335c9ff18cc',
+              'e_v0_fixture_adapter.py': '96bb5351208c157003ce0a50f828075537c5edb5',
+              'run_p1f_perceptual_evidence.py': 'e2f6552c0f2bb1f7cd7b85ba560f36e43df2ec25',
+          }
+          lines = []
+          mismatches = []
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git', 'hash-object', path], text=True).strip()
+              lines.append(f'{actual}  {path}')
+              if actual != wanted:
+                  mismatches.append((path, wanted, actual))
+          Path('../../p1-fr7/evidence/git_blob_shas.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          if mismatches:
+              raise SystemExit('blob mismatch: ' + repr(mismatches))
+          print('exact_private_public_and_frozen_upstream_hashes=PASS')
+          PY
+
+      - name: Run retained regression and FR7 V1 tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_c4_hard_motion.py test_e_v0_structural.py test_p1_fr1_mesh_feasibility.py test_p1f_perceptual_evidence.py test_p1_fr2_perceptual_revision_v5.py test_p1_fr3_feline_core_topology_v5.py test_p1_fr4_internal_core_scaffold_v3.py test_p1_fr5_core_mass_silhouette_v1.py test_p1_fr7_derived_upper_body_controls_v1.py 2>&1 | tee ../../p1-fr7/evidence/unittest.txt
+
+      - name: Generate deterministic FR7 V1 evidence
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-fr7/run1 ../../p1-fr7/run2
+          PYTHONHASHSEED=1 python3 run_p1_fr7_derived_upper_body_controls_v1.py --output-dir ../../p1-fr7/run1
+          PYTHONHASHSEED=777 python3 run_p1_fr7_derived_upper_body_controls_v1.py --output-dir ../../p1-fr7/run2
+          (cd ../../p1-fr7/run1 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr7/run1.sha256
+          (cd ../../p1-fr7/run2 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > ../../p1-fr7/run2.sha256
+          cmp ../../p1-fr7/run1.sha256 ../../p1-fr7/run2.sha256
+          cp -R ../../p1-fr7/run1/. ../../p1-fr7/evidence/
+          cp ../../p1-fr7/run1.sha256 ../../p1-fr7/evidence/files.sha256
+          echo "hash_seed_repeat_exact=PASS" > ../../p1-fr7/evidence/deterministic.txt
+
+      - name: Validate FR7 V1 evidence
+        working-directory: mobi/p1-fr7/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, xml.etree.ElementTree as ET
+          from pathlib import Path
+          s=json.loads(Path('summary.json').read_text())
+          assert s['structuralPass'] is True, s
+          assert s['recordCount']==1770, s
+          assert s['externalTopologySignatureCount']==1, s
+          assert s['integrationSignatureCount']==1, s
+          assert s['patchVertexCountSets']==[[8,6,8]], s
+          assert s['semanticMutationCount']==0, s
+          assert s['maxPawPinError']<=1e-9, s
+          assert s['finalCoreSelfIntersectionCount']==0, s
+          assert s['patchSelfIntersectionCount']==0, s
+          assert s['patchOutsideVertexCount']==0, s
+          assert s['correctionUseCount']==0, s
+          assert s['meshDomainCounts']==[6], s
+          assert s['appendageMismatchVsFr3V5Count']==0, s
+          assert s['profileCoreMismatchVsFr3V5Count']==0, s
+          assert s['changedCoreRecordCount']>0, s
+          assert s['maxNormalizedCoreDisplacement']<=0.18+1e-12, s
+          assert s['earAttachmentRegressionRecordCount']==0, s
+          assert s['earAttachmentRegressionRecordCountVsFr5V1']==0, s
+          assert s['stressLimbCrossingDeltaVsFr3V5']==0, s
+          assert s['minimumPriorFoldCorridorMarginDp']>0.0, s
+          svgs=sorted(Path('debug').glob('*.svg'))
+          baseline=sorted(Path('frozen_p1f_baseline').glob('*.svg'))
+          assert len(svgs)==6, len(svgs)
+          assert len(baseline)==22, len(baseline)
+          for p in svgs+baseline: ET.parse(p)
+          print(json.dumps(s,indent=2,sort_keys=True))
+          PY
+
+      - name: Hash evidence
+        working-directory: mobi/p1-fr7/evidence
+        run: sha256sum environment.txt git_blob_shas.txt unittest.txt summary.json manifest.json records.json files.sha256 deterministic.txt | tee EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-fr7-derived-upper-body-controls-v1-${{ github.run_id }}
+          path: mobi/p1-fr7/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
