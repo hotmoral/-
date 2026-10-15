@@ -1,4 +1,5 @@
 name: Mobi P1-FR5 CORE Mass Silhouette
+# V1 exact-PROFILE identity re-execution after atomic source/test mirror.
 
 on:
   push:
