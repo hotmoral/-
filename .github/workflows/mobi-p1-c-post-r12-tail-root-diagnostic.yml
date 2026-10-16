@@ -1,0 +1,203 @@
+name: Mobi P1-C Post-R12 Tail-Root Observational Diagnostic
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_diagnostic:
+        description: 'Exact authorization token required after frozen implementation is privately imported'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobi-p1-c-post-r12-tail-root-observational-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnostic:
+    if: >-
+      github.ref == 'refs/heads/mobi/run-p1-c-post-r12-tail-root-diagnostic-20261017' &&
+      inputs.confirm_diagnostic == 'RUN_POST_R12_TAIL_ROOT_DIAGNOSTIC_AFTER_PRIVATE_IMPORT'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify implementation freeze and exact dispatch boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/mobi/run-p1-c-post-r12-tail-root-diagnostic-20261017'
+          test '${{ inputs.confirm_diagnostic }}' = 'RUN_POST_R12_TAIL_ROOT_DIAGNOSTIC_AFTER_PRIVATE_IMPORT'
+          FREEZE='mobi/p1-b2/geometry/P1_C_POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_IMPLEMENTATION_FREEZE.md'
+          ID='mobi/p1-b2/geometry/P1_C_POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_IDENTITY.json'
+          test -f "$FREEZE"
+          test -f "$ID"
+          grep -q 'POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_IMPLEMENTATION_FREEZE' "$FREEZE"
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          ident=json.loads(Path('mobi/p1-b2/geometry/P1_C_POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_IDENTITY.json').read_text())
+          if ident.get('diagnosticEvidenceRunAuthorized') is not False:
+              raise SystemExit('identity must remain pre-evidence / diagnosticEvidenceRunAuthorized=false')
+          if ident.get('dispatchAuthorizationToken') != 'RUN_POST_R12_TAIL_ROOT_DIAGNOSTIC_AFTER_PRIVATE_IMPORT':
+              raise SystemExit('dispatch token identity drift')
+          for path, expected in ident['gitBlobSha1'].items():
+              actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
+              if actual != expected:
+                  raise SystemExit(f'blob identity drift: {path}: {actual} != {expected}')
+          print('post-R12 diagnostic frozen blob identity PASS')
+          PY
+
+      - name: Assemble and verify exact frozen R11 implementation
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install exact inherited runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+          python - <<'PY'
+          import sys, numpy, fast_simplification, trimesh, skimage, scipy
+          expected={
+              'numpy':'2.5.4',
+              'fast_simplification':'0.2.0',
+              'trimesh':'4.11.1',
+              'skimage':'0.26.0',
+              'scipy':'1.17.0',
+          }
+          actual={
+              'numpy':numpy.__version__,
+              'fast_simplification':fast_simplification.__version__,
+              'trimesh':trimesh.__version__,
+              'skimage':skimage.__version__,
+              'scipy':scipy.__version__,
+          }
+          if sys.version_info[:3] != (3,12,15):
+              raise SystemExit(sys.version)
+          if actual != expected:
+              raise SystemExit(f'dependency drift: {actual}')
+          print(sys.version)
+          print(actual)
+          PY
+
+      - name: Verify inherited R10/R11/R12 identities and synthetic regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          test "$(git hash-object "$G/p1_c_r10_morphology_reduction_v1.py")" = 'f281aad3e3a6c740c38c0a3f015718996dc45157'
+          test "$(git hash-object "$G/p1_c_3d_cat_stage_d_projection_v1.py")" = '5c8820fb7270e7727ececb1bb37d3a24331b24ab'
+          test "$(git hash-object "$G/p1_c_3d_cat_stage_b_inspector_v1.py")" = '9b7899bc1c39d02291813a826df01d3697192846'
+          test "$(git hash-object "$G/p1_c_r12_surface_terminal_bind_alias_v1.py")" = '837f4abe7ff474a527893b099be8087a104f7aaa'
+          echo 'fc4096162607dbf59859749562ec5ab9ea7d0e09551aa7cd3cd1ad05e9f5594c  mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py' | sha256sum -c -
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+          cd "$G"
+          python -m unittest -v test_p1_c_r11_semantic_scaffold_v1.py
+          python -m unittest -v test_p1_c_r12_surface_terminal_bind_alias_v1.py
+          python -m unittest -v test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py
+
+      - name: Acquire exact frozen standing-cat source
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-post-r12-tail-root-diagnostic/evidence
+          mkdir -p "$E/source"
+          UA='Mobi post-R12 bounded observational diagnostic/1.0'
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/source/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-post-r12-tail-root-diagnostic/evidence/source/cat-original.glb' | sha256sum -c -
+
+      - name: Execute frozen observational diagnostic under both seeds
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          E=mobi/p1-c-post-r12-tail-root-diagnostic/evidence
+          SRC="$E/source/cat-original.glb"
+          mkdir -p "$E/seed1" "$E/seed777"
+          PYTHONHASHSEED=1 python "$G/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
+            "$SRC" --geometry-dir "$G" --out "$E/seed1/diagnostic.json" \
+            > "$E/seed1/run.log" 2>&1
+          PYTHONHASHSEED=777 python "$G/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
+            "$SRC" --geometry-dir "$G" --out "$E/seed777/diagnostic.json" \
+            > "$E/seed777/run.log" 2>&1
+          cmp -s "$E/seed1/diagnostic.json" "$E/seed777/diagnostic.json"
+          diff -u "$E/seed1/diagnostic.json" "$E/seed777/diagnostic.json" > "$E/deterministic_diff.txt"
+          cp "$E/seed1/diagnostic.json" "$E/diagnostic.json"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          e=Path('mobi/p1-c-post-r12-tail-root-diagnostic/evidence')
+          x=json.loads((e/'diagnostic.json').read_text())
+          allowed={
+              'BROADER_ZERO_LENGTH_HIERARCHY_DEGENERACY',
+              'COINCIDENT_BRANCH_ROOT_WITH_TAIL_SUPPORT_DEFECT',
+              'COINCIDENT_BRANCH_ROOT_WITH_NONVACUOUS_TAIL_SUPPORT',
+              'MIXED_OR_UNRESOLVED',
+          }
+          primary=x['classification']['primary']
+          if primary not in allowed:
+              raise SystemExit(f'unrecognized classification: {primary}')
+          if x['identity']['v3125']['meshArraySha256'] != '839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77':
+              raise SystemExit('V3125 identity drift')
+          if not x['identity']['mutationFreeBeforeAfter']:
+              raise SystemExit('diagnostic mutated frozen state')
+          if x['tailRootCounterfactualProbes']['probeNamesExact'] != ['TAIL_ROOT_TO_TAIL_1','TAIL_PATH_FORWARD']:
+              raise SystemExit('counterfactual probe vocabulary drift')
+          (e/'classification.txt').write_text(primary+'\n',encoding='utf-8')
+          print('diagnostic classification',primary)
+          print('determinism byte identity PASS')
+          PY
+
+      - name: Record environment and evidence manifest
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-post-r12-tail-root-diagnostic/evidence
+          mkdir -p "$E"
+          python - <<'PY' > "$E/environment.txt"
+          import platform, sys
+          print(sys.version)
+          print(platform.platform())
+          try:
+              import numpy, fast_simplification, trimesh, skimage, scipy
+              print('numpy',numpy.__version__)
+              print('fast-simplification',fast_simplification.__version__)
+              print('trimesh',trimesh.__version__)
+              print('scikit-image',skimage.__version__)
+              print('scipy',scipy.__version__)
+          except Exception as exc:
+              print('dependency-report-error',repr(exc))
+          PY
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobi-p1-c-post-r12-tail-root-diagnostic-${{ github.run_id }}
+          path: mobi/p1-c-post-r12-tail-root-diagnostic/evidence
+          if-no-files-found: warn
+          retention-days: 30
