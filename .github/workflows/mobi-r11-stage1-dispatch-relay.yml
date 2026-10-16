@@ -1,0 +1,42 @@
+name: Mobi R11 Stage-1 One-Shot Dispatch Relay
+
+on:
+  push:
+    branches:
+      - 'mobi/ops-r11-stage1-dispatch-20261016'
+    paths:
+      - '.github/workflows/mobi-r11-stage1-dispatch-relay.yml'
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: mobi-r11-stage1-one-shot-dispatch-relay
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch frozen R11 Stage-1 workflow
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${{ github.repository }}/actions/workflows/mobi-p1-c-r11-semantic-scaffold.yml/dispatches"
+          body='{"ref":"mobi/run-p1-c-r11-semantic-scaffold-20261016","inputs":{"confirm_stage1":"RUN_R11_STAGE1_AFTER_STAGE0_FREEZE"}}'
+          code="$(curl -sS -o /tmp/dispatch_response.txt -w '%{http_code}' \
+            -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "$api" \
+            -d "$body")"
+          if [ "$code" != '204' ]; then
+            cat /tmp/dispatch_response.txt >&2 || true
+            echo "dispatch failed with HTTP $code" >&2
+            exit 1
+          fi
+          echo 'R11 Stage-1 workflow_dispatch accepted (HTTP 204).'
