@@ -24,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           actual="$(git hash-object p1_c_post_r10_rigged_cat_motion_reference_audit_v1.py)"
-          test "$actual" = '4e675516110d073c0f9231925e55baf276fca969'
+          test "$actual" = '45b5b711273efc6778a93bc348061921f05c4e94'
           echo 'frozen_rigged_cat_audit_identity=PASS'
 
       - name: Acquire and freeze CC0 Cat Pilot source
@@ -47,6 +47,7 @@ jobs:
             'https://opengameart.org/sites/default/files/CatPilot.blend' \
             -o "$E/source/CatPilot.blend" > "$E/source/download_meta.txt"
           test "$(stat -c '%s' "$E/source/CatPilot.blend")" -gt 1000000
+          echo 'c8506dada39953517b86ce28fa4c5d9c4867d375782f5c99e84392f6be1ea7d0  mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence/source/CatPilot.blend' | sha256sum -c -
           sha256sum "$E/source/CatPilot.blend" | tee "$E/source/source_sha256.txt"
           stat -c 'bytes=%s' "$E/source/CatPilot.blend" | tee "$E/source/source_size.txt"
 
@@ -83,7 +84,7 @@ jobs:
           root=Path('mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence')
           p=root/'result/rigged_cat_motion_reference_summary.json'
           s=json.loads(p.read_text())
-          assert s['version'] == 'P1_C_POST_R10_RIGGED_CAT_MOTION_REFERENCE_AUDIT_V1'
+          assert s['version'] == 'P1_C_POST_R10_RIGGED_CAT_MOTION_REFERENCE_AUDIT_V2_STDLIB'
           assert s['objects']['meshCount'] >= 1
           assert s['objects']['armatureCount'] >= 1
           assert s['primaryMesh'] is not None

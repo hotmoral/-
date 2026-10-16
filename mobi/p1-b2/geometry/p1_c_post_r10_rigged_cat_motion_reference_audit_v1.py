@@ -9,9 +9,8 @@ from collections import defaultdict
 from pathlib import Path
 
 import bpy
-import numpy as np
 
-VERSION = "P1_C_POST_R10_RIGGED_CAT_MOTION_REFERENCE_AUDIT_V1"
+VERSION = "P1_C_POST_R10_RIGGED_CAT_MOTION_REFERENCE_AUDIT_V2_STDLIB"
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,60 +33,92 @@ def sha_topology(mesh) -> str:
     return h.hexdigest()
 
 
-def mesh_coords(mesh) -> np.ndarray:
-    arr = np.empty((len(mesh.vertices), 3), dtype=np.float64)
-    for i, v in enumerate(mesh.vertices):
-        arr[i, :] = (float(v.co.x), float(v.co.y), float(v.co.z))
-    return arr
+def mesh_coords(mesh) -> list[tuple[float, float, float]]:
+    return [
+        (float(v.co.x), float(v.co.y), float(v.co.z))
+        for v in mesh.vertices
+    ]
 
 
-def bbox_diag(points: np.ndarray) -> float:
-    if len(points) == 0:
+def centroid(points: list[tuple[float, float, float]]) -> tuple[float, float, float]:
+    n = len(points)
+    if n == 0:
+        return (0.0, 0.0, 0.0)
+    return (
+        sum(p[0] for p in points) / n,
+        sum(p[1] for p in points) / n,
+        sum(p[2] for p in points) / n,
+    )
+
+
+def bbox_diag(points: list[tuple[float, float, float]]) -> float:
+    if not points:
         return 0.0
-    ext = points.max(axis=0) - points.min(axis=0)
-    return float(np.linalg.norm(ext))
+    mins = [min(p[i] for p in points) for i in range(3)]
+    maxs = [max(p[i] for p in points) for i in range(3)]
+    return math.sqrt(sum((maxs[i] - mins[i]) ** 2 for i in range(3)))
 
 
-def best_fit_similarity(source: np.ndarray, target: np.ndarray) -> tuple[np.ndarray, dict]:
-    if source.shape != target.shape or source.ndim != 2 or source.shape[1] != 3:
-        raise ValueError("shape mismatch for similarity alignment")
-    xs = source.mean(axis=0)
-    yt = target.mean(axis=0)
-    x = source - xs
-    y = target - yt
-    h = x.T @ y
-    u, svals, vt = np.linalg.svd(h)
-    r = vt.T @ u.T
-    if np.linalg.det(r) < 0:
-        vt[-1, :] *= -1
-        r = vt.T @ u.T
-    denom = float(np.sum(x * x))
-    scale = 1.0 if denom <= 1e-30 else float(np.sum(svals) / denom)
-    aligned = scale * (x @ r.T) + yt
-    return aligned, {
-        "scale": scale,
-        "rotationDeterminant": float(np.linalg.det(r)),
-        "sourceCentroid": [float(x) for x in xs],
-        "targetCentroid": [float(x) for x in yt],
-    }
+def percentile(sorted_values: list[float], q: float) -> float:
+    if not sorted_values:
+        return 0.0
+    if len(sorted_values) == 1:
+        return float(sorted_values[0])
+    pos = (len(sorted_values) - 1) * q / 100.0
+    lo = int(math.floor(pos))
+    hi = int(math.ceil(pos))
+    if lo == hi:
+        return float(sorted_values[lo])
+    t = pos - lo
+    return float(sorted_values[lo] * (1.0 - t) + sorted_values[hi] * t)
 
 
-def displacement_summary(source: np.ndarray, target: np.ndarray) -> dict:
-    aligned, transform = best_fit_similarity(source, target)
-    d = np.linalg.norm(aligned - target, axis=1)
+def displacement_summary(
+    source: list[tuple[float, float, float]],
+    target: list[tuple[float, float, float]],
+) -> dict:
+    if len(source) != len(target):
+        raise ValueError("vertex count mismatch")
+    cs = centroid(source)
+    ct = centroid(target)
     diag = bbox_diag(target)
-    n = d / diag if diag > 1e-30 else d
+    raw = []
+    centered = []
+    for a, b in zip(source, target):
+        dx = b[0] - a[0]
+        dy = b[1] - a[1]
+        dz = b[2] - a[2]
+        raw.append(math.sqrt(dx * dx + dy * dy + dz * dz))
+        ac = (a[0] - cs[0], a[1] - cs[1], a[2] - cs[2])
+        bc = (b[0] - ct[0], b[1] - ct[1], b[2] - ct[2])
+        cdx = bc[0] - ac[0]
+        cdy = bc[1] - ac[1]
+        cdz = bc[2] - ac[2]
+        centered.append(math.sqrt(cdx * cdx + cdy * cdy + cdz * cdz))
+
+    def norm_summary(values: list[float]) -> dict:
+        norm = [v / diag if diag > 1e-30 else v for v in values]
+        s = sorted(norm)
+        rms = math.sqrt(sum(v * v for v in norm) / len(norm)) if norm else 0.0
+        return {
+            "p50": percentile(s, 50),
+            "p90": percentile(s, 90),
+            "p95": percentile(s, 95),
+            "p99": percentile(s, 99),
+            "max": max(s) if s else 0.0,
+            "rms": rms,
+        }
+
     return {
-        "alignment": transform,
         "targetBBoxDiagonal": diag,
-        "normalized": {
-            "p50": float(np.percentile(n, 50)),
-            "p90": float(np.percentile(n, 90)),
-            "p95": float(np.percentile(n, 95)),
-            "p99": float(np.percentile(n, 99)),
-            "max": float(np.max(n)),
-            "rms": float(np.sqrt(np.mean(n * n))),
-        },
+        "sourceCentroid": list(cs),
+        "targetCentroid": list(ct),
+        "rawNormalized": norm_summary(raw),
+        "centroidTranslationRemovedNormalized": norm_summary(centered),
+        "alignmentQualifier": (
+            "centroid translation removed only; global rotation/scale are intentionally not fitted "
+            "in this bounded audit"
+        ),
     }
 
 
@@ -116,7 +147,7 @@ def choose_primary_mesh() -> tuple[object | None, object | None, list[dict]]:
         })
     ranked = sorted(
         candidates,
-        key=lambda x: (x["hasArmature"], x["polygonCount"], x["vertexCount"]),
+        key=lambda x: (x["hasArmature"], x["polygonCount"], x["vertexCount"], x["object"].name),
         reverse=True,
     )
     chosen = ranked[0] if ranked else None
@@ -153,15 +184,15 @@ def vertex_group_summary(obj) -> list[dict]:
                 weights[int(g.group)].append(float(g.weight))
     out = []
     for idx, name in sorted(index_to_name.items(), key=lambda kv: kv[1].lower()):
-        ws = np.asarray(weights.get(idx, []), dtype=np.float64)
+        ws = sorted(weights.get(idx, []))
         out.append({
             "index": idx,
             "name": name,
-            "weightedVertexCount": int(len(ws)),
-            "weightSum": float(ws.sum()) if len(ws) else 0.0,
-            "weightP50": float(np.percentile(ws, 50)) if len(ws) else None,
-            "weightP90": float(np.percentile(ws, 90)) if len(ws) else None,
-            "weightMax": float(ws.max()) if len(ws) else None,
+            "weightedVertexCount": len(ws),
+            "weightSum": float(sum(ws)),
+            "weightP50": percentile(ws, 50) if ws else None,
+            "weightP90": percentile(ws, 90) if ws else None,
+            "weightMax": max(ws) if ws else None,
         })
     return out
 
@@ -188,13 +219,14 @@ def armature_summary(arm_obj) -> dict | None:
 
 
 def action_summary(action) -> dict:
-    frame_range = [float(action.frame_range[0]), float(action.frame_range[1])]
     fcurves = list(getattr(action, "fcurves", []))
-    groups = sorted({getattr(fc.group, "name", None) for fc in fcurves if getattr(fc, "group", None)})
+    groups = sorted(
+        {str(fc.group.name) for fc in fcurves if getattr(fc, "group", None) is not None}
+    )
     paths = sorted({str(fc.data_path) for fc in fcurves})
     return {
         "name": action.name,
-        "frameRange": frame_range,
+        "frameRange": [float(action.frame_range[0]), float(action.frame_range[1])],
         "fCurveCount": len(fcurves),
         "groups": groups,
         "sampleDataPaths": paths[:40],
@@ -206,11 +238,17 @@ def sampled_frames(action) -> list[int]:
     end = int(math.ceil(float(action.frame_range[1])))
     if end <= start:
         return [start]
-    vals = [start, round(start + 0.25 * (end - start)), round(start + 0.5 * (end - start)), round(start + 0.75 * (end - start)), end]
+    vals = [
+        start,
+        round(start + 0.25 * (end - start)),
+        round(start + 0.5 * (end - start)),
+        round(start + 0.75 * (end - start)),
+        end,
+    ]
     return sorted(set(int(v) for v in vals))
 
 
-def evaluated_mesh_state(obj, depsgraph) -> tuple[dict, np.ndarray]:
+def evaluated_mesh_state(obj, depsgraph) -> tuple[dict, list[tuple[float, float, float]]]:
     eval_obj = obj.evaluated_get(depsgraph)
     mesh = eval_obj.to_mesh(preserve_all_data_layers=True, depsgraph=depsgraph)
     try:
@@ -246,7 +284,10 @@ def audit_action(scene, obj, arm_obj, action) -> dict:
         arm_obj.animation_data.action = old_action
         scene.frame_set(old_frame)
 
-    topo_set = {(s["vertexCount"], s["polygonCount"], s["topologySha256"]) for s in states}
+    topo_set = {
+        (s["vertexCount"], s["polygonCount"], s["topologySha256"])
+        for s in states
+    }
     exact_correspondence = len(topo_set) == 1 and len(coords) >= 2
     displacement = []
     if exact_correspondence:
@@ -273,7 +314,10 @@ def main() -> None:
     primary, armature, meshes = choose_primary_mesh()
     actions = sorted(bpy.data.actions, key=lambda a: a.name.lower())
     action_reports = [action_summary(a) for a in actions]
-    motion_actions = [a for a in actions if any(k in a.name.lower() for k in ("walk", "run"))]
+    motion_actions = [
+        a for a in actions
+        if any(k in a.name.lower() for k in ("walk", "run"))
+    ]
 
     report = {
         "version": VERSION,
