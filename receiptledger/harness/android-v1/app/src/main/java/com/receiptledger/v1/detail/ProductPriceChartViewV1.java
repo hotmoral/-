@@ -24,6 +24,7 @@ public final class ProductPriceChartViewV1 extends View {
     private final Paint latestPoint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint usual = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path linePath = new Path();
     private List<ProductDetailV1.PurchaseRow> points = Collections.emptyList();
     private PriceEvaluationV1 evaluation;
 
@@ -119,13 +120,13 @@ public final class ProductPriceChartViewV1 extends View {
                     right, Math.max(top + text.getTextSize(), y - dp(4)), text);
         }
 
-        Path path = new Path();
+        linePath.reset();
         for (int i = 0; i < points.size(); i++) {
             float x = x(i, points.size(), left, right);
             float y = y(points.get(i).comparisonPriceMinor.doubleValue(), lo, hi, top, bottom);
-            if (i == 0) path.moveTo(x, y); else path.lineTo(x, y);
+            if (i == 0) linePath.moveTo(x, y); else linePath.lineTo(x, y);
         }
-        if (points.size() > 1) canvas.drawPath(path, line);
+        if (points.size() > 1) canvas.drawPath(linePath, line);
 
         for (int i = 0; i < points.size(); i++) {
             float x = x(i, points.size(), left, right);
