@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.InputType;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -105,11 +106,17 @@ public final class ReceiptReviewDialog {
             EditText quantity = field(activity, R.string.review_quantity_hint, fmt(item.quantity), true);
             EditText unit = field(activity, R.string.review_unit_price_hint, fmt(item.unitPrice), true);
             EditText amount = field(activity, R.string.review_line_amount_hint, fmt(item.lineAmount), true);
+            CheckBox remove = new CheckBox(activity);
+            remove.setText(R.string.review_item_not_product);
+            remove.setMinHeight(UiKitV1.dp(activity, DesignTokensV1.TOUCH_TARGET_MIN_DP));
+            UiKitV1.styleText(remove, DesignTokensV1.TextRole.BODY_MEDIUM, DesignTokensV1.COLOR_TEXT_PRIMARY);
+            remove.setOnCheckedChangeListener((button, checked) -> setRowEnabled(name, quantity, unit, amount, !checked));
             form.addView(name);
             form.addView(quantity);
             form.addView(unit);
             form.addView(amount);
-            rows.put(item.ordinal, new RowFields(name, quantity, unit, amount));
+            form.addView(remove);
+            rows.put(item.ordinal, new RowFields(name, quantity, unit, amount, remove));
         }
 
         ScrollView scroll = new ScrollView(activity);
@@ -142,6 +149,8 @@ public final class ReceiptReviewDialog {
                     RowFields row = rows.get(item.ordinal);
                     if (row == null) {
                         edits.add(new ReviewItemInput(item.name, item.quantity, item.unitPrice, item.lineAmount));
+                    } else if (row.remove.isChecked()) {
+                        edits.add(ReviewItemInput.removed());
                     } else {
                         edits.add(new ReviewItemInput(
                                 row.name.getText().toString(),
@@ -160,6 +169,18 @@ public final class ReceiptReviewDialog {
             }
         }));
         dialog.show();
+    }
+
+    private static void setRowEnabled(EditText name, EditText quantity, EditText unit, EditText amount, boolean enabled) {
+        name.setEnabled(enabled);
+        quantity.setEnabled(enabled);
+        unit.setEnabled(enabled);
+        amount.setEnabled(enabled);
+        float alpha = enabled ? 1f : 0.45f;
+        name.setAlpha(alpha);
+        quantity.setAlpha(alpha);
+        unit.setAlpha(alpha);
+        amount.setAlpha(alpha);
     }
 
     private static EditText field(Context context, int hintRes, Object value, boolean number) {
@@ -189,11 +210,13 @@ public final class ReceiptReviewDialog {
         final EditText quantity;
         final EditText unit;
         final EditText amount;
-        RowFields(EditText name, EditText quantity, EditText unit, EditText amount) {
+        final CheckBox remove;
+        RowFields(EditText name, EditText quantity, EditText unit, EditText amount, CheckBox remove) {
             this.name = name;
             this.quantity = quantity;
             this.unit = unit;
             this.amount = amount;
+            this.remove = remove;
         }
     }
 }
