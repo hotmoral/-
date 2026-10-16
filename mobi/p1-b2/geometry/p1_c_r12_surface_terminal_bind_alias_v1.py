@@ -5,6 +5,7 @@ import hashlib
 import importlib.util
 import json
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -63,6 +64,7 @@ def load_r11(geometry_dir: Path):
     if spec is None or spec.loader is None:
         raise RuntimeError("cannot import frozen R11 implementation")
     mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     checks = {
         "version": getattr(mod, "VERSION", None),
