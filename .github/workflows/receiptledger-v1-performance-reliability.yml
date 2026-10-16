@@ -242,7 +242,7 @@ jobs:
           set -euo pipefail
           timeout 1200 adb shell am instrument -w -r \
             -e class com.receiptledger.v1.performance.PerformanceReliabilityInstrumentedTest \
-            com.receiptledger.v1.test/android.test.InstrumentationTestRunner \
+            com.receiptledger.v1.test/androidx.test.runner.AndroidJUnitRunner \
             | tee receiptledger/cp36-instrumentation.txt
           if grep -Fq 'FAILURES!!!' receiptledger/cp36-instrumentation.txt; then exit 71; fi
           grep -Fq 'OK (1 test)' receiptledger/cp36-instrumentation.txt

@@ -1,5 +1,7 @@
 package com.receiptledger.v1.performance;
 
+import static org.junit.Assert.*;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -11,8 +13,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Debug;
 import android.os.SystemClock;
-import android.test.InstrumentationTestCase;
 import android.view.View;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.receiptledger.v1.archive.ImageArchivePolicy;
 import com.receiptledger.v1.archive.ReceiptImageArchive;
@@ -35,7 +39,6 @@ import com.receiptledger.v1.priceintel.PriceIntelligenceV2;
 import com.receiptledger.v1.product.IdentityResolution;
 import com.receiptledger.v1.product.ProductCatalogMigrationV2;
 import com.receiptledger.v1.product.ProductCatalogSchema;
-import com.receiptledger.v1.product.ProductType;
 import com.receiptledger.v1.product.SqliteProductCatalogStore;
 import com.receiptledger.v1.search.SearchBrowseQueryV1;
 import com.receiptledger.v1.search.SearchBrowseResultV1;
@@ -45,7 +48,6 @@ import com.receiptledger.v1.validation.ValidationStatus;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -55,12 +57,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** CP36 actual Android/SQLite/ML Kit runtime profile. */
-@SuppressWarnings("deprecation")
-public final class PerformanceReliabilityInstrumentedTest extends InstrumentationTestCase {
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-    public void testCanonicalAndroidRuntimeProfile() throws Exception {
-        Context context = getInstrumentation().getTargetContext();
+/** CP36 actual Android/SQLite/ML Kit runtime profile. */
+@RunWith(AndroidJUnit4.class)
+public final class PerformanceReliabilityInstrumentedTest {
+
+    @Test public void canonicalAndroidRuntimeProfile() throws Exception {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         cleanup(context);
 
         SqliteScaleMetrics scale = measureSqliteSearchAndHistory(context);
@@ -312,7 +317,7 @@ public final class PerformanceReliabilityInstrumentedTest extends Instrumentatio
     private long drawChart(final ProductDetailV1 detail, final Context context) {
         final long[] elapsed = new long[1];
         final AtomicReference<Throwable> failure = new AtomicReference<>();
-        getInstrumentation().runOnMainSync(() -> {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
             try {
                 ProductPriceChartViewV1 chart = new ProductPriceChartViewV1(context);
                 Bitmap output = Bitmap.createBitmap(1080, 660, Bitmap.Config.ARGB_8888);
@@ -336,7 +341,7 @@ public final class PerformanceReliabilityInstrumentedTest extends Instrumentatio
 
     private OcrMetrics measureOcr() throws Exception {
         Bitmap bitmap = syntheticReceiptBitmap();
-        int before = Debug.getPss();
+        long before = Debug.getPss();
         MlKitOcrEngine engine = new MlKitOcrEngine();
         try {
             OcrRun cold = recognize(engine, bitmap);
@@ -349,7 +354,7 @@ public final class PerformanceReliabilityInstrumentedTest extends Instrumentatio
                 warm[i] = run.elapsedMs;
             }
             java.util.Arrays.sort(warm);
-            int after = Debug.getPss();
+            long after = Debug.getPss();
             return new OcrMetrics(cold.elapsedMs, warm[1], before, after);
         } finally {
             engine.close();
@@ -634,9 +639,9 @@ public final class PerformanceReliabilityInstrumentedTest extends Instrumentatio
     private static final class OcrMetrics {
         final long coldMs;
         final long warmMedianMs;
-        final int pssBeforeKb;
-        final int pssAfterKb;
-        OcrMetrics(long coldMs, long warmMedianMs, int pssBeforeKb, int pssAfterKb) {
+        final long pssBeforeKb;
+        final long pssAfterKb;
+        OcrMetrics(long coldMs, long warmMedianMs, long pssBeforeKb, long pssAfterKb) {
             this.coldMs = coldMs;
             this.warmMedianMs = warmMedianMs;
             this.pssBeforeKb = pssBeforeKb;
