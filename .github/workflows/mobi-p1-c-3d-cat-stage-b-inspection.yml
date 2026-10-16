@@ -1,0 +1,136 @@
+name: Mobi P1-C 3D Cat Stage B Inspection
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-3d-cat-projection-feasibility-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_3d_cat_stage_b_inspector_v1.py'
+      - '.github/workflows/mobi-p1-c-3d-cat-stage-b-inspection.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stage-b-inspection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify frozen inspector blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+            'p1_c_3d_cat_stage_b_inspector_v1.py': '9b7899bc1c39d02291813a826df01d3697192846',
+            'test_p1_c_3d_cat_stage_b_inspector_v1.py': 'f7125437320b6bbf6c2d70cdbe8dd306002577ec',
+          }
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git','hash-object',path], text=True).strip()
+              assert actual == wanted, (path, wanted, actual)
+          print('frozen_inspector_identity=PASS')
+          PY
+
+      - name: Run bounded inspector tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_3d_cat_stage_b_inspector_v1.py
+
+      - name: Acquire source and license evidence
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-3d-cat-stage-b/evidence
+          E=mobi/p1-c-3d-cat-stage-b/evidence
+          UA='Mobi bounded public feasibility/1.0'
+
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 120 -A "$UA" \
+            'https://www.innerscene.com/tools/library/3d-parts/standing-cat-cda42538' \
+            -o "$E/source_page.html"
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 120 -A "$UA" \
+            'https://www.innerscene.com/tools/library/terms' \
+            -o "$E/library_terms.html"
+
+          grep -Fq 'Public domain (CC0)' "$E/source_page.html"
+          grep -Fq 'cat-original.glb' "$E/source_page.html"
+          grep -Fq 'CC0 1.0 Universal' "$E/library_terms.html"
+          grep -Fq 'copy, modify, distribute and use' "$E/library_terms.html"
+
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            -D "$E/download_headers.txt" \
+            -w 'effective_url=%{url_effective}\nhttp_code=%{http_code}\ncontent_type=%{content_type}\nsize_download=%{size_download}\n' \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/cat-original.glb" > "$E/download_meta.txt"
+
+          sha256sum "$E/cat-original.glb" | tee "$E/source_sha256.txt"
+          stat -c 'bytes=%s' "$E/cat-original.glb" | tee "$E/source_size.txt"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('mobi/p1-c-3d-cat-stage-b/evidence/cat-original.glb')
+          b=p.read_bytes()
+          assert len(b) > 100000, len(b)
+          assert b[:4] == b'glTF', b[:4]
+          print('raw_glb_magic_and_size=PASS')
+          PY
+
+      - name: Inspect raw GLB twice deterministically
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          E=../../p1-c-3d-cat-stage-b/evidence
+          PYTHONHASHSEED=1 python3 p1_c_3d_cat_stage_b_inspector_v1.py "$E/cat-original.glb" --out "$E/inspection_seed1.json" > "$E/inspection_seed1_stdout.txt"
+          PYTHONHASHSEED=777 python3 p1_c_3d_cat_stage_b_inspector_v1.py "$E/cat-original.glb" --out "$E/inspection_seed777.json" > "$E/inspection_seed777_stdout.txt"
+          diff -u "$E/inspection_seed1.json" "$E/inspection_seed777.json" > "$E/deterministic_diff.txt"
+          cp "$E/inspection_seed1.json" "$E/inspection.json"
+
+      - name: Validate structural inspection boundary
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('mobi/p1-c-3d-cat-stage-b/evidence/inspection.json')
+          s=json.loads(p.read_text())
+          assert s['version'] == 'P1_C_3D_CAT_STAGE_B_INSPECTOR_V1'
+          assert s['file']['glbVersion'] == 2
+          assert s['structure']['meshCount'] >= 1
+          assert s['structure']['primitiveCount'] >= 1
+          assert s['geometry']['totalTriangleCount'] > 0
+          assert s['geometry']['nonFinitePositionScalars'] == 0
+          ext=s['geometry']['worldExtents']
+          assert ext is not None and all(x > 0 for x in ext), ext
+          assert Path('mobi/p1-c-3d-cat-stage-b/evidence/deterministic_diff.txt').read_text() == ''
+          print(json.dumps({
+            'sha256': s['file']['sha256'],
+            'bytes': s['file']['bytes'],
+            'meshCount': s['structure']['meshCount'],
+            'primitiveCount': s['structure']['primitiveCount'],
+            'materialCount': s['structure']['materialCount'],
+            'skinCount': s['structure']['skinCount'],
+            'animationCount': s['structure']['animationCount'],
+            'morphTargetSetCount': s['structure']['morphTargetSetCount'],
+            'totalTriangleCount': s['geometry']['totalTriangleCount'],
+            'worldExtents': ext,
+          }, indent=2, sort_keys=True))
+          PY
+
+      - name: Record environment and hash evidence
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-3d-cat-stage-b/evidence
+          { echo "git_commit=${GITHUB_SHA}"; python3 --version; curl --version | head -1; } > "$E/environment.txt"
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-3d-cat-stage-b-${{ github.run_id }}
+          path: mobi/p1-c-3d-cat-stage-b/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
