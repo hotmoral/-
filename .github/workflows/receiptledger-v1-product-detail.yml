@@ -1,0 +1,222 @@
+name: ReceiptLedger V1 Product Detail
+
+on:
+  push:
+    branches:
+      - receiptledger/run-v1-product-detail-20261016
+    paths:
+      - 'receiptledger/CP31_PRODUCT_DETAIL_PLAN.md'
+      - 'receiptledger/PRODUCT_DETAIL_CONSISTENCY_REVIEW.md'
+      - 'receiptledger/PRODUCT_DETAIL_GOLDEN_VECTORS.md'
+      - 'receiptledger/harness/android-v1/app/build.gradle'
+      - 'receiptledger/harness/android-v1/app/src/main/AndroidManifest.xml'
+      - 'receiptledger/harness/android-v1/app/src/main/res/values/strings.xml'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/ProductDetailActivity.java'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/PriceHistoryActivity.java'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/detail/**'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/design/SemanticPresentationV1.java'
+      - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/detail/**'
+      - '.github/workflows/receiptledger-v1-product-detail.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: receiptledger-v1-product-detail-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate-product-detail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Ensure Android API 36 SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          if [ ! -d "$ANDROID_HOME/platforms/android-36" ] || [ ! -d "$ANDROID_HOME/build-tools/35.0.0" ]; then
+            yes | "$SDKMANAGER" 'platforms;android-36' 'build-tools;35.0.0' >/dev/null
+          fi
+          test -d "$ANDROID_HOME/platforms/android-36"
+          test -d "$ANDROID_HOME/build-tools/35.0.0"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+          cache-disabled: true
+
+      - name: Audit public namespace
+        run: bash receiptledger/tools/audit_public_tree.sh
+
+      - name: Enforce CP31 scope and frozen contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=f67e39654d1d4cfdc2cd6fce8e7c16f72ed34b60
+          APP=receiptledger/harness/android-v1/app
+          git diff --name-only "$BASE" "$GITHUB_SHA" > receiptledger/cp31-changed-files.txt
+          while IFS= read -r f; do
+            case "$f" in
+              .github/workflows/receiptledger-v1-product-detail.yml) ;;
+              receiptledger/CP31_PRODUCT_DETAIL_PLAN.md) ;;
+              receiptledger/PRODUCT_DETAIL_CONSISTENCY_REVIEW.md) ;;
+              receiptledger/PRODUCT_DETAIL_GOLDEN_VECTORS.md) ;;
+              receiptledger/harness/android-v1/app/build.gradle) ;;
+              receiptledger/harness/android-v1/app/src/main/AndroidManifest.xml) ;;
+              receiptledger/harness/android-v1/app/src/main/res/values/strings.xml) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/ProductDetailActivity.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/PriceHistoryActivity.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/detail/*) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/design/SemanticPresentationV1.java) ;;
+              receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/detail/*) ;;
+              '') ;;
+              *) echo "CP31 scope violation: $f"; exit 31 ;;
+            esac
+          done < receiptledger/cp31-changed-files.txt
+
+          for frozen in catalog product semantics identity category commodity persistence price priceintel priceeval search; do
+            git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/$frozen" || { echo "Frozen upstream package changed: $frozen"; exit 32; }
+          done
+          for frozen_file in \
+            "$APP/src/main/java/com/receiptledger/v1/MainActivity.java" \
+            "$APP/src/main/java/com/receiptledger/v1/ReceiptDetailActivity.java" \
+            "$APP/src/main/java/com/receiptledger/v1/review/ReceiptReviewDialog.java"; do
+            git diff --quiet "$BASE" "$GITHUB_SHA" -- "$frozen_file" || { echo "Frozen upstream UI changed: $frozen_file"; exit 33; }
+          done
+
+          grep -Fq 'VERSION = 2' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
+          grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/persistence/ReceiptSchema.java"
+          grep -Fq 'versionCode 30' "$APP/build.gradle"
+          grep -Fq "versionName '1.0.29-product-detail'" "$APP/build.gradle"
+          grep -Fq 'ProductDetailActivity' "$APP/src/main/AndroidManifest.xml"
+          grep -Fq 'CP31 supports STANDARD product only' "$APP/src/main/java/com/receiptledger/v1/detail/ProductDetailServiceV1.java"
+          grep -Fq 'ComparisonBasisV2.standardPackage()' "$APP/src/main/java/com/receiptledger/v1/detail/ProductDetailServiceV1.java"
+          grep -Fq 'ChartGrammarV1.requireSingleBasis' "$APP/src/main/java/com/receiptledger/v1/detail/ProductPriceChartViewV1.java"
+
+      - name: Test lint and build
+        shell: bash
+        run: |
+          set +e
+          gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+          status=$?
+          REPORT=receiptledger/harness/android-v1/app/build/reports/lint-results-debug.txt
+          if [ -f "$REPORT" ]; then
+            echo '===== COMPLETE ANDROID LINT REPORT ====='
+            cat "$REPORT"
+            echo '===== END ANDROID LINT REPORT ====='
+          else
+            echo 'Expected lint report missing'
+            status=41
+          fi
+          for TEST_XML in \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.detail.ProductDetailV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.design.DesignSystemFoundationV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.search.SearchBrowseV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.priceeval.PriceEvaluationV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.priceintel.PriceIntelligenceV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.price.PriceHistoryServiceTest.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.commodity.CommodityNonStandardV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.category.CategorySystemV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.identity.IdentityResolverV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.semantics.ReceiptProductSemanticParserTest.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.catalog.CatalogDomainV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.product.CatalogPersistenceContractV2Test.xml; do
+            if [ ! -f "$TEST_XML" ]; then echo "Expected test result missing: $TEST_XML"; status=42; fi
+          done
+          exit "$status"
+
+      - name: Extract and verify CP31 metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' | tee receiptledger/cp31-product-detail-metrics.txt
+          import re, xml.etree.ElementTree as ET
+          path='receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.detail.ProductDetailV1Test.xml'
+          root=ET.parse(path).getroot()
+          if int(root.attrib.get('failures','0')) or int(root.attrib.get('errors','0')):
+              raise SystemExit('CP31 tests failed')
+          text='\n'.join((n.text or '') for n in root.iter('system-out'))
+          lines=[x.strip() for x in text.splitlines() if x.strip().startswith('CP31_METRICS ')]
+          if len(lines)!=1: raise SystemExit('Expected exactly one CP31_METRICS line, got %d' % len(lines))
+          line=lines[0]
+          v={k:int(x) for k,x in re.findall(r'(\w+)=(\d+)', line)}
+          expected={
+            'product_detail_version':1,
+            'standard_basis':1,
+            'identity_fallbacks':1,
+            'price_states':8,
+            'responsive_cases':6,
+            'traceability':1,
+            'chart_single_basis':1,
+            'purchase_rows':4,
+          }
+          for k,val in expected.items():
+              if v.get(k) != val: raise SystemExit('%s expected %d got %r' % (k,val,v.get(k)))
+          print(line)
+          PY
+
+      - name: Package and verify evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=f67e39654d1d4cfdc2cd6fce8e7c16f72ed34b60
+          SRC=receiptledger/harness/android-v1
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=receiptledger/output/v1-product-detail
+          rm -rf "$OUT"; mkdir -p "$OUT"
+          cp "$APK" "$OUT/receiptledger-v1-product-detail-debug.apk"
+          cp receiptledger/cp31-product-detail-metrics.txt "$OUT/CP31_PRODUCT_DETAIL_METRICS.txt"
+          cp "$SRC/app/build/reports/lint-results-debug.txt" "$OUT/lint-results-debug.txt"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.detail.ProductDetailV1Test.xml" "$OUT/PRODUCT_DETAIL_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.design.DesignSystemFoundationV1Test.xml" "$OUT/DESIGN_SYSTEM_FOUNDATION_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.search.SearchBrowseV1Test.xml" "$OUT/SEARCH_BROWSE_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.priceeval.PriceEvaluationV1Test.xml" "$OUT/PRICE_EVALUATION_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.priceintel.PriceIntelligenceV2Test.xml" "$OUT/PRICE_INTELLIGENCE_V2_TEST.xml"
+          unzip -t "$OUT/receiptledger-v1-product-detail-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
+          "$AAPT" dump badging "$APK" > "$OUT/APK_BADGING.txt"
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then echo "Forbidden permission packaged: $forbidden"; exit 51; fi
+          done
+          git diff --name-status "$BASE" "$GITHUB_SHA" > "$OUT/CP31_DIFF.txt"
+          sha256sum "$OUT/receiptledger-v1-product-detail-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo 'checkpoint=RL_V1_PRODUCT_DETAIL_01'
+            echo "public_commit=${GITHUB_SHA}"
+            echo "predecessor_handoff=${BASE}"
+            echo 'product_schema=2_UNCHANGED'
+            echo 'receipt_schema=1_UNCHANGED'
+            echo 'detail_scope=STANDARD_ONLY'
+            echo 'chart_basis=STANDARD_PACKAGE_ONLY'
+            echo 'receipt_traceability=PRESERVED'
+            echo 'ui_architecture=PROGRAMMATIC_ANDROID_WIDGET_PRESERVED'
+            echo 'compose_migration=NONE'
+            echo 'material_dependency_added=NO'
+            echo 'compile_sdk=36'
+            echo 'target_sdk=36'
+            echo 'min_sdk=23'
+            echo 'version_name=1.0.29-product-detail'
+            echo 'version_code=30'
+            echo 'signing=debug_only'
+          } > "$OUT/BUILD_IDENTITY.txt"
+          (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
+          sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt "$OUT"/APK_PERMISSIONS.txt "$OUT"/CP31_PRODUCT_DETAIL_METRICS.txt "$OUT"/PRODUCT_DETAIL_V1_TEST.xml "$OUT"/CP31_DIFF.txt > "$OUT/EVIDENCE_SHA256.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: receiptledger-v1-product-detail-${{ github.run_id }}
+          path: receiptledger/output/v1-product-detail/
+          if-no-files-found: error
+          retention-days: 14
