@@ -19,6 +19,7 @@ public final class ReceiptStructureAnalyzer {
         if (layout == null) return new ReceiptStructure(rows, null, null);
 
         for (int i = 0; i < layout.rows.size(); i++) rows.add(classify(i, layout.rows.get(i)));
+        suppressPreDateFalseItems(rows);
 
         int firstBody = rows.size();
         for (int i = 0; i < rows.size(); i++) {
@@ -42,6 +43,30 @@ public final class ReceiptStructureAnalyzer {
             }
         }
         return new ReceiptStructure(rows, total, date);
+    }
+
+    private static void suppressPreDateFalseItems(List<StructuredRow> rows) {
+        int firstDate = -1;
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i).role == RowRole.DATE) {
+                firstDate = i;
+                break;
+            }
+        }
+        if (firstDate < 0) return;
+
+        int itemsAfterDate = 0;
+        for (int i = firstDate + 1; i < rows.size(); i++) {
+            if (rows.get(i).role == RowRole.ITEM) itemsAfterDate++;
+        }
+        if (itemsAfterDate < 2) return;
+
+        for (int i = 0; i < firstDate; i++) {
+            StructuredRow row = rows.get(i);
+            if (row.role == RowRole.ITEM) {
+                rows.set(i, row.withRole(RowRole.HEADER, "ITEM_BEFORE_DATE_WITH_BODY_BELOW"));
+            }
+        }
     }
 
     private StructuredRow classify(int index, ReceiptRow row) {
