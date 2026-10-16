@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.receiptledger.v1.archive.ReceiptRepository;
@@ -93,9 +94,15 @@ public final class MainActivity extends Activity {
         outer.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
         UiKitV1.applyPage(this, outer);
 
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
+        outer.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1f));
+
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
-        outer.addView(content, new LinearLayout.LayoutParams(contentWidthPx(), -1));
+        scroll.addView(content, new ScrollView.LayoutParams(
+                contentWidthPx(), ScrollView.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP | Gravity.CENTER_HORIZONTAL));
 
         content.addView(UiKitV1.title(this, R.string.capture_review_title));
         TextView intro = UiKitV1.body(this, getString(R.string.capture_review_intro));
@@ -117,7 +124,7 @@ public final class MainActivity extends Activity {
 
         preview = new DocumentPreviewView(this);
         preview.setMinimumHeight(dp(180));
-        content.addView(preview, new LinearLayout.LayoutParams(-1, 0, 1f));
+        content.addView(preview, new LinearLayout.LayoutParams(-1, dp(240)));
 
         LinearLayout imageActions = new LinearLayout(this);
         imageActions.setOrientation(LinearLayout.HORIZONTAL);
@@ -455,25 +462,6 @@ public final class MainActivity extends Activity {
         worker.execute(() -> {
             try {
                 repository.save(record, image);
-                RepeatIdentityReuseV1.Result reuse = repeatReuse.apply(record,
-                        (receiptId, ordinal, rawName) ->
-                                catalog.resolveAndLinkExact(receiptId, ordinal, rawName).classified());
-                int count = repository.count();
-                runOnUiThread(() -> {
-                    cameraButton.setEnabled(true);
-                    galleryButton.setEnabled(true);
-                    restoreImageActions();
-                    if (pendingRecord == record) {
-                        pendingRecord = null;
-                        reviewAssessment = null;
-                        summaryHost.removeAllViews();
-                        hideReviewActions();
-                        showState(SemanticPresentationV1.display(
-                                getString(R.string.capture_saved_title),
-                                getString(R.string.capture_saved_body, count, reuse.linkedCount),
-                                SemanticToneV1.POSITIVE));
-                    }
-                });
             } catch (Exception error) {
                 runOnUiThread(() -> {
                     cameraButton.setEnabled(true);
@@ -484,7 +472,27 @@ public final class MainActivity extends Activity {
                         showError(R.string.capture_save_failed_title, error);
                     }
                 });
+                return;
             }
+
+            RepeatIdentityReuseV1.Result reuse = repeatReuse.apply(record,
+                    (receiptId, ordinal, rawName) ->
+                            catalog.resolveAndLinkExact(receiptId, ordinal, rawName).classified());
+            runOnUiThread(() -> {
+                cameraButton.setEnabled(true);
+                galleryButton.setEnabled(true);
+                restoreImageActions();
+                if (pendingRecord == record) {
+                    pendingRecord = null;
+                    reviewAssessment = null;
+                    summaryHost.removeAllViews();
+                    hideReviewActions();
+                    showState(SemanticPresentationV1.display(
+                            getString(R.string.capture_saved_title),
+                            getString(R.string.capture_saved_body, reuse.linkedCount),
+                            SemanticToneV1.POSITIVE));
+                }
+            });
         });
     }
 

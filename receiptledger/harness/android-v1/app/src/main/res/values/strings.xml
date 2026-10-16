@@ -97,7 +97,7 @@
     <string name="capture_saving_title">영수증을 저장하는 중</string>
     <string name="capture_saving_body">이미지와 구매 기록을 안전하게 저장하고 있어요.</string>
     <string name="capture_saved_title">저장했어요</string>
-    <string name="capture_saved_body">저장된 영수증 %1$d건 · 이전에 확인한 상품 %2$d개를 자동으로 다시 연결했습니다.</string>
+    <string name="capture_saved_body">영수증을 저장했습니다. 이전에 확인한 상품 %1$d개를 자동으로 다시 연결했습니다.</string>
     <string name="capture_load_failed_title">사진을 불러오지 못했어요</string>
     <string name="capture_correction_failed_title">영수증 보정을 완료하지 못했어요</string>
     <string name="capture_ocr_failed_title">영수증을 읽지 못했어요</string>
@@ -109,7 +109,6 @@
     <string name="review_title_all">전체 내용 수정</string>
     <string name="review_help_required">자동으로 확정하기 어려운 항목만 표시합니다. 확인한 값은 그대로 저장에 사용됩니다.</string>
     <string name="review_help_all">인식된 영수증 전체 내용을 수정할 수 있습니다. 비운 값은 자동으로 다시 채우지 않습니다.</string>
-    <string name="review_reanalyze_needed">수정할 특정 항목을 정할 수 없습니다. 사진을 다시 분석해 주세요.</string>
     <string name="review_store_hint">매장명</string>
     <string name="review_date_hint">날짜 YYYY-MM-DD</string>
     <string name="review_total_hint">영수증 합계</string>

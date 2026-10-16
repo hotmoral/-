@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.InputType;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -40,7 +39,7 @@ public final class ReceiptReviewDialog {
             Callback callback) {
         if (assessment == null) assessment = CaptureReviewAssessmentV2.assess(base);
         if (assessment.receiptFields.isEmpty() && assessment.itemOrdinals.isEmpty()) {
-            Toast.makeText(activity, R.string.review_reanalyze_needed, Toast.LENGTH_LONG).show();
+            showInternal(activity, base, assessment, true, callback);
             return;
         }
         showInternal(activity, base, assessment, false, callback);
