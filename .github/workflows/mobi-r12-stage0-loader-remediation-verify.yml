@@ -1,0 +1,54 @@
+name: Mobi R12 Stage-0 Loader Remediation Verify
+
+on:
+  push:
+    branches:
+      - mobi/verify-r12-stage0-loader-remediation-20261017
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install frozen inherited runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+
+      - name: Verify exact inherited R11 bytes and remediated adapter identity
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+          printf 'R12_ADAPTER_BYTES=' && wc -c < p1_c_r12_surface_terminal_bind_alias_v1.py
+          printf 'R12_ADAPTER_SHA256=' && sha256sum p1_c_r12_surface_terminal_bind_alias_v1.py | awk '{print $1}'
+          printf 'R12_ADAPTER_GIT_BLOB=' && git hash-object p1_c_r12_surface_terminal_bind_alias_v1.py
+
+      - name: Run unchanged synthetic contract tests only
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python -m unittest -v test_p1_c_r11_semantic_scaffold_v1.py
+          python -m unittest -v test_p1_c_r12_surface_terminal_bind_alias_v1.py
