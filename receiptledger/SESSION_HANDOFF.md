@@ -4,43 +4,43 @@ Updated: 2026-10-16 KST
 
 ## 0. Restart contract
 
-GitHub is canonical. Do not reconstruct ReceiptLedger execution state from old chat before reading current files and verifying refs.
+GitHub is canonical. Do not reconstruct execution state from chat memory before reading current files and verifying refs.
 
 Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP24_IDENTITY_RESOLVER_V2_CLOSEOUT.md`
-4. `receiptledger/CP24_IDENTITY_RESOLVER_V2_EVIDENCE.md`
-5. `receiptledger/CP24_IDENTITY_RESOLVER_V2_PLAN.md`
-6. `receiptledger/IDENTITY_RESOLVER_V2_CONSISTENCY_REVIEW.md`
-7. `receiptledger/IDENTITY_RESOLVER_V2_GOLDEN_VECTORS.md`
-8. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_CLOSEOUT.md`
-9. `receiptledger/CP23_RECEIPT_PRODUCT_SEMANTICS_EVIDENCE.md`
-10. `receiptledger/CP22_PERSISTENCE_V2_CLOSEOUT.md`
-11. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-12. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-13. `receiptledger/README.md`
-14. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP25_CATEGORY_SYSTEM_CLOSEOUT.md`
+4. `receiptledger/CP25_CATEGORY_SYSTEM_EVIDENCE.md`
+5. `receiptledger/CP25_CATEGORY_SYSTEM_PLAN.md`
+6. `receiptledger/CATEGORY_SYSTEM_CONSISTENCY_REVIEW.md`
+7. `receiptledger/CATEGORY_SYSTEM_GOLDEN_VECTORS.md`
+8. `receiptledger/CP24_IDENTITY_RESOLVER_V2_CLOSEOUT.md`
+9. `receiptledger/CP24_IDENTITY_RESOLVER_V2_EVIDENCE.md`
+10. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+12. `receiptledger/README.md`
+13. `receiptledger/WORK_UNIT.md`
 
 ## 1. Latest executable checkpoint
 
-**CP24 — Identity Resolver V2 — PASS / COMPLETE**
+**CP25 — Category System — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-identity-resolver-v2-20261016`
-- predecessor handoff: `d04667a5dd9f257117f59bcde194d5b702fa1337`
-- frozen implementation HEAD: `4b556afd4dd52b68cf768e937bb456665ad4c231`
-- canonical Actions: `38824134990` — SUCCESS
-- job: `116727478370` — SUCCESS
-- artifact ID: `12014915453`
-- artifact digest: `sha256:4740590ca2c7d7525842aa3ebe6ec7964911d303322ebad77b5701344ce76867`
-- APK SHA-256: `0656c60110ba7debcb0801ddee048cd2220b959c2119539a79274eebbc05eb6e`
+- branch: `receiptledger/run-v1-category-system-20261016`
+- predecessor handoff: `4858c6e6b377e09ebbbe77384d9bb94ede4d906d`
+- frozen implementation HEAD: `042c3b59063f0e58a273a5f685b25780683fcf36`
+- canonical Actions: `38827880730` — SUCCESS
+- job: `116739504019` — SUCCESS
+- artifact ID: `12015144887`
+- artifact digest: `sha256:06e0dcd1d74e3abafd4f39a97363d51b9d53cfb2253c0cf4e742e39f5b257a92`
+- APK SHA-256: `69244c65cfb09476f371b9c748d42cbe58a5974c3f49d662be90e603e3622a1f`
+- CP25 category tests: 8/8 PASS
 - CP24 identity tests: 8/8 PASS
 - CP23 semantics tests: 7/7 PASS
 - CP21 catalog tests: 15/15 PASS
 - CP22 persistence tests: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionName `1.0.22-identity-resolver-v2`, versionCode 23
+- versionName `1.0.23-category-system`, versionCode 24
 
 Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary.
 
@@ -50,123 +50,147 @@ ReceiptLedger is a personal purchase-price memory and comparison system.
 
 Target experience:
 
-`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색 -> 과거 가격과 현재 가격 판단`
+`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색·카테고리 탐색 -> 과거 가격과 현재 가격 판단`
 
-The same purchased product must accumulate under the correct stable identity. Both wrong merging and identity fragmentation undermine price history.
+The receipt remains evidence/input. Product/commodity history and price judgment are the destination.
 
-## 3. CP24 resolver contract
+## 3. CP25 category contract
+
+Category is browse/classification metadata over an already-resolved stable catalog ID.
+
+Taxonomy:
+
+- 28 stable nodes;
+- roots: FOOD / 식품, HOUSEHOLD / 생활;
+- common dairy/noodle/frozen/produce/grain/snack/beverage/seasoning/cleaning/paper/personal-care leaves;
+- no forced OTHER bucket.
 
 Decision states:
 
-- `AUTO_LINK`
+- `REUSE_PERSISTED`
+- `AUTO_ASSIGNABLE`
 - `REVIEW`
 - `UNRESOLVED`
 
-Authority precedence:
+Strong unique local rules can be auto-assignable. Generic/conflicting evidence is review-gated. Unsupported evidence remains unresolved.
 
-1. exact MERCHANT alias;
-2. exact GLOBAL alias;
-3. unique strict semantic exact;
-4. semantic suggestion/review;
-5. unresolved.
+## 4. Persistence/correction contract
 
-The resolver only points to existing stable catalog IDs. It does not auto-create or merge entities.
+CP22 already contains `category_refs(product_id,category_id)`, so CP25 adds no schema migration.
 
-## 4. Confirmed alias rules
+Effective assignment is persisted on the existing stable catalog ID. Correction changes only CategoryRef and must preserve:
 
-MERCHANT exact alias is more specific than GLOBAL and is checked first.
+- stable ID;
+- CatalogKind;
+- canonicalName;
+- brand/productName/variant/specification fields;
+- createdAt/origin;
+- aliases/item links.
 
-A confirmed alias is normally reusable, but a dangling target or strong explicit contradiction in current brand/variant/non-ambiguous specification yields REVIEW instead of silent fallback or automatic linking.
+Persisted category is reused before classifier rules, reducing repeated review.
 
-Free lexical product-name differences do not veto an exact alias because abbreviations are a principal reason aliases exist.
+## 5. Identity firewall
 
-## 5. Strict semantic auto-link rules
+Category MUST NOT:
 
-STANDARD semantic auto-link requires:
+- prove product/commodity identity;
+- alter MERCHANT/GLOBAL alias precedence;
+- link/merge/split/create catalog entities;
+- repair CP24 false split by itself;
+- become a resolver feature without an explicit future amendment.
 
-- CP23 not review-required and not measure-ambiguous;
-- confirmed exact catalog productName;
-- confirmed exact catalog specification;
-- brand confirmed/present/exact on both sides if either side carries it;
-- variant confirmed/present/exact on both sides if either side carries it;
-- exactly one strict candidate.
+CP24 `identity/**` is unchanged and was frozen by CI diff guard.
 
-Product-name equality, category, store, HIGH parser confidence, fuzzy similarity or partial semantic resemblance are insufficient by themselves.
+## 6. Canonical local metrics
 
-Duplicate strict candidates are review-gated; CP24 does not merge them.
+`fixtures=30 known_category=28 auto_suggestions=24 correct_auto_suggestions=24 incorrect_auto_suggestions=0 review_required=6 unresolved=2 repeat_cases=4 repeat_reused=4 correction_cases=3 correction_reused=3`
 
-## 6. Repeat learning
+- auto suggestions 24/28 known-category fixtures;
+- correct auto suggestions 24/24;
+- incorrect auto suggestions 0;
+- repeat reuse 4/4;
+- correction reuse 3/3.
 
-After an explicit user confirmation:
+Synthetic/local only; not final real-receipt accuracy.
 
-- merchant context -> remember the raw alias in MERCHANT scope by default;
-- explicit global decision or no merchant -> GLOBAL alias.
+## 7. Frozen upstream contracts
 
-This is least-authority learning. It is intended to make repeat purchases automatic without poisoning other stores' alias namespaces.
-
-## 7. Canonical local metrics
-
-`fixtures=24 known_identity=20 auto_links=14 correct_auto_links=14 incorrect_auto_links=0 false_merge=0 false_split=1 review_required=6 unresolved=4 repeat_cases=4 repeat_reused=4`
-
-- automatic-link correctness: 14/14;
-- false merge: 0;
-- incorrect automatic link: 0;
-- false split / fragmentation risk: 1/20 = 5%;
-- repeat confirmed reuse: 4/4 = 100%.
-
-The one fragmentation-risk case is an intentionally weak known-product fixture where the resolver refuses to guess and fails to surface the correct existing identity. Keep this visible. Do not force it to zero by broadening unsafe auto-link rules.
-
-These are bounded synthetic-fixture metrics. CP35 remains the end-to-end real/sanitized receipt evaluation.
-
-## 8. Frozen upstream/storage rules
-
-- CP21 stable catalog ID remains identity authority;
-- product DB `receipt-products-v1.db`, schema 2;
-- receipt DB `receiptledger-v1.db`, schema 1;
-- CP23 parsed fields remain unconfirmed evidence;
-- standalone physical-measure ambiguity remains review-gated;
-- category is not identity proof;
-- NON_STANDARD semantic grouping remains CP26 work;
+### CP21
+- stable catalog ID = identity authority;
+- STANDARD/NON_STANDARD/UNCLASSIFIED semantics;
 - grouping != comparability;
-- price/date/store/validation remain receipt-derived;
-- no permission/network/privacy expansion.
+- source/confidence/confirmation independent.
 
-## 9. Next planned implementation checkpoint
+### CP22
+- product DB schema 2;
+- receipt DB schema 1;
+- category_refs already available;
+- receipt price/date/store/validation authoritative;
+- direct SQLite retained.
 
-**CP25 — Category System**
+### CP23
+- receipt semantic fields are unconfirmed evidence;
+- standalone physical measure ambiguity remains review-gated.
 
-Required direction:
+### CP24
+- MERCHANT exact alias -> GLOBAL exact alias -> strict unique semantic exact -> review -> unresolved;
+- fuzzy similarity not auto-link authority;
+- resolver never auto-creates/merges identities;
+- category is not identity authority.
 
-- define practical V1 category taxonomy/hierarchy;
-- persist stable category identities/assignments;
-- assign/suggest categories to already-resolved Product/Commodity identities;
-- support user correction and safe repeat reuse;
-- measure category suggestion accuracy and review burden locally;
-- never use category to prove or override CP24 product identity.
+## 8. CP25 limitations deliberately retained
 
-CP25 is planned, not automatically authorized.
+- taxonomy is bounded, not exhaustive;
+- no user custom categories or tags;
+- suggestion provenance/confidence is not separately persisted; only effective assignment is stored;
+- category does not establish commodity price comparability;
+- category does not eliminate identity fragmentation.
 
-## 10. Security/public boundary
+Do not solve these limitations through unrelated scope expansion.
 
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Do not use other project namespaces. Never commit secrets, signing material, private receipts, personal purchase databases/backups, identifiers or uncleared assets.
+## 9. Preflight process note
+
+An accidental Markdown-only preflight commit `af4640af63d1a3d6faa1355addb8d3b4802205cb` briefly moved the CP24 branch before CP25 branch creation. CP24 was immediately restored with force-with-lease to `4858c6e6...`, and CP25 was branched directly from that exact canonical handoff. The orphan commit contains no app/schema/runtime change and is outside canonical CP24/CP25 history.
+
+## 10. Next planned checkpoint
+
+**CP26 — Commodity / Non-standard V2**
+
+Required concerns before implementation:
+
+1. common commodity identity such as 감자 across heterogeneous purchase forms;
+2. preserve original 봉/팩/단/상자/개/kg/g etc. evidence;
+3. grouping != comparability remains hard contract;
+4. no guessed unit/package conversion;
+5. false grouping and false splitting both measured;
+6. raw unit/form preservation measured;
+7. review burden/repeat reuse measured;
+8. category remains metadata only;
+9. receipt-derived price truth preserved.
+
+CP26 is planned, not automatically authorized.
+
+## 11. Security/public boundary
+
+Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Do not use other project namespaces. Never commit secrets, signing material, private receipts, personal purchase DBs/backups, identifiers or uncleared assets.
 
 Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE unless separately authorized.
 
-## 11. Group discipline
+## 12. Group discipline
 
 For every checkpoint:
 
 - recover canonical state;
 - restate essence/non-goals;
-- inspect only material consistency risks;
-- resolve cheap contradictions first;
-- avoid unrelated cleanup and speculative scope;
+- inspect materially relevant consistency risks;
+- resolve cheap contradictions before implementation;
+- avoid ritual re-audits and unrelated cleanup;
 - implement the smallest coherent proof;
 - run scoped CI/evidence;
 - freeze exact executable refs;
 - synchronize handoff/status docs;
 - stop before the next unauthorized group.
 
-## 12. Stop condition
+## 13. Stop condition
 
-**CP24 is complete and handoff synchronization is the final operation of this group. Await explicit authorization for CP25.**
+**CP25 is complete and handoff-synchronized. Await explicit authorization for CP26.**

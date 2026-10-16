@@ -6,10 +6,10 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP24_IDENTITY_RESOLVER_V2_CLOSEOUT.md`
-4. `CP24_IDENTITY_RESOLVER_V2_EVIDENCE.md`
-5. `CP24_IDENTITY_RESOLVER_V2_PLAN.md`
-6. `IDENTITY_RESOLVER_V2_CONSISTENCY_REVIEW.md`
+3. `CP25_CATEGORY_SYSTEM_CLOSEOUT.md`
+4. `CP25_CATEGORY_SYSTEM_EVIDENCE.md`
+5. `CP25_CATEGORY_SYSTEM_PLAN.md`
+6. `CATEGORY_SYSTEM_CONSISTENCY_REVIEW.md`
 7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
 8. `WORK_UNIT.md`
 
@@ -17,20 +17,22 @@ GitHub is canonical; verify refs before relying on old chat context.
 
 ## Current boundary
 
-**CP24 — Identity Resolver V2 — COMPLETE**
+**CP25 — Category System — COMPLETE**
 
-- branch `receiptledger/run-v1-identity-resolver-v2-20261016`
-- frozen implementation HEAD `4b556afd4dd52b68cf768e937bb456665ad4c231`
-- canonical Actions `38824134990` — SUCCESS
-- artifact ID `12014915453`
-- artifact digest `sha256:4740590ca2c7d7525842aa3ebe6ec7964911d303322ebad77b5701344ce76867`
-- APK SHA-256 `0656c60110ba7debcb0801ddee048cd2220b959c2119539a79274eebbc05eb6e`
+- branch `receiptledger/run-v1-category-system-20261016`
+- frozen implementation HEAD `042c3b59063f0e58a273a5f685b25780683fcf36`
+- canonical Actions `38827880730` — SUCCESS
+- job `116739504019` — SUCCESS
+- artifact ID `12015144887`
+- artifact digest `sha256:06e0dcd1d74e3abafd4f39a97363d51b9d53cfb2253c0cf4e742e39f5b257a92`
+- APK SHA-256 `69244c65cfb09476f371b9c748d42cbe58a5974c3f49d662be90e603e3622a1f`
+- category tests 8/8 PASS
 - identity tests 8/8 PASS
 - semantics tests 7/7 PASS
 - catalog tests 15/15 PASS
 - persistence tests 7/7 PASS
 - lint 0 errors / 0 warnings
-- version `1.0.22-identity-resolver-v2`, versionCode 23
+- version `1.0.23-category-system`, versionCode 24
 
 ## Product direction
 
@@ -40,40 +42,35 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-CP24 converts confirmed alias knowledge and sufficiently strict semantic evidence into deterministic reuse of an **existing** stable catalog ID.
+CP25 makes resolved products/commodities easier to browse through category metadata without changing identity.
 
-Key rules:
+Key current category rules:
 
-- MERCHANT exact alias precedes GLOBAL exact alias;
-- dangling or strongly contradicted confirmed aliases go to REVIEW;
-- strict semantic auto-link requires one unique existing STANDARD candidate with confirmed exact product name and specification, plus confirmed exact brand/variant when applicable;
-- product-name similarity or parser HIGH confidence alone cannot auto-link;
-- fuzzy/edit-distance/embedding-style similarity is not auto-link authority;
-- ambiguity stays review-gated;
-- resolver never auto-creates or merges identities;
-- category is not identity authority;
-- NON_STANDARD semantic grouping remains CP26;
-- price truth remains receipt-derived.
+- bounded 28-node FOOD/HOUSEHOLD taxonomy;
+- persisted category reuses before rules;
+- unique high-confidence rule -> AUTO_ASSIGNABLE;
+- generic/conflicting evidence -> REVIEW;
+- unsupported evidence -> UNRESOLVED;
+- no forced OTHER;
+- correction changes only category on the same stable catalog ID;
+- category never proves identity or merges price histories;
+- existing product schema 2 `category_refs` is reused; no schema v3;
+- grouping != comparability remains frozen;
+- price truth stays receipt-derived.
 
-## CP24 local quality
+## CP25 local quality
 
-- 24 synthetic fixtures / 20 known-identity fixtures
-- automatic links 14, correct 14, incorrect 0
-- false merge 0
-- false split / fragmentation risk 1/20 = 5%
-- review-required 6
-- unresolved 4
-- repeat confirmed reuse 4/4 = 100%
+`fixtures=30 known_category=28 auto_suggestions=24 correct_auto_suggestions=24 incorrect_auto_suggestions=0 review_required=6 unresolved=2 repeat_cases=4 repeat_reused=4 correction_cases=3 correction_reused=3`
 
-The false-split risk is deliberately reported rather than eliminated by unsafe resolver broadening. These are local synthetic metrics, not final real-receipt accuracy.
+These are synthetic/local metrics, not final real-receipt accuracy.
 
 ## Next planned checkpoint
 
-**CP25 — Category System**
+**CP26 — Commodity / Non-standard V2**
 
-It will define category taxonomy/persistence/assignment/suggestion/correction/reuse for browse and organization. Category remains metadata and must never prove or override product identity.
+It will formalize common commodity grouping across heterogeneous purchase forms while preserving raw unit/form and prohibiting guessed conversion or fake comparability.
 
-Do not start CP25 until explicitly authorized.
+Do not start CP26 until explicitly authorized.
 
 ## Privacy/security
 
