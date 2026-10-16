@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">ReceiptLedger V1</string>
+    <string name="app_name">ReceiptLedger</string>
     <string name="apply_review">검토 적용</string>
-    <string name="library_title">저장된 영수증</string>
-    <string name="close_library">닫기</string>
+    <string name="library_title">영수증 기록</string>
+    <string name="library_intro">저장된 영수증과 구매 근거를 확인할 수 있어요.</string>
+    <string name="library_add_receipt">영수증 추가</string>
+    <string name="library_find">상품·품목 찾기</string>
+    <string name="close_library">뒤로</string>
     <string name="library_loading">영수증 목록을 읽는 중입니다.</string>
     <string name="library_count">저장된 영수증 %1$d건</string>
     <string name="library_empty">저장된 영수증이 없습니다.</string>
@@ -18,7 +21,6 @@
     <string name="identity_confirm">연결</string>
     <string name="identity_unclassify">미분류로 되돌리기</string>
     <string name="identity_name_required">대표 상품명을 입력하세요.</string>
-    <string name="open_price_history">가격 이력</string>
     <string name="price_history_title">상품 가격 이력</string>
     <string name="price_product_count">분류된 상품 %1$d개</string>
     <string name="price_product_button">[%1$s] %2$s</string>
@@ -122,4 +124,41 @@
     <string name="review_item_quantity_assumed">수량 확인 필요</string>
     <string name="review_item_calculated">금액 계산 확인</string>
     <string name="review_item_auto">자동 확인</string>
+
+    <!-- CP34 Commercial UI Shell -->
+    <string name="home_title">내 가격기억</string>
+    <string name="home_intro">내가 산 제품과 품목의 가격을 영수증 근거와 함께 기억하고 비교합니다.</string>
+    <string name="home_memory_title">영수증이 가격기억이 됩니다</string>
+    <string name="home_memory_body">영수증을 추가하면 구매 기록이 쌓이고, 다음 구매 때 내 과거 가격을 바로 확인할 수 있어요.</string>
+    <string name="home_add_receipt">영수증 추가</string>
+    <string name="home_find_section">상품·품목 찾기</string>
+    <string name="home_find">검색·카테고리로 찾기</string>
+    <string name="home_recent">최근 구매</string>
+    <string name="home_frequent">자주 구매</string>
+    <string name="home_recent_title">최근 가격기억</string>
+    <string name="home_recent_loading">최근 구매를 불러오는 중입니다.</string>
+    <string name="home_recent_failed">최근 구매를 불러오지 못했습니다.</string>
+    <string name="home_recent_empty">아직 연결된 구매 기록이 없습니다. 영수증을 추가해 가격기억을 시작하세요.</string>
+    <string name="home_recent_count">최근 구매 %1$d개</string>
+    <string name="home_receipt_section">구매 근거</string>
+    <string name="home_receipts">영수증 기록 보기</string>
+
+    <string name="search_browse_title">상품·품목 찾기</string>
+    <string name="search_browse_intro">내 구매 기록에 연결된 제품과 품목을 검색하거나 카테고리로 찾아보세요.</string>
+    <string name="search_browse_hint">제품명, 품목명, 브랜드, 영수증 표기, 매장</string>
+    <string name="search_browse_action">검색</string>
+    <string name="search_browse_recent">최근 구매</string>
+    <string name="search_browse_frequent">자주 구매</string>
+    <string name="search_browse_category">카테고리</string>
+    <string name="search_browse_all_categories">전체 카테고리로</string>
+    <string name="search_browse_parent_category">상위: %1$s</string>
+    <string name="search_browse_searching">검색하는 중입니다.</string>
+    <string name="search_browse_loading_recent">최근 구매를 불러오는 중입니다.</string>
+    <string name="search_browse_loading_frequent">자주 구매한 항목을 불러오는 중입니다.</string>
+    <string name="search_browse_loading_category">%1$s 항목을 불러오는 중입니다.</string>
+    <string name="search_browse_count">찾은 항목 %1$d개</string>
+    <string name="search_browse_empty">조건에 맞는 구매 기록이 없습니다.</string>
+    <string name="search_browse_failed">구매 기록을 불러오지 못했습니다.</string>
+    <string name="search_browse_unsupported">아직 상세를 열 수 없는 항목입니다.</string>
+    <string name="search_browse_back">뒤로</string>
 </resources>
