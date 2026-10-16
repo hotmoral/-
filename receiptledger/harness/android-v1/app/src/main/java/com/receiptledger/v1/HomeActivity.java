@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -17,7 +16,6 @@ import com.receiptledger.v1.design.UiKitV1;
 import com.receiptledger.v1.persistence.SqliteReceiptStore;
 import com.receiptledger.v1.priceeval.PriceEvaluationServiceV1;
 import com.receiptledger.v1.priceintel.PriceIntelligenceServiceV2;
-import com.receiptledger.v1.product.ProductType;
 import com.receiptledger.v1.product.SqliteProductCatalogStore;
 import com.receiptledger.v1.search.SearchBrowseEntryV1;
 import com.receiptledger.v1.search.SearchBrowseServiceV1;
@@ -76,7 +74,7 @@ public final class HomeActivity extends Activity {
         content.addView(add, blockParams(DesignTokensV1.SPACE_3_DP));
 
         TextView findTitle = UiKitV1.sectionTitle(this, getString(R.string.home_find_section));
-        content.addView(findTitle, blockParams(DesignTokensV1.SPACE_5_DP));
+        content.addView(findTitle, blockParams(DesignTokensV1.SPACE_6_DP));
 
         Button find = UiKitV1.button(this, R.string.home_find,
                 v -> startActivity(new Intent(this, SearchBrowseActivity.class)), UiKitV1.ButtonTone.SECONDARY);
@@ -93,7 +91,7 @@ public final class HomeActivity extends Activity {
         content.addView(browseActions, blockParams(DesignTokensV1.SPACE_2_DP));
 
         TextView recentTitle = UiKitV1.sectionTitle(this, getString(R.string.home_recent_title));
-        content.addView(recentTitle, blockParams(DesignTokensV1.SPACE_5_DP));
+        content.addView(recentTitle, blockParams(DesignTokensV1.SPACE_6_DP));
         recentStatus = UiKitV1.status(this);
         content.addView(recentStatus);
         recentHost = new LinearLayout(this);
@@ -101,7 +99,7 @@ public final class HomeActivity extends Activity {
         content.addView(recentHost);
 
         TextView receiptTitle = UiKitV1.sectionTitle(this, getString(R.string.home_receipt_section));
-        content.addView(receiptTitle, blockParams(DesignTokensV1.SPACE_5_DP));
+        content.addView(receiptTitle, blockParams(DesignTokensV1.SPACE_6_DP));
         Button history = UiKitV1.button(this, R.string.home_receipts,
                 v -> startActivity(new Intent(this, LibraryActivity.class)), UiKitV1.ButtonTone.SECONDARY);
         content.addView(history, blockParams(DesignTokensV1.SPACE_2_DP));

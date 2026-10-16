@@ -22,7 +22,6 @@ import com.receiptledger.v1.priceintel.PriceIntelligenceServiceV2;
 import com.receiptledger.v1.product.SqliteProductCatalogStore;
 import com.receiptledger.v1.search.SearchBrowseEntryV1;
 import com.receiptledger.v1.search.SearchBrowseQueryV1;
-import com.receiptledger.v1.search.SearchBrowseResultV1;
 import com.receiptledger.v1.search.SearchBrowseServiceV1;
 import com.receiptledger.v1.shell.CommercialDestinationV1;
 import com.receiptledger.v1.shell.CommercialShellFormatterV1;
@@ -47,7 +46,6 @@ public final class SearchBrowseActivity extends Activity {
     private TextView status;
     private LinearLayout categoryHost;
     private LinearLayout resultHost;
-    private String selectedCategoryId;
     private long generation;
 
     @Override protected void onCreate(Bundle state) {
@@ -102,7 +100,7 @@ public final class SearchBrowseActivity extends Activity {
         content.addView(quick, blockParams(DesignTokensV1.SPACE_2_DP));
 
         content.addView(UiKitV1.sectionTitle(this, getString(R.string.search_browse_category)),
-                blockParams(DesignTokensV1.SPACE_5_DP));
+                blockParams(DesignTokensV1.SPACE_6_DP));
         categoryHost = new LinearLayout(this);
         categoryHost.setOrientation(LinearLayout.VERTICAL);
         content.addView(categoryHost, blockParams(DesignTokensV1.SPACE_1_DP));
@@ -115,7 +113,7 @@ public final class SearchBrowseActivity extends Activity {
 
         Button back = UiKitV1.button(this, R.string.search_browse_back,
                 v -> finish(), UiKitV1.ButtonTone.SECONDARY);
-        content.addView(back, blockParams(DesignTokensV1.SPACE_5_DP));
+        content.addView(back, blockParams(DesignTokensV1.SPACE_6_DP));
 
         setContentView(root);
         SystemBarInsetHelper.apply(this, root);
@@ -128,7 +126,6 @@ public final class SearchBrowseActivity extends Activity {
 
     private void searchText() {
         String text = queryField.getText().toString().trim();
-        selectedCategoryId = null;
         renderCategoryNav(null);
         if (text.isEmpty()) {
             showRecent();
@@ -139,19 +136,16 @@ public final class SearchBrowseActivity extends Activity {
     }
 
     private void showRecent() {
-        selectedCategoryId = null;
         renderCategoryNav(null);
         load(getString(R.string.search_browse_loading_recent), () -> discovery.recent(RESULT_LIMIT));
     }
 
     private void showFrequent() {
-        selectedCategoryId = null;
         renderCategoryNav(null);
         load(getString(R.string.search_browse_loading_frequent), () -> discovery.frequent(RESULT_LIMIT));
     }
 
     private void selectCategory(String categoryId) {
-        selectedCategoryId = categoryId;
         renderCategoryNav(categoryId);
         CategoryNodeV1 node = CategoryTaxonomyV1.require(categoryId);
         load(getString(R.string.search_browse_loading_category, node.displayNameKo),
@@ -172,7 +166,6 @@ public final class SearchBrowseActivity extends Activity {
                                     CategoryTaxonomyV1.require(selected.parentId).displayNameKo),
                     v -> {
                         if (selected.parentId == null) {
-                            selectedCategoryId = null;
                             renderCategoryNav(null);
                             showRecent();
                         } else {
