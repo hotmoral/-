@@ -1,22 +1,30 @@
 {
   "adapter": {
-    "byteCount": 16839,
-    "gitBlobSha1": "f63d7ee780e5fb2f4716b83532e16d3d2ee525a3",
+    "byteCount": 16883,
+    "gitBlobSha1": "837f4abe7ff474a527893b099be8087a104f7aaa",
     "path": "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py",
-    "sha256": "06d8529cf28b3dc1cffa1cecb3da4524083167614cf3a4b3da36d46844557025"
+    "sha256": "fc4096162607dbf59859749562ec5ab9ea7d0e09551aa7cd3cd1ad05e9f5594c"
   },
   "contractToken": "R12_SURFACE_TERMINAL_BIND_ALIAS_FEASIBILITY_CONTRACT_FROZEN",
   "decisionToken": "R12_RF_M_SURFACE_TERMINAL_BIND_ALIAS_SELECTED_FOR_FEASIBILITY",
   "expectedV3125MeshArraySha256": "839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77",
+  "firstStage1Attempt": {
+    "classification": "R12_STAGE1_PRE_EVIDENCE_HARNESS_FAIL_DYNAMIC_IMPORT_REGISTRATION",
+    "executionHead": "7d5a33648eeefe954bf1166923d9993e86a715c3",
+    "jobId": 117148935288,
+    "runId": 38953040299,
+    "structuralEvidenceEntered": false
+  },
   "freezeToken": "R12_STAGE0_IMPLEMENTATION_FREEZE",
   "gitBlobSha1": {
     ".github/workflows/mobi-p1-c-r12-surface-terminal-bind.yml": "8918c48e6330b493c15e9fb41c6b5b741ee5f698",
     "mobi/p1-b2/geometry/P1_C_R12_STAGE0_IMPLEMENTATION_FREEZE.md": "d436bde0b2fa550ed5d5ac1639403a8d8c40aa95",
+    "mobi/p1-b2/geometry/P1_C_R12_STAGE0_LOADER_REMEDIATION_FREEZE.md": "dae8e0a3aec7ecf63952ecb85db3820f242a2ef0",
     "mobi/p1-b2/geometry/assemble_p1_c_r11_semantic_scaffold_v1.sh": "7a5c4bda8131fcbfc1ef301c70c64d423bf5c04f",
     "mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py": "9b7899bc1c39d02291813a826df01d3697192846",
     "mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py": "5c8820fb7270e7727ececb1bb37d3a24331b24ab",
     "mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py": "f281aad3e3a6c740c38c0a3f015718996dc45157",
-    "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py": "f63d7ee780e5fb2f4716b83532e16d3d2ee525a3",
+    "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py": "837f4abe7ff474a527893b099be8087a104f7aaa",
     "mobi/p1-b2/geometry/r11_stage0_parts/part000.txt": "8e4c430cf405c0b1c05dcad591a7c73e6bb143db",
     "mobi/p1-b2/geometry/r11_stage0_parts/part001.txt": "86d3651e1b115c9bbfcedddbe0b42b0ac95f91c1",
     "mobi/p1-b2/geometry/r11_stage0_parts/part002.txt": "b514eaca8a1af556509d719411ccf679c6eacabb",
@@ -32,9 +40,17 @@
     "assembledSha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87",
     "frozenExecutionHead": "4c695503b99974e929491b1e78b0cf2935b675c7"
   },
+  "originalStage0ExecutionHead": "7d5a33648eeefe954bf1166923d9993e86a715c3",
   "preFreezeImplementationHead": "6955239841219384e55fcd8c0fb6092cf859a62a",
   "publicBaseHead": "4ce94fa9c07f0f86b0380c58cdacaf59481732c2",
   "publicBranch": "mobi/run-p1-c-r12-surface-terminal-bind-20261017",
+  "remediation": {
+    "implementationCommit": "3b1297a4c52dabd791ceb2d960709165a5c487f0",
+    "remediationToken": "R12_STAGE0_LOADER_REMEDIATION_FROZEN_PRE_EVIDENCE_PASS",
+    "verificationHead": "84c1e1a43e69971fa87542e7ef54279de4e73428",
+    "verificationRunId": 38953786641,
+    "verificationResult": "SUCCESS"
+  },
   "runtime": {
     "fast-simplification": "0.2.0",
     "numpy": "2.5.4",
