@@ -1,0 +1,225 @@
+name: ReceiptLedger V1 Real Receipt Evaluation
+
+on:
+  push:
+    branches:
+      - receiptledger/run-v1-real-receipt-evaluation-20261016
+    paths:
+      - '.github/workflows/receiptledger-v1-real-receipt-evaluation.yml'
+      - 'receiptledger/CP35_REAL_RECEIPT_EVALUATION_PLAN.md'
+      - 'receiptledger/REAL_RECEIPT_EVALUATION_CONSISTENCY_REVIEW.md'
+      - 'receiptledger/REAL_RECEIPT_EVALUATION_FIXTURES_V1.md'
+      - 'receiptledger/harness/android-v1/app/build.gradle'
+      - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/evaluation/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-real-receipt-evaluation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Ensure Android API 36 SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          if [ ! -d "$ANDROID_HOME/platforms/android-36" ] || [ ! -d "$ANDROID_HOME/build-tools/35.0.0" ]; then
+            yes | "$SDKMANAGER" 'platforms;android-36' 'build-tools;35.0.0' >/dev/null
+          fi
+          test -d "$ANDROID_HOME/platforms/android-36"
+          test -d "$ANDROID_HOME/build-tools/35.0.0"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+          cache-disabled: true
+
+      - name: Audit public namespace
+        run: bash receiptledger/tools/audit_public_tree.sh
+
+      - name: Enforce CP35 evaluation-only scope and frozen contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=386c1b3d9ef7f3737ffd8b4d0f34fe2e076cab8e
+          APP=receiptledger/harness/android-v1/app
+          git diff --name-only "$BASE" "$GITHUB_SHA" > receiptledger/cp35-changed-files.txt
+          while IFS= read -r f; do
+            case "$f" in
+              .github/workflows/receiptledger-v1-real-receipt-evaluation.yml) ;;
+              receiptledger/CP35_REAL_RECEIPT_EVALUATION_PLAN.md) ;;
+              receiptledger/REAL_RECEIPT_EVALUATION_CONSISTENCY_REVIEW.md) ;;
+              receiptledger/REAL_RECEIPT_EVALUATION_FIXTURES_V1.md) ;;
+              receiptledger/harness/android-v1/app/build.gradle) ;;
+              receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/evaluation/RealReceiptEvaluationV1Test.java) ;;
+              '') ;;
+              *) echo "CP35 scope violation: $f"; exit 31 ;;
+            esac
+          done < receiptledger/cp35-changed-files.txt
+
+          # CP35 starts as evaluation-only. Any production source change requires a demonstrated failing fixture and a new reviewed scope.
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java" || {
+            echo 'CP35 evaluation-only boundary violated: production Java changed'; exit 32;
+          }
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/AndroidManifest.xml" || {
+            echo 'CP35 evaluation-only boundary violated: manifest changed'; exit 33;
+          }
+          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/res" || {
+            echo 'CP35 evaluation-only boundary violated: production resources changed'; exit 34;
+          }
+
+          grep -Fq 'VERSION = 2' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
+          grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/persistence/ReceiptSchema.java"
+          grep -Fq 'versionCode 34' "$APP/build.gradle"
+          grep -Fq "versionName '1.0.33-real-receipt-evaluation'" "$APP/build.gradle"
+
+      - name: Test lint and build
+        shell: bash
+        run: |
+          set +e
+          gradle --no-daemon -p receiptledger/harness/android-v1 :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+          status=$?
+          REPORT=receiptledger/harness/android-v1/app/build/reports/lint-results-debug.txt
+          if [ -f "$REPORT" ]; then
+            echo '===== COMPLETE ANDROID LINT REPORT ====='
+            cat "$REPORT"
+            echo '===== END ANDROID LINT REPORT ====='
+            if ! grep -Fqx 'No issues found.' "$REPORT"; then
+              echo 'CP35 requires lint 0 errors / 0 warnings'
+              status=43
+            fi
+          else
+            echo 'Expected lint report missing'
+            status=41
+          fi
+          for TEST_XML in \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.evaluation.RealReceiptEvaluationV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.shell.CommercialUiShellV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.review.CaptureReviewUxV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.commoditydetail.CommodityDetailV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.detail.ProductDetailV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.search.SearchBrowseV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.priceeval.PriceEvaluationV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.priceintel.PriceIntelligenceV2Test.xml; do
+            if [ ! -f "$TEST_XML" ]; then echo "Expected test result missing: $TEST_XML"; status=42; fi
+          done
+          exit "$status"
+
+      - name: Extract and verify CP35 metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' | tee receiptledger/cp35-real-receipt-evaluation-metrics.txt
+          import re, xml.etree.ElementTree as ET
+          path='receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.evaluation.RealReceiptEvaluationV1Test.xml'
+          root=ET.parse(path).getroot()
+          if int(root.attrib.get('failures','0')) or int(root.attrib.get('errors','0')):
+              raise SystemExit('CP35 evaluation test failed')
+          text='\n'.join((n.text or '') for n in root.iter('system-out'))
+          lines=[x.strip() for x in text.splitlines() if x.strip().startswith('CP35_METRICS ')]
+          if len(lines)!=1: raise SystemExit('Expected exactly one CP35_METRICS line, got %d' % len(lines))
+          line=lines[0]
+          values={k:int(x) for k,x in re.findall(r'(\w+)=(\d+)', line)}
+          expected={
+            'evaluation_version':1,
+            'fixtures':8,
+            'receipts':9,
+            'items':11,
+            'structured_correct':9,
+            'auto_confirmed':8,
+            'review_required':1,
+            'final_safe_registrations':7,
+            'exact_alias_reuse':2,
+            'conservative_unresolved':1,
+            'false_auto_links':0,
+            'strict_weight_observations':2,
+            'contextual_cohorts':2,
+            'discount_exclusions':1,
+            'invalid_exclusions':1,
+            'detail_trace_rows':7,
+            'schema_unchanged':1,
+          }
+          for key,value in expected.items():
+              if values.get(key) != value:
+                  raise SystemExit('%s expected %d got %r' % (key,value,values.get(key)))
+          print(line)
+          PY
+
+      - name: Package and verify evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=386c1b3d9ef7f3737ffd8b4d0f34fe2e076cab8e
+          SRC=receiptledger/harness/android-v1
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=receiptledger/output/v1-real-receipt-evaluation
+          rm -rf "$OUT"; mkdir -p "$OUT"
+          cp "$APK" "$OUT/receiptledger-v1-real-receipt-evaluation-debug.apk"
+          cp receiptledger/cp35-real-receipt-evaluation-metrics.txt "$OUT/CP35_REAL_RECEIPT_EVALUATION_METRICS.txt"
+          cp receiptledger/CP35_REAL_RECEIPT_EVALUATION_PLAN.md "$OUT/"
+          cp receiptledger/REAL_RECEIPT_EVALUATION_CONSISTENCY_REVIEW.md "$OUT/"
+          cp receiptledger/REAL_RECEIPT_EVALUATION_FIXTURES_V1.md "$OUT/"
+          cp "$SRC/app/build/reports/lint-results-debug.txt" "$OUT/lint-results-debug.txt"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.evaluation.RealReceiptEvaluationV1Test.xml" "$OUT/REAL_RECEIPT_EVALUATION_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.shell.CommercialUiShellV1Test.xml" "$OUT/COMMERCIAL_UI_SHELL_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.review.CaptureReviewUxV2Test.xml" "$OUT/CAPTURE_REVIEW_UX_V2_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.commoditydetail.CommodityDetailV1Test.xml" "$OUT/COMMODITY_DETAIL_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.detail.ProductDetailV1Test.xml" "$OUT/PRODUCT_DETAIL_V1_TEST.xml"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.search.SearchBrowseV1Test.xml" "$OUT/SEARCH_BROWSE_V1_TEST.xml"
+          unzip -t "$OUT/receiptledger-v1-real-receipt-evaluation-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
+          "$AAPT" dump badging "$APK" > "$OUT/APK_BADGING.txt"
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then echo "Forbidden permission packaged: $forbidden"; exit 51; fi
+          done
+          git diff --name-status "$BASE" "$GITHUB_SHA" > "$OUT/CP35_DIFF.txt"
+          sha256sum "$OUT/receiptledger-v1-real-receipt-evaluation-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo 'checkpoint=RL_V1_REAL_RECEIPT_EVALUATION_01'
+            echo "public_commit=${GITHUB_SHA}"
+            echo "predecessor_handoff=${BASE}"
+            echo 'fixture_policy=PUBLIC_SAFE_SYNTHETIC_ONLY'
+            echo 'ocr_boundary=SYNTHETIC_OCR_DOCUMENT_TOKENS'
+            echo 'primary_metric=CORRECT_PURCHASE_REGISTRATION'
+            echo 'production_java=UNCHANGED'
+            echo 'product_schema=2_UNCHANGED'
+            echo 'receipt_schema=1_UNCHANGED'
+            echo 'identity_authority=UNCHANGED'
+            echo 'price_contract=CP27_UNCHANGED'
+            echo 'review_contract=CP33_UNCHANGED'
+            echo 'compile_sdk=36'
+            echo 'target_sdk=36'
+            echo 'min_sdk=23'
+            echo 'version_name=1.0.33-real-receipt-evaluation'
+            echo 'version_code=34'
+            echo 'signing=debug_only'
+          } > "$OUT/BUILD_IDENTITY.txt"
+          {
+            echo 'CP35 does not measure ML Kit image-to-text character recognition accuracy.'
+            echo 'Fixtures enter at synthetic OcrDocument token/geometry boundary.'
+            echo 'CP35 does not claim statistical representativeness across merchants, cameras or receipt fonts.'
+            echo 'No private real receipt, personal identifier or real purchase database is included.'
+            echo 'Performance, scale and reliability benchmarking remain CP36.'
+          } > "$OUT/EVIDENCE_LIMITATIONS.txt"
+          (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
+          sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt "$OUT"/APK_PERMISSIONS.txt "$OUT"/CP35_REAL_RECEIPT_EVALUATION_METRICS.txt "$OUT"/REAL_RECEIPT_EVALUATION_V1_TEST.xml "$OUT"/CP35_DIFF.txt "$OUT"/EVIDENCE_LIMITATIONS.txt > "$OUT/EVIDENCE_SHA256.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: receiptledger-v1-real-receipt-evaluation-${{ github.run_id }}
+          path: receiptledger/output/v1-real-receipt-evaluation/
+          if-no-files-found: error
+          retention-days: 14
