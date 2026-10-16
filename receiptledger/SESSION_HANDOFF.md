@@ -4,196 +4,163 @@ Updated: 2026-10-16 KST
 
 ## 0. Restart contract
 
-GitHub is canonical. Do not reconstruct execution state from old chat before reading current files and verifying refs.
+GitHub is canonical. Do not reconstruct execution state from old chat before reading the current canonical files and verifying refs.
 
 Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP32_COMMODITY_DETAIL_CLOSEOUT.md`
-4. `receiptledger/CP32_COMMODITY_DETAIL_EVIDENCE.md`
-5. `receiptledger/CP32_COMMODITY_DETAIL_PLAN.md`
-6. `receiptledger/COMMODITY_DETAIL_CONSISTENCY_REVIEW.md`
-7. `receiptledger/COMMODITY_DETAIL_GOLDEN_VECTORS.md`
-8. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
-9. `receiptledger/CP31_PRODUCT_DETAIL_EVIDENCE.md`
-10. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-12. `receiptledger/README.md`
-13. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP33_CAPTURE_REVIEW_UX_V2_CLOSEOUT.md`
+4. `receiptledger/CP33_CAPTURE_REVIEW_UX_V2_EVIDENCE.md`
+5. `receiptledger/CP33_CAPTURE_REVIEW_UX_V2_PLAN.md`
+6. `receiptledger/CAPTURE_REVIEW_UX_V2_CONSISTENCY_REVIEW.md`
+7. `receiptledger/CAPTURE_REVIEW_UX_V2_GOLDEN_VECTORS.md`
+8. `receiptledger/CP32_COMMODITY_DETAIL_CLOSEOUT.md`
+9. `receiptledger/CP32_COMMODITY_DETAIL_EVIDENCE.md`
+10. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
+11. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
+12. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+13. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+14. `receiptledger/README.md`
+15. `receiptledger/WORK_UNIT.md`
 
 ## 1. Latest executable checkpoint
 
-**CP32 — Commodity Detail — PASS / COMPLETE**
+**CP33 — Capture / Review UX V2 — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-commodity-detail-20261016`
-- predecessor CP31 handoff: `1025f3d4f319ae6924bcf5012797b879757434fe`
-- frozen implementation HEAD: `e42629ccd66a80a4a1a14de0c7798b178d6b0062`
-- canonical Actions: `38855942283` — SUCCESS
-- job: `116827303606` — SUCCESS
-- artifact ID: `12027322130`
-- artifact digest: `sha256:ce1ae60e5a9e5295359f433a85417b2efc5a39bca95b29b2480e82e7154f4a9b`
-- APK SHA-256: `320379024800e5c0ee441656ea8d28bef20ac2ee0377332190b770645c8606d2`
-- CP32 11/11, CP31 9/9, CP30 9/9, CP29 8/8, CP28 8/8, CP27 8/8, CP26 8/8 PASS in packaged XML evidence
-- lint: 0 errors / 0 warnings (`No issues found.`)
-- versionName `1.0.30-commodity-detail`, versionCode 31
+- branch: `receiptledger/run-v1-capture-review-ux-v2-20261016`
+- predecessor CP32 handoff: `1996668e1fec6961eb158c5dd2e6b673fdb46ee0`
+- frozen implementation HEAD: `34cdac2d3e61081ab2a529173dbef9a2431431e0`
+- canonical Actions: `38874509796` — SUCCESS
+- job: `116886197267` — SUCCESS
+- artifact ID: `12034453925`
+- artifact digest: `sha256:36da341582f3e4083699a31d87eb5366b62e6c99c555d1fcd41dec4b9dd3f912`
+- APK SHA-256: `8f78d9dab92c65bdccd31008f9cd15221f26ef63dbfcfab2741e9a066d2237b0`
+- versionName `1.0.31-capture-review-ux-v2`, versionCode 32
+- lint: `No issues found.`
+- CP33 13/13, legacy ReviewEngine 4/4, CP32 11/11, CP31 9/9, CP30 9/9, CP29/28/27/26 8/8 each in packaged evidence, all with zero failures/errors/skips.
 
-Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary from `e42629cc...`.
+Later status/closeout synchronization must remain documentation-only. Do not move the executable boundary from `34cdac2d...`.
 
 ## 2. Product essence
 
 ReceiptLedger is a personal purchase-price memory and comparison system.
 
-Target experience:
+Target user loop:
 
-`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 검색/탐색 -> 제품/품목 상세 -> 과거 가격과 현재 가격 판단`
+`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 반복 구매 자동 재사용 -> 검색/탐색 -> 제품/품목 상세 -> 내 과거 가격 판단`
 
-CP31 completes STANDARD Product Detail. CP32 completes NON_STANDARD Commodity Detail without treating every purchase form as directly comparable.
+Receipt storage is supporting evidence, not the final product purpose.
 
-## 3. CP32 design direction
+## 3. CP33 behavior
 
-Commercial direction remains:
+Primary capture flow now:
 
-**quiet confidence / price-first / evidence-backed**
+1. user captures/selects a receipt image;
+2. OCR/recovery starts automatically;
+3. deterministic review assessment identifies whether material uncertainty remains;
+4. clean results can go directly to explicit Save;
+5. uncertain fields/items alone are shown by default;
+6. full edit remains available;
+7. after successful persistence, already-confirmed GLOBAL exact aliases are best-effort reused.
 
-For non-standard goods, the additional rule is:
+Manual OCR as a required user step and mandatory full-edit review for every receipt are removed from the primary flow.
 
-**clarity before apparent simplicity**
+## 4. Review decision rules
 
-The screen must make it immediately clear that one commodity may have several independent price bases.
+AUTO_CONFIRMED is allowed only when material receipt truth is complete and trustworthy.
 
-## 4. Frozen CP32 read model
+Mandatory review includes mismatch/incomplete states, missing required context, no items, blank/missing material values, PARTIAL/UNKNOWN provenance and unconfirmed DEFAULT_ONE quantity.
 
-`CommodityDetailServiceV1` is read-only.
+`INFERRED_ARITHMETIC` is not automatically suspicious when it is deterministic and the final receipt arithmetic is trustworthy.
 
-It consumes:
+A corrected record may leave review when remaining PASS_WITH_WARNINGS issues are only explicit `USER_EDITED_*` / `USER_CONFIRMED_*` provenance.
 
-- canonical NON_STANDARD product/commodity identity;
-- CP27 observations and basis-specific cohorts;
-- CP28 evaluation independently for each cohort;
-- receipt provenance.
+An unchanged quantity that originated from `DEFAULT_ONE` becomes acceptable only after the user explicitly applies review; CP33 records `USER_CONFIRMED_DEFAULT_ONE:<ordinal>` while retaining the original DEFAULT_ONE origin.
 
-It returns:
+## 5. Frozen edit authority
 
-- strict sections: WEIGHT_KG / VOLUME_L / EACH when present;
-- contextual sections: independent LIKE_FORM cohorts;
-- all newest-first purchase observations, including excluded rows;
-- the real newest purchase independently of strict comparability.
+`ReceiptReviewEngine` remains unchanged and authoritative for edits/revalidation.
 
-It does not persist new price truth, conversion tables, caches, aliases or judgments.
+- raw OCR remains preserved;
+- user edits retain provenance;
+- cleared values do not trigger silent re-inference;
+- mismatch is never auto-repaired;
+- selective review passes unflagged values through unchanged.
 
-## 5. Comparison safety
+If a warning is review-required but cannot be safely narrowed, the primary review action falls back to full edit rather than presenting a dead end.
 
-Strict bases:
+## 6. Post-save exact identity reuse
 
-- kg/g -> 원/kg;
-- L/mL -> 원/L;
-- exact count -> 원/개.
+CP33 invokes the already-existing `resolveAndLinkExact()` path only **after** durable receipt/image persistence.
 
-Each strict basis owns its own latest/previous/usual/judgment/chart.
+Authority remains frozen:
 
-Never:
+- only confirmed GLOBAL exact alias reuse;
+- no new product creation;
+- no new alias confirmation;
+- no fuzzy/search/category/price-based relinking.
 
-- connect different strict bases in one chart;
-- create a commodity-wide usual price;
-- infer `봉 = kg`, `상자 = N개` or another unsupported conversion.
+Unknown aliases remain unclassified. Per-item link failures do not roll back or invalidate the saved receipt.
 
-Contextual forms:
+The final implementation separates the persistence try/catch from optional post-save work so an already-saved receipt cannot be shown as failed because a later auxiliary operation failed.
 
-- one LIKE_FORM cohort per preserved form key;
-- same-form reference only;
-- CP28 `CONTEXTUAL_ONLY` / Judgment.NONE;
-- no cheap/expensive tone;
-- no contextual line chart in CP32.
+## 7. UI / accessibility
 
-## 6. Latest purchase semantics
+CP30 design grammar remains the presentation foundation.
 
-`최근 구매` means the actual newest receipt-linked observation.
+- normal Korean product copy replaces raw pass/score diagnostics;
+- processing, review-required, auto-confirmed, saving, success and error states are textually distinct;
+- complete capture content is vertically scrollable, preserving access to review/save controls on constrained heights and enlarged text;
+- touch target policy remains CP30-compliant;
+- architecture remains `Activity + android.widget`.
 
-If the newest purchase is contextual or excluded, it remains the latest purchase shown at the top.
+This is still not the CP34 commercial home/navigation shell.
 
-A strict section separately shows its own latest comparable observation. CP32 never relabels an older strict observation as the commodity's latest purchase.
+## 8. Frozen dependencies
 
-## 7. UI / chart / traceability
+Unchanged for CP33:
 
-Normal compact order:
-
-`commodity identity -> latest purchase -> strict comparisons -> contextual references -> purchase history`
-
-Strict chart behavior:
-
-- actual eligible purchases only;
-- one strict basis only;
-- oldest -> newest;
-- usual reference only for EVALUATED history;
-- judgment color only when permitted by CP28;
-- Korean accessibility summary;
-- no tiny-point interaction requirement;
-- nonlinear font-scaling-safe SP conversion.
-
-Purchase rows are >=64dp and open the existing Receipt Detail using preserved receipt IDs. Excluded observations remain provenance-visible but never enter cohort/chart/evaluation values.
-
-## 8. Responsive/accessibility
-
-Frozen CP30 policy continues:
-
-- compact `<600dp` single-column;
-- medium `600..839dp` single-column;
-- expanded `>=840dp`;
-- two-pane only expanded + height >=480dp;
-- text + color semantics;
-- minimum interaction target >=48dp.
-
-## 9. Minimal integration boundary
-
-Legacy Price History routing now sends:
-
-- STANDARD -> CP31 Product Detail;
-- NON_STANDARD -> CP32 Commodity Detail.
-
-`MainActivity` remains unchanged. The user-approved plan is to defer the complete launcher/home/navigation structure to CP34 rather than add temporary CP32 navigation work.
-
-Frozen/unmodified for CP32:
-
-- Main capture/OCR flow;
-- STANDARD Product Detail behavior;
-- Receipt Detail behavior;
-- Receipt Review behavior;
-- catalog/product/semantics/identity/category/commodity/persistence/price/priceintel/priceeval/search/detail/design packages;
+- catalog/product/semantics/identity/category/commodity/commoditydetail;
+- persistence/price/priceintel/priceeval/search/detail;
+- design tokens;
+- OCR/recovery/item/validation algorithms;
+- ProductDetailActivity / CommodityDetailActivity / PriceHistoryActivity / ReceiptDetailActivity / LibraryActivity;
+- ReceiptReviewEngine / ReviewInputParser / ReviewItemInput;
 - product schema 2 / receipt schema 1.
 
-## 10. Pre-closeout discipline
+## 9. Pre-closeout discipline
 
-Meaningful history:
+Meaningful sequence:
 
-- initial CI `38855330418` caught one nonexistent CP30 spacing-token reference;
-- implementation fix produced green run `38855551821`;
-- plan/code/lint review rejected that green run because two `SetTextI18n` warnings remained;
-- final `e42629cc...` fixed text composition and made clean lint an explicit CI gate;
-- `38855942283` is the only canonical CP32 execution run.
+- `38873199997`: non-canonical failure due only to 27 obsolete UnusedResources warnings after the old harness UI was replaced;
+- `38873592904`: green but rejected after plan/code review;
+- post-green review found and corrected save-success ambiguity, no-target review fallback and constrained-height action accessibility;
+- final `34cdac2d...` / `38874509796` is the only canonical CP33 execution boundary.
 
-## 11. Security/public boundary
+## 10. Security/public boundary
 
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows.
+Repository is public. ReceiptLedger may modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows.
 
-Never commit secrets, signing material, private receipts, real purchase DB/backups, identifiers or uncleared assets.
+Never commit secrets, signing material, private receipts, real purchase DB/backups, personal identifiers or uncleared assets.
 
-Forbidden packaged permissions CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE remain absent.
+Forbidden CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE permissions remain absent from the packaged APK.
 
-## 12. Evidence limitation
+## 11. Evidence limitation
 
-No emulator/device screenshot campaign or real-user usability study is included in CP32 evidence. Do not interpret deterministic CI as pixel-perfect on-device visual validation.
+CP33 does not include private real-receipt evaluation, emulator screenshot comparison, physical-device usability evidence or scale benchmarking. Do not reinterpret deterministic CI as those kinds of evidence.
 
-## 13. Next planned checkpoint
+## 12. Next planned checkpoint
 
-**CP33 — Capture / Review UX V2**
+**CP34 — Commercial UI Shell — NOT STARTED**
 
-Primary objective:
+Expected boundary:
 
-`영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검토 -> 저장`
+- connect the existing product capabilities into a coherent normal-user home/navigation shell;
+- expose receipt add, find/browse, category, Product Detail, Commodity Detail, receipt history/detail and supporting settings/navigation;
+- do not change stable identity, comparison basis, evaluation thresholds, review truth, schemas or privacy posture merely for navigation convenience;
+- do not begin CP35 real-receipt evaluation or CP36 hardening in the same checkpoint.
 
-CP33 must reduce review burden without bypassing identity, provenance or validation safety. It must not absorb CP34 commercial shell/navigation work.
+## 13. Stop condition
 
-## 14. Stop condition
-
-**CP32 is complete and handoff-ready. Await explicit authorization for CP33.**
+**CP33 is complete and handoff-ready. Await explicit authorization for CP34.**
