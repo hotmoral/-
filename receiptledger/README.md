@@ -6,15 +6,16 @@ ReceiptLedger is a personal purchase-price memory and comparison system. This na
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
-4. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
-5. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_PLAN.md`
-6. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
-7. `CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
-8. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-9. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-10. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-11. `WORK_UNIT.md`
+3. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
+4. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
+5. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_PLAN.md`
+6. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
+7. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
+8. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+9. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+10. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+11. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+12. `WORK_UNIT.md`
 
 GitHub is canonical. Verify current docs-only handoff and frozen executable separately.
 
@@ -24,43 +25,51 @@ V1 CP20–CP36: **COMPLETE**.
 
 Post-V1 CP37: **IN PROGRESS**.
 
-Current state: **Selective Review Coverage Instrumentation — READY_FOR_PHYSICAL_METRIC_CHECK**.
+Current state: **Remediation C — READY_FOR_PHYSICAL_PREFILL_RETEST**.
 
-- branch `receiptledger/run-post-v1-selective-review-coverage-20261017`
-- predecessor handoff `c4e00ff22339869346f0f8692e38d82567568b7e`
-- frozen executable `7dbed4cf73a2963ace7447974e9d972a9776b79f`
-- Actions `38976080450` SUCCESS
-- job `117225743973`
-- artifact `12078898591`
-- digest `sha256:402a5dda9d0892550ff08d5a5f3dbeb228a01a6f32abc40d24f8a75efa510b67`
-- APK SHA-256 `29fcd2073d74fee819d53525bf2409db1587a72e72e86af115496843562405b8`
-- version `1.0.37-review-coverage-validation` / 38
-- debug app `com.receiptledger.v1.reviewcoverage`
-- label `ReceiptLedger 검증 B`
+- branch `receiptledger/run-post-v1-partial-row-prefill-20261017`
+- predecessor handoff `d4f75d8120e4a9c347b3777c64b511e4f5d224d4`
+- frozen executable `01b22652a45889b6bfaa474131e0c5fa7f19e96e`
+- Actions `38979684033` SUCCESS
+- job `117237351555`
+- artifact `12080029714`
+- digest `sha256:55300e9525851f02232dc03f9a528fcd5b3c9c30ba68e7a30eb0bdb6634d46c2`
+- APK SHA-256 `65fe0827f3a9ebfeafbbf783c6c8f82544f8594203008692288ab74ec9eb1e0e`
+- version `1.0.38-partial-row-prefill-validation` / 39
+- debug app `com.receiptledger.v1.rowrecovery`
+- label `ReceiptLedger 검증 C`
 
-## Why report v2 exists
+## What Remediation C does
 
-Remediation A physically fixed the triggering address/header false-item sample. The retest was REVIEW_REQUIRED but full visual comparison still found multiple item corrections while only one item had been initially selected for review.
+If OCR misses the quantity token but a row has one unambiguous printed unit-price candidate and a printed line amount whose ratio is an exact quantity from 1 to 99, the app pre-fills quantity and unit price.
 
-Report v2 therefore adds item-level review coverage metrics without changing the review policy:
+The item deliberately remains `PARTIAL` and review-required. Ambiguous/non-integral cases remain unresolved.
 
-- `corrections_outside_review_items=N`
-- `review_scope_miss=0|1`
+This reduces unnecessary retyping without weakening the review boundary.
 
-A distinct corrected item ordinal counts once regardless of how many of its fields changed.
+## What it does not do
+
+- no OCR model change;
+- no preprocessing/recovery change;
+- no generic text substitution;
+- no change to the Remediation A false-item gate;
+- no change to selective-review policy;
+- no schema/identity/price/search change.
+
+The observed package-suffix character confusion remains tracked as physical evidence only.
 
 ## Next physical step
 
-Install `ReceiptLedger 검증 B` side by side, process one real receipt, visually verify all fields, correct everything necessary, save, and return only the generated `RL_CP37_SAMPLE version=2 ...` line.
+Install `ReceiptLedger 검증 C` side by side and process the same receipt once more.
 
-After confirming the metric path, use v2 for the independent 10-receipt campaign. Earlier v1 reports are diagnostic evidence only and do not count toward the final 10.
+Verify that the first item quantity and unit price are prefilled **and** that the item still appears in explicit review. Then visually verify/correct all fields, save, and return only the generated `RL_CP37_SAMPLE version=2 ...` line.
+
+Do not count this repeated diagnostic receipt toward the final independent 10-receipt campaign.
 
 ## Privacy
 
-Never commit/share public real receipt photos, OCR text, merchant/product names, dates, prices, IDs, file paths, private DBs/backups, credentials or signing material.
-
-The validation report emits structural counts/flags only.
+Never commit/share publicly real receipt photos, OCR text, merchant/product names, dates, prices, IDs, file paths, private DBs/backups, credentials or signing material.
 
 ## Stop condition
 
-**No further OCR, structure or review-policy implementation until the first v2 physical report is analyzed.**
+**Do not start the independent 10-receipt campaign until the Remediation C same-receipt retest is analyzed.**
