@@ -1,0 +1,159 @@
+name: Mobi P1-C R10 Morphology Reduction Broad Ladder
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c-r10-morphology-reduction-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_r10_morphology_reduction_v1.py'
+      - '.github/workflows/mobi-p1-c-r10-morphology-reduction.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r10-broad-ladder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify frozen experiment blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+            'p1_c_r10_morphology_reduction_v1.py': 'f281aad3e3a6c740c38c0a3f015718996dc45157',
+            'test_p1_c_r10_morphology_reduction_v1.py': 'db0153ad0f561e586fece4fdb294087a4dc38b65',
+            'p1_c_3d_cat_stage_d_projection_v1.py': '5c8820fb7270e7727ececb1bb37d3a24331b24ab',
+            'p1_c_3d_cat_stage_b_inspector_v1.py': '9b7899bc1c39d02291813a826df01d3697192846',
+          }
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git', 'hash-object', path], text=True).strip()
+              assert actual == wanted, (path, wanted, actual)
+          print('frozen_r10_blob_identity=PASS')
+          PY
+
+      - name: Install frozen Python dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check 'numpy==2.5.4' 'fast-simplification==0.2.0'
+          python3 - <<'PY'
+          import numpy, fast_simplification
+          assert numpy.__version__ == '2.5.4', numpy.__version__
+          assert fast_simplification.__version__ == '0.2.0', fast_simplification.__version__
+          print('dependency_identity=PASS')
+          PY
+
+      - name: Run bounded unit tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_r10_morphology_reduction_v1.py
+
+      - name: Acquire exact frozen CC0 source
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r10/evidence/source
+          E=mobi/p1-c-r10/evidence/source
+          UA='Mobi R10 bounded public feasibility/1.0'
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-r10/evidence/source/cat-original.glb' | sha256sum -c -
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('mobi/p1-c-r10/evidence/source/cat-original.glb')
+          assert p.stat().st_size == 4903420, p.stat().st_size
+          assert p.read_bytes()[:4] == b'glTF'
+          print('source_identity=PASS')
+          PY
+
+      - name: Run broad ladder twice deterministically
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c-r10/seed1 ../../p1-c-r10/seed777
+          PYTHONHASHSEED=1 python3 p1_c_r10_morphology_reduction_v1.py \
+            ../../p1-c-r10/evidence/source/cat-original.glb \
+            --out ../../p1-c-r10/seed1
+          PYTHONHASHSEED=777 python3 p1_c_r10_morphology_reduction_v1.py \
+            ../../p1-c-r10/evidence/source/cat-original.glb \
+            --out ../../p1-c-r10/seed777
+          diff -ru ../../p1-c-r10/seed1 ../../p1-c-r10/seed777 > ../../p1-c-r10/evidence/deterministic_diff.txt
+          mkdir -p ../../p1-c-r10/evidence/result
+          cp -R ../../p1-c-r10/seed1/. ../../p1-c-r10/evidence/result/
+
+      - name: Validate broad-ladder evidence shape
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('mobi/p1-c-r10/evidence/result/summary.json')
+          s=json.loads(p.read_text())
+          assert s['version'] == 'P1_C_R10_MORPHOLOGY_REDUCTION_V1'
+          assert s['sourceSha256'] == '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5'
+          assert s['fastSimplificationVersion'] == '0.2.0'
+          assert s['sourceVertexCount'] == 99642
+          assert s['sourceTriangleCount'] == 199280
+          assert s['targetVertices'] == [50000,25000,12500,6250,3125,1560,780]
+          assert [x['lane'] for x in s['lanes']] == ['A_AGG7','B_AGG0']
+          assert Path('mobi/p1-c-r10/evidence/deterministic_diff.txt').read_text() == ''
+          for lane in s['lanes']:
+              assert lane['tiers'][0]['role'] == 'FULL_REFERENCE'
+              assert lane['tiers'][0]['mechanicalHardPass'] is True
+              assert lane['collapseCount'] >= 0
+              reached=[t for t in lane['tiers'][1:] if t.get('targetReached')]
+              if lane['lane'] == 'A_AGG7':
+                  assert reached, lane
+              for t in reached:
+                  assert t['topology']['closedOrientedTwoManifold'] in (True, False)
+                  png=Path('mobi/p1-c-r10/evidence/result')/lane['lane']/t['primaryNativePng']
+                  assert png.read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
+          print(json.dumps({
+            'laneSummary': [
+              {
+                'lane': l['lane'],
+                'collapseCount': l['collapseCount'],
+                'reachableMinVertices': l['reachableMinVertices'],
+                'reached': [
+                  [t['tier'],t.get('vertexCount'),t.get('mechanicalHardPass')]
+                  for t in l['tiers'] if t.get('targetReached')
+                ]
+              } for l in s['lanes']
+            ]
+          }, indent=2))
+          PY
+
+      - name: Record environment and evidence hashes
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-r10/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            python3 --version
+            python3 - <<'PY'
+          import numpy, fast_simplification
+          print('numpy='+numpy.__version__)
+          print('fast_simplification='+fast_simplification.__version__)
+          PY
+          } > "$E/environment.txt"
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-r10-broad-ladder-${{ github.run_id }}
+          path: mobi/p1-c-r10/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
