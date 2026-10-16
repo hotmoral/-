@@ -30,7 +30,7 @@ Frozen implementation `4b556afd4dd52b68cf768e937bb456665ad4c231`; Actions `38824
 Frozen implementation `042c3b59063f0e58a273a5f685b25780683fcf36`; Actions `38827880730` SUCCESS. Bounded taxonomy and reusable classification metadata; category never becomes identity authority.
 
 ### CP26 — Commodity / Non-standard V2 — COMPLETE
-Frozen implementation `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`; Actions `38829423445` SUCCESS. Same commodity can group heterogeneous purchase forms while grouping remains distinct from comparability.
+Frozen implementation `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`; Actions `38829423445` SUCCESS. Same commodity may group heterogeneous purchase forms while grouping remains distinct from comparability.
 
 ## 2. Stage D — Price intelligence — COMPLETE
 
@@ -95,49 +95,66 @@ Frozen implementation `1d2e7ef67e949af9098027a78e30551c228c255c`; canonical Acti
 
 Commercial direction: **quiet confidence / price-first / evidence-backed**.
 
-Delivered:
+Delivered STANDARD product detail:
 
-- read-only STANDARD Product Detail projection;
-- exact/canonical product identity with structured V2 fields when available;
-- legacy STANDARD fallback without inferred metadata;
-- latest price as primary numeric focus;
-- previous and usual price kept distinct;
-- frozen CP28 judgment and explanation;
-- STANDARD_PACKAGE-only purchase-history chart;
-- actual purchase points with latest emphasis and optional valid usual-price reference;
-- store/date context;
-- receipt-traceable >=64dp purchase rows;
+- canonical identity/specification;
+- latest/previous/usual kept distinct;
+- frozen CP28 judgment/explanation;
+- STANDARD_PACKAGE-only actual-purchase chart;
+- store/date/receipt traceability;
 - insufficient/no-judgment states;
-- compact/medium single-column and expanded eligible two-pane composition;
-- chart accessibility summary and nonlinear font-scale-safe SP conversion;
+- CP30 responsive/accessibility grammar;
 - no domain/schema/search/price-policy rewrite.
 
 Canonical metric:
 
 `CP31_METRICS product_detail_version=1 standard_basis=1 identity_fallbacks=1 price_states=8 responsive_cases=6 traceability=1 chart_single_basis=1 purchase_rows=4`
 
-Known evidence limit: no emulator/device screenshot comparison or real-user usability study in CP31 CI evidence.
+### CP32 — Commodity Detail — COMPLETE
+Frozen implementation `e42629ccd66a80a4a1a14de0c7798b178d6b0062`; canonical Actions `38855942283` SUCCESS.
 
-### CP32 — Commodity Detail — NEXT PLANNED
+Commercial direction remains CP31's **quiet confidence / price-first / evidence-backed**, with **clarity before apparent simplicity** for NON_STANDARD cases.
 
-Goal: commercial NON_STANDARD history without making heterogeneous purchase forms look comparable.
+Delivered:
 
-Required boundaries:
+- read-only NON_STANDARD Commodity Detail projection;
+- real newest purchase preserved independently of comparability;
+- separate WEIGHT_KG / VOLUME_L / EACH sections;
+- per-strict-basis latest/previous/usual/CP28 judgment;
+- one strict basis per chart;
+- independent LIKE_FORM groups for package forms;
+- contextual package forms explicitly reference-only, unjudged and chartless;
+- no fake bag/box/bundle conversion;
+- excluded observations preserved as receipt provenance;
+- >=64dp history rows opening Receipt Detail;
+- compact/medium single-column and expanded eligible two-pane composition;
+- Korean chart accessibility summary and nonlinear font-scaling-safe custom drawing;
+- no identity/schema/price/search/Product Detail rewrite.
 
-- commodity grouping remains separate from price comparability;
-- kg/g -> price/kg, L/mL -> price/L, count -> price/each;
-- each strict comparison basis has its own chart/judgment context;
-- SAME_FORM/LIKE_FORM package history remains contextual/reference-only unless strict comparability exists;
-- no fake normalization such as bag = kg;
-- store/date/receipt traceability preserved;
-- CP30 visual grammar and CP31 commercial-quality bar reused where semantically valid;
-- do not force STANDARD Product Detail composition onto commodity cases where it would mislead.
+Canonical metric:
 
-### CP33 — Capture / Review UX V2
-Move toward `영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검토 -> 저장`; acceptance includes review burden and repeat-use automation.
+`CP32_METRICS commodity_detail_version=1 strict_basis_kinds=3 contextual_policy=1 grouping_not_comparability=1 responsive_cases=6 traceability=1 chart_single_basis=1 strict_sections=2 contextual_sections=2 purchase_rows=9`
+
+Known evidence limit: no emulator/device screenshot campaign or real-user usability study in CP32 CI evidence.
+
+### CP33 — Capture / Review UX V2 — NEXT PLANNED
+
+Target flow:
+
+`영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검토 -> 저장`
+
+Primary acceptance direction:
+
+- reduce manual review burden, especially for repeat known purchases;
+- distinguish auto-confirmed versus review-required results clearly;
+- preserve raw OCR/receipt evidence and correction provenance;
+- never bypass CP24 identity authority or CP27 price eligibility for convenience;
+- preserve offline/privacy permission posture;
+- use CP30 commercial design grammar;
+- do not absorb CP34 home/navigation shell into this checkpoint.
 
 ### CP34 — Commercial UI Shell
-Product-centric home/navigation/search/category/product/commodity/receipt/settings integration without gratuitous domain rewrite.
+Product-centric home/navigation/search/category/product/commodity/receipt/settings integration. The user explicitly chose to defer complete navigation/launcher integration to this checkpoint rather than add temporary navigation during CP31/32.
 
 ## 5. Stage G — Validation and hardening
 
@@ -162,8 +179,9 @@ For CP29 specifically, benchmark canonical-store linear scan at approximately 1k
 - CP29 search is read-only; relevance never becomes merge/relink authority.
 - CP30 visual semantics present rather than reinterpret upstream facts.
 - CP31 STANDARD Product Detail consumes exactly STANDARD_PACKAGE history and receipt provenance.
-- CP32 must preserve basis separation and contextual-only package-form semantics.
+- CP32 NON_STANDARD detail preserves strict-basis isolation and contextual-only LIKE_FORM semantics.
 - CP33 must not bypass identity/provenance rules for convenience.
+- CP34 shell may connect existing destinations but must not redefine their business truth.
 
 ## 7. Every checkpoint asks, only where materially relevant
 
@@ -197,4 +215,4 @@ At every completed group:
 
 ## 9. Current boundary
 
-**CP31 is COMPLETE. CP32 — Commodity Detail is the next planned checkpoint and must not start without explicit user authorization.**
+**CP32 is COMPLETE. CP33 — Capture / Review UX V2 is the next planned checkpoint and must not start without explicit user authorization.**

@@ -6,22 +6,21 @@ Public namespace: `receiptledger/`
 
 ## 1. Current completed boundary
 
-Latest executable checkpoint: **CP31 — Product Detail — PASS / COMPLETE**.
+Latest executable checkpoint: **CP32 — Commodity Detail — PASS / COMPLETE**.
 
-- branch: `receiptledger/run-v1-product-detail-20261016`
-- predecessor CP30 handoff: `f67e39654d1d4cfdc2cd6fce8e7c16f72ed34b60`
-- frozen CP31 implementation HEAD: `1d2e7ef67e949af9098027a78e30551c228c255c`
-- canonical Actions run: `38852423981` — SUCCESS
-- job: `116816787905` — SUCCESS
-- artifact ID: `12025398048`
-- artifact digest: `sha256:d4ad68382e6b666f796345c452c42e18f03ef1bd3084d18182a78059da0b4b0f`
-- debug APK SHA-256: `8be04d623cc0bea95f87868dca2a45a774440e0dddc3cd32be5a63baf867e3ae`
-- CP31 9/9, CP30 9/9, CP29 8/8, CP28 8/8, CP27 8/8 PASS in packaged evidence
-- prior targeted regressions remain guarded by the full unit-test run
+- branch: `receiptledger/run-v1-commodity-detail-20261016`
+- predecessor CP31 handoff: `1025f3d4f319ae6924bcf5012797b879757434fe`
+- frozen CP32 implementation HEAD: `e42629ccd66a80a4a1a14de0c7798b178d6b0062`
+- canonical Actions run: `38855942283` — SUCCESS
+- job: `116827303606` — SUCCESS
+- artifact ID: `12027322130`
+- artifact digest: `sha256:ce1ae60e5a9e5295359f433a85417b2efc5a39bca95b29b2480e82e7154f4a9b`
+- debug APK SHA-256: `320379024800e5c0ee441656ea8d28bef20ac2ee0377332190b770645c8606d2`
+- CP32 11/11, CP31 9/9, CP30 9/9, CP29 8/8, CP28 8/8, CP27 8/8, CP26 8/8 PASS in packaged XML evidence
 - lint: 0 errors / 0 warnings (`No issues found.`)
-- version: `1.0.29-product-detail` / versionCode 30
+- version: `1.0.30-commodity-detail` / versionCode 31
 
-Any later handoff/status commit must remain documentation-only. Executable/evidence boundary remains `1d2e7ef...`.
+Any later handoff/status commit must remain documentation-only. Executable/evidence boundary remains `e42629cc...`.
 
 ## 2. Product objective
 
@@ -31,125 +30,118 @@ Primary loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> explainable judgment -> find/browse -> inspect`
 
-CP31 makes the STANDARD-product `inspect` destination commercial and immediately useful without changing the upstream truth.
+CP31 provides STANDARD Product Detail. CP32 now provides the corresponding NON_STANDARD commodity detail without weakening comparison safety.
 
-## 3. CP31 commercial Product Detail
+## 3. CP32 Commodity Detail
 
-Visual/product direction:
+Commercial direction remains:
 
 **quiet confidence / price-first / evidence-backed**
 
-Primary hierarchy:
+NON_STANDARD addition:
 
-1. exact product identity;
-2. recent purchase price;
-3. personal-history judgment and reason;
-4. previous/usual price context;
-5. actual-purchase price trend;
-6. receipt-traceable purchase history.
+**clarity before apparent simplicity**
 
-The screen deliberately avoids shopping-promotion language, decorative sale badges, market-price claims, raw enums/IDs and debug-oriented presentation.
+Compact hierarchy:
 
-## 4. Frozen CP31 data contract
+`commodity identity -> real latest purchase -> strict comparable prices -> contextual package-form references -> receipt-traceable purchase history`
 
-CP31 supports STANDARD products only.
+Critical behavior:
 
-- stable catalog ID remains identity authority;
-- structured brand/product/variant/specification is read from canonical V2 data when present;
-- legacy STANDARD falls back to canonical name without guessing fields;
-- price observations come from CP27;
-- evaluation/latest/previous/usual/judgment come from CP28;
-- STANDARD chart basis is exactly `STANDARD_PACKAGE`;
-- UI does not implement replacement thresholds or unit normalization;
-- excluded observations remain provenance but cannot enter chart/evaluation values;
-- purchase rows preserve receipt traceability and open the existing Receipt Detail.
+- same commodity grouping does not mean one price basis;
+- WEIGHT_KG / VOLUME_L / EACH remain independent;
+- each strict basis gets its own latest/previous/usual/CP28 judgment/chart;
+- LIKE_FORM stays reference-only and unjudged;
+- no fake conversion such as bag = kg;
+- newest real purchase is not replaced by an older strict-comparable observation;
+- excluded observations remain visible provenance but never enter chart/judgment values.
 
-## 5. UI / accessibility / responsive result
+## 4. UI / accessibility / responsive result
 
-CP31 consumes the frozen CP30 design system:
+CP32 consumes the CP30 design system and CP31 commercial composition bar:
 
-- PRICE_HERO/title/body/label typography roles;
-- spacing/radius/elevation tokens;
-- semantic text + color state presentations;
-- minimum interaction target rules;
-- max-width/gutter policy;
-- compact `<600dp`, medium `600..839dp`, expanded `>=840dp`;
+- purpose-based typography and semantic text+color;
+- explicit basis/unit copy adjacent to normalized prices;
+- strict chart series are single-basis actual purchases only;
+- usual-price reference and judgment color only when CP28 is EVALUATED;
+- contextual package forms use INFO/reference presentation and no chart;
+- purchase rows are >=64dp and open Receipt Detail;
+- charts expose Korean accessibility summaries;
+- custom chart SP conversion supports nonlinear font scaling;
+- compact/medium remain single-column;
 - two-pane only expanded + height >=480dp.
 
-`ProductPriceChartViewV1` plots actual purchases oldest -> newest, emphasizes the latest point, shows a usual-price reference only for evaluated histories, and exposes a Korean accessibility summary.
+## 5. Architecture / safety boundary
 
-History rows are >=64dp and carry date/store/price or exclusion context plus receipt navigation.
+Unchanged:
 
-## 6. Architecture / safety boundary
-
-- existing `Activity + android.widget` architecture preserved;
+- `Activity + android.widget` architecture;
 - no Compose/AppCompat/Material migration;
 - no custom/downloadable font;
-- product schema 2 / receipt schema 1 unchanged;
-- CP21–30 identity/category/commodity/price/evaluation/search semantics unchanged;
-- Main capture/OCR, Receipt Detail and Receipt Review behavior unchanged;
-- no duplicate price truth/cache/index introduced;
+- product schema 2 / receipt schema 1;
+- CP21–31 domain/search/price/detail contracts;
+- Main capture/OCR flow;
+- Product Detail behavior;
+- Receipt Detail/Review behavior;
+- offline/privacy posture;
 - forbidden CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE permissions remain absent.
 
-## 7. Canonical metric
+No duplicate mutable price truth/cache/index/conversion table was introduced.
 
-`CP31_METRICS product_detail_version=1 standard_basis=1 identity_fallbacks=1 price_states=8 responsive_cases=6 traceability=1 chart_single_basis=1 purchase_rows=4`
+## 6. Canonical metric
 
-This is deterministic contract evidence, not device visual-usability evidence.
+`CP32_METRICS commodity_detail_version=1 strict_basis_kinds=3 contextual_policy=1 grouping_not_comparability=1 responsive_cases=6 traceability=1 chart_single_basis=1 strict_sections=2 contextual_sections=2 purchase_rows=9`
 
-## 8. Pre-closeout correction history
+## 7. Pre-closeout discipline
 
-CP31 was deliberately not closed on the first build attempt or first green run.
+CP32 was not closed on the first build or first green run.
 
-- first run `38851792728` found two implementation compile errors;
-- after functional green, plan/code review caught chart `DrawAllocation` and it was fixed;
-- another green run still exposed direct `scaledDensity` use inconsistent with modern nonlinear font scaling; it was replaced with Android SP dimension conversion;
-- final HEAD `1d2e7ef...` passed canonical run `38852423981` with lint `No issues found.`
+- run `38855330418` exposed one invalid CP30 spacing-token reference;
+- run `38855551821` became functionally green, but closeout review found two Android `SetTextI18n` warnings;
+- final HEAD `e42629cc...` moved the text composition into string resources and strengthened CI to require `No issues found.`;
+- canonical run `38855942283` passed the complete gate.
 
-Only the final HEAD/run pair is canonical.
+## 8. Known limitations
 
-## 9. Known limitations
+- CP33 Capture/Review UX V2 not started;
+- CP34 commercial home/navigation shell not started;
+- current launcher remains the existing OCR-development entry until CP34;
+- final icon artwork/library and dark-theme finalization remain open;
+- no emulator/device screenshot or real-user usability evidence is included in CP32 CI.
 
-- CP32 NON_STANDARD Commodity Detail not yet implemented;
-- Capture/Review UX V2 remains CP33;
-- final commercial home/navigation shell remains CP34;
-- final icon artwork/library still not selected;
-- no dark-theme finalization;
-- CP31 has no emulator/device screenshot or real-user usability evidence yet.
+## 9. Completed checkpoint chain
 
-## 10. Completed checkpoint chain
+Foundation -> Image/Document -> OCR -> Layout -> Structure -> Item Tuple -> Validation -> Persistence -> Image Archive -> Receipt Library -> Review/Edit -> Product Identity -> Price History -> OCR Recovery -> Vertical Integration -> Merchant -> Cross-Pass Merge -> Build Hygiene -> Target API36 -> CP20 Product Rebaseline -> CP21 Catalog Domain V2 -> CP22 Persistence V2 -> CP23 Receipt Product Semantics -> CP24 Identity Resolver V2 -> CP25 Category System -> CP26 Commodity / Non-standard V2 -> CP27 Price Intelligence V2 -> CP28 Price Evaluation -> CP29 Search / Browse -> CP30 Design System Foundation -> CP31 Product Detail -> **CP32 Commodity Detail**.
 
-Foundation -> Image/Document -> OCR -> Layout -> Structure -> Item Tuple -> Validation -> Persistence -> Image Archive -> Receipt Library -> Review/Edit -> Product Identity -> Price History -> OCR Recovery -> Vertical Integration -> Merchant -> Cross-Pass Merge -> Build Hygiene -> Target API36 -> CP20 Product Rebaseline -> CP21 Catalog Domain V2 -> CP22 Persistence V2 -> CP23 Receipt Product Semantics -> CP24 Identity Resolver V2 -> CP25 Category System -> CP26 Commodity / Non-standard V2 -> CP27 Price Intelligence V2 -> CP28 Price Evaluation -> CP29 Search / Browse -> CP30 Design System Foundation -> **CP31 Product Detail**.
+## 10. Next planned checkpoint
 
-## 11. Next planned checkpoint
+**CP33 — Capture / Review UX V2**.
 
-**CP32 — Commodity Detail**
+Goal: move the front half of the product toward:
 
-Goal: build the NON_STANDARD commodity detail experience while preserving the critical distinction between grouping and price comparability.
+`영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검토 -> 저장`
 
-Required direction:
+Expected emphasis:
 
-- commodity identity and purchase forms;
-- strict comparable cohorts separated by basis (kg / L / each);
-- contextual SAME_FORM/LIKE_FORM history visibly reference-only;
-- no fake conversion such as bag = kg;
-- basis-specific charts/judgments only;
-- receipt/store/date traceability;
-- CP30 design grammar and CP31 commercial quality bar where semantically applicable.
+- reduce review burden without bypassing identity/provenance safety;
+- clearly separate auto-confirmed versus review-required fields/items;
+- preserve raw receipt evidence and correction traceability;
+- keep permissions/offline model unchanged unless separately authorized;
+- do not prematurely build the CP34 commercial shell.
 
-Do not begin CP32 without explicit user authorization.
+Do not begin CP33 without explicit user authorization.
 
-## 12. Canonical restart order
+## 11. Canonical restart order
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
-4. `receiptledger/CP31_PRODUCT_DETAIL_EVIDENCE.md`
-5. `receiptledger/CP31_PRODUCT_DETAIL_PLAN.md`
-6. `receiptledger/PRODUCT_DETAIL_CONSISTENCY_REVIEW.md`
-7. `receiptledger/PRODUCT_DETAIL_GOLDEN_VECTORS.md`
-8. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
-9. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_EVIDENCE.md`
+3. `receiptledger/CP32_COMMODITY_DETAIL_CLOSEOUT.md`
+4. `receiptledger/CP32_COMMODITY_DETAIL_EVIDENCE.md`
+5. `receiptledger/CP32_COMMODITY_DETAIL_PLAN.md`
+6. `receiptledger/COMMODITY_DETAIL_CONSISTENCY_REVIEW.md`
+7. `receiptledger/COMMODITY_DETAIL_GOLDEN_VECTORS.md`
+8. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
+9. `receiptledger/CP31_PRODUCT_DETAIL_EVIDENCE.md`
 10. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
 12. `receiptledger/README.md`
@@ -157,8 +149,8 @@ Do not begin CP32 without explicit user authorization.
 
 GitHub is canonical. Verify current handoff HEAD and frozen executable boundary separately before future work.
 
-## 13. Public/privacy boundary
+## 12. Public/privacy boundary
 
 Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Never commit secrets, release signing material, private receipts, real purchase DB/backups, personal identifiers or uncleared assets.
 
-**Current stop condition: CP31 is complete. Await explicit authorization for CP32.**
+**Current stop condition: CP32 is complete. Await explicit authorization for CP33.**
