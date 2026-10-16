@@ -1,0 +1,130 @@
+name: Mobi P1-C-R9 Curve Pixel Stage 1
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c-r9-intrinsic-curve-pixel-raster-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/P1_C_R9_PUBLIC_EXECUTION_SCOPE.md'
+      - 'mobi/p1-b2/geometry/p1_c_r9_intrinsic_curve_pixel_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_r9_intrinsic_curve_pixel_v1.py'
+      - 'mobi/p1-b2/geometry/run_p1_c_r9_curve_pixel_stage1.py'
+      - '.github/workflows/mobi-p1-c-r9-curve-pixel-stage1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c-r9-stage1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r9-stage1/evidence
+          { echo "git_commit=${GITHUB_SHA}"; echo "runner=ubuntu-latest"; python3 --version; } | tee mobi/p1-c-r9-stage1/evidence/environment.txt
+
+      - name: Verify frozen R9 and semantic inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          expected = {
+              'p1_c_r9_intrinsic_curve_pixel_v1.py': '3cc6e2b9b1f5001c93b6b4530c2bdd03a7bad883',
+              'test_p1_c_r9_intrinsic_curve_pixel_v1.py': '617e4aa131eb1b845cb014794011a937c10018c7',
+              'run_p1_c_r9_curve_pixel_stage1.py': '5fbe3da3b876653fd471b2f17dd2fa5ed46c6f93',
+              'model.py': 'c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b',
+              'orientation_v2.py': '33cb9c1e8f3b41f038898345a0aee0642609e812',
+              'h6n_stepped_turn.py': '62ee60e58120b4db537cb8247f507d7ede67afcb',
+          }
+          lines = []
+          mismatches = []
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git', 'hash-object', path], text=True).strip()
+              lines.append(f'{actual}  {path}')
+              if actual != wanted:
+                  mismatches.append((path, wanted, actual))
+          Path('../../p1-c-r9-stage1/evidence/git_blob_shas.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          if mismatches:
+              raise SystemExit('blob mismatch: ' + repr(mismatches))
+          print('frozen_r9_and_semantic_input_hashes=PASS')
+          PY
+
+      - name: Run bounded R9 tests before evidence
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_r9_intrinsic_curve_pixel_v1.py 2>&1 | tee ../../p1-c-r9-stage1/evidence/unittest.txt
+
+      - name: Generate deterministic Stage 1 evidence twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf r9_stage1_evidence ../../p1-c-r9-stage1/run-seed1 ../../p1-c-r9-stage1/run-seed777
+          PYTHONHASHSEED=1 python3 run_p1_c_r9_curve_pixel_stage1.py
+          mv r9_stage1_evidence ../../p1-c-r9-stage1/run-seed1
+          PYTHONHASHSEED=777 python3 run_p1_c_r9_curve_pixel_stage1.py
+          mv r9_stage1_evidence ../../p1-c-r9-stage1/run-seed777
+          diff -ru ../../p1-c-r9-stage1/run-seed1 ../../p1-c-r9-stage1/run-seed777 | tee ../../p1-c-r9-stage1/evidence/deterministic_diff.txt
+          cp -R ../../p1-c-r9-stage1/run-seed1/. ../../p1-c-r9-stage1/evidence/
+
+      - name: Validate bounded Stage 1 evidence
+        working-directory: mobi/p1-c-r9-stage1/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          s = json.loads(Path('summary.json').read_text())
+          assert s['checkpoint'] == 'P1-C-R9', s
+          assert s['stage'] == 'STAGE_1_NEUTRAL_ORIENTATION_PIXEL_GATE', s
+          assert s['family'] == 'RF_K_BOUNDED_INTRINSIC_DEFORMABLE_CURVE_CARRIER_WITH_PIXEL_RASTERIZATION', s
+          assert s['mechanicalPass'] is True, s
+          c = s['carrier']
+          assert c['curveGroups'] <= 16, c
+          assert c['controlNodes'] <= 64, c
+          assert c['curveSegments'] <= 48, c
+          assert c['nativeRaster'] == [80, 80], c
+          assert c['domains'] == ['CORE', 'FORE_L', 'FORE_R', 'HIND_L', 'HIND_R', 'TAIL'], c
+          o = s['orientation']
+          assert o['steps'] == 13, o
+          assert o['deterministicRerender'] is True, o
+          assert o['maxAreaJumpRatio'] <= 0.25, o
+          assert o['maxCentroidStepPx'] <= 4.0, o
+          assert o['maxXorUnionRatio'] <= 0.45, o
+          assert o['maxComponentCount'] <= 3, o
+          assert o['minOccupiedPixels'] > 160, o
+          max_pin = max(max(r['pawPinErrorsDp'].values()) for r in s['records'])
+          assert max_pin <= 1e-9, max_pin
+          assert Path('deterministic_diff.txt').read_text() == '', 'non-empty deterministic diff'
+          pngs = sorted(Path('.').glob('*.png'))
+          assert len(pngs) == 8, [p.name for p in pngs]
+          for path in pngs:
+              assert path.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'), path
+          print(json.dumps(s, indent=2, sort_keys=True))
+          PY
+
+      - name: Hash Stage 1 evidence
+        working-directory: mobi/p1-c-r9-stage1/evidence
+        run: |
+          set -euo pipefail
+          find . -type f -print0 | sort -z | xargs -0 sha256sum > EVIDENCE_SHA256SUMS.txt
+          cat EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-r9-curve-pixel-stage1-${{ github.run_id }}
+          path: mobi/p1-c-r9-stage1/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
