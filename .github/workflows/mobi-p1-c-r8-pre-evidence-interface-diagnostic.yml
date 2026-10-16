@@ -1,0 +1,44 @@
+name: Mobi P1-C-R8 Pre-Evidence Interface Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c-r8-regional-procedural-surface-20261016'
+    paths:
+      - '.github/workflows/mobi-p1-c-r8-pre-evidence-interface-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print raw and composed interface values
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from e_v0_fixture_adapter import H6N, build_e_fixture
+          from e_v0_profiles import M0
+          import p1_c_r8_regional_procedural_surface_v1 as r8
+
+          for t in (0.0, 0.5, 1.0):
+              f = build_e_fixture(M0, H6N, 80, t, +1)
+              a = f.state.anchors['BODY_ROOT']
+              b = f.state.anchors['PELVIS_REF']
+              print('VIEW', t, 'BODY_ROOT', a.x, a.y, 'PELVIS_REF', b.x, b.y)
+              for name, q in (
+                  ('BODY', (float(a.x), float(a.y), 0.0)),
+                  ('Q1', (float(a.x)*0.75+float(b.x)*0.25, float(a.y)*0.75+float(b.y)*0.25, 0.0)),
+                  ('MID', ((float(a.x)+float(b.x))*0.5, (float(a.y)+float(b.y))*0.5, 0.0)),
+                  ('Q3', (float(a.x)*0.25+float(b.x)*0.75, float(a.y)*0.25+float(b.y)*0.75, 0.0)),
+                  ('PELVIS', (float(b.x), float(b.y), 0.0)),
+              ):
+                  v = r8.raw_fields(f, *q)
+                  print(name, 'thorax=', v['THORAX_FLANK'], 'abdomen=', v['ABDOMEN_TUCK'], 'pelvis=', v['PELVIS_HAUNCH'], 'composed=', r8.composed_field_from_raw(v))
+              print('overlap=', r8.interface_overlap_checks(f))
+          PY
