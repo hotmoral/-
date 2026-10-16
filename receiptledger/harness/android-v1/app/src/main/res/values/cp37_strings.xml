@@ -1,4 +1,5 @@
 <resources>
     <string name="cp37_copy_validation">검증 결과 복사</string>
     <string name="cp37_validation_copied">개인정보 없는 검증 결과를 복사했습니다.</string>
+    <string name="review_item_not_product">이 항목은 상품이 아님</string>
 </resources>
