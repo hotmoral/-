@@ -4,122 +4,115 @@ Updated: 2026-10-16 KST
 
 ## Current stage
 
-**CP34 — Commercial UI Shell is COMPLETE.**
+**CP35 — Real Receipt Evaluation is COMPLETE.**
 
-- branch: `receiptledger/run-v1-commercial-ui-shell-20261016`
-- predecessor handoff: `2a15e14e9897aa9785762faef1568254fbeb5f82`
-- frozen implementation HEAD: `d9764b1447aefaaf3e3fdc5785c72c7c98e8314e`
-- canonical Actions: `38878681881` — SUCCESS
-- job: `116899840083` — SUCCESS
-- artifact ID: `12036721843`
-- artifact digest: `sha256:61e31f76bcf1e8d4e7dc596807b2aacd6c7774ad8e9fe05f36b09b59d4a95258`
-- APK SHA-256: `64899bfdd715780ecb864f033896f66e2c89d7186da338f2dd59c7fc2033a2af`
-- versionCode 33
-- versionName `1.0.32-commercial-ui-shell`
+- branch: `receiptledger/run-v1-real-receipt-evaluation-20261016`
+- predecessor handoff: `386c1b3d9ef7f3737ffd8b4d0f34fe2e076cab8e`
+- frozen executable/evaluation HEAD: `6ae9fbcfe0abc17dd9471de243170a9a87272767`
+- canonical Actions: `38884870134` — SUCCESS
+- job: `116920055654` — SUCCESS
+- artifact ID: `12038973171`
+- artifact digest: `sha256:3336486a5807fa971e8385cdd10008f29cb85daf1779ab5fd226008d9ad72258`
+- APK SHA-256: `3e89e7ab1358278889c55410fc49f4b5e4e50f54c8a490aeb473dd58c0cab9cf`
+- versionCode 34
+- versionName `1.0.33-real-receipt-evaluation`
 - lint: 0 errors / 0 warnings
-- CP34 7/7 + CP33 13/13 + CP32 11/11 + CP31 9/9 + CP29 8/8 packaged key regressions PASS.
 
-## Frozen CP34 contract
+## Frozen CP35 result
 
-- HomeActivity is the real packaged launcher;
-- Home primary CTA enters frozen CP33 receipt-add flow;
-- discovery uses frozen CP29 read-only APIs only;
-- search, recent, frequent and category browse do not mutate identity;
-- STANDARD stable ID opens CP31 Product Detail;
-- NON_STANDARD stable ID opens CP32 Commodity Detail;
-- unsupported/unclassified items are not promoted by navigation;
-- receipt history opens exact ReceiptDetail rows;
-- CP31/32 purchase rows retain exact receipt provenance;
-- legacy PriceHistoryActivity is no longer Library's primary browse destination;
-- Home/Search/Library long content is vertically scrollable;
-- product schema 2 / receipt schema 1 unchanged;
-- no new network/broad permissions;
-- no Compose/Material migration.
+CP35 did not alter production behavior. It added deterministic public-safe evaluation around the already-frozen system.
 
-## Commercial shell result
+Corpus:
 
-Normal app flow:
+- 8 contract-risk fixture classes;
+- 9 synthetic receipt instances;
+- 11 item rows;
+- synthetic `OcrDocument` token/geometry boundary;
+- production ReceiptRecognitionPipeline onward.
 
-`홈 -> 영수증 추가 -> 자동 분석/필요 검토/저장 -> 검색·카테고리 -> 제품·품목 상세 -> 구매 영수증 근거`
+Canonical metric:
 
-The product now exposes the outcome—personal price memory—rather than presenting capture as the whole application.
+`CP35_METRICS evaluation_version=1 fixtures=8 receipts=9 items=11 structured_correct=9 auto_confirmed=8 review_required=1 final_safe_registrations=7 exact_alias_reuse=2 conservative_unresolved=1 false_auto_links=0 strict_weight_observations=2 contextual_cohorts=2 discount_exclusions=1 invalid_exclusions=1 detail_trace_rows=7 schema_unchanged=1`
 
-## Identity and price authority
+## Registration/safety evidence
 
-CP34 has no authority to:
+- valid receipt structures: 9/9 expected;
+- safe AUTO_CONFIRMED receipts: 8;
+- deliberate total mismatch: REVIEW_REQUIRED;
+- false auto-links: 0;
+- two later exact matching aliases reused existing stable identity;
+- similar 900mL name did not inherit the 1L identity;
+- 1kg/500g commodity data formed one strict WEIGHT_KG cohort;
+- 봉/상자 remained two separate contextual cohorts;
+- contextual price judgments remained NONE;
+- multi-item receipt-level discount did not contaminate comparable item history;
+- mismatch receipt remained invalid price evidence;
+- seven Product/Commodity detail rows retained exact source receipt IDs.
 
-- create/merge/relink product identity from search relevance;
-- confirm new aliases;
-- reinterpret category as identity;
-- recompute CP27 comparison basis;
-- reimplement CP28 thresholds;
-- fabricate market-price/savings claims;
-- reinterpret CP33 save readiness.
+## Production immutability
 
-The shell only connects already-frozen services and screens.
+Compared with CP34 handoff, executable changes are limited to:
 
-## Local quality evidence
+- CP35 workflow;
+- CP35 plan/consistency/fixture docs;
+- test-only RealReceiptEvaluationV1Test;
+- app version bump.
 
-`CP34_METRICS shell_version=1 launcher_home=1 add_receipt=1 search_browse=1 category_browse=1 standard_detail=1 commodity_detail=1 receipt_history=1 legacy_price_entry_removed=1 schema_unchanged=1`
+No production Java, manifest or production resource changed.
 
-Canonical artifact inspection confirms:
+Product schema 2 / receipt schema 1 remain frozen.
 
-- HomeActivity packaged as launchable activity;
-- APK SHA above;
-- lint `No issues found.`;
-- forbidden CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE permissions absent;
-- internal dynamic-receiver permission only;
-- CP34/33/32/31/29 key test XMLs zero failure/error/skip.
+## Regression evidence
 
-## Pre-closeout corrections
+Packaged key suites:
 
-CP34 deliberately was not closed at the first implementation state.
+- CP35: 1/1 PASS;
+- CP34: 7/7 PASS;
+- CP33: 13/13 PASS;
+- CP32: 11/11 PASS;
+- CP31: 9/9 PASS;
+- CP29: 8/8 PASS.
 
-1. run `38877757713`: compilation failed because five new layout references used nonexistent `SPACE_5_DP`; corrected to frozen CP30 `SPACE_6_DP` (24dp);
-2. run `38877971396`: full green but post-green review found Library constrained-height/large-text accessibility risk and missing list-read failure state;
-3. final `d9764b...`: Library hardened; canonical run `38878681881` clean green.
+Full Gradle unit suite/build passed. Lint is clean. Forbidden camera/media/storage/network permissions remain absent.
 
-## Known limitations
+## Evidence limitation
 
-- no private real-receipt accuracy campaign;
-- no emulator/device screenshot comparison;
-- no physical-device usability study;
-- no representative 1k/10k performance benchmark;
-- no release signing evidence;
-- CP35 and CP36 remain future validation/hardening stages.
+CP35 does not measure ML Kit image-to-text accuracy or real camera/merchant/font statistical coverage. Synthetic fixtures start after optical character recognition at the `OcrDocument` token/geometry boundary.
+
+This limitation is part of the canonical result, not a hidden assumption.
 
 ## Next planned work unit
 
-**CP35 — Real Receipt Evaluation**
+**CP36 — Performance / Reliability**
 
 Before implementation:
 
-1. recover CP34 frozen executable and handoff refs separately;
-2. define public-safe synthetic and/or explicitly approved sanitized receipt fixture policy;
-3. define end-to-end correct purchase registration as the primary success metric;
-4. cover receipt structure, product/commodity identity outcome, quantity/price registration, comparison eligibility and receipt provenance;
-5. distinguish safe unresolved/review-required outcomes from incorrect confident registration;
-6. measure review burden and confirmed repeat-use behavior where fixtures permit;
-7. preserve CP20–34 identity/price/review/schema/privacy contracts;
-8. avoid performance/index/cache work reserved for CP36;
-9. package deterministic evidence and failure taxonomy;
-10. compare plan vs actual even if CI is green;
-11. synchronize docs-only handoff;
-12. stop before CP36.
+1. recover CP35 frozen executable and handoff refs separately;
+2. define representative workload/latency/memory/reliability metrics before optimizing;
+3. measure startup and OCR pipeline latency/memory;
+4. measure large receipt/catalog/history workloads;
+5. benchmark CP29 linear search around 1k/10k before considering FTS/index/cache;
+6. benchmark price/evaluation/detail/chart paths;
+7. verify schema migration behavior and archive reconciliation;
+8. verify deterministic recovery/failure paths;
+9. preserve identity/price/review/privacy contracts;
+10. implement only measurement-justified hardening;
+11. rerun full scoped regressions/evidence;
+12. compare plan vs actual after green;
+13. synchronize docs-only handoff and stop.
 
 ## Group discipline
 
 - recover canonical GitHub state;
 - restate essential goal/non-goals;
 - inspect materially relevant contradictions only;
-- fix cheap contract gaps before closure even if CI is green;
+- fix cheap material gaps before closure even if CI is green;
 - avoid unrelated cleanup/speculative scope;
-- implement the smallest coherent proof;
-- run scoped CI/evidence;
+- measure before optimizing;
 - freeze exact executable refs;
 - synchronize handoff materials docs-only;
 - verify post-boundary changes;
-- stop before the next unauthorized checkpoint.
+- stop before unauthorized work.
 
 ## Public/privacy rules
 
@@ -127,4 +120,4 @@ Modify only `receiptledger/**` and explicitly approved ReceiptLedger-prefixed wo
 
 ## Stop condition
 
-**CP34 is complete. Await explicit authorization for CP35.**
+**CP35 is complete. Await explicit authorization for CP36.**
