@@ -39,10 +39,10 @@ jobs:
 
           expected = {
               'p1_c_r8_regional_grammar_v1.py': '9ed2555afebf79dc7c087c35f82f69968b3c7ea9',
-              'p1_c_r8_neutral_m0_params_v1.py': '58bf9d249159a7d1765d14c3b881732f05172aab',
+              'p1_c_r8_neutral_m0_params_v1.py': '071ce89d0d760998bbbf40aa9ed86db5f9bd97da',
               'p1_c_r8_regional_procedural_surface_v1.py': '4ad080dd41d52b8c6846734ecb19af267a926579',
               'run_p1_c_r8_regional_procedural_stage3.py': 'fe5b8d6d9e4a91089542d1dcf193c18f671ac24c',
-              'test_p1_c_r8_regional_procedural_surface_v1.py': '7012830633f03b92b5f870f7e7dc3d375741cbb2',
+              'test_p1_c_r8_regional_procedural_surface_v1.py': '76643c4547316b8d7a619b7f50e3f25df31862b5',
               'p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py': '6165e55fd905944d484a1a0758f9a85f4cf92761',
               'p1_c_r2_minimal_volumetric_proxy_v1.py': '4d4006f66e98fbf10ce54ed87bb78a9ee5ee3daa',
               'model.py': 'c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b',
@@ -98,8 +98,8 @@ jobs:
           assert s['prototypeVersion'] == 'P1_C_R8_REGIONAL_PROCEDURAL_DEFORMABLE_SURFACE_V1', s
           assert s['sourceFamily'] == 'RF_J_BOUNDED_REGIONAL_PROCEDURAL_DEFORMABLE_SURFACE', s
           assert s['sourcePackId'] == 'R6_CONSTRUCTION_PACK_V1', s
-          assert s['grammarSignature'] == '704759c992bb72a416b19b2b03698fe35ab200a361bc5bc0493cf340b427f4ba', s
-          assert s['parameterSignature'] == '491de168aa148547d1e8266360d07039468e6b07fc517ff4d2afc78130e77ef0', s
+          assert s['grammarSignature'] == '20f1ace341726b6e0b36c45a19f5d01fb5be75ff0b7d27a6e5758850db1979e5', s
+          assert s['parameterSignature'] == '41f3401026b1993e83835b997a727b6974c374441821d30244d6a79dbc316ecd', s
           assert s['recordCount'] == 3, s
           assert s['semanticMutationCount'] == 0, s
           assert s['surfaceSignatureCount'] == 1, s
