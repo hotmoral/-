@@ -73,7 +73,8 @@ public final class SemanticPresentationV1 {
         }
     }
 
-    static Presentation display(String label, String explanation, SemanticToneV1 tone) {
+    /** Additive CP31 adapter for screen-specific semantic surfaces that still consume frozen tones. */
+    public static Presentation display(String label, String explanation, SemanticToneV1 tone) {
         return p(label, explanation, tone, false);
     }
 
