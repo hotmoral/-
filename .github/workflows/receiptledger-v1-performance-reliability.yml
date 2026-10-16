@@ -170,7 +170,13 @@ jobs:
           set -euo pipefail
           AVDMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager"
           IMAGE='system-images;android-34;default;x86_64'
-          echo no | "$AVDMANAGER" create avd --force --name cp36 --package "$IMAGE" >/dev/null
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/cp36-avd-home"
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo no | "$AVDMANAGER" create avd --force --name cp36 --package "$IMAGE" -p "$ANDROID_AVD_HOME/cp36.avd" >/dev/null
+          echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
+          test -f "$ANDROID_AVD_HOME/cp36.ini"
+          "$ANDROID_HOME/emulator/emulator" -list-avds | tee receiptledger/cp36-avd-list.txt
+          grep -Fxq 'cp36' receiptledger/cp36-avd-list.txt
           sudo chmod 666 /dev/kvm 2>/dev/null || true
           nohup "$ANDROID_HOME/emulator/emulator" \
             -avd cp36 -no-window -noaudio -no-boot-anim -no-snapshot \
