@@ -1,0 +1,88 @@
+name: Mobi P1-C 3D Cat Stage B Topology Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-3d-cat-projection-feasibility-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_topology_diagnostic_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_3d_cat_stage_b_topology_diagnostic_v1.py'
+      - '.github/workflows/mobi-p1-c-3d-cat-stage-b-topology-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  topology-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify frozen diagnostic blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected={
+            'p1_c_3d_cat_stage_b_inspector_v1.py':'9b7899bc1c39d02291813a826df01d3697192846',
+            'p1_c_3d_cat_stage_b_topology_diagnostic_v1.py':'2d84d91360c447eb3aa3ac6e3afa4aad4d1f873e',
+            'test_p1_c_3d_cat_stage_b_topology_diagnostic_v1.py':'66e79be6c2826a0d745e76bd74d9d337d30a25d9',
+          }
+          for p,w in expected.items():
+            a=subprocess.check_output(['git','hash-object',p],text=True).strip(); assert a==w,(p,w,a)
+          print('frozen_topology_identity=PASS')
+          PY
+      - name: Run bounded topology unit tests
+        working-directory: mobi/p1-b2/geometry
+        run: python3 -m unittest -v test_p1_c_3d_cat_stage_b_topology_diagnostic_v1.py
+      - name: Reacquire exact source
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-3d-cat-stage-b-topology/evidence
+          E=mobi/p1-c-3d-cat-stage-b-topology/evidence
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A 'Mobi bounded public feasibility/1.0' \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' -o "$E/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  '"$E/cat-original.glb" | sha256sum -c -
+      - name: Run topology diagnostic
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          E=../../p1-c-3d-cat-stage-b-topology/evidence
+          python3 p1_c_3d_cat_stage_b_topology_diagnostic_v1.py "$E/cat-original.glb" --out "$E/topology.json" | tee "$E/topology_stdout.txt"
+      - name: Validate expected topology result
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('mobi/p1-c-3d-cat-stage-b-topology/evidence/topology.json').read_text())
+          assert s['sourceSha256']=='6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5'
+          assert s['structuralNodeName']=='Cat continuous body'
+          assert s['vertexCount']==99642
+          assert s['triangleCount']==199280
+          assert s['uniqueEdgeCount']==298920
+          assert s['edgeMultiplicityHistogram']=={'2':298920}
+          assert s['boundaryEdgeCount']==0
+          assert s['nonManifoldEdgeCount']==0
+          assert s['orientationMismatchEdgeCount']==0
+          assert s['degenerateIndexTriangleCount']==0
+          assert s['duplicateTriangleCount']==0
+          assert s['eulerCharacteristic']==2
+          assert s['genusIfConnectedClosedOrientable']==0
+          assert s['closedTwoManifoldByIndexTopology'] is True
+          print('topology_validation=PASS')
+          PY
+      - name: Hash evidence
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-3d-cat-stage-b-topology/evidence
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-3d-cat-stage-b-topology-${{ github.run_id }}
+          path: mobi/p1-c-3d-cat-stage-b-topology/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
