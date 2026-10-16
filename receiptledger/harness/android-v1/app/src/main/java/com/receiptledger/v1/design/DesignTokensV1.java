@@ -37,6 +37,10 @@ public final class DesignTokensV1 {
     public static final int RADIUS_MEDIUM_DP = 12;
     public static final int RADIUS_LARGE_DP = 16;
 
+    public static final int ELEVATION_CARD_DP = 1;
+    public static final int ELEVATION_FLOATING_DP = 3;
+
+    public static final int ICON_GLYPH_DP = 24;
     public static final int TOUCH_TARGET_MIN_DP = 48;
     public static final int LIST_ROW_MIN_DP = 56;
     public static final int CONTENT_MAX_WIDTH_DP = 720;

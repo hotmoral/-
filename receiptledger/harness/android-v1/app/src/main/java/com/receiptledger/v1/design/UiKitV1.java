@@ -99,7 +99,7 @@ public final class UiKitV1 {
         int pad = dp(context, DesignTokensV1.SPACE_4_DP);
         card.setPadding(pad, pad, pad, pad);
         card.setBackground(surfaceDrawable(context, presentation.tone.backgroundArgb, DesignTokensV1.RADIUS_MEDIUM_DP));
-        card.setElevation(dp(context, 1));
+        card.setElevation(dp(context, DesignTokensV1.ELEVATION_CARD_DP));
         TextView label = sectionTitle(context, presentation.labelKo);
         label.setTextColor(presentation.tone.foregroundArgb);
         TextView body = body(context, presentation.explanationKo);

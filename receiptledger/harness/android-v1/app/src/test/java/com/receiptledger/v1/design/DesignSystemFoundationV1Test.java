@@ -16,6 +16,8 @@ public final class DesignSystemFoundationV1Test {
         assertEquals(48, DesignTokensV1.TOUCH_TARGET_MIN_DP);
         assertEquals(56, DesignTokensV1.LIST_ROW_MIN_DP);
         assertEquals(720, DesignTokensV1.CONTENT_MAX_WIDTH_DP);
+        assertEquals(1, DesignTokensV1.ELEVATION_CARD_DP);
+        assertEquals(3, DesignTokensV1.ELEVATION_FLOATING_DP);
         assertArrayEquals(new int[]{4,8,12,16,24,32}, new int[]{
                 DesignTokensV1.SPACE_1_DP, DesignTokensV1.SPACE_2_DP, DesignTokensV1.SPACE_3_DP,
                 DesignTokensV1.SPACE_4_DP, DesignTokensV1.SPACE_6_DP, DesignTokensV1.SPACE_8_DP});
@@ -99,6 +101,17 @@ public final class DesignSystemFoundationV1Test {
         assertTrue(ChartGrammarV1.axisLabelKo(ComparisonBasisV2.likeForm("BAG", "봉")).startsWith("참고"));
     }
 
+    @Test public void iconGrammarCentralizesGlyphHitAreaAndSpokenLabels() {
+        assertEquals(10, IconGrammarV1.values().length);
+        assertEquals(24, DesignTokensV1.ICON_GLYPH_DP);
+        for (IconGrammarV1 icon : IconGrammarV1.values()) {
+            assertTrue(icon.validForIconOnlyControl());
+            assertEquals(24, icon.glyphSizeDp());
+            assertEquals(48, icon.minimumHitTargetDp());
+            assertFalse(icon.contentDescriptionKo.isEmpty());
+        }
+    }
+
     @Test public void cheapExpensiveColorNeverExistsWithoutTextMeaning() {
         SemanticPresentationV1.Presentation cheap = SemanticPresentationV1.price(
                 PriceEvaluationV1.Status.EVALUATED, PriceEvaluationV1.Judgment.CHEAP);
@@ -120,6 +133,8 @@ public final class DesignSystemFoundationV1Test {
                 + " ui_states=" + UiStatePresentationV1.Kind.values().length
                 + " contrast_pairs=" + contrastPairs
                 + " responsive_cases=5 chart_cross_basis_rejections=1 min_touch_dp="
-                + DesignTokensV1.TOUCH_TARGET_MIN_DP + " representative_activities=2");
+                + DesignTokensV1.TOUCH_TARGET_MIN_DP
+                + " icon_roles=" + IconGrammarV1.values().length
+                + " elevation_tokens=2 representative_activities=2");
     }
 }

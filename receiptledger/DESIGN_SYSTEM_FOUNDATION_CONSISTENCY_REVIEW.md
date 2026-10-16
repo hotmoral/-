@@ -14,109 +14,104 @@ The Android harness uses programmatic `android.widget` Views directly. Existing 
 
 A Compose or Material migration inside CP30 would be an architecture migration disguised as visual work and is therefore rejected.
 
-## 3. Domain boundary
+## 3. Frozen upstream compatibility
 
-### Identity / catalog
-Visual similarity, card grouping and color can never create or merge a product ID. CP21/24 remain authoritative.
+- stable catalog ID remains identity authority;
+- search relevance remains discovery-only and cannot merge/relink;
+- category remains browse metadata;
+- commodity grouping remains distinct from price comparability;
+- CP27 price eligibility and CP28 judgment thresholds are consumed, not recalculated;
+- product schema 2 / receipt schema 1 remain unchanged;
+- OCR/capture/review/detail behavior and permissions remain unchanged.
 
-### Category / commodity
-Category colors or sections are browsing metadata only. NON_STANDARD grouping and comparison-basis separation remain CP26 authority.
+## 4. Accessibility contract
 
-### Price intelligence / evaluation
-CP30 displays CP27/28 results; it cannot recalculate eligibility or thresholds. No-judgment states remain visually distinct from cheap/expensive judgments.
+The foundation adopts the Android accessibility baseline:
 
-### Search
-Search field styling cannot change CP29 matching/ranking and has no identity mutation authority.
-
-## 4. Accessibility consistency
-
-The foundation adopts Android's current minimum interaction/contrast baseline:
-
-- 48dp minimum interactive target;
-- >=4.5:1 small-text contrast;
-- >=3:1 large text/graphics;
+- minimum interactive target 48dp;
+- small-text contrast >=4.5:1;
+- large text/graphics contrast >=3:1;
 - state meaning expressed in text as well as color;
-- sp-based typography roles;
-- visible action labels satisfy naming for text buttons; icon-only future controls require content descriptions.
+- sp-based typography;
+- icon-only controls require a non-empty spoken/content description.
 
-The frozen palette is unit-tested for its small-text semantic foreground/background pairs.
+The frozen semantic palette is unit-tested for its small-text foreground/background pairs.
 
-## 5. Responsive consistency
-
-Width class contract:
+## 5. Responsive contract
 
 - COMPACT `<600dp`;
 - MEDIUM `600..839dp`;
-- EXPANDED `>=840dp`.
+- EXPANDED `>=840dp`;
+- page gutter 16dp compact, 24dp medium/expanded;
+- content max width token 720dp;
+- two-pane eligible only at expanded width and height >=480dp.
 
-Page gutter:
+The window dimensions, not physical device type, are the layout authority.
 
-- compact 16dp;
-- medium/expanded 24dp.
+## 6. Typography / spacing / surface contract
 
-Two-pane is allowed only at expanded width and height >=480dp. This avoids treating physical device type as a layout authority.
+System sans-serif is retained; no bundled/downloadable font is introduced.
 
-## 6. Typography consistency
+Roles:
 
-The system font is retained. CP30 introduces no bundled or downloadable font.
+- PRICE_HERO 30/36 bold;
+- TITLE_LARGE 22/28 bold;
+- TITLE_MEDIUM 18/24 medium;
+- BODY_LARGE 16/24 normal;
+- BODY_MEDIUM 14/20 normal;
+- LABEL 12/16 medium.
 
-Roles are purpose-based rather than screen-based:
+Spacing: 4/8/12/16/24/32dp.
+Radii: 8/12/16dp.
+Elevation: card 1dp, floating 3dp.
 
-- PRICE_HERO 30sp;
-- TITLE_LARGE 22sp;
-- TITLE_MEDIUM 18sp;
-- BODY_LARGE 16sp;
-- BODY_MEDIUM 14sp;
-- LABEL 12sp.
+Future screens consume these roles rather than adding ad-hoc values.
 
-Future screens must consume roles rather than add arbitrary sizes.
+## 7. Icon grammar
 
-## 7. Semantic presentation consistency
+CP30 freezes icon semantics without prematurely choosing a third-party icon library or adding many assets.
 
-Every CP28 evaluated price judgment has Korean text plus a semantic tone. Every no-judgment state also has explicit text, but never receives positive/negative judgment color.
+- glyph size token: 24dp;
+- minimum interactive hit area: 48dp;
+- stable roles: ADD_RECEIPT, SEARCH, FILTER, RECEIPT, PRODUCT, CATEGORY, PRICE_TREND, REVIEW, MORE, DELETE;
+- every icon-only role has explicit Korean accessibility text;
+- icon shape may later change, but role meaning and accessibility contract must not.
 
-Validation states are similarly mapped to explicit user-facing labels rather than raw enum text.
+## 8. Semantic presentation
 
-## 8. Chart consistency
+Every CP28 evaluated price judgment has Korean text plus semantic tone. No-judgment states never receive positive/negative judgment color. Validation and reusable loading/empty/review/error states also expose explicit Korean title/body text instead of raw enum names.
 
-A chart series is identified by `stable catalog ID + CP27 comparison basis`.
+## 9. Chart consistency
 
-Cross-basis series are rejected. In particular:
+A chart series is `stable catalog ID + CP27 comparison basis`.
 
 - kg and each cannot be connected;
 - L and package cannot be connected;
-- LIKE_FORM is explicitly labeled as contextual/reference-only;
-- usual-price reference is shown only for CP28 EVALUATED state.
+- LIKE_FORM is contextual/reference-only;
+- usual-price reference and judgment color are allowed only for CP28 EVALUATED state.
 
-## 9. Representative adoption
+## 10. Representative adoption
 
-Only `LibraryActivity` and legacy `PriceHistoryActivity` are adapted to prove the UiKit works in real programmatic Views.
+Only `LibraryActivity` and legacy `PriceHistoryActivity` consume the new UiKit in CP30. This proves the foundation works with real programmatic Views without turning CP30 into the final screen redesign.
 
-Not changed:
+Frozen:
 
-- Main capture/OCR flow;
-- receipt review engine/dialog behavior;
-- receipt detail identity flow;
-- domain/persistence/search/price packages;
-- AndroidManifest/permissions.
+- MainActivity capture/OCR;
+- ReceiptDetailActivity identity flow;
+- ReceiptReviewDialog behavior;
+- AndroidManifest/permissions;
+- upstream domain/search/price packages.
 
-## 10. Risk review
+## 11. Risk review
 
-### Risk: attractive color becomes business meaning
-Mitigation: semantic mapping is derived from existing CP28 states and always includes text.
+- **Color becomes business meaning:** prevented by text + tone mapping.
+- **Foundation turns into final redesign:** limited representative adoption only.
+- **UI toolkit migration risk:** no new Compose/Material dependency.
+- **Tablet assumptions:** window-width/height contract only.
+- **Cross-basis chart deception:** mixed basis rejected.
+- **Ad-hoc icon semantics:** stable icon roles and accessibility labels frozen.
+- **Ad-hoc shadows:** elevation tokens centralized.
 
-### Risk: foundation turns into final UI redesign
-Mitigation: only two representative activities adopt common creation helpers; CP31–34 own full surfaces.
+## 12. Result
 
-### Risk: visual toolkit migration introduces dependency/build risk
-Mitigation: no new UI dependency; current platform Views retained.
-
-### Risk: responsive logic becomes tablet detection
-Mitigation: use available-window width/height breakpoints only.
-
-### Risk: chart visually merges incompatible commodity histories
-Mitigation: ChartGrammar rejects mixed comparison bases.
-
-## 11. Result
-
-No blocking contradiction found. CP30 is a presentation-only foundation and does not require schema, identity, search, price-policy or permission changes.
+No blocking contradiction remains. CP30 is a presentation-only foundation and does not require schema, identity, search, price-policy or permission changes.
