@@ -37,12 +37,14 @@ jobs:
           set -euo pipefail
           SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           test -x "$SDKMANAGER"
+          set +o pipefail
           yes | "$SDKMANAGER" \
             'platform-tools' \
             'platforms;android-36' \
             'build-tools;35.0.0' \
             'emulator' \
             'system-images;android-34;default;x86_64' >/dev/null
+          set -o pipefail
           test -d "$ANDROID_HOME/platforms/android-36"
           test -d "$ANDROID_HOME/build-tools/35.0.0"
           test -x "$ANDROID_HOME/emulator/emulator"
@@ -206,6 +208,7 @@ jobs:
           COMPONENT=com.receiptledger.v1/.HomeActivity
           adb shell pm clear "$PKG" >/dev/null
           : > receiptledger/cp36-startup-raw.txt
+          : > receiptledger/cp36-startup-times.txt
           for i in 0 1 2 3 4 5; do
             adb shell am force-stop "$PKG"
             OUT="$(adb shell am start -W -n "$COMPONENT" | tr -d '\r')"
