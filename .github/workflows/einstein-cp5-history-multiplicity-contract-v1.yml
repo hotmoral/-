@@ -1,0 +1,35 @@
+name: Einstein CP5 history multiplicity contract v1
+
+on:
+  push:
+    branches:
+      - einstein-cp5-history-multiplicity-contract-v1
+    paths:
+      - 'einstein/cp5-history-multiplicity-contract-v1/**'
+      - '.github/workflows/einstein-cp5-history-multiplicity-contract-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run synthetic history multiplicity contract
+        run: python3 einstein/cp5-history-multiplicity-contract-v1/contract_test.py
