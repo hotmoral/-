@@ -6,66 +6,66 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP33_CAPTURE_REVIEW_UX_V2_CLOSEOUT.md`
-4. `CP33_CAPTURE_REVIEW_UX_V2_EVIDENCE.md`
-5. `CP33_CAPTURE_REVIEW_UX_V2_PLAN.md`
-6. `CAPTURE_REVIEW_UX_V2_CONSISTENCY_REVIEW.md`
-7. `CAPTURE_REVIEW_UX_V2_GOLDEN_VECTORS.md`
-8. `CP32_COMMODITY_DETAIL_CLOSEOUT.md`
-9. `CP32_COMMODITY_DETAIL_EVIDENCE.md`
-10. `CP31_PRODUCT_DETAIL_CLOSEOUT.md`
-11. `CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
-12. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-13. `WORK_UNIT.md`
+3. `CP34_COMMERCIAL_UI_SHELL_CLOSEOUT.md`
+4. `CP34_COMMERCIAL_UI_SHELL_EVIDENCE.md`
+5. `CP34_COMMERCIAL_UI_SHELL_PLAN.md`
+6. `COMMERCIAL_UI_SHELL_CONSISTENCY_REVIEW.md`
+7. `COMMERCIAL_UI_SHELL_GOLDEN_VECTORS.md`
+8. `CP33_CAPTURE_REVIEW_UX_V2_CLOSEOUT.md`
+9. `CP33_CAPTURE_REVIEW_UX_V2_EVIDENCE.md`
+10. `CP32_COMMODITY_DETAIL_CLOSEOUT.md`
+11. `CP31_PRODUCT_DETAIL_CLOSEOUT.md`
+12. `CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
+13. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+14. `WORK_UNIT.md`
 
-GitHub is canonical. Verify the current handoff ref and frozen executable ref separately before relying on old chat context.
+GitHub is canonical. Verify the current handoff branch HEAD and frozen executable ref separately before relying on old chat context.
 
 ## Current boundary
 
-**CP33 — Capture / Review UX V2 — COMPLETE**
+**CP34 — Commercial UI Shell — COMPLETE**
 
-- branch `receiptledger/run-v1-capture-review-ux-v2-20261016`
-- predecessor handoff `1996668e1fec6961eb158c5dd2e6b673fdb46ee0`
-- frozen implementation HEAD `34cdac2d3e61081ab2a529173dbef9a2431431e0`
-- canonical Actions `38874509796` — SUCCESS
-- job `116886197267` — SUCCESS
-- artifact ID `12034453925`
-- artifact digest `sha256:36da341582f3e4083699a31d87eb5366b62e6c99c555d1fcd41dec4b9dd3f912`
-- APK SHA-256 `8f78d9dab92c65bdccd31008f9cd15221f26ef63dbfcfab2741e9a066d2237b0`
+- branch `receiptledger/run-v1-commercial-ui-shell-20261016`
+- predecessor handoff `2a15e14e9897aa9785762faef1568254fbeb5f82`
+- frozen implementation HEAD `d9764b1447aefaaf3e3fdc5785c72c7c98e8314e`
+- canonical Actions `38878681881` — SUCCESS
+- job `116899840083` — SUCCESS
+- artifact ID `12036721843`
+- artifact digest `sha256:61e31f76bcf1e8d4e7dc596807b2aacd6c7774ad8e9fe05f36b09b59d4a95258`
+- APK SHA-256 `64899bfdd715780ecb864f033896f66e2c89d7186da338f2dd59c7fc2033a2af`
 - lint `No issues found.`
-- version `1.0.31-capture-review-ux-v2`, versionCode 32
+- version `1.0.32-commercial-ui-shell`, versionCode 33
 
 ## Product direction
 
 ReceiptLedger is a **personal purchase-price memory and comparison system**.
 
-Core experience:
+Current experience:
 
-`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 반복 구매 재사용 -> 검색/탐색 -> 제품/품목 가격기억 확인`
+`홈 -> 영수증 추가 -> 자동 처리/필요 검토 -> 저장 -> 검색/카테고리 -> 제품/품목 가격기억 -> 영수증 근거`
 
-## CP33 result
+## CP34 result
 
-The capture surface now:
+The packaged app now launches into a real product-centric Home instead of the capture harness.
 
-- automatically starts OCR/recovery after image load;
-- no longer requires a manual OCR button step;
-- does not force every clean receipt through a full edit dialog;
-- blocks Save when material uncertainty remains;
-- shows only flagged fields/items by default;
-- preserves `전체 내용 수정`;
-- preserves raw OCR and frozen review-engine provenance behavior;
-- requires explicit confirmation for `DEFAULT_ONE` quantity;
-- permits deterministic arithmetic inference when the final receipt arithmetic is trustworthy;
-- performs best-effort reuse of already-confirmed GLOBAL exact aliases only after receipt persistence;
-- never creates products or aliases automatically and never uses fuzzy/search/category/price identity inference;
-- isolates post-save optional failures from receipt-save success;
-- uses a vertically scrollable capture surface so review/save controls remain reachable on constrained heights;
-- replaces old debug/pass-score copy with Korean product-facing states.
+Home connects:
+
+- receipt add -> frozen CP33 capture/review flow;
+- text search and category browse -> frozen CP29 discovery;
+- recent/frequent purchase views;
+- STANDARD results -> frozen CP31 Product Detail;
+- NON_STANDARD results -> frozen CP32 Commodity Detail;
+- receipt history -> Library -> Receipt Detail;
+- recent linked price-memory preview.
+
+Library no longer exposes legacy PriceHistoryActivity as the primary product browse path. Home, Search and Library are vertically scrollable and use CP30 design tokens/components.
 
 ## Frozen domain / architecture
 
-CP21–32 identity/category/commodity/price/evaluation/search/detail contracts remain frozen.
+CP21–33 identity/category/commodity/price/evaluation/search/detail/review contracts remain frozen.
 
+- stable product ID remains identity authority;
+- search/category/UI cannot relink identity;
 - product schema 2;
 - receipt schema 1;
 - programmatic `Activity + android.widget`;
@@ -74,19 +74,19 @@ CP21–32 identity/category/commodity/price/evaluation/search/detail contracts r
 - offline/local OCR posture;
 - no broad storage/media/network permissions.
 
-## CP33 metric
+## CP34 metric
 
-`CP33_METRICS capture_review_version=2 auto_confirm_cases=2 review_required_cases=7 user_edit_exit=1 selective_review=1 full_edit=1 raw_ocr_preserved=1 exact_alias_reuse=1 unknown_alias_safe=1 link_failure_isolated=1 auto_processing=1 schema_unchanged=1`
+`CP34_METRICS shell_version=1 launcher_home=1 add_receipt=1 search_browse=1 category_browse=1 standard_detail=1 commodity_detail=1 receipt_history=1 legacy_price_entry_removed=1 schema_unchanged=1`
 
-Packaged evidence includes CP33 13/13, legacy ReviewEngine 4/4 and CP26–32 key regressions with zero failures/errors/skips.
+Packaged evidence includes CP34 7/7, CP33 13/13, CP32 11/11, CP31 9/9 and CP29 8/8 key regressions with zero failures/errors/skips.
 
 ## Next planned checkpoint
 
-**CP34 — Commercial UI Shell — NOT STARTED**
+**CP35 — Real Receipt Evaluation — NOT STARTED**
 
-CP34 will connect the existing receipt-add, search/browse/category, Product Detail, Commodity Detail and receipt history/detail capabilities into a coherent normal-user app shell. It is integration/presentation work, not authorization to change identity/price/review/schema truth.
+CP35 evaluates end-to-end correct purchase registration using public-safe synthetic or explicitly approved sanitized fixtures. Correct purchase registration is the primary metric, not OCR character accuracy alone.
 
-Do not start CP34 until explicitly authorized.
+Do not start CP35 until explicitly authorized.
 
 ## Privacy/security
 

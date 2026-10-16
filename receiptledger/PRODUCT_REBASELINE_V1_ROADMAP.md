@@ -75,58 +75,55 @@ Commercial STANDARD-product price-memory detail: exact identity, recent/previous
 ### CP32 — Commodity Detail — COMPLETE
 Frozen `e42629ccd66a80a4a1a14de0c7798b178d6b0062`; Actions `38855942283` SUCCESS.
 
-Commercial NON_STANDARD detail while preserving grouping != comparability:
-
-- separate WEIGHT_KG / VOLUME_L / EACH strict cohorts;
-- contextual package-form history reference-only;
-- no fake conversion;
-- basis-specific chart/judgment;
-- receipt/store/date traceability.
+Commercial NON_STANDARD detail preserves grouping != comparability, strict WEIGHT_KG/VOLUME_L/EACH cohorts, contextual package-form reference-only history and receipt traceability.
 
 ### CP33 — Capture / Review UX V2 — COMPLETE
 Frozen `34cdac2d3e61081ab2a529173dbef9a2431431e0`; canonical Actions `38874509796` SUCCESS.
 
+Delivered automatic OCR/recovery start, selective review, explicit save, DEFAULT_ONE confirmation, exact confirmed alias reuse after durable save, post-save failure isolation and constrained-height scrolling while preserving upstream truth.
+
+### CP34 — Commercial UI Shell — COMPLETE
+Frozen `d9764b1447aefaaf3e3fdc5785c72c7c98e8314e`; canonical Actions `38878681881` SUCCESS.
+
 Delivered:
 
-- image selection/capture automatically starts existing OCR/recovery;
-- explicit Save remains mandatory;
-- clean deterministic receipts skip mandatory full edit;
-- deterministic V2 review assessment exposes only material blockers;
-- selective review plus voluntary full edit;
-- `DEFAULT_ONE` quantity requires explicit user confirmation;
-- corrected USER_EDITED/USER_CONFIRMED provenance can exit review when material truth is valid;
-- raw OCR preserved;
-- already-confirmed GLOBAL exact aliases reused best-effort only after successful receipt persistence;
-- no fuzzy/new-product auto identity;
-- optional post-save work cannot make an already-saved receipt appear failed;
-- primary capture content vertically scrollable for constrained-height accessibility;
-- old development diagnostics removed from primary user UI;
-- schemas and upstream domain logic unchanged.
+- `HomeActivity` as the real launcher;
+- primary receipt-add entry into frozen CP33;
+- CP29-backed text search, recent, frequent and category browse;
+- stable-ID STANDARD -> CP31 Product Detail routing;
+- stable-ID NON_STANDARD -> CP32 Commodity Detail routing;
+- receipt-history entry and receipt-detail provenance;
+- recent price-memory preview on Home;
+- Library removal of legacy PriceHistoryActivity as primary browse path;
+- full-page scroll/accessibility hardening for Home/Search/Library;
+- explicit loading/empty/failure states;
+- no new identity/price/review/schema authority.
 
 Canonical metric:
 
-`CP33_METRICS capture_review_version=2 auto_confirm_cases=2 review_required_cases=7 user_edit_exit=1 selective_review=1 full_edit=1 raw_ocr_preserved=1 exact_alias_reuse=1 unknown_alias_safe=1 link_failure_isolated=1 auto_processing=1 schema_unchanged=1`
-
-### CP34 — Commercial UI Shell — NEXT PLANNED
-
-Goal: integrate the already-built capabilities into one coherent normal-user product shell.
-
-Expected scope:
-
-- product-centric home/primary navigation;
-- obvious receipt-add entry into the CP33 flow;
-- search/browse/category destinations;
-- STANDARD Product Detail and NON_STANDARD Commodity Detail entry paths;
-- receipt history/detail;
-- supporting settings/help/navigation only where justified;
-- remove reliance on legacy engineering-oriented entry paths.
-
-CP34 must **not** redefine identity, price, review or persistence truth to make navigation easier. No Compose/Material migration is implied.
+`CP34_METRICS shell_version=1 launcher_home=1 add_receipt=1 search_browse=1 category_browse=1 standard_detail=1 commodity_detail=1 receipt_history=1 legacy_price_entry_removed=1 schema_unchanged=1`
 
 ## 5. Validation and hardening
 
-### CP35 — Real Receipt Evaluation
-Use public-safe synthetic or explicitly approved sanitized fixtures to measure end-to-end correct purchase registration. Primary metric is correct purchase registration, not OCR character accuracy alone.
+### CP35 — Real Receipt Evaluation — NEXT PLANNED
+
+Evaluate the complete purchase-registration loop with public-safe synthetic or explicitly approved sanitized fixtures.
+
+Primary metric:
+
+**correct purchase registration**, not OCR character accuracy alone.
+
+Expected evaluation dimensions:
+
+- correct receipt structure/merchant/date/total where supported;
+- correct product/commodity identity outcome or safe unresolved/review state;
+- correct quantity/unit/line amount registration;
+- correct price observation eligibility/basis;
+- correct receipt provenance into Product/Commodity detail;
+- review burden and repeat-use behavior;
+- failure taxonomy with reproducible fixtures.
+
+CP35 must not loosen frozen identity, price, normalization or review contracts merely to improve headline accuracy.
 
 ### CP36 — Performance / Reliability
 Verify startup, OCR latency/memory, large catalog/history, search, price/evaluation/chart workloads, migrations, archive reconciliation and recovery. Benchmark CP29 linear scan around representative 1k/10k scale before adding FTS/index/cache.
@@ -139,13 +136,14 @@ Verify startup, OCR latency/memory, large catalog/history, search, price/evaluat
 - category/price/search/UI cannot widen identity authority;
 - commodity grouping remains distinct from comparability;
 - CP27 eligible cohort is the only CP28 price input basis;
-- CP28 judgment thresholds cannot be reimplemented by UI;
+- CP28 thresholds cannot be reimplemented by UI;
 - CP29 search is read-only;
 - CP30 presentation presents rather than reinterprets facts;
 - CP31 STANDARD detail consumes STANDARD_PACKAGE only;
 - CP32 preserves strict basis separation and contextual package semantics;
 - CP33 selective-review convenience cannot erase provenance or make uncertain values authoritative;
-- CP34 navigation must integrate these frozen contracts, not rewrite them.
+- CP34 navigation integrates these contracts but does not rewrite them;
+- CP35 evaluation must measure the frozen system before proposing any contract change.
 
 ## 7. Every checkpoint asks, only where material
 
@@ -163,7 +161,7 @@ Verify startup, OCR latency/memory, large catalog/history, search, price/evaluat
 - Can a new performance hot path appear?
 - Which local regression catches failure now?
 
-Avoid ritual audits, speculative abstractions, unrelated cleanup and expansion into budgeting/banking/cloud/e-commerce before the core loop is complete.
+Avoid ritual audits, speculative abstractions, unrelated cleanup and expansion into budgeting/banking/cloud/e-commerce before the core loop is validated.
 
 ## 8. Handoff discipline
 
@@ -179,4 +177,4 @@ At every completed group:
 
 ## 9. Current boundary
 
-**CP33 is COMPLETE. CP34 — Commercial UI Shell is next planned and has NOT STARTED. Await explicit user authorization.**
+**CP34 is COMPLETE. CP35 — Real Receipt Evaluation is next planned and has NOT STARTED. Await explicit user authorization.**
