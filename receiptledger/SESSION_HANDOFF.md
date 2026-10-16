@@ -4,154 +4,119 @@ Updated: 2026-10-17 KST
 
 ## 0. Restart contract
 
-GitHub is canonical. Do not reconstruct project state from old chat before reading current documents and verifying refs.
+GitHub is canonical. Do not reconstruct current state from old chat before reading the current files and verifying refs.
 
 Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
-4. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
-5. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_PLAN.md`
-6. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-7. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
-8. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-9. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-10. `receiptledger/README.md`
-11. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
+4. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
+5. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_PLAN.md`
+6. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+7. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
+8. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+9. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+11. `receiptledger/README.md`
+12. `receiptledger/WORK_UNIT.md`
 
-## 1. Current execution state
+## 1. Current state
 
-V1 CP20–CP36 is complete.
+V1 CP20–CP36 is complete. CP37 is open.
 
-CP37 is open.
+Current state: **Selective Review Coverage Instrumentation READY_FOR_PHYSICAL_METRIC_CHECK**.
 
-Current state: **Remediation A READY_FOR_PHYSICAL_RETEST**.
-
-- active branch: `receiptledger/run-post-v1-physical-ocr-remediation-20261017`
-- predecessor Phase A handoff: `6b7d7b9b65432701b43da53a0e6f0ff1e47a1449`
-- frozen remediation executable: `06fafa9db1da0e4592ddc15a468a9c6e4e338515`
-- canonical Actions: `38957744298` SUCCESS
-- job: `117164770764`
-- artifact: `12071212297`
-- artifact digest: `sha256:6540c6350ea47280dc3d9fec64cdaef3b2aef24976f833a44e0cb13bd3b2a811`
-- APK SHA-256: `109b61603c9f4a0a399ecb919399151427ab3ba243e626bbe8543340a4ee0f3d`
-- versionName: `1.0.36-physical-ocr-remediation`
-- versionCode: 37
-- package: `com.receiptledger.v1.remediation`
-- label: `ReceiptLedger 검증`
+- branch: `receiptledger/run-post-v1-selective-review-coverage-20261017`
+- predecessor handoff: `c4e00ff22339869346f0f8692e38d82567568b7e`
+- frozen executable: `7dbed4cf73a2963ace7447974e9d972a9776b79f`
+- Actions: `38976080450` SUCCESS
+- job: `117225743973` SUCCESS
+- artifact: `12078898591`
+- artifact digest: `sha256:402a5dda9d0892550ff08d5a5f3dbeb228a01a6f32abc40d24f8a75efa510b67`
+- APK SHA-256: `29fcd2073d74fee819d53525bf2409db1587a72e72e86af115496843562405b8`
+- version: `1.0.37-review-coverage-validation` / 38
+- package: `com.receiptledger.v1.reviewcoverage`
+- label: `ReceiptLedger 검증 B`
 - lint: `No issues found.`
 
-Do **not** label CP37 complete.
+Do **not** mark CP37 complete.
 
-## 2. Why remediation was opened
+## 2. Physical evidence sequence
 
-First real-device sample produced a privacy-safe report with:
+### Sample A — initial Phase B diagnostic
 
-- GALLERY, 800x1067;
-- OCR 562ms;
-- 3 attempted passes, 2 merged candidates;
-- ORIGINAL selected;
-- MISMATCH / REVIEW_REQUIRED;
-- 16 initial items / 16 review items;
-- 5 item-name edits, 1 unit-price edit, 1 line-amount edit;
-- false_auto_confirm=0;
-- final PASS_WITH_WARNINGS / save success.
+REVIEW_REQUIRED correctly prevented false auto-confirm, but an address/header row was classified as a product item. The old review UI could not delete that row.
 
-After sending the report, the user noted that a spatially separate address/header row had also been treated as a product item.
+### Remediation A
 
-Inspection confirmed:
+Implemented a narrow pre-date false-item gate plus explicit `이 항목은 상품이 아님` removal recovery.
 
-- item detection accepted letters left of a money-like numeric token with no body-continuity guard;
-- a 3+ digit header/address number could therefore create a false ITEM row;
-- review could edit item values but could not delete an item row.
+### Sample B — Remediation A physical retest
 
-This is a structural/recoverability defect, not just OCR spelling error.
+The same false address row did **not** appear as an item. Remediation A is therefore physically confirmed for the triggering defect.
 
-## 3. Remediation implementation
+The retest also showed initial_items=15 and initial_review_items=1, but after full visual verification the user corrected 3 item names, 1 quantity and 1 unit price. Since report v1 only counted field deltas, it could not determine how many corrected item ordinals were outside the initially selected review set.
 
-### Structure
+## 3. New report v2 contract
 
-If a valid receipt DATE exists and at least two ITEM rows exist below it, provisional ITEM rows above the date are demoted to HEADER with reason `ITEM_BEFORE_DATE_WITH_BODY_BELOW`.
+Output begins:
 
-The rule is intentionally narrow. No generic address text classifier was introduced.
+`RL_CP37_SAMPLE version=2 ...`
 
-### Review
+New fields:
 
-Review displays `이 항목은 상품이 아님` for shown item rows.
+- `corrections_outside_review_items=N`
+- `review_scope_miss=0|1`
 
-A removed row:
+Definition:
 
-- is omitted from the reviewed record;
-- leaves remaining original ordinals unchanged;
-- writes `USER_REMOVED_ITEM:<ordinal>`;
-- recomputes arithmetic/validation;
-- is recognized by `CaptureReviewAssessmentV2` as explicit user provenance.
+A distinct item ordinal counts once when it was not in initial `assessment.itemOrdinals` and later had any name/quantity/unit-price/line-amount edit, removal or addition.
 
-### Report
+`review_scope_miss=1` iff the count is greater than zero.
 
-The existing CP37 report maps items by ordinal. Removal therefore produces `item_count_changed=1` and at least one `item_structure_changes`, while still exporting no receipt values.
+Multiple field corrections on one item still count as one out-of-scope item.
 
-## 4. Side-by-side installation
+Receipt-level field corrections are not included in this metric.
 
-Do not uninstall the original Phase A validation app.
+## 4. Instrumentation-only boundary
 
-Runner-generated debug signing certificates differed between builds, so Remediation A uses a separate debug package:
+No product review behavior changed. Frozen from Remediation A:
 
-- package: `com.receiptledger.v1.remediation`
-- label: `ReceiptLedger 검증`
-- FileProvider authority: `com.receiptledger.v1.remediation.capture`
-
-The package has its own empty local DB/catalog. This is intentional. The original app/data remain untouched.
+- OCR/recovery;
+- false-item structure gate;
+- review selection policy;
+- item removal behavior;
+- identity/price/search;
+- schemas;
+- permissions.
 
 ## 5. Verification
 
 Canonical metric:
 
-`CP37_REMEDIATION_METRICS version=1 structure_tests=5 review_tests=5 report_tests=5 predate_false_item_gate=1 explicit_item_removal=1 provenance_preserved=1 report_structure_delta=1 side_by_side_debug=1 schema_unchanged=1`
+`CP37_REVIEW_COVERAGE_METRICS report_version=2 tests=8 outside_scope_detection=1 in_scope_control=1 distinct_item_counting=1 removal_detection=1 privacy_preserved=1 product_behavior_unchanged=1 schema_unchanged=1`
 
-All three focused suites: 5/5 PASS. Full debug unit regression, lint and APK build passed. Forbidden camera/media/storage/network permissions remain absent.
-
-OCR/recovery/identity/price/schema implementations were not changed.
+Report suite 8/8 PASS; full unit regression/lint/APK PASS. APK badging confirms package `com.receiptledger.v1.reviewcoverage`, label `ReceiptLedger 검증 B`, and provider `com.receiptledger.v1.reviewcoverage.capture`.
 
 ## 6. Exact next task
 
-This is **physical retest evidence**, not more coding.
+This is physical evidence collection, not more coding.
 
-Use the frozen remediation APK and rerun the same receipt that exposed the false item.
+1. install `ReceiptLedger 검증 B` side by side;
+2. use one real receipt;
+3. visually compare every field with the original, regardless of initial decision;
+4. correct every factual/structural error;
+5. save;
+6. tap `검증 결과 복사`;
+7. return only the `RL_CP37_SAMPLE version=2 ...` line.
 
-Procedure:
+Analyze the v2 metrics first. If the path is working, resume the independent 10-receipt campaign with v2 only. Earlier v1 samples remain diagnostic evidence and do not count toward the final 10.
 
-1. install `ReceiptLedger 검증` side by side;
-2. process the same image via the same acquisition method where practical;
-3. check whether the address/header false item is gone;
-4. compare every remaining field against the original;
-5. if any false item remains, select `이 항목은 상품이 아님`;
-6. correct remaining factual errors;
-7. save;
-8. tap `검증 결과 복사`;
-9. return only the resulting `RL_CP37_SAMPLE ...` line and separately state whether the original false address row appeared again.
+## 7. Privacy
 
-Do not continue with additional campaign receipts before this retest is analyzed.
+Do not upload or commit real receipt images, OCR text, merchant/product values, dates, prices, IDs, paths, private DBs/backups, or credentials.
 
-## 7. Decision after retest
+## 8. Stop condition
 
-If the original false item is gone and no new blocker appears, record Remediation A physical confirmation and resume the CP37 campaign.
-
-If it remains, use the new removal recovery if possible, record the sanitized line, and analyze the remaining structure pattern before broadening the rule.
-
-Avoid speculative general classifiers or OCR changes from one sample.
-
-## 8. Privacy boundary
-
-Never commit/share in public GitHub:
-
-- real receipt photo;
-- raw OCR text;
-- merchant/product names;
-- real dates/prices/totals;
-- receipt/product IDs;
-- DB backup/private files;
-- credentials/signing material.
-
-Sanitized CP37 report lines and aggregate conclusions are permitted evidence.
+No further OCR/structure/review-policy change before the first v2 physical report is analyzed.

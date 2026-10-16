@@ -1,21 +1,22 @@
 # ReceiptLedger public execution namespace
 
-This directory contains public-safe ReceiptLedger Android/OCR development, product/domain specifications, validation, CI and debug APK evidence.
+ReceiptLedger is a personal purchase-price memory and comparison system. This namespace contains public-safe Android/OCR implementation, validation, CI and debug evidence.
 
 ## Start here
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
-4. `CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
-5. `CP37_FALSE_ITEM_ROW_REMEDIATION_PLAN.md`
-6. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-7. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
-8. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-9. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-10. `WORK_UNIT.md`
+3. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
+4. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
+5. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_PLAN.md`
+6. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+7. `CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
+8. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+9. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+10. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+11. `WORK_UNIT.md`
 
-GitHub is canonical. Verify the current docs-only handoff and the frozen executable separately before using old chat context.
+GitHub is canonical. Verify current docs-only handoff and frozen executable separately.
 
 ## Current boundary
 
@@ -23,76 +24,43 @@ V1 CP20–CP36: **COMPLETE**.
 
 Post-V1 CP37: **IN PROGRESS**.
 
-Current state: **Remediation A READY_FOR_PHYSICAL_RETEST**.
+Current state: **Selective Review Coverage Instrumentation — READY_FOR_PHYSICAL_METRIC_CHECK**.
 
-- active branch `receiptledger/run-post-v1-physical-ocr-remediation-20261017`
-- predecessor Phase A handoff `6b7d7b9b65432701b43da53a0e6f0ff1e47a1449`
-- frozen remediation executable `06fafa9db1da0e4592ddc15a468a9c6e4e338515`
-- canonical Actions `38957744298` — SUCCESS
-- job `117164770764`
-- artifact `12071212297`
-- artifact digest `sha256:6540c6350ea47280dc3d9fec64cdaef3b2aef24976f833a44e0cb13bd3b2a811`
-- APK SHA-256 `109b61603c9f4a0a399ecb919399151427ab3ba243e626bbe8543340a4ee0f3d`
-- version `1.0.36-physical-ocr-remediation`, code 37
-- debug package `com.receiptledger.v1.remediation`
-- label `ReceiptLedger 검증`
-- lint `No issues found.`
+- branch `receiptledger/run-post-v1-selective-review-coverage-20261017`
+- predecessor handoff `c4e00ff22339869346f0f8692e38d82567568b7e`
+- frozen executable `7dbed4cf73a2963ace7447974e9d972a9776b79f`
+- Actions `38976080450` SUCCESS
+- job `117225743973`
+- artifact `12078898591`
+- digest `sha256:402a5dda9d0892550ff08d5a5f3dbeb228a01a6f32abc40d24f8a75efa510b67`
+- APK SHA-256 `29fcd2073d74fee819d53525bf2409db1587a72e72e86af115496843562405b8`
+- version `1.0.37-review-coverage-validation` / 38
+- debug app `com.receiptledger.v1.reviewcoverage`
+- label `ReceiptLedger 검증 B`
 
-CP37 is **not complete**.
+## Why report v2 exists
 
-## Why remediation exists
+Remediation A physically fixed the triggering address/header false-item sample. The retest was REVIEW_REQUIRED but full visual comparison still found multiple item corrections while only one item had been initially selected for review.
 
-The first physical sample was correctly REVIEW_REQUIRED, but user inspection found a non-product address/header row classified as a product item. The row was spatially separated from the real item body, and the Phase A review UI could not remove a false item row.
+Report v2 therefore adds item-level review coverage metrics without changing the review policy:
 
-The issue was therefore classified as a structure/recoverability defect.
+- `corrections_outside_review_items=N`
+- `review_scope_miss=0|1`
 
-## Remediation A
+A distinct corrected item ordinal counts once regardless of how many of its fields changed.
 
-The frozen remediation build adds:
+## Next physical step
 
-- a conservative rule demoting provisional item rows above a recognized date when a real multi-item body exists below;
-- `이 항목은 상품이 아님` in review;
-- `USER_REMOVED_ITEM:<ordinal>` provenance;
-- correct sanitized structural-delta reporting;
-- a side-by-side debug package so the original validation app and its local evidence remain intact.
+Install `ReceiptLedger 검증 B` side by side, process one real receipt, visually verify all fields, correct everything necessary, save, and return only the generated `RL_CP37_SAMPLE version=2 ...` line.
 
-OCR model/options, recovery passes, identity, price semantics and schemas remain unchanged.
+After confirming the metric path, use v2 for the independent 10-receipt campaign. Earlier v1 reports are diagnostic evidence only and do not count toward the final 10.
 
-## Next physical retest
+## Privacy
 
-Install the remediation APK alongside the existing validation app. It appears as **ReceiptLedger 검증**.
+Never commit/share public real receipt photos, OCR text, merchant/product names, dates, prices, IDs, file paths, private DBs/backups, credentials or signing material.
 
-Rerun the same receipt that exposed the false item, using the same acquisition path where practical.
+The validation report emits structural counts/flags only.
 
-Then:
+## Stop condition
 
-1. check whether the previous address/header false item is absent;
-2. visually verify every remaining recognized field;
-3. if another false item remains, mark `이 항목은 상품이 아님`;
-4. correct other factual errors;
-5. save;
-6. tap `검증 결과 복사`;
-7. return only the new `RL_CP37_SAMPLE ...` line and state whether the original false row appeared again.
-
-Do not resume the broader 10-receipt campaign before this retest is analyzed.
-
-## Privacy/security
-
-Never commit or share in the public repository:
-
-- real receipt images;
-- OCR text;
-- merchant/product names;
-- dates/prices/totals;
-- receipt/product IDs;
-- real DBs/backups;
-- credentials/signing secrets.
-
-The remediation APK packages no CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permission.
-
-## Namespace isolation
-
-ReceiptLedger work may modify only:
-
-- `receiptledger/**`
-- explicitly ReceiptLedger-prefixed workflows.
+**No further OCR, structure or review-policy implementation until the first v2 physical report is analyzed.**

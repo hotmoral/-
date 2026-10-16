@@ -2,106 +2,84 @@
 
 Updated: 2026-10-17 KST
 
-## 0. Governing objective
-
-ReceiptLedger is a personal purchase-price memory and comparison system. Receipts are input/evidence; the product outcome is trustworthy, receipt-traceable product/commodity price memory.
-
-Checkpoint work must preserve authority boundaries, catch material contradictions early, avoid speculative scope and freeze exact evidence before advancing.
-
 ## 1. Completed V1 chain
 
-The planned V1 chain CP20–CP36 is complete.
-
-CP36 frozen executable: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
-CP36 docs-only handoff: `d0a3a9ec7658808c82247715d58ac106a3778186`
-
-CP36 corrected only the measured SQLite search bottleneck. Warm OCR on the CI emulator remained an accepted V1 risk because real-device latency and real-image accuracy were unknown.
+CP20–CP36 is complete. CP36 closed the measured SQLite search bottleneck while leaving OCR as a physical-device validation risk.
 
 ## 2. CP37 — Physical Device / Real-Image OCR Validation — IN PROGRESS
 
-### Phase A — validation instrumentation — COMPLETE
+### Phase A — validation instrumentation
 
-- frozen executable: `9bb5dcc276fae4632ade5ac3134e586baad65235`
-- docs-only handoff: `6b7d7b9b65432701b43da53a0e6f0ff1e47a1449`
-- canonical run: `38950400666` SUCCESS
+Completed and frozen before physical testing.
 
-Phase A added privacy-safe debug instrumentation only.
+### Remediation A — false item row / recoverability
 
-### Phase B first physical sample — DEFECT FOUND
+Triggered by the first real-device sample where an address/header row was classified as an item and could not be deleted.
 
-The first physical sample was conservatively REVIEW_REQUIRED and had `false_auto_confirm=0`, but user inspection found a spatially separate address/header row emitted as a product item. The existing review UI could not remove such a row.
+Remediation A added:
 
-This triggered bounded Remediation A before continuing the campaign.
+- narrow pre-date false-item gating;
+- explicit `이 항목은 상품이 아님` removal recovery;
+- removal provenance.
 
-### Remediation A — READY_FOR_PHYSICAL_RETEST
+Physical retest confirmed the triggering address row no longer appeared as an item.
 
-- branch: `receiptledger/run-post-v1-physical-ocr-remediation-20261017`
-- frozen executable: `06fafa9db1da0e4592ddc15a468a9c6e4e338515`
-- canonical run: `38957744298` SUCCESS
-- artifact: `12071212297`
-- APK SHA-256: `109b61603c9f4a0a399ecb919399151427ab3ba243e626bbe8543340a4ee0f3d`
-- version: `1.0.36-physical-ocr-remediation` / 37
+### Review-Coverage Instrumentation — READY_FOR_PHYSICAL_METRIC_CHECK
 
-Remediation A adds only:
+The Remediation A retest also showed a selective-review evidence gap: initial review selected only 1 of 15 items, while full visual verification resulted in multiple item corrections.
 
-1. a conservative pre-date false-item gate when a real multi-item body is present below;
-2. explicit `상품이 아님` row removal during review;
-3. provenance/report support for that removal;
-4. side-by-side debug packaging for safe retest.
+To quantify this without changing review behavior, report schema v2 adds:
 
-It does not change OCR/recovery/identity/price/schema behavior.
+- `corrections_outside_review_items`
+- `review_scope_miss`
 
-## 3. Current decision gate
+Frozen executable:
 
-Do **not** resume the broad CP37 sample campaign yet.
+- `7dbed4cf73a2963ace7447974e9d972a9776b79f`
+- run `38976080450` SUCCESS
+- artifact `12078898591`
+- APK SHA-256 `29fcd2073d74fee819d53525bf2409db1587a72e72e86af115496843562405b8`
+- version `1.0.37-review-coverage-validation` / 38
 
-First rerun the same receipt on the frozen remediation APK.
+## 3. Current physical decision path
 
-If the original false row no longer appears and no new blocker is observed, resume Phase B collection. If the row remains, use explicit removal and analyze the new evidence before broadening any structure rule.
+1. Run one v2 physical metric-check sample.
+2. Confirm the new fields are emitted and interpretable.
+3. If instrumentation is sound, begin the independent 10-receipt campaign using v2 only.
+4. Aggregate correctness/safety/review burden/latency.
+5. Only then decide whether review-policy or OCR remediation is justified.
 
-## 4. CP37 decision priority
+Earlier v1 samples are diagnostic/remediation evidence, not part of the final 10-sample decision corpus.
 
-1. correctness and false-auto-confirm safety;
-2. saved-data/provenance reliability;
-3. ability to recover from structural false positives;
+## 4. Decision priority
+
+1. correctness / false auto-confirm safety;
+2. selective-review coverage;
+3. save/provenance reliability;
 4. review burden;
 5. latency.
 
-A latency improvement never justifies reduced recognition correctness.
+`false_auto_confirm=1` indicates whole-receipt trust failure.
+
+`review_scope_miss=1` indicates at least one corrected item was outside the initial item review set, even if the receipt as a whole was REVIEW_REQUIRED.
 
 ## 5. Frozen authority gates
 
 Still authoritative:
 
-- stable catalog ID is final product identity authority;
-- category/search/price/UI relevance cannot create identity;
-- commodity grouping != comparability;
-- strict kg/L/each bases remain separate from contextual package forms;
-- CP27 defines eligible price evidence;
-- CP28 owns judgment thresholds;
-- review convenience cannot erase provenance;
-- product schema 2 / receipt schema 1 remain frozen;
-- no network/broad media/storage permission posture remains frozen.
+- stable catalog ID final identity authority;
+- grouping != comparability;
+- CP27/28 price contracts;
+- CP29 discovery contract;
+- Remediation A structure gate until new evidence justifies change;
+- review-policy changes require physical evidence;
+- product schema 2 / receipt schema 1;
+- offline/no broad permission posture.
 
-## 6. Post-retest rule
+## 6. Scope discipline
 
-Do not invent a broader OCR or structure checkpoint until the same-receipt remediation retest is analyzed.
+Do not invent a broader classifier or change OCR/review policy from one sample. The current checkpoint is measurement-only. If the v2 campaign proves a systematic review-scope defect, define the smallest separate remediation boundary with before/after evidence.
 
-If Remediation A succeeds, resume the original minimum 10-receipt campaign target. If further false-item patterns appear, define the smallest evidence-backed extension rather than a general-purpose address/product classifier.
+## 7. Current stop
 
-## 7. Handoff discipline
-
-At every boundary:
-
-1. recover canonical refs;
-2. inspect predecessor consistency and material risks;
-3. implement only the smallest coherent scope;
-4. run regression/evidence;
-5. perform post-green plan/code/evidence review;
-6. freeze executable HEAD;
-7. synchronize docs-only handoff;
-8. stop before unrelated work.
-
-## 8. Current boundary
-
-**CP37 Remediation A is READY_FOR_PHYSICAL_RETEST. CP37 is not complete. Next task is the same-receipt physical retest, not additional coding.**
+**Await one `RL_CP37_SAMPLE version=2 ...` physical report before any further implementation.**
