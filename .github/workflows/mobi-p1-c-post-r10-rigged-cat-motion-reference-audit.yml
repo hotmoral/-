@@ -64,10 +64,12 @@ jobs:
           SRC="$ROOT/evidence/source/CatPilot.blend"
           SCRIPT=mobi/p1-b2/geometry/p1_c_post_r10_rigged_cat_motion_reference_audit_v1.py
           rm -rf "$ROOT/seed1" "$ROOT/seed777"
-          PYTHONHASHSEED=1 blender -b "$SRC" --python "$SCRIPT" -- --out "$ROOT/seed1" \
-            > "$ROOT/evidence/blender_seed1_stdout.txt" 2>&1
-          PYTHONHASHSEED=777 blender -b "$SRC" --python "$SCRIPT" -- --out "$ROOT/seed777" \
-            > "$ROOT/evidence/blender_seed777_stdout.txt" 2>&1
+          PYTHONHASHSEED=1 blender -b "$SRC" --python-exit-code 17 --python "$SCRIPT" -- --out "$ROOT/seed1" \
+            2>&1 | tee "$ROOT/evidence/blender_seed1_stdout.txt"
+          test -f "$ROOT/seed1/rigged_cat_motion_reference_summary.json"
+          PYTHONHASHSEED=777 blender -b "$SRC" --python-exit-code 17 --python "$SCRIPT" -- --out "$ROOT/seed777" \
+            2>&1 | tee "$ROOT/evidence/blender_seed777_stdout.txt"
+          test -f "$ROOT/seed777/rigged_cat_motion_reference_summary.json"
           diff -ru "$ROOT/seed1" "$ROOT/seed777" > "$ROOT/evidence/deterministic_diff.txt"
           mkdir -p "$ROOT/evidence/result"
           cp -R "$ROOT/seed1/." "$ROOT/evidence/result/"
@@ -120,6 +122,7 @@ jobs:
           PY
 
       - name: Record environment and evidence hashes
+        if: success()
         run: |
           set -euo pipefail
           E=mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence
@@ -131,6 +134,7 @@ jobs:
           find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: mobi-p1-c-post-r10-rigged-cat-motion-reference-${{ github.run_id }}
           path: mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence/
