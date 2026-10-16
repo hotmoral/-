@@ -1,5 +1,6 @@
 package com.receiptledger.v1.devicevalidation;
 
+import com.receiptledger.v1.BuildConfig;
 import com.receiptledger.v1.persistence.PersistedItem;
 import com.receiptledger.v1.persistence.ReceiptRecord;
 import com.receiptledger.v1.review.CaptureReviewAssessmentV2;
@@ -77,6 +78,7 @@ public final class DeviceValidationReportV1 {
             String bestPass,
             ReceiptRecord record,
             CaptureReviewAssessmentV2 assessment) {
+        if (!BuildConfig.DEBUG) return null;
         if (record == null || assessment == null) throw new IllegalArgumentException("initial validation state");
         if (ocrMillis < 0 || attemptedPasses < 0 || mergedCandidates < 0) {
             throw new IllegalArgumentException("validation metrics");
