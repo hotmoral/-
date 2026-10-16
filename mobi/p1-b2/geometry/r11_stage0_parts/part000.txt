@@ -1,0 +1,155 @@
+from __future__ import annotations
+
+import argparse
+import hashlib
+import heapq
+import importlib.util
+import json
+import math
+import struct
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Iterable
+
+import numpy as np
+
+VERSION = "P1_C_R11_SEMANTIC_SCAFFOLD_V1"
+FREEZE_TOKEN = "R11_STAGE0_IMPLEMENTATION_FREEZE"
+EXPECTED_SOURCE_SHA256 = "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5"
+EXPECTED_R10_REDUCER_BLOB = "f281aad3e3a6c740c38c0a3f015718996dc45157"
+EXPECTED_STAGE_D_BLOB = "5c8820fb7270e7727ececb1bb37d3a24331b24ab"
+EXPECTED_STAGE_B_BLOB = "9b7899bc1c39d02291813a826df01d3697192846"
+EXPECTED_NUMPY_VERSION = "2.5.4"
+EXPECTED_FAST_SIMPLIFICATION_VERSION = "0.2.0"
+EXPECTED_TRIMESH_VERSION = "4.11.1"
+EXPECTED_SKIMAGE_VERSION = "0.26.0"
+EXPECTED_SCIPY_VERSION = "1.17.0"
+R10_AGG = 7.0
+R10_LOWEST_FACE_TARGET = 1556
+R10_COLLAPSE_PREFIX = 96517
+V3125_VERTEX_COUNT = 3125
+V3125_FACE_COUNT = 6246
+MESH_HASH_PREFIX = b"MOBI_R11_MESH_V1\0"
+WEIGHT_HASH_PREFIX = b"MOBI_R11_WEIGHTS_V1\0"
+
+# Stage-0 frozen structural constants. These are intentionally result-blind.
+VOXELS_PER_BODY_HEIGHT = 192
+VOXEL_PADDING = 4
+VOXEL_METHOD = "subdivide"
+VOXEL_FILL_METHOD = "holes"
+SKELETON_METHOD = "lee"
+GRAPH_CONNECTIVITY = 26
+PRUNE_LENGTH_BODY_FRACTION = 0.035
+PATH_RESAMPLE_SAMPLES = 129
+PATH_SMOOTH_PASSES = 2
+CURVATURE_MIN_RAD = 0.12
+CURVATURE_MIN_SEPARATION_FRACTION = 0.12
+CURVATURE_ENDPOINT_GUARD_FRACTION = 0.08
+DOMAIN_CHILD_MARGIN_PITCHES = 0.5
+MIDLINE_CORE_BAND_PITCHES = 0.5
+ROOT_INTERFACE_ARC_FRACTION = 0.22
+ROOT_INTERFACE_WIDTH_PITCHES = 3.0
+WEIGHT_SIGMA_PITCHES = 2.0
+MAX_INFLUENCES = 4
+JACOBIAN_EPSILON_RAD = 1e-6
+JACOBIAN_DERIVATIVE_THRESHOLD = 1e-10
+PAW_SUPPORT_RADIUS_PITCHES = 4.0
+FLOAT_SUM_TOLERANCE = 1e-12
+REST_MAX_NORMALIZED = 1e-9
+REST_RMS_NORMALIZED = 1e-10
+
+DOMAIN_ORDER = ("CORE", "FORE_L", "FORE_R", "HIND_L", "HIND_R", "TAIL")
+ROLE_ORDER = (
+    "BODY_ROOT_CTRL", "PELVIS_CTRL", "LUMBAR_CTRL", "FOREQUARTER_CTRL", "NECK_BASE_CTRL", "HEAD_CTRL",
+    "FORE_L_SCAPULAR_CTRL", "FORE_L_PROXIMAL_CTRL", "FORE_L_MID_CTRL", "FORE_L_DISTAL_CTRL", "FORE_L_PAW_CTRL",
+    "FORE_R_SCAPULAR_CTRL", "FORE_R_PROXIMAL_CTRL", "FORE_R_MID_CTRL", "FORE_R_DISTAL_CTRL", "FORE_R_PAW_CTRL",
+    "HIND_L_PROXIMAL_CTRL", "HIND_L_MID_CTRL", "HIND_L_DISTAL_CTRL", "HIND_L_PAW_CTRL",
+    "HIND_R_PROXIMAL_CTRL", "HIND_R_MID_CTRL", "HIND_R_DISTAL_CTRL", "HIND_R_PAW_CTRL",
+    "TAIL_ROOT_CTRL", "TAIL_1_CTRL", "TAIL_2_CTRL", "TAIL_3_CTRL", "TAIL_4_CTRL", "TAIL_TIP_CTRL",
+)
+ROLE_INDEX = {r: i for i, r in enumerate(ROLE_ORDER)}
+ROLE_DOMAIN = {
+    **{r: "CORE" for r in ROLE_ORDER[:6]},
+    **{r: "FORE_L" for r in ROLE_ORDER[6:11]},
+    **{r: "FORE_R" for r in ROLE_ORDER[11:16]},
+    **{r: "HIND_L" for r in ROLE_ORDER[16:20]},
+    **{r: "HIND_R" for r in ROLE_ORDER[20:24]},
+    **{r: "TAIL" for r in ROLE_ORDER[24:30]},
+}
+PARENT = {
+    "BODY_ROOT_CTRL": None,
+    "PELVIS_CTRL": "BODY_ROOT_CTRL",
+    "LUMBAR_CTRL": "PELVIS_CTRL",
+    "FOREQUARTER_CTRL": "LUMBAR_CTRL",
+    "NECK_BASE_CTRL": "FOREQUARTER_CTRL",
+    "HEAD_CTRL": "NECK_BASE_CTRL",
+    "FORE_L_SCAPULAR_CTRL": "FOREQUARTER_CTRL", "FORE_L_PROXIMAL_CTRL": "FORE_L_SCAPULAR_CTRL",
+    "FORE_L_MID_CTRL": "FORE_L_PROXIMAL_CTRL", "FORE_L_DISTAL_CTRL": "FORE_L_MID_CTRL", "FORE_L_PAW_CTRL": "FORE_L_DISTAL_CTRL",
+    "FORE_R_SCAPULAR_CTRL": "FOREQUARTER_CTRL", "FORE_R_PROXIMAL_CTRL": "FORE_R_SCAPULAR_CTRL",
+    "FORE_R_MID_CTRL": "FORE_R_PROXIMAL_CTRL", "FORE_R_DISTAL_CTRL": "FORE_R_MID_CTRL", "FORE_R_PAW_CTRL": "FORE_R_DISTAL_CTRL",
+    "HIND_L_PROXIMAL_CTRL": "PELVIS_CTRL", "HIND_L_MID_CTRL": "HIND_L_PROXIMAL_CTRL",
+    "HIND_L_DISTAL_CTRL": "HIND_L_MID_CTRL", "HIND_L_PAW_CTRL": "HIND_L_DISTAL_CTRL",
+    "HIND_R_PROXIMAL_CTRL": "PELVIS_CTRL", "HIND_R_MID_CTRL": "HIND_R_PROXIMAL_CTRL",
+    "HIND_R_DISTAL_CTRL": "HIND_R_MID_CTRL", "HIND_R_PAW_CTRL": "HIND_R_DISTAL_CTRL",
+    "TAIL_ROOT_CTRL": "PELVIS_CTRL", "TAIL_1_CTRL": "TAIL_ROOT_CTRL", "TAIL_2_CTRL": "TAIL_1_CTRL",
+    "TAIL_3_CTRL": "TAIL_2_CTRL", "TAIL_4_CTRL": "TAIL_3_CTRL", "TAIL_TIP_CTRL": "TAIL_4_CTRL",
+}
+PROVENANCE = {
+    "BODY_ROOT_CTRL": "CANONICAL_ID_VISUAL_BIND", "PELVIS_CTRL": "CANONICAL_ID_VISUAL_BIND",
+    "FOREQUARTER_CTRL": "CANONICAL_ID_VISUAL_BIND", "HEAD_CTRL": "CANONICAL_ID_VISUAL_BIND",
+    "FORE_L_PAW_CTRL": "CANONICAL_ID_VISUAL_BIND", "FORE_R_PAW_CTRL": "CANONICAL_ID_VISUAL_BIND",
+    "HIND_L_PAW_CTRL": "CANONICAL_ID_VISUAL_BIND", "HIND_R_PAW_CTRL": "CANONICAL_ID_VISUAL_BIND",
+    "TAIL_ROOT_CTRL": "CANONICAL_ID_VISUAL_BIND",
+}
+for _r in ROLE_ORDER:
+    PROVENANCE.setdefault(_r, "SOURCE_DERIVED_INTERNAL")
+
+FALLBACK_QUANTILES = {
+    "LUMBAR": (0.50,), "NECK": (0.55,),
+    "FORE": (0.12, 0.32, 0.58, 0.82),
+    "HIND": (0.18, 0.50, 0.80),
+    "TAIL": (0.20, 0.40, 0.60, 0.80),
+}
+
+NEIGHBOR_OFFSETS = tuple(sorted(
+    (di, dj, dk) for di in (-1, 0, 1) for dj in (-1, 0, 1) for dk in (-1, 0, 1)
+    if (di, dj, dk) != (0, 0, 0)
+))
+
+@dataclass(frozen=True)
+class Control:
+    role: str
+    parent: str | None
+    domain: str
+    position: tuple[float, float, float]
+    provenance: str
+    derivation: str
+
+
+def _load_module(path: Path, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load module: {path}")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def git_blob_sha(path: Path) -> str:
+    data = path.read_bytes()
+    return hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+
+
+def mesh_array_sha256(vertices: np.ndarray, faces: np.ndarray) -> str:
+    v = np.asarray(vertices, dtype="<f8", order="C")
+    f = np.asarray(faces, dtype="<i4", order="C")
+    payload = bytearray(MESH_HASH_PREFIX)
+    payload += struct.pack(

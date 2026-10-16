@@ -1,0 +1,118 @@
+"<QQ", len(v), len(f))
+    payload += v.tobytes(order="C")
+    payload += f.tobytes(order="C")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def reproduce_v3125(source_glb: Path, geometry_dir: Path) -> tuple[np.ndarray, np.ndarray, dict]:
+    reducer_path = geometry_dir / "p1_c_r10_morphology_reduction_v1.py"
+    stage_d_path = geometry_dir / "p1_c_3d_cat_stage_d_projection_v1.py"
+    stage_b_path = geometry_dir / "p1_c_3d_cat_stage_b_inspector_v1.py"
+    identity = {
+        "sourceSha256": sha256_file(source_glb),
+        "r10ReducerBlob": git_blob_sha(reducer_path),
+        "stageDBlob": git_blob_sha(stage_d_path),
+        "stageBBlob": git_blob_sha(stage_b_path),
+    }
+    if identity != {
+        "sourceSha256": EXPECTED_SOURCE_SHA256,
+        "r10ReducerBlob": EXPECTED_R10_REDUCER_BLOB,
+        "stageDBlob": EXPECTED_STAGE_D_BLOB,
+        "stageBBlob": EXPECTED_STAGE_B_BLOB,
+    }:
+        raise RuntimeError(f"frozen input identity drift: {identity}")
+
+    stage_d = _load_module(stage_d_path, "r11_stage_d")
+    points_list, triangles_list, source_sha = stage_d.load_structural_mesh(source_glb)
+    if source_sha != EXPECTED_SOURCE_SHA256:
+        raise RuntimeError("source hash drift")
+    points = np.asarray(points_list, dtype=np.float64)
+    triangles = np.asarray(triangles_list, dtype=np.int32)
+
+    if np.__version__ != EXPECTED_NUMPY_VERSION:
+        raise RuntimeError(f"numpy version drift: {np.__version__}")
+    import fast_simplification
+    if getattr(fast_simplification, "__version__", None) != EXPECTED_FAST_SIMPLIFICATION_VERSION:
+        raise RuntimeError(f"fast-simplification version drift: {getattr(fast_simplification, '__version__', None)}")
+    _pmin, _fmin, collapses = fast_simplification.simplify(
+        points, triangles, target_count=R10_LOWEST_FACE_TARGET, agg=R10_AGG,
+        verbose=False, return_collapses=True, preserve_border=False,
+    )
+    collapses = np.asarray(collapses, dtype=np.int64)
+    if len(collapses) < R10_COLLAPSE_PREFIX:
+        raise RuntimeError(f"collapse stream too short: {len(collapses)}")
+    v, f, _mapping = fast_simplification.replay_simplification(
+        points=points, triangles=triangles, collapses=collapses[:R10_COLLAPSE_PREFIX]
+    )
+    v = np.asarray(v, dtype=np.float64, order="C")
+    f = np.asarray(f, dtype=np.int32, order="C")
+    if v.shape != (V3125_VERTEX_COUNT, 3) or f.shape != (V3125_FACE_COUNT, 3):
+        raise RuntimeError(f"V3125 shape drift: {v.shape} / {f.shape}")
+    identity.update({
+        "numpyVersion": np.__version__,
+        "fastSimplificationVersion": fast_simplification.__version__,
+        "agg": R10_AGG,
+        "collapsePrefix": R10_COLLAPSE_PREFIX,
+        "vertexCount": len(v), "faceCount": len(f),
+        "meshArraySha256": mesh_array_sha256(v, f),
+    })
+    return v, f, identity
+
+
+def frame_sign_audit(vertices: np.ndarray, geometry_dir: Path) -> dict:
+    stage_d_path = geometry_dir / "p1_c_3d_cat_stage_d_projection_v1.py"
+    if git_blob_sha(stage_d_path) != EXPECTED_STAGE_D_BLOB:
+        raise RuntimeError("stage D blob drift")
+    stage_d = _load_module(stage_d_path, "r11_frame_stage_d")
+    mn, mx = vertices.min(axis=0), vertices.max(axis=0)
+    center = (mn + mx) * 0.5
+    delta = max(float(mx[0] - mn[0]), 1.0) * 1e-4
+    p0 = stage_d.project_point(center.tolist(), 0.0)
+    px = stage_d.project_point((center + np.array([delta, 0.0, 0.0])).tolist(), 0.0)
+    pz = stage_d.project_point((center + np.array([0.0, 0.0, delta])).tolist(), 90.0)
+    plus_x_is_screen_right_at_front = bool(px[0] > p0[0])
+    plus_z_is_screen_right_at_profile = bool(pz[0] > p0[0])
+    # Frozen Stage-C convention: yaw 0 camera is on +Z facing the cat; viewer-right is anatomical-left.
+    # Therefore +X_R10 must be anatomical-left. This is a pre-evidence semantic deduction, not a render-fit.
+    anatomical_left_sign = "+X_R10" if plus_x_is_screen_right_at_front else "UNRESOLVED"
+    passed = plus_x_is_screen_right_at_front and plus_z_is_screen_right_at_profile and anatomical_left_sign == "+X_R10"
+    report = {
+        "passed": passed,
+        "r10": {"up": "+Y", "front": "+Z", "bilateral": "X"},
+        "b3": {"forward": "+X", "up": "+Y", "left": "+Z"},
+        "mapping": {"x_B3": "z_R10", "y_B3": "y_R10", "z_B3": "x_R10"},
+        "plusXScreenRightAtYaw0": plus_x_is_screen_right_at_front,
+        "plusZScreenRightAtYaw90": plus_z_is_screen_right_at_profile,
+        "anatomicalLeftSign": anatomical_left_sign,
+        "failurePolicy": "STOP_CHANGE_CONTROL_NO_SILENT_FLIP",
+    }
+    if not passed:
+        raise RuntimeError(f"frame/sign hard gate failed: {report}")
+    return report
+
+
+def body_metrics(vertices: np.ndarray) -> dict:
+    mn, mx = vertices.min(axis=0), vertices.max(axis=0)
+    h = float(mx[1] - mn[1]); length = float(mx[2] - mn[2]); width = float(mx[0] - mn[0])
+    if min(h, length, width) <= 0:
+        raise RuntimeError("degenerate V3125 bounds")
+    return {"min": mn, "max": mx, "height": h, "length": length, "width": width, "center": (mn + mx) * 0.5}
+
+
+def derive_surface_anchors(vertices: np.ndarray) -> dict[str, np.ndarray]:
+    b = body_metrics(vertices); mn=b["min"]; mx=b["max"]; c=b["center"]; h=b["height"]; length=b["length"]
+    anchors: dict[str, np.ndarray] = {}
+    head_mask = (vertices[:,1] >= mn[1] + 0.55*h) & (vertices[:,2] >= mn[2] + 0.65*length)
+    tail_mask = vertices[:,2] <= mn[2] + 0.05*length
+    if not head_mask.any() or not tail_mask.any():
+        raise RuntimeError("head/tail anchor region empty")
+    anchors["HEAD"] = vertices[head_mask].mean(axis=0)
+    anchors["TAIL_TIP"] = vertices[tail_mask].mean(axis=0)
+    zmid = float(c[2]); xmid = float(c[0])
+    quadrants = {
+        "FORE_L_PAW": (vertices[:,0] >= xmid, vertices[:,2] >= zmid),
+        "FORE_R_PAW": (vertices[:,0] < xmid, vertices[:,2] >= zmid),
+        "HIND_L_PAW": (vertices[:,0] >= xmid, vertices[:,2] < zmid),
+        "HIND_R_PAW": (vertices[:,0] < xmid, vertices[:,2] < zmid),
+    }
+    for name, (sx, sz) in quadr

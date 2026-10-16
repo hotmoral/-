@@ -1,0 +1,107 @@
+1
+        den=cum[j+1]-cum[j]; a=0.0 if den==0 else (t-cum[j])/den
+        out[i]=points[j]*(1-a)+points[j+1]*a
+    return out
+
+
+def smooth_polyline(points: np.ndarray):
+    p=points.copy(); k=np.array([1,4,6,4,1],float)/16.0
+    for _ in range(PATH_SMOOTH_PASSES):
+        q=p.copy()
+        for i in range(2,len(p)-2): q[i]=(p[i-2:i+3]*k[:,None]).sum(axis=0)
+        q[0]=p[0]; q[-1]=p[-1]; p=q
+    return p
+
+
+def select_internal_points(points: np.ndarray, count: int, fallback: Iterable[float]):
+    p=smooth_polyline(resample_polyline(points)); n=len(p); cand=[]
+    for i in range(2,n-2):
+        frac=i/(n-1)
+        if not (CURVATURE_ENDPOINT_GUARD_FRACTION <= frac <= 1-CURVATURE_ENDPOINT_GUARD_FRACTION): continue
+        a=p[i]-p[i-2]; b=p[i+2]-p[i]; na=np.linalg.norm(a); nb=np.linalg.norm(b)
+        if na<=0 or nb<=0: continue
+        angle=math.acos(float(np.clip(np.dot(a,b)/(na*nb),-1,1)))
+        if angle >= CURVATURE_MIN_RAD: cand.append((angle,i,frac))
+    selected=[]
+    for score,i,frac in sorted(cand,key=lambda x:(-x[0],x[1])):
+        if all(abs(frac-s[2])>=CURVATURE_MIN_SEPARATION_FRACTION for s in selected):
+            selected.append((score,i,frac))
+            if len(selected)==count: break
+    if len(selected)<count:
+        qs=tuple(fallback)
+        if len(qs)!=count: raise RuntimeError("fallback quantile count mismatch")
+        return [(float(q), p[int(round(float(q)*(n-1)))].copy(), "FALLBACK_ARC_QUANTILE") for q in qs]
+    return [(frac,p[i].copy(),"CURVATURE_EXTREMUM") for _score,i,frac in sorted(selected,key=lambda x:x[2])]
+
+
+def point_at_fraction(points: np.ndarray, fraction: float) -> np.ndarray:
+    p=resample_polyline(points); return p[int(round(fraction*(len(p)-1)))].copy()
+
+
+def derive_semantic_graph(vertices, graph, transform, pitch):
+    anchors=derive_surface_anchors(vertices)
+    snapped={k:nearest_graph_node(v,graph,transform) for k,v in anchors.items()}
+    protected=set(snapped.values())
+    g=prune_graph(graph,protected,pitch,body_metrics(vertices)["height"])
+    head=snapped["HEAD"]
+    fl,fr=snapped["FORE_L_PAW"],snapped["FORE_R_PAW"]
+    hl,hr=snapped["HIND_L_PAW"],snapped["HIND_R_PAW"]
+    tail=snapped["TAIL_TIP"]
+    hfl,_=shortest_path(g,head,fl,pitch); hfr,_=shortest_path(g,head,fr,pitch)
+    hhl,_=shortest_path(g,head,hl,pitch); hhr,_=shortest_path(g,head,hr,pitch)
+    fore=pair_merge_node(g,hfl,hfr,fl,fr,pitch)
+    pelvis=pair_merge_node(g,hhl,hhr,hl,hr,pitch)
+    pelvis_head,_=shortest_path(g,pelvis,head,pitch)
+    tail_head,_=shortest_path(g,tail,head,pitch)
+    tail_root=first_merge_from_tail(g,tail_head,pelvis_head,tail,pitch)
+    paths={
+        "PELVIS_FOREQUARTER": shortest_path(g,pelvis,fore,pitch)[0],
+        "FOREQUARTER_HEAD": shortest_path(g,fore,head,pitch)[0],
+        "FORE_L": shortest_path(g,fore,fl,pitch)[0], "FORE_R": shortest_path(g,fore,fr,pitch)[0],
+        "HIND_L": shortest_path(g,pelvis,hl,pitch)[0], "HIND_R": shortest_path(g,pelvis,hr,pitch)[0],
+        "TAIL": shortest_path(g,tail_root,tail,pitch)[0],
+    }
+    return g, snapped, {"PELVIS":pelvis,"FOREQUARTER":fore,"TAIL_ROOT":tail_root,"HEAD":head}, paths
+
+
+def make_controls(transform, nodes, paths):
+    pw={k:path_world(v,transform) for k,v in paths.items()}
+    positions={
+        "PELVIS_CTRL":index_to_world(nodes["PELVIS"],transform),
+        "FOREQUARTER_CTRL":index_to_world(nodes["FOREQUARTER"],transform),
+        "HEAD_CTRL":index_to_world(nodes["HEAD"],transform),
+        "TAIL_ROOT_CTRL":index_to_world(nodes["TAIL_ROOT"],transform),
+        "BODY_ROOT_CTRL":point_at_fraction(pw["PELVIS_FOREQUARTER"],0.50),
+    }
+    positions["LUMBAR_CTRL"]=select_internal_points(pw["PELVIS_FOREQUARTER"],1,FALLBACK_QUANTILES["LUMBAR"])[0][1]
+    positions["NECK_BASE_CTRL"]=select_internal_points(pw["FOREQUARTER_HEAD"],1,FALLBACK_QUANTILES["NECK"])[0][1]
+    deriv={r:"SEMANTIC_GRAPH_NODE" for r in positions}
+    deriv["BODY_ROOT_CTRL"]="CORE_PATH_ARC_0.50"
+    deriv["LUMBAR_CTRL"]="CURVATURE_OR_FROZEN_FALLBACK"
+    deriv["NECK_BASE_CTRL"]="CURVATURE_OR_FROZEN_FALLBACK"
+    for side in ("L","R"):
+        vals=select_internal_points(pw[f"FORE_{side}"],4,FALLBACK_QUANTILES["FORE"])
+        for role,(_q,pos,how) in zip((f"FORE_{side}_SCAPULAR_CTRL",f"FORE_{side}_PROXIMAL_CTRL",f"FORE_{side}_MID_CTRL",f"FORE_{side}_DISTAL_CTRL"),vals):
+            positions[role]=pos; deriv[role]=how
+        positions[f"FORE_{side}_PAW_CTRL"]=pw[f"FORE_{side}"][-1]; deriv[f"FORE_{side}_PAW_CTRL"]="SEMANTIC_PATH_ENDPOINT"
+        vals=select_internal_points(pw[f"HIND_{side}"],3,FALLBACK_QUANTILES["HIND"])
+        for role,(_q,pos,how) in zip((f"HIND_{side}_PROXIMAL_CTRL",f"HIND_{side}_MID_CTRL",f"HIND_{side}_DISTAL_CTRL"),vals):
+            positions[role]=pos; deriv[role]=how
+        positions[f"HIND_{side}_PAW_CTRL"]=pw[f"HIND_{side}"][-1]; deriv[f"HIND_{side}_PAW_CTRL"]="SEMANTIC_PATH_ENDPOINT"
+    vals=select_internal_points(pw["TAIL"],4,FALLBACK_QUANTILES["TAIL"])
+    for role,(_q,pos,how) in zip(("TAIL_1_CTRL","TAIL_2_CTRL","TAIL_3_CTRL","TAIL_4_CTRL"),vals):
+        positions[role]=pos; deriv[role]=how
+    positions["TAIL_TIP_CTRL"]=pw["TAIL"][-1]; deriv["TAIL_TIP_CTRL"]="SEMANTIC_PATH_ENDPOINT"
+    if set(positions)!=set(ROLE_ORDER): raise RuntimeError(f"role construction mismatch: {set(ROLE_ORDER)-set(positions)}")
+    return [Control(r,PARENT[r],ROLE_DOMAIN[r],tuple(map(float,positions[r])),PROVENANCE[r],deriv[r]) for r in ROLE_ORDER], pw
+
+
+def point_polyline_distance_fraction(points: np.ndarray, poly: np.ndarray):
+    seg=poly[1:]-poly[:-1]; seglen=np.linalg.norm(seg,axis=1); cum=np.concatenate([[0.0],np.cumsum(seglen)]); total=cum[-1]
+    if total<=0: raise RuntimeError("zero polyline")
+    best_d=np.full(len(points),np.inf); best_f=np.zeros(len(points))
+    for i,(a,dv,L) in enumerate(zip(poly[:-1],seg,seglen)):
+        if L<=0: continue
+        t=np.clip(((points-a)@dv)/(L*L),0.0,1.0); q=a+t[:,None]*dv; d=np.linalg.norm(points-q,axis=1)
+        frac=(cum[i]+t*L)/total
+        better

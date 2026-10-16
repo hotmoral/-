@@ -1,0 +1,105 @@
+=(d<best_d-1e-15)|((np.abs(d-best_d)<=1e-15)&(frac<best_f))
+        best_d[better]=d[better]; best_f[better]=frac[better]
+    return best_d,best_f
+
+
+def derive_domains(vertices: np.ndarray, path_worlds: dict, pitch: float):
+    core=np.vstack([path_worlds["PELVIS_FOREQUARTER"],path_worlds["FOREQUARTER_HEAD"][1:]])
+    polylines={"CORE":core,"FORE_L":path_worlds["FORE_L"],"FORE_R":path_worlds["FORE_R"],"HIND_L":path_worlds["HIND_L"],"HIND_R":path_worlds["HIND_R"],"TAIL":path_worlds["TAIL"]}
+    info={d:point_polyline_distance_fraction(vertices,p) for d,p in polylines.items()}
+    c=body_metrics(vertices)["center"]; out=[]; interfaces=[]
+    for i,p in enumerate(vertices):
+        dc=info["CORE"][0][i]; candidates=[]
+        if abs(float(p[0]-c[0])) > MIDLINE_CORE_BAND_PITCHES*pitch:
+            sides=("FORE_L","HIND_L") if p[0]>c[0] else ("FORE_R","HIND_R")
+            for d in sides: candidates.append((info[d][0][i],DOMAIN_ORDER.index(d),d))
+        candidates.append((info["TAIL"][0][i],DOMAIN_ORDER.index("TAIL"),"TAIL"))
+        child=min(candidates) if candidates else None
+        domain="CORE"; interface=False
+        if child and child[0]+DOMAIN_CHILD_MARGIN_PITCHES*pitch < dc:
+            domain=child[2]; frac=info[domain][1][i]
+            interface=bool(frac<=ROOT_INTERFACE_ARC_FRACTION and dc-child[0]<=ROOT_INTERFACE_WIDTH_PITCHES*pitch)
+        out.append(domain); interfaces.append(interface)
+    return np.asarray(out,dtype="U7"),np.asarray(interfaces,dtype=bool),info,polylines
+
+
+def allowed_roles(domain: str, interface: bool):
+    roles=[r for r in ROLE_ORDER if ROLE_DOMAIN[r]==domain]
+    if domain!="CORE" and interface: roles += [r for r in ROLE_ORDER if ROLE_DOMAIN[r]=="CORE"]
+    return roles
+
+
+def build_weights(vertices, controls: list[Control], domains, interfaces, pitch):
+    pos={c.role:np.array(c.position,float) for c in controls}
+    idx=np.full((len(vertices),MAX_INFLUENCES),255,dtype=np.uint8); w=np.zeros((len(vertices),MAX_INFLUENCES),dtype=np.float64)
+    sigma=WEIGHT_SIGMA_PITCHES*pitch
+    for i,p in enumerate(vertices):
+        candidates=[]
+        for r in allowed_roles(str(domains[i]),bool(interfaces[i])):
+            d=float(np.linalg.norm(p-pos[r])); raw=1.0/(d*d+sigma*sigma); candidates.append((-raw,ROLE_INDEX[r],r,raw))
+        candidates.sort(); take=candidates[:MAX_INFLUENCES]
+        if not take: raise RuntimeError(f"unweighted vertex {i}")
+        total=sum(x[3] for x in take)
+        for j,x in enumerate(take): idx[i,j]=x[1]; w[i,j]=x[3]/total
+        if not np.isfinite(w[i]).all() or (w[i]<0).any() or abs(float(w[i].sum())-1.0)>FLOAT_SUM_TOLERANCE:
+            raise RuntimeError(f"weight normalization fail {i}")
+    return idx,w
+
+
+def serialize_weights(indices: np.ndarray, weights: np.ndarray) -> bytes:
+    payload=bytearray(WEIGHT_HASH_PREFIX); payload += struct.pack("<QI",len(indices),len(ROLE_ORDER))
+    payload += np.asarray(indices,dtype=np.uint8,order="C").tobytes(); payload += np.asarray(weights,dtype="<f8",order="C").tobytes()
+    return bytes(payload)
+
+
+def rest_lbs(vertices, controls, indices, weights):
+    out=np.zeros_like(vertices,dtype=np.float64)
+    for i,v in enumerate(vertices):
+        for j in range(MAX_INFLUENCES):
+            ri=int(indices[i,j]); wt=float(weights[i,j])
+            if ri==255 or wt==0: continue
+            out[i] += wt*v
+    return out
+
+
+def rodrigues(v, axis, angle):
+    a=axis/np.linalg.norm(axis); return v*math.cos(angle)+np.cross(a,v)*math.sin(angle)+a*np.dot(a,v)*(1-math.cos(angle))
+
+
+def diagnostic_axis(role, controls_by_role):
+    c=controls_by_role[role]; p=np.array(c.position)
+    parent=c.parent
+    if parent is not None: tangent=p-np.array(controls_by_role[parent].position)
+    else:
+        child=next(r for r in ROLE_ORDER if PARENT[r]==role); tangent=np.array(controls_by_role[child].position)-p
+    n=np.linalg.norm(tangent)
+    if n<=1e-15: raise RuntimeError(f"zero diagnostic tangent {role}")
+    t=tangent/n; basis=min(np.eye(3),key=lambda b:abs(float(np.dot(t,b)))); axis=np.cross(t,basis)
+    if np.linalg.norm(axis)<=1e-15: raise RuntimeError(f"zero diagnostic axis {role}")
+    return axis/np.linalg.norm(axis)
+
+
+def jacobian_audit(vertices, controls, indices, weights, domains, pitch, tail_info, paw_positions):
+    by={c.role:c for c in controls}; h=body_metrics(vertices)["height"]; reports={}
+    for role in ROLE_ORDER[1:]:
+        ridx=ROLE_INDEX[role]; axis=diagnostic_axis(role,by); bind=np.array(by[role].position); disp=np.zeros(len(vertices))
+        for i,v in enumerate(vertices):
+            slots=np.where(indices[i]==ridx)[0]
+            if len(slots)==0: continue
+            wt=float(weights[i,slots[0]]); rotated=bind+rodrigues(v-bind,axis,JACOBIAN_EPSILON_RAD); d=wt*(rotated-v)
+            disp[i]=np.linalg.norm(d)/(JACOBIAN_EPSILON_RAD*h)
+        support=np.where(disp>JACOBIAN_DERIVATIVE_THRESHOLD)[0]
+        if len(support)==0: raise RuntimeError(f"dead control {role}")
+        role_domain=ROLE_DOMAIN[role]
+        if role_domain!="CORE" and any(str(domains[i])!=role_domain for i in support): raise RuntimeError(f"domain bleed {role}")
+        if role.endswith("_PAW_CTRL"):
+            near=np.linalg.norm(vertices[support]-paw_positions[role],axis=1) <= PAW_SUPPORT_RADIUS_PITCHES*pitch
+            if not near.any(): raise RuntimeError(f"paw terminal lacks local support {role}")
+        reports[role]={"supportCount":int(len(support)),"maxNormalizedDerivative":float(disp[support].max()),"axisR10":axis.tolist()}
+    tail_roles=("TAIL_ROOT_CTRL","TAIL_1_CTRL","TAIL_2_CTRL","TAIL_3_CTRL","TAIL_4_CTRL","TAIL_TIP_CTRL")
+    tail_frac=tail_info[1]; cent=[]; supports=[]
+    for role in tail_roles:
+        ridx=ROLE_INDEX[role]; wt=np.array([weights[i,np.where(indices[i]==ridx)[0][0]] if np.any(indices[i]==ridx) else 0.0 for i in range(len(vertices))])
+        nz=np.where(wt>0)[0]
+        if len(nz)==0: raise RuntimeError(f"tail dead weight {role}")
+        cent.append(float(np.average(tail_frac

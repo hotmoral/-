@@ -1,0 +1,20 @@
+ance,"derivation":c.derivation} for c in controls]
+    wb=serialize_weights(indices,weights); (out/"weights.bin").write_bytes(wb)
+    (out/"scaffold.json").write_bytes(stable_json(control_json)); (out/"frame_sign_audit.json").write_bytes(stable_json(frame))
+    (out/"domains.json").write_bytes(stable_json({"domains":domains.tolist(),"rootInterface":interfaces.tolist()}))
+    (out/"weight_audit.json").write_bytes(stable_json(waudit))
+    (out/"jacobian.json").write_bytes(stable_json(jac)); (out/"raster_identity.json").write_bytes(stable_json(raster))
+    summary={"version":VERSION,"freezeTokenRequired":FREEZE_TOKEN,"identity":identity,"topologyIdentity":{"vertexCount":len(v),"faceCount":len(f),"faceIndexSha256":face_index_sha256(f)},"pitch":pitch,"rawSkeletonNodes":len(raw),"prunedSkeletonNodes":len(graph),"controlCount":len(controls),"weightSha256":hashlib.sha256(wb).hexdigest(),"weightAudit":waudit,"rest":rest_report,"primaryRaster":primary_raster,"rasterAll37ByteIdentical":all(x["byteIdentical"] for x in raster),"exactFront":raster[0]}
+    (out/"summary.json").write_bytes(stable_json(summary))
+    files=sorted(p for p in out.iterdir() if p.is_file() and p.name!="EVIDENCE_SHA256SUMS.txt")
+    (out/"EVIDENCE_SHA256SUMS.txt").write_text("".join(f"{sha256_file(p)}  {p.name}\n" for p in files),encoding="utf-8")
+    return summary
+
+
+def main():
+    ap=argparse.ArgumentParser(); ap.add_argument("source_glb",type=Path); ap.add_argument("--geometry-dir",type=Path,default=Path(__file__).resolve().parent); ap.add_argument("--out",type=Path,required=True); ap.add_argument("--identity-only",action="store_true")
+    a=ap.parse_args()
+    result=run_identity_only(a.source_glb,a.geometry_dir,a.out) if a.identity_only else run_stage1(a.source_glb,a.geometry_dir,a.out)
+    print(json.dumps(result,indent=2,sort_keys=True))
+
+if __name__=="__main__": main()

@@ -1,0 +1,150 @@
+ants.items():
+        qmask = sx & sz
+        if not qmask.any():
+            raise RuntimeError(f"empty paw quadrant {name}")
+        q = vertices[qmask]
+        ymin = float(q[:,1].min())
+        sole = q[q[:,1] <= ymin + 0.035*h]
+        if len(sole) == 0:
+            raise RuntimeError(f"empty paw sole {name}")
+        anchors[name] = sole.mean(axis=0)
+    return anchors
+
+
+def voxel_skeleton(vertices: np.ndarray, faces: np.ndarray):
+    import trimesh
+    from skimage.morphology import skeletonize
+    if trimesh.__version__ != EXPECTED_TRIMESH_VERSION:
+        raise RuntimeError(f"trimesh version drift: {trimesh.__version__}")
+    import skimage
+    if skimage.__version__ != EXPECTED_SKIMAGE_VERSION:
+        raise RuntimeError(f"scikit-image version drift: {skimage.__version__}")
+    import scipy
+    if scipy.__version__ != EXPECTED_SCIPY_VERSION:
+        raise RuntimeError(f"scipy version drift: {scipy.__version__}")
+    h = body_metrics(vertices)["height"]
+    pitch = h / VOXELS_PER_BODY_HEIGHT
+    mesh = trimesh.Trimesh(vertices=vertices, faces=faces, process=False, validate=False)
+    vg = mesh.voxelized(pitch=pitch, method=VOXEL_METHOD).fill(method=VOXEL_FILL_METHOD)
+    matrix = np.asarray(vg.matrix, dtype=bool)
+    transform = np.asarray(vg.transform, dtype=np.float64)
+    if matrix.ndim != 3 or not matrix.any():
+        raise RuntimeError("empty voxel body")
+    padded = np.pad(matrix, VOXEL_PADDING, mode="constant", constant_values=False)
+    skel = np.asarray(skeletonize(padded, method=SKELETON_METHOD), dtype=bool)
+    if not skel.any():
+        raise RuntimeError("empty medial skeleton")
+    return skel, transform, pitch
+
+
+def index_to_world(idx: tuple[int,int,int], transform: np.ndarray) -> np.ndarray:
+    native = np.array([idx[0]-VOXEL_PADDING, idx[1]-VOXEL_PADDING, idx[2]-VOXEL_PADDING, 1.0], dtype=np.float64)
+    return (transform @ native)[:3]
+
+
+def graph_from_skeleton(skel: np.ndarray) -> dict[tuple[int,int,int], set[tuple[int,int,int]]]:
+    nodes = {tuple(map(int, p)) for p in np.argwhere(skel)}
+    g = {n: set() for n in nodes}
+    for n in sorted(nodes):
+        for d in NEIGHBOR_OFFSETS:
+            q=(n[0]+d[0],n[1]+d[1],n[2]+d[2])
+            if q in nodes:
+                g[n].add(q)
+    return g
+
+
+def edge_len(a, b, pitch: float) -> float:
+    d=np.subtract(a,b); return float(pitch*math.sqrt(float(np.dot(d,d))))
+
+
+def nearest_graph_node(point: np.ndarray, graph, transform) -> tuple[int,int,int]:
+    best=None
+    for n in sorted(graph):
+        w=index_to_world(n, transform); d=float(np.dot(w-point,w-point))
+        key=(d,n)
+        if best is None or key<best[0]: best=(key,n)
+    if best is None: raise RuntimeError("empty graph")
+    return best[1]
+
+
+def terminal_chain(graph, start, pitch):
+    if len(graph[start]) != 1: return [], 0.0
+    chain=[start]; prev=None; cur=start; length=0.0
+    while True:
+        nxt=[n for n in sorted(graph[cur]) if n!=prev]
+        if len(nxt)!=1: break
+        q=nxt[0]; length += edge_len(cur,q,pitch); chain.append(q); prev,cur=cur,q
+        if len(graph[cur]) != 2: break
+    return chain, length
+
+
+def prune_graph(graph, protected: set, pitch: float, body_height: float):
+    g={n:set(v) for n,v in graph.items()}; threshold=PRUNE_LENGTH_BODY_FRACTION*body_height
+    while True:
+        remove=set()
+        for n in sorted(g):
+            if len(g[n]) != 1: continue
+            chain,length=terminal_chain(g,n,pitch)
+            if length < threshold and not (set(chain)&protected):
+                remove.update(chain[:-1])
+        if not remove: break
+        for n in sorted(remove):
+            for q in list(g.get(n,())):
+                if q in g: g[q].discard(n)
+            g.pop(n,None)
+    if any(p not in g for p in protected): raise RuntimeError("protected anchor pruned")
+    return g
+
+
+def shortest_path(graph, start, goal, pitch):
+    dist={start:0.0}; pred={}; heap=[(0.0,start)]
+    while heap:
+        du,u=heapq.heappop(heap)
+        if du>dist[u]+1e-15: continue
+        if u==goal: break
+        for v in sorted(graph[u]):
+            nd=du+edge_len(u,v,pitch); old=dist.get(v,math.inf)
+            if nd < old-1e-15 or (abs(nd-old)<=1e-15 and u < pred.get(v,(10**9,)*3)):
+                dist[v]=nd; pred[v]=u; heapq.heappush(heap,(nd,v))
+    if goal not in dist: raise RuntimeError(f"no graph path {start}->{goal}")
+    path=[goal]
+    while path[-1]!=start: path.append(pred[path[-1]])
+    path.reverse(); return path, dist[goal]
+
+
+def distances_from(graph, start, pitch):
+    dist={start:0.0}; heap=[(0.0,start)]
+    while heap:
+        du,u=heapq.heappop(heap)
+        if du>dist[u]+1e-15: continue
+        for v in sorted(graph[u]):
+            nd=du+edge_len(u,v,pitch)
+            if nd < dist.get(v,math.inf)-1e-15:
+                dist[v]=nd; heapq.heappush(heap,(nd,v))
+    return dist
+
+
+def pair_merge_node(graph, path_a, path_b, end_a, end_b, pitch):
+    common=set(path_a)&set(path_b)
+    if not common: raise RuntimeError("paired semantic paths do not merge")
+    da=distances_from(graph,end_a,pitch); db=distances_from(graph,end_b,pitch)
+    return min(common, key=lambda n:(da.get(n,math.inf)+db.get(n,math.inf), n))
+
+
+def first_merge_from_tail(graph, tail_to_head, core_path, tail, pitch):
+    common=set(tail_to_head)&set(core_path)
+    if not common: raise RuntimeError("tail path does not merge with core")
+    dt=distances_from(graph,tail,pitch)
+    return min(common,key=lambda n:(dt.get(n,math.inf),n))
+
+
+def path_world(path, transform): return np.vstack([index_to_world(n,transform) for n in path]).astype(np.float64)
+
+
+def resample_polyline(points: np.ndarray, samples: int = PATH_RESAMPLE_SAMPLES):
+    seg=np.linalg.norm(np.diff(points,axis=0),axis=1); cum=np.concatenate([[0.0],np.cumsum(seg)])
+    if cum[-1] <= 0: raise RuntimeError("zero-length path")
+    targets=np.linspace(0.0,cum[-1],samples); out=np.empty((samples,3),float)
+    j=0
+    for i,t in enumerate(targets):
+        while j+1<len(cum)-1 and cum[j+1]<t: j+=

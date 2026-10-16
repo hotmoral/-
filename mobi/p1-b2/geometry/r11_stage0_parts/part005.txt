@@ -1,0 +1,89 @@
+[nz],weights=wt[nz]))); supports.append(set(map(int,nz)))
+    if any(not (cent[i] < cent[i+1]) for i in range(len(cent)-1)): raise RuntimeError(f"tail support order fail {cent}")
+    if any(len(supports[i]&supports[i+1])==0 for i in range(len(supports)-1)): raise RuntimeError("adjacent tail supports do not overlap")
+    return {"controls":reports,"tailWeightedArcCentroids":dict(zip(tail_roles,cent))}
+
+
+def stable_json(obj) -> bytes:
+    return (json.dumps(obj,indent=2,sort_keys=True,separators=(",", ": "))+"\n").encode("utf-8")
+
+
+def face_index_sha256(faces: np.ndarray) -> str:
+    return hashlib.sha256(np.asarray(faces,dtype="<i4",order="C").tobytes(order="C")).hexdigest()
+
+
+def weight_audit(indices, weights, domains, interfaces):
+    sums=weights.sum(axis=1); unweighted=int(np.count_nonzero(sums==0)); max_count=0; bleed=[]
+    for i in range(len(indices)):
+        roles=[ROLE_ORDER[int(q)] for q in indices[i] if int(q)!=255 and weights[i,list(indices[i]).index(q)]>0]
+        max_count=max(max_count,len(roles)); allowed=set(allowed_roles(str(domains[i]),bool(interfaces[i])))
+        bad=[r for r in roles if r not in allowed]
+        if bad: bleed.append([i,bad])
+    report={"finite":bool(np.isfinite(weights).all()),"nonnegative":bool((weights>=0).all()),"maxWeightSumAbsError":float(np.max(np.abs(sums-1.0))),"maxInfluences":int(max_count),"unweightedVertexCount":unweighted,"domainBleedCount":len(bleed)}
+    if not report["finite"] or not report["nonnegative"] or report["maxWeightSumAbsError"]>FLOAT_SUM_TOLERANCE or max_count>MAX_INFLUENCES or unweighted or bleed:
+        raise RuntimeError(f"weight audit failed: {report}")
+    return report
+
+
+def graph_diagnostic(graph):
+    nodes=sorted(graph); edges=[]
+    for a in nodes:
+        for b in sorted(graph[a]):
+            if a<b: edges.append([list(a),list(b)])
+    return {"connectivity":GRAPH_CONNECTIVITY,"nodeCount":len(nodes),"edgeCount":len(edges),"nodes":[list(n) for n in nodes],"edges":edges}
+
+
+def semantic_paths_diagnostic(paths, transform):
+    out={}
+    for name,path in sorted(paths.items()):
+        world=path_world(path,transform)
+        out[name]={"gridNodes":[list(n) for n in path],"worldR10":world.tolist(),"nodeCount":len(path),"arcLength":float(np.linalg.norm(np.diff(world,axis=0),axis=1).sum())}
+    return out
+
+
+def write_primary_raster_evidence(stage_d, vertices, rest, faces, out: Path):
+    primary={0.0:"EXACT_FRONT",22.5:"NEAR_FRONT",45.0:"STRONG_3Q",67.5:"NEAR_PROFILE",90.0:"EXACT_PROFILE"}; reports=[]
+    tri=[tuple(map(int,t)) for t in faces.tolist()]
+    for deg,name in primary.items():
+        a=stage_d.rasterize([stage_d.project_point(p,deg) for p in vertices.tolist()],tri)
+        b=stage_d.rasterize([stage_d.project_point(p,deg) for p in rest.tolist()],tri)
+        xor=bytes(int(x)^int(y) for x,y in zip(a,b))
+        for label,mask in (("BASELINE",a),("REST",b),("XOR",xor)):
+            gray=stage_d.mask_to_gray(mask)
+            (out/f"R11_NEUTRAL_{name}_{label}_96.png").write_bytes(stage_d.png_gray(stage_d.CANVAS,stage_d.CANVAS,gray))
+        reports.append({"name":name,"yawDeg":deg,"byteIdentical":bytes(a)==bytes(b),"baselineMaskSha256":hashlib.sha256(bytes(a)).hexdigest(),"restMaskSha256":hashlib.sha256(bytes(b)).hexdigest(),"xorOccupied":int(sum(xor))})
+    if not all(x["byteIdentical"] for x in reports): raise RuntimeError("primary neutral raster drift")
+    return reports
+
+
+def run_identity_only(source_glb: Path, geometry_dir: Path, out_file: Path):
+    _v,_f,identity=reproduce_v3125(source_glb,geometry_dir)
+    out_file.parent.mkdir(parents=True,exist_ok=True); out_file.write_bytes(stable_json(identity)); return identity
+
+
+def run_stage1(source_glb: Path, geometry_dir: Path, out: Path):
+    out.mkdir(parents=True,exist_ok=True)
+    v,f,identity=reproduce_v3125(source_glb,geometry_dir)
+    frame=frame_sign_audit(v,geometry_dir)
+    skel,transform,pitch=voxel_skeleton(v,f); raw=graph_from_skeleton(skel)
+    graph,snapped,nodes,paths=derive_semantic_graph(v,raw,transform,pitch)
+    controls,path_worlds=make_controls(transform,nodes,paths)
+    (out/"medial_graph.json").write_bytes(stable_json(graph_diagnostic(graph)))
+    (out/"semantic_paths.json").write_bytes(stable_json(semantic_paths_diagnostic(paths,transform)))
+    domains,interfaces,domain_info,polylines=derive_domains(v,path_worlds,pitch)
+    indices,weights=build_weights(v,controls,domains,interfaces,pitch)
+    waudit=weight_audit(indices,weights,domains,interfaces)
+    rest=rest_lbs(v,controls,indices,weights); delta=np.linalg.norm(rest-v,axis=1); h=body_metrics(v)["height"]
+    rest_report={"maxNormalized":float(delta.max()/h),"rmsNormalized":float(math.sqrt(float(np.mean(delta*delta)))/h)}
+    if rest_report["maxNormalized"]>REST_MAX_NORMALIZED or rest_report["rmsNormalized"]>REST_RMS_NORMALIZED: raise RuntimeError(f"rest drift fail {rest_report}")
+    paw_positions={r:np.array(next(c.position for c in controls if c.role==r)) for r in ("FORE_L_PAW_CTRL","FORE_R_PAW_CTRL","HIND_L_PAW_CTRL","HIND_R_PAW_CTRL")}
+    jac=jacobian_audit(v,controls,indices,weights,domains,pitch,domain_info["TAIL"],paw_positions)
+    stage_d=_load_module(geometry_dir/"p1_c_3d_cat_stage_d_projection_v1.py","r11_raster")
+    primary_raster=write_primary_raster_evidence(stage_d,v,rest,f,out)
+    yaw=list(np.arange(0.0,90.0+1e-9,2.5)); raster=[]
+    for deg in yaw:
+        a=stage_d.rasterize([stage_d.project_point(p,float(deg)) for p in v.tolist()],[tuple(map(int,t)) for t in f.tolist()])
+        b=stage_d.rasterize([stage_d.project_point(p,float(deg)) for p in rest.tolist()],[tuple(map(int,t)) for t in f.tolist()])
+        same=bytes(a)==bytes(b); raster.append({"yawDeg":float(deg),"byteIdentical":same,"sha256":hashlib.sha256(bytes(a)).hexdigest()})
+        if not same: raise RuntimeError(f"neutral raster drift at {deg}")
+    control_json=[{"ordinal":ROLE_INDEX[c.role]+1,"role":c.role,"parent":c.parent,"domain":c.domain,"positionR10":list(c.position),"provenance":c.proven
