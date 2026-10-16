@@ -1,0 +1,4 @@
+<resources>
+    <string name="cp37_copy_validation">검증 결과 복사</string>
+    <string name="cp37_validation_copied">개인정보 없는 검증 결과를 복사했습니다.</string>
+</resources>
