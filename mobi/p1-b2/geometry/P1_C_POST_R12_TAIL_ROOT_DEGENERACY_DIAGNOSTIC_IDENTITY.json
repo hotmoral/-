@@ -1,0 +1,114 @@
+{
+  "version": "P1_C_POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_IDENTITY_V1",
+  "decisionToken": "POST_R12_TAIL_ROOT_OBSERVATIONAL_DIAGNOSTIC_SELECTED",
+  "contractToken": "POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_CONTRACT_FROZEN",
+  "preflightToken": "POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_PREFLIGHT_PASS",
+  "freezeToken": "POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_IMPLEMENTATION_FREEZE",
+  "publicRepository": "hotmoral/-",
+  "publicBranch": "mobi/run-p1-c-post-r12-tail-root-diagnostic-20261017",
+  "publicBaseHead": "4dbc13f67c0097e5bb84fd2b0ec27d71c280ac42",
+  "finalExecutablePreFreezeHead": "e6b94f3d318ded465af437c8c90210e12e8167c4",
+  "sourceSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5",
+  "expectedV3125MeshArraySha256": "839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77",
+  "inheritedR11Implementation": {
+    "assembledByteCount": 37871,
+    "sha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87"
+  },
+  "inheritedR12Adapter": {
+    "byteCount": 16883,
+    "gitBlobSha1": "837f4abe7ff474a527893b099be8087a104f7aaa",
+    "sha256": "fc4096162607dbf59859749562ec5ab9ea7d0e09551aa7cd3cd1ad05e9f5594c"
+  },
+  "runtime": {
+    "python": "3.12.15",
+    "numpy": "2.5.4",
+    "fast-simplification": "0.2.0",
+    "trimesh": "4.11.1",
+    "scikit-image": "0.26.0",
+    "scipy": "1.17.0"
+  },
+  "gitBlobSha1": {
+    "mobi/p1-b2/geometry/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py": "d5f006bab21fb1c022fb4a67011b5be9b7a0306e",
+    "mobi/p1-b2/geometry/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py": "79afe96c4d31e32010c22f55916177ab185d7b8a",
+    ".github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml": "b1fe94d43989bc7d0f2340362241eeb31ab8fa16",
+    ".github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic.yml": "7c32f77fc04dcb8436bb704bdfc524b26357e85f",
+    "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py": "837f4abe7ff474a527893b099be8087a104f7aaa",
+    "mobi/p1-b2/geometry/assemble_p1_c_r11_semantic_scaffold_v1.sh": "7a5c4bda8131fcbfc1ef301c70c64d423bf5c04f",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part000.txt": "8e4c430cf405c0b1c05dcad591a7c73e6bb143db",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part001.txt": "86d3651e1b115c9bbfcedddbe0b42b0ac95f91c1",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part002.txt": "b514eaca8a1af556509d719411ccf679c6eacabb",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part003.txt": "8e9c9798de55bde7099971e6a868c98b65f377cf",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part004.txt": "a09ae537bdec38534adc63882854f4fac3ae9e50",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part005.txt": "db9dd42cb562ce23049cb32ca6cda6728e159b10",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part006.txt": "10449747ebebb1a96298427d8e570675d3c4e2a9",
+    "mobi/p1-b2/geometry/test_p1_c_r11_semantic_scaffold_v1.py": "868a9cf58a32fdf725fe79c0d34d2cc77cb3c7aa",
+    "mobi/p1-b2/geometry/test_p1_c_r12_surface_terminal_bind_alias_v1.py": "7257217740e2ff7dedffc3b54f33b85d42a920db",
+    "mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py": "f281aad3e3a6c740c38c0a3f015718996dc45157",
+    "mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py": "5c8820fb7270e7727ececb1bb37d3a24331b24ab",
+    "mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py": "9b7899bc1c39d02291813a826df01d3697192846"
+  },
+  "sha256AndBytes": {
+    "mobi/p1-b2/geometry/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py": {
+      "sha256": "5cb8297d6f47fe16a5cf80f5bb6d18bbe6a891ffa44b5d9ccba8e992424c4367",
+      "bytes": 32200
+    },
+    "mobi/p1-b2/geometry/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py": {
+      "sha256": "41cca69cac39990f740ddff18ec46bc82408be86be691640c231194a0463b07f",
+      "bytes": 8406
+    },
+    ".github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml": {
+      "sha256": "704e636c5977c731bd510c46b1e24dd1e9b8d629f08e2c97a0f45cbb6fcf2f18",
+      "bytes": 7229
+    },
+    ".github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic.yml": {
+      "sha256": "e418f958cd83a740a6b51339e576ae6799754637ac99fc93283a4355764ebb0c",
+      "bytes": 9506
+    }
+  },
+  "preEvidenceQa": {
+    "firstRun": {
+      "runId": 38976274333,
+      "jobId": 117226368395,
+      "head": "2fea9ce73de944a0841ffa4fc79d4910149a73b6",
+      "conclusion": "FAILURE",
+      "classification": "PRE_EVIDENCE_QA_HARNESS_SELF_MATCH_SOURCE_GUARD",
+      "structuralSourceAcquired": false,
+      "structuralEvidenceEntered": false
+    },
+    "secondRun": {
+      "runId": 38976428322,
+      "jobId": 117226873500,
+      "head": "903f8d939ee9a5506fe84cb96db988b85de729d7",
+      "conclusion": "SUCCESS",
+      "structuralSourceAcquired": false,
+      "structuralEvidenceEntered": false
+    },
+    "finalRun": {
+      "runId": 38976599230,
+      "jobId": 117227429393,
+      "head": "e6b94f3d318ded465af437c8c90210e12e8167c4",
+      "conclusion": "SUCCESS",
+      "r11Tests": "8/8 PASS",
+      "r12Tests": "4/4 PASS",
+      "postR12DiagnosticTests": "8/8 PASS",
+      "dispatchWorkflowGuard": "PASS",
+      "sourceAcquisitionGuard": "PASS",
+      "structuralSourceAcquired": false,
+      "structuralEvidenceEntered": false
+    }
+  },
+  "counterfactualProbeNames": [
+    "TAIL_ROOT_TO_TAIL_1",
+    "TAIL_PATH_FORWARD"
+  ],
+  "classificationPrecedence": [
+    "BROADER_ZERO_LENGTH_HIERARCHY_DEGENERACY",
+    "COINCIDENT_BRANCH_ROOT_WITH_TAIL_SUPPORT_DEFECT",
+    "COINCIDENT_BRANCH_ROOT_WITH_NONVACUOUS_TAIL_SUPPORT",
+    "MIXED_OR_UNRESOLVED"
+  ],
+  "dispatchAuthorizationToken": "RUN_POST_R12_TAIL_ROOT_DIAGNOSTIC_AFTER_PRIVATE_IMPORT",
+  "diagnosticEvidenceRunAuthorized": false,
+  "tailRootRepairAuthorized": false,
+  "finitePoseAuthorized": false
+}
