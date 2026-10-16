@@ -86,7 +86,12 @@ public final class PriceHistoryActivity extends Activity {
             startActivity(intent);
             return;
         }
-        // CP32 owns NON_STANDARD Commodity Detail. Preserve the legacy read-only view until then.
+        if (product.type == ProductType.NON_STANDARD) {
+            Intent intent = new Intent(this, CommodityDetailActivity.class);
+            intent.putExtra(CommodityDetailActivity.EXTRA_PRODUCT_ID, product.id);
+            startActivity(intent);
+            return;
+        }
         loadLegacyHistory(product.id);
     }
 
