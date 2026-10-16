@@ -8,8 +8,11 @@ on:
       - 'mobi/p1-b2/geometry/p1_c_r8_regional_grammar_v1.py'
       - 'mobi/p1-b2/geometry/p1_c_r8_neutral_m0_params_v1.py'
       - 'mobi/p1-b2/geometry/p1_c_r8_regional_procedural_surface_v1.py'
+      - 'mobi/p1-b2/geometry/p1_c_r8_intrinsic_frame_adapter_v1.py'
       - 'mobi/p1-b2/geometry/run_p1_c_r8_regional_procedural_stage3.py'
+      - 'mobi/p1-b2/geometry/run_p1_c_r8_regional_procedural_stage3_corrected.py'
       - 'mobi/p1-b2/geometry/test_p1_c_r8_regional_procedural_surface_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_r8_intrinsic_frame_adapter_v1.py'
       - '.github/workflows/mobi-p1-c-r8-stage3-regional-procedural.yml'
   workflow_dispatch:
 
@@ -41,8 +44,11 @@ jobs:
               'p1_c_r8_regional_grammar_v1.py': '9ed2555afebf79dc7c087c35f82f69968b3c7ea9',
               'p1_c_r8_neutral_m0_params_v1.py': '071ce89d0d760998bbbf40aa9ed86db5f9bd97da',
               'p1_c_r8_regional_procedural_surface_v1.py': '4ad080dd41d52b8c6846734ecb19af267a926579',
+              'p1_c_r8_intrinsic_frame_adapter_v1.py': '0efabeed340d103550c1faba5afd31adea73629e',
               'run_p1_c_r8_regional_procedural_stage3.py': 'fe5b8d6d9e4a91089542d1dcf193c18f671ac24c',
+              'run_p1_c_r8_regional_procedural_stage3_corrected.py': '98c9ada4222fb7d3f5345740100aabe55da0f943',
               'test_p1_c_r8_regional_procedural_surface_v1.py': '76643c4547316b8d7a619b7f50e3f25df31862b5',
+              'test_p1_c_r8_intrinsic_frame_adapter_v1.py': '57d8e3ef9ab897776b89c1e69eab7acc169ba3b8',
               'p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py': '6165e55fd905944d484a1a0758f9a85f4cf92761',
               'p1_c_r2_minimal_volumetric_proxy_v1.py': '4d4006f66e98fbf10ce54ed87bb78a9ee5ee3daa',
               'model.py': 'c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b',
@@ -73,15 +79,15 @@ jobs:
         working-directory: mobi/p1-b2/geometry
         run: |
           set -euo pipefail
-          python3 -m unittest -v test_p1_c_r8_regional_procedural_surface_v1.py 2>&1 | tee ../../p1-c-r8-stage3/evidence/unittest.txt
+          python3 -m unittest -v test_p1_c_r8_intrinsic_frame_adapter_v1.py 2>&1 | tee ../../p1-c-r8-stage3/evidence/unittest.txt
 
       - name: Generate deterministic Stage 3 evidence twice
         working-directory: mobi/p1-b2/geometry
         run: |
           set -euo pipefail
           rm -rf ../../p1-c-r8-stage3/run-seed1 ../../p1-c-r8-stage3/run-seed777
-          PYTHONHASHSEED=1 python3 run_p1_c_r8_regional_procedural_stage3.py --output-dir ../../p1-c-r8-stage3/run-seed1
-          PYTHONHASHSEED=777 python3 run_p1_c_r8_regional_procedural_stage3.py --output-dir ../../p1-c-r8-stage3/run-seed777
+          PYTHONHASHSEED=1 python3 run_p1_c_r8_regional_procedural_stage3_corrected.py --output-dir ../../p1-c-r8-stage3/run-seed1
+          PYTHONHASHSEED=777 python3 run_p1_c_r8_regional_procedural_stage3_corrected.py --output-dir ../../p1-c-r8-stage3/run-seed777
           diff -ru ../../p1-c-r8-stage3/run-seed1 ../../p1-c-r8-stage3/run-seed777 | tee ../../p1-c-r8-stage3/evidence/deterministic_diff.txt
           cp -R ../../p1-c-r8-stage3/run-seed1/. ../../p1-c-r8-stage3/evidence/
 
