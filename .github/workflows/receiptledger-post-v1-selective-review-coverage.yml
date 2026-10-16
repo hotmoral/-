@@ -1,0 +1,194 @@
+name: ReceiptLedger Post-V1 Selective Review Coverage
+
+on:
+  push:
+    branches:
+      - receiptledger/run-post-v1-selective-review-coverage-20261017
+    paths:
+      - 'receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_PLAN.md'
+      - 'receiptledger/harness/android-v1/app/build.gradle'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/devicevalidation/DeviceValidationReportV1.java'
+      - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/devicevalidation/DeviceValidationReportV1Test.java'
+      - 'receiptledger/harness/android-v1/app/src/debug/res/values/cp37_remediation_strings.xml'
+      - '.github/workflows/receiptledger-post-v1-selective-review-coverage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-selective-review-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Ensure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          set +o pipefail
+          yes | "$SDKMANAGER" 'platforms;android-36' 'build-tools;35.0.0' >/dev/null
+          set -o pipefail
+          test -d "$ANDROID_HOME/platforms/android-36"
+          test -x "$ANDROID_HOME/build-tools/35.0.0/aapt"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+          cache-disabled: true
+
+      - name: Audit public namespace
+        run: bash receiptledger/tools/audit_public_tree.sh
+
+      - name: Enforce bounded instrumentation scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=c4e00ff22339869346f0f8692e38d82567568b7e
+          APP=receiptledger/harness/android-v1/app
+          git diff --name-only "$BASE" "$GITHUB_SHA" > receiptledger/cp37-review-coverage-changed-files.txt
+          while IFS= read -r f; do
+            case "$f" in
+              .github/workflows/receiptledger-post-v1-selective-review-coverage.yml) ;;
+              receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_PLAN.md) ;;
+              receiptledger/harness/android-v1/app/build.gradle) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/devicevalidation/DeviceValidationReportV1.java) ;;
+              receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/devicevalidation/DeviceValidationReportV1Test.java) ;;
+              receiptledger/harness/android-v1/app/src/debug/res/values/cp37_remediation_strings.xml) ;;
+              '') ;;
+              *) echo "CP37 review-coverage scope violation: $f"; exit 31 ;;
+            esac
+          done < receiptledger/cp37-review-coverage-changed-files.txt
+
+          for frozen in \
+            "$APP/src/main/AndroidManifest.xml" \
+            "$APP/src/main/java/com/receiptledger/v1/MainActivity.java" \
+            "$APP/src/main/java/com/receiptledger/v1/ocr" \
+            "$APP/src/main/java/com/receiptledger/v1/recovery" \
+            "$APP/src/main/java/com/receiptledger/v1/structure" \
+            "$APP/src/main/java/com/receiptledger/v1/review" \
+            "$APP/src/main/java/com/receiptledger/v1/identity" \
+            "$APP/src/main/java/com/receiptledger/v1/price" \
+            "$APP/src/main/java/com/receiptledger/v1/search"; do
+            git diff --quiet "$BASE" "$GITHUB_SHA" -- "$frozen" || { echo "Frozen path changed: $frozen"; exit 32; }
+          done
+
+          grep -Fq 'VERSION = 2' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
+          grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/persistence/ReceiptSchema.java"
+          grep -Fq 'versionCode 38' "$APP/build.gradle"
+          grep -Fq "versionName '1.0.37-review-coverage-validation'" "$APP/build.gradle"
+          grep -Fq "applicationIdSuffix '.reviewcoverage'" "$APP/build.gradle"
+          grep -Fq 'ReceiptLedger 검증 B' "$APP/src/debug/res/values/cp37_remediation_strings.xml"
+
+      - name: Unit regression lint and APK build
+        shell: bash
+        run: |
+          set +e
+          gradle --no-daemon -p receiptledger/harness/android-v1 \
+            :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+          status=$?
+          REPORT=receiptledger/harness/android-v1/app/build/reports/lint-results-debug.txt
+          if [ -f "$REPORT" ]; then
+            echo '===== COMPLETE ANDROID LINT REPORT ====='
+            cat "$REPORT"
+            echo '===== END ANDROID LINT REPORT ====='
+            if ! grep -Fqx 'No issues found.' "$REPORT"; then status=43; fi
+          else
+            echo 'Expected lint report missing'
+            status=41
+          fi
+          for TEST_XML in \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.devicevalidation.DeviceValidationReportV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.structure.ReceiptStructureAnalyzerTest.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.review.ReceiptReviewEngineTest.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.review.CaptureReviewUxV2Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.evaluation.RealReceiptEvaluationV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.shell.CommercialUiShellV1Test.xml \
+            receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.search.SearchBrowseV1Test.xml; do
+            if [ ! -f "$TEST_XML" ]; then echo "Expected test result missing: $TEST_XML"; status=42; fi
+          done
+          exit "$status"
+
+      - name: Verify selective review coverage contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          XML=receiptledger/harness/android-v1/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.devicevalidation.DeviceValidationReportV1Test.xml
+          python3 - <<'PY' "$XML" | tee receiptledger/cp37-review-coverage-metrics.txt
+          import sys, xml.etree.ElementTree as ET
+          root=ET.parse(sys.argv[1]).getroot()
+          tests=int(root.attrib.get('tests','0'))
+          failures=int(root.attrib.get('failures','0'))
+          errors=int(root.attrib.get('errors','0'))
+          skipped=int(root.attrib.get('skipped','0'))
+          if tests != 8 or failures or errors or skipped:
+              raise SystemExit(f'CP37 review coverage test contract mismatch: tests={tests} failures={failures} errors={errors} skipped={skipped}')
+          print('CP37_REVIEW_COVERAGE_METRICS report_version=2 tests=8 outside_scope_detection=1 in_scope_control=1 distinct_item_counting=1 removal_detection=1 privacy_preserved=1 product_behavior_unchanged=1 schema_unchanged=1')
+          PY
+
+      - name: Package review coverage validation artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=c4e00ff22339869346f0f8692e38d82567568b7e
+          SRC=receiptledger/harness/android-v1
+          APK="$SRC/app/build/outputs/apk/debug/app-debug.apk"
+          OUT=receiptledger/output/post-v1-selective-review-coverage
+          rm -rf "$OUT"; mkdir -p "$OUT"
+          cp "$APK" "$OUT/ReceiptLedger-1.0.37-review-coverage-validation-debug.apk"
+          cp receiptledger/cp37-review-coverage-metrics.txt "$OUT/CP37_REVIEW_COVERAGE_METRICS.txt"
+          cp receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_PLAN.md "$OUT/"
+          cp "$SRC/app/build/reports/lint-results-debug.txt" "$OUT/lint-results-debug.txt"
+          cp "$SRC/app/build/test-results/testDebugUnitTest/TEST-com.receiptledger.v1.devicevalidation.DeviceValidationReportV1Test.xml" "$OUT/DEVICE_VALIDATION_REPORT_V2_TEST.xml"
+          unzip -t "$OUT/ReceiptLedger-1.0.37-review-coverage-validation-debug.apk" > "$OUT/APK_ZIP_INTEGRITY.txt"
+
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
+          "$AAPT" dump badging "$APK" | tee "$OUT/APK_BADGING.txt"
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml > "$OUT/APK_MANIFEST_TREE.txt"
+
+          grep -Fq "package: name='com.receiptledger.v1.reviewcoverage'" "$OUT/APK_BADGING.txt"
+          grep -Fq "application-label:'ReceiptLedger 검증 B'" "$OUT/APK_BADGING.txt"
+          grep -Fq 'com.receiptledger.v1.reviewcoverage.capture' "$OUT/APK_MANIFEST_TREE.txt"
+
+          for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
+            if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then echo "Forbidden permission packaged: $forbidden"; exit 81; fi
+          done
+
+          git diff --name-status "$BASE" "$GITHUB_SHA" > "$OUT/CP37_REVIEW_COVERAGE_DIFF.txt"
+          sha256sum "$OUT/ReceiptLedger-1.0.37-review-coverage-validation-debug.apk" > "$OUT/APK_SHA256.txt"
+          {
+            echo 'checkpoint=RL_POST_V1_CP37_REVIEW_COVERAGE_INSTRUMENTATION'
+            echo "public_commit=${GITHUB_SHA}"
+            echo "predecessor_handoff=${BASE}"
+            echo 'status=READY_FOR_PHYSICAL_METRIC_CHECK_CANDIDATE'
+            echo 'report_version=2'
+            echo 'product_behavior=UNCHANGED'
+            echo 'review_policy=UNCHANGED'
+            echo 'remediation_a_structure_gate=UNCHANGED'
+            echo 'product_schema=2_UNCHANGED'
+            echo 'receipt_schema=1_UNCHANGED'
+            echo 'debug_application_id=com.receiptledger.v1.reviewcoverage'
+            echo 'version_name=1.0.37-review-coverage-validation'
+            echo 'version_code=38'
+            echo 'signing=debug_only'
+          } > "$OUT/BUILD_IDENTITY.txt"
+          sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/APK_PERMISSIONS.txt \
+            "$OUT"/CP37_REVIEW_COVERAGE_METRICS.txt "$OUT"/CP37_REVIEW_COVERAGE_DIFF.txt > "$OUT/EVIDENCE_SHA256.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: receiptledger-post-v1-selective-review-coverage-${{ github.run_id }}
+          path: receiptledger/output/post-v1-selective-review-coverage/
+          if-no-files-found: error
+          retention-days: 14
