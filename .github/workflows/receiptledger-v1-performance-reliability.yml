@@ -11,6 +11,8 @@ on:
       - 'receiptledger/harness/android-v1/app/build.gradle'
       - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/performance/**'
       - 'receiptledger/harness/android-v1/app/src/androidTest/java/com/receiptledger/v1/performance/**'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/search/SearchBrowseServiceV1.java'
+      - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/search/SqliteSearchBrowseSnapshotV1.java'
       - '.github/workflows/receiptledger-v1-performance-reliability.yml'
   workflow_dispatch:
 
@@ -59,7 +61,7 @@ jobs:
       - name: Audit public namespace
         run: bash receiptledger/tools/audit_public_tree.sh
 
-      - name: Enforce CP36 Phase A measurement-only scope
+      - name: Enforce CP36 Phase B bounded remediation scope
         shell: bash
         run: |
           set -euo pipefail
@@ -75,19 +77,18 @@ jobs:
               receiptledger/harness/android-v1/app/build.gradle) ;;
               receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/performance/PerformanceReliabilityV1Test.java) ;;
               receiptledger/harness/android-v1/app/src/androidTest/java/com/receiptledger/v1/performance/PerformanceReliabilityInstrumentedTest.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/search/SearchBrowseServiceV1.java) ;;
+              receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/search/SqliteSearchBrowseSnapshotV1.java) ;;
               '') ;;
-              *) echo "CP36 Phase A scope violation: $f"; exit 31 ;;
+              *) echo "CP36 Phase B scope violation: $f"; exit 31 ;;
             esac
           done < receiptledger/cp36-changed-files.txt
 
-          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java" || {
-            echo 'CP36 Phase A must not change production Java'; exit 32;
-          }
           git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/AndroidManifest.xml" || {
-            echo 'CP36 Phase A must not change manifest'; exit 33;
+            echo 'CP36 must not change manifest'; exit 33;
           }
           git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/res" || {
-            echo 'CP36 Phase A must not change production resources'; exit 34;
+            echo 'CP36 must not change production resources'; exit 34;
           }
           grep -Fq 'VERSION = 2' "$APP/src/main/java/com/receiptledger/v1/product/ProductCatalogSchema.java"
           grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/persistence/ReceiptSchema.java"
@@ -297,7 +298,7 @@ jobs:
           ]
           breaches=[(n,x,b) for n,x,b in checks if x>b]
           ratio=round(a['search_10k_ms']/max(1,a['search_1k_ms']),2)
-          print('CP36_BUDGET_ANALYSIS phase=DIAGNOSTIC budget_breaches=%d search_10k_to_1k_ratio_x100=%d' % (
+          print('CP36_BUDGET_ANALYSIS phase=POST_SEARCH_REMEDIATION budget_breaches=%d search_10k_to_1k_ratio_x100=%d' % (
               len(breaches),round(ratio*100)))
           for n,x,b in checks:
               print('%s actual=%d budget=%d status=%s' % (n,x,b,'BREACH' if x>b else 'WITHIN'))
@@ -346,10 +347,9 @@ jobs:
             echo 'checkpoint=RL_V1_PERFORMANCE_RELIABILITY_01'
             echo "public_commit=${GITHUB_SHA}"
             echo "predecessor_handoff=${BASE}"
-            echo 'phase=DIAGNOSTIC_MEASUREMENT_ONLY'
+            echo 'phase=BOUNDED_SEARCH_REMEDIATION'
             echo 'product_schema=2_UNCHANGED'
             echo 'receipt_schema=1_UNCHANGED'
-            echo 'production_java=UNCHANGED'
             echo 'compile_sdk=36'
             echo 'target_sdk=36'
             echo 'min_sdk=23'
