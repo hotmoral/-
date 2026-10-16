@@ -429,11 +429,11 @@ public final class PerformanceReliabilityInstrumentedTest {
                 product.bindString(1, id);
                 product.bindString(2, "STANDARD");
                 product.bindString(3, "Migration " + suffix);
-                product.bindString(4, "migration" + suffix);
+                product.bindString(4, com.receiptledger.v1.product.ProductNameNormalizer.key("Migration " + suffix));
                 product.bindLong(5, i + 1L);
                 product.executeInsert();
                 alias.clearBindings();
-                alias.bindString(1, raw.toLowerCase(Locale.ROOT));
+                alias.bindString(1, com.receiptledger.v1.product.ProductNameNormalizer.key(raw));
                 alias.bindString(2, raw);
                 alias.bindString(3, id);
                 alias.executeInsert();
