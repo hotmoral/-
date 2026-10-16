@@ -1,0 +1,143 @@
+name: Mobi P1-C-R8 Regional Procedural Stage 3
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c-r8-regional-procedural-surface-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_r8_regional_grammar_v1.py'
+      - 'mobi/p1-b2/geometry/p1_c_r8_neutral_m0_params_v1.py'
+      - 'mobi/p1-b2/geometry/p1_c_r8_regional_procedural_surface_v1.py'
+      - 'mobi/p1-b2/geometry/run_p1_c_r8_regional_procedural_stage3.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_r8_regional_procedural_surface_v1.py'
+      - '.github/workflows/mobi-p1-c-r8-stage3-regional-procedural.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c-r8-stage3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r8-stage3/evidence
+          { echo "git_commit=${GITHUB_SHA}"; echo "runner=ubuntu-latest"; python3 --version; } | tee mobi/p1-c-r8-stage3/evidence/environment.txt
+
+      - name: Verify exact private parity and frozen inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          expected = {
+              'p1_c_r8_regional_grammar_v1.py': '9ed2555afebf79dc7c087c35f82f69968b3c7ea9',
+              'p1_c_r8_neutral_m0_params_v1.py': '58bf9d249159a7d1765d14c3b881732f05172aab',
+              'p1_c_r8_regional_procedural_surface_v1.py': '4ad080dd41d52b8c6846734ecb19af267a926579',
+              'run_p1_c_r8_regional_procedural_stage3.py': 'fe5b8d6d9e4a91089542d1dcf193c18f671ac24c',
+              'test_p1_c_r8_regional_procedural_surface_v1.py': '7012830633f03b92b5f870f7e7dc3d375741cbb2',
+              'p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py': '6165e55fd905944d484a1a0758f9a85f4cf92761',
+              'p1_c_r2_minimal_volumetric_proxy_v1.py': '4d4006f66e98fbf10ce54ed87bb78a9ee5ee3daa',
+              'model.py': 'c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b',
+              'orientation_v2.py': '33cb9c1e8f3b41f038898345a0aee0642609e812',
+              'e_v0_profiles.py': '087826028fa7a2ad5a9a042ec188f335c9ff18cc',
+              'e_v0_fixture_adapter.py': '96bb5351208c157003ce0a50f828075537c5edb5',
+              'c3_semantic.py': '9ebb7192fbd414f134ecd15991ca252af58bfd62',
+              'c3w_h6n_fixture_adapter.py': 'fd3a53be0ef18e8ee4085b031cf8e7d2faa18195',
+              'h6n_stepped_turn_v2.py': '8903145739c5eb0a21b87d192c27cfdab6fc48b0',
+              'h6n_stepped_turn.py': '62ee60e58120b4db537cb8247f507d7ede67afcb',
+              'candidates_v2.py': '39bcf9759387800c7da60ace45a528d238d4208f',
+              'motions_v2.py': 'a3d6c1fd0227216fdf2a69e056e3b177dc398c53',
+          }
+          lines = []
+          mismatches = []
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git', 'hash-object', path], text=True).strip()
+              lines.append(f'{actual}  {path}')
+              if actual != wanted:
+                  mismatches.append((path, wanted, actual))
+          Path('../../p1-c-r8-stage3/evidence/git_blob_shas.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          if mismatches:
+              raise SystemExit('blob mismatch: ' + repr(mismatches))
+          print('exact_private_public_and_frozen_input_hashes=PASS')
+          PY
+
+      - name: Run bounded R8 regional procedural tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_r8_regional_procedural_surface_v1.py 2>&1 | tee ../../p1-c-r8-stage3/evidence/unittest.txt
+
+      - name: Generate deterministic Stage 3 evidence twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c-r8-stage3/run-seed1 ../../p1-c-r8-stage3/run-seed777
+          PYTHONHASHSEED=1 python3 run_p1_c_r8_regional_procedural_stage3.py --output-dir ../../p1-c-r8-stage3/run-seed1
+          PYTHONHASHSEED=777 python3 run_p1_c_r8_regional_procedural_stage3.py --output-dir ../../p1-c-r8-stage3/run-seed777
+          diff -ru ../../p1-c-r8-stage3/run-seed1 ../../p1-c-r8-stage3/run-seed777 | tee ../../p1-c-r8-stage3/evidence/deterministic_diff.txt
+          cp -R ../../p1-c-r8-stage3/run-seed1/. ../../p1-c-r8-stage3/evidence/
+
+      - name: Validate bounded Stage 3 evidence
+        working-directory: mobi/p1-c-r8-stage3/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          s = json.loads(Path('summary.json').read_text())
+          assert s['mechanicalPass'] is True, s
+          assert s['prototypeVersion'] == 'P1_C_R8_REGIONAL_PROCEDURAL_DEFORMABLE_SURFACE_V1', s
+          assert s['sourceFamily'] == 'RF_J_BOUNDED_REGIONAL_PROCEDURAL_DEFORMABLE_SURFACE', s
+          assert s['sourcePackId'] == 'R6_CONSTRUCTION_PACK_V1', s
+          assert s['grammarSignature'] == '704759c992bb72a416b19b2b03698fe35ab200a361bc5bc0493cf340b427f4ba', s
+          assert s['parameterSignature'] == '491de168aa148547d1e8266360d07039468e6b07fc517ff4d2afc78130e77ef0', s
+          assert s['recordCount'] == 3, s
+          assert s['semanticMutationCount'] == 0, s
+          assert s['surfaceSignatureCount'] == 1, s
+          assert s['grammarSignatureCount'] == 1, s
+          assert s['parameterSignatureCount'] == 1, s
+          assert s['authoritativeRegionFunctionCount'] == 8, s
+          assert s['authoritativeRegionScalarCount'] == 54, s
+          assert s['authoritativeBlendInterfaceCount'] == 7, s
+          assert s['authoritativeScalarCount'] == 61, s
+          assert s['derivedSubdivisionSteps'] == 0, s
+          assert s['externalDomainCounts'] == [6], s
+          assert s['maxPawPinError'] <= 1e-9, s
+          assert s['nonfiniteRecordCount'] == 0, s
+          assert s['interfaceFailureRecordCount'] == 0, s
+          assert s['samplingBoundsMismatchCount'] == 0, s
+          assert s['correctionUseCount'] == 0, s
+          assert all(v > 0 for v in s['occupiedPixelCounts']), s
+          assert Path('deterministic_diff.txt').read_text() == '', 'non-empty deterministic diff'
+          pngs = sorted(Path('debug').glob('*.png'))
+          assert len(pngs) == 12, [p.name for p in pngs]
+          for path in pngs:
+              assert path.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'), path
+          print(json.dumps(s, indent=2, sort_keys=True))
+          PY
+
+      - name: Hash Stage 3 evidence
+        working-directory: mobi/p1-c-r8-stage3/evidence
+        run: |
+          set -euo pipefail
+          find . -type f -print0 | sort -z | xargs -0 sha256sum > EVIDENCE_SHA256SUMS.txt
+          cat EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-r8-regional-procedural-stage3-${{ github.run_id }}
+          path: mobi/p1-c-r8-stage3/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
