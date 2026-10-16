@@ -77,6 +77,7 @@ jobs:
               receiptledger/harness/android-v1/app/build.gradle) ;;
               receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/performance/PerformanceReliabilityV1Test.java) ;;
               receiptledger/harness/android-v1/app/src/androidTest/java/com/receiptledger/v1/performance/PerformanceReliabilityInstrumentedTest.java) ;;
+              receiptledger/harness/android-v1/app/src/androidTest/java/com/receiptledger/v1/performance/SearchBrowseSqliteParityInstrumentedTest.java) ;;
               receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/search/SearchBrowseServiceV1.java) ;;
               receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/search/SqliteSearchBrowseSnapshotV1.java) ;;
               '') ;;
@@ -264,6 +265,17 @@ jobs:
             | tr -d '\r' | tee receiptledger/cp36-android-metrics.txt
           grep -Fq 'CP36_ANDROID_METRICS ' receiptledger/cp36-android-metrics.txt
 
+      - name: Verify CP36 SQLite search semantic parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 300 adb shell am instrument -w -r \
+            -e class com.receiptledger.v1.performance.SearchBrowseSqliteParityInstrumentedTest \
+            com.receiptledger.v1.test/androidx.test.runner.AndroidJUnitRunner \
+            | tee receiptledger/cp36-search-parity.txt
+          if grep -Fq 'FAILURES!!!' receiptledger/cp36-search-parity.txt; then exit 72; fi
+          grep -Fq 'OK (1 test)' receiptledger/cp36-search-parity.txt
+
       - name: Analyze CP36 decision budgets
         shell: bash
         run: |
@@ -280,7 +292,7 @@ jobs:
           required={'version':1,'search_10k_scanned':10000,'history_observations':1000,'migration_rows':1000,
                     'archive_files':2000,'archive_removed':1000,'reopen_cycles':10,'semantic_failures':0}
           for k,v in required.items():
-              if a.get(k)!=v: raise SystemExit('%s expected %d got %r' % (k,v,a.get(k)))
+              if a.get(k)!=v: raise SystemExit('%s expected %d got %r' % (k,v,values.get(k)))
           checks=[
               ('startup_median_ms',s['startup_median_ms'],2500),
               ('startup_max_ms',s['startup_max_ms'],5000),
@@ -323,6 +335,7 @@ jobs:
           cp receiptledger/cp36-startup-raw.txt "$OUT/CP36_STARTUP_RAW.txt"
           cp receiptledger/cp36-home-meminfo.txt "$OUT/CP36_HOME_MEMINFO.txt"
           cp receiptledger/cp36-instrumentation.txt "$OUT/CP36_INSTRUMENTATION.txt"
+          cp receiptledger/cp36-search-parity.txt "$OUT/CP36_SEARCH_PARITY.txt"
           cp receiptledger/cp36-emulator.log "$OUT/CP36_EMULATOR.log"
           cp receiptledger/cp36-emulator-android-release.txt "$OUT/CP36_EMULATOR_ANDROID_RELEASE.txt"
           cp receiptledger/cp36-emulator-api.txt "$OUT/CP36_EMULATOR_API.txt"
@@ -363,8 +376,8 @@ jobs:
           (cd "$SRC" && find . -type f -not -path './app/build/*' -print0 | sort -z | xargs -0 sha256sum) > "$OUT/SOURCE_SHA256.txt"
           sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/SOURCE_SHA256.txt \
             "$OUT"/APK_PERMISSIONS.txt "$OUT"/CP36_JVM_METRICS.txt "$OUT"/CP36_STARTUP_METRICS.txt \
-            "$OUT"/CP36_ANDROID_METRICS.txt "$OUT"/CP36_BUDGET_ANALYSIS.txt "$OUT"/CP36_DIFF.txt \
-            > "$OUT/EVIDENCE_SHA256.txt"
+            "$OUT"/CP36_ANDROID_METRICS.txt "$OUT"/CP36_BUDGET_ANALYSIS.txt "$OUT"/CP36_SEARCH_PARITY.txt \
+            "$OUT"/CP36_DIFF.txt > "$OUT/EVIDENCE_SHA256.txt"
 
       - uses: actions/upload-artifact@v4
         with:
