@@ -127,7 +127,9 @@ public final class CaptureReviewAssessmentV2 {
         if (issues == null || issues.isEmpty()) return false;
         for (String issue : issues) {
             if (issue == null) return false;
-            if (!issue.startsWith("USER_EDITED_") && !issue.startsWith("USER_CONFIRMED_")) return false;
+            if (!issue.startsWith("USER_EDITED_")
+                    && !issue.startsWith("USER_CONFIRMED_")
+                    && !issue.startsWith("USER_REMOVED_")) return false;
         }
         return true;
     }
