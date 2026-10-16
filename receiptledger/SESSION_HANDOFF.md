@@ -10,12 +10,12 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP27_PRICE_INTELLIGENCE_V2_CLOSEOUT.md`
-4. `receiptledger/CP27_PRICE_INTELLIGENCE_V2_EVIDENCE.md`
-5. `receiptledger/CP27_PRICE_INTELLIGENCE_V2_PLAN.md`
-6. `receiptledger/PRICE_INTELLIGENCE_V2_CONSISTENCY_REVIEW.md`
-7. `receiptledger/PRICE_INTELLIGENCE_V2_GOLDEN_VECTORS.md`
-8. `receiptledger/CP26_COMMODITY_NONSTANDARD_V2_CLOSEOUT.md`
+3. `receiptledger/CP28_PRICE_EVALUATION_CLOSEOUT.md`
+4. `receiptledger/CP28_PRICE_EVALUATION_EVIDENCE.md`
+5. `receiptledger/CP28_PRICE_EVALUATION_PLAN.md`
+6. `receiptledger/PRICE_EVALUATION_CONSISTENCY_REVIEW.md`
+7. `receiptledger/PRICE_EVALUATION_GOLDEN_VECTORS.md`
+8. `receiptledger/CP27_PRICE_INTELLIGENCE_V2_CLOSEOUT.md`
 9. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
 11. `receiptledger/README.md`
@@ -23,26 +23,20 @@ Read in order:
 
 ## 1. Latest executable checkpoint
 
-**CP27 — Price Intelligence V2 — PASS / COMPLETE**
+**CP28 — Price Evaluation — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-price-intelligence-v2-20261016`
-- predecessor handoff: `b5a20233fbe9d64d45e00c46adafadfbe6925f6e`
-- frozen implementation HEAD: `4edc37c5e16752ff4a4ebc96d67d8a6abfb8e5b8`
-- canonical Actions: `38831623548` — SUCCESS
-- job: `116751473084` — SUCCESS
-- artifact ID: `12017014494`
-- artifact digest: `sha256:660ead5ea86bae86fbd6cf67643866c17acfa5f144c9b1d06f29d50f71f44dd5`
-- APK SHA-256: `8455e4ce23e15c6a113e87ddbd0ddb000e41d9f1849e7f431c9ed5dfbfabe1bc`
-- CP27 price-intelligence tests: 8/8 PASS
-- legacy price-history tests: 2/2 PASS
-- CP26 commodity: 8/8 PASS
-- CP25 category: 8/8 PASS
-- CP24 identity: 8/8 PASS
-- CP23 semantics: 7/7 PASS
-- CP21 catalog: 15/15 PASS
-- CP22 persistence: 7/7 PASS
-- lint: 0 errors / 0 warnings
-- versionName `1.0.25-price-intelligence-v2`, versionCode 26
+- branch: `receiptledger/run-v1-price-evaluation-20261016`
+- predecessor handoff: `c9131d0c6c8e799390ff37a370a1b1c77c38647a`
+- frozen implementation HEAD: `dd4f98613677ae998932d77f3e5f89d7bddba107`
+- canonical Actions: `38834818192` — SUCCESS
+- job: `116761457914` — SUCCESS
+- artifact ID: `12018776680`
+- artifact digest: `sha256:aa90bff8107f34d1974fd9998ceb543fba33fd8b0d402cc972840f9495b9e4b6`
+- APK SHA-256: `692e16f0bd6ad23caba3361d831376620bac09e1505f4780d7147402f9fd48f6`
+- CP28 tests 8/8 PASS
+- CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
+- lint 0 errors / 0 warnings
+- versionName `1.0.26-price-evaluation`, versionCode 27
 
 Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary.
 
@@ -54,148 +48,104 @@ Target experience:
 
 `영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색·탐색 -> 과거 가격과 현재 가격 판단`
 
-CP27 supplies the historical comparison facts. CP28 will decide how those facts become a human-readable price judgment.
+CP28 now supplies the deterministic personal-history judgment layer.
 
-## 3. CP27 comparison-price contract
+## 3. Frozen evaluation policy
 
-Comparison price is a **receipt-traceable ratio**, not an opaque aggregate.
+Input: exactly one CP27 eligible comparison cohort.
 
-Every eligible observation retains:
+Baseline:
 
-- receipt/item identity;
-- date/store;
-- raw unit price / line amount / receipt discount;
-- validation/link source;
-- PurchaseForm and provenance;
-- comparison basis;
-- exact source numerator and denominator.
+- latest observation excluded;
+- minimum prior observations = 3;
+- use at most 5 most recent prior observations;
+- usual price = median.
 
-### STANDARD
+Material change requires >=5% AND >=100 minor units.
+Extreme change requires >=15% AND >=500 minor units.
+Exact boundaries are inclusive.
 
-- stable exact product ID defines the history;
-- denominator = one purchased package;
-- line amount / item quantity preferred;
-- direct unit price fallback only if line/quantity unavailable;
-- conflicting item arithmetic is excluded.
+Judgments: `VERY_CHEAP / CHEAP / TYPICAL / EXPENSIVE / VERY_EXPENSIVE`.
 
-### NON_STANDARD
+No-judgment states: `INSUFFICIENT_HISTORY / CONTEXTUAL_ONLY / NON_POSITIVE_BASELINE`.
 
-Strict normalized cohorts:
+## 4. Explainability / separation
 
-- `WEIGHT_KG`
-- `VOLUME_L`
-- `EACH`
+Every result preserves:
 
-Contextual only:
+- basis/strength;
+- status/judgment/reason code;
+- latest and immediately previous price;
+- previous delta/percent;
+- baseline count/window and baseline receipt IDs;
+- usual-price median;
+- latest-vs-usual delta/percent;
+- frozen thresholds.
 
-- `LIKE_FORM:<unit>:<raw form>` for 봉/팩/상자/단/OTHER.
+`지난번보다` and `평소보다` are intentionally separate calculations.
 
-Do not combine distinct cohorts.
+## 5. Contextual commodity boundary
 
-## 4. Discount contract
+`LIKE_FORM` package/form histories are contextual only. Equal 봉/팩/상자 label does not prove equal physical contents, so CP28 never produces cheap/expensive labels for those cohorts.
 
-Receipt persistence currently has aggregate `discountSum`, not an item-discount attribution graph.
-
-Therefore:
-
-- sole-item receipt + discount -> exact attribution permitted;
-- multi-item receipt + unallocated discount -> observation visible but excluded from aggregates;
-- no proportional or proximity-based discount allocation.
-
-Do not reinterpret excluded multi-item discounts as zero discount.
-
-## 5. Validation/statistics contract
-
-Eligible receipt validation:
-
-- PASS
-- PASS_WITH_WARNINGS
-
-Excluded:
-
-- MISMATCH
-- INCOMPLETE
-
-Each safe cohort supports:
-
-- latest / previous;
-- delta / delta-percent;
-- min / max;
-- mean / median;
-- all-history, period, store, and period+store scope.
-
-CP27 produces no cheap/normal/expensive judgment.
+Strict kg/L/each cohorts may be evaluated because CP27 provides exact normalized comparison bases.
 
 ## 6. Canonical metric
 
-`observations=10 eligible=7 excluded_discount=1 excluded_invalid=1 missing_form=1 standard_cohorts=1 commodity_strict_cohorts=1 commodity_contextual_cohorts=1 scope_checks=2 receipt_traceable_rates=7`
+`cases=12 evaluated=9 insufficient=1 contextual=1 nonpositive=1 typical=2 cheap=2 very_cheap=1 expensive=2 very_expensive=2 latest_excluded=1 recent_five_window=1 deterministic_repeat=1`
 
-Synthetic/local contract evidence only.
+Synthetic deterministic contract evidence only.
 
 ## 7. Frozen upstream rules
 
-- stable catalog ID = identity authority;
-- product schema 2;
-- receipt schema 1;
-- legacy `price/**` unchanged;
-- CP23 semantics unconfirmed;
-- CP24 identity unchanged;
-- CP25 category non-authoritative;
-- CP26 grouping/form rules unchanged;
-- grouping != comparability;
-- receipt-derived price/date/store/validation truth preserved;
+- stable catalog ID remains identity authority;
+- product schema 2 / receipt schema 1;
+- CP27 `priceintel/**` frozen;
+- legacy `price/**` frozen;
+- identity/category/commodity rules unchanged;
+- CP27 discount/validation exclusions cannot be bypassed;
 - no duplicate mutable price table;
-- no permission/network/privacy expansion.
+- no market-price/network/generative-AI judgment;
+- no permission/privacy expansion.
 
 ## 8. Deliberate limitations
 
-- multi-item receipt discounts cannot enter strict aggregates until item-level attribution is represented with evidence;
-- contextual same-form cohorts are not physical normalization;
-- exact-normalized store text is not merchant-entity consolidation;
-- CP27 does not judge price desirability;
-- no chart or commercial UI here.
+- thresholds are fixed V1 personal-history heuristics;
+- baseline is observation-count based rather than seasonal/time-decay;
+- old observations may remain relevant for infrequently purchased goods;
+- contextual forms remain unjudged;
+- no commercial UI/search implementation in CP28.
 
 Do not solve these through unrelated scope expansion.
 
 ## 9. Next planned implementation checkpoint
 
-**CP28 — Price Evaluation**
+**CP29 — Search / Browse**
 
-Required preflight:
+Required direction:
 
-1. choose data-sufficiency thresholds;
-2. choose deterministic baseline/window semantics;
-3. use a robust “usual price” statistic rather than arbitrary free-form judgment;
-4. define explicit cheap/normal/expensive thresholds;
-5. handle sparse history and previous price = 0 safely;
-6. decide whether contextual LIKE_FORM cohorts may receive judgment, and if so label their weaker basis clearly;
-7. every result must expose the evidence/baseline/reason;
-8. never mix cohorts;
-9. no online price or generative-AI opinion.
+1. define searchable product/commodity fields and ranking;
+2. support product/commodity name, confirmed safe aliases, brand/specification and category;
+3. include store context without turning store text into identity authority;
+4. support recent/frequent/price-change browse views using existing derived facts;
+5. fuzzy text may assist discovery but must never silently merge identities;
+6. keep search read-only with respect to catalog equality;
+7. define deterministic empty/no-result and unresolved states;
+8. keep query performance measurable for CP36;
+9. do not jump into final commercial visual polish before CP30 Design System.
 
-CP28 is planned, not automatically authorized.
+CP29 is planned, not automatically authorized.
 
 ## 10. Security/public boundary
 
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Do not use other project namespaces. Never commit secrets, signing material, private receipts, personal purchase DBs/backups, identifiers or uncleared assets.
+Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Never commit secrets, signing material, private receipts, personal purchase DB/backups, identifiers or uncleared assets.
 
 Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE unless separately authorized.
 
 ## 11. Group discipline
 
-For every checkpoint:
-
-- recover canonical state;
-- restate essence/non-goals;
-- inspect materially relevant contradictions and risks;
-- resolve cheap problems before implementation;
-- avoid ritual re-audits and unrelated cleanup;
-- implement the smallest coherent proof;
-- run scoped CI/evidence;
-- freeze exact executable refs;
-- synchronize handoff/status docs;
-- stop before the next unauthorized group.
+Recover canonical state -> restate essence/non-goals -> inspect material contradictions -> implement smallest coherent proof -> run scoped CI/evidence -> freeze refs -> synchronize handoff -> stop before next unauthorized checkpoint.
 
 ## 12. Stop condition
 
-**CP27 is complete and handoff-synchronized. Await explicit authorization for CP28.**
+**CP28 is complete and handoff-synchronized. Await explicit authorization for CP29.**
