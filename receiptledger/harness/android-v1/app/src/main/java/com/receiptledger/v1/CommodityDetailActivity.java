@@ -161,7 +161,7 @@ public final class CommodityDetailActivity extends Activity {
         latestCard.addView(form);
         SemanticPresentationV1.Presentation p = CommodityDetailFormatterV1.latestPresentation(latest);
         TextView status = new TextView(this);
-        status.setText(p.labelKo + " · " + p.explanationKo);
+        status.setText(getString(R.string.commodity_detail_status_join, p.labelKo, p.explanationKo));
         UiKitV1.styleText(status, DesignTokensV1.TextRole.BODY_MEDIUM, p.tone.foregroundArgb);
         status.setPadding(0, dp(DesignTokensV1.SPACE_3_DP), 0, 0);
         latestCard.addView(status);
@@ -265,7 +265,7 @@ public final class CommodityDetailActivity extends Activity {
         card.addView(summary);
         SemanticPresentationV1.Presentation p = SemanticPresentationV1.price(section.evaluation);
         TextView context = new TextView(this);
-        context.setText(p.labelKo + " · " + p.explanationKo);
+        context.setText(getString(R.string.commodity_detail_status_join, p.labelKo, p.explanationKo));
         UiKitV1.styleText(context, DesignTokensV1.TextRole.BODY_MEDIUM, p.tone.foregroundArgb);
         context.setPadding(0, dp(DesignTokensV1.SPACE_3_DP), 0, 0);
         card.addView(context);

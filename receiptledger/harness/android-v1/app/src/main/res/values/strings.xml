@@ -76,6 +76,7 @@
     <string name="commodity_detail_contextual_body">봉·팩·상자·단처럼 실제 무게나 용량이 확정되지 않은 형태는 싸다·비싸다 판정 없이 같은 형태끼리만 참고합니다.</string>
     <string name="commodity_detail_purchase_history">구매 이력</string>
     <string name="commodity_detail_history_empty">아직 연결된 구매 기록이 없습니다.</string>
+    <string name="commodity_detail_status_join">%1$s · %2$s</string>
 
     <string name="showing_original">원본과 검출 사각형을 표시 중입니다.</string>
     <string name="loading">이미지 디코딩 및 영수증 영역 분석 중입니다.</string>

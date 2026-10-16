@@ -114,6 +114,10 @@ jobs:
             echo '===== COMPLETE ANDROID LINT REPORT ====='
             cat "$REPORT"
             echo '===== END ANDROID LINT REPORT ====='
+            if ! grep -Fqx 'No issues found.' "$REPORT"; then
+              echo 'CP32 requires lint 0 errors / 0 warnings'
+              status=43
+            fi
           else
             echo 'Expected lint report missing'
             status=41
