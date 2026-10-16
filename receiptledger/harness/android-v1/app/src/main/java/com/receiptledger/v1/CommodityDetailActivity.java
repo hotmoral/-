@@ -249,7 +249,7 @@ public final class CommodityDetailActivity extends Activity {
         CommodityPriceChartViewV1 chart = new CommodityPriceChartViewV1(this);
         chart.setSection(section);
         chartCard.addView(chart, new LinearLayout.LayoutParams(-1, dp(CommodityPriceChartViewV1.RECOMMENDED_HEIGHT_DP)));
-        addBlock(host, chartCard, DesignTokensV1.SPACE_5_DP);
+        addBlock(host, chartCard, DesignTokensV1.SPACE_6_DP);
     }
 
     private void renderContextualSection(CommodityDetailV1.BasisSection section, LinearLayout host) {
