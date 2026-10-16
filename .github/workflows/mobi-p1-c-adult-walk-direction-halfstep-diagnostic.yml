@@ -1,0 +1,67 @@
+name: Mobi P1-C Adult Walk Direction Half-Step Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-adult-walk-density-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_adult_walk_direction_halfstep_diagnostic_v1.py'
+      - '.github/workflows/mobi-p1-c-adult-walk-direction-halfstep-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  halfstep-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify frozen base and diagnostic blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+            'p1_c_adult_walk_density_experiment_v1.py': '3d96036e9c2aca29acafef20e5c72db090c3ec44',
+            'p1_c_adult_walk_direction_halfstep_diagnostic_v1.py': '60e2b2ecf52bf80dff65df28ea7ecdb84bad6e4d',
+          }
+          for path, wanted in expected.items():
+            actual = subprocess.check_output(['git','hash-object',path], text=True).strip()
+            assert actual == wanted, (path, wanted, actual)
+          print('frozen_halfstep_identity=PASS')
+          PY
+
+      - name: Run exact half-step diagnostic
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c-adult-walk-halfstep
+          python3 p1_c_adult_walk_direction_halfstep_diagnostic_v1.py --output-dir ../../p1-c-adult-walk-halfstep
+
+      - name: Validate diagnostic
+        working-directory: mobi/p1-c-adult-walk-halfstep
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          s = json.loads(Path('direction_halfstep_summary.json').read_text())
+          assert s['version'] == 'P1_C_ADULT_WALK_DIRECTION_HALFSTEP_DIAGNOSTIC_V1'
+          assert [r['directionCount'] for r in s['results']] == [12,16,24,36]
+          expected = {12:15.0, 16:11.25, 24:7.5, 36:5.0}
+          for r in s['results']:
+            assert abs(r['theoreticalMaxAngularErrorDeg'] - expected[r['directionCount']]) < 1e-9
+            assert abs(r['measuredHalfstepMaxAngularErrorDeg'] - expected[r['directionCount']]) < 1e-9
+          print(json.dumps(s, indent=2, sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-adult-walk-halfstep-${{ github.run_id }}
+          path: mobi/p1-c-adult-walk-halfstep/
+          if-no-files-found: error
+          retention-days: 30
