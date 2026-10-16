@@ -1,0 +1,204 @@
+name: Mobi P1-C R12 Surface-Terminal Bind Stage-1 Evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_stage1:
+        description: 'Exact authorization token required after R12 Stage-0 freeze review'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobi-p1-c-r12-surface-terminal-bind-stage1
+  cancel-in-progress: false
+
+jobs:
+  r12-stage1:
+    if: >-
+      github.ref == 'refs/heads/mobi/run-p1-c-r12-surface-terminal-bind-20261017' &&
+      inputs.confirm_stage1 == 'RUN_R12_STAGE1_AFTER_STAGE0_FREEZE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify R12 Stage-0 freeze and trigger boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/mobi/run-p1-c-r12-surface-terminal-bind-20261017'
+          test '${{ inputs.confirm_stage1 }}' = 'RUN_R12_STAGE1_AFTER_STAGE0_FREEZE'
+          FREEZE='mobi/p1-b2/geometry/P1_C_R12_STAGE0_IMPLEMENTATION_FREEZE.md'
+          ID='mobi/p1-b2/geometry/P1_C_R12_STAGE0_IDENTITY.json'
+          test -f "$FREEZE"
+          test -f "$ID"
+          grep -q 'R12_STAGE0_IMPLEMENTATION_FREEZE' "$FREEZE"
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          ident=json.loads(Path('mobi/p1-b2/geometry/P1_C_R12_STAGE0_IDENTITY.json').read_text())
+          if ident.get('stage1RunAuthorized') is not False:
+              raise SystemExit('Stage-0 identity must remain pre-execution / stage1RunAuthorized=false')
+          for path, expected in ident['gitBlobSha1'].items():
+              actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
+              if actual != expected:
+                  raise SystemExit(f'blob identity drift: {path}: {actual} != {expected}')
+          print('R12 Stage-0 blob identity PASS')
+          PY
+
+      - name: Assemble and verify exact frozen R11 implementation bytes
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install frozen inherited runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+          python - <<'PY'
+          import sys, numpy, fast_simplification, trimesh, skimage, scipy
+          expected={
+              'numpy':'2.5.4','fast_simplification':'0.2.0','trimesh':'4.11.1',
+              'skimage':'0.26.0','scipy':'1.17.0'
+          }
+          actual={
+              'numpy':numpy.__version__,'fast_simplification':fast_simplification.__version__,
+              'trimesh':trimesh.__version__,'skimage':skimage.__version__,'scipy':scipy.__version__
+          }
+          if sys.version_info[:3] != (3,12,15): raise SystemExit(sys.version)
+          if actual != expected: raise SystemExit(f'dependency drift: {actual}')
+          print(sys.version)
+          print(actual)
+          PY
+
+      - name: Verify inherited R10/R11 identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py)" = 'f281aad3e3a6c740c38c0a3f015718996dc45157'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py)" = '5c8820fb7270e7727ececb1bb37d3a24331b24ab'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py)" = '9b7899bc1c39d02291813a826df01d3697192846'
+          test "$(sha256sum mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py | awk '{print $1}')" = 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87'
+
+      - name: Run pre-evidence synthetic contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd mobi/p1-b2/geometry
+          python -m unittest -v test_p1_c_r11_semantic_scaffold_v1.py
+          python -m unittest -v test_p1_c_r12_surface_terminal_bind_alias_v1.py
+
+      - name: Acquire exact frozen standing-cat source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r12/evidence/source
+          E=mobi/p1-c-r12/evidence/source
+          UA='Mobi R12 bounded public feasibility/1.0'
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-r12/evidence/source/cat-original.glb' | sha256sum -c -
+
+      - name: Hard-gate exact V3125 identity before R12 alias construction
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          SRC=mobi/p1-c-r12/evidence/source/cat-original.glb
+          rm -rf /tmp/r12_identity
+          mkdir -p /tmp/r12_identity
+          PYTHONHASHSEED=1 python "$G/p1_c_r12_surface_terminal_bind_alias_v1.py" "$SRC" --geometry-dir "$G" --identity-only --out /tmp/r12_identity/seed1.json
+          PYTHONHASHSEED=777 python "$G/p1_c_r12_surface_terminal_bind_alias_v1.py" "$SRC" --geometry-dir "$G" --identity-only --out /tmp/r12_identity/seed777.json
+          diff -u /tmp/r12_identity/seed1.json /tmp/r12_identity/seed777.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('/tmp/r12_identity/seed1.json').read_text())
+          v=x['v3125']
+          assert v['vertexCount']==3125 and v['faceCount']==6246
+          assert v['meshArraySha256']=='839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77'
+          assert x['r11ImplementationSha256']=='af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87'
+          Path('mobi/p1-c-r12/evidence/V3125_MESH_IDENTITY.json').write_text(json.dumps(x,indent=2,sort_keys=True)+'\n')
+          print('R12 V3125 identity gate PASS',v['meshArraySha256'])
+          PY
+
+      - name: Execute frozen R12 Stage-1 evidence under both seeds
+        shell: bash
+        run: |
+          set -uo pipefail
+          G=mobi/p1-b2/geometry
+          SRC=mobi/p1-c-r12/evidence/source/cat-original.glb
+          E=mobi/p1-c-r12/evidence
+          mkdir -p "$E/seed1" "$E/seed777"
+          set +e
+          PYTHONHASHSEED=1 python "$G/p1_c_r12_surface_terminal_bind_alias_v1.py" "$SRC" --geometry-dir "$G" --out "$E/seed1" > "$E/seed1_run.log" 2>&1
+          RC1=$?
+          PYTHONHASHSEED=777 python "$G/p1_c_r12_surface_terminal_bind_alias_v1.py" "$SRC" --geometry-dir "$G" --out "$E/seed777" > "$E/seed777_run.log" 2>&1
+          RC777=$?
+          set -e
+          python - "$RC1" "$RC777" <<'PY'
+          import json,sys
+          from pathlib import Path
+          rc1,rc777=map(int,sys.argv[1:])
+          Path('mobi/p1-c-r12/evidence/execution_status.json').write_text(
+              json.dumps({'seed1ExitCode':rc1,'seed777ExitCode':rc777},indent=2,sort_keys=True)+'\n'
+          )
+          PY
+          if [ "$RC1" -ne 0 ] || [ "$RC777" -ne 0 ]; then
+            echo "R12 evidence failed: seed1=$RC1 seed777=$RC777" >&2
+            exit 1
+          fi
+          diff -qr "$E/seed1" "$E/seed777" | tee "$E/deterministic_diff.txt"
+          test ! -s "$E/deterministic_diff.txt"
+
+      - name: Record environment and evidence manifest
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-r12/evidence
+          mkdir -p "$E"
+          python - <<'PY' > "$E/environment.txt"
+          import platform,sys
+          print(sys.version)
+          print(platform.platform())
+          try:
+              import numpy,fast_simplification,trimesh,skimage,scipy
+              print('numpy',numpy.__version__)
+              print('fast-simplification',fast_simplification.__version__)
+              print('trimesh',trimesh.__version__)
+              print('scikit-image',skimage.__version__)
+              print('scipy',scipy.__version__)
+          except Exception as exc:
+              print('dependency-report-error',repr(exc))
+          PY
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobi-p1-c-r12-surface-terminal-bind-${{ github.run_id }}
+          path: mobi/p1-c-r12/evidence
+          if-no-files-found: warn
+          retention-days: 30
