@@ -43,11 +43,17 @@ Do not paste OCR text, store name, product names, dates, prices or screenshots c
 
 ## 5. Sanitized report contract
 
-Expected shape:
+Exact Phase A output shape:
 
-`RL_CP37_SAMPLE version=1 source=GALLERY image_w=... image_h=... perspective=0 ocr_ms=... attempted_passes=... merged_candidates=... best_pass=ORIGINAL initial_validation=PASS initial_decision=AUTO_CONFIRMED initial_items=... initial_review_items=... initial_review_fields=... store_changed=0 date_changed=0 total_changed=0 discount_changed=0 item_count_changed=0 item_name_changes=0 item_quantity_changes=0 item_unit_price_changes=0 item_line_amount_changes=0 final_validation=PASS saved=1`
+`RL_CP37_SAMPLE version=1 source=GALLERY image_w=... image_h=... perspective=0 ocr_ms=... attempted_passes=... merged_candidates=... best_pass=ORIGINAL initial_validation=PASS initial_decision=AUTO_CONFIRMED initial_items=... initial_review_items=... initial_review_fields=... store_changed=0 date_changed=0 total_changed=0 discount_changed=0 item_count_changed=0 item_structure_changes=0 item_name_changes=0 item_quantity_changes=0 item_unit_price_changes=0 item_line_amount_changes=0 any_correction=0 false_auto_confirm=0 final_validation=PASS saved=1`
 
-The exact key order is frozen by the Phase A implementation.
+Key order and names are frozen by `DeviceValidationReportV1` version 1.
+
+Meaning of the additional structural flags:
+
+- `item_structure_changes`: number of initial/final item ordinals that exist on only one side;
+- `any_correction`: 1 when any tracked receipt/item value or item structure changed before save;
+- `false_auto_confirm`: 1 only when the initial decision was AUTO_CONFIRMED and `any_correction=1`.
 
 The line must not contain source values.
 
@@ -55,12 +61,9 @@ The line must not contain source values.
 
 ### Critical trust signal
 
-If:
+`false_auto_confirm=1` is the canonical critical trust signal.
 
-- `initial_decision=AUTO_CONFIRMED`, and
-- any correction count/receipt-field change is non-zero,
-
-classify the sample as `FALSE_AUTO_CONFIRM`.
+It means the app initially considered the receipt safe to save without required review, but visual comparison against the real receipt led to at least one factual/structural correction before save.
 
 Any such sample requires investigation before declaring CP37 PASS_NO_OCR_CHANGE.
 
@@ -68,7 +71,7 @@ Any such sample requires investigation before declaring CP37 PASS_NO_OCR_CHANGE.
 
 For REVIEW_REQUIRED samples, correction counts distinguish useful conservative review from actual OCR/structure errors.
 
-A review request with zero factual corrections is conservative burden; it is not equivalent to a false auto-confirm.
+A review request with `any_correction=0` is conservative burden; it is not equivalent to a false auto-confirm.
 
 ### Latency
 
@@ -114,7 +117,7 @@ After enough samples, aggregate:
 - AUTO_CONFIRMED / REVIEW_REQUIRED counts;
 - false-auto-confirm count;
 - total receipt-field correction count;
-- total item-field correction counts;
+- total item-structure and item-field correction counts;
 - crashes/save failures/duplicates.
 
 Then classify CP37 as PASS_NO_OCR_CHANGE, REMEDIATION_REQUIRED or INSUFFICIENT_EVIDENCE.
