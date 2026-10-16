@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import com.receiptledger.v1.design.ChartGrammarV1;
 import com.receiptledger.v1.design.DesignTokensV1;
@@ -170,6 +171,13 @@ public final class ProductPriceChartViewV1 extends View {
         return value.isEmpty() ? "날짜 미상" : value;
     }
 
-    private int dp(float value) { return Math.round(value * getResources().getDisplayMetrics().density); }
-    private float sp(float value) { return value * getResources().getDisplayMetrics().scaledDensity; }
+    private int dp(float value) {
+        return Math.round(TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics()));
+    }
+
+    private float sp(float value) {
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP, value, getResources().getDisplayMetrics());
+    }
 }
