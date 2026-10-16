@@ -8,6 +8,7 @@ on:
       - 'mobi/p1-b2/geometry/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py'
       - 'mobi/p1-b2/geometry/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py'
       - '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml'
+      - '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic.yml'
 
 permissions:
   contents: read
@@ -100,7 +101,12 @@ jobs:
           assert mod.DECISION_TOKEN == 'POST_R12_TAIL_ROOT_OBSERVATIONAL_DIAGNOSTIC_SELECTED'
           assert mod.CONTRACT_TOKEN == 'POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_CONTRACT_FROZEN'
           assert mod.PREFLIGHT_TOKEN == 'POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_PREFLIGHT_PASS'
-          print('post-R12 diagnostic contract vocabulary PASS')
+          evidence=Path('.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic.yml').read_text(encoding='utf-8')
+          assert 'workflow_dispatch:' in evidence
+          assert '\n  push:' not in evidence
+          assert "refs/heads/mobi/run-p1-c-post-r12-tail-root-diagnostic-20261017" in evidence
+          assert 'RUN_POST_R12_TAIL_ROOT_DIAGNOSTIC_AFTER_PRIVATE_IMPORT' in evidence
+          print('post-R12 diagnostic contract and dispatch vocabulary PASS')
           PY
           WF=.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml
           python - "$WF" <<'PY'
@@ -131,7 +137,8 @@ jobs:
           for p in \
             "$G/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
             "$G/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
-            '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml'; do
+            '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml' \
+            '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic.yml'; do
             printf '%s\n' "PATH=$p"
             printf 'GIT_BLOB_SHA1=%s\n' "$(git hash-object "$p")"
             printf 'SHA256=%s\n' "$(sha256sum "$p" | awk '{print $1}')"
