@@ -1,0 +1,129 @@
+name: Mobi P1-C-R5 Control Shell Stage A
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c-r5-bounded-explicit-control-shell-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py'
+      - 'mobi/p1-b2/geometry/run_p1_c_r5_control_shell_stage_a.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py'
+      - '.github/workflows/mobi-p1-c-r5-stage-a-control-shell.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-c-r5-stage-a:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r5-stage-a/evidence
+          { echo "git_commit=${GITHUB_SHA}"; echo "runner=ubuntu-latest"; python3 --version; } | tee mobi/p1-c-r5-stage-a/evidence/environment.txt
+
+      - name: Verify exact private parity and frozen inputs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          expected = {
+              'p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py': '6165e55fd905944d484a1a0758f9a85f4cf92761',
+              'run_p1_c_r5_control_shell_stage_a.py': 'afe54cd5f212ec821a20ff80142923240112a39c',
+              'test_p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py': 'c6a244e71b06d8fe46170abf07087986621e0d7f',
+              'p1_c_r2_minimal_volumetric_proxy_v1.py': '4d4006f66e98fbf10ce54ed87bb78a9ee5ee3daa',
+              'model.py': 'c4e0334cf5896d0bb7a2ab3e8d89c1cd37f7410b',
+              'orientation_v2.py': '33cb9c1e8f3b41f038898345a0aee0642609e812',
+              'e_v0_profiles.py': '087826028fa7a2ad5a9a042ec188f335c9ff18cc',
+              'e_v0_fixture_adapter.py': '96bb5351208c157003ce0a50f828075537c5edb5',
+              'c3_semantic.py': '9ebb7192fbd414f134ecd15991ca252af58bfd62',
+              'c3w_h6n_fixture_adapter.py': 'fd3a53be0ef18e8ee4085b031cf8e7d2faa18195',
+              'h6n_stepped_turn_v2.py': '8903145739c5eb0a21b87d192c27cfdab6fc48b0',
+              'h6n_stepped_turn.py': '62ee60e58120b4db537cb8247f507d7ede67afcb',
+              'candidates_v2.py': '39bcf9759387800c7da60ace45a528d238d4208f',
+              'motions_v2.py': 'a3d6c1fd0227216fdf2a69e056e3b177dc398c53',
+          }
+          lines = []
+          mismatches = []
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git', 'hash-object', path], text=True).strip()
+              lines.append(f'{actual}  {path}')
+              if actual != wanted:
+                  mismatches.append((path, wanted, actual))
+          Path('../../p1-c-r5-stage-a/evidence/git_blob_shas.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          if mismatches:
+              raise SystemExit('blob mismatch: ' + repr(mismatches))
+          print('exact_private_public_and_frozen_input_hashes=PASS')
+          PY
+
+      - name: Run bounded Stage A targeted tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_r5_bounded_explicit_anatomical_control_shell_v1.py 2>&1 | tee ../../p1-c-r5-stage-a/evidence/unittest.txt
+
+      - name: Generate deterministic Stage A evidence twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c-r5-stage-a/run-seed1 ../../p1-c-r5-stage-a/run-seed777
+          PYTHONHASHSEED=1 python3 run_p1_c_r5_control_shell_stage_a.py --output-dir ../../p1-c-r5-stage-a/run-seed1
+          PYTHONHASHSEED=777 python3 run_p1_c_r5_control_shell_stage_a.py --output-dir ../../p1-c-r5-stage-a/run-seed777
+          diff -ru ../../p1-c-r5-stage-a/run-seed1 ../../p1-c-r5-stage-a/run-seed777 | tee ../../p1-c-r5-stage-a/evidence/determinism_diff.txt
+          cp -R ../../p1-c-r5-stage-a/run-seed1/. ../../p1-c-r5-stage-a/evidence/
+
+      - name: Validate bounded Stage A evidence
+        working-directory: mobi/p1-c-r5-stage-a/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, xml.etree.ElementTree as ET
+          from pathlib import Path
+          s=json.loads(Path('summary.json').read_text())
+          assert s['mechanicalPass'] is True, s
+          assert s['recordCount']==3, s
+          assert s['semanticMutationCount']==0, s
+          assert s['shellSignatureCount']==1, s
+          assert s['coreControlCount']==54, s
+          assert s['junctionControlCount']==16, s
+          assert s['authoritativeControlCount']==70, s
+          assert s['authoritativeFaceCount']==54, s
+          assert s['authoritativeControlCount']<=96, s
+          assert s['authoritativeFaceCount']<=128, s
+          assert s['derivedSubdivisionSteps']==0, s
+          assert s['externalDomainCounts']==[6], s
+          assert s['maxPawPinError']<=1e-9, s
+          assert s['nonfiniteRecordCount']==0, s
+          assert s['domainBoundsMismatchCount']==0, s
+          assert s['correctionUseCount']==0, s
+          assert Path('determinism_diff.txt').read_text()==''
+          svgs=sorted(Path('debug').glob('*.svg'))
+          assert len(svgs)==5, len(svgs)
+          for p in svgs: ET.parse(p)
+          print(json.dumps(s,indent=2,sort_keys=True))
+          PY
+
+      - name: Hash Stage A evidence
+        working-directory: mobi/p1-c-r5-stage-a/evidence
+        run: |
+          set -euo pipefail
+          find . -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > EVIDENCE_SHA256SUMS.txt
+          cat EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-r5-control-shell-stage-a-${{ github.run_id }}
+          path: mobi/p1-c-r5-stage-a/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
