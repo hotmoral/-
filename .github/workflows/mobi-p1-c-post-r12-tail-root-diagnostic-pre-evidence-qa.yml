@@ -103,10 +103,16 @@ jobs:
           print('post-R12 diagnostic contract vocabulary PASS')
           PY
           WF=.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml
-          if grep -Eiq 'curl|wget|innerscene|cat-original\.glb' "$WF"; then
-            echo 'pre-evidence QA workflow must not acquire structural source data' >&2
-            exit 1
-          fi
+          python - "$WF" <<'PY'
+          import sys
+          from pathlib import Path
+          text=Path(sys.argv[1]).read_text(encoding='utf-8').lower()
+          forbidden=('cu'+'rl','wg'+'et','inner'+'scene','cat-original'+'.'+'glb')
+          hits=[token for token in forbidden if token in text]
+          if hits:
+              raise SystemExit(f'pre-evidence QA source-acquisition guard failed: {hits}')
+          print('pre-evidence QA source-acquisition guard PASS')
+          PY
 
       - name: Run inherited and new synthetic tests only
         shell: bash
