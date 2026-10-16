@@ -6,17 +6,16 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-4. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
-5. `CP37_PHYSICAL_DEVICE_REAL_IMAGE_OCR_VALIDATION_PLAN.md`
-6. `PHYSICAL_DEVICE_OCR_VALIDATION_CONSISTENCY_REVIEW.md`
-7. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-8. `CP36_PERFORMANCE_RELIABILITY_CLOSEOUT.md`
-9. `CP36_PERFORMANCE_RELIABILITY_EVIDENCE.md`
-10. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-11. `WORK_UNIT.md`
+3. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+4. `CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
+5. `CP37_FALSE_ITEM_ROW_REMEDIATION_PLAN.md`
+6. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+7. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
+8. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+9. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+10. `WORK_UNIT.md`
 
-GitHub is canonical. Verify the current docs-only handoff HEAD and frozen executable ref separately before using old chat context.
+GitHub is canonical. Verify the current docs-only handoff and the frozen executable separately before using old chat context.
 
 ## Current boundary
 
@@ -24,54 +23,58 @@ V1 CP20–CP36: **COMPLETE**.
 
 Post-V1 CP37: **IN PROGRESS**.
 
-**CP37 Phase A — READY_FOR_DEVICE_EVIDENCE**
+Current state: **Remediation A READY_FOR_PHYSICAL_RETEST**.
 
-- branch `receiptledger/run-post-v1-physical-ocr-validation-20261017`
-- predecessor handoff `d0a3a9ec7658808c82247715d58ac106a3778186`
-- frozen Phase A executable `9bb5dcc276fae4632ade5ac3134e586baad65235`
-- canonical Actions `38950400666` — SUCCESS
-- job `117140033593`
-- artifact ID `12068811009`
-- artifact digest `sha256:86d3861727db107e26edf4073666e010f59249ac746496524f6007ca09787697`
-- APK SHA-256 `f9e5b73db79043a6fc6f76f3381e0e2fdab164b7b53c59d8b9ce405d1147120f`
-- version `1.0.35-physical-ocr-validation`, versionCode 36
+- active branch `receiptledger/run-post-v1-physical-ocr-remediation-20261017`
+- predecessor Phase A handoff `6b7d7b9b65432701b43da53a0e6f0ff1e47a1449`
+- frozen remediation executable `06fafa9db1da0e4592ddc15a468a9c6e4e338515`
+- canonical Actions `38957744298` — SUCCESS
+- job `117164770764`
+- artifact `12071212297`
+- artifact digest `sha256:6540c6350ea47280dc3d9fec64cdaef3b2aef24976f833a44e0cb13bd3b2a811`
+- APK SHA-256 `109b61603c9f4a0a399ecb919399151427ab3ba243e626bbe8543340a4ee0f3d`
+- version `1.0.36-physical-ocr-remediation`, code 37
+- debug package `com.receiptledger.v1.remediation`
+- label `ReceiptLedger 검증`
 - lint `No issues found.`
 
-CP37 is **not complete** until physical-device / real-image evidence is analyzed.
+CP37 is **not complete**.
 
-## What the validation APK does
+## Why remediation exists
 
-The normal ReceiptLedger product flow remains intact. In a debuggable build, after a successful receipt save it additionally exposes `검증 결과 복사`.
+The first physical sample was correctly REVIEW_REQUIRED, but user inspection found a non-product address/header row classified as a product item. The row was spatially separated from the real item body, and the Phase A review UI could not remove a false item row.
 
-That copies one sanitized line describing:
+The issue was therefore classified as a structure/recoverability defect.
 
-- acquisition source;
-- image dimensions/perspective flag;
-- OCR/recovery elapsed time and pass counts;
-- initial validation/review state;
-- correction counts made before save;
-- final validation;
-- whether an initial AUTO_CONFIRMED sample actually required correction.
+## Remediation A
 
-It does not copy merchant/product/date/price/OCR text, IDs, paths or images.
+The frozen remediation build adds:
 
-## Phase B procedure
+- a conservative rule demoting provisional item rows above a recognized date when a real multi-item body exists below;
+- `이 항목은 상품이 아님` in review;
+- `USER_REMOVED_ITEM:<ordinal>` provenance;
+- correct sanitized structural-delta reporting;
+- a side-by-side debug package so the original validation app and its local evidence remain intact.
 
-Use the canonical CP37 debug APK for at least 10 real receipts.
+OCR model/options, recovery passes, identity, price semantics and schemas remain unchanged.
 
-For each receipt:
+## Next physical retest
 
-1. add via camera or gallery;
-2. let OCR finish;
-3. visually compare every field with the original receipt, even if AUTO_CONFIRMED;
-4. correct all factual errors;
+Install the remediation APK alongside the existing validation app. It appears as **ReceiptLedger 검증**.
+
+Rerun the same receipt that exposed the false item, using the same acquisition path where practical.
+
+Then:
+
+1. check whether the previous address/header false item is absent;
+2. visually verify every remaining recognized field;
+3. if another false item remains, mark `이 항목은 상품이 아님`;
+4. correct other factual errors;
 5. save;
 6. tap `검증 결과 복사`;
-7. return only the `RL_CP37_SAMPLE ...` line to this chat.
+7. return only the new `RL_CP37_SAMPLE ...` line and state whether the original false row appeared again.
 
-Aim for >=3 camera, >=3 gallery and >=3 different receipt layouts where practical.
-
-`false_auto_confirm=1` is a blocker-quality trust finding.
+Do not resume the broader 10-receipt campaign before this retest is analyzed.
 
 ## Privacy/security
 
@@ -79,13 +82,13 @@ Never commit or share in the public repository:
 
 - real receipt images;
 - OCR text;
-- store/product names;
+- merchant/product names;
 - dates/prices/totals;
 - receipt/product IDs;
-- real purchase databases/backups;
+- real DBs/backups;
 - credentials/signing secrets.
 
-No CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permission is packaged.
+The remediation APK packages no CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permission.
 
 ## Namespace isolation
 
@@ -93,7 +96,3 @@ ReceiptLedger work may modify only:
 
 - `receiptledger/**`
 - explicitly ReceiptLedger-prefixed workflows.
-
-## Stop condition
-
-**Wait for physical-device Phase B reports before changing OCR behavior.**

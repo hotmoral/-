@@ -6,107 +6,92 @@ Updated: 2026-10-17 KST
 
 **CP37 — Physical Device / Real-Image OCR Validation**
 
-Current substage: **Phase A READY_FOR_DEVICE_EVIDENCE / Phase B PENDING**
+Current substage: **Remediation A READY_FOR_PHYSICAL_RETEST**
 
-- branch: `receiptledger/run-post-v1-physical-ocr-validation-20261017`
-- predecessor CP36 handoff: `d0a3a9ec7658808c82247715d58ac106a3778186`
-- frozen CP37 Phase A executable: `9bb5dcc276fae4632ade5ac3134e586baad65235`
-- canonical Actions: `38950400666` — SUCCESS
-- job: `117140033593`
-- artifact ID: `12068811009`
-- artifact digest: `sha256:86d3861727db107e26edf4073666e010f59249ac746496524f6007ca09787697`
-- APK SHA-256: `f9e5b73db79043a6fc6f76f3381e0e2fdab164b7b53c59d8b9ce405d1147120f`
-- versionCode 36
-- versionName `1.0.35-physical-ocr-validation`
+- active branch: `receiptledger/run-post-v1-physical-ocr-remediation-20261017`
+- predecessor Phase A handoff: `6b7d7b9b65432701b43da53a0e6f0ff1e47a1449`
+- frozen remediation executable: `06fafa9db1da0e4592ddc15a468a9c6e4e338515`
+- canonical Actions: `38957744298` — SUCCESS
+- job: `117164770764`
+- artifact: `12071212297`
+- artifact digest: `sha256:6540c6350ea47280dc3d9fec64cdaef3b2aef24976f833a44e0cb13bd3b2a811`
+- APK SHA-256: `109b61603c9f4a0a399ecb919399151427ab3ba243e626bbe8543340a4ee0f3d`
+- versionName: `1.0.36-physical-ocr-remediation`
+- versionCode: 37
+- debug applicationId: `com.receiptledger.v1.remediation`
+- app label: `ReceiptLedger 검증`
 - lint: 0 errors / 0 warnings
 
-**Do not label CP37 complete yet.**
+**CP37 is not complete.**
 
-## Phase A frozen result
+## Why the work unit changed
 
-Phase A added only a privacy-safe, debug-only measurement layer around the existing OCR/recovery/review/save path.
+The first physical receipt sample exposed a false item row: a non-product address/header row was included as an item despite being spatially separate from the product body.
+
+The sample was REVIEW_REQUIRED and `false_auto_confirm=0`, so the safety gate behaved conservatively. The defect was instead in structure classification and user recoverability.
+
+## Remediation A contents
+
+1. If a recognized date has at least two real item candidates below it, provisional item rows above the date are demoted to HEADER.
+2. Review now supports `이 항목은 상품이 아님`.
+3. Removed rows preserve remaining original ordinals and write `USER_REMOVED_ITEM:<ordinal>`.
+4. Validation arithmetic is recomputed after removal.
+5. CP37 sanitized reports detect item-count/structure changes without private receipt values.
+6. The debug build installs side-by-side as `ReceiptLedger 검증` so the original Phase A app/data are preserved.
 
 Canonical metric:
 
-`CP37_PHASE_A_METRICS report_version=1 tests=4 privacy_leak_tests=1 false_auto_confirm_tests=1 conservative_review_tests=1 structure_delta_tests=1 schema_unchanged=1`
+`CP37_REMEDIATION_METRICS version=1 structure_tests=5 review_tests=5 report_tests=5 predate_false_item_gate=1 explicit_item_removal=1 provenance_preserved=1 report_structure_delta=1 side_by_side_debug=1 schema_unchanged=1`
 
-No OCR model/options/preprocessing/recovery rule or CP33 review rule changed. Product schema 2 / receipt schema 1 remain unchanged.
+## Current physical work unit
 
-## Phase B work unit
+The next task is **one same-receipt physical retest**.
 
-The next work is **evidence collection, not coding**.
+Do not collect new campaign receipts yet.
 
-Minimum target: 10 successfully saved real receipts.
+### Procedure
 
-Desired coverage when practical:
+1. Keep the existing `ReceiptLedger` Phase A app installed.
+2. Install the remediation APK; it appears separately as `ReceiptLedger 검증`.
+3. In `ReceiptLedger 검증`, process the same receipt image that produced the first sample, using GALLERY again where practical.
+4. Check whether the prior false address/header item appears.
+5. Compare every recognized field with the original receipt.
+6. If any false item remains, check `이 항목은 상품이 아님` for it.
+7. Correct all other factual errors.
+8. Save.
+9. Tap `검증 결과 복사`.
+10. Return only the new `RL_CP37_SAMPLE ...` line plus a short yes/no statement on whether the original false address row appeared again.
 
-- >=3 CAMERA;
-- >=3 GALLERY;
-- >=3 materially different receipt layouts;
-- short/long receipts mixed if naturally available;
-- perspective correction where warranted.
+## Retest interpretation
 
-## Per-sample procedure
+### Remediation confirmation
 
-1. Install the canonical CP37 validation APK.
-2. Open `영수증 추가`.
-3. Acquire a real receipt via camera or gallery.
-4. Let OCR/recovery finish.
-5. Compare every recognized field against the original receipt, even for AUTO_CONFIRMED.
-6. Correct all factual errors using existing review/full-edit flow.
-7. Save once correct.
-8. Tap `검증 결과 복사`.
-9. Return only the generated `RL_CP37_SAMPLE ...` line to the planning chat.
+Strong confirmation requires:
 
-Do not return receipt photos, OCR text or purchase values unless separately and privately authorized.
+- prior false address/header row absent, OR remaining false row safely removable;
+- no crash/OCR hang/save failure/duplicate save;
+- report records structural removal if used;
+- false_auto_confirm remains 0 unless a real AUTO_CONFIRMED error is discovered.
 
-## Decision metrics after >=10 samples
+### If the false row persists
 
-Aggregate:
+Do not immediately add a broad address/product classifier. Preserve the report and analyze the remaining row position/structure. Extend the rule only with evidence.
 
-- sample count;
-- CAMERA/GALLERY counts;
-- OCR median/max latency;
-- attempted-pass distribution;
-- AUTO_CONFIRMED / REVIEW_REQUIRED counts;
-- `false_auto_confirm` count;
-- receipt-field correction totals;
-- item structure/name/quantity/unit-price/line-amount correction totals;
-- crashes/OCR hangs/save failures/duplicates.
+## Frozen non-goals
 
-## Decision rule
+No change to:
 
-Priority order:
+- ML Kit model/options;
+- OCR preprocessing/recovery scoring/pass order;
+- identity authority;
+- price/comparability semantics;
+- product schema 2 / receipt schema 1;
+- network/storage permission posture.
 
-1. correctness / false-auto-confirm safety;
-2. save/provenance reliability;
-3. review burden;
-4. latency.
+## Public/privacy rule
 
-`false_auto_confirm=1` is blocker-quality evidence.
-
-Final CP37 outcome must be one of:
-
-- PASS_NO_OCR_CHANGE;
-- REMEDIATION_REQUIRED;
-- INSUFFICIENT_EVIDENCE.
-
-No downsampling, pass reduction, recognizer replacement or other OCR optimization is authorized before this evidence is analyzed.
-
-## Group discipline
-
-- recover canonical refs first;
-- compare physical evidence against the frozen Phase A build only;
-- do not mix APK versions;
-- catch material inconsistencies before remediation;
-- avoid speculative optimization or unrelated UI/domain changes;
-- if remediation is justified, define a new bounded implementation/evidence boundary before coding;
-- maintain docs-only handoff discipline for new sessions.
-
-## Public/privacy rules
-
-Only sanitized report lines and aggregate metrics may become public evidence. Never commit real receipts, OCR text, real DBs/backups, credentials or signing material.
+Only sanitized `RL_CP37_SAMPLE` lines and aggregate conclusions may become public evidence. Never commit real receipt image/text/value data, DBs, credentials or signing material.
 
 ## Stop condition
 
-**Wait for user-supplied Phase B sanitized reports.**
+**Wait for the same-receipt remediation retest. Do not resume the broad Phase B campaign or add more code before that evidence is analyzed.**

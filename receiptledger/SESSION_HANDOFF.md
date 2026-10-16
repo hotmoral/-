@@ -4,115 +4,154 @@ Updated: 2026-10-17 KST
 
 ## 0. Restart contract
 
-GitHub is canonical. Do not reconstruct state from old chat before reading the current files and verifying refs.
+GitHub is canonical. Do not reconstruct project state from old chat before reading current documents and verifying refs.
 
 Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-4. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
-5. `receiptledger/CP37_PHYSICAL_DEVICE_REAL_IMAGE_OCR_VALIDATION_PLAN.md`
-6. `receiptledger/PHYSICAL_DEVICE_OCR_VALIDATION_CONSISTENCY_REVIEW.md`
-7. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-8. `receiptledger/CP36_PERFORMANCE_RELIABILITY_CLOSEOUT.md`
-9. `receiptledger/CP36_PERFORMANCE_RELIABILITY_EVIDENCE.md`
-10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-11. `receiptledger/README.md`
-12. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+4. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_EVIDENCE.md`
+5. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_PLAN.md`
+6. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+7. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
+8. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+9. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+10. `receiptledger/README.md`
+11. `receiptledger/WORK_UNIT.md`
 
 ## 1. Current execution state
 
 V1 CP20–CP36 is complete.
 
-Post-V1 CP37 is open.
+CP37 is open.
 
-**CP37 Phase A — READY_FOR_DEVICE_EVIDENCE**
+Current state: **Remediation A READY_FOR_PHYSICAL_RETEST**.
 
-- branch: `receiptledger/run-post-v1-physical-ocr-validation-20261017`
-- predecessor handoff: `d0a3a9ec7658808c82247715d58ac106a3778186`
-- frozen Phase A executable: `9bb5dcc276fae4632ade5ac3134e586baad65235`
-- canonical Actions: `38950400666` — SUCCESS
-- job: `117140033593` — SUCCESS
-- artifact ID: `12068811009`
-- artifact digest: `sha256:86d3861727db107e26edf4073666e010f59249ac746496524f6007ca09787697`
-- APK SHA-256: `f9e5b73db79043a6fc6f76f3381e0e2fdab164b7b53c59d8b9ce405d1147120f`
-- versionName `1.0.35-physical-ocr-validation`, versionCode 36
+- active branch: `receiptledger/run-post-v1-physical-ocr-remediation-20261017`
+- predecessor Phase A handoff: `6b7d7b9b65432701b43da53a0e6f0ff1e47a1449`
+- frozen remediation executable: `06fafa9db1da0e4592ddc15a468a9c6e4e338515`
+- canonical Actions: `38957744298` SUCCESS
+- job: `117164770764`
+- artifact: `12071212297`
+- artifact digest: `sha256:6540c6350ea47280dc3d9fec64cdaef3b2aef24976f833a44e0cb13bd3b2a811`
+- APK SHA-256: `109b61603c9f4a0a399ecb919399151427ab3ba243e626bbe8543340a4ee0f3d`
+- versionName: `1.0.36-physical-ocr-remediation`
+- versionCode: 37
+- package: `com.receiptledger.v1.remediation`
+- label: `ReceiptLedger 검증`
 - lint: `No issues found.`
 
-**Do not mark CP37 complete.** Phase B physical-device evidence is still missing.
+Do **not** label CP37 complete.
 
-## 2. Phase A implementation
+## 2. Why remediation was opened
 
-Phase A instruments the existing MainActivity capture/review/save path without changing OCR/recovery/review semantics.
+First real-device sample produced a privacy-safe report with:
 
-It adds:
+- GALLERY, 800x1067;
+- OCR 562ms;
+- 3 attempted passes, 2 merged candidates;
+- ORIGINAL selected;
+- MISMATCH / REVIEW_REQUIRED;
+- 16 initial items / 16 review items;
+- 5 item-name edits, 1 unit-price edit, 1 line-amount edit;
+- false_auto_confirm=0;
+- final PASS_WITH_WARNINGS / save success.
 
-- `DeviceValidationReportV1`;
-- 4 deterministic privacy/correction tests;
-- debug-only `검증 결과 복사` control;
-- OCR/recovery elapsed/pass metadata capture;
-- initial-vs-final correction counting;
-- `false_auto_confirm` detection.
+After sending the report, the user noted that a spatially separate address/header row had also been treated as a product item.
 
-The validation snapshot is debug-gated. Report generation occurs after durable save and cannot convert a successful save into failure.
+Inspection confirmed:
 
-## 3. Exact report contract
+- item detection accepted letters left of a money-like numeric token with no body-continuity guard;
+- a 3+ digit header/address number could therefore create a false ITEM row;
+- review could edit item values but could not delete an item row.
 
-Expected line:
+This is a structural/recoverability defect, not just OCR spelling error.
 
-`RL_CP37_SAMPLE version=1 source=GALLERY image_w=... image_h=... perspective=0 ocr_ms=... attempted_passes=... merged_candidates=... best_pass=ORIGINAL initial_validation=PASS initial_decision=AUTO_CONFIRMED initial_items=... initial_review_items=... initial_review_fields=... store_changed=0 date_changed=0 total_changed=0 discount_changed=0 item_count_changed=0 item_structure_changes=0 item_name_changes=0 item_quantity_changes=0 item_unit_price_changes=0 item_line_amount_changes=0 any_correction=0 false_auto_confirm=0 final_validation=PASS saved=1`
+## 3. Remediation implementation
 
-No raw receipt value belongs in this line.
+### Structure
 
-## 4. Phase B user procedure
+If a valid receipt DATE exists and at least two ITEM rows exist below it, provisional ITEM rows above the date are demoted to HEADER with reason `ITEM_BEFORE_DATE_WITH_BODY_BELOW`.
 
-For each real receipt:
+The rule is intentionally narrow. No generic address text classifier was introduced.
 
-1. Install/use the canonical CP37 validation APK.
-2. Enter `영수증 추가`.
-3. Acquire by CAMERA or GALLERY.
-4. Allow OCR/recovery to finish.
-5. Visually compare the recognized receipt with the original **even if AUTO_CONFIRMED**.
-6. Correct every factual error using existing review/full-edit UI.
-7. Save.
-8. Tap `검증 결과 복사`.
-9. Paste only the `RL_CP37_SAMPLE ...` line into the chat.
+### Review
 
-Minimum decision target: 10 saved samples, with >=3 CAMERA, >=3 GALLERY and >=3 materially different layouts where practical.
+Review displays `이 항목은 상품이 아님` for shown item rows.
 
-## 5. Interpretation
+A removed row:
 
-- `initial_decision=AUTO_CONFIRMED` + `any_correction=1` -> `false_auto_confirm=1` -> blocker-quality trust finding.
-- REVIEW_REQUIRED + `any_correction=0` -> conservative review burden, not a false auto-confirm.
-- `ocr_ms` measures only the existing full `OcrRecoveryEngine.recognize(...)` operation.
+- is omitted from the reviewed record;
+- leaves remaining original ordinals unchanged;
+- writes `USER_REMOVED_ITEM:<ordinal>`;
+- recomputes arithmetic/validation;
+- is recognized by `CaptureReviewAssessmentV2` as explicit user provenance.
 
-After enough samples, classify CP37 as:
+### Report
 
-- `PASS_NO_OCR_CHANGE`, or
-- `REMEDIATION_REQUIRED`, or
-- `INSUFFICIENT_EVIDENCE`.
+The existing CP37 report maps items by ordinal. Removal therefore produces `item_count_changed=1` and at least one `item_structure_changes`, while still exporting no receipt values.
 
-## 6. Frozen authority / non-goals
+## 4. Side-by-side installation
 
-Until Phase B is analyzed, do not change:
+Do not uninstall the original Phase A validation app.
 
-- ML Kit model/options;
-- OCR preprocessing;
-- recovery pass rules / MAX_PASSES;
-- CP33 review rules;
-- identity/price/search semantics;
-- schema;
-- permissions.
+Runner-generated debug signing certificates differed between builds, so Remediation A uses a separate debug package:
 
-Do not add telemetry, network upload, real receipt fixtures, release signing or unrelated features.
+- package: `com.receiptledger.v1.remediation`
+- label: `ReceiptLedger 검증`
+- FileProvider authority: `com.receiptledger.v1.remediation.capture`
 
-## 7. Public/privacy boundary
+The package has its own empty local DB/catalog. This is intentional. The original app/data remain untouched.
 
-Never put real receipt photos, OCR text, merchant/product names, dates, prices, receipt/product IDs, file paths, private DBs/backups or credentials into the public repository.
+## 5. Verification
 
-Only sanitized report lines and aggregate conclusions may become public evidence.
+Canonical metric:
 
-## 8. Stop condition
+`CP37_REMEDIATION_METRICS version=1 structure_tests=5 review_tests=5 report_tests=5 predate_false_item_gate=1 explicit_item_removal=1 provenance_preserved=1 report_structure_delta=1 side_by_side_debug=1 schema_unchanged=1`
 
-**Current task is to collect Phase B physical-device reports. No further code work is authorized by Phase A itself.**
+All three focused suites: 5/5 PASS. Full debug unit regression, lint and APK build passed. Forbidden camera/media/storage/network permissions remain absent.
+
+OCR/recovery/identity/price/schema implementations were not changed.
+
+## 6. Exact next task
+
+This is **physical retest evidence**, not more coding.
+
+Use the frozen remediation APK and rerun the same receipt that exposed the false item.
+
+Procedure:
+
+1. install `ReceiptLedger 검증` side by side;
+2. process the same image via the same acquisition method where practical;
+3. check whether the address/header false item is gone;
+4. compare every remaining field against the original;
+5. if any false item remains, select `이 항목은 상품이 아님`;
+6. correct remaining factual errors;
+7. save;
+8. tap `검증 결과 복사`;
+9. return only the resulting `RL_CP37_SAMPLE ...` line and separately state whether the original false address row appeared again.
+
+Do not continue with additional campaign receipts before this retest is analyzed.
+
+## 7. Decision after retest
+
+If the original false item is gone and no new blocker appears, record Remediation A physical confirmation and resume the CP37 campaign.
+
+If it remains, use the new removal recovery if possible, record the sanitized line, and analyze the remaining structure pattern before broadening the rule.
+
+Avoid speculative general classifiers or OCR changes from one sample.
+
+## 8. Privacy boundary
+
+Never commit/share in public GitHub:
+
+- real receipt photo;
+- raw OCR text;
+- merchant/product names;
+- real dates/prices/totals;
+- receipt/product IDs;
+- DB backup/private files;
+- credentials/signing material.
+
+Sanitized CP37 report lines and aggregate conclusions are permitted evidence.
