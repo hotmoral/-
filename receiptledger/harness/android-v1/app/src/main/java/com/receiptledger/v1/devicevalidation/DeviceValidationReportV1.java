@@ -5,8 +5,11 @@ import com.receiptledger.v1.persistence.PersistedItem;
 import com.receiptledger.v1.persistence.ReceiptRecord;
 import com.receiptledger.v1.review.CaptureReviewAssessmentV2;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * CP37 local-only validation projection. It intentionally emits structural metrics only and never
@@ -53,6 +56,7 @@ public final class DeviceValidationReportV1 {
         int itemQuantityChanges;
         int itemUnitPriceChanges;
         int itemLineAmountChanges;
+        final Set<Integer> correctedItemOrdinals = new LinkedHashSet<>();
 
         boolean anyCorrection() {
             return storeChanged != 0
@@ -99,10 +103,12 @@ public final class DeviceValidationReportV1 {
         int anyCorrection = delta.anyCorrection() ? 1 : 0;
         int falseAutoConfirm = initial.assessment.decision == CaptureReviewAssessmentV2.Decision.AUTO_CONFIRMED
                 && delta.anyCorrection() ? 1 : 0;
+        int correctionsOutsideReviewItems = correctionsOutsideReviewItems(initial.assessment, delta);
+        int reviewScopeMiss = correctionsOutsideReviewItems > 0 ? 1 : 0;
 
-        StringBuilder out = new StringBuilder(512);
+        StringBuilder out = new StringBuilder(640);
         out.append("RL_CP37_SAMPLE")
-                .append(" version=1")
+                .append(" version=2")
                 .append(" source=").append(initial.source.name())
                 .append(" image_w=").append(initial.record.sourceWidth)
                 .append(" image_h=").append(initial.record.sourceHeight)
@@ -126,6 +132,8 @@ public final class DeviceValidationReportV1 {
                 .append(" item_quantity_changes=").append(delta.itemQuantityChanges)
                 .append(" item_unit_price_changes=").append(delta.itemUnitPriceChanges)
                 .append(" item_line_amount_changes=").append(delta.itemLineAmountChanges)
+                .append(" corrections_outside_review_items=").append(correctionsOutsideReviewItems)
+                .append(" review_scope_miss=").append(reviewScopeMiss)
                 .append(" any_correction=").append(anyCorrection)
                 .append(" false_auto_confirm=").append(falseAutoConfirm)
                 .append(" final_validation=").append(finalRecord.validationStatus.name())
@@ -147,16 +155,36 @@ public final class DeviceValidationReportV1 {
             PersistedItem other = after.get(entry.getKey());
             if (other == null) {
                 out.itemStructureChanges++;
+                out.correctedItemOrdinals.add(entry.getKey());
                 continue;
             }
             PersistedItem item = entry.getValue();
-            out.itemNameChanges += changed(item.name, other.name);
-            out.itemQuantityChanges += changed(item.quantity, other.quantity);
-            out.itemUnitPriceChanges += changed(item.unitPrice, other.unitPrice);
-            out.itemLineAmountChanges += changed(item.lineAmount, other.lineAmount);
+            int nameChanged = changed(item.name, other.name);
+            int quantityChanged = changed(item.quantity, other.quantity);
+            int unitPriceChanged = changed(item.unitPrice, other.unitPrice);
+            int lineAmountChanged = changed(item.lineAmount, other.lineAmount);
+            out.itemNameChanges += nameChanged;
+            out.itemQuantityChanges += quantityChanged;
+            out.itemUnitPriceChanges += unitPriceChanged;
+            out.itemLineAmountChanges += lineAmountChanged;
+            if (nameChanged != 0 || quantityChanged != 0 || unitPriceChanged != 0 || lineAmountChanged != 0) {
+                out.correctedItemOrdinals.add(entry.getKey());
+            }
         }
         for (Integer ordinal : after.keySet()) {
-            if (!before.containsKey(ordinal)) out.itemStructureChanges++;
+            if (!before.containsKey(ordinal)) {
+                out.itemStructureChanges++;
+                out.correctedItemOrdinals.add(ordinal);
+            }
+        }
+        return out;
+    }
+
+    private static int correctionsOutsideReviewItems(CaptureReviewAssessmentV2 assessment, Delta delta) {
+        Set<Integer> initialReviewOrdinals = new HashSet<>(assessment.itemOrdinals);
+        int out = 0;
+        for (Integer ordinal : delta.correctedItemOrdinals) {
+            if (!initialReviewOrdinals.contains(ordinal)) out++;
         }
         return out;
     }
