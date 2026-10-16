@@ -1,0 +1,29 @@
+{
+  "assembledImplementation": {
+    "byteCount": 37871,
+    "path": "mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py",
+    "sha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87"
+  },
+  "freezeToken": "R11_STAGE0_IMPLEMENTATION_FREEZE",
+  "gitBlobSha1": {
+    ".github/workflows/mobi-p1-c-r11-semantic-scaffold.yml": "0bd5e0444bb01625917a18eaa255d9e0fe27cfef",
+    "mobi/p1-b2/geometry/P1_C_R11_STAGE0_IMPLEMENTATION_FREEZE.md": "e9b64933831973789ba68c4c0ff43e7f43230713",
+    "mobi/p1-b2/geometry/assemble_p1_c_r11_semantic_scaffold_v1.sh": "7a5c4bda8131fcbfc1ef301c70c64d423bf5c04f",
+    "mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py": "9b7899bc1c39d02291813a826df01d3697192846",
+    "mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py": "5c8820fb7270e7727ececb1bb37d3a24331b24ab",
+    "mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py": "f281aad3e3a6c740c38c0a3f015718996dc45157",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part000.txt": "8e4c430cf405c0b1c05dcad591a7c73e6bb143db",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part001.txt": "86d3651e1b115c9bbfcedddbe0b42b0ac95f91c1",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part002.txt": "b514eaca8a1af556509d719411ccf679c6eacabb",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part003.txt": "8e9c9798de55bde7099971e6a868c98b65f377cf",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part004.txt": "a09ae537bdec38534adc63882854f4fac3ae9e50",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part005.txt": "db9dd42cb562ce23049cb32ca6cda6728e159b10",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part006.txt": "10449747ebebb1a96298427d8e570675d3c4e2a9",
+    "mobi/p1-b2/geometry/test_p1_c_r11_semantic_scaffold_v1.py": "868a9cf58a32fdf725fe79c0d34d2cc77cb3c7aa"
+  },
+  "implementationCommit": "176bbb42b06e49c216ecd2f6de9d16e12feaa709",
+  "publicBaseHead": "a2138902b1070bc2d9ecb54c7e5d08efecbda1d2",
+  "publicBranch": "mobi/run-p1-c-r11-semantic-scaffold-20261016",
+  "sourceSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5",
+  "stage1RunAuthorized": false
+}
