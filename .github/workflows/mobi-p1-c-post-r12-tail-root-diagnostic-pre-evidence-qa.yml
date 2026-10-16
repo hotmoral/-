@@ -1,0 +1,134 @@
+name: Mobi P1-C Post-R12 Tail-Root Diagnostic Pre-Evidence QA
+
+on:
+  push:
+    branches:
+      - mobi/run-p1-c-post-r12-tail-root-diagnostic-20261017
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py'
+      - '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa
+  cancel-in-progress: false
+
+jobs:
+  pre-evidence-qa:
+    if: github.ref == 'refs/heads/mobi/run-p1-c-post-r12-tail-root-diagnostic-20261017'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify inherited frozen R11/R12 identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          test "$(git hash-object "$G/p1_c_r12_surface_terminal_bind_alias_v1.py")" = '837f4abe7ff474a527893b099be8087a104f7aaa'
+          echo 'fc4096162607dbf59859749562ec5ab9ea7d0e09551aa7cd3cd1ad05e9f5594c  mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py' | sha256sum -c -
+          test "$(git hash-object "$G/assemble_p1_c_r11_semantic_scaffold_v1.sh")" = '7a5c4bda8131fcbfc1ef301c70c64d423bf5c04f'
+          test "$(git hash-object "$G/r11_stage0_parts/part000.txt")" = '8e4c430cf405c0b1c05dcad591a7c73e6bb143db'
+          test "$(git hash-object "$G/r11_stage0_parts/part001.txt")" = '86d3651e1b115c9bbfcedddbe0b42b0ac95f91c1'
+          test "$(git hash-object "$G/r11_stage0_parts/part002.txt")" = 'b514eaca8a1af556509d719411ccf679c6eacabb'
+          test "$(git hash-object "$G/r11_stage0_parts/part003.txt")" = '8e9c9798de55bde7099971e6a868c98b65f377cf'
+          test "$(git hash-object "$G/r11_stage0_parts/part004.txt")" = 'a09ae537bdec38534adc63882854f4fac3ae9e50'
+          test "$(git hash-object "$G/r11_stage0_parts/part005.txt")" = 'db9dd42cb562ce23049cb32ca6cda6728e159b10'
+          test "$(git hash-object "$G/r11_stage0_parts/part006.txt")" = '10449747ebebb1a96298427d8e570675d3c4e2a9'
+          test "$(git hash-object "$G/test_p1_c_r11_semantic_scaffold_v1.py")" = '868a9cf58a32fdf725fe79c0d34d2cc77cb3c7aa'
+          test "$(git hash-object "$G/test_p1_c_r12_surface_terminal_bind_alias_v1.py")" = '7257217740e2ff7dedffc3b54f33b85d42a920db'
+
+      - name: Assemble exact frozen R11 implementation
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install pre-evidence synthetic-test runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy==2.5.4'
+          python - <<'PY'
+          import sys, numpy
+          if sys.version_info[:3] != (3, 12, 15):
+              raise SystemExit(sys.version)
+          if numpy.__version__ != '2.5.4':
+              raise SystemExit(numpy.__version__)
+          print(sys.version)
+          print('numpy', numpy.__version__)
+          PY
+
+      - name: Static compile and contract-vocabulary guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          python -m py_compile \
+            "$G/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
+            "$G/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py"
+          python - <<'PY'
+          import importlib.util, sys
+          from pathlib import Path
+          g=Path('mobi/p1-b2/geometry')
+          p=g/'p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py'
+          spec=importlib.util.spec_from_file_location('post_r12_pre_evidence_guard',p)
+          mod=importlib.util.module_from_spec(spec)
+          sys.modules[spec.name]=mod
+          spec.loader.exec_module(mod)
+          assert mod.COUNTERFACTUAL_PROBE_NAMES == ('TAIL_ROOT_TO_TAIL_1','TAIL_PATH_FORWARD')
+          assert mod.CLASSIFICATION_PRECEDENCE == (
+              'BROADER_ZERO_LENGTH_HIERARCHY_DEGENERACY',
+              'COINCIDENT_BRANCH_ROOT_WITH_TAIL_SUPPORT_DEFECT',
+              'COINCIDENT_BRANCH_ROOT_WITH_NONVACUOUS_TAIL_SUPPORT',
+              'MIXED_OR_UNRESOLVED',
+          )
+          assert mod.DECISION_TOKEN == 'POST_R12_TAIL_ROOT_OBSERVATIONAL_DIAGNOSTIC_SELECTED'
+          assert mod.CONTRACT_TOKEN == 'POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_CONTRACT_FROZEN'
+          assert mod.PREFLIGHT_TOKEN == 'POST_R12_TAIL_ROOT_DEGENERACY_DIAGNOSTIC_PREFLIGHT_PASS'
+          print('post-R12 diagnostic contract vocabulary PASS')
+          PY
+          WF=.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml
+          if grep -Eiq 'curl|wget|innerscene|cat-original\.glb' "$WF"; then
+            echo 'pre-evidence QA workflow must not acquire structural source data' >&2
+            exit 1
+          fi
+
+      - name: Run inherited and new synthetic tests only
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python -m unittest -v test_p1_c_r11_semantic_scaffold_v1.py
+          python -m unittest -v test_p1_c_r12_surface_terminal_bind_alias_v1.py
+          python -m unittest -v test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py
+
+      - name: Print implementation identities for freeze review
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          for p in \
+            "$G/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
+            "$G/test_p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py" \
+            '.github/workflows/mobi-p1-c-post-r12-tail-root-diagnostic-pre-evidence-qa.yml'; do
+            printf '%s\n' "PATH=$p"
+            printf 'GIT_BLOB_SHA1=%s\n' "$(git hash-object "$p")"
+            printf 'SHA256=%s\n' "$(sha256sum "$p" | awk '{print $1}')"
+            printf 'BYTES=%s\n' "$(wc -c < "$p" | tr -d ' ')"
+          done
+          echo 'PRE_EVIDENCE_SYNTHETIC_QA_ONLY=PASS'
