@@ -4,19 +4,19 @@ Updated: 2026-10-16 KST
 
 ## 0. Restart contract
 
-GitHub is canonical. Do not reconstruct execution state from chat memory before reading current files and verifying refs.
+GitHub is canonical. Do not reconstruct execution state from old chat before reading current files and verifying refs.
 
 Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP25_CATEGORY_SYSTEM_CLOSEOUT.md`
-4. `receiptledger/CP25_CATEGORY_SYSTEM_EVIDENCE.md`
-5. `receiptledger/CP25_CATEGORY_SYSTEM_PLAN.md`
-6. `receiptledger/CATEGORY_SYSTEM_CONSISTENCY_REVIEW.md`
-7. `receiptledger/CATEGORY_SYSTEM_GOLDEN_VECTORS.md`
-8. `receiptledger/CP24_IDENTITY_RESOLVER_V2_CLOSEOUT.md`
-9. `receiptledger/CP24_IDENTITY_RESOLVER_V2_EVIDENCE.md`
+3. `receiptledger/CP26_COMMODITY_NONSTANDARD_V2_CLOSEOUT.md`
+4. `receiptledger/CP26_COMMODITY_NONSTANDARD_V2_EVIDENCE.md`
+5. `receiptledger/CP26_COMMODITY_NONSTANDARD_V2_PLAN.md`
+6. `receiptledger/COMMODITY_NONSTANDARD_V2_CONSISTENCY_REVIEW.md`
+7. `receiptledger/COMMODITY_NONSTANDARD_V2_GOLDEN_VECTORS.md`
+8. `receiptledger/CP25_CATEGORY_SYSTEM_CLOSEOUT.md`
+9. `receiptledger/CP25_CATEGORY_SYSTEM_EVIDENCE.md`
 10. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
 12. `receiptledger/README.md`
@@ -24,23 +24,24 @@ Read in order:
 
 ## 1. Latest executable checkpoint
 
-**CP25 — Category System — PASS / COMPLETE**
+**CP26 — Commodity / Non-standard V2 — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-category-system-20261016`
-- predecessor handoff: `4858c6e6b377e09ebbbe77384d9bb94ede4d906d`
-- frozen implementation HEAD: `042c3b59063f0e58a273a5f685b25780683fcf36`
-- canonical Actions: `38827880730` — SUCCESS
-- job: `116739504019` — SUCCESS
-- artifact ID: `12015144887`
-- artifact digest: `sha256:06e0dcd1d74e3abafd4f39a97363d51b9d53cfb2253c0cf4e742e39f5b257a92`
-- APK SHA-256: `69244c65cfb09476f371b9c748d42cbe58a5974c3f49d662be90e603e3622a1f`
+- branch: `receiptledger/run-v1-commodity-nonstandard-v2-20261016`
+- predecessor handoff: `e9bbd3d1b2b5c6e153d6c76b1c02b2a1cd217389`
+- frozen implementation HEAD: `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`
+- canonical Actions: `38829423445` — SUCCESS
+- job: `116744485504` — SUCCESS
+- artifact ID: `12016292501`
+- artifact digest: `sha256:6ad4342d61274530aecc090fbe7caa8f606f3a20c113285e3b18cd86893336bd`
+- APK SHA-256: `250d4d00bb93334fede3873c92e85b63d1ccd05ee5d09f9a4c7970fb366b90cb`
+- CP26 commodity tests: 8/8 PASS
 - CP25 category tests: 8/8 PASS
 - CP24 identity tests: 8/8 PASS
 - CP23 semantics tests: 7/7 PASS
 - CP21 catalog tests: 15/15 PASS
 - CP22 persistence tests: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionName `1.0.23-category-system`, versionCode 24
+- versionName `1.0.24-commodity-nonstandard-v2`, versionCode 25
 
 Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary.
 
@@ -50,125 +51,118 @@ ReceiptLedger is a personal purchase-price memory and comparison system.
 
 Target experience:
 
-`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색·카테고리 탐색 -> 과거 가격과 현재 가격 판단`
+`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 제품/품목 검색·탐색 -> 과거 가격과 현재 가격 판단`
 
-The receipt remains evidence/input. Product/commodity history and price judgment are the destination.
+Receipt remains evidence/input. Product/commodity history and trustworthy price judgment are the destination.
 
-## 3. CP25 category contract
+## 3. CP26 grouping contract
 
-Category is browse/classification metadata over an already-resolved stable catalog ID.
+Commodity grouping resolves only to an existing `NON_STANDARD_COMMODITY` stable ID.
 
-Taxonomy:
+Authority precedence:
 
-- 28 stable nodes;
-- roots: FOOD / 식품, HOUSEHOLD / 생활;
-- common dairy/noodle/frozen/produce/grain/snack/beverage/seasoning/cleaning/paper/personal-care leaves;
-- no forced OTHER bucket.
+1. confirmed MERCHANT exact alias;
+2. confirmed GLOBAL exact alias;
+3. unique exact commodity canonical-name match;
+4. modifier-bearing safe whole-phrase suggestion -> REVIEW;
+5. unresolved.
 
-Decision states:
+Hard rules:
 
-- `REUSE_PERSISTED`
-- `AUTO_ASSIGNABLE`
-- `REVIEW`
-- `UNRESOLVED`
+- purchase form is not commodity identity authority;
+- category is not commodity identity authority;
+- lexical substring inside another word is forbidden as a candidate;
+- STANDARD-target alias is CROSS_KIND_CONFLICT/REVIEW;
+- strong packaged-product cues review-gate semantic commodity matching;
+- fuzzy/edit-distance/embedding/phonetic similarity is not automatic grouping authority;
+- CP26 never auto-creates, merges or splits catalog rows.
 
-Strong unique local rules can be auto-assignable. Generic/conflicting evidence is review-gated. Unsupported evidence remains unresolved.
+## 4. Confirmation / repeat learning
 
-## 4. Persistence/correction contract
+After explicit user confirmation, commodity aliases reuse CP24 least-authority storage:
 
-CP22 already contains `category_refs(product_id,category_id)`, so CP25 adds no schema migration.
+- merchant context -> MERCHANT alias by default;
+- explicit global decision or no merchant -> GLOBAL alias.
 
-Effective assignment is persisted on the existing stable catalog ID. Correction changes only CategoryRef and must preserve:
+This converts repeated store/POS strings into automatic grouping without widening general lexical matching.
 
-- stable ID;
-- CatalogKind;
-- canonicalName;
-- brand/productName/variant/specification fields;
-- createdAt/origin;
-- aliases/item links.
+## 5. Purchase-form preservation
 
-Persisted category is reused before classifier rules, reducing repeated review.
+CP23 purchase-form evidence is persisted unchanged for the observation:
 
-## 5. Identity firewall
+- quantity;
+- standardized SalesUnitCode;
+- original raw unit label;
+- source/confidence/confirmation.
 
-Category MUST NOT:
+Grouping confirmation does not upgrade a parsed purchase form to CONFIRMED.
 
-- prove product/commodity identity;
-- alter MERCHANT/GLOBAL alias precedence;
-- link/merge/split/create catalog entities;
-- repair CP24 false split by itself;
-- become a resolver feature without an explicit future amendment.
+## 6. Grouping vs comparability
 
-CP24 `identity/**` is unchanged and was frozen by CI diff guard.
+CP26 defines only form relations, not price metrics:
 
-## 6. Canonical local metrics
+- `EXACT_NORMALIZABLE_QUANTITY`: exact base quantity exists within the same physical/count dimension (kg/g, L/mL, count);
+- `SAME_FORM_ONLY`: same package/form class such as 봉 vs 봉, or same OTHER raw label;
+- `INCOMPARABLE`: different/unsupported dimensions/forms;
+- `MISSING`: no purchase-form evidence.
 
-`fixtures=30 known_category=28 auto_suggestions=24 correct_auto_suggestions=24 incorrect_auto_suggestions=0 review_required=6 unresolved=2 repeat_cases=4 repeat_reused=4 correction_cases=3 correction_reused=3`
+`SAME_FORM_ONLY` is not normalized price authority. CP27 must separately define price comparison eligibility.
 
-- auto suggestions 24/28 known-category fixtures;
-- correct auto suggestions 24/24;
-- incorrect auto suggestions 0;
-- repeat reuse 4/4;
-- correction reuse 3/3.
+## 7. Canonical local metrics
 
-Synthetic/local only; not final real-receipt accuracy.
+`fixtures=25 known_commodity=21 auto_groups=18 correct_auto_groups=18 incorrect_auto_groups=0 false_group=0 review_suggestions=2 false_split=1 negative_fixtures=4 raw_form_cases=12 raw_form_preserved=12 repeat_cases=3 repeat_reused=3`
 
-## 7. Frozen upstream contracts
+- auto-group correctness: 18/18;
+- false group: 0;
+- safe review suggestions: 2;
+- false split / fragmentation risk: 1/21 = 4.7619%;
+- raw form preserved: 12/12;
+- confirmed repeat reuse: 3/3.
 
-### CP21
-- stable catalog ID = identity authority;
-- STANDARD/NON_STANDARD/UNCLASSIFIED semantics;
-- grouping != comparability;
-- source/confidence/confirmation independent.
+The visible false split is intentionally retained. Do not force it to zero by introducing unsafe substring/fuzzy matching.
 
-### CP22
-- product DB schema 2;
-- receipt DB schema 1;
-- category_refs already available;
-- receipt price/date/store/validation authoritative;
-- direct SQLite retained.
+These are bounded synthetic metrics, not CP35 end-to-end real/sanitized receipt accuracy.
 
-### CP23
-- receipt semantic fields are unconfirmed evidence;
-- standalone physical measure ambiguity remains review-gated.
+## 8. Frozen upstream/storage rules
 
-### CP24
-- MERCHANT exact alias -> GLOBAL exact alias -> strict unique semantic exact -> review -> unresolved;
-- fuzzy similarity not auto-link authority;
-- resolver never auto-creates/merges identities;
-- category is not identity authority.
+- stable catalog ID remains equality/identity authority;
+- product DB `receipt-products-v1.db`, schema 2;
+- receipt DB `receiptledger-v1.db`, schema 1;
+- CP23 parser evidence remains unconfirmed;
+- CP24 STANDARD identity authority unchanged;
+- CP25 category authority unchanged and non-identifying;
+- price/date/store/validation truth remains receipt-derived;
+- no guessed package-form conversion;
+- no permission/network/privacy expansion.
 
-## 8. CP25 limitations deliberately retained
+## 9. CP26 limitations deliberately retained
 
-- taxonomy is bounded, not exhaustive;
-- no user custom categories or tags;
-- suggestion provenance/confidence is not separately persisted; only effective assignment is stored;
-- category does not establish commodity price comparability;
-- category does not eliminate identity fragmentation.
+- existing commodity IDs only;
+- no automatic commodity creation;
+- subtype/attached-token forms such as `알감자` can remain fragmented until confirmed;
+- no exhaustive commodity ontology;
+- no unit-price or history aggregation policy in CP26;
+- no UI redesign.
 
-Do not solve these limitations through unrelated scope expansion.
+Do not solve these through unrelated scope expansion.
 
-## 9. Preflight process note
+## 10. Next planned implementation checkpoint
 
-An accidental Markdown-only preflight commit `af4640af63d1a3d6faa1355addb8d3b4802205cb` briefly moved the CP24 branch before CP25 branch creation. CP24 was immediately restored with force-with-lease to `4858c6e6...`, and CP25 was branched directly from that exact canonical handoff. The orphan commit contains no app/schema/runtime change and is outside canonical CP24/CP25 history.
+**CP27 — Price Intelligence V2**
 
-## 10. Next planned checkpoint
+Required direction:
 
-**CP26 — Commodity / Non-standard V2**
+1. define canonical comparison price for one receipt-derived purchase observation;
+2. distinguish line amount, quantity and one package/unit meaning;
+3. account only for discounts that can be attributed without guessing;
+4. preserve unallocated receipt-level coupon/benefit provenance rather than fake item allocation;
+5. exclude invalid/incomplete observations where required;
+6. STANDARD comparisons require the correct stable exact-product identity;
+7. NON_STANDARD comparisons must respect CP26 form relations and never treat package forms as mathematically normalized;
+8. then compute deterministic latest/previous/delta/min/max/mean/median/period/store metrics;
+9. remain receipt-traceable and test insufficient/incomparable states.
 
-Required concerns before implementation:
-
-1. common commodity identity such as 감자 across heterogeneous purchase forms;
-2. preserve original 봉/팩/단/상자/개/kg/g etc. evidence;
-3. grouping != comparability remains hard contract;
-4. no guessed unit/package conversion;
-5. false grouping and false splitting both measured;
-6. raw unit/form preservation measured;
-7. review burden/repeat reuse measured;
-8. category remains metadata only;
-9. receipt-derived price truth preserved.
-
-CP26 is planned, not automatically authorized.
+CP27 is planned, not automatically authorized.
 
 ## 11. Security/public boundary
 
@@ -193,4 +187,4 @@ For every checkpoint:
 
 ## 13. Stop condition
 
-**CP25 is complete and handoff-synchronized. Await explicit authorization for CP26.**
+**CP26 is complete and handoff-synchronized. Await explicit authorization for CP27.**

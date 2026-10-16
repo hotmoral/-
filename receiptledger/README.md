@@ -6,10 +6,10 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP25_CATEGORY_SYSTEM_CLOSEOUT.md`
-4. `CP25_CATEGORY_SYSTEM_EVIDENCE.md`
-5. `CP25_CATEGORY_SYSTEM_PLAN.md`
-6. `CATEGORY_SYSTEM_CONSISTENCY_REVIEW.md`
+3. `CP26_COMMODITY_NONSTANDARD_V2_CLOSEOUT.md`
+4. `CP26_COMMODITY_NONSTANDARD_V2_EVIDENCE.md`
+5. `CP26_COMMODITY_NONSTANDARD_V2_PLAN.md`
+6. `COMMODITY_NONSTANDARD_V2_CONSISTENCY_REVIEW.md`
 7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
 8. `WORK_UNIT.md`
 
@@ -17,22 +17,23 @@ GitHub is canonical; verify refs before relying on old chat context.
 
 ## Current boundary
 
-**CP25 — Category System — COMPLETE**
+**CP26 — Commodity / Non-standard V2 — COMPLETE**
 
-- branch `receiptledger/run-v1-category-system-20261016`
-- frozen implementation HEAD `042c3b59063f0e58a273a5f685b25780683fcf36`
-- canonical Actions `38827880730` — SUCCESS
-- job `116739504019` — SUCCESS
-- artifact ID `12015144887`
-- artifact digest `sha256:06e0dcd1d74e3abafd4f39a97363d51b9d53cfb2253c0cf4e742e39f5b257a92`
-- APK SHA-256 `69244c65cfb09476f371b9c748d42cbe58a5974c3f49d662be90e603e3622a1f`
+- branch `receiptledger/run-v1-commodity-nonstandard-v2-20261016`
+- frozen implementation HEAD `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`
+- canonical Actions `38829423445` — SUCCESS
+- job `116744485504` — SUCCESS
+- artifact ID `12016292501`
+- artifact digest `sha256:6ad4342d61274530aecc090fbe7caa8f606f3a20c113285e3b18cd86893336bd`
+- APK SHA-256 `250d4d00bb93334fede3873c92e85b63d1ccd05ee5d09f9a4c7970fb366b90cb`
+- commodity tests 8/8 PASS
 - category tests 8/8 PASS
 - identity tests 8/8 PASS
 - semantics tests 7/7 PASS
 - catalog tests 15/15 PASS
 - persistence tests 7/7 PASS
 - lint 0 errors / 0 warnings
-- version `1.0.23-category-system`, versionCode 24
+- version `1.0.24-commodity-nonstandard-v2`, versionCode 25
 
 ## Product direction
 
@@ -42,35 +43,35 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-CP25 makes resolved products/commodities easier to browse through category metadata without changing identity.
+CP26 makes one commodity history span heterogeneous purchase forms while preserving every observation's original quantity/unit/form.
 
-Key current category rules:
+Key current rules:
 
-- bounded 28-node FOOD/HOUSEHOLD taxonomy;
-- persisted category reuses before rules;
-- unique high-confidence rule -> AUTO_ASSIGNABLE;
-- generic/conflicting evidence -> REVIEW;
-- unsupported evidence -> UNRESOLVED;
-- no forced OTHER;
-- correction changes only category on the same stable catalog ID;
-- category never proves identity or merges price histories;
-- existing product schema 2 `category_refs` is reused; no schema v3;
-- grouping != comparability remains frozen;
-- price truth stays receipt-derived.
+- commodity grouping resolves only to existing NON_STANDARD stable IDs;
+- confirmed MERCHANT alias -> confirmed GLOBAL alias -> exact commodity name -> REVIEW suggestion -> unresolved;
+- `감자` must not silently match `감자칩` or `감자전분`;
+- category and purchase form are not identity authority;
+- modifier names remain review-only until confirmed;
+- confirmation learns the narrowest useful alias scope for repeat use;
+- raw quantity/unit/form and provenance remain observation-specific;
+- exact physical/count conversions are distinguished from same-form-only and incomparable observations;
+- **grouping != comparability**;
+- no guessed 봉/팩/상자 conversion;
+- price truth remains receipt-derived.
 
-## CP25 local quality
+## CP26 local quality
 
-`fixtures=30 known_category=28 auto_suggestions=24 correct_auto_suggestions=24 incorrect_auto_suggestions=0 review_required=6 unresolved=2 repeat_cases=4 repeat_reused=4 correction_cases=3 correction_reused=3`
+`fixtures=25 known_commodity=21 auto_groups=18 correct_auto_groups=18 incorrect_auto_groups=0 false_group=0 review_suggestions=2 false_split=1 negative_fixtures=4 raw_form_cases=12 raw_form_preserved=12 repeat_cases=3 repeat_reused=3`
 
 These are synthetic/local metrics, not final real-receipt accuracy.
 
 ## Next planned checkpoint
 
-**CP26 — Commodity / Non-standard V2**
+**CP27 — Price Intelligence V2**
 
-It will formalize common commodity grouping across heterogeneous purchase forms while preserving raw unit/form and prohibiting guessed conversion or fake comparability.
+It must first define a canonical receipt-traceable comparison price and eligibility rules, then compute deterministic personal-history statistics without turning incomparable NON_STANDARD forms into fake normalized prices.
 
-Do not start CP26 until explicitly authorized.
+Do not start CP27 until explicitly authorized.
 
 ## Privacy/security
 

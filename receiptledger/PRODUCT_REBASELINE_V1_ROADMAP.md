@@ -31,63 +31,75 @@ Authority: MERCHANT exact alias -> GLOBAL exact alias -> unique strict semantic 
 ### CP25 — Category System — COMPLETE
 Frozen implementation `042c3b59063f0e58a273a5f685b25780683fcf36`; Actions `38827880730` SUCCESS.
 
-Frozen category contract:
-
 - bounded 28-node FOOD/HOUSEHOLD taxonomy;
-- category is browse/classification metadata only, never identity authority;
-- persisted category reuses before classification rules;
-- unique high-confidence rule -> AUTO_ASSIGNABLE;
-- generic/conflicting evidence -> REVIEW;
-- unsupported evidence -> UNRESOLVED; no forced OTHER;
-- correction changes only CategoryRef on the same stable catalog ID;
-- existing product-schema-v2 `category_refs` is reused; no schema migration.
-
-Local metrics:
-
-- fixtures 30 / known category 28;
-- auto suggestions 24, correct 24, incorrect 0;
-- review-required 6, unresolved 2;
+- category is browse/classification metadata only;
+- existing schema-v2 `category_refs` reused;
+- local auto suggestions 24/24 correct;
 - persisted repeat reuse 4/4;
 - correction reuse 3/3.
 
-## 2. Stage C — Identity and classification
+### CP26 — Commodity / Non-standard V2 — COMPLETE
+Frozen implementation `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`; Actions `38829423445` SUCCESS.
 
-### CP26 — Commodity / Non-standard V2 — NEXT PLANNED
+Frozen commodity contract:
 
-Goal: make common non-standard commodity history useful across heterogeneous purchase forms without creating fake comparability.
+- grouping resolves only to existing NON_STANDARD stable IDs;
+- confirmed MERCHANT alias -> confirmed GLOBAL alias -> exact commodity canonical name -> safe review suggestion -> unresolved;
+- purchase form/category are not commodity identity authority;
+- modifier-bearing names are review-gated until confirmed;
+- substring/fuzzy matching cannot auto-group;
+- STANDARD-target alias is a cross-kind conflict;
+- confirmation learns contextual alias knowledge for repeat use;
+- raw purchase quantity/unit/form/provenance is preserved;
+- exact quantity basis is separated from same-form-only and incomparable observations;
+- grouping != comparability;
+- no guessed 봉/팩/상자 conversion;
+- no schema migration.
 
-Must include:
+Local metrics:
 
-- stable commodity identity for concepts such as 감자/사과/대파;
-- preserve observed sales form/unit/quantity such as 봉/팩/단/상자/개/kg/g;
-- same commodity can group heterogeneous observations;
-- grouping != comparability remains explicit;
-- no guessed conversion or arbitrary package equivalence;
-- deterministic suggestion/review/confirmation reuse boundary;
-- false grouping rate;
-- false splitting/fragmentation rate;
-- raw unit/form preservation rate;
-- review burden and repeat confirmed reuse metrics;
-- category remains metadata only;
-- do not prematurely implement CP27 price-comparison statistics.
+- fixtures 25 / known commodity 21;
+- auto groups 18, correct 18, incorrect 0;
+- false grouping 0;
+- review suggestions 2;
+- false split risk 1/21;
+- raw form preservation 12/12;
+- confirmed repeat reuse 3/3.
 
-## 3. Stage D — Price intelligence
+## 2. Stage D — Price intelligence
 
-### CP27 — Price Intelligence V2
+### CP27 — Price Intelligence V2 — NEXT PLANNED
 
-Before statistics, define the canonical comparison price for one purchase observation, covering quantity >1, item discounts, unallocated receipt coupons, provenance, invalid observations, exact packaged identity and like-unit NON_STANDARD subsets. Then provide deterministic latest/previous, delta, min/max, mean/median, period and store-aware metrics.
+Before statistics, define the canonical comparison price and eligibility for one receipt-derived purchase observation.
+
+Must cover:
+
+- line amount vs one purchased unit/package;
+- receipt item quantity > 1;
+- item-specific discounts and their provenance;
+- receipt-level coupons/discounts that cannot be safely allocated;
+- invalid/incomplete observations;
+- exact STANDARD product identity;
+- NON_STANDARD CP26 form relations;
+- exact-normalizable physical/count subsets without guessed package conversion;
+- same-form-only history without pretending mathematical normalization;
+- deterministic latest/previous, absolute/percentage delta, min/max, mean/median, period and store-aware statistics;
+- explicit insufficient/incomparable states;
+- receipt traceability for every included observation.
+
+CP27 must not implement CP28 user-facing cheap/normal/expensive threshold labels early.
 
 ### CP28 — Price Evaluation
 
 Define explicit data-sufficiency/window/threshold rules for cheap/normal/expensive labels. Sparse data yields `데이터 부족`.
 
-## 4. Stage E — Find and inspect
+## 3. Stage E — Find and inspect
 
 ### CP29 — Search / Browse
 
 Global search/browse by product/commodity, brand, safe aliases, category, specification, store, recent/frequent and price change. Freeze data access/interaction behavior before final visual polish.
 
-## 5. Stage F — Commercial UX
+## 4. Stage F — Commercial UX
 
 ### CP30 — Design System Foundation
 Freeze typography, color, spacing, shapes, icons, cards, fields, chart grammar, feedback states and accessibility baseline.
@@ -104,7 +116,7 @@ Move toward `영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검
 ### CP34 — Commercial UI Shell
 Product-centric home/navigation/search/category/product/commodity/receipt/settings integration without gratuitous domain rewrite.
 
-## 6. Stage G — Validation and hardening
+## 5. Stage G — Validation and hardening
 
 ### CP35 — Real Receipt Evaluation
 Measure end-to-end correct purchase registration using public-safe synthetic or explicitly approved sanitized fixtures. Primary metric is correct purchase registration, not OCR character accuracy alone.
@@ -112,20 +124,20 @@ Measure end-to-end correct purchase registration using public-safe synthetic or 
 ### CP36 — Performance / Reliability
 Verify startup, OCR latency/memory, large catalog/history, alias/search/category queries, aggregation, charts, migrations, archive reconciliation and failure recovery at representative scale.
 
-## 7. Dependency gates
+## 6. Dependency gates
 
 - CP21 stable-ID identity semantics remain frozen.
 - CP22 product schema 2 / receipt schema 1 remain frozen unless explicit amendment is justified.
 - CP23 parser evidence remains unconfirmed/non-authoritative.
-- CP24 resolver authority remains frozen; category cannot widen/override it.
+- CP24 STANDARD resolver authority remains frozen.
 - CP25 category remains browse/classification metadata, never identity authority.
-- CP26 commodity grouping remains distinct from comparability.
-- CP27 comparison-price definition precedes CP28 price judgment.
+- CP26 commodity grouping remains distinct from comparability; exact quantity basis and same-form-only must remain distinguishable.
+- CP27 canonical comparison-price definition and eligibility precede CP28 price judgment.
 - CP29 data access precedes commercial shell dependencies.
 - CP30 Design System precedes final CP31/CP32 visual implementation.
 - CP33 must not bypass identity/provenance rules for convenience.
 
-## 8. Every checkpoint asks, only where materially relevant
+## 7. Every checkpoint asks, only where materially relevant
 
 - Does this change stored-data meaning?
 - Can it create a false merge/grouping?
@@ -141,7 +153,7 @@ Verify startup, OCR latency/memory, large catalog/history, alias/search/category
 
 Avoid ritual re-audits, speculative abstractions, unrelated cleanup and expansion into budgeting/banking/cloud/e-commerce before the core loop is complete.
 
-## 9. Handoff discipline
+## 8. Handoff discipline
 
 At every completed group:
 
@@ -152,6 +164,6 @@ At every completed group:
 5. verify post-boundary changes are documentation-only;
 6. stop before the next unauthorized checkpoint.
 
-## 10. Current boundary
+## 9. Current boundary
 
-**CP25 is COMPLETE. CP26 — Commodity / Non-standard V2 is the next planned checkpoint and must not start without explicit user authorization.**
+**CP26 is COMPLETE. CP27 — Price Intelligence V2 is the next planned checkpoint and must not start without explicit user authorization.**
