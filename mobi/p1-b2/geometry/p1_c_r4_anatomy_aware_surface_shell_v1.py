@@ -108,6 +108,12 @@ def _yaw(fixture) -> float:
     return float(fixture.payload.get("orientation", {}).get("yawRad", 0.0))
 
 
+def _screen_xy(point) -> Tuple[float, float]:
+    if hasattr(point, "x") and hasattr(point, "y"):
+        return float(point.x), float(point.y)
+    return float(point[0]), float(point[1])
+
+
 def _lerp_point(a, b, t: float) -> Tuple[float, float]:
     return (
         float(a.x) * (1.0 - t) + float(b.x) * t,
@@ -122,12 +128,13 @@ def _point_type_like(reference, point: Tuple[float, float]):
 def _ring_points(center, radius_y: float, radius_z: float, yaw: float, samples: int = SECTION_SAMPLES):
     if samples != SECTION_SAMPLES:
         raise ValueError("section sample count is frozen")
+    cx, cy = _screen_xy(center)
     points = []
     for index in range(samples):
         theta = 2.0 * math.pi * index / samples
         y_up = radius_y * math.sin(theta)
         z_left = radius_z * math.cos(theta)
-        points.append(r2._project_offset(center, 0.0, y_up, z_left, yaw))
+        points.append((cx + z_left * math.sin(yaw), cy - y_up))
     return tuple(points)
 
 
@@ -136,7 +143,7 @@ def _make_ring(id_: str, center, radius_y: float, radius_z: float, yaw: float) -
         raise ValueError((id_, radius_y, radius_z))
     return SectionRing(
         id=id_,
-        center=(float(center.x), float(center.y)),
+        center=_screen_xy(center),
         radius_y=float(radius_y),
         radius_z=float(radius_z),
         points=_ring_points(center, radius_y, radius_z, yaw),
@@ -291,18 +298,13 @@ def _surface_faces(sections: Tuple[SectionRing, ...]) -> Tuple[r2.ProjectedPrimi
 
 
 def _collar_ring(center, radius_y: float, radius_z: float, yaw: float):
+    cx, cy = _screen_xy(center)
     points = []
     for index in range(COLLAR_SAMPLES):
         theta = 2.0 * math.pi * index / COLLAR_SAMPLES
-        points.append(
-            r2._project_offset(
-                center,
-                0.0,
-                radius_y * math.sin(theta),
-                radius_z * math.cos(theta),
-                yaw,
-            )
-        )
+        y_up = radius_y * math.sin(theta)
+        z_left = radius_z * math.cos(theta)
+        points.append((cx + z_left * math.sin(yaw), cy - y_up))
     return tuple(points)
 
 

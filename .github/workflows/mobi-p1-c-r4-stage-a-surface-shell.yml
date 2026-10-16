@@ -36,7 +36,7 @@ jobs:
           import subprocess
 
           expected = {
-              'p1_c_r4_anatomy_aware_surface_shell_v1.py': 'f5424107efaf0836153ae6d87859fe8028ad7de1',
+              'p1_c_r4_anatomy_aware_surface_shell_v1.py': '8c6e1c8e47348181ca0719e6b882782f26bab32a',
               'run_p1_c_r4_surface_shell_stage_a.py': '91455fdb5c8e6b3460a6ed8ede5cfaa538e60c49',
               'test_p1_c_r4_anatomy_aware_surface_shell_v1.py': 'eccb39b9365f45c6993180e67485a234f274c805',
               'p1_c_r2_minimal_volumetric_proxy_v1.py': '4d4006f66e98fbf10ce54ed87bb78a9ee5ee3daa',
