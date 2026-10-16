@@ -1,6 +1,6 @@
 # ReceiptLedger V1 — Session Handoff
 
-Updated: 2026-10-16 KST
+Updated: 2026-10-17 KST
 
 ## 0. Restart contract
 
@@ -10,38 +10,42 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_CLOSEOUT.md`
-4. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_EVIDENCE.md`
-5. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_PLAN.md`
-6. `receiptledger/REAL_RECEIPT_EVALUATION_CONSISTENCY_REVIEW.md`
-7. `receiptledger/REAL_RECEIPT_EVALUATION_FIXTURES_V1.md`
-8. `receiptledger/CP34_COMMERCIAL_UI_SHELL_CLOSEOUT.md`
-9. `receiptledger/CP34_COMMERCIAL_UI_SHELL_EVIDENCE.md`
-10. `receiptledger/CP33_CAPTURE_REVIEW_UX_V2_CLOSEOUT.md`
-11. `receiptledger/CP32_COMMODITY_DETAIL_CLOSEOUT.md`
-12. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
-13. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
-14. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-15. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-16. `receiptledger/README.md`
-17. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP36_PERFORMANCE_RELIABILITY_CLOSEOUT.md`
+4. `receiptledger/CP36_PERFORMANCE_RELIABILITY_EVIDENCE.md`
+5. `receiptledger/CP36_PERFORMANCE_RELIABILITY_PLAN.md`
+6. `receiptledger/PERFORMANCE_RELIABILITY_CONSISTENCY_REVIEW.md`
+7. `receiptledger/PERFORMANCE_RELIABILITY_VECTORS.md`
+8. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_CLOSEOUT.md`
+9. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_EVIDENCE.md`
+10. `receiptledger/CP34_COMMERCIAL_UI_SHELL_CLOSEOUT.md`
+11. `receiptledger/CP33_CAPTURE_REVIEW_UX_V2_CLOSEOUT.md`
+12. `receiptledger/CP32_COMMODITY_DETAIL_CLOSEOUT.md`
+13. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
+14. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
+15. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
+16. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+17. `receiptledger/README.md`
+18. `receiptledger/WORK_UNIT.md`
+
+Verify the live handoff branch HEAD and the frozen executable HEAD separately.
 
 ## 1. Latest executable checkpoint
 
-**CP35 — Real Receipt Evaluation — PASS / COMPLETE**
+**CP36 — Performance / Reliability — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-real-receipt-evaluation-20261016`
-- predecessor CP34 handoff: `386c1b3d9ef7f3737ffd8b4d0f34fe2e076cab8e`
-- frozen executable/evaluation HEAD: `6ae9fbcfe0abc17dd9471de243170a9a87272767`
-- canonical Actions: `38884870134` — SUCCESS
-- job: `116920055654` — SUCCESS
-- artifact ID: `12038973171`
-- artifact digest: `sha256:3336486a5807fa971e8385cdd10008f29cb85daf1779ab5fd226008d9ad72258`
-- APK SHA-256: `3e89e7ab1358278889c55410fc49f4b5e4e50f54c8a490aeb473dd58c0cab9cf`
-- versionName `1.0.33-real-receipt-evaluation`, versionCode 34
+- branch: `receiptledger/run-v1-performance-reliability-20261016`
+- predecessor CP35 handoff: `8a8a9ee0bb3bcd7e198f76b436087d54170a469d`
+- predecessor CP35 frozen executable/evaluation: `6ae9fbcfe0abc17dd9471de243170a9a87272767`
+- frozen CP36 executable HEAD: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
+- canonical Actions: `38926526457` — SUCCESS
+- canonical job: `117059359644` — SUCCESS
+- artifact ID: `12057296715`
+- artifact digest: `sha256:3e11a5b85f15ad860f4c5a9a81f948d79bb4dd80122fcba6b1f8d2bfffe85756`
+- APK SHA-256: `f17ade820165ab40213f17c38b9e720488b7791aa3621b09b3b19cdd4a53c5f7`
+- versionName `1.0.34-performance-reliability`, versionCode 35
 - lint: `No issues found.`
 
-Later status/closeout synchronization must remain documentation-only. Do not move the executable boundary from `6ae9fbcf...`.
+Any later handoff/status synchronization is documentation-only. Do not move the executable/evidence boundary from `78cdd99c...`.
 
 ## 2. Product essence
 
@@ -51,105 +55,130 @@ Current user loop:
 
 `홈 -> 영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 반복 구매 재사용 -> 검색/카테고리 -> 제품/품목 상세 -> 내 과거 가격 판단 -> 영수증 근거`
 
-## 3. CP35 result
+Receipts are input/evidence; trustworthy product/commodity price memory is the product outcome.
 
-CP35 evaluated correct purchase registration with a public-safe synthetic corpus.
+## 3. CP36 result
 
-Eight risk classes / nine receipt instances / eleven item rows covered:
+CP36 measured before optimizing. The first valid Android baseline exposed a material CP29 SQLite discovery bottleneck:
 
-- new STANDARD confirmation;
-- confirmed exact-alias repeat reuse;
-- similar-name conservative unresolved behavior;
-- kg/g strict commodity normalization;
-- 봉/상자 contextual separation;
-- unattributed multi-item discount exclusion;
-- arithmetic mismatch review/invalid-price exclusion;
-- CP31/32 detail receipt provenance.
+- search 1k: 2,385 ms;
+- search 10k: 17,106 ms;
+- recent 10k: 10,267 ms.
 
-Canonical metric:
+Only this measured bottleneck was remediated. Production changes are limited to:
 
-`CP35_METRICS evaluation_version=1 fixtures=8 receipts=9 items=11 structured_correct=9 auto_confirmed=8 review_required=1 final_safe_registrations=7 exact_alias_reuse=2 conservative_unresolved=1 false_auto_links=0 strict_weight_observations=2 contextual_cohorts=2 discount_exclusions=1 invalid_exclusions=1 detail_trace_rows=7 schema_unchanged=1`
+- modified `SearchBrowseServiceV1.java`;
+- added read-only `SqliteSearchBrowseSnapshotV1.java`.
 
-## 4. Safety conclusions
+No FTS, persistent cache, new search index, schema or secondary truth was introduced.
 
-- no false automatic identity link was observed;
-- exact confirmed aliases reused the same stable ID on later matching receipts;
-- merely similar product names did not inherit identity;
-- strict physical normalization remained separate from contextual package forms;
-- contextual forms stayed non-judgmental;
-- unsupported receipt-level discount allocation was excluded, not guessed;
-- mismatch evidence stayed review-required and outside eligible price history;
-- detail purchase rows preserved source receipt IDs.
+Canonical final measurements:
 
-No production code correction was needed.
+- startup median/max: 516 / 748 ms;
+- Home PSS: 42,787 KB;
+- search 1k: 189 ms;
+- search 10k: 1,524 ms;
+- recent 10k: 856 ms;
+- price intelligence 1k: 461 ms;
+- Product Detail 1k: 459 ms;
+- chart 1k: 19 ms;
+- OCR cold: 4,448 ms;
+- OCR warm median: 4,078 ms;
+- migration 1k: 4 ms;
+- archive reconciliation: 41 ms;
+- reopen cycles: 10;
+- semantic failures: 0.
 
-## 5. Frozen upstream authority
+## 4. Search semantics / reliability
+
+The optimized SQLite path remains read-only and preserves CP29 authority boundaries, ranking, filters, match reasons, category behavior and identity non-authority.
+
+A dedicated Android instrumentation parity test compares the optimized SQLite path against an adapter-forced original/generic CP29 path across canonical/compact/structured/specification/observed/store search, store filtering, category browse, recent and frequent ordering.
+
+It also injects corrupt catalog-field evidence and verifies both paths fail fast.
+
+Result: **1/1 PASS**.
+
+## 5. Explicit accepted V1 risk
+
+The only final decision-budget breach is warm ML Kit OCR on the canonical API 34 x86_64 CI emulator:
+
+- final warm median: 4,078 ms;
+- budget: 1,500 ms.
+
+This breach is reproducible and explicitly accepted for V1, not hidden. Production OCR remains unchanged because:
+
+- cold OCR is within the 5,000 ms budget;
+- OCR memory remains within budget;
+- the same recognizer instance is already reused;
+- the benchmark is emulator-based, not physical-device certification;
+- CP35 did not quantify real-photo OCR accuracy versus image resolution/merchant variation;
+- reducing optical work solely to satisfy emulator latency could regress correctness without evidence.
+
+Physical-device / real-image OCR profiling is a post-V1 candidate only if separately authorized.
+
+## 6. Frozen upstream authority
 
 Unchanged:
 
-- catalog/product/semantics/identity/category;
-- commodity grouping/comparability;
-- persistence/price/priceintel/priceeval/search/detail;
+- stable catalog ID as final identity authority;
+- product schema 2 / receipt schema 1;
+- CP21–29 domain/search semantics;
+- CP27 comparison eligibility and CP28 thresholds;
 - CP30 design system;
+- CP31/32 detail semantics;
 - CP33 capture/review/save/provenance;
 - CP34 commercial shell;
-- OCR/recovery/item/validation production algorithms;
-- ProductDetailActivity / CommodityDetailActivity / MainActivity / SearchBrowseActivity / HomeActivity / LibraryActivity;
-- product schema 2 / receipt schema 1;
+- CP35 registration-safety conclusions;
+- OCR/recovery/item/validation semantics;
 - programmatic `Activity + android.widget` architecture;
 - offline/no-network/no-broad-permission posture.
 
-The CP35 executable diff has no production Java, manifest or production-resource change.
+## 7. Regression / privacy evidence
 
-## 6. Evidence boundary
+Canonical Run #11 passed:
 
-The public fixture corpus starts at synthetic `OcrDocument` tokens/geometry and passes those through the production `ReceiptRecognitionPipeline`.
+- public namespace audit;
+- bounded CP36 scope guard;
+- complete JVM unit regression;
+- CP29 and CP31–35 regressions;
+- lint 0 errors / 0 warnings;
+- APK + AndroidTest build;
+- emulator startup/PSS profile;
+- Android runtime performance/reliability profile;
+- 1→2 migration with 1,000 products;
+- archive reconciliation with 2,000 files / 1,000 stale removals;
+- repeated reopen cycles;
+- SQLite fast-path semantic/fail-fast parity;
+- evidence packaging.
 
-Therefore CP35 is **not** evidence for:
+Forbidden CAMERA/media/storage/network permissions remain absent. No private receipt, real purchase DB, credential or release signing material was introduced.
 
-- ML Kit image-to-text accuracy;
-- real camera/image variability;
-- statistical merchant/font coverage;
-- physical-device UX;
-- performance/scale/reliability.
+## 8. Execution-history caution
 
-Those claims must not be inferred from the CP35 PASS.
+Several early CP36 runs failed before valid product measurement because of CI bootstrap/harness issues: sdkmanager pipe handling, AndroidTest API/dependency setup, adb PATH, AVD path resolution and a legacy migration fixture normalization mismatch. Those are not product-performance failures.
 
-## 7. Regression / public boundary
+Run #9 attempt 2 was accidentally re-run by the assistant while responding to a user stop request. It is retained only as repeatability evidence, not as the canonical run.
 
-Canonical artifact contains zero-failure packaged CP35/34/33/32/31/29 suites, clean lint and a valid debug APK.
+Canonical CP36 execution is exclusively:
 
-Packaged permissions contain only the internal dynamic-receiver permission. CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE remain absent.
+`78cdd99c... / Actions 38926526457 / job 117059359644`.
 
-No private real receipt, personal data, real purchase DB or release signing secret was committed.
+## 9. Completed V1 boundary
 
-## 8. Post-green discipline
+The authorized V1 chain CP20 through CP36 is complete.
 
-The first CP35 implementation run was green. Post-green review still checked:
+No post-V1 checkpoint is currently authorized. Do not start:
 
-- actual diff scope;
-- production-code immutability;
-- purchase-form persistence ordering against production contract;
-- repeat exact-alias path against CP33's actual `resolveAndLinkExact()` use;
-- whether search needed to be duplicated into CP35 rather than remain CP29-regression-covered.
+- physical-device campaigns;
+- OCR redesign/downsampling;
+- new product features;
+- schema changes;
+- broader optimization;
+- release/signing work;
 
-No material gap justified another implementation revision. `6ae9fbcf... / 38884870134` is the canonical execution boundary.
-
-## 9. Next planned checkpoint
-
-**CP36 — Performance / Reliability — NOT STARTED**
-
-Expected boundary:
-
-- startup/OCR latency and memory;
-- large catalog/history/search/price/detail workloads;
-- representative CP29 scan measurement around 1k/10k before any index/cache decision;
-- migrations and archive reconciliation;
-- recovery/failure reliability;
-- smallest justified hardening only after measurement.
-
-Do not start CP36 without explicit user authorization.
+without explicit user authorization and a new bounded checkpoint definition.
 
 ## 10. Stop condition
 
-**CP35 is complete and handoff-ready. Await explicit authorization for CP36.**
+**CP36 is complete and handoff-ready. Planned V1 CP20–CP36 is complete. Await explicit authorization for any post-V1 work.**

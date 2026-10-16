@@ -1,118 +1,125 @@
 # ReceiptLedger public execution work unit
 
-Updated: 2026-10-16 KST
+Updated: 2026-10-17 KST
 
 ## Current stage
 
-**CP35 — Real Receipt Evaluation is COMPLETE.**
+**CP36 — Performance / Reliability is COMPLETE.**
 
-- branch: `receiptledger/run-v1-real-receipt-evaluation-20261016`
-- predecessor handoff: `386c1b3d9ef7f3737ffd8b4d0f34fe2e076cab8e`
-- frozen executable/evaluation HEAD: `6ae9fbcfe0abc17dd9471de243170a9a87272767`
-- canonical Actions: `38884870134` — SUCCESS
-- job: `116920055654` — SUCCESS
-- artifact ID: `12038973171`
-- artifact digest: `sha256:3336486a5807fa971e8385cdd10008f29cb85daf1779ab5fd226008d9ad72258`
-- APK SHA-256: `3e89e7ab1358278889c55410fc49f4b5e4e50f54c8a490aeb473dd58c0cab9cf`
-- versionCode 34
-- versionName `1.0.33-real-receipt-evaluation`
+- branch: `receiptledger/run-v1-performance-reliability-20261016`
+- predecessor CP35 handoff: `8a8a9ee0bb3bcd7e198f76b436087d54170a469d`
+- frozen executable HEAD: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
+- canonical Actions: `38926526457` — SUCCESS
+- job: `117059359644` — SUCCESS
+- artifact ID: `12057296715`
+- artifact digest: `sha256:3e11a5b85f15ad860f4c5a9a81f948d79bb4dd80122fcba6b1f8d2bfffe85756`
+- APK SHA-256: `f17ade820165ab40213f17c38b9e720488b7791aa3621b09b3b19cdd4a53c5f7`
+- versionCode 35
+- versionName `1.0.34-performance-reliability`
 - lint: 0 errors / 0 warnings
 
-## Frozen CP35 result
+## Frozen CP36 result
 
-CP35 did not alter production behavior. It added deterministic public-safe evaluation around the already-frozen system.
+CP36 used a measure-first strategy. Initial valid Android profiling found CP29 discovery was dominated by repeated SQLite reads.
 
-Corpus:
+Baseline:
 
-- 8 contract-risk fixture classes;
-- 9 synthetic receipt instances;
-- 11 item rows;
-- synthetic `OcrDocument` token/geometry boundary;
-- production ReceiptRecognitionPipeline onward.
+- search 1k: 2,385 ms;
+- search 10k: 17,106 ms;
+- recent 10k: 10,267 ms.
 
-Canonical metric:
+Bounded remediation changed only the CP29 discovery read path:
 
-`CP35_METRICS evaluation_version=1 fixtures=8 receipts=9 items=11 structured_correct=9 auto_confirmed=8 review_required=1 final_safe_registrations=7 exact_alias_reuse=2 conservative_unresolved=1 false_auto_links=0 strict_weight_observations=2 contextual_cohorts=2 discount_exclusions=1 invalid_exclusions=1 detail_trace_rows=7 schema_unchanged=1`
+- modified `SearchBrowseServiceV1.java`;
+- added read-only transient `SqliteSearchBrowseSnapshotV1.java`.
 
-## Registration/safety evidence
+No FTS, persistent cache, new index, schema or secondary truth was added.
 
-- valid receipt structures: 9/9 expected;
-- safe AUTO_CONFIRMED receipts: 8;
-- deliberate total mismatch: REVIEW_REQUIRED;
-- false auto-links: 0;
-- two later exact matching aliases reused existing stable identity;
-- similar 900mL name did not inherit the 1L identity;
-- 1kg/500g commodity data formed one strict WEIGHT_KG cohort;
-- 봉/상자 remained two separate contextual cohorts;
-- contextual price judgments remained NONE;
-- multi-item receipt-level discount did not contaminate comparable item history;
-- mismatch receipt remained invalid price evidence;
-- seven Product/Commodity detail rows retained exact source receipt IDs.
+Final canonical metrics:
 
-## Production immutability
+- startup median/max: 516 / 748 ms;
+- Home PSS: 42,787 KB;
+- search 1k: 189 ms;
+- search 10k: 1,524 ms;
+- recent 10k: 856 ms;
+- price 1k: 461 ms;
+- detail 1k: 459 ms;
+- chart 1k: 19 ms;
+- OCR cold: 4,448 ms;
+- OCR warm median: 4,078 ms;
+- OCR PSS before/after: 104,611 / 111,183 KB;
+- migration 1k: 4 ms;
+- archive reconciliation 2,000 files / 1,000 removals: 41 ms;
+- reopen cycles: 10;
+- semantic failures: 0.
 
-Compared with CP34 handoff, executable changes are limited to:
+## Search semantic evidence
 
-- CP35 workflow;
-- CP35 plan/consistency/fixture docs;
-- test-only RealReceiptEvaluationV1Test;
-- app version bump.
+The optimized SQLite fast path was compared directly with an adapter-forced original/generic CP29 path.
 
-No production Java, manifest or production resource changed.
+Covered:
 
-Product schema 2 / receipt schema 1 remain frozen.
+- canonical search;
+- compact search;
+- structured/specification search;
+- observed-name search;
+- store search/filter;
+- category browse;
+- recent ordering;
+- frequent ordering;
+- corrupt catalog-field fail-fast behavior.
 
-## Regression evidence
+Result: **1/1 PASS**.
 
-Packaged key suites:
+## Explicit accepted risk
 
-- CP35: 1/1 PASS;
-- CP34: 7/7 PASS;
-- CP33: 13/13 PASS;
-- CP32: 11/11 PASS;
-- CP31: 9/9 PASS;
-- CP29: 8/8 PASS.
+Warm ML Kit OCR remains above its emulator decision budget:
 
-Full Gradle unit suite/build passed. Lint is clean. Forbidden camera/media/storage/network permissions remain absent.
+- final median: 4,078 ms;
+- budget: 1,500 ms.
 
-## Evidence limitation
+This is an explicit V1 accepted risk, not a hidden pass. Production OCR is unchanged because cold OCR and memory pass, recognizer reuse is already present, and no real-photo accuracy evidence exists to justify downsampling or altered recognition purely for speed.
 
-CP35 does not measure ML Kit image-to-text accuracy or real camera/merchant/font statistical coverage. Synthetic fixtures start after optical character recognition at the `OcrDocument` token/geometry boundary.
+Physical-device / real-image OCR profiling is not authorized by CP36 closeout.
 
-This limitation is part of the canonical result, not a hidden assumption.
+## Reliability / regression evidence
 
-## Next planned work unit
+Canonical Run #11 passed:
 
-**CP36 — Performance / Reliability**
+- namespace/scope guards;
+- complete JVM unit regression;
+- lint 0/0;
+- APK + AndroidTest build;
+- startup/PSS profile;
+- Android runtime profile;
+- migration stress;
+- archive reconciliation;
+- reopen/recovery repetition;
+- SQLite search semantic/fail-fast parity;
+- evidence packaging.
 
-Before implementation:
+Product schema 2 / receipt schema 1 remain unchanged. Forbidden camera/media/storage/network permissions remain absent.
 
-1. recover CP35 frozen executable and handoff refs separately;
-2. define representative workload/latency/memory/reliability metrics before optimizing;
-3. measure startup and OCR pipeline latency/memory;
-4. measure large receipt/catalog/history workloads;
-5. benchmark CP29 linear search around 1k/10k before considering FTS/index/cache;
-6. benchmark price/evaluation/detail/chart paths;
-7. verify schema migration behavior and archive reconciliation;
-8. verify deterministic recovery/failure paths;
-9. preserve identity/price/review/privacy contracts;
-10. implement only measurement-justified hardening;
-11. rerun full scoped regressions/evidence;
-12. compare plan vs actual after green;
-13. synchronize docs-only handoff and stop.
+## Execution-history notes
 
-## Group discipline
+Early CP36 failures were CI/bootstrap/harness failures rather than product-performance failures, including sdkmanager pipe handling, AndroidTest setup, adb PATH, AVD path resolution and one legacy migration fixture normalization mismatch.
 
-- recover canonical GitHub state;
-- restate essential goal/non-goals;
-- inspect materially relevant contradictions only;
-- fix cheap material gaps before closure even if CI is green;
-- avoid unrelated cleanup/speculative scope;
-- measure before optimizing;
-- freeze exact executable refs;
-- synchronize handoff materials docs-only;
-- verify post-boundary changes;
-- stop before unauthorized work.
+Run #9 attempt 2 was accidentally re-run by the assistant during a user stop request. It is non-canonical and retained only as repeatability evidence.
+
+## Completed V1 boundary
+
+The authorized V1 chain CP20 through CP36 is complete.
+
+No post-V1 work unit is currently authorized.
+
+Before any future work:
+
+1. recover `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md` first;
+2. verify live handoff HEAD and frozen executable `78cdd99c...` separately;
+3. define a new bounded checkpoint with explicit scope/non-goals/acceptance/evidence/stop conditions;
+4. review contradictions against frozen identity/price/review/search/UI/privacy contracts;
+5. avoid changing OCR or schema without direct evidence;
+6. preserve public namespace isolation and docs/executable boundary discipline.
 
 ## Public/privacy rules
 
@@ -120,4 +127,4 @@ Modify only `receiptledger/**` and explicitly approved ReceiptLedger-prefixed wo
 
 ## Stop condition
 
-**CP35 is complete. Await explicit authorization for CP36.**
+**Planned ReceiptLedger V1 CP20–CP36 is complete. Await explicit authorization for any post-V1 work.**
