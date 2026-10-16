@@ -176,7 +176,12 @@ jobs:
             -avd cp36 -no-window -noaudio -no-boot-anim -no-snapshot \
             -gpu swiftshader_indirect -memory 2048 -cores 2 \
             > receiptledger/cp36-emulator.log 2>&1 &
-          adb wait-for-device
+          if ! timeout 180s adb wait-for-device; then
+            echo 'ADB device wait timeout'
+            tail -200 receiptledger/cp36-emulator.log || true
+            adb devices -l || true
+            exit 62
+          fi
           ready=0
           for _ in $(seq 1 120); do
             if [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then ready=1; break; fi
