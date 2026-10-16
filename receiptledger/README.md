@@ -6,10 +6,10 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP26_COMMODITY_NONSTANDARD_V2_CLOSEOUT.md`
-4. `CP26_COMMODITY_NONSTANDARD_V2_EVIDENCE.md`
-5. `CP26_COMMODITY_NONSTANDARD_V2_PLAN.md`
-6. `COMMODITY_NONSTANDARD_V2_CONSISTENCY_REVIEW.md`
+3. `CP27_PRICE_INTELLIGENCE_V2_CLOSEOUT.md`
+4. `CP27_PRICE_INTELLIGENCE_V2_EVIDENCE.md`
+5. `CP27_PRICE_INTELLIGENCE_V2_PLAN.md`
+6. `PRICE_INTELLIGENCE_V2_CONSISTENCY_REVIEW.md`
 7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
 8. `WORK_UNIT.md`
 
@@ -17,23 +17,20 @@ GitHub is canonical; verify refs before relying on old chat context.
 
 ## Current boundary
 
-**CP26 — Commodity / Non-standard V2 — COMPLETE**
+**CP27 — Price Intelligence V2 — COMPLETE**
 
-- branch `receiptledger/run-v1-commodity-nonstandard-v2-20261016`
-- frozen implementation HEAD `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`
-- canonical Actions `38829423445` — SUCCESS
-- job `116744485504` — SUCCESS
-- artifact ID `12016292501`
-- artifact digest `sha256:6ad4342d61274530aecc090fbe7caa8f606f3a20c113285e3b18cd86893336bd`
-- APK SHA-256 `250d4d00bb93334fede3873c92e85b63d1ccd05ee5d09f9a4c7970fb366b90cb`
-- commodity tests 8/8 PASS
-- category tests 8/8 PASS
-- identity tests 8/8 PASS
-- semantics tests 7/7 PASS
-- catalog tests 15/15 PASS
-- persistence tests 7/7 PASS
+- branch `receiptledger/run-v1-price-intelligence-v2-20261016`
+- frozen implementation HEAD `4edc37c5e16752ff4a4ebc96d67d8a6abfb8e5b8`
+- canonical Actions `38831623548` — SUCCESS
+- job `116751473084` — SUCCESS
+- artifact ID `12017014494`
+- artifact digest `sha256:660ead5ea86bae86fbd6cf67643866c17acfa5f144c9b1d06f29d50f71f44dd5`
+- APK SHA-256 `8455e4ce23e15c6a113e87ddbd0ddb000e41d9f1849e7f431c9ed5dfbfabe1bc`
+- CP27 tests 8/8 PASS
+- legacy price-history tests 2/2 PASS
+- CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
 - lint 0 errors / 0 warnings
-- version `1.0.24-commodity-nonstandard-v2`, versionCode 25
+- version `1.0.25-price-intelligence-v2`, versionCode 26
 
 ## Product direction
 
@@ -43,35 +40,36 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> price judgment`
 
-CP26 makes one commodity history span heterogeneous purchase forms while preserving every observation's original quantity/unit/form.
+CP27 now defines historical price using receipt-traceable comparison ratios and safe comparison cohorts.
 
-Key current rules:
+Key rules:
 
-- commodity grouping resolves only to existing NON_STANDARD stable IDs;
-- confirmed MERCHANT alias -> confirmed GLOBAL alias -> exact commodity name -> REVIEW suggestion -> unresolved;
-- `감자` must not silently match `감자칩` or `감자전분`;
-- category and purchase form are not identity authority;
-- modifier names remain review-only until confirmed;
-- confirmation learns the narrowest useful alias scope for repeat use;
-- raw quantity/unit/form and provenance remain observation-specific;
-- exact physical/count conversions are distinguished from same-form-only and incomparable observations;
-- **grouping != comparability**;
-- no guessed 봉/팩/상자 conversion;
-- price truth remains receipt-derived.
+- STANDARD compares one exact stable package;
+- kg/g normalize exactly to price/kg;
+- L/mL normalize exactly to price/L;
+- count normalizes to price/each;
+- 봉/팩/상자/단/OTHER remain contextual same-form cohorts only;
+- multi-item unallocated receipt discounts are excluded from aggregates;
+- sole-item discount attribution is permitted only because the target item is unique;
+- invalid receipts and arithmetic conflicts remain visible but excluded;
+- statistics include latest/previous/delta/min/max/mean/median plus period/store filtering;
+- no cheap/normal/expensive judgment yet;
+- product schema 2 and receipt schema 1 remain unchanged;
+- legacy price-history core remains intact.
 
-## CP26 local quality
+## CP27 local contract metric
 
-`fixtures=25 known_commodity=21 auto_groups=18 correct_auto_groups=18 incorrect_auto_groups=0 false_group=0 review_suggestions=2 false_split=1 negative_fixtures=4 raw_form_cases=12 raw_form_preserved=12 repeat_cases=3 repeat_reused=3`
+`observations=10 eligible=7 excluded_discount=1 excluded_invalid=1 missing_form=1 standard_cohorts=1 commodity_strict_cohorts=1 commodity_contextual_cohorts=1 scope_checks=2 receipt_traceable_rates=7`
 
-These are synthetic/local metrics, not final real-receipt accuracy.
+Synthetic/local evidence only; not real-receipt accuracy.
 
 ## Next planned checkpoint
 
-**CP27 — Price Intelligence V2**
+**CP28 — Price Evaluation**
 
-It must first define a canonical receipt-traceable comparison price and eligibility rules, then compute deterministic personal-history statistics without turning incomparable NON_STANDARD forms into fake normalized prices.
+It will turn only CP27-eligible cohort facts into deterministic, explainable price judgments using explicit data-sufficiency, baseline/window and threshold rules. It must not use free-form AI judgment or combine incomparable cohorts.
 
-Do not start CP27 until explicitly authorized.
+Do not start CP28 until explicitly authorized.
 
 ## Privacy/security
 

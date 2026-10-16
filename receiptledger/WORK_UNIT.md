@@ -4,73 +4,72 @@ Updated: 2026-10-16 KST
 
 ## Current stage
 
-**CP26 — Commodity / Non-standard V2 is COMPLETE.**
+**CP27 — Price Intelligence V2 is COMPLETE.**
 
-- branch: `receiptledger/run-v1-commodity-nonstandard-v2-20261016`
-- frozen implementation HEAD: `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`
-- canonical Actions: `38829423445` — SUCCESS
-- job: `116744485504` — SUCCESS
-- artifact ID: `12016292501`
-- artifact digest: `sha256:6ad4342d61274530aecc090fbe7caa8f606f3a20c113285e3b18cd86893336bd`
-- APK SHA-256: `250d4d00bb93334fede3873c92e85b63d1ccd05ee5d09f9a4c7970fb366b90cb`
-- commodity tests: 8/8 PASS
-- category tests: 8/8 PASS
-- identity tests: 8/8 PASS
-- semantics tests: 7/7 PASS
-- catalog tests: 15/15 PASS
-- persistence tests: 7/7 PASS
+- branch: `receiptledger/run-v1-price-intelligence-v2-20261016`
+- frozen implementation HEAD: `4edc37c5e16752ff4a4ebc96d67d8a6abfb8e5b8`
+- canonical Actions: `38831623548` — SUCCESS
+- job: `116751473084` — SUCCESS
+- artifact ID: `12017014494`
+- artifact digest: `sha256:660ead5ea86bae86fbd6cf67643866c17acfa5f144c9b1d06f29d50f71f44dd5`
+- APK SHA-256: `8455e4ce23e15c6a113e87ddbd0ddb000e41d9f1849e7f431c9ed5dfbfabe1bc`
+- CP27 tests: 8/8 PASS
+- legacy price tests: 2/2 PASS
+- CP26 commodity: 8/8 PASS
+- CP25 category: 8/8 PASS
+- CP24 identity: 8/8 PASS
+- CP23 semantics: 7/7 PASS
+- CP21 catalog: 15/15 PASS
+- CP22 persistence: 7/7 PASS
 - lint: 0 errors / 0 warnings
-- versionCode 25
-- versionName `1.0.24-commodity-nonstandard-v2`
+- versionCode 26
+- versionName `1.0.25-price-intelligence-v2`
 
-## Frozen CP26 contract
+## Frozen CP27 contract
 
-- commodity grouping resolves to existing NON_STANDARD stable IDs only;
-- authority: MERCHANT exact alias -> GLOBAL exact alias -> exact commodity canonical name -> safe REVIEW suggestion -> unresolved;
-- purchase form and category cannot prove commodity identity;
-- substring/fuzzy similarity cannot auto-group;
-- modifier-bearing names remain review-gated until confirmation;
-- STANDARD-target aliases are cross-kind conflicts;
-- explicit confirmation reuses CP24 least-authority contextual alias learning;
-- original quantity/unit/raw unit label and provenance remain observation-specific;
-- exact quantity basis is limited to exact built-in dimensions (kg/g, L/mL, count);
-- same package form such as 봉 vs 봉 is `SAME_FORM_ONLY`, not normalized price authority;
-- guessed 봉/팩/상자 conversion is forbidden;
-- grouping != comparability;
-- product schema 2 and receipt schema 1 remain unchanged;
-- receipt-derived price truth remains unchanged.
+- comparison price is receipt-traceable numerator/denominator evidence;
+- STANDARD basis is one exact stable product package;
+- kg/g, L/mL and count use exact normalized quantity bases;
+- same 봉/팩/상자/단/OTHER form is contextual only;
+- different forms are never combined by guessed conversion;
+- PASS/PASS_WITH_WARNINGS only can contribute to aggregates;
+- MISMATCH/INCOMPLETE stay visible but excluded;
+- sole-item discount can be exactly attributed to its only item;
+- multi-item receipt discount without persisted attribution is excluded from aggregates;
+- item arithmetic conflict is excluded rather than silently corrected;
+- latest/previous/delta/delta-percent/min/max/mean/median are deterministic per cohort;
+- date/store scopes are supported;
+- price judgment labels are deferred to CP28;
+- product schema 2 / receipt schema 1 / legacy price core remain unchanged.
 
 ## Local quality evidence
 
-`fixtures=25 known_commodity=21 auto_groups=18 correct_auto_groups=18 incorrect_auto_groups=0 false_group=0 review_suggestions=2 false_split=1 negative_fixtures=4 raw_form_cases=12 raw_form_preserved=12 repeat_cases=3 repeat_reused=3`
+`observations=10 eligible=7 excluded_discount=1 excluded_invalid=1 missing_form=1 standard_cohorts=1 commodity_strict_cohorts=1 commodity_contextual_cohorts=1 scope_checks=2 receipt_traceable_rates=7`
 
 Interpretation:
 
-- 18/18 automatic groups correct;
-- false grouping 0;
-- safe review suggestions 2;
-- visible false split risk 1/21;
-- raw form preservation 12/12;
-- confirmed repeat reuse 3/3.
-
-The false split is intentionally visible. Do not remove it through unsafe matching broadening.
+- every eligible rate in the bounded fixture is receipt-traceable;
+- one deliberately unallocated discount stays excluded;
+- one invalid receipt stays excluded;
+- one missing commodity form stays excluded;
+- strict and contextual commodity cohorts remain separate;
+- store/date filters passed.
 
 ## Next planned work unit
 
-**CP27 — Price Intelligence V2**
+**CP28 — Price Evaluation**
 
 Before implementation:
 
-1. define one canonical receipt-traceable comparison price for each eligible purchase observation;
-2. define line amount / purchased quantity / one package-unit semantics explicitly;
-3. include item-specific discounts only when attributable without guessing;
-4. retain unallocated receipt-level coupon/benefit provenance without fabricated allocation;
-5. define exclusion rules for invalid/incomplete observations;
-6. STANDARD comparisons must stay within the correct exact stable product identity;
-7. NON_STANDARD comparisons must respect CP26 form relation and never infer package-form conversion;
-8. define latest/previous/delta/min/max/mean/median/period/store statistics deterministically;
-9. keep insufficient/incomparable states first-class;
-10. do not begin CP28 cheap/normal/expensive thresholds early.
+1. define minimum data sufficiency;
+2. define the historical baseline/window;
+3. choose a robust usual-price statistic;
+4. freeze explicit cheap/normal/expensive thresholds;
+5. handle sparse data and zero baseline safely;
+6. decide whether contextual LIKE_FORM history can receive judgment and label its weaker evidence;
+7. provide transparent explanation fields;
+8. never mix CP27 comparison cohorts;
+9. do not introduce online price or free-form generative judgment.
 
 ## Group discipline
 
@@ -93,4 +92,4 @@ Forbidden APK permissions remain CAMERA, broad media/storage, INTERNET and ACCES
 
 ## Stop condition
 
-**CP26 is complete. Await explicit authorization for CP27.**
+**CP27 is complete. Await explicit authorization for CP28.**
