@@ -11,6 +11,7 @@ import com.receiptledger.v1.category.CategoryTaxonomyV1;
 import com.receiptledger.v1.persistence.PersistedItem;
 import com.receiptledger.v1.persistence.ReceiptRecord;
 import com.receiptledger.v1.persistence.ReceiptStore;
+import com.receiptledger.v1.persistence.SqliteReceiptStore;
 import com.receiptledger.v1.priceeval.PriceEvaluationServiceV1;
 import com.receiptledger.v1.priceeval.PriceEvaluationV1;
 import com.receiptledger.v1.priceintel.PriceCohortV2;
@@ -23,6 +24,7 @@ import com.receiptledger.v1.product.ItemLinkRef;
 import com.receiptledger.v1.product.ProductCatalogStore;
 import com.receiptledger.v1.product.ProductNameNormalizer;
 import com.receiptledger.v1.product.ProductType;
+import com.receiptledger.v1.product.SqliteProductCatalogStore;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
@@ -176,12 +178,76 @@ public final class SearchBrowseServiceV1 {
     }
 
     private List<BuiltEntry> buildEntries() {
+        if (receipts instanceof SqliteReceiptStore
+                && catalog instanceof SqliteProductCatalogStore
+                && v2Store == catalog) {
+            SqliteSearchBrowseSnapshotV1.Snapshot snapshot = SqliteSearchBrowseSnapshotV1.load(
+                    (SqliteReceiptStore) receipts,
+                    (SqliteProductCatalogStore) catalog);
+            List<BuiltEntry> out = new ArrayList<>();
+            for (SqliteSearchBrowseSnapshotV1.ProductRow row : snapshot.products) {
+                out.add(buildEntry(row));
+            }
+            return out;
+        }
+
         List<BuiltEntry> out = new ArrayList<>();
         for (CatalogProduct product : catalog.listProducts()) {
             if (product == null || product.type == ProductType.UNCLASSIFIED) continue;
             out.add(buildEntry(product));
         }
         return out;
+    }
+
+    private BuiltEntry buildEntry(SqliteSearchBrowseSnapshotV1.ProductRow row) {
+        String categoryPath = categoryPath(row.categoryId);
+        LinkedHashSet<String> observed = new LinkedHashSet<>();
+        LinkedHashSet<String> stores = new LinkedHashSet<>();
+        Set<String> receiptIds = new HashSet<>();
+        SqliteSearchBrowseSnapshotV1.PurchaseRow latest = null;
+
+        for (SqliteSearchBrowseSnapshotV1.PurchaseRow purchase : row.purchases) {
+            receiptIds.add(purchase.receiptId);
+            if (!clean(purchase.itemName).isEmpty()) observed.add(purchase.itemName.trim());
+            if (!clean(purchase.storeName).isEmpty()) stores.add(purchase.storeName.trim());
+            if (latest == null || isPurchaseNewer(purchase, latest)) latest = purchase;
+        }
+
+        List<String> observedList = sortedText(observed);
+        List<String> storeList = sortedText(stores);
+        String specSummary = specificationSummary(row.specification);
+
+        SearchBrowseEntryV1 entry = new SearchBrowseEntryV1(
+                row.product.id,
+                row.product.type,
+                row.product.canonicalName,
+                row.brand,
+                row.productName,
+                row.variant,
+                specSummary,
+                row.categoryId,
+                categoryPath,
+                observedList,
+                storeList,
+                receiptIds.size(),
+                latest == null ? null : cleanToNull(latest.purchaseDate),
+                latest == null ? null : cleanToNull(latest.storeName),
+                latest == null ? 0L : latest.createdAtMillis,
+                0,
+                "BROWSE");
+
+        List<FieldValue> fields = new ArrayList<>();
+        add(fields, FieldKind.CANONICAL, row.product.canonicalName);
+        add(fields, FieldKind.STRUCTURED, row.brand);
+        add(fields, FieldKind.STRUCTURED, row.productName);
+        add(fields, FieldKind.STRUCTURED, row.variant);
+        for (String term : specificationTerms(row.specification)) add(fields, FieldKind.STRUCTURED, term);
+        for (String term : observedList) add(fields, FieldKind.OBSERVED, term);
+        if (row.categoryId != null) add(fields, FieldKind.CATEGORY, row.categoryId);
+        if (categoryPath != null) add(fields, FieldKind.CATEGORY, categoryPath);
+        for (String label : categoryLabels(row.categoryId)) add(fields, FieldKind.CATEGORY, label);
+        for (String store : storeList) add(fields, FieldKind.STORE, store);
+        return new BuiltEntry(entry, fields);
     }
 
     private BuiltEntry buildEntry(CatalogProduct product) {
@@ -498,6 +564,22 @@ public final class SearchBrowseServiceV1 {
         if (ad != null && bd == null) return -1;
         if (ad == null && bd != null) return 1;
         return 0;
+    }
+
+    private static boolean isPurchaseNewer(
+            SqliteSearchBrowseSnapshotV1.PurchaseRow a,
+            SqliteSearchBrowseSnapshotV1.PurchaseRow b) {
+        String ad = cleanToNull(a.purchaseDate);
+        String bd = cleanToNull(b.purchaseDate);
+        if (ad != null && bd != null) {
+            int c = ad.compareTo(bd);
+            if (c != 0) return c > 0;
+        }
+        int c = Long.compare(a.createdAtMillis, b.createdAtMillis);
+        if (c != 0) return c > 0;
+        if (ad != null && bd == null) return true;
+        if (ad == null && bd != null) return false;
+        return safe(a.receiptId).compareTo(safe(b.receiptId)) > 0;
     }
 
     private static boolean isReceiptNewer(ReceiptRecord a, ReceiptRecord b) {
