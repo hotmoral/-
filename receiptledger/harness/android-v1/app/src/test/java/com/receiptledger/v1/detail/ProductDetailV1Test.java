@@ -18,7 +18,6 @@ import com.receiptledger.v1.persistence.PersistedItem;
 import com.receiptledger.v1.persistence.ReceiptRecord;
 import com.receiptledger.v1.priceeval.PriceEvaluationV1;
 import com.receiptledger.v1.priceintel.PriceIntelligenceServiceV2;
-import com.receiptledger.v1.priceintel.PriceObservationV2;
 import com.receiptledger.v1.product.CatalogProduct;
 import com.receiptledger.v1.product.CatalogV2PersistenceStore;
 import com.receiptledger.v1.product.IdentityResolution;
@@ -36,9 +35,9 @@ public final class ProductDetailV1Test {
         ProductDetailV1 detail = f.service.load(f.product.id);
         assertEquals(ProductType.STANDARD, detail.product.type);
         assertEquals("STANDARD_PACKAGE", detail.cohort.basis.key());
-        assertEquals(new BigDecimal("3000"), detail.evaluation.latestPriceMinor);
-        assertEquals(new BigDecimal("3500"), detail.evaluation.previousPriceMinor);
-        assertEquals(new BigDecimal("3500"), detail.evaluation.usualPriceMinor);
+        assertDecimal("3000", detail.evaluation.latestPriceMinor);
+        assertDecimal("3500", detail.evaluation.previousPriceMinor);
+        assertDecimal("3500", detail.evaluation.usualPriceMinor);
         assertEquals(PriceEvaluationV1.Judgment.CHEAP, detail.evaluation.judgment);
         assertEquals(4, detail.purchases.size());
     }
@@ -49,6 +48,7 @@ public final class ProductDetailV1Test {
         assertEquals("서울우유", ProductDetailFormatterV1.brand(detail));
         assertEquals("우유", ProductDetailFormatterV1.primaryName(detail));
         assertEquals("고소한맛", ProductDetailFormatterV1.variant(detail));
+        assertEquals("1L", ProductDetailFormatterV1.specification(detail));
     }
 
     @Test public void legacyStandardFallsBackWithoutFabrication() {
@@ -109,6 +109,11 @@ public final class ProductDetailV1Test {
         System.out.println("CP31_METRICS product_detail_version=1 standard_basis=1 identity_fallbacks=1 price_states=8 responsive_cases=6 traceability=1 chart_single_basis=1 purchase_rows=" + detail.purchases.size());
     }
 
+    private static void assertDecimal(String expected, BigDecimal actual) {
+        assertNotNull(actual);
+        assertEquals(0, new BigDecimal(expected).compareTo(actual));
+    }
+
     private static Fixture fixture(boolean structured) {
         return new Fixture(structured, new long[]{3500L, 3500L, 3500L, 3000L});
     }
@@ -152,8 +157,8 @@ public final class ProductDetailV1Test {
     private static ReceiptRecord receipt(String id, String date, long price, long created) {
         PersistedItem item = new PersistedItem(
                 0, 0, "서울우유1L", 1, price, price,
-                ValueOrigin.OCR, ValueOrigin.OCR, ValueOrigin.OCR,
-                ItemResolution.RESOLVED, null);
+                ValueOrigin.PRINTED, ValueOrigin.PRINTED, ValueOrigin.PRINTED,
+                ItemResolution.EXACT, null);
         return new ReceiptRecord(
                 id, created, date, "동네마트", "", price, price, 0L, price, 0L,
                 ValidationStatus.PASS, 100, 200, false,
