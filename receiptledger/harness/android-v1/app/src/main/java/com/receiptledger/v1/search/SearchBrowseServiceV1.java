@@ -68,6 +68,8 @@ public final class SearchBrowseServiceV1 {
         List<BuiltEntry> docs = buildEntries();
         List<SearchBrowseEntryV1> matches = new ArrayList<>();
         String normalizedQuery = key(q.text);
+        String compactQuery = compactNormalized(normalizedQuery);
+        List<String> queryTokens = tokens(normalizedQuery);
 
         for (BuiltEntry doc : docs) {
             if (q.productType != null && doc.entry.type != q.productType) continue;
@@ -78,7 +80,7 @@ public final class SearchBrowseServiceV1 {
                 matches.add(doc.entry.withMatch(0, "BROWSE"));
                 continue;
             }
-            Match match = match(doc, q.text);
+            Match match = match(doc, normalizedQuery, compactQuery, queryTokens);
             if (match != null) matches.add(doc.entry.withMatch(match.score, match.reason));
         }
 
@@ -312,16 +314,14 @@ public final class SearchBrowseServiceV1 {
         return new BuiltEntry(entry, fields);
     }
 
-    private Match match(BuiltEntry doc, String query) {
-        String q = key(query);
+    private Match match(BuiltEntry doc, String q, String qc, List<String> queryTokens) {
         if (q.isEmpty()) return new Match(0, "BROWSE");
-        String qc = compact(query);
         int bestScore = -1;
         String bestReason = null;
 
         for (FieldValue field : doc.fields) {
             String fk = key(field.text);
-            String fc = compact(field.text);
+            String fc = compactNormalized(fk);
             if (fk.isEmpty()) continue;
             boolean exact = fk.equals(q) || (!qc.isEmpty() && fc.equals(qc));
             boolean prefix = !exact && (fk.startsWith(q) || (!qc.isEmpty() && fc.startsWith(qc)));
@@ -333,15 +333,14 @@ public final class SearchBrowseServiceV1 {
             }
         }
 
-        List<String> tokens = tokens(q);
-        if (tokens.size() > 1) {
+        if (queryTokens.size() > 1) {
             String productAggregate = aggregate(doc.fields, false);
-            if (allContained(productAggregate, tokens) && 6500 > bestScore) {
+            if (allContained(productAggregate, queryTokens) && 6500 > bestScore) {
                 bestScore = 6500;
                 bestReason = "PRODUCT_ALL_TERMS";
             }
             String allAggregate = aggregate(doc.fields, true);
-            if (allContained(allAggregate, tokens) && 5000 > bestScore) {
+            if (allContained(allAggregate, queryTokens) && 5000 > bestScore) {
                 bestScore = 5000;
                 bestReason = "ALL_TERMS";
             }
@@ -532,7 +531,7 @@ public final class SearchBrowseServiceV1 {
 
     private static boolean allContained(String aggregate, List<String> tokens) {
         if (aggregate == null || aggregate.isEmpty()) return false;
-        for (String token : tokens) if (!aggregate.contains(compact(token))) return false;
+        for (String token : tokens) if (!aggregate.contains(compactNormalized(token))) return false;
         return true;
     }
 
@@ -636,7 +635,8 @@ public final class SearchBrowseServiceV1 {
     }
 
     private static String key(String value) { return ProductNameNormalizer.key(value); }
-    private static String compact(String value) { return key(value).replace(" ", ""); }
+    private static String compact(String value) { return compactNormalized(key(value)); }
+    private static String compactNormalized(String normalized) { return normalized == null ? "" : normalized.replace(" ", ""); }
     private static String clean(String value) { return value == null ? "" : value.trim(); }
     private static String cleanToNull(String value) { String v = clean(value); return v.isEmpty() ? null : v; }
     private static String safe(String value) { return value == null ? "" : value; }
