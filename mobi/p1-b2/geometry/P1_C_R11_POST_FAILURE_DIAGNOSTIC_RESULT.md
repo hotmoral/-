@@ -15,13 +15,7 @@ Decision token: **`R11_DIAGNOSTIC_ALL_PAW_BIND_SURFACE_SEPARATION`**
 - diagnostic JSON SHA-256: `9c11d312f9fe32ff458488bf0e6b3f8a304102dbc159d4e2819aaaf827b8f9be`
 - seed1 JSON SHA-256: same
 - seed777 JSON SHA-256: same
-- deterministic diff: empty / SHA-256 `e3b0c44298fc1c149afbf4fe419b934ca495991b7852b855` corrected below
-
-Exact empty-file SHA-256:
-
-`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
-
-The earlier abbreviated line is superseded by this exact value.
+- deterministic diff: empty / SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
 
 ## Frozen identity reproduced
 
