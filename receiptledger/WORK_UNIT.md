@@ -4,82 +4,100 @@ Updated: 2026-10-16 KST
 
 ## Current stage
 
-**CP30 — Design System Foundation is COMPLETE.**
+**CP31 — Product Detail is COMPLETE.**
 
-- branch: `receiptledger/run-v1-design-system-foundation-20261016`
-- frozen implementation HEAD: `ff0745db529499171246866039521a0b83e830e4`
-- canonical Actions: `38842905325` — SUCCESS
-- job: `116786812761` — SUCCESS
-- artifact ID: `12022330459`
-- artifact digest: `sha256:f1bcb1b2d58e328b15cf4811dd1dc107888cc2f5ba733ce1bb1ee60bf8ec0e5e`
-- APK SHA-256: `cb35afb3ee0bf00dafad48f0b33733401661a982df11557bb01f716ca6655373`
-- CP30 tests: 9/9 PASS
-- CP29 8/8, CP28 8/8, CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
+- branch: `receiptledger/run-v1-product-detail-20261016`
+- predecessor handoff: `f67e39654d1d4cfdc2cd6fce8e7c16f72ed34b60`
+- frozen implementation HEAD: `1d2e7ef67e949af9098027a78e30551c228c255c`
+- canonical Actions: `38852423981` — SUCCESS
+- job: `116816787905` — SUCCESS
+- artifact ID: `12025398048`
+- artifact digest: `sha256:d4ad68382e6b666f796345c452c42e18f03ef1bd3084d18182a78059da0b4b0f`
+- APK SHA-256: `8be04d623cc0bea95f87868dca2a45a774440e0dddc3cd32be5a63baf867e3ae`
+- CP31 tests: 9/9 PASS
+- CP30 9/9, CP29 8/8, CP28 8/8, CP27 8/8 PASS in packaged XML evidence
+- full prior regression suite required by workflow
 - lint: 0 errors / 0 warnings
-- versionCode 29
-- versionName `1.0.28-design-system-foundation`
+- versionCode 30
+- versionName `1.0.29-product-detail`
 
-## Frozen CP30 contract
+## Frozen CP31 contract
 
-- current `Activity + android.widget` architecture retained;
-- no Compose/Material dependency migration;
-- 6 typography roles and fixed spacing/radius/elevation tokens;
-- minimum interactive target 48dp;
-- semantic price/review/error colors always paired with text;
-- 8 semantic tones and 8 reusable UI-state presentations;
-- 10 icon semantic roles, 24dp glyph token, 48dp hit target, Korean accessibility labels;
-- width classes compact <600, medium 600–839, expanded >=840;
-- two-pane only expanded + height >=480;
-- chart line series cannot mix CP27 comparison bases;
-- product schema 2 / receipt schema 1 unchanged;
-- CP21–29 domain/search/price contracts unchanged;
-- only LibraryActivity and legacy PriceHistoryActivity use UiKit as representative proof.
+- STANDARD products only;
+- Product Detail is a read-only projection over canonical catalog/CP27/CP28/receipt data;
+- no duplicate mutable price truth;
+- stable catalog ID remains identity authority;
+- structured identity fields displayed only when canonical V2 data exists;
+- legacy STANDARD falls back to canonical name without guessing metadata;
+- price basis = `STANDARD_PACKAGE` only;
+- latest/previous/usual/judgment remain distinct frozen CP28 concepts;
+- chart uses actual eligible purchases only, oldest -> newest;
+- usual-price reference and judgment color only when CP28 permits;
+- excluded observations remain provenance and never enter judgment/chart values;
+- every purchase row preserves receipt navigation;
+- product schema 2 / receipt schema 1 unchanged.
+
+## Commercial UI result
+
+Design direction:
+
+**quiet confidence / price-first / evidence-backed**
+
+Compact hierarchy:
+
+`identity -> recent price -> judgment/reason -> previous/usual -> chart -> purchase history`
+
+CP30 typography/spacing/radius/elevation/semantic/responsive grammar is reused rather than forked.
+
+History rows are >=64dp. Chart exposes Korean accessibility summary, avoids per-draw Path allocation and uses Android SP dimension conversion compatible with nonlinear font scaling.
+
+Expanded two-pane remains gated by CP30: width >=840dp and height >=480dp.
 
 ## Local quality evidence
 
-`CP30_METRICS typography_roles=6 semantic_tones=8 price_presentations=8 validation_presentations=4 ui_states=8 contrast_pairs=9 responsive_cases=5 chart_cross_basis_rejections=1 min_touch_dp=48 icon_roles=10 elevation_tokens=2 representative_activities=2`
+`CP31_METRICS product_detail_version=1 standard_basis=1 identity_fallbacks=1 price_states=8 responsive_cases=6 traceability=1 chart_single_basis=1 purchase_rows=4`
 
-Interpretation:
+Canonical artifact inspection confirms:
 
-- all required price/no-judgment states have explicit presentations;
-- all semantic palette test pairs pass contrast contract;
-- responsive breakpoints and compact-height protection pass;
-- mixed comparison-basis chart series is rejected;
-- icon roles have stable accessible semantics;
-- common UiKit compiles against minSdk 23.
+- APK SHA above;
+- lint `No issues found.`;
+- CP31/CP30/CP29/CP28/CP27 packaged test XMLs all have zero failures/errors/skips;
+- packaged permissions contain only the internal dynamic-receiver permission.
 
-## Pre-closeout correction
+## Pre-closeout corrections
 
-The first green implementation `5c63a537...` was not closed immediately. Plan-to-code review found icon grammar and elevation centralization were incomplete. `ff0745db...` corrected both and then passed full Actions `38842905325`.
+CP31 was not closed at the first green state.
 
-This correction is part of CP30, not a new checkpoint.
+1. initial CI found two Java implementation errors;
+2. later green run still had chart `DrawAllocation` and was rejected for closure;
+3. next green run still used direct `scaledDensity` for chart text and was rejected for closure;
+4. final `1d2e7ef...` corrected both visual-runtime quality issues and passed full canonical Actions `38852423981` with clean lint.
 
 ## Known limitations
 
-- final STANDARD Product Detail not built;
-- final NON_STANDARD Commodity Detail not built;
-- final chart renderer not built;
-- final capture/review UX and navigation shell not built;
-- no dark-theme finalization;
-- no final icon artwork/library selection;
-- no real-user visual/usability evaluation.
+- NON_STANDARD Commodity Detail is not built yet;
+- Capture/Review UX V2 remains later work;
+- commercial home/navigation shell remains later work;
+- final icon artwork/library and dark-theme finalization remain open;
+- CP31 does not include emulator/device screenshot comparison or real-user usability evidence.
 
 ## Next planned work unit
 
-**CP31 — Product Detail**
+**CP32 — Commodity Detail**
 
 Before implementation:
 
-1. re-read CP30 and CP29 canonical refs;
-2. inspect current product/catalog/priceintel/priceeval/search read APIs and receipt traceability path;
-3. define exactly one STANDARD-product detail read model without duplicating truth;
-4. preserve current/latest vs previous vs usual-price meaning;
-5. use one CP27 comparison basis per chart;
-6. expose receipt/store/date provenance;
-7. support CP28 no-judgment states without fabricating a label;
-8. consume CP30 typography/state/chart/responsive components instead of new hardcoded rules;
-9. do not redesign Commodity Detail, capture/review or shell in the same checkpoint;
-10. finish CI/evidence/handoff and stop before CP32.
+1. recover CP31 frozen and handoff refs separately;
+2. re-read CP26/27 commodity grouping/comparability contracts;
+3. define NON_STANDARD detail read model without duplicating truth;
+4. keep WEIGHT_KG / VOLUME_L / EACH cohorts separate;
+5. keep SAME_FORM/LIKE_FORM contextual/reference-only unless strict comparability exists;
+6. never fake-convert bag/pack/box/count into kg/L/each;
+7. make no-judgment/contextual states visually unmistakable;
+8. preserve store/date/receipt provenance;
+9. consume CP30 design grammar and CP31 quality bar where appropriate;
+10. do not start CP33 Capture/Review or CP34 shell work in the same checkpoint;
+11. finish scoped CI/evidence/handoff and stop before CP33.
 
 ## Group discipline
 
@@ -92,6 +110,7 @@ Before implementation:
 - run scoped CI/evidence;
 - freeze exact refs;
 - synchronize handoff materials;
+- verify post-boundary changes are documentation-only;
 - stop before next unauthorized checkpoint.
 
 ## Public/privacy rules
@@ -102,4 +121,4 @@ Forbidden APK permissions remain CAMERA, broad media/storage, INTERNET and ACCES
 
 ## Stop condition
 
-**CP30 is complete. Await explicit authorization for CP31.**
+**CP31 is complete. Await explicit authorization for CP32.**

@@ -6,30 +6,33 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
-4. `CP30_DESIGN_SYSTEM_FOUNDATION_EVIDENCE.md`
-5. `CP30_DESIGN_SYSTEM_FOUNDATION_PLAN.md`
-6. `DESIGN_SYSTEM_FOUNDATION_CONSISTENCY_REVIEW.md`
-7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-8. `WORK_UNIT.md`
+3. `CP31_PRODUCT_DETAIL_CLOSEOUT.md`
+4. `CP31_PRODUCT_DETAIL_EVIDENCE.md`
+5. `CP31_PRODUCT_DETAIL_PLAN.md`
+6. `PRODUCT_DETAIL_CONSISTENCY_REVIEW.md`
+7. `PRODUCT_DETAIL_GOLDEN_VECTORS.md`
+8. `CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
+9. `CP30_DESIGN_SYSTEM_FOUNDATION_EVIDENCE.md`
+10. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+11. `WORK_UNIT.md`
 
-GitHub is canonical; verify refs before relying on old chat context.
+GitHub is canonical; verify current handoff ref and frozen executable ref separately before relying on old chat context.
 
 ## Current boundary
 
-**CP30 — Design System Foundation — COMPLETE**
+**CP31 — Product Detail — COMPLETE**
 
-- branch `receiptledger/run-v1-design-system-foundation-20261016`
-- frozen implementation HEAD `ff0745db529499171246866039521a0b83e830e4`
-- canonical Actions `38842905325` — SUCCESS
-- job `116786812761` — SUCCESS
-- artifact ID `12022330459`
-- artifact digest `sha256:f1bcb1b2d58e328b15cf4811dd1dc107888cc2f5ba733ce1bb1ee60bf8ec0e5e`
-- APK SHA-256 `cb35afb3ee0bf00dafad48f0b33733401661a982df11557bb01f716ca6655373`
-- CP30 tests 9/9 PASS
-- CP29 8/8, CP28 8/8, CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
-- lint 0 errors / 0 warnings
-- version `1.0.28-design-system-foundation`, versionCode 29
+- branch `receiptledger/run-v1-product-detail-20261016`
+- predecessor handoff `f67e39654d1d4cfdc2cd6fce8e7c16f72ed34b60`
+- frozen implementation HEAD `1d2e7ef67e949af9098027a78e30551c228c255c`
+- canonical Actions `38852423981` — SUCCESS
+- job `116816787905` — SUCCESS
+- artifact ID `12025398048`
+- artifact digest `sha256:d4ad68382e6b666f796345c452c42e18f03ef1bd3084d18182a78059da0b4b0f`
+- APK SHA-256 `8be04d623cc0bea95f87868dca2a45a774440e0dddc3cd32be5a63baf867e3ae`
+- CP31 9/9, CP30 9/9, CP29 8/8, CP28 8/8, CP27 8/8 PASS in packaged XML evidence
+- lint `No issues found.`
+- version `1.0.29-product-detail`, versionCode 30
 
 ## Product direction
 
@@ -39,44 +42,57 @@ Target loop:
 
 `receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> explainable judgment -> find/browse -> inspect`
 
-CP30 freezes how later commercial screens present that truth. It does not change identity, price, search or persistence semantics.
+CP31 implements the first commercial `inspect` destination for STANDARD products without changing upstream business truth.
 
-## CP30 foundation
+## CP31 Product Detail
 
-- 6 purpose-based typography roles;
-- 8 semantic tones with text + color, never color alone;
-- spacing 4/8/12/16/24/32dp;
-- radii 8/12/16dp;
-- card/floating elevation 1/3dp;
-- minimum touch target 48dp;
-- 10 stable icon roles with Korean accessibility labels;
-- compact/medium/expanded width classes at 600/840dp;
-- chart series forbidden from mixing comparison bases;
-- 8 reusable loading/empty/review/error/unavailable state presentations;
-- existing programmatic `android.widget` architecture preserved;
-- no Compose/Material migration.
+Design direction: **quiet confidence / price-first / evidence-backed**.
 
-Only LibraryActivity and legacy PriceHistoryActivity are representative UiKit adopters in CP30. Full commercial screens begin later.
+The detail screen prioritizes:
 
-## CP30 local contract metric
+`exact identity -> recent price -> personal-history judgment/reason -> previous/usual context -> purchase trend -> receipt-traceable history`
 
-`CP30_METRICS typography_roles=6 semantic_tones=8 price_presentations=8 validation_presentations=4 ui_states=8 contrast_pairs=9 responsive_cases=5 chart_cross_basis_rejections=1 min_touch_dp=48 icon_roles=10 elevation_tokens=2 representative_activities=2`
+Key frozen behavior:
 
-Synthetic/local foundation evidence only.
+- STANDARD only;
+- exact `STANDARD_PACKAGE` comparison basis;
+- no UI-side identity inference or CP28 threshold reimplementation;
+- structured brand/product/variant/specification when canonical V2 data exists;
+- legacy STANDARD canonical-name fallback;
+- actual eligible purchase points only in the chart;
+- latest point emphasized;
+- usual-price reference only for evaluated histories;
+- >=64dp history rows opening existing Receipt Detail;
+- excluded observations remain provenance but not chart/evaluation inputs;
+- compact/medium single-column;
+- expanded two-pane only when width >=840dp and height >=480dp;
+- chart Korean accessibility summary and nonlinear font-scaling-safe SP handling.
+
+## Architecture / privacy
+
+The app remains programmatic `Activity + android.widget`.
+
+No Compose/Material migration, schema migration, duplicate price truth, network requirement or new identity authority was introduced.
+
+The executable app intentionally does not request CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permissions.
+
+## CP31 metric
+
+`CP31_METRICS product_detail_version=1 standard_basis=1 identity_fallbacks=1 price_states=8 responsive_cases=6 traceability=1 chart_single_basis=1 purchase_rows=4`
+
+CI evidence does not include emulator/device screenshot comparison or real-user visual usability validation.
 
 ## Next planned checkpoint
 
-**CP31 — Product Detail**
+**CP32 — Commodity Detail**
 
-It will build the STANDARD-product price-memory detail experience using frozen identity/specification, CP27 price facts, CP28 judgment, CP29 discovery/read models and CP30 visual/interaction grammar.
+CP32 must present NON_STANDARD history without confusing commodity grouping with price comparability. Strict kg/L/each cohorts remain separate; package-form SAME_FORM/LIKE_FORM history remains contextual unless genuinely comparable.
 
-Do not start CP31 until explicitly authorized.
+Do not start CP32 until explicitly authorized.
 
 ## Privacy/security
 
 This repository is public. Never commit signing secrets, credentials, real private receipt photos, real purchase databases/backups, personal identifiers or uncleared assets.
-
-The executable app intentionally does not request CAMERA, broad media/storage, INTERNET or ACCESS_NETWORK_STATE permissions.
 
 ## Namespace isolation
 

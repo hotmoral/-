@@ -67,9 +67,7 @@ Frozen implementation `b73fe8653b9e90e83c44cb24aa3e3da9bfed96f1`; Actions `38839
 - exact/prefix/all-term/contains deterministic ranking;
 - no fuzzy identity authority;
 - category descendants and exact normalized store filtering;
-- recent = latest purchase occasion;
-- frequent = distinct receipt occasions;
-- price-change = strict CP28 evaluated non-typical basis-specific rows;
+- recent/frequent/price-change browsing;
 - no mutable search index/table/FTS;
 - scan diagnostics retained for CP36.
 
@@ -80,53 +78,60 @@ Frozen implementation `ff0745db529499171246866039521a0b83e830e4`; canonical Acti
 
 Frozen contract:
 
-- current programmatic `Activity + android.widget` architecture retained;
+- programmatic `Activity + android.widget` retained;
 - no Compose/Material migration;
-- typography roles: price hero/title/body/label;
-- semantic tones: neutral/primary/positive/negative/review/error/info/disabled;
-- color always paired with text meaning;
+- purpose-based typography roles and Korean-first hierarchy;
+- semantic tones always paired with text meaning;
 - spacing 4/8/12/16/24/32dp;
 - radii 8/12/16dp;
 - elevations 1/3dp;
 - minimum interaction area 48dp;
-- 10 stable icon roles with 24dp glyph token and Korean accessibility labels;
-- width classes compact <600, medium 600–839, expanded >=840;
+- compact/medium/expanded width classes at 600/840dp;
 - chart series cannot mix CP27 comparison bases;
-- loading/empty/no-result/review/insufficient/contextual/error/disabled state presentations;
-- LibraryActivity and legacy PriceHistoryActivity are representative UiKit adopters only.
+- reusable loading/empty/review/error/unavailable state presentations.
+
+### CP31 — Product Detail — COMPLETE
+Frozen implementation `1d2e7ef67e949af9098027a78e30551c228c255c`; canonical Actions `38852423981` SUCCESS.
+
+Commercial direction: **quiet confidence / price-first / evidence-backed**.
+
+Delivered:
+
+- read-only STANDARD Product Detail projection;
+- exact/canonical product identity with structured V2 fields when available;
+- legacy STANDARD fallback without inferred metadata;
+- latest price as primary numeric focus;
+- previous and usual price kept distinct;
+- frozen CP28 judgment and explanation;
+- STANDARD_PACKAGE-only purchase-history chart;
+- actual purchase points with latest emphasis and optional valid usual-price reference;
+- store/date context;
+- receipt-traceable >=64dp purchase rows;
+- insufficient/no-judgment states;
+- compact/medium single-column and expanded eligible two-pane composition;
+- chart accessibility summary and nonlinear font-scale-safe SP conversion;
+- no domain/schema/search/price-policy rewrite.
 
 Canonical metric:
 
-`CP30_METRICS typography_roles=6 semantic_tones=8 price_presentations=8 validation_presentations=4 ui_states=8 contrast_pairs=9 responsive_cases=5 chart_cross_basis_rejections=1 min_touch_dp=48 icon_roles=10 elevation_tokens=2 representative_activities=2`
+`CP31_METRICS product_detail_version=1 standard_basis=1 identity_fallbacks=1 price_states=8 responsive_cases=6 traceability=1 chart_single_basis=1 purchase_rows=4`
 
-Initial green implementation `5c63a537...` was not closed because plan/code review found icon semantics and elevation centralization incomplete. Those were corrected before the canonical CP30 boundary.
+Known evidence limit: no emulator/device screenshot comparison or real-user usability study in CP31 CI evidence.
 
-### CP31 — Product Detail — NEXT PLANNED
+### CP32 — Commodity Detail — NEXT PLANNED
 
-Goal: first full commercial STANDARD product price-memory detail surface.
+Goal: commercial NON_STANDARD history without making heterogeneous purchase forms look comparable.
 
-Must consume frozen CP21–30 contracts and expose:
+Required boundaries:
 
-- stable identity/specification;
-- latest/current price;
-- previous price and delta;
-- usual-price baseline and CP28 judgment/explanation;
-- one-basis price-history chart;
-- store/date context;
-- receipt traceability;
-- insufficient/no-judgment states;
-- CP30 responsive/accessibility grammar.
-
-Must not:
-
-- infer/merge identity from UI/search similarity;
-- mix price comparison bases;
-- invent unsupported discount allocation;
-- change CP28 thresholds;
-- redesign commodity/capture/shell scope in the same checkpoint.
-
-### CP32 — Commodity Detail
-Commercial NON_STANDARD history that clearly separates strict normalized cohorts from contextual same-form observations.
+- commodity grouping remains separate from price comparability;
+- kg/g -> price/kg, L/mL -> price/L, count -> price/each;
+- each strict comparison basis has its own chart/judgment context;
+- SAME_FORM/LIKE_FORM package history remains contextual/reference-only unless strict comparability exists;
+- no fake normalization such as bag = kg;
+- store/date/receipt traceability preserved;
+- CP30 visual grammar and CP31 commercial-quality bar reused where semantically valid;
+- do not force STANDARD Product Detail composition onto commodity cases where it would mislead.
 
 ### CP33 — Capture / Review UX V2
 Move toward `영수증 추가 -> 자동 처리 -> 확인 필요한 항목만 검토 -> 저장`; acceptance includes review burden and repeat-use automation.
@@ -155,10 +160,9 @@ For CP29 specifically, benchmark canonical-store linear scan at approximately 1k
 - CP27 eligible cohort is the only price input basis for CP28 judgment.
 - CP28 judgment is deterministic/explainable and cannot be replaced by UI opinion.
 - CP29 search is read-only; relevance never becomes merge/relink authority.
-- CP29 price-change rows remain comparison-basis-specific.
-- CP30 visual semantics must present, not reinterpret, CP21–29 facts.
-- CP30 chart grammar forbids cross-basis visual lines.
-- CP31/32 consume CP30 components/tokens rather than create parallel ad-hoc systems.
+- CP30 visual semantics present rather than reinterpret upstream facts.
+- CP31 STANDARD Product Detail consumes exactly STANDARD_PACKAGE history and receipt provenance.
+- CP32 must preserve basis separation and contextual-only package-form semantics.
 - CP33 must not bypass identity/provenance rules for convenience.
 
 ## 7. Every checkpoint asks, only where materially relevant
@@ -193,4 +197,4 @@ At every completed group:
 
 ## 9. Current boundary
 
-**CP30 is COMPLETE. CP31 — Product Detail is the next planned checkpoint and must not start without explicit user authorization.**
+**CP31 is COMPLETE. CP32 — Commodity Detail is the next planned checkpoint and must not start without explicit user authorization.**
