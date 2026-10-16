@@ -56,9 +56,9 @@ public final class ProductPriceChartViewV1 extends View {
         for (ProductDetailV1.PurchaseRow row : detail.purchases) {
             if (row.comparable && row.comparisonPriceMinor != null) comparable.add(row);
         }
-        Collections.reverse(comparable); // CP27 is newest-first; charts read oldest -> newest.
-        this.points = Collections.unmodifiableList(comparable);
-        this.evaluation = detail.evaluation;
+        Collections.reverse(comparable);
+        points = Collections.unmodifiableList(comparable);
+        evaluation = detail.evaluation;
         latestPoint.setColor(latestColor(detail.evaluation));
         setContentDescription(ProductDetailFormatterV1.chartAccessibilitySummary(detail));
         invalidate();
@@ -66,9 +66,9 @@ public final class ProductPriceChartViewV1 extends View {
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int desired = dp(RECOMMENDED_HEIGHT_DP);
-        int h = resolveSize(desired, heightMeasureSpec);
-        int w = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-        setMeasuredDimension(w, h);
+        setMeasuredDimension(
+                resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+                resolveSize(desired, heightMeasureSpec));
     }
 
     @Override protected void onDraw(Canvas canvas) {
@@ -77,11 +77,8 @@ public final class ProductPriceChartViewV1 extends View {
         int h = getHeight();
         if (w <= 0 || h <= 0) return;
 
-        float left = dp(8);
-        float right = Math.max(left + 1, w - dp(8));
-        float top = dp(16);
-        float bottom = Math.max(top + 1, h - dp(28));
-
+        float left = dp(8), right = Math.max(left + 1, w - dp(8));
+        float top = dp(16), bottom = Math.max(top + 1, h - dp(28));
         canvas.drawLine(left, bottom, right, bottom, grid);
         if (points.isEmpty()) {
             text.setTextAlign(Paint.Align.CENTER);
@@ -101,13 +98,12 @@ public final class ProductPriceChartViewV1 extends View {
             if (evaluation.usualPriceMinor.compareTo(max) > 0) max = evaluation.usualPriceMinor;
         }
 
-        double lo = min.doubleValue();
-        double hi = max.doubleValue();
+        double lo = min.doubleValue(), hi = max.doubleValue();
         double spread = hi - lo;
         if (spread <= 0d) spread = Math.max(100d, Math.abs(hi) * 0.08d);
-        double pad = spread * 0.14d;
-        lo -= pad;
-        hi += pad;
+        double padding = spread * 0.14d;
+        lo -= padding;
+        hi += padding;
 
         for (int i = 1; i <= 2; i++) {
             float y = top + (bottom - top) * i / 3f;
@@ -119,7 +115,8 @@ public final class ProductPriceChartViewV1 extends View {
             float y = y(evaluation.usualPriceMinor.doubleValue(), lo, hi, top, bottom);
             canvas.drawLine(left, y, right, y, usual);
             text.setTextAlign(Paint.Align.RIGHT);
-            canvas.drawText("평소 " + ProductDetailFormatterV1.formatWon(evaluation.usualPriceMinor), right, Math.max(top + text.getTextSize(), y - dp(4)), text);
+            canvas.drawText("평소 " + ProductDetailFormatterV1.formatWon(evaluation.usualPriceMinor),
+                    right, Math.max(top + text.getTextSize(), y - dp(4)), text);
         }
 
         Path path = new Path();
@@ -133,7 +130,8 @@ public final class ProductPriceChartViewV1 extends View {
         for (int i = 0; i < points.size(); i++) {
             float x = x(i, points.size(), left, right);
             float y = y(points.get(i).comparisonPriceMinor.doubleValue(), lo, hi, top, bottom);
-            canvas.drawCircle(x, y, dp(i == points.size() - 1 ? 5 : 3), i == points.size() - 1 ? latestPoint : point);
+            canvas.drawCircle(x, y, dp(i == points.size() - 1 ? 5 : 3),
+                    i == points.size() - 1 ? latestPoint : point);
         }
 
         ProductDetailV1.PurchaseRow first = points.get(0);
@@ -150,34 +148,27 @@ public final class ProductPriceChartViewV1 extends View {
         if (e == null || !ChartGrammarV1.allowJudgmentColor(e.status)) return DesignTokensV1.COLOR_PRIMARY;
         switch (e.judgment) {
             case VERY_CHEAP:
-            case CHEAP:
-                return DesignTokensV1.COLOR_POSITIVE_TEXT;
+            case CHEAP: return DesignTokensV1.COLOR_POSITIVE_TEXT;
             case EXPENSIVE:
-            case VERY_EXPENSIVE:
-                return DesignTokensV1.COLOR_NEGATIVE_TEXT;
-            case TYPICAL:
-            case NONE:
-            default:
-                return DesignTokensV1.COLOR_PRIMARY;
+            case VERY_EXPENSIVE: return DesignTokensV1.COLOR_NEGATIVE_TEXT;
+            default: return DesignTokensV1.COLOR_PRIMARY;
         }
     }
 
     private static float x(int index, int count, float left, float right) {
-        if (count <= 1) return (left + right) / 2f;
-        return left + (right - left) * index / (count - 1f);
+        return count <= 1 ? (left + right) / 2f : left + (right - left) * index / (count - 1f);
     }
 
     private static float y(double value, double lo, double hi, float top, float bottom) {
-        double normalized = (value - lo) / (hi - lo);
-        return (float) (bottom - normalized * (bottom - top));
+        return (float) (bottom - ((value - lo) / (hi - lo)) * (bottom - top));
     }
 
     private static String shortDate(String date) {
-        String v = date == null ? "" : date.trim();
-        if (v.length() >= 10) return v.substring(5, 10).replace('-', '.');
-        return v.isEmpty() ? "날짜 미상" : v;
+        String value = date == null ? "" : date.trim();
+        if (value.length() >= 10) return value.substring(5, 10).replace('-', '.');
+        return value.isEmpty() ? "날짜 미상" : value;
     }
 
-    private float dp(float value) { return value * getResources().getDisplayMetrics().density; }
+    private int dp(float value) { return Math.round(value * getResources().getDisplayMetrics().density); }
     private float sp(float value) { return value * getResources().getDisplayMetrics().scaledDensity; }
 }
