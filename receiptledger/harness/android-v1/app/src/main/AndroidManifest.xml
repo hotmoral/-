@@ -26,7 +26,7 @@
         </activity>
         <provider
             android:name=".image.CaptureFileProvider"
-            android:authorities="com.receiptledger.v1.capture"
+            android:authorities="${applicationId}.capture"
             android:exported="false"
             android:grantUriPermissions="true" />
     </application>
