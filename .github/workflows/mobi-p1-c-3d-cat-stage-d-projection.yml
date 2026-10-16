@@ -1,0 +1,101 @@
+name: Mobi P1-C 3D Cat Stage D Projection
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-3d-cat-projection-feasibility-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_3d_cat_stage_d_projection_v1.py'
+      - '.github/workflows/mobi-p1-c-3d-cat-stage-d-projection.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stage-d-projection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify frozen projection blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected={
+            'p1_c_3d_cat_stage_b_inspector_v1.py':'9b7899bc1c39d02291813a826df01d3697192846',
+            'p1_c_3d_cat_stage_d_projection_v1.py':'5c8820fb7270e7727ececb1bb37d3a24331b24ab',
+            'test_p1_c_3d_cat_stage_d_projection_v1.py':'3b3e9bfcaa4f4ea25c0ebea3f788b25531bf5e43',
+          }
+          for p,w in expected.items():
+            a=subprocess.check_output(['git','hash-object',p],text=True).strip(); assert a==w,(p,w,a)
+          print('frozen_stage_d_identity=PASS')
+          PY
+
+      - name: Run bounded projection tests
+        working-directory: mobi/p1-b2/geometry
+        run: python3 -m unittest -v test_p1_c_3d_cat_stage_d_projection_v1.py
+
+      - name: Acquire exact frozen source
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-3d-cat-stage-d/source mobi/p1-c-3d-cat-stage-d/seed1 mobi/p1-c-3d-cat-stage-d/seed777 mobi/p1-c-3d-cat-stage-d/evidence
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A 'Mobi bounded public feasibility/1.0' \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o mobi/p1-c-3d-cat-stage-d/source/cat-original.glb
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-3d-cat-stage-d/source/cat-original.glb' | sha256sum -c -
+
+      - name: Render twice deterministically
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          SRC=../../p1-c-3d-cat-stage-d/source/cat-original.glb
+          PYTHONHASHSEED=1 python3 p1_c_3d_cat_stage_d_projection_v1.py "$SRC" --out ../../p1-c-3d-cat-stage-d/seed1 > ../../p1-c-3d-cat-stage-d/evidence/seed1_stdout.txt
+          PYTHONHASHSEED=777 python3 p1_c_3d_cat_stage_d_projection_v1.py "$SRC" --out ../../p1-c-3d-cat-stage-d/seed777 > ../../p1-c-3d-cat-stage-d/evidence/seed777_stdout.txt
+          diff -ru ../../p1-c-3d-cat-stage-d/seed1 ../../p1-c-3d-cat-stage-d/seed777 > ../../p1-c-3d-cat-stage-d/evidence/deterministic_diff.txt
+          cp -R ../../p1-c-3d-cat-stage-d/seed1/. ../../p1-c-3d-cat-stage-d/evidence/
+
+      - name: Validate frozen evidence shape
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          E=Path('mobi/p1-c-3d-cat-stage-d/evidence')
+          s=json.loads((E/'summary.json').read_text())
+          assert s['version']=='P1_C_3D_CAT_STAGE_D_PROJECTION_V1'
+          assert s['sourceSha256']=='6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5'
+          assert s['structuralNodeName']=='Cat continuous body'
+          assert s['canvas']==[96,96]
+          assert s['projection']=='orthographic'
+          assert s['vertexCount']==99642
+          assert s['triangleCount']==199280
+          assert [v['yawDeg'] for v in s['views']]==[0.0,22.5,45.0,67.5,90.0]
+          assert [v['name'] for v in s['views']]==['EXACT_FRONT','NEAR_FRONT','STRONG_3Q','NEAR_PROFILE','EXACT_PROFILE']
+          assert all(v['occupiedPixels']>0 for v in s['views'])
+          assert all(v['components8']>=1 for v in s['views'])
+          assert (E/'deterministic_diff.txt').read_text()==''
+          pngs=sorted(E.glob('*.png'))
+          assert len(pngs)==12,[p.name for p in pngs]
+          for p in pngs: assert p.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'),p
+          print(json.dumps(s,indent=2,sort_keys=True))
+          PY
+
+      - name: Record environment and hash evidence
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-3d-cat-stage-d/evidence
+          { echo "git_commit=${GITHUB_SHA}"; python3 --version; } > "$E/environment.txt"
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-3d-cat-stage-d-${{ github.run_id }}
+          path: mobi/p1-c-3d-cat-stage-d/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
