@@ -1,0 +1,139 @@
+name: Mobi P1-C Post-R10 Rigged Cat Motion Reference Audit
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-rigged-cat-motion-reference-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_post_r10_rigged_cat_motion_reference_audit_v1.py'
+      - '.github/workflows/mobi-p1-c-post-r10-rigged-cat-motion-reference-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rigged-cat-motion-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify frozen audit blob
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          actual="$(git hash-object p1_c_post_r10_rigged_cat_motion_reference_audit_v1.py)"
+          test "$actual" = '4e675516110d073c0f9231925e55baf276fca969'
+          echo 'frozen_rigged_cat_audit_identity=PASS'
+
+      - name: Acquire and freeze CC0 Cat Pilot source
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence
+          mkdir -p "$E/source"
+          UA='Mobi post-R10 rigged cat motion reference audit/1.0'
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 120 -A "$UA" \
+            'https://opengameart.org/content/cat-pilot-rigged-animated' \
+            -o "$E/source/source_page.html"
+          grep -Fq 'CC0' "$E/source/source_page.html"
+          grep -Fq 'The model is rigged' "$E/source/source_page.html"
+          grep -Fq 'Walking' "$E/source/source_page.html"
+          grep -Fq 'Running' "$E/source/source_page.html"
+          grep -Fq 'CatPilot.blend' "$E/source/source_page.html"
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            -D "$E/source/download_headers.txt" \
+            -w 'effective_url=%{url_effective}\nhttp_code=%{http_code}\ncontent_type=%{content_type}\nsize_download=%{size_download}\n' \
+            'https://opengameart.org/sites/default/files/CatPilot.blend' \
+            -o "$E/source/CatPilot.blend" > "$E/source/download_meta.txt"
+          test "$(stat -c '%s' "$E/source/CatPilot.blend")" -gt 1000000
+          sha256sum "$E/source/CatPilot.blend" | tee "$E/source/source_sha256.txt"
+          stat -c 'bytes=%s' "$E/source/CatPilot.blend" | tee "$E/source/source_size.txt"
+
+      - name: Install bounded Blender inspection dependency
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender
+          blender --version | head -5 | tee mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence/blender_version.txt
+
+      - name: Audit rig and evaluated motion twice deterministically
+        run: |
+          set -euo pipefail
+          ROOT=mobi/p1-c-post-r10-rigged-cat-motion-reference
+          SRC="$ROOT/evidence/source/CatPilot.blend"
+          SCRIPT=mobi/p1-b2/geometry/p1_c_post_r10_rigged_cat_motion_reference_audit_v1.py
+          rm -rf "$ROOT/seed1" "$ROOT/seed777"
+          PYTHONHASHSEED=1 blender -b "$SRC" --python "$SCRIPT" -- --out "$ROOT/seed1" \
+            > "$ROOT/evidence/blender_seed1_stdout.txt" 2>&1
+          PYTHONHASHSEED=777 blender -b "$SRC" --python "$SCRIPT" -- --out "$ROOT/seed777" \
+            > "$ROOT/evidence/blender_seed777_stdout.txt" 2>&1
+          diff -ru "$ROOT/seed1" "$ROOT/seed777" > "$ROOT/evidence/deterministic_diff.txt"
+          mkdir -p "$ROOT/evidence/result"
+          cp -R "$ROOT/seed1/." "$ROOT/evidence/result/"
+
+      - name: Validate motion-reference evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence')
+          p=root/'result/rigged_cat_motion_reference_summary.json'
+          s=json.loads(p.read_text())
+          assert s['version'] == 'P1_C_POST_R10_RIGGED_CAT_MOTION_REFERENCE_AUDIT_V1'
+          assert s['objects']['meshCount'] >= 1
+          assert s['objects']['armatureCount'] >= 1
+          assert s['primaryMesh'] is not None
+          assert s['armature'] is not None
+          assert s['armature']['boneCount'] > 0
+          assert len(s['actions']) > 0
+          assert s['auditConclusion'] in (
+            'FIXED_TOPOLOGY_RIGGED_MOTION_REFERENCE_AVAILABLE',
+            'RIGGED_ACTIONS_PRESENT_BUT_EVALUATED_TOPOLOGY_NOT_FIXED',
+            'NO_WALK_OR_RUN_ACTION_FOUND',
+            'PRIMARY_MESH_HAS_NO_ARMATURE_BINDING',
+          )
+          assert (root/'deterministic_diff.txt').read_text() == ''
+          print(json.dumps({
+            'conclusion': s['auditConclusion'],
+            'blenderVersion': s['blenderVersion'],
+            'primaryMesh': {
+              'objectName': s['primaryMesh']['objectName'],
+              'baseVertexCount': s['primaryMesh']['baseVertexCount'],
+              'basePolygonCount': s['primaryMesh']['basePolygonCount'],
+              'vertexGroupCount': s['primaryMesh']['vertexGroupCount'],
+              'armatureObject': s['primaryMesh']['armatureObject'],
+            },
+            'boneCount': s['armature']['boneCount'],
+            'boneNames': [b['name'] for b in s['armature']['bones']],
+            'actions': [a['name'] for a in s['actions']],
+            'motionActions': [
+              {
+                'name': a['action']['name'],
+                'frames': a['frames'],
+                'topologyInvariant': a['topologyInvariantAcrossSampledFrames'],
+                'directCorrespondence': a['directVertexCorrespondenceAcrossSampledFrames'],
+              } for a in s['motionActionAudits']
+            ],
+          }, indent=2, sort_keys=True))
+          PY
+
+      - name: Record environment and evidence hashes
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            uname -a
+            blender --version | head -5
+          } > "$E/environment.txt"
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-post-r10-rigged-cat-motion-reference-${{ github.run_id }}
+          path: mobi/p1-c-post-r10-rigged-cat-motion-reference/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
