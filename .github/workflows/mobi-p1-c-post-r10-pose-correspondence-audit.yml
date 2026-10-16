@@ -1,0 +1,172 @@
+name: Mobi P1-C Post-R10 Pose Correspondence Audit
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-cat-pose-correspondence-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_post_r10_pose_correspondence_audit_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_post_r10_pose_correspondence_audit_v1.py'
+      - '.github/workflows/mobi-p1-c-post-r10-pose-correspondence-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pose-correspondence-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify frozen audit blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+            'p1_c_post_r10_pose_correspondence_audit_v1.py': 'f9e264a67785be89889e0ddd3c1373049edbbc7a',
+            'test_p1_c_post_r10_pose_correspondence_audit_v1.py': '905095341f30ae7f1b605735e09a3c386b3075fb',
+            'p1_c_3d_cat_stage_b_inspector_v1.py': '9b7899bc1c39d02291813a826df01d3697192846',
+          }
+          for path, wanted in expected.items():
+              actual = subprocess.check_output(['git','hash-object',path], text=True).strip()
+              assert actual == wanted, (path, wanted, actual)
+          print('frozen_pose_audit_identity=PASS')
+          PY
+
+      - name: Install frozen dependency
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check 'numpy==2.5.4'
+          python3 - <<'PY'
+          import numpy
+          assert numpy.__version__ == '2.5.4', numpy.__version__
+          print('dependency_identity=PASS')
+          PY
+
+      - name: Run bounded unit tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_post_r10_pose_correspondence_audit_v1.py
+
+      - name: Acquire and freeze CC0 source evidence
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-post-r10-pose-correspondence/evidence
+          mkdir -p "$E/source" "$E/pages"
+          UA='Mobi post-R10 pose correspondence audit/1.0'
+
+          declare -A PAGE_URLS=(
+            [standing]='https://www.innerscene.com/tools/library/3d-parts/standing-cat-cda42538'
+            [walking]='https://www.innerscene.com/tools/library/3d-parts/domestic-cat-walking-4e8ff6c2'
+            [sitting]='https://www.innerscene.com/tools/library/3d-parts/domestic-cat-sitting-c7caf7c2'
+          )
+          declare -A DOWNLOAD_URLS=(
+            [standing]='https://www.innerscene.com/api/library/standing-cat-cda42538/download'
+            [walking]='https://www.innerscene.com/api/library/domestic-cat-walking-4e8ff6c2/download'
+            [sitting]='https://www.innerscene.com/api/library/domestic-cat-sitting-c7caf7c2/download'
+          )
+
+          for name in standing walking sitting; do
+            curl -L --fail --retry 3 --connect-timeout 20 --max-time 120 -A "$UA" \
+              "${PAGE_URLS[$name]}" -o "$E/pages/${name}.html"
+            grep -Fq 'Public domain (CC0)' "$E/pages/${name}.html"
+            curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+              -D "$E/source/${name}_download_headers.txt" \
+              -w 'effective_url=%{url_effective}\nhttp_code=%{http_code}\ncontent_type=%{content_type}\nsize_download=%{size_download}\n' \
+              "${DOWNLOAD_URLS[$name]}" -o "$E/source/${name}.glb" > "$E/source/${name}_download_meta.txt"
+            python3 - "$E/source/${name}.glb" <<'PY'
+          import sys
+          from pathlib import Path
+          p=Path(sys.argv[1]); b=p.read_bytes()
+          assert len(b) > 100000, len(b)
+          assert b[:4] == b'glTF', b[:4]
+          print(p.name, len(b), 'GLB_MAGIC_PASS')
+          PY
+          done
+
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-post-r10-pose-correspondence/evidence/source/standing.glb' | sha256sum -c -
+          sha256sum "$E/source/"*.glb | tee "$E/source/source_glb_sha256.txt"
+          stat -c '%n bytes=%s' "$E/source/"*.glb | tee "$E/source/source_glb_sizes.txt"
+
+      - name: Run raw topology correspondence audit twice deterministically
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          E=../../p1-c-post-r10-pose-correspondence
+          rm -rf "$E/seed1" "$E/seed777"
+          PYTHONHASHSEED=1 python3 p1_c_post_r10_pose_correspondence_audit_v1.py \
+            --standing "$E/evidence/source/standing.glb" \
+            --walking "$E/evidence/source/walking.glb" \
+            --sitting "$E/evidence/source/sitting.glb" \
+            --out "$E/seed1"
+          PYTHONHASHSEED=777 python3 p1_c_post_r10_pose_correspondence_audit_v1.py \
+            --standing "$E/evidence/source/standing.glb" \
+            --walking "$E/evidence/source/walking.glb" \
+            --sitting "$E/evidence/source/sitting.glb" \
+            --out "$E/seed777"
+          diff -ru "$E/seed1" "$E/seed777" > "$E/evidence/deterministic_diff.txt"
+          mkdir -p "$E/evidence/result"
+          cp -R "$E/seed1/." "$E/evidence/result/"
+
+      - name: Validate audit result shape
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('mobi/p1-c-post-r10-pose-correspondence/evidence/result/pose_correspondence_summary.json')
+          s=json.loads(p.read_text())
+          assert s['version'] == 'P1_C_POST_R10_POSE_CORRESPONDENCE_AUDIT_V1'
+          assert s['sourceOrder'] == ['standing','walking','sitting']
+          assert s['sources']['standing']['sha256'] == '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5'
+          assert len(s['pairComparisons']) == 3
+          assert s['auditConclusion'] in (
+              'DIRECT_POSE_VERTEX_CORRESPONDENCE_AVAILABLE',
+              'NO_DIRECT_POSE_VERTEX_CORRESPONDENCE_IN_TESTED_SOURCES'
+          )
+          assert Path('mobi/p1-c-post-r10-pose-correspondence/evidence/deterministic_diff.txt').read_text() == ''
+          print(json.dumps({
+            'conclusion': s['auditConclusion'],
+            'sources': {
+              k: {
+                'sha256': v['sha256'],
+                'bytes': v['bytes'],
+                'skinCount': v['skinCount'],
+                'animationCount': v['animationCount'],
+                'body': v['structuralBodyCandidate'],
+              } for k,v in s['sources'].items()
+            },
+            'pairs': s['pairComparisons'],
+          }, indent=2, sort_keys=True))
+          PY
+
+      - name: Record environment and evidence hashes
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-post-r10-pose-correspondence/evidence
+          {
+            echo "git_commit=${GITHUB_SHA}"
+            python3 --version
+            python3 - <<'PY'
+          import numpy
+          print('numpy='+numpy.__version__)
+          PY
+          } > "$E/environment.txt"
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-post-r10-pose-correspondence-${{ github.run_id }}
+          path: mobi/p1-c-post-r10-pose-correspondence/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
