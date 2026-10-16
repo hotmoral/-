@@ -5,7 +5,7 @@ Amended by: `CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 
 ## 0. Governing objective
 
-Complete the smallest coherent product that lets a user add a receipt with minimal manual work, obtain trustworthy product/commodity identities and purchase prices, find a repeat purchase later, browse/search it, inspect personal historical prices, and judge whether a current price is cheap/normal/expensive without fake normalization of non-standard goods.
+Complete the smallest coherent product that lets a user add a receipt with minimal manual work, obtain trustworthy product/commodity identities and purchase prices, find a repeat purchase later, inspect personal historical prices, and judge whether a current price is cheap/normal/expensive without fake normalization of non-standard goods.
 
 Every checkpoint requires explicit user authorization and closes with exact evidence plus handoff synchronization.
 
@@ -37,12 +37,12 @@ Frozen implementation `a0b4b1246f2e7bc4d41b3376507ae34f44e1e372`; Actions `38829
 ### CP27 — Price Intelligence V2 — COMPLETE
 Frozen implementation `4edc37c5e16752ff4a4ebc96d67d8a6abfb8e5b8`; Actions `38831623548` SUCCESS.
 
-- comparison price is receipt-traceable numerator/denominator evidence;
+- receipt-traceable numerator/denominator comparison price;
 - STANDARD compares one exact stable package;
 - kg/g -> price/kg, L/mL -> price/L, count -> price/each;
-- package/form units remain contextual only;
-- unsupported discount attribution is excluded rather than guessed;
-- latest/previous/min/max/mean/median and period/store scopes are deterministic.
+- package/form units contextual only;
+- unsupported discount attribution excluded rather than guessed;
+- deterministic latest/previous/min/max/mean/median and period/store scopes.
 
 ### CP28 — Price Evaluation — COMPLETE
 Frozen implementation `dd4f98613677ae998932d77f3e5f89d7bddba107`; Actions `38834818192` SUCCESS.
@@ -53,7 +53,7 @@ Frozen implementation `dd4f98613677ae998932d77f3e5f89d7bddba107`; Actions `38834
 - usual price = prior median;
 - material change = >=5% AND >=100 minor units;
 - extreme = >=15% AND >=500 minor units;
-- contextual LIKE_FORM stays unjudged;
+- contextual LIKE_FORM remains unjudged;
 - every judgment exposes reason/baseline evidence;
 - no market-price or free-form AI opinion.
 
@@ -62,52 +62,68 @@ Frozen implementation `dd4f98613677ae998932d77f3e5f89d7bddba107`; Actions `38834
 ### CP29 — Search / Browse — COMPLETE
 Frozen implementation `b73fe8653b9e90e83c44cb24aa3e3da9bfed96f1`; Actions `38839041465` SUCCESS.
 
-Frozen contract:
-
 - read-only discovery over canonical stores;
-- searchable canonical/brand/product/variant/specification fields;
-- linked receipt item names usable as discovery text only;
-- category path and store context searchable;
+- canonical/brand/product/variant/specification and observed linked receipt text searchable;
 - exact/prefix/all-term/contains deterministic ranking;
-- whitespace-compacted discovery allowed;
 - no fuzzy identity authority;
-- category parent includes descendants;
-- store filter is exact normalized text;
+- category descendants and exact normalized store filtering;
 - recent = latest purchase occasion;
 - frequent = distinct receipt occasions;
-- price-change = strict CP28 evaluated non-typical cohort rows only;
-- one commodity may expose multiple independent basis rows;
+- price-change = strict CP28 evaluated non-typical basis-specific rows;
 - no mutable search index/table/FTS;
-- scanned/matched diagnostics retained for CP36.
-
-Local metric:
-
-`CP29_METRICS documents=3 exact_hits=1 compact_hits=1 observed_hits=1 category_rows=3 store_rows=1 recent_rows=3 frequent_rows=3 no_result_rows=0 mutation_checks=1 diagnostics_scanned=3`
+- scan diagnostics retained for CP36.
 
 ## 4. Stage F — Commercial UX
 
-### CP30 — Design System Foundation — NEXT PLANNED
+### CP30 — Design System Foundation — COMPLETE
+Frozen implementation `ff0745db529499171246866039521a0b83e830e4`; canonical Actions `38842905325` SUCCESS.
 
-Goal: freeze a commercial-quality visual and interaction language **before** final user-facing detail/shell work.
+Frozen contract:
 
-Must define:
+- current programmatic `Activity + android.widget` architecture retained;
+- no Compose/Material migration;
+- typography roles: price hero/title/body/label;
+- semantic tones: neutral/primary/positive/negative/review/error/info/disabled;
+- color always paired with text meaning;
+- spacing 4/8/12/16/24/32dp;
+- radii 8/12/16dp;
+- elevations 1/3dp;
+- minimum interaction area 48dp;
+- 10 stable icon roles with 24dp glyph token and Korean accessibility labels;
+- width classes compact <600, medium 600–839, expanded >=840;
+- chart series cannot mix CP27 comparison bases;
+- loading/empty/no-result/review/insufficient/contextual/error/disabled state presentations;
+- LibraryActivity and legacy PriceHistoryActivity are representative UiKit adopters only.
 
-- Korean typography hierarchy and price/numeric roles;
-- color tokens and semantic price/judgment/review/error states;
-- spacing/grid and responsive rhythm;
-- radius, elevation and surface hierarchy;
-- icon grammar;
-- buttons, fields, search bars, chips, list/card rows;
-- price history and CP28 judgment presentation;
-- chart grammar that preserves comparison-basis distinctions;
-- loading/empty/error/review states;
-- accessibility/touch-target/contrast baseline;
-- responsive profiles for representative Android sizes.
+Canonical metric:
 
-CP30 should establish reusable components/tokens and limited visual proofs. It must not rewrite CP21–29 domain/search semantics for convenience.
+`CP30_METRICS typography_roles=6 semantic_tones=8 price_presentations=8 validation_presentations=4 ui_states=8 contrast_pairs=9 responsive_cases=5 chart_cross_basis_rejections=1 min_touch_dp=48 icon_roles=10 elevation_tokens=2 representative_activities=2`
 
-### CP31 — Product Detail
-Commercial STANDARD price-memory screen with identity/specification, latest/previous/usual price, graph, store context, CP28 explanation and receipt traceability.
+Initial green implementation `5c63a537...` was not closed because plan/code review found icon semantics and elevation centralization incomplete. Those were corrected before the canonical CP30 boundary.
+
+### CP31 — Product Detail — NEXT PLANNED
+
+Goal: first full commercial STANDARD product price-memory detail surface.
+
+Must consume frozen CP21–30 contracts and expose:
+
+- stable identity/specification;
+- latest/current price;
+- previous price and delta;
+- usual-price baseline and CP28 judgment/explanation;
+- one-basis price-history chart;
+- store/date context;
+- receipt traceability;
+- insufficient/no-judgment states;
+- CP30 responsive/accessibility grammar.
+
+Must not:
+
+- infer/merge identity from UI/search similarity;
+- mix price comparison bases;
+- invent unsupported discount allocation;
+- change CP28 thresholds;
+- redesign commodity/capture/shell scope in the same checkpoint.
 
 ### CP32 — Commodity Detail
 Commercial NON_STANDARD history that clearly separates strict normalized cohorts from contextual same-form observations.
@@ -121,38 +137,41 @@ Product-centric home/navigation/search/category/product/commodity/receipt/settin
 ## 5. Stage G — Validation and hardening
 
 ### CP35 — Real Receipt Evaluation
-Measure end-to-end correct purchase registration using public-safe synthetic or explicitly approved sanitized fixtures. Primary metric is correct purchase registration, not OCR character accuracy alone. Search/discovery usability should also be exercised on representative accumulated histories.
+Measure end-to-end correct purchase registration using public-safe synthetic or explicitly approved sanitized fixtures. Primary metric is correct purchase registration, not OCR character accuracy alone. Search/detail usability should also be exercised on representative accumulated histories.
 
 ### CP36 — Performance / Reliability
 Verify startup, OCR latency/memory, large catalog/history, alias/search/category queries, CP27/28 aggregation, chart workloads, migrations, archive reconciliation and failure recovery at representative scale.
 
-For CP29 specifically, benchmark the current canonical-store linear scan at approximately 1k/10k catalog/history scale before deciding whether FTS/index/cache is justified.
+For CP29 specifically, benchmark canonical-store linear scan at approximately 1k/10k catalog/history scale before deciding whether FTS/index/cache is justified.
 
 ## 6. Dependency gates
 
 - CP21 stable-ID identity semantics remain frozen.
-- CP22 product schema 2 / receipt schema 1 remain frozen unless a later checkpoint proves an explicit migration necessary.
+- CP22 product schema 2 / receipt schema 1 remain frozen unless explicit migration need is proved.
 - CP23 parser evidence remains unconfirmed/non-authoritative.
-- CP24 resolver authority remains frozen; category/price/search cannot widen identity authority.
+- CP24 resolver authority remains frozen; category/price/search/UI cannot widen identity authority.
 - CP25 category remains browse/classification metadata only.
 - CP26 commodity grouping remains distinct from comparability.
-- CP27 eligible comparison cohort is the only input basis for CP28 judgment.
-- CP28 judgment is deterministic/explainable and must not be replaced by UI opinion.
-- CP29 search is read-only; discovery relevance must never become merge/relink authority.
+- CP27 eligible cohort is the only price input basis for CP28 judgment.
+- CP28 judgment is deterministic/explainable and cannot be replaced by UI opinion.
+- CP29 search is read-only; relevance never becomes merge/relink authority.
 - CP29 price-change rows remain comparison-basis-specific.
-- CP30 Design System precedes final CP31/CP32 visual implementation.
+- CP30 visual semantics must present, not reinterpret, CP21–29 facts.
+- CP30 chart grammar forbids cross-basis visual lines.
+- CP31/32 consume CP30 components/tokens rather than create parallel ad-hoc systems.
 - CP33 must not bypass identity/provenance rules for convenience.
 
 ## 7. Every checkpoint asks, only where materially relevant
 
 - Does this change stored-data meaning?
-- Can it create a false merge/grouping or false split?
+- Can it create false merge/grouping or false split?
 - Does confirmed repeat use reduce review burden?
 - Is raw receipt/purchase evidence preserved?
 - Is every compared price exactly defined and receipt-traceable?
 - Can incomparable prices look comparable?
 - Can discounts be falsely allocated?
 - Can search relevance be mistaken for identity evidence?
+- Can UI styling accidentally imply a business judgment that does not exist?
 - Can provenance/validation be bypassed?
 - Can permissions/network/privacy posture change?
 - Can a new performance hot path appear?
@@ -167,10 +186,11 @@ At every completed group:
 1. freeze exact implementation/spec HEAD;
 2. record CI/artifact/evidence;
 3. record limitations and meaningful failures/process anomalies;
-4. update status/handoff/readme/work-unit/roadmap docs;
-5. verify post-boundary changes are documentation-only;
-6. stop before the next unauthorized checkpoint.
+4. compare plan/acceptance to actual implementation before closure, even if CI is green;
+5. update status/handoff/readme/work-unit/roadmap docs;
+6. verify post-boundary changes are documentation-only;
+7. stop before the next unauthorized checkpoint.
 
 ## 9. Current boundary
 
-**CP29 is COMPLETE. CP30 — Design System Foundation is the next planned checkpoint and must not start without explicit user authorization.**
+**CP30 is COMPLETE. CP31 — Product Detail is the next planned checkpoint and must not start without explicit user authorization.**

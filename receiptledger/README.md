@@ -6,10 +6,10 @@ This directory contains public-safe ReceiptLedger Android/OCR development, produ
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP29_SEARCH_BROWSE_CLOSEOUT.md`
-4. `CP29_SEARCH_BROWSE_EVIDENCE.md`
-5. `CP29_SEARCH_BROWSE_PLAN.md`
-6. `SEARCH_BROWSE_CONSISTENCY_REVIEW.md`
+3. `CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
+4. `CP30_DESIGN_SYSTEM_FOUNDATION_EVIDENCE.md`
+5. `CP30_DESIGN_SYSTEM_FOUNDATION_PLAN.md`
+6. `DESIGN_SYSTEM_FOUNDATION_CONSISTENCY_REVIEW.md`
 7. `PRODUCT_REBASELINE_V1_ROADMAP.md`
 8. `WORK_UNIT.md`
 
@@ -17,19 +17,19 @@ GitHub is canonical; verify refs before relying on old chat context.
 
 ## Current boundary
 
-**CP29 — Search / Browse — COMPLETE**
+**CP30 — Design System Foundation — COMPLETE**
 
-- branch `receiptledger/run-v1-search-browse-20261016`
-- frozen implementation HEAD `b73fe8653b9e90e83c44cb24aa3e3da9bfed96f1`
-- canonical Actions `38839041465` — SUCCESS
-- job `116774625167` — SUCCESS
-- artifact ID `12020980247`
-- artifact digest `sha256:16505e577d84180771fe8e6da8f8d4243cf389aa0892f2446e621933fad4de81`
-- APK SHA-256 `e8f0503cd12126461f6eb257a11be2d0ef7bac68cc2857c6b4f523c059830088`
-- CP29 tests 8/8 PASS
-- CP28 8/8, CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
+- branch `receiptledger/run-v1-design-system-foundation-20261016`
+- frozen implementation HEAD `ff0745db529499171246866039521a0b83e830e4`
+- canonical Actions `38842905325` — SUCCESS
+- job `116786812761` — SUCCESS
+- artifact ID `12022330459`
+- artifact digest `sha256:f1bcb1b2d58e328b15cf4811dd1dc107888cc2f5ba733ce1bb1ee60bf8ec0e5e`
+- APK SHA-256 `cb35afb3ee0bf00dafad48f0b33733401661a982df11557bb01f716ca6655373`
+- CP30 tests 9/9 PASS
+- CP29 8/8, CP28 8/8, CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
 - lint 0 errors / 0 warnings
-- version `1.0.27-search-browse`, versionCode 28
+- version `1.0.28-design-system-foundation`, versionCode 29
 
 ## Product direction
 
@@ -37,38 +37,40 @@ ReceiptLedger is a **personal purchase-price memory and comparison system**.
 
 Target loop:
 
-`receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> explainable judgment -> find/browse`
+`receipt -> trustworthy extraction -> product/commodity identity -> purchase observation -> historical price -> explainable judgment -> find/browse -> inspect`
 
-CP29 now makes the frozen product/commodity/history facts discoverable through a read-only search/browse layer.
+CP30 freezes how later commercial screens present that truth. It does not change identity, price, search or persistence semantics.
 
-Key rules:
+## CP30 foundation
 
-- canonical/brand/product/variant/specification can be searched;
-- already-linked receipt item names can be used as discovery text;
-- observed search text never becomes identity authority;
-- category browse includes descendants;
-- store filter uses exact normalized text;
-- recent and frequent views are deterministic;
-- frequency counts distinct receipt occasions;
-- price-change browse includes only strict CP28 evaluated non-typical cohorts;
-- contextual 봉/팩/상자 histories never become cheap/expensive alerts;
-- one commodity may expose separate kg/each/etc. price-change rows;
-- no mutable search table/index/FTS was added;
-- product schema 2 and receipt schema 1 remain unchanged.
+- 6 purpose-based typography roles;
+- 8 semantic tones with text + color, never color alone;
+- spacing 4/8/12/16/24/32dp;
+- radii 8/12/16dp;
+- card/floating elevation 1/3dp;
+- minimum touch target 48dp;
+- 10 stable icon roles with Korean accessibility labels;
+- compact/medium/expanded width classes at 600/840dp;
+- chart series forbidden from mixing comparison bases;
+- 8 reusable loading/empty/review/error/unavailable state presentations;
+- existing programmatic `android.widget` architecture preserved;
+- no Compose/Material migration.
 
-## CP29 local contract metric
+Only LibraryActivity and legacy PriceHistoryActivity are representative UiKit adopters in CP30. Full commercial screens begin later.
 
-`CP29_METRICS documents=3 exact_hits=1 compact_hits=1 observed_hits=1 category_rows=3 store_rows=1 recent_rows=3 frequent_rows=3 no_result_rows=0 mutation_checks=1 diagnostics_scanned=3`
+## CP30 local contract metric
 
-Synthetic/local evidence only; not real-user search-quality or large-scale performance evidence.
+`CP30_METRICS typography_roles=6 semantic_tones=8 price_presentations=8 validation_presentations=4 ui_states=8 contrast_pairs=9 responsive_cases=5 chart_cross_basis_rejections=1 min_touch_dp=48 icon_roles=10 elevation_tokens=2 representative_activities=2`
+
+Synthetic/local foundation evidence only.
 
 ## Next planned checkpoint
 
-**CP30 — Design System Foundation**
+**CP31 — Product Detail**
 
-It will define typography, color/semantic states, spacing/grid, shapes, icons, component grammar, charts and accessibility before final Product/Commodity Detail and commercial shell work.
+It will build the STANDARD-product price-memory detail experience using frozen identity/specification, CP27 price facts, CP28 judgment, CP29 discovery/read models and CP30 visual/interaction grammar.
 
-Do not start CP30 until explicitly authorized.
+Do not start CP31 until explicitly authorized.
 
 ## Privacy/security
 

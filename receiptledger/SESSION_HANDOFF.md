@@ -10,12 +10,12 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP29_SEARCH_BROWSE_CLOSEOUT.md`
-4. `receiptledger/CP29_SEARCH_BROWSE_EVIDENCE.md`
-5. `receiptledger/CP29_SEARCH_BROWSE_PLAN.md`
-6. `receiptledger/SEARCH_BROWSE_CONSISTENCY_REVIEW.md`
-7. `receiptledger/SEARCH_BROWSE_GOLDEN_VECTORS.md`
-8. `receiptledger/CP28_PRICE_EVALUATION_CLOSEOUT.md`
+3. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
+4. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_EVIDENCE.md`
+5. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_PLAN.md`
+6. `receiptledger/DESIGN_SYSTEM_FOUNDATION_CONSISTENCY_REVIEW.md`
+7. `receiptledger/DESIGN_SYSTEM_FOUNDATION_GOLDEN_VECTORS.md`
+8. `receiptledger/CP29_SEARCH_BROWSE_CLOSEOUT.md`
 9. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
 11. `receiptledger/README.md`
@@ -23,20 +23,20 @@ Read in order:
 
 ## 1. Latest executable checkpoint
 
-**CP29 — Search / Browse — PASS / COMPLETE**
+**CP30 — Design System Foundation — PASS / COMPLETE**
 
-- branch: `receiptledger/run-v1-search-browse-20261016`
-- predecessor handoff: `36c361d8c5c5845a15ecf77648861cd2ea7a1b40`
-- frozen implementation HEAD: `b73fe8653b9e90e83c44cb24aa3e3da9bfed96f1`
-- canonical Actions: `38839041465` — SUCCESS
-- job: `116774625167` — SUCCESS
-- artifact ID: `12020980247`
-- artifact digest: `sha256:16505e577d84180771fe8e6da8f8d4243cf389aa0892f2446e621933fad4de81`
-- APK SHA-256: `e8f0503cd12126461f6eb257a11be2d0ef7bac68cc2857c6b4f523c059830088`
-- CP29 search/browse tests 8/8 PASS
-- CP28 8/8, CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
+- branch: `receiptledger/run-v1-design-system-foundation-20261016`
+- predecessor handoff: `3727db04d2207fe92c0552d4691dbf421d71444c`
+- frozen implementation HEAD: `ff0745db529499171246866039521a0b83e830e4`
+- canonical Actions: `38842905325` — SUCCESS
+- job: `116786812761` — SUCCESS
+- artifact ID: `12022330459`
+- artifact digest: `sha256:f1bcb1b2d58e328b15cf4811dd1dc107888cc2f5ba733ce1bb1ee60bf8ec0e5e`
+- APK SHA-256: `cb35afb3ee0bf00dafad48f0b33733401661a982df11557bb01f716ca6655373`
+- CP30 9/9 PASS
+- CP29 8/8, CP28 8/8, CP27 8/8, legacy price 2/2, CP26 8/8, CP25 8/8, CP24 8/8, CP23 7/7, CP21 15/15, CP22 7/7 PASS
 - lint 0 errors / 0 warnings
-- versionName `1.0.27-search-browse`, versionCode 28
+- versionName `1.0.28-design-system-foundation`, versionCode 29
 
 Later closeout/status commits must remain documentation-only; do not move the executable evidence boundary.
 
@@ -46,109 +46,137 @@ ReceiptLedger is a personal purchase-price memory and comparison system.
 
 Target experience:
 
-`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 검색/카테고리 탐색 -> 과거 가격/평소 가격/가격변화 판단`
+`영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 검색/탐색 -> 제품/품목 상세 -> 과거 가격과 현재 가격 판단`
 
-CP29 supplies the read-only discovery layer for this loop.
+CP30 supplies the visual/interaction grammar for later user-facing surfaces; it does not create new business truth.
 
-## 3. Frozen CP29 discovery rules
+## 3. Frozen architecture choice
 
-Search document can use:
+Current Android architecture remains programmatic platform Views:
 
-- stable product/commodity canonical name;
-- persisted brand/productName/variant;
-- exact specification representations;
-- observed raw item names from already-linked receipts;
-- category labels/path;
-- store context.
+`Activity + android.widget`
 
-Ranking is deterministic:
+Frozen CP30 decisions:
 
-`canonical exact -> structured exact -> observed exact -> prefix -> all terms -> contains`
+- no Compose migration;
+- no AppCompat/Material dependency migration;
+- no custom/downloadable font;
+- no new navigation framework;
+- CP31–34 should consume `design/**` rather than add new hardcoded visual values.
 
-Whitespace-compacted discovery is allowed. Fuzzy edit-distance/embedding search is not part of V1.
+## 4. Typography / layout foundation
 
-Search has **zero identity mutation authority**.
+Typography roles:
 
-## 4. Alias boundary
+- PRICE_HERO 30/36 bold
+- TITLE_LARGE 22/28 bold
+- TITLE_MEDIUM 18/24 medium
+- BODY_LARGE 16/24 normal
+- BODY_MEDIUM 14/20 normal
+- LABEL 12/16 medium
 
-Current V2 persistence can resolve a known alias but cannot enumerate all aliases.
+Layout/surface:
 
-CP29 did not expand schema/API solely for search. Observed linked receipt item names are searchable discovery text instead.
+- spacing 4/8/12/16/24/32dp
+- radius 8/12/16dp
+- elevation card 1dp / floating 3dp
+- touch target >=48dp
+- list row >=56dp
+- content max-width token 720dp
 
-Do not treat observed text as confirmed alias evidence and do not use search matches to merge stable IDs.
+## 5. Semantic state foundation
 
-## 5. Browse rules
+Tones:
 
-- recent = newest distinct purchase occasion;
-- frequent = number of distinct receipt occasions;
-- category parent includes descendants;
-- store filter = exact normalized text;
-- blank query = browse-all after filters;
-- no result = explicit empty result, no synthetic fallback.
+`NEUTRAL / PRIMARY / POSITIVE / NEGATIVE / REVIEW / ERROR / INFO / DISABLED`
 
-Price-change browse:
+Rules:
 
-- consumes existing CP27/28 derived cohorts;
-- only `EVALUATED` non-`TYPICAL` strict cohorts appear;
-- `LIKE_FORM` contextual cohorts do not receive change alerts;
-- separate comparison bases remain separate rows even under one commodity stable ID.
+- color never carries state meaning alone;
+- CP28 judgments always have explicit Korean text;
+- no-judgment states never use cheap/expensive tone;
+- validation/review/loading/empty/error/unavailable states have explicit Korean title/body copy;
+- semantic foreground/background pairs are tested to CP30's >=4.5:1 small-text contrast requirement.
 
-## 6. Storage/performance rules
+## 6. Icons / accessibility
 
-- product schema 2;
-- receipt schema 1;
-- no new mutable search DB/index/FTS;
-- canonical stores remain source truth;
-- linear scan is accepted for current V1 scale;
-- scanned/matched diagnostics must remain available for CP36 scale benchmarking.
+Frozen semantic icon roles:
 
-Do not introduce a cache/index before representative scale proves a need and invalidation semantics are defined.
+`ADD_RECEIPT / SEARCH / FILTER / RECEIPT / PRODUCT / CATEGORY / PRICE_TREND / REVIEW / MORE / DELETE`
 
-## 7. Canonical metric
+- glyph token 24dp;
+- minimum interactive hit area 48dp;
+- icon-only controls require Korean content descriptions;
+- final icon artwork/library is not frozen yet.
 
-`CP29_METRICS documents=3 exact_hits=1 compact_hits=1 observed_hits=1 category_rows=3 store_rows=1 recent_rows=3 frequent_rows=3 no_result_rows=0 mutation_checks=1 diagnostics_scanned=3`
+## 7. Responsive / chart rules
 
-Synthetic deterministic contract evidence only.
+Width classes:
 
-## 8. Deliberate limitations
+- compact `<600dp`
+- medium `600..839dp`
+- expanded `>=840dp`
 
-- no typo/fuzzy search;
-- confirmed alias enumeration remains absent;
-- observed discovery text may disappear if its receipt/link is deleted;
-- exact store text is not merchant-entity consolidation;
-- large-catalog search latency has not yet been validated;
-- no final search/detail commercial UI in CP29.
+Two-pane only when expanded width and height >=480dp.
 
-Do not solve these through unrelated scope expansion.
+Chart series key is effectively stable catalog ID + CP27 comparison basis. Different bases may not be connected into one line. LIKE_FORM remains contextual/reference-only.
 
-## 9. Next planned implementation checkpoint
+## 8. Representative adoption
 
-**CP30 — Design System Foundation**
+Only:
+
+- `LibraryActivity`
+- legacy `PriceHistoryActivity`
+
+use `UiKitV1` as the CP30 proof.
+
+Do not infer that Main/Review/Detail are already commercially redesigned.
+
+## 9. Pre-closeout correction history
+
+Initial implementation `5c63a537...` / Actions `38842440663` passed. Before closure, plan/code comparison caught missing icon-role centralization and hardcoded elevation. Those were fixed in `ff0745db...`; full CI reran as `38842905325` and passed.
+
+This is an example of the required project discipline: a green CI does not override a missing product/contract requirement.
+
+## 10. Frozen upstream rules
+
+- stable catalog ID remains identity authority;
+- product schema 2 / receipt schema 1;
+- CP23 parser evidence remains unconfirmed unless later confirmed;
+- CP24 resolver authority unchanged;
+- category remains non-identifying;
+- commodity grouping != price comparability;
+- CP27 discount/price eligibility unchanged;
+- CP28 evaluation thresholds unchanged;
+- CP29 search relevance never becomes identity authority;
+- no duplicate mutable truth/index introduced;
+- offline/privacy/permission posture unchanged.
+
+## 11. Next planned implementation checkpoint
+
+**CP31 — Product Detail**
 
 Required direction:
 
-1. define typography roles for Korean text, numbers and price emphasis;
-2. freeze color tokens including semantic price/judgment/review/error states;
-3. define spacing/grid, radius, elevation and icon grammar;
-4. define search field, filter chips, list/card rows, buttons and empty/loading/error states;
-5. define graph/chart grammar compatible with STANDARD and NON_STANDARD cohort distinctions;
-6. preserve CP28 explanation states and CP29 search/read-model semantics;
-7. include accessibility/touch-target/contrast and responsive baselines;
-8. do not rewrite domain or search contracts for visual convenience;
-9. do not yet build the full Product Detail/Commodity Detail/Commercial Shell unless explicitly scoped.
+1. STANDARD-product identity/spec header;
+2. current/latest price as primary focus;
+3. previous and usual price kept distinct;
+4. CP28 judgment with explanation/reason-safe copy;
+5. one-basis historical chart using CP30 chart grammar;
+6. purchase dates/stores and receipt traceability;
+7. explicit insufficient/no-judgment states;
+8. responsive behavior from CP30 width policy;
+9. no cross-basis mixing or identity inference from UI/search;
+10. no incidental redesign of capture/review/commodity detail/shell.
 
-CP30 is planned, not automatically authorized.
+CP31 is planned, not automatically authorized.
 
-## 10. Security/public boundary
+## 12. Security/public boundary
 
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Never commit secrets, signing material, private receipts, personal purchase DB/backups, identifiers or uncleared assets.
+Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Never commit secrets, signing material, private receipts, real purchase DB/backups, identifiers or uncleared assets.
 
 Forbidden packaged permissions remain CAMERA, broad media/storage, INTERNET and ACCESS_NETWORK_STATE unless separately authorized.
 
-## 11. Group discipline
+## 13. Stop condition
 
-Recover canonical state -> restate essence/non-goals -> inspect material contradictions -> implement smallest coherent proof -> run scoped CI/evidence -> freeze refs -> synchronize handoff -> stop before next unauthorized checkpoint.
-
-## 12. Stop condition
-
-**CP29 is complete and handoff-synchronized. Await explicit authorization for CP30.**
+**CP30 is complete and handoff-synchronized. Await explicit authorization for CP31.**
