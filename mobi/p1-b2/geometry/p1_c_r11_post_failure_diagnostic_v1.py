@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
-import math
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -32,6 +32,7 @@ def load_module(path: Path):
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot import frozen R11 implementation: {path}")
     mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     return mod
 
