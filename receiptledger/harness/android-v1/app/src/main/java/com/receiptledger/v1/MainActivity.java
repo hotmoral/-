@@ -2,10 +2,13 @@ package com.receiptledger.v1;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.receiptledger.v1.design.ResponsiveLayoutPolicyV1;
 import com.receiptledger.v1.design.SemanticPresentationV1;
 import com.receiptledger.v1.design.SemanticToneV1;
 import com.receiptledger.v1.design.UiKitV1;
+import com.receiptledger.v1.devicevalidation.DeviceValidationReportV1;
 import com.receiptledger.v1.document.DocumentDetection;
 import com.receiptledger.v1.document.PerspectivePlan;
 import com.receiptledger.v1.document.ProjectiveTransform;
@@ -49,7 +53,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** CP33 capture/review surface. Full product navigation remains deferred to CP34. */
+/** Capture/review surface used by the commercial shell; CP37 adds debug-only local validation. */
 public final class MainActivity extends Activity {
     private static final int REQ_CAMERA = 1001;
     private static final int REQ_PICK = 1002;
@@ -74,6 +78,7 @@ public final class MainActivity extends Activity {
     private Button reviewButton;
     private Button editAllButton;
     private Button saveButton;
+    private Button validationCopyButton;
     private Uri pendingCaptureUri;
     private Bitmap sourceBitmap;
     private Bitmap correctedBitmap;
@@ -81,6 +86,10 @@ public final class MainActivity extends Activity {
     private Quad detectedQuad;
     private PerspectivePlan correctedPlan;
     private ProjectiveTransform displayToSource = ProjectiveTransform.identity();
+    private DeviceValidationReportV1.AcquisitionSource validationSource =
+            DeviceValidationReportV1.AcquisitionSource.UNKNOWN;
+    private DeviceValidationReportV1.InitialSnapshot validationInitial;
+    private String lastValidationReport;
     private long generation;
     private long displayRevision;
 
@@ -155,6 +164,12 @@ public final class MainActivity extends Activity {
         content.addView(reviewButton, blockParams(DesignTokensV1.SPACE_2_DP));
         content.addView(editAllButton, blockParams(DesignTokensV1.SPACE_2_DP));
         content.addView(saveButton, blockParams(0));
+        if (isDebuggable()) {
+            validationCopyButton = UiKitV1.button(this, R.string.cp37_copy_validation,
+                    v -> copyValidationReport(), UiKitV1.ButtonTone.SECONDARY);
+            validationCopyButton.setVisibility(View.GONE);
+            content.addView(validationCopyButton, blockParams(DesignTokensV1.SPACE_2_DP));
+        }
 
         setContentView(outer);
         SystemBarInsetHelper.apply(this, outer);
@@ -204,8 +219,10 @@ public final class MainActivity extends Activity {
         if (resultCode != RESULT_OK) return;
         Uri uri = null;
         if (requestCode == REQ_CAMERA) {
+            validationSource = DeviceValidationReportV1.AcquisitionSource.CAMERA;
             uri = pendingCaptureUri;
         } else if (requestCode == REQ_PICK && data != null) {
+            validationSource = DeviceValidationReportV1.AcquisitionSource.GALLERY;
             uri = data.getData();
             if (uri != null) {
                 try {
@@ -329,9 +346,11 @@ public final class MainActivity extends Activity {
                 getString(R.string.capture_processing_title),
                 getString(R.string.capture_processing_body),
                 SemanticToneV1.INFO));
+        final long ocrStartedAt = SystemClock.elapsedRealtime();
         ocrEngine.recognize(input, mapper, new OcrRecoveryEngine.Callback() {
             @Override public void onSuccess(RecoveryResult result) {
                 if (imageTicket != generation || viewTicket != displayRevision) return;
+                long ocrMillis = Math.max(0L, SystemClock.elapsedRealtime() - ocrStartedAt);
                 RecognitionCandidate candidate = result.best;
                 preview.setOcrQuads(displayQuads(candidate.document));
                 int sourceWidth = sourceBitmap == null ? input.getWidth() : sourceBitmap.getWidth();
@@ -347,6 +366,15 @@ public final class MainActivity extends Activity {
                         sourceWidth,
                         sourceHeight,
                         corrected);
+                CaptureReviewAssessmentV2 initialAssessment = CaptureReviewAssessmentV2.assess(pendingRecord);
+                validationInitial = DeviceValidationReportV1.captureInitial(
+                        validationSource,
+                        ocrMillis,
+                        result.attemptedPasses(),
+                        result.derivedCandidates(),
+                        candidate.pass == null ? "UNKNOWN" : candidate.pass.name(),
+                        pendingRecord,
+                        initialAssessment);
                 restoreImageActions();
                 updateReviewUi();
             }
@@ -447,6 +475,7 @@ public final class MainActivity extends Activity {
         final ReceiptRecord record = pendingRecord;
         final Bitmap image = sourceBitmap;
         final CaptureReviewAssessmentV2 assessment = reviewAssessment;
+        final DeviceValidationReportV1.InitialSnapshot validationSnapshot = validationInitial;
         if (record == null || image == null || assessment == null || assessment.requiresReview()) return;
         cameraButton.setEnabled(false);
         galleryButton.setEnabled(false);
@@ -475,6 +504,15 @@ public final class MainActivity extends Activity {
                 return;
             }
 
+            String builtValidationReport = null;
+            if (isDebuggable() && validationSnapshot != null) {
+                try {
+                    builtValidationReport = DeviceValidationReportV1.savedReport(validationSnapshot, record);
+                } catch (RuntimeException ignored) {
+                    // Validation reporting is non-authoritative and must never turn a durable save into failure.
+                }
+            }
+            final String savedValidationReport = builtValidationReport;
             RepeatIdentityReuseV1.Result reuse = repeatReuse.apply(record,
                     (receiptId, ordinal, rawName) ->
                             catalog.resolveAndLinkExact(receiptId, ordinal, rawName).classified());
@@ -485,21 +523,50 @@ public final class MainActivity extends Activity {
                 if (pendingRecord == record) {
                     pendingRecord = null;
                     reviewAssessment = null;
+                    validationInitial = null;
                     summaryHost.removeAllViews();
                     hideReviewActions();
                     showState(SemanticPresentationV1.display(
                             getString(R.string.capture_saved_title),
                             getString(R.string.capture_saved_body, reuse.linkedCount),
                             SemanticToneV1.POSITIVE));
+                    showValidationReport(savedValidationReport);
                 }
             });
         });
+    }
+
+    private void copyValidationReport() {
+        if (lastValidationReport == null || validationCopyButton == null) return;
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        if (clipboard == null) return;
+        clipboard.setPrimaryClip(ClipData.newPlainText("ReceiptLedger CP37", lastValidationReport));
+        Toast.makeText(this, R.string.cp37_validation_copied, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showValidationReport(String report) {
+        lastValidationReport = report;
+        if (validationCopyButton == null) return;
+        boolean available = report != null && !report.isEmpty();
+        validationCopyButton.setVisibility(available ? View.VISIBLE : View.GONE);
+        validationCopyButton.setEnabled(available);
+    }
+
+    private void clearValidationReport() {
+        validationInitial = null;
+        lastValidationReport = null;
+        if (validationCopyButton != null) validationCopyButton.setVisibility(View.GONE);
+    }
+
+    private boolean isDebuggable() {
+        return (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 
     private void invalidateRecord() {
         ocrEngine.cancelPending();
         pendingRecord = null;
         reviewAssessment = null;
+        clearValidationReport();
         if (summaryHost != null) summaryHost.removeAllViews();
         hideReviewActions();
     }
