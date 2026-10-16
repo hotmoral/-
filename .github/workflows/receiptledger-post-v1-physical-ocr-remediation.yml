@@ -7,6 +7,8 @@ on:
     paths:
       - 'receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_PLAN.md'
       - 'receiptledger/harness/android-v1/app/build.gradle'
+      - 'receiptledger/harness/android-v1/app/src/main/AndroidManifest.xml'
+      - 'receiptledger/harness/android-v1/app/src/debug/res/values/cp37_remediation_strings.xml'
       - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/structure/ReceiptStructureAnalyzer.java'
       - 'receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/structure/ReceiptStructureAnalyzerTest.java'
       - 'receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/review/ReviewItemInput.java'
@@ -68,6 +70,8 @@ jobs:
               .github/workflows/receiptledger-post-v1-physical-ocr-remediation.yml) ;;
               receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_PLAN.md) ;;
               receiptledger/harness/android-v1/app/build.gradle) ;;
+              receiptledger/harness/android-v1/app/src/main/AndroidManifest.xml) ;;
+              receiptledger/harness/android-v1/app/src/debug/res/values/cp37_remediation_strings.xml) ;;
               receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/structure/ReceiptStructureAnalyzer.java) ;;
               receiptledger/harness/android-v1/app/src/test/java/com/receiptledger/v1/structure/ReceiptStructureAnalyzerTest.java) ;;
               receiptledger/harness/android-v1/app/src/main/java/com/receiptledger/v1/review/ReviewItemInput.java) ;;
@@ -82,7 +86,6 @@ jobs:
             esac
           done < receiptledger/cp37-remediation-changed-files.txt
 
-          git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/AndroidManifest.xml" || { echo 'manifest changed'; exit 32; }
           git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/ocr" || { echo 'OCR engine changed'; exit 33; }
           git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/recovery" || { echo 'recovery logic changed'; exit 34; }
           git diff --quiet "$BASE" "$GITHUB_SHA" -- "$APP/src/main/java/com/receiptledger/v1/identity" || { echo 'identity changed'; exit 35; }
@@ -91,6 +94,9 @@ jobs:
           grep -Fq 'VERSION=1' "$APP/src/main/java/com/receiptledger/v1/persistence/ReceiptSchema.java"
           grep -Fq 'versionCode 37' "$APP/build.gradle"
           grep -Fq "versionName '1.0.36-physical-ocr-remediation'" "$APP/build.gradle"
+          grep -Fq "applicationIdSuffix '.remediation'" "$APP/build.gradle"
+          grep -Fq 'android:authorities="${applicationId}.capture"' "$APP/src/main/AndroidManifest.xml"
+          grep -Fq '<string name="app_name">ReceiptLedger 검증</string>' "$APP/src/debug/res/values/cp37_remediation_strings.xml"
 
       - name: Unit regression lint and APK build
         shell: bash
@@ -134,7 +140,7 @@ jobs:
               vals={k:int(root.attrib.get(k,'0')) for k in ('tests','failures','errors','skipped')}
               if vals['tests'] != expected or vals['failures'] or vals['errors'] or vals['skipped']:
                   raise SystemExit(f'{name} contract mismatch: {vals}')
-          print('CP37_REMEDIATION_METRICS version=1 structure_tests=5 review_tests=5 report_tests=5 predate_false_item_gate=1 explicit_item_removal=1 provenance_preserved=1 report_structure_delta=1 schema_unchanged=1')
+          print('CP37_REMEDIATION_METRICS version=1 structure_tests=5 review_tests=5 report_tests=5 predate_false_item_gate=1 explicit_item_removal=1 provenance_preserved=1 report_structure_delta=1 side_by_side_debug=1 schema_unchanged=1')
           PY
 
       - name: Package remediation artifact
@@ -157,6 +163,9 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
           "$AAPT" dump permissions "$APK" | tee "$OUT/APK_PERMISSIONS.txt"
           "$AAPT" dump badging "$APK" > "$OUT/APK_BADGING.txt"
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml > "$OUT/APK_MANIFEST_XMLTREE.txt"
+          grep -Fq "package: name='com.receiptledger.v1.remediation'" "$OUT/APK_BADGING.txt" || { echo 'Unexpected remediation debug package'; exit 82; }
+          grep -Fq 'com.receiptledger.v1.remediation.capture' "$OUT/APK_MANIFEST_XMLTREE.txt" || { echo 'Remediation provider authority mismatch'; exit 83; }
           for forbidden in CAMERA READ_MEDIA_IMAGES READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE MANAGE_EXTERNAL_STORAGE INTERNET ACCESS_NETWORK_STATE; do
             if grep -q "$forbidden" "$OUT/APK_PERMISSIONS.txt"; then echo "Forbidden permission packaged: $forbidden"; exit 81; fi
           done
@@ -166,17 +175,20 @@ jobs:
             echo 'checkpoint=RL_POST_V1_PHYSICAL_OCR_VALIDATION_01_REMEDIATION_A'
             echo "public_commit=${GITHUB_SHA}"
             echo "predecessor_handoff=${BASE}"
-            echo 'status=REMEDIATION_CANDIDATE'
+            echo 'status=REMEDIATION_RETEST_CANDIDATE'
             echo 'product_schema=2_UNCHANGED'
             echo 'receipt_schema=1_UNCHANGED'
             echo 'ocr_engine=UNCHANGED'
             echo 'recovery_policy=UNCHANGED'
             echo 'version_name=1.0.36-physical-ocr-remediation'
             echo 'version_code=37'
+            echo 'debug_application_id=com.receiptledger.v1.remediation'
+            echo 'install_mode=SIDE_BY_SIDE_WITH_CP37_PHASE_A'
             echo 'signing=debug_only'
           } > "$OUT/BUILD_IDENTITY.txt"
           sha256sum "$OUT"/APK_SHA256.txt "$OUT"/BUILD_IDENTITY.txt "$OUT"/APK_PERMISSIONS.txt \
-            "$OUT"/CP37_REMEDIATION_METRICS.txt "$OUT"/CP37_REMEDIATION_DIFF.txt > "$OUT/EVIDENCE_SHA256.txt"
+            "$OUT"/CP37_REMEDIATION_METRICS.txt "$OUT"/CP37_REMEDIATION_DIFF.txt \
+            "$OUT"/APK_BADGING.txt "$OUT"/APK_MANIFEST_XMLTREE.txt > "$OUT/EVIDENCE_SHA256.txt"
 
       - uses: actions/upload-artifact@v4
         with:
