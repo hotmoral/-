@@ -1,0 +1,55 @@
+{
+  "adapter": {
+    "byteCount": 16839,
+    "gitBlobSha1": "f63d7ee780e5fb2f4716b83532e16d3d2ee525a3",
+    "path": "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py",
+    "sha256": "06d8529cf28b3dc1cffa1cecb3da4524083167614cf3a4b3da36d46844557025"
+  },
+  "contractToken": "R12_SURFACE_TERMINAL_BIND_ALIAS_FEASIBILITY_CONTRACT_FROZEN",
+  "decisionToken": "R12_RF_M_SURFACE_TERMINAL_BIND_ALIAS_SELECTED_FOR_FEASIBILITY",
+  "expectedV3125MeshArraySha256": "839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77",
+  "freezeToken": "R12_STAGE0_IMPLEMENTATION_FREEZE",
+  "gitBlobSha1": {
+    ".github/workflows/mobi-p1-c-r12-surface-terminal-bind.yml": "8918c48e6330b493c15e9fb41c6b5b741ee5f698",
+    "mobi/p1-b2/geometry/P1_C_R12_STAGE0_IMPLEMENTATION_FREEZE.md": "d436bde0b2fa550ed5d5ac1639403a8d8c40aa95",
+    "mobi/p1-b2/geometry/assemble_p1_c_r11_semantic_scaffold_v1.sh": "7a5c4bda8131fcbfc1ef301c70c64d423bf5c04f",
+    "mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py": "9b7899bc1c39d02291813a826df01d3697192846",
+    "mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py": "5c8820fb7270e7727ececb1bb37d3a24331b24ab",
+    "mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py": "f281aad3e3a6c740c38c0a3f015718996dc45157",
+    "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py": "f63d7ee780e5fb2f4716b83532e16d3d2ee525a3",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part000.txt": "8e4c430cf405c0b1c05dcad591a7c73e6bb143db",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part001.txt": "86d3651e1b115c9bbfcedddbe0b42b0ac95f91c1",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part002.txt": "b514eaca8a1af556509d719411ccf679c6eacabb",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part003.txt": "8e9c9798de55bde7099971e6a868c98b65f377cf",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part004.txt": "a09ae537bdec38534adc63882854f4fac3ae9e50",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part005.txt": "db9dd42cb562ce23049cb32ca6cda6728e159b10",
+    "mobi/p1-b2/geometry/r11_stage0_parts/part006.txt": "10449747ebebb1a96298427d8e570675d3c4e2a9",
+    "mobi/p1-b2/geometry/test_p1_c_r11_semantic_scaffold_v1.py": "868a9cf58a32fdf725fe79c0d34d2cc77cb3c7aa",
+    "mobi/p1-b2/geometry/test_p1_c_r12_surface_terminal_bind_alias_v1.py": "7257217740e2ff7dedffc3b54f33b85d42a920db"
+  },
+  "inheritedR11Implementation": {
+    "assembledByteCount": 37871,
+    "assembledSha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87",
+    "frozenExecutionHead": "4c695503b99974e929491b1e78b0cf2935b675c7"
+  },
+  "preFreezeImplementationHead": "6955239841219384e55fcd8c0fb6092cf859a62a",
+  "publicBaseHead": "4ce94fa9c07f0f86b0380c58cdacaf59481732c2",
+  "publicBranch": "mobi/run-p1-c-r12-surface-terminal-bind-20261017",
+  "runtime": {
+    "fast-simplification": "0.2.0",
+    "numpy": "2.5.4",
+    "python": "3.12.15",
+    "scikit-image": "0.26.0",
+    "scipy": "1.17.0",
+    "trimesh": "4.11.1"
+  },
+  "sourceSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5",
+  "stage1AuthorizationToken": "RUN_R12_STAGE1_AFTER_STAGE0_FREEZE",
+  "stage1RunAuthorized": false,
+  "syntheticTests": {
+    "byteCount": 5049,
+    "gitBlobSha1": "7257217740e2ff7dedffc3b54f33b85d42a920db",
+    "path": "mobi/p1-b2/geometry/test_p1_c_r12_surface_terminal_bind_alias_v1.py",
+    "sha256": "64b85b6c8331783fc313e68064af724ffbf5966bcdfeb9e2dddb20e5f8d60140"
+  }
+}
