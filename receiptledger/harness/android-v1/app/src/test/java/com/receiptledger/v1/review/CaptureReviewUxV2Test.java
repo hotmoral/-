@@ -62,6 +62,17 @@ public final class CaptureReviewUxV2Test {
         assertTrue(CaptureReviewAssessmentV2.assess(record).requiresReview());
     }
 
+    @Test public void populatedPartialArithmeticPrefillStillRequiresReview() {
+        PersistedItem partial = item(0, "첫상품", 1, 3980L, 3980L,
+                ValueOrigin.INFERRED_ARITHMETIC, ValueOrigin.PRINTED, ValueOrigin.PRINTED,
+                ItemResolution.PARTIAL, "PRINTED_UNIT_AND_LINE_INFER_QTY_REVIEW_REQUIRED");
+        ReceiptRecord record = record(ValidationStatus.PASS_WITH_WARNINGS, "2026-10-16", "마트", 3980L,
+                Collections.singletonList("PARTIAL_ITEM_TUPLE"), partial);
+        CaptureReviewAssessmentV2 assessment = CaptureReviewAssessmentV2.assess(record);
+        assertTrue(assessment.requiresReview());
+        assertEquals(Collections.singletonList(0), assessment.itemOrdinals);
+    }
+
     @Test public void unknownOriginRequiresReview() {
         PersistedItem unknown = item(0, "감자", 1, 3000L, 3000L,
                 ValueOrigin.UNKNOWN, ValueOrigin.PRINTED, ValueOrigin.PRINTED,
