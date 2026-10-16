@@ -26,14 +26,37 @@ public final class ItemTupleSolver {
             }
         }
 
+        if(quantities.isEmpty()&&money.size()>=2){
+            PrintedUnitInference inferred=findUniquePrintedUnitForMissingQuantity(money,line);
+            if(inferred!=null){
+                return new ItemTuple(row.index,joinName(row,inferred.unit.token.centerX),inferred.quantity,inferred.unit.amount,line.amount,
+                        ValueOrigin.INFERRED_ARITHMETIC,ValueOrigin.PRINTED,ValueOrigin.PRINTED,
+                        ItemResolution.PARTIAL,"PRINTED_UNIT_AND_LINE_INFER_QTY_REVIEW_REQUIRED");
+            }
+        }
+
         if(money.size()==1&&quantities.isEmpty())return new ItemTuple(row.index,joinName(row,line.token.centerX),1,line.amount,line.amount,ValueOrigin.DEFAULT_ONE,ValueOrigin.PRINTED,ValueOrigin.PRINTED,ItemResolution.INFERRED,"SINGLE_AMOUNT_DEFAULT_QTY_ONE");
 
         return new ItemTuple(row.index,joinName(row,money.get(0).token.centerX),null,null,line.amount,ValueOrigin.UNKNOWN,ValueOrigin.UNKNOWN,ValueOrigin.PRINTED,ItemResolution.PARTIAL,"NO_EXACT_ARITHMETIC_SOLUTION");
     }
 
     private static Exact findExact(List<MoneyCandidate> money,List<QuantityCandidate> quantities,MoneyCandidate line){Exact best=null;double bestScore=Double.POSITIVE_INFINITY;for(QuantityCandidate q:quantities)for(MoneyCandidate unit:money){if(unit==line||unit.amount<=0)continue;Long product=safeMultiply(unit.amount,q.quantity);if(product==null||product!=line.amount)continue;double score=Math.abs(unit.token.centerX-q.token.centerX)+(unit.token.centerX>line.token.centerX?10000:0);if(score<bestScore){bestScore=score;best=new Exact(unit,q);}}return best;}
+    private static PrintedUnitInference findUniquePrintedUnitForMissingQuantity(List<MoneyCandidate> money,MoneyCandidate line){
+        if(line==null||line.amount<=0)return null;
+        PrintedUnitInference found=null;
+        for(MoneyCandidate unit:money){
+            if(unit==line||unit.amount<=0||unit.token.centerX>=line.token.centerX)continue;
+            if(line.amount%unit.amount!=0)continue;
+            long q=line.amount/unit.amount;
+            if(q<1||q>99)continue;
+            if(found!=null)return null;
+            found=new PrintedUnitInference(unit,(int)q);
+        }
+        return found;
+    }
     private static QuantityCandidate nearestQuantityBeforeOrAfter(List<QuantityCandidate> qs,double x){QuantityCandidate best=null;double distance=Double.POSITIVE_INFINITY;for(QuantityCandidate q:qs){double d=Math.abs(q.token.centerX-x);if(d<distance){distance=d;best=q;}}return best;}
     private static Long safeMultiply(long a,int b){if(a<0||b<0)return null;if(b!=0&&a>Long.MAX_VALUE/b)return null;return a*b;}
     private static String joinName(StructuredRow row,double cutoff){StringBuilder out=new StringBuilder();for(LayoutToken token:row.row.tokens){if(token.centerX>=cutoff)break;if(out.length()>0)out.append(' ');out.append(token.text);}return out.toString().trim();}
     private static final class Exact{final MoneyCandidate unit;final QuantityCandidate quantity;Exact(MoneyCandidate u,QuantityCandidate q){unit=u;quantity=q;}}
+    private static final class PrintedUnitInference{final MoneyCandidate unit;final int quantity;PrintedUnitInference(MoneyCandidate unit,int quantity){this.unit=unit;this.quantity=quantity;}}
 }
