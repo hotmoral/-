@@ -292,7 +292,7 @@ jobs:
           required={'version':1,'search_10k_scanned':10000,'history_observations':1000,'migration_rows':1000,
                     'archive_files':2000,'archive_removed':1000,'reopen_cycles':10,'semantic_failures':0}
           for k,v in required.items():
-              if a.get(k)!=v: raise SystemExit('%s expected %d got %r' % (k,v,values.get(k)))
+              if a.get(k)!=v: raise SystemExit('%s expected %d got %r' % (k,v,a.get(k)))
           checks=[
               ('startup_median_ms',s['startup_median_ms'],2500),
               ('startup_max_ms',s['startup_max_ms'],5000),
