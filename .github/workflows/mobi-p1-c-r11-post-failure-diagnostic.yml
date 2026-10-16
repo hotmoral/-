@@ -132,9 +132,9 @@ jobs:
               r=x['paws'][role]; a=r['localCompetitionAggregate']
               lines.append(f"| {role} | {', '.join(r['classification'])} | {r['nearestSurface']['distanceToBind']:.12g} | {r['localVertexCount']} | {a['pawEligibleCount']} | {a['eligibleAndRetainedCount']} | {r['differentialSupportWithinRadiusCount']} |")
           lines.append('')
-          fl=x['paws']['FORE_L_PAW_CTRL']; a=fl['localCompetitionAggregate']
           lines.append('## FORE_L causal measurements')
           lines.append('')
+          fl=x['paws']['FORE_L_PAW_CTRL']; a=fl['localCompetitionAggregate']
           lines.append(f"- surface-anchor → snapped endpoint distance: `{fl['surfaceAnchorToSnappedEndpointDistance']}`")
           lines.append(f"- nearest surface distance: `{fl['nearestSurface']['distanceToBind']}`")
           lines.append(f"- nearest FORE_L-domain distance: `{fl['nearestRoleDomainSurface']['distanceToBind']}`")
