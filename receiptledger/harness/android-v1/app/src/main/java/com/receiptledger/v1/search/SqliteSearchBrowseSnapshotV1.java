@@ -2,6 +2,9 @@ package com.receiptledger.v1.search;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.receiptledger.v1.catalog.CatalogEntryV2;
+import com.receiptledger.v1.catalog.CatalogField;
+import com.receiptledger.v1.catalog.CategoryRef;
 import com.receiptledger.v1.catalog.PackageMeasure;
 import com.receiptledger.v1.catalog.ProductSpecification;
 import com.receiptledger.v1.catalog.SalesUnitCode;
@@ -40,9 +43,11 @@ final class SqliteSearchBrowseSnapshotV1 {
         if (builders.isEmpty()) return new Snapshot(Collections.<ProductRow>emptyList());
 
         SQLiteDatabase productDb = catalog.getReadableDatabase();
+        loadCoreIntegrity(productDb, builders);
         loadStructuredFields(productDb, builders);
         loadSpecifications(productDb, builders);
         loadCategories(productDb, builders);
+        validateCatalogShapes(builders);
 
         Set<String> neededReceiptIds = new HashSet<>();
         try (Cursor c = productDb.query(
@@ -66,11 +71,14 @@ final class SqliteSearchBrowseSnapshotV1 {
             SQLiteDatabase receiptDb = receipts.getReadableDatabase();
             try (Cursor c = receiptDb.query(
                     "receipts",
-                    new String[]{"id", "created_at_ms", "purchase_date", "store_name"},
+                    new String[]{"id", "created_at_ms", "purchase_date", "store_name", "source_width", "source_height"},
                     null, null, null, null, null)) {
                 while (c.moveToNext()) {
                     String id = c.getString(0);
                     if (!neededReceiptIds.contains(id)) continue;
+                    int sourceWidth = c.getInt(4);
+                    int sourceHeight = c.getInt(5);
+                    if (sourceWidth < 1 || sourceHeight < 1) throw new IllegalArgumentException("source dimensions");
                     receiptRows.put(id, new ReceiptRow(
                             id,
                             c.getLong(1),
@@ -115,6 +123,24 @@ final class SqliteSearchBrowseSnapshotV1 {
             rows.add(builder.build());
         }
         return new Snapshot(Collections.unmodifiableList(rows));
+    }
+
+    private static void loadCoreIntegrity(SQLiteDatabase db, Map<String, ProductBuilder> builders) {
+        try (Cursor c = db.query(
+                "products",
+                new String[]{"id", "type", "record_origin"},
+                null, null, null, null, "canonical_name COLLATE NOCASE ASC")) {
+            while (c.moveToNext()) {
+                ProductBuilder builder = builders.get(c.getString(0));
+                if (builder == null) continue;
+                ProductType storedType = ProductType.valueOf(c.getString(1));
+                if (storedType != builder.product.type) throw new IllegalStateException("catalog type mismatch");
+                builder.recordOrigin = CatalogEntryV2.RecordOrigin.valueOf(c.getString(2));
+            }
+        }
+        for (ProductBuilder builder : builders.values()) {
+            if (builder.recordOrigin == null) throw new IllegalStateException("missing catalog core row");
+        }
     }
 
     private static void loadStructuredFields(SQLiteDatabase db, Map<String, ProductBuilder> builders) {
@@ -162,16 +188,33 @@ final class SqliteSearchBrowseSnapshotV1 {
                 null, null, null, null, "product_id ASC")) {
             while (c.moveToNext()) {
                 ProductBuilder builder = builders.get(c.getString(0));
-                if (builder != null) builder.categoryId = c.getString(1);
+                if (builder != null) builder.categoryId = new CategoryRef(c.getString(1)).id;
+            }
+        }
+    }
+
+    private static void validateCatalogShapes(Map<String, ProductBuilder> builders) {
+        for (ProductBuilder builder : builders.values()) {
+            if (builder.product.type == ProductType.NON_STANDARD
+                    && (builder.brand != null || builder.productName != null || builder.variant != null
+                    || builder.specification != null)) {
+                throw new IllegalArgumentException("commodity cannot carry STANDARD product fields");
+            }
+            if (builder.product.type == ProductType.STANDARD
+                    && builder.recordOrigin == CatalogEntryV2.RecordOrigin.NATIVE_V2
+                    && builder.productName == null) {
+                throw new IllegalArgumentException("native STANDARD product requires productName");
             }
         }
     }
 
     private static void validateEvidence(Cursor c, int sourceIndex, int confidenceIndex, int confirmationIndex) {
-        // Preserve the corruption-failure behavior of the canonical V2 row codec even though search only needs values.
-        com.receiptledger.v1.catalog.CatalogField.Source.valueOf(c.getString(sourceIndex));
-        com.receiptledger.v1.catalog.CatalogField.Confidence.valueOf(c.getString(confidenceIndex));
-        com.receiptledger.v1.catalog.CatalogField.Confirmation.valueOf(c.getString(confirmationIndex));
+        CatalogField.Source source = CatalogField.Source.valueOf(c.getString(sourceIndex));
+        CatalogField.Confidence.valueOf(c.getString(confidenceIndex));
+        CatalogField.Confirmation.valueOf(c.getString(confirmationIndex));
+        if (source == CatalogField.Source.UNKNOWN) {
+            throw new IllegalArgumentException("present field requires a known source");
+        }
     }
 
     private static PackageMeasure readMeasure(Cursor c, int amountIndex, int unitIndex) {
@@ -243,6 +286,7 @@ final class SqliteSearchBrowseSnapshotV1 {
         String variant;
         ProductSpecification specification;
         String categoryId;
+        CatalogEntryV2.RecordOrigin recordOrigin;
 
         ProductBuilder(CatalogProduct product) { this.product = product; }
 
