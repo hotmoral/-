@@ -1,0 +1,97 @@
+name: Mobi P1-C Adult Walk Density Experiment
+
+on:
+  push:
+    branches:
+      - 'mobi/experiment-adult-walk-density-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_adult_walk_density_experiment_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_adult_walk_density_experiment_v1.py'
+      - 'mobi/p1-b2/geometry/run_p1_c_adult_walk_density_experiment_v1.py'
+      - '.github/workflows/mobi-p1-c-adult-walk-density-experiment.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  density-experiment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record environment
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-adult-walk-density/evidence
+          { echo "git_commit=${GITHUB_SHA}"; python3 --version; } | tee mobi/p1-c-adult-walk-density/evidence/environment.txt
+
+      - name: Verify frozen experiment blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+            'p1_c_adult_walk_density_experiment_v1.py': '3d96036e9c2aca29acafef20e5c72db090c3ec44',
+            'test_p1_c_adult_walk_density_experiment_v1.py': '80e80d9f64435bffcab9edd5d62839ba6dfea32e',
+            'run_p1_c_adult_walk_density_experiment_v1.py': '28f5a9649d0e37e0e8928536c2c31d8da57fc19b',
+          }
+          for path, wanted in expected.items():
+            actual = subprocess.check_output(['git','hash-object',path], text=True).strip()
+            assert actual == wanted, (path, wanted, actual)
+          print('frozen_blob_identity=PASS')
+          PY
+
+      - name: Run bounded tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_adult_walk_density_experiment_v1.py 2>&1 | tee ../../p1-c-adult-walk-density/evidence/unittest.txt
+
+      - name: Generate deterministic experiment twice
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c-adult-walk-density/seed1 ../../p1-c-adult-walk-density/seed777
+          PYTHONHASHSEED=1 python3 run_p1_c_adult_walk_density_experiment_v1.py --output-dir ../../p1-c-adult-walk-density/seed1
+          PYTHONHASHSEED=777 python3 run_p1_c_adult_walk_density_experiment_v1.py --output-dir ../../p1-c-adult-walk-density/seed777
+          diff -ru ../../p1-c-adult-walk-density/seed1 ../../p1-c-adult-walk-density/seed777 > ../../p1-c-adult-walk-density/evidence/deterministic_diff.txt
+          cp -R ../../p1-c-adult-walk-density/seed1/. ../../p1-c-adult-walk-density/evidence/
+
+      - name: Validate experiment output
+        working-directory: mobi/p1-c-adult-walk-density/evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          s = json.loads(Path('summary.json').read_text())
+          assert s['version'] == 'P1_C_ADULT_WALK_DENSITY_EXPERIMENT_V1'
+          assert s['canvas'] == [96,96]
+          assert s['footfallOrder'] == ['RH','RF','LH','LF']
+          assert len(s['directionResults']) == 4
+          assert len(s['frameResults']) == 4
+          assert len(s['combinedResults']) == 16
+          assert Path('deterministic_diff.txt').read_text() == ''
+          pngs = sorted(Path('visual').glob('*.png'))
+          assert len(pngs) == 9, [p.name for p in pngs]
+          for p in pngs:
+            assert p.read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
+          print(json.dumps(s, indent=2, sort_keys=True))
+          PY
+
+      - name: Hash evidence
+        working-directory: mobi/p1-c-adult-walk-density/evidence
+        run: |
+          set -euo pipefail
+          find . -type f -print0 | sort -z | xargs -0 sha256sum > EVIDENCE_SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-adult-walk-density-${{ github.run_id }}
+          path: mobi/p1-c-adult-walk-density/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
