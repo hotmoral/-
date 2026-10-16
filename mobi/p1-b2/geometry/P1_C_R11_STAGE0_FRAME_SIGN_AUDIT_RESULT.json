@@ -1,0 +1,86 @@
+{
+  "anatomicalLeftSign": "+X_R10",
+  "decision": "PASS_PLUS_X_R10_IS_ANATOMICAL_LEFT",
+  "faceNodeTranslations": {
+    "Eye": [
+      -0.04100000113248825,
+      0.4659999907016754,
+      0.3529999852180481
+    ],
+    "Eye.001": [
+      0.04100000113248825,
+      0.4659999907016754,
+      0.3529999852180481
+    ],
+    "Muzzle pad": [
+      -0.023000000044703484,
+      0.4180000126361847,
+      0.3580000102519989
+    ],
+    "Muzzle pad.001": [
+      0.023000000044703484,
+      0.4180000126361847,
+      0.3580000102519989
+    ],
+    "Nose": [
+      0,
+      0.4309999942779541,
+      0.38199999928474426
+    ],
+    "Vertical pupil": [
+      -0.04100000113248825,
+      0.4659999907016754,
+      0.3630000054836273
+    ],
+    "Vertical pupil.001": [
+      0.04100000113248825,
+      0.4659999907016754,
+      0.3630000054836273
+    ]
+  },
+  "failurePolicy": "STOP_CHANGE_CONTROL_NO_SILENT_FLIP",
+  "mapping": {
+    "x_B3": "z_R10",
+    "y_B3": "y_R10",
+    "z_B3": "x_R10"
+  },
+  "sourceBytes": 4903420,
+  "sourceFrame": {
+    "bilateral": "X_R10",
+    "front": "+Z_R10",
+    "up": "+Y_R10"
+  },
+  "sourceSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5",
+  "stageDProjectionBlobReferenced": "5c8820fb7270e7727ececb1bb37d3a24331b24ab",
+  "structuralAabbMax": [
+    0.12377957999706268,
+    0.7522867619991302,
+    0.36675095558166504
+  ],
+  "structuralAabbMin": [
+    -0.12377405166625977,
+    0.0055554211139678955,
+    -0.40411117672920227
+  ],
+  "structuralVertexCount": 99642,
+  "version": "P1_C_R11_STAGE0_FRAME_SIGN_AUDIT_V1",
+  "yaw0": {
+    "cameraForwardTowardTarget": [
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "screenRight": [
+      1.0,
+      0.0,
+      0.0
+    ]
+  },
+  "yaw90": {
+    "screenRight": [
+      6.123233995736766e-17,
+      0.0,
+      1.0
+    ]
+  }
+}
