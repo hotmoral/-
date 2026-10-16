@@ -4,127 +4,109 @@ Updated: 2026-10-17 KST
 
 ## Current stage
 
-**CP36 — Performance / Reliability is COMPLETE.**
+**CP37 — Physical Device / Real-Image OCR Validation**
 
-- branch: `receiptledger/run-v1-performance-reliability-20261016`
-- predecessor CP35 handoff: `8a8a9ee0bb3bcd7e198f76b436087d54170a469d`
-- frozen executable HEAD: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
-- canonical Actions: `38926526457` — SUCCESS
-- job: `117059359644` — SUCCESS
-- artifact ID: `12057296715`
-- artifact digest: `sha256:3e11a5b85f15ad860f4c5a9a81f948d79bb4dd80122fcba6b1f8d2bfffe85756`
-- APK SHA-256: `f17ade820165ab40213f17c38b9e720488b7791aa3621b09b3b19cdd4a53c5f7`
-- versionCode 35
-- versionName `1.0.34-performance-reliability`
+Current substage: **Phase A READY_FOR_DEVICE_EVIDENCE / Phase B PENDING**
+
+- branch: `receiptledger/run-post-v1-physical-ocr-validation-20261017`
+- predecessor CP36 handoff: `d0a3a9ec7658808c82247715d58ac106a3778186`
+- frozen CP37 Phase A executable: `9bb5dcc276fae4632ade5ac3134e586baad65235`
+- canonical Actions: `38950400666` — SUCCESS
+- job: `117140033593`
+- artifact ID: `12068811009`
+- artifact digest: `sha256:86d3861727db107e26edf4073666e010f59249ac746496524f6007ca09787697`
+- APK SHA-256: `f9e5b73db79043a6fc6f76f3381e0e2fdab164b7b53c59d8b9ce405d1147120f`
+- versionCode 36
+- versionName `1.0.35-physical-ocr-validation`
 - lint: 0 errors / 0 warnings
 
-## Frozen CP36 result
+**Do not label CP37 complete yet.**
 
-CP36 used a measure-first strategy. Initial valid Android profiling found CP29 discovery was dominated by repeated SQLite reads.
+## Phase A frozen result
 
-Baseline:
+Phase A added only a privacy-safe, debug-only measurement layer around the existing OCR/recovery/review/save path.
 
-- search 1k: 2,385 ms;
-- search 10k: 17,106 ms;
-- recent 10k: 10,267 ms.
+Canonical metric:
 
-Bounded remediation changed only the CP29 discovery read path:
+`CP37_PHASE_A_METRICS report_version=1 tests=4 privacy_leak_tests=1 false_auto_confirm_tests=1 conservative_review_tests=1 structure_delta_tests=1 schema_unchanged=1`
 
-- modified `SearchBrowseServiceV1.java`;
-- added read-only transient `SqliteSearchBrowseSnapshotV1.java`.
+No OCR model/options/preprocessing/recovery rule or CP33 review rule changed. Product schema 2 / receipt schema 1 remain unchanged.
 
-No FTS, persistent cache, new index, schema or secondary truth was added.
+## Phase B work unit
 
-Final canonical metrics:
+The next work is **evidence collection, not coding**.
 
-- startup median/max: 516 / 748 ms;
-- Home PSS: 42,787 KB;
-- search 1k: 189 ms;
-- search 10k: 1,524 ms;
-- recent 10k: 856 ms;
-- price 1k: 461 ms;
-- detail 1k: 459 ms;
-- chart 1k: 19 ms;
-- OCR cold: 4,448 ms;
-- OCR warm median: 4,078 ms;
-- OCR PSS before/after: 104,611 / 111,183 KB;
-- migration 1k: 4 ms;
-- archive reconciliation 2,000 files / 1,000 removals: 41 ms;
-- reopen cycles: 10;
-- semantic failures: 0.
+Minimum target: 10 successfully saved real receipts.
 
-## Search semantic evidence
+Desired coverage when practical:
 
-The optimized SQLite fast path was compared directly with an adapter-forced original/generic CP29 path.
+- >=3 CAMERA;
+- >=3 GALLERY;
+- >=3 materially different receipt layouts;
+- short/long receipts mixed if naturally available;
+- perspective correction where warranted.
 
-Covered:
+## Per-sample procedure
 
-- canonical search;
-- compact search;
-- structured/specification search;
-- observed-name search;
-- store search/filter;
-- category browse;
-- recent ordering;
-- frequent ordering;
-- corrupt catalog-field fail-fast behavior.
+1. Install the canonical CP37 validation APK.
+2. Open `영수증 추가`.
+3. Acquire a real receipt via camera or gallery.
+4. Let OCR/recovery finish.
+5. Compare every recognized field against the original receipt, even for AUTO_CONFIRMED.
+6. Correct all factual errors using existing review/full-edit flow.
+7. Save once correct.
+8. Tap `검증 결과 복사`.
+9. Return only the generated `RL_CP37_SAMPLE ...` line to the planning chat.
 
-Result: **1/1 PASS**.
+Do not return receipt photos, OCR text or purchase values unless separately and privately authorized.
 
-## Explicit accepted risk
+## Decision metrics after >=10 samples
 
-Warm ML Kit OCR remains above its emulator decision budget:
+Aggregate:
 
-- final median: 4,078 ms;
-- budget: 1,500 ms.
+- sample count;
+- CAMERA/GALLERY counts;
+- OCR median/max latency;
+- attempted-pass distribution;
+- AUTO_CONFIRMED / REVIEW_REQUIRED counts;
+- `false_auto_confirm` count;
+- receipt-field correction totals;
+- item structure/name/quantity/unit-price/line-amount correction totals;
+- crashes/OCR hangs/save failures/duplicates.
 
-This is an explicit V1 accepted risk, not a hidden pass. Production OCR is unchanged because cold OCR and memory pass, recognizer reuse is already present, and no real-photo accuracy evidence exists to justify downsampling or altered recognition purely for speed.
+## Decision rule
 
-Physical-device / real-image OCR profiling is not authorized by CP36 closeout.
+Priority order:
 
-## Reliability / regression evidence
+1. correctness / false-auto-confirm safety;
+2. save/provenance reliability;
+3. review burden;
+4. latency.
 
-Canonical Run #11 passed:
+`false_auto_confirm=1` is blocker-quality evidence.
 
-- namespace/scope guards;
-- complete JVM unit regression;
-- lint 0/0;
-- APK + AndroidTest build;
-- startup/PSS profile;
-- Android runtime profile;
-- migration stress;
-- archive reconciliation;
-- reopen/recovery repetition;
-- SQLite search semantic/fail-fast parity;
-- evidence packaging.
+Final CP37 outcome must be one of:
 
-Product schema 2 / receipt schema 1 remain unchanged. Forbidden camera/media/storage/network permissions remain absent.
+- PASS_NO_OCR_CHANGE;
+- REMEDIATION_REQUIRED;
+- INSUFFICIENT_EVIDENCE.
 
-## Execution-history notes
+No downsampling, pass reduction, recognizer replacement or other OCR optimization is authorized before this evidence is analyzed.
 
-Early CP36 failures were CI/bootstrap/harness failures rather than product-performance failures, including sdkmanager pipe handling, AndroidTest setup, adb PATH, AVD path resolution and one legacy migration fixture normalization mismatch.
+## Group discipline
 
-Run #9 attempt 2 was accidentally re-run by the assistant during a user stop request. It is non-canonical and retained only as repeatability evidence.
-
-## Completed V1 boundary
-
-The authorized V1 chain CP20 through CP36 is complete.
-
-No post-V1 work unit is currently authorized.
-
-Before any future work:
-
-1. recover `PROJECT_STATUS_LATEST.md` and `SESSION_HANDOFF.md` first;
-2. verify live handoff HEAD and frozen executable `78cdd99c...` separately;
-3. define a new bounded checkpoint with explicit scope/non-goals/acceptance/evidence/stop conditions;
-4. review contradictions against frozen identity/price/review/search/UI/privacy contracts;
-5. avoid changing OCR or schema without direct evidence;
-6. preserve public namespace isolation and docs/executable boundary discipline.
+- recover canonical refs first;
+- compare physical evidence against the frozen Phase A build only;
+- do not mix APK versions;
+- catch material inconsistencies before remediation;
+- avoid speculative optimization or unrelated UI/domain changes;
+- if remediation is justified, define a new bounded implementation/evidence boundary before coding;
+- maintain docs-only handoff discipline for new sessions.
 
 ## Public/privacy rules
 
-Modify only `receiptledger/**` and explicitly approved ReceiptLedger-prefixed workflows. Never commit secrets, signing material, private receipt photos, personal purchase DBs/backups, identifiers or uncleared assets.
+Only sanitized report lines and aggregate metrics may become public evidence. Never commit real receipts, OCR text, real DBs/backups, credentials or signing material.
 
 ## Stop condition
 
-**Planned ReceiptLedger V1 CP20–CP36 is complete. Await explicit authorization for any post-V1 work.**
+**Wait for user-supplied Phase B sanitized reports.**

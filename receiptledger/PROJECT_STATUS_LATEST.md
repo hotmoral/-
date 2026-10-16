@@ -1,159 +1,122 @@
-# ReceiptLedger V1 — Project Status Latest
+# ReceiptLedger — Project Status Latest
 
 Updated: 2026-10-17 KST
 Repository: `hotmoral/-`
 Public namespace: `receiptledger/`
 
-## 1. Current completed boundary
+## 1. Current boundary
 
-Latest executable checkpoint: **CP36 — Performance / Reliability — PASS / COMPLETE**.
+Planned V1 CP20–CP36 is complete.
 
-- branch: `receiptledger/run-v1-performance-reliability-20261016`
-- predecessor CP35 handoff: `8a8a9ee0bb3bcd7e198f76b436087d54170a469d`
-- frozen CP36 executable HEAD: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
-- canonical Actions run: `38926526457` — SUCCESS
-- canonical job: `117059359644` — SUCCESS
-- artifact ID: `12057296715`
-- artifact digest: `sha256:3e11a5b85f15ad860f4c5a9a81f948d79bb4dd80122fcba6b1f8d2bfffe85756`
-- debug APK SHA-256: `f17ade820165ab40213f17c38b9e720488b7791aa3621b09b3b19cdd4a53c5f7`
-- version: `1.0.34-performance-reliability` / versionCode 35
-- lint: 0 errors / 0 warnings (`No issues found.`)
+Current post-V1 checkpoint: **CP37 — Physical Device / Real-Image OCR Validation**.
 
-Any later handoff/status synchronization is documentation-only. The executable/evidence boundary remains `78cdd99c...`.
+Current phase: **Phase A — READY_FOR_DEVICE_EVIDENCE**.
+
+Important: **CP37 itself is NOT COMPLETE.** Phase B requires physical-device / real-receipt reports.
+
+- branch: `receiptledger/run-post-v1-physical-ocr-validation-20261017`
+- predecessor CP36 handoff: `d0a3a9ec7658808c82247715d58ac106a3778186`
+- frozen CP36 executable: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
+- frozen CP37 Phase A executable: `9bb5dcc276fae4632ade5ac3134e586baad65235`
+- canonical Phase A Actions: `38950400666` — SUCCESS
+- canonical job: `117140033593` — SUCCESS
+- artifact ID: `12068811009`
+- artifact digest: `sha256:86d3861727db107e26edf4073666e010f59249ac746496524f6007ca09787697`
+- debug APK SHA-256: `f9e5b73db79043a6fc6f76f3381e0e2fdab164b7b53c59d8b9ce405d1147120f`
+- version: `1.0.35-physical-ocr-validation` / versionCode 36
+- lint: 0 errors / 0 warnings
+
+Any later handoff synchronization must be docs-only. Keep Phase A executable/evidence boundary at `9bb5dcc2...` unless Phase B evidence explicitly justifies a new implementation.
 
 ## 2. Product objective
 
-ReceiptLedger is a **personal purchase-price memory and comparison system**.
+ReceiptLedger remains a **personal purchase-price memory and comparison system**.
 
-Current loop:
+Core loop:
 
-`홈 -> 영수증 추가 -> 자동 처리 -> 필요한 항목만 확인 -> 저장 -> 반복 구매 재사용 -> 검색/카테고리 -> 제품/품목 가격기억 -> 영수증 근거`
+`홈 -> 영수증 추가 -> 자동 처리 -> 필요한 항목 확인 -> 저장 -> 검색/탐색 -> 제품/품목 가격기억 -> 영수증 근거`
 
-Receipts are input/evidence; trustworthy product/commodity price memory is the product outcome.
+CP37 does not add a product feature. It validates the unresolved real-image OCR boundary before any OCR optimization.
 
-## 3. CP36 result
+## 3. Why CP37 follows CP36
 
-CP36 measured before optimizing. The first complete Android profile found CP29 discovery dominated by repeated SQLite product/link/receipt reads.
+CP35's public evaluation begins at synthetic OCR token/geometry input and therefore does not quantify real-image recognition accuracy.
 
-Only that measured bottleneck was changed:
+CP36 found warm OCR around 4 seconds on an API34 x86_64 emulator, but deliberately left OCR unchanged because physical-device performance and any accuracy tradeoff from optimization were unknown.
 
-- `SearchBrowseServiceV1.java` modified;
-- read-only transient `SqliteSearchBrowseSnapshotV1.java` added.
+CP37 resolves this evidence gap in two phases:
 
-No FTS, persistent cache, new index or schema was added.
+- Phase A: privacy-safe debug instrumentation — complete;
+- Phase B: user-supplied physical-device sanitized samples — pending.
 
-Canonical final measurements:
+## 4. Phase A result
 
-- Home startup median/max: 516 / 748 ms;
-- Home PSS: 42,787 KB;
-- search 1k: 189 ms;
-- search 10k: 1,524 ms;
-- recent 10k: 856 ms;
-- price 1k: 461 ms;
-- detail 1k: 459 ms;
-- chart 1k: 19 ms;
-- OCR cold: 4,448 ms;
-- OCR warm median: 4,078 ms;
-- migration 1k: 4 ms;
-- archive reconciliation: 41 ms;
-- reopen cycles: 10;
-- semantic failures: 0.
+Phase A adds a debug-only local report around the existing OCR/recovery/review/save path without changing OCR behavior.
 
-Search 10k improved from the valid baseline 17,106 ms to 1,524 ms.
+Canonical metric:
 
-## 4. Search semantic preservation
+`CP37_PHASE_A_METRICS report_version=1 tests=4 privacy_leak_tests=1 false_auto_confirm_tests=1 conservative_review_tests=1 structure_delta_tests=1 schema_unchanged=1`
 
-The optimized SQLite path remains read-only and uses the same CP29 ranking/filter/match semantics. Generic/in-memory stores retain the original path.
+The validation APK records only structural data such as OCR time/pass counts, initial review state and correction counts. It never exports receipt text, store/product values, dates, prices, IDs, paths or images.
 
-A dedicated Android parity test compares optimized SQLite output against an adapter-forced original/generic path for canonical, compact, structured, specification, observed-name, store, category, recent and frequent cases. It also verifies equivalent fail-fast handling for corrupt catalog evidence.
+## 5. Critical Phase B rule
 
-Result: **1/1 PASS**.
+Every physical receipt must be visually checked against the original **even when initial_decision=AUTO_CONFIRMED**.
 
-## 5. Explicit known V1 risk
+If the user makes any factual/structural correction after an initial AUTO_CONFIRMED decision, the report emits:
 
-The only final decision-budget breach is warm ML Kit OCR on the API 34 x86_64 CI emulator:
+`false_auto_confirm=1`
 
-- final warm median: 4,078 ms;
-- decision budget: 1,500 ms.
-
-This was reproducible across valid runs and is explicitly accepted rather than hidden. Production OCR is unchanged because cold OCR and memory are within budget, the recognizer is already reused, the benchmark is emulator-based, and real-photo OCR accuracy versus resolution/merchant variation has not been established. Changing/downsampling OCR solely for this number could trade correctness for latency without evidence.
-
-Physical-device / real-image OCR profiling is a post-V1 validation candidate only if separately authorized.
+Any such sample is a blocker-quality trust finding requiring investigation before CP37 can pass without OCR changes.
 
 ## 6. Frozen contracts
 
-Unchanged:
+Unchanged through Phase A:
 
 - stable catalog ID identity authority;
-- CP21–29 domain/search meaning and ranking authority boundary;
+- commodity grouping != comparability;
 - CP27 comparison eligibility;
-- CP28 thresholds;
-- CP30 design system;
-- CP31/32 detail semantics;
-- CP33 capture/review/save/provenance;
-- CP34 commercial shell;
+- CP28 evaluation thresholds;
+- CP29 discovery meaning;
+- CP30–34 UI/review/navigation contracts;
 - CP35 registration-safety conclusions;
-- OCR/recovery/item/validation semantics;
+- CP36 bounded search optimization;
+- ML Kit recognition model/options;
+- OCR recovery preprocessing/pass order/MAX_PASSES;
 - product schema 2 / receipt schema 1;
-- programmatic `Activity + android.widget` architecture;
-- offline/no-network/no-broad-permission posture.
+- no broad storage/media/network permissions.
 
-## 7. Regression / privacy evidence
+## 7. Phase B campaign target
 
-Canonical Run #11 passed:
+Use only the canonical CP37 validation APK.
 
-- public namespace and bounded-scope guards;
-- full JVM unit regression;
-- CP29 search regression;
-- CP31–35 and price/evaluation regressions;
-- lint 0/0;
-- APK + AndroidTest build;
-- Android startup/memory/runtime profile;
-- migration/archive/reopen checks;
-- SQLite search parity;
-- evidence packaging.
+Minimum target:
 
-Forbidden CAMERA/media/storage/network permissions remain absent.
+- 10 successfully saved real receipt samples;
+- aim for >=3 CAMERA and >=3 GALLERY samples;
+- aim for >=3 materially different receipt layouts.
 
-## 8. Completed V1 checkpoint chain
+For each sample: process -> visually inspect all fields -> correct factual errors -> save -> tap `검증 결과 복사` -> return only the sanitized `RL_CP37_SAMPLE ...` line.
 
-CP20 Product Rebaseline -> CP21 Catalog Domain V2 -> CP22 Persistence V2 -> CP23 Receipt Product Semantics -> CP24 Identity Resolver V2 -> CP25 Category System -> CP26 Commodity / Non-standard V2 -> CP27 Price Intelligence V2 -> CP28 Price Evaluation -> CP29 Search / Browse -> CP30 Design System Foundation -> CP31 Product Detail -> CP32 Commodity Detail -> CP33 Capture / Review UX V2 -> CP34 Commercial UI Shell -> CP35 Real Receipt Evaluation -> **CP36 Performance / Reliability**.
+Do not upload real receipt photos, OCR text, store/product names, dates, prices, IDs or DB backups to GitHub.
 
-The planned V1 roadmap through CP36 is complete.
+## 8. Current stop condition
 
-## 9. Next work boundary
+**Wait for Phase B physical-device evidence. Do not optimize/downsample/change OCR before those reports are analyzed.**
 
-**No post-V1 checkpoint is currently authorized.**
-
-Do not begin a physical-device campaign, OCR redesign, new feature group, schema change or broader optimization without explicit user authorization.
-
-If post-V1 work is authorized, first recover the CP36 frozen executable and current docs-only handoff separately and define a new bounded checkpoint before implementation.
-
-## 10. Canonical restart order
+## 9. Canonical restart order
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP36_PERFORMANCE_RELIABILITY_CLOSEOUT.md`
-4. `receiptledger/CP36_PERFORMANCE_RELIABILITY_EVIDENCE.md`
-5. `receiptledger/CP36_PERFORMANCE_RELIABILITY_PLAN.md`
-6. `receiptledger/PERFORMANCE_RELIABILITY_CONSISTENCY_REVIEW.md`
-7. `receiptledger/PERFORMANCE_RELIABILITY_VECTORS.md`
-8. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_CLOSEOUT.md`
-9. `receiptledger/CP35_REAL_RECEIPT_EVALUATION_EVIDENCE.md`
-10. `receiptledger/CP34_COMMERCIAL_UI_SHELL_CLOSEOUT.md`
-11. `receiptledger/CP33_CAPTURE_REVIEW_UX_V2_CLOSEOUT.md`
-12. `receiptledger/CP32_COMMODITY_DETAIL_CLOSEOUT.md`
-13. `receiptledger/CP31_PRODUCT_DETAIL_CLOSEOUT.md`
-14. `receiptledger/CP30_DESIGN_SYSTEM_FOUNDATION_CLOSEOUT.md`
-15. `receiptledger/CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
-16. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-17. `receiptledger/README.md`
-18. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+4. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_EVIDENCE.md`
+5. `receiptledger/CP37_PHYSICAL_DEVICE_REAL_IMAGE_OCR_VALIDATION_PLAN.md`
+6. `receiptledger/PHYSICAL_DEVICE_OCR_VALIDATION_CONSISTENCY_REVIEW.md`
+7. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+8. `receiptledger/CP36_PERFORMANCE_RELIABILITY_CLOSEOUT.md`
+9. `receiptledger/CP36_PERFORMANCE_RELIABILITY_EVIDENCE.md`
+10. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+11. `receiptledger/README.md`
+12. `receiptledger/WORK_UNIT.md`
 
-GitHub is canonical. Verify live handoff HEAD and frozen executable HEAD separately.
-
-## 11. Public/privacy boundary
-
-Modify only `receiptledger/**` and explicitly ReceiptLedger-prefixed workflows. Never commit secrets, release signing material, private receipts, real purchase DB/backups, personal identifiers or uncleared assets.
-
-**Current stop condition: planned V1 CP20–CP36 complete. Await explicit authorization for any post-V1 work.**
+GitHub is canonical. Verify current docs-only handoff HEAD and frozen Phase A executable separately.

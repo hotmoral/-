@@ -1,155 +1,100 @@
-# ReceiptLedger V1 — Product-Centric Roadmap
+# ReceiptLedger — Product / Validation Roadmap
 
 Updated: 2026-10-17 KST
-Amended by: `CLIENT_REQUIREMENT_ALIGNMENT_AMENDMENT.md`
 
 ## 0. Governing objective
 
-Complete the smallest coherent product that lets a user add a receipt with minimal manual work, obtain trustworthy product/commodity identities and purchase prices, find a repeat purchase later, inspect personal historical prices, and judge whether a current price is cheap/normal/expensive without fake normalization of non-standard goods.
+ReceiptLedger is a personal purchase-price memory and comparison system. Receipts are input/evidence; the product outcome is trustworthy, receipt-traceable product/commodity price memory.
 
-Every checkpoint closes only after exact executable evidence, plan/code comparison and docs-only handoff synchronization.
+Checkpoint work must preserve authority boundaries, catch material contradictions early, avoid speculative scope and freeze exact evidence before advancing.
 
-## 1. Completed chain
+## 1. Completed V1 chain
 
-### CP20 — Product Rebaseline / V1 Master Specification — COMPLETE
-Personal purchase-price memory and comparison is the frozen product essence.
+The planned V1 chain is complete:
 
-### CP21 — Catalog Domain V2 — COMPLETE
-Stable-ID identity, STANDARD/NON_STANDARD boundary, structured product fields, exact physical measures, raw purchase forms, category non-authority and evidence/confirmation separation.
+CP20 Product Rebaseline -> CP21 Catalog Domain V2 -> CP22 Persistence V2 -> CP23 Receipt Product Semantics -> CP24 Identity Resolver V2 -> CP25 Category System -> CP26 Commodity / Non-standard V2 -> CP27 Price Intelligence V2 -> CP28 Price Evaluation -> CP29 Search / Browse -> CP30 Design System Foundation -> CP31 Product Detail -> CP32 Commodity Detail -> CP33 Capture / Review UX V2 -> CP34 Commercial UI Shell -> CP35 Real Receipt Evaluation -> CP36 Performance / Reliability.
 
-### CP22 — Persistence V2 — COMPLETE
-Frozen `449896c7580fb3412f41c9b58d1ab9412d13d84d`; product schema 2 / receipt schema 1.
+### CP36 final boundary
 
-### CP23 — Receipt Product Semantics — COMPLETE
-Conservative unconfirmed semantic evidence.
+- frozen executable: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
+- canonical run: `38926526457` SUCCESS
+- docs-only handoff: `d0a3a9ec7658808c82247715d58ac106a3778186`
 
-### CP24 — Identity Resolver V2 — COMPLETE
-Exact authority and review/unresolved fallback preserved.
+CP36 corrected only the measured SQLite search bottleneck. 10k search improved from 17,106ms to 1,524ms without FTS, persistent cache, new index or schema change. Warm OCR on the CI emulator remained an explicit accepted V1 risk because physical-device performance and real-image accuracy were not known.
 
-### CP25 — Category System — COMPLETE
-Category remains browse metadata, never identity authority.
+## 2. Post-V1 validation
 
-### CP26 — Commodity / Non-standard V2 — COMPLETE
-Grouping remains distinct from price comparability.
+### CP37 — Physical Device / Real-Image OCR Validation — IN PROGRESS
 
-### CP27 — Price Intelligence V2 — COMPLETE
-STANDARD exact package; kg/g -> price/kg; L/mL -> price/L; count -> price/each; contextual package forms remain non-normalized; unsupported discount attribution excluded.
+Purpose: resolve the evidence gap left by CP35/36 before changing OCR.
 
-### CP28 — Price Evaluation — COMPLETE
-Median baseline, minimum-history gate, material/extreme thresholds and contextual no-judgment contract frozen.
+#### Phase A — Device Validation Instrumentation — READY_FOR_DEVICE_EVIDENCE
 
-### CP29 — Search / Browse — COMPLETE
-Read-only deterministic discovery. Search relevance cannot create/merge/relink identity.
+- frozen executable: `9bb5dcc276fae4632ade5ac3134e586baad65235`
+- canonical run: `38950400666` SUCCESS
+- artifact ID: `12068811009`
+- APK SHA-256: `f9e5b73db79043a6fc6f76f3381e0e2fdab164b7b53c59d8b9ce405d1147120f`
+- version: `1.0.35-physical-ocr-validation` / 36
 
-### CP30 — Design System Foundation — COMPLETE
-Programmatic Android widgets retained; Korean-first typography, semantic states, spacing/radius/elevation/touch targets, responsive classes and single-basis chart grammar frozen.
+Phase A adds privacy-safe, debug-only instrumentation. It does not change OCR recognition, preprocessing, recovery, review, identity, price, schema or permission semantics.
 
-### CP31 — Product Detail — COMPLETE
-STANDARD product detail with exact identity, recent/previous/usual price, CP28 judgment/reason, STANDARD_PACKAGE chart and receipt-traceable history.
+#### Phase B — Physical Device Campaign — PENDING
 
-### CP32 — Commodity Detail — COMPLETE
-NON_STANDARD detail preserving strict WEIGHT_KG/VOLUME_L/EACH cohorts, contextual package-form history and grouping != comparability.
+Minimum decision target:
 
-### CP33 — Capture / Review UX V2 — COMPLETE
-Automatic OCR/recovery start, selective review, explicit save, DEFAULT_ONE confirmation, exact confirmed alias reuse after durable save and post-save failure isolation.
+- 10 real saved receipt samples;
+- >=3 CAMERA and >=3 GALLERY where practical;
+- >=3 materially different layouts.
 
-### CP34 — Commercial UI Shell — COMPLETE
-Product-centric Home launcher, receipt-add entry, search/recent/frequent/category discovery, Product/Commodity detail routing and receipt-history provenance.
+Every result must be visually checked even when AUTO_CONFIRMED. Only sanitized `RL_CP37_SAMPLE ...` lines are returned; real receipt data stays local.
 
-### CP35 — Real Receipt Evaluation — COMPLETE
-Public-safe synthetic token/geometry corpus validated registration safety, exact-alias reuse, conservative unresolved behavior, strict/contextual commodity separation, discount exclusion, mismatch exclusion and detail receipt provenance.
+Possible outcomes:
 
-### CP36 — Performance / Reliability — COMPLETE
-Frozen executable: `78cdd99c7df8fcdff2765a4e7e66b428397e7cf4`
-Canonical Actions: `38926526457` SUCCESS.
+- PASS_NO_OCR_CHANGE;
+- REMEDIATION_REQUIRED;
+- INSUFFICIENT_EVIDENCE.
 
-Measurement-first hardening found a material CP29 SQLite discovery bottleneck. Bounded remediation changed only the discovery read path:
+## 3. CP37 decision priority
 
-- `SearchBrowseServiceV1.java`;
-- `SqliteSearchBrowseSnapshotV1.java`.
+Correctness and trust precede speed.
 
-No FTS, persistent cache, new index or schema was introduced.
+`false_auto_confirm=1` means an initially AUTO_CONFIRMED sample required a factual/structural correction before save. This is blocker-quality evidence and must be investigated before a PASS decision.
 
-Final canonical measurements:
+Latency evidence is interpreted together with correction burden. No downsampling/pass reduction/model change may be justified by latency alone.
 
-- startup median/max: 516 / 748 ms;
-- Home PSS: 42,787 KB;
-- search 1k: 189 ms;
-- search 10k: 1,524 ms;
-- recent 10k: 856 ms;
-- price 1k: 461 ms;
-- detail 1k: 459 ms;
-- chart 1k: 19 ms;
-- OCR cold: 4,448 ms;
-- OCR warm median: 4,078 ms;
-- migration 1k: 4 ms;
-- archive reconciliation: 41 ms;
-- reopen cycles: 10;
-- semantic failures: 0.
+## 4. Frozen authority gates
 
-SQLite fast-path semantic/fail-fast parity: 1/1 PASS.
+Still authoritative:
 
-The only final budget breach is warm OCR on the API 34 x86_64 CI emulator. It is an explicitly accepted V1 risk because cold OCR and memory are within budget, recognizer reuse is already in place, and real-photo OCR accuracy versus downsampling/resolution has not been established. Production OCR remains unchanged.
+- stable catalog ID is final product identity authority;
+- category/search/price/UI relevance cannot create identity;
+- commodity grouping != comparability;
+- strict kg/L/each bases stay separate from contextual package forms;
+- CP27 defines eligible price evidence;
+- CP28 owns judgment thresholds;
+- review convenience cannot erase provenance;
+- product schema 2 / receipt schema 1 remain frozen;
+- no network/broad media/storage permission posture remains frozen.
 
-## 2. Frozen dependency gates
+## 5. Post-Phase-B rule
 
-- stable catalog ID remains final identity authority;
-- product schema 2 / receipt schema 1 remain frozen unless a separately authorized migration need is proved;
-- parser evidence is non-authoritative until confirmed;
-- category/price/search/UI cannot widen identity authority;
-- commodity grouping remains distinct from comparability;
-- CP27 eligible cohort is the only CP28 price input basis;
-- CP28 thresholds cannot be reimplemented by UI;
-- CP29 search remains read-only;
-- CP30 presentation presents rather than reinterprets facts;
-- CP31 STANDARD detail consumes STANDARD_PACKAGE only;
-- CP32 preserves strict/contextual separation;
-- CP33 convenience cannot erase provenance or authorize uncertain data;
-- CP34 navigation integrates but does not rewrite truth;
-- CP35 evidence must not be overstated beyond its synthetic token-boundary corpus;
-- CP36 optimization remains measurement-driven and bounded to proven bottlenecks.
+Do not invent a CP38 or OCR remediation group before Phase B analysis.
 
-## 3. Current roadmap boundary
+If Phase B proves a material defect, first define the smallest bounded remediation checkpoint with before/after evidence on the same physical corpus where practical. If Phase B passes without material defect, close CP37 with no OCR change.
 
-The authorized V1 roadmap **CP20 through CP36 is complete**.
+## 6. Handoff discipline
 
-No post-V1 checkpoint is currently authorized.
+At every boundary:
 
-Potential future work such as physical-device OCR profiling, real-image merchant/font coverage, new features, schema changes, release/signing or broader optimization requires:
+1. recover canonical refs;
+2. inspect predecessor consistency and material risks;
+3. implement only the smallest coherent scope;
+4. run regression/evidence;
+5. perform post-green plan/code/evidence review;
+6. freeze executable HEAD;
+7. synchronize docs-only handoff;
+8. stop before unauthorized work.
 
-1. explicit user authorization;
-2. recovery of current handoff and frozen executable refs;
-3. a newly named bounded checkpoint with scope/non-goals/acceptance/evidence/stop conditions;
-4. contradiction/consistency review before implementation.
+## 7. Current boundary
 
-## 4. Checkpoint discipline
-
-At every future checkpoint, where material:
-
-- recover canonical GitHub state first;
-- compare prior frozen contracts against the proposed change;
-- catch cheap contradictions before implementation;
-- avoid ritual audits and speculative abstractions;
-- measure before optimizing;
-- preserve provenance and authority boundaries;
-- compare plan vs actual even after green CI;
-- freeze exact executable/evidence refs;
-- synchronize docs-only handoff;
-- stop before unauthorized work.
-
-## 5. Handoff discipline
-
-At every completed group:
-
-1. freeze exact executable/spec HEAD;
-2. record CI/artifact/evidence and known limitations;
-3. record meaningful failure/remediation history;
-4. compare acceptance criteria to actual implementation;
-5. update status/handoff/readme/work-unit/roadmap docs;
-6. verify all post-boundary changes are documentation-only;
-7. verify the handoff commit is directly based on the frozen executable when possible;
-8. stop before the next unauthorized checkpoint.
-
-## 6. Current stop condition
-
-**Planned ReceiptLedger V1 CP20–CP36 is COMPLETE. Await explicit user authorization for any post-V1 work.**
+**CP37 Phase A is READY_FOR_DEVICE_EVIDENCE. Phase B is next and requires user-supplied physical-device sanitized reports. CP37 is not yet complete.**
