@@ -1,0 +1,131 @@
+name: Mobi P1-C R10 Boundary Smoothness Diagnostic
+
+on:
+  push:
+    branches:
+      - 'mobi/run-p1-c-r10-morphology-reduction-20261016'
+    paths:
+      - 'mobi/p1-b2/geometry/p1_c_r10_boundary_smoothness_diagnostic_v1.py'
+      - 'mobi/p1-b2/geometry/test_p1_c_r10_boundary_smoothness_diagnostic_v1.py'
+      - '.github/workflows/mobi-p1-c-r10-boundary-smoothness-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  boundary-smoothness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify frozen diagnostic blobs
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+            'p1_c_r10_morphology_reduction_v1.py': 'f281aad3e3a6c740c38c0a3f015718996dc45157',
+            'p1_c_r10_boundary_smoothness_diagnostic_v1.py': 'c0b9771410df46e9526d03026ab8dcafb5daff57',
+            'test_p1_c_r10_boundary_smoothness_diagnostic_v1.py': 'e324b5779bf522fcccf81b360db2fd6e5f1a2db6',
+            'p1_c_3d_cat_stage_d_projection_v1.py': '5c8820fb7270e7727ececb1bb37d3a24331b24ab',
+            'p1_c_3d_cat_stage_b_inspector_v1.py': '9b7899bc1c39d02291813a826df01d3697192846',
+          }
+          for path,wanted in expected.items():
+              actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
+              assert actual==wanted,(path,wanted,actual)
+          print('frozen_boundary_blob_identity=PASS')
+          PY
+
+      - name: Install frozen Python dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check 'numpy==2.5.4' 'fast-simplification==0.2.0'
+          python3 - <<'PY'
+          import numpy, fast_simplification
+          assert numpy.__version__=='2.5.4'
+          assert fast_simplification.__version__=='0.2.0'
+          print('dependency_identity=PASS')
+          PY
+
+      - name: Run bounded diagnostic tests
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v test_p1_c_r10_boundary_smoothness_diagnostic_v1.py
+
+      - name: Acquire exact source
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r10-boundary/evidence/source
+          E=mobi/p1-c-r10-boundary/evidence/source
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 \
+            -A 'Mobi R10 boundary diagnostic/1.0' \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-r10-boundary/evidence/source/cat-original.glb' | sha256sum -c -
+
+      - name: Run diagnostic twice deterministically
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          rm -rf ../../p1-c-r10-boundary/seed1 ../../p1-c-r10-boundary/seed777
+          PYTHONHASHSEED=1 python3 p1_c_r10_boundary_smoothness_diagnostic_v1.py \
+            ../../p1-c-r10-boundary/evidence/source/cat-original.glb \
+            --out ../../p1-c-r10-boundary/seed1
+          PYTHONHASHSEED=777 python3 p1_c_r10_boundary_smoothness_diagnostic_v1.py \
+            ../../p1-c-r10-boundary/evidence/source/cat-original.glb \
+            --out ../../p1-c-r10-boundary/seed777
+          diff -ru ../../p1-c-r10-boundary/seed1 ../../p1-c-r10-boundary/seed777 > ../../p1-c-r10-boundary/evidence/deterministic_diff.txt
+          mkdir -p ../../p1-c-r10-boundary/evidence/result
+          cp -R ../../p1-c-r10-boundary/seed1/. ../../p1-c-r10-boundary/evidence/result/
+
+      - name: Validate diagnostic boundary
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('mobi/p1-c-r10-boundary/evidence/result/boundary_smoothness_summary.json').read_text())
+          assert s['version']=='P1_C_R10_BOUNDARY_SMOOTHNESS_DIAGNOSTIC_V1'
+          assert s['sourceSha256']=='6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5'
+          assert s['fastSimplificationVersion']=='0.2.0'
+          assert s['agg']==7.0
+          assert s['refinementRule']['frozenRefinementTargetVertices']==1088
+          assert [x['targetVertices'] for x in s['candidates']]==[3125,1560,1088,780]
+          assert Path('mobi/p1-c-r10-boundary/evidence/deterministic_diff.txt').read_text()==''
+          for c in s['candidates']:
+              assert c['vertexCount']==c['targetVertices'], c
+              assert c['dihedral']['twoFaceEdgeCount']>0
+          print(json.dumps([
+            {
+              'V':c['vertexCount'],
+              'hard':c['mechanicalHardPass'],
+              'P95':c['dihedral']['angleDegP95'],
+              'P99':c['dihedral']['angleDegP99'],
+              'over10':c['dihedral']['fractionAbove10_0Deg'],
+              'yawExcess':c['yaw']['maxExcessAdjacentXorUnion']
+            } for c in s['candidates']
+          ],indent=2))
+          PY
+
+      - name: Hash evidence
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-r10-boundary/evidence
+          { echo "git_commit=${GITHUB_SHA}"; python3 --version; } > "$E/environment.txt"
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-r10-boundary-smoothness-${{ github.run_id }}
+          path: mobi/p1-c-r10-boundary/evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
