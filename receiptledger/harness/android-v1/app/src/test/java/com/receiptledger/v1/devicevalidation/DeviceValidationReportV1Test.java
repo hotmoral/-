@@ -144,6 +144,38 @@ public final class DeviceValidationReportV1Test {
         assertFalse(report.contains("PRIVATE_RAW_OCR"));
     }
 
+    @Test public void removedFalseItemIsCountedAsOneStructuralCorrection() {
+        PersistedItem falseItem = item(0, "PRIVATE_ADDRESS_ROW", 1, 1234L, 1234L, ValueOrigin.DEFAULT_ONE);
+        PersistedItem realItem = item(1, "PRIVATE_REAL_ITEM", 1, 4500L, 4500L, ValueOrigin.PRINTED);
+        ReceiptRecord initial = new ReceiptRecord(
+                "r4", 1L, "2026-10-01", "S", "PRIVATE_RAW_OCR",
+                4500L, 5734L, 0L, 5734L, 1234L, ValidationStatus.MISMATCH,
+                1800, 2400, false, Collections.singletonList("RECEIPT_TOTAL_MISMATCH:1234"), Arrays.asList(falseItem, realItem));
+        CaptureReviewAssessmentV2 assessment = CaptureReviewAssessmentV2.assess(initial);
+        ReceiptRecord corrected = new ReceiptRecord(
+                "r4", 1L, "2026-10-01", "S", "PRIVATE_RAW_OCR",
+                4500L, 4500L, 0L, 4500L, 0L, ValidationStatus.PASS_WITH_WARNINGS,
+                1800, 2400, false, Collections.singletonList("USER_REMOVED_ITEM:0"), Collections.singletonList(realItem));
+
+        String report = DeviceValidationReportV1.savedReport(
+                DeviceValidationReportV1.captureInitial(
+                        DeviceValidationReportV1.AcquisitionSource.GALLERY,
+                        600,
+                        3,
+                        2,
+                        "ORIGINAL",
+                        initial,
+                        assessment),
+                corrected);
+
+        assertTrue(report.contains("item_count_changed=1"));
+        assertTrue(report.contains("item_structure_changes=1"));
+        assertTrue(report.contains("any_correction=1"));
+        assertTrue(report.contains("false_auto_confirm=0"));
+        assertFalse(report.contains("PRIVATE_ADDRESS_ROW"));
+        assertFalse(report.contains("PRIVATE_REAL_ITEM"));
+    }
+
     private static ReceiptRecord record(
             String id,
             String date,
