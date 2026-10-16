@@ -16,9 +16,16 @@ Token: **`R11_POST_FAILURE_DIAGNOSTIC_IMPLEMENTATION_FREEZE`**
 - diagnostic script: `mobi/p1-b2/geometry/p1_c_r11_post_failure_diagnostic_v1.py`
 - diagnostic script git blob: `d26fd0027782d7633ba1c8c19be75e41dccb6e0f`
 - workflow: `.github/workflows/mobi-p1-c-r11-post-failure-diagnostic.yml`
-- workflow git blob: `61143ed0f07dbe9ba9cdd7cb7923812067e707ee`
+- workflow git blob: `42219aa1eef850e3f7bcc50fc78b4ab9b9d1dfac`
 
-The first script candidate was corrected before evidence only to register the dynamically loaded frozen R11 module in `sys.modules`, which is required for safe execution of dataclass definitions. No R11 measurement formula, constant, threshold, domain rule, control rule or weight rule changed.
+Two pre-evidence implementation corrections are recorded:
+
+1. the diagnostic loader was corrected to register the dynamically loaded frozen R11 module in `sys.modules`, required for safe execution of dataclass definitions;
+2. the workflow summary step was corrected to bind the already-produced `FORE_L_PAW_CTRL` report before formatting summary fields.
+
+Both occurred before any diagnostic evidence run. Neither changes an R11 measurement formula, constant, threshold, domain rule, control rule, weight rule or classification rule.
+
+The default-branch registration copy of the workflow is required to have the same workflow blob `42219aa1eef850e3f7bcc50fc78b4ab9b9d1dfac` before dispatch.
 
 ## Execution authorization token
 
