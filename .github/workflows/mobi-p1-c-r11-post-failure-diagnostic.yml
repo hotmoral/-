@@ -1,0 +1,176 @@
+name: Mobi P1-C R11 Post-Failure Diagnostic
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_diagnostic:
+        description: 'Exact authorization token required after diagnostic freeze review'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobi-p1-c-r11-post-failure-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    if: >-
+      github.ref == 'refs/heads/mobi/run-p1-c-r11-post-failure-diagnostic-20261016' &&
+      inputs.confirm_diagnostic == 'RUN_R11_POST_FAILURE_DIAGNOSTIC_AFTER_FREEZE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify frozen diagnostic and inherited R11 identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/mobi/run-p1-c-r11-post-failure-diagnostic-20261016'
+          test '${{ inputs.confirm_diagnostic }}' = 'RUN_R11_POST_FAILURE_DIAGNOSTIC_AFTER_FREEZE'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_r11_post_failure_diagnostic_v1.py)" = 'd26fd0027782d7633ba1c8c19be75e41dccb6e0f'
+          test "$(git hash-object mobi/p1-b2/geometry/assemble_p1_c_r11_semantic_scaffold_v1.sh)" = '7a5c4bda8131fcbfc1ef301c70c64d423bf5c04f'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_r10_morphology_reduction_v1.py)" = 'f281aad3e3a6c740c38c0a3f015718996dc45157'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_3d_cat_stage_d_projection_v1.py)" = '5c8820fb7270e7727ececb1bb37d3a24331b24ab'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_3d_cat_stage_b_inspector_v1.py)" = '9b7899bc1c39d02291813a826df01d3697192846'
+
+      - name: Assemble and verify frozen failed R11 implementation
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          test "$(sha256sum p1_c_r11_semantic_scaffold_v1.py | awk '{print $1}')" = 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87'
+          python3 -m py_compile p1_c_r11_post_failure_diagnostic_v1.py p1_c_r11_semantic_scaffold_v1.py
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install exact frozen runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+          python - <<'PY'
+          import sys, numpy, fast_simplification, trimesh, skimage, scipy
+          expected={
+              'numpy':'2.5.4','fast_simplification':'0.2.0','trimesh':'4.11.1',
+              'skimage':'0.26.0','scipy':'1.17.0'
+          }
+          actual={
+              'numpy':numpy.__version__,'fast_simplification':fast_simplification.__version__,
+              'trimesh':trimesh.__version__,'skimage':skimage.__version__,'scipy':scipy.__version__
+          }
+          if sys.version_info[:3] != (3,12,15): raise SystemExit(sys.version)
+          if actual != expected: raise SystemExit(f'dependency drift: {actual}')
+          print(sys.version)
+          print(actual)
+          PY
+
+      - name: Acquire exact frozen standing-cat source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-r11-diagnostic/evidence/source
+          E=mobi/p1-c-r11-diagnostic/evidence/source
+          UA='Mobi R11 post-failure diagnostic/1.0'
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-r11-diagnostic/evidence/source/cat-original.glb' | sha256sum -c -
+
+      - name: Execute observational diagnostic twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          SRC=mobi/p1-c-r11-diagnostic/evidence/source/cat-original.glb
+          E=mobi/p1-c-r11-diagnostic/evidence
+          PYTHONHASHSEED=1 python "$G/p1_c_r11_post_failure_diagnostic_v1.py" "$SRC" --geometry-dir "$G" --out "$E/seed1.json"
+          PYTHONHASHSEED=777 python "$G/p1_c_r11_post_failure_diagnostic_v1.py" "$SRC" --geometry-dir "$G" --out "$E/seed777.json"
+          diff -u "$E/seed1.json" "$E/seed777.json" | tee "$E/deterministic_diff.txt"
+          test ! -s "$E/deterministic_diff.txt"
+          cp "$E/seed1.json" "$E/R11_POST_FAILURE_DIAGNOSTIC.json"
+
+      - name: Build frozen diagnostic summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('mobi/p1-c-r11-diagnostic/evidence')
+          x=json.loads((p/'R11_POST_FAILURE_DIAGNOSTIC.json').read_text())
+          lines=[]
+          lines.append('# R11 Post-Failure Diagnostic Summary')
+          lines.append('')
+          lines.append('Status: **DIAGNOSTIC PASS / OBSERVATIONAL ONLY**')
+          lines.append('')
+          lines.append('R11 Stage-1 remains **CLOSED / FAIL**. This report does not repair or retune R11.')
+          lines.append('')
+          lines.append(f"- V3125 mesh SHA-256: `{x['identity']['meshArraySha256']}`")
+          lines.append(f"- pitch: `{x['scale']['pitch']}`")
+          lines.append(f"- frozen paw-local radius: `{x['scale']['pawLocalRadius']}`")
+          lines.append(f"- cross-side classification: **{x['crossSide']['classification']}**")
+          lines.append('')
+          lines.append('| Paw role | Classification | nearest surface | local vertices | eligible | retained | differential local |')
+          lines.append('|---|---|---:|---:|---:|---:|---:|')
+          for role in ('FORE_L_PAW_CTRL','FORE_R_PAW_CTRL','HIND_L_PAW_CTRL','HIND_R_PAW_CTRL'):
+              r=x['paws'][role]; a=r['localCompetitionAggregate']
+              lines.append(f"| {role} | {', '.join(r['classification'])} | {r['nearestSurface']['distanceToBind']:.12g} | {r['localVertexCount']} | {a['pawEligibleCount']} | {a['eligibleAndRetainedCount']} | {r['differentialSupportWithinRadiusCount']} |")
+          lines.append('')
+          lines.append('## FORE_L causal measurements')
+          lines.append('')
+          fl=x['paws']['FORE_L_PAW_CTRL']; a=fl['localCompetitionAggregate']
+          lines.append(f"- surface-anchor → snapped endpoint distance: `{fl['surfaceAnchorToSnappedEndpointDistance']}`")
+          lines.append(f"- nearest surface distance: `{fl['nearestSurface']['distanceToBind']}`")
+          lines.append(f"- nearest FORE_L-domain distance: `{fl['nearestRoleDomainSurface']['distanceToBind']}`")
+          lines.append(f"- weighted support count: `{fl['weightedSupportCount']}`")
+          lines.append(f"- weighted support within radius: `{fl['weightedSupportWithinRadiusCount']}`")
+          lines.append(f"- differential support count: `{fl['differentialSupportCount']}`")
+          lines.append(f"- differential support within radius: `{fl['differentialSupportWithinRadiusCount']}`")
+          lines.append(f"- local domain histogram: `{json.dumps(fl['localDomainHistogram'], sort_keys=True)}`")
+          lines.append(f"- local eligibility: `{a['pawEligibleCount']}` eligible / `{a['ineligibleCount']}` ineligible")
+          lines.append(f"- top-4: `{a['eligibleAndRetainedCount']}` retained / `{a['eligibleButTruncatedCount']}` truncated")
+          lines.append(f"- rank histogram: `{json.dumps(a['pawRankHistogram'], sort_keys=True)}`")
+          lines.append('')
+          lines.append('Next step, if any, requires separate private structural change-control. No finite pose work is authorized by this diagnostic.')
+          (p/'R11_POST_FAILURE_DIAGNOSTIC_SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+
+      - name: Record environment and evidence manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-r11-diagnostic/evidence
+          python - <<'PY' > "$E/environment.txt"
+          import platform,sys,numpy,fast_simplification,trimesh,skimage,scipy
+          print(sys.version)
+          print(platform.platform())
+          print('numpy',numpy.__version__)
+          print('fast-simplification',fast_simplification.__version__)
+          print('trimesh',trimesh.__version__)
+          print('scikit-image',skimage.__version__)
+          print('scipy',scipy.__version__)
+          PY
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobi-p1-c-r11-post-failure-diagnostic-${{ github.run_id }}
+          path: mobi/p1-c-r11-diagnostic/evidence
+          if-no-files-found: error
+          retention-days: 30
