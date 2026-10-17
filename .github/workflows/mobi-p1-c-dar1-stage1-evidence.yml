@@ -1,0 +1,353 @@
+name: Mobi P1-C DAR1 Revised Stage-1 Evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_stage1:
+        description: 'Exact authorization token required after private DAR1 implementation import'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobi-p1-c-dar1-revised-stage1
+  cancel-in-progress: false
+
+jobs:
+  dar1-stage1:
+    if: >-
+      github.ref == 'refs/heads/mobi/run-p1-c-dar1-stage1-evidence-20261017' &&
+      inputs.confirm_stage1 == 'RUN_DAR1_REVISED_STAGE1_AFTER_PRIVATE_IMPORT'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify frozen execution identity and authorization boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/mobi/run-p1-c-dar1-stage1-evidence-20261017'
+          test '${{ inputs.confirm_stage1 }}' = 'RUN_DAR1_REVISED_STAGE1_AFTER_PRIVATE_IMPORT'
+          G='mobi/p1-b2/geometry'
+          EXEC_ID="$G/P1_C_DAR1_STAGE1_EXECUTION_IDENTITY.json"
+          EXEC_FREEZE="$G/P1_C_DAR1_STAGE1_EXECUTION_FREEZE.md"
+          IMPL_ID="$G/P1_C_DAR1_IMPLEMENTATION_IDENTITY.json"
+          test -f "$EXEC_ID"
+          test -f "$EXEC_FREEZE"
+          test -f "$IMPL_ID"
+          grep -q 'P1_C_DAR1_STAGE1_EXECUTION_FREEZE' "$EXEC_FREEZE"
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          g=Path('mobi/p1-b2/geometry')
+          ident=json.loads((g/'P1_C_DAR1_STAGE1_EXECUTION_IDENTITY.json').read_text())
+          impl=json.loads((g/'P1_C_DAR1_IMPLEMENTATION_IDENTITY.json').read_text())
+          assert ident['stage1RunAuthorized'] is True
+          assert ident['executionBranch']=='mobi/run-p1-c-dar1-stage1-evidence-20261017'
+          assert ident['dispatchToken']=='RUN_DAR1_REVISED_STAGE1_AFTER_PRIVATE_IMPORT'
+          assert ident['variant']=='DAR1_HIERARCHY_CONTINUATION_ON_EXACT_PARENT_DEGENERACY'
+          assert impl['stage1RunAuthorized'] is False
+          assert impl['variant']==ident['variant']
+          for path,expected in ident['gitBlobSha1'].items():
+              actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
+              if actual != expected:
+                  raise SystemExit(f'execution blob drift: {path}: {actual} != {expected}')
+          print('DAR1 Stage-1 execution identity PASS')
+          PY
+
+      - name: Assemble and verify exact frozen R11 implementation
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install exact inherited runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+          python - <<'PY'
+          import sys,numpy,fast_simplification,trimesh,skimage,scipy
+          expected={
+            'numpy':'2.5.4','fast_simplification':'0.2.0','trimesh':'4.11.1',
+            'skimage':'0.26.0','scipy':'1.17.0'
+          }
+          actual={
+            'numpy':numpy.__version__,'fast_simplification':fast_simplification.__version__,
+            'trimesh':trimesh.__version__,'skimage':skimage.__version__,'scipy':scipy.__version__
+          }
+          if sys.version_info[:3] != (3,12,15): raise SystemExit(sys.version)
+          if actual != expected: raise SystemExit(f'dependency drift: {actual}')
+          print(sys.version)
+          print(actual)
+          PY
+
+      - name: Run inherited and DAR1 synthetic regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd mobi/p1-b2/geometry
+          python -m unittest -v test_p1_c_r11_semantic_scaffold_v1.py
+          python -m unittest -v test_p1_c_r12_surface_terminal_bind_alias_v1.py
+          python -m unittest -v test_p1_c_dar1_diagnostic_axis_revision_v1.py
+
+      - name: Acquire exact frozen standing-cat source
+        shell: bash
+        run: |
+          set -euo pipefail
+          E='mobi/p1-c-dar1-stage1/evidence'
+          mkdir -p "$E/source"
+          UA='Mobi DAR1 revised Stage-1 bounded evidence/1.0'
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 -A "$UA" \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$E/source/cat-original.glb"
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-dar1-stage1/evidence/source/cat-original.glb' | sha256sum -c -
+
+      - name: Materialize exact frozen post-R12 tail observer from historical commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          P='mobi/p1-b2/geometry/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py'
+          git show '725d49dd4ebe25a70e97fe5f3101405d91012899:'"$P" > /tmp/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py
+          test "$(git hash-object /tmp/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py)" = 'd5f006bab21fb1c022fb4a67011b5be9b7a0306e'
+          echo 'Frozen tail observer identity PASS'
+
+      - name: Re-run DAR1 pre-evidence isolation under both seeds
+        shell: bash
+        run: |
+          set -euo pipefail
+          G='mobi/p1-b2/geometry'
+          E='mobi/p1-c-dar1-stage1/evidence'
+          SRC="$E/source/cat-original.glb"
+          mkdir -p "$E/stage0"
+          PYTHONHASHSEED=1 python "$G/p1_c_dar1_diagnostic_axis_revision_v1.py" "$SRC" --geometry-dir "$G" --stage0-audit --out "$E/stage0/seed1.json"
+          PYTHONHASHSEED=777 python "$G/p1_c_dar1_diagnostic_axis_revision_v1.py" "$SRC" --geometry-dir "$G" --stage0-audit --out "$E/stage0/seed777.json"
+          diff -u "$E/stage0/seed1.json" "$E/stage0/seed777.json" > "$E/stage0/deterministic_diff.txt"
+          test ! -s "$E/stage0/deterministic_diff.txt"
+
+      - name: Execute full frozen DAR1 revised Stage-1 under both seeds
+        shell: bash
+        run: |
+          set -uo pipefail
+          G='mobi/p1-b2/geometry'
+          E='mobi/p1-c-dar1-stage1/evidence'
+          SRC="$E/source/cat-original.glb"
+          mkdir -p "$E/seed1" "$E/seed777"
+          set +e
+          PYTHONHASHSEED=1 python "$G/p1_c_dar1_diagnostic_axis_revision_v1.py" "$SRC" --geometry-dir "$G" --stage1 --out "$E/seed1" > "$E/seed1_run.log" 2>&1
+          RC1=$?
+          PYTHONHASHSEED=777 python "$G/p1_c_dar1_diagnostic_axis_revision_v1.py" "$SRC" --geometry-dir "$G" --stage1 --out "$E/seed777" > "$E/seed777_run.log" 2>&1
+          RC777=$?
+          set -e
+          python - "$RC1" "$RC777" <<'PY'
+          import json,sys
+          from pathlib import Path
+          rc1,rc777=map(int,sys.argv[1:])
+          Path('mobi/p1-c-dar1-stage1/evidence/execution_status.json').write_text(
+              json.dumps({'seed1ExitCode':rc1,'seed777ExitCode':rc777},indent=2,sort_keys=True)+'\n'
+          )
+          print({'seed1ExitCode':rc1,'seed777ExitCode':rc777})
+          PY
+          diff -qr "$E/seed1" "$E/seed777" > "$E/deterministic_stage1_diff.txt" || true
+
+      - name: Re-run frozen tail ordering and overlap observer under both seeds
+        if: always()
+        shell: bash
+        run: |
+          set -uo pipefail
+          G='mobi/p1-b2/geometry'
+          E='mobi/p1-c-dar1-stage1/evidence'
+          SRC="$E/source/cat-original.glb"
+          mkdir -p "$E/tail_observer"
+          if [ ! -f "$SRC" ]; then
+            echo 'source unavailable; tail observer cannot execute' > "$E/tail_observer/observer_error.txt"
+            exit 0
+          fi
+          set +e
+          PYTHONHASHSEED=1 python /tmp/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py "$SRC" --geometry-dir "$G" --out "$E/tail_observer/seed1.json" > "$E/tail_observer/seed1.log" 2>&1
+          ORC1=$?
+          PYTHONHASHSEED=777 python /tmp/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py "$SRC" --geometry-dir "$G" --out "$E/tail_observer/seed777.json" > "$E/tail_observer/seed777.log" 2>&1
+          ORC777=$?
+          set -e
+          python - "$ORC1" "$ORC777" <<'PY'
+          import json,sys
+          from pathlib import Path
+          a,b=map(int,sys.argv[1:])
+          Path('mobi/p1-c-dar1-stage1/evidence/tail_observer/status.json').write_text(
+              json.dumps({'seed1ExitCode':a,'seed777ExitCode':b},indent=2,sort_keys=True)+'\n'
+          )
+          PY
+          diff -u "$E/tail_observer/seed1.json" "$E/tail_observer/seed777.json" > "$E/tail_observer/deterministic_diff.txt" 2>/dev/null || true
+
+      - name: Validate complete revised Stage-1 evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          E=Path('mobi/p1-c-dar1-stage1/evidence')
+          out={'pass':False,'checks':{},'failure':None}
+          try:
+              status=json.loads((E/'execution_status.json').read_text())
+              out['checks']['executionStatus']=status
+              if status != {'seed1ExitCode':0,'seed777ExitCode':0}:
+                  raise RuntimeError(f'Stage-1 process failure: {status}')
+              if (E/'deterministic_stage1_diff.txt').read_bytes() != b'':
+                  raise RuntimeError('seed1/777 Stage-1 directories are not byte-identical')
+              s0a=(E/'stage0/seed1.json').read_bytes()
+              s0b=(E/'stage0/seed777.json').read_bytes()
+              if s0a != s0b:
+                  raise RuntimeError('stage0 audit seed drift')
+              s0=json.loads(s0a)
+              iso=s0['axisIsolation']
+              if iso['changedDiagnosticAxisRoles'] != ['TAIL_ROOT_CTRL']:
+                  raise RuntimeError(f'axis isolation drift: {iso["changedDiagnosticAxisRoles"]}')
+              if iso['hierarchy']['degenerateEdges'] != [['PELVIS_CTRL','TAIL_ROOT_CTRL']]:
+                  raise RuntimeError('degenerate edge identity drift')
+              if iso['hierarchy']['directChildren'] != ['TAIL_1_CTRL']:
+                  raise RuntimeError('direct child identity drift')
+              if not iso['selectedTangentMatchesFrozenIdentity'] or not iso['selectedAxisMatchesFrozenIdentity']:
+                  raise RuntimeError('DAR1 frozen tangent/axis mismatch')
+
+              expected_paws=['FORE_L_PAW_CTRL','FORE_R_PAW_CTRL','HIND_L_PAW_CTRL','HIND_R_PAW_CTRL']
+              expected_tail=['TAIL_ROOT_CTRL','TAIL_1_CTRL','TAIL_2_CTRL','TAIL_3_CTRL','TAIL_4_CTRL','TAIL_TIP_CTRL']
+              stage_summaries=[]
+              for seed in ('seed1','seed777'):
+                  D=E/seed
+                  summary=json.loads((D/'summary.json').read_text())
+                  stage_summaries.append(summary)
+                  if summary['identity']['meshArraySha256'] != '839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77':
+                      raise RuntimeError(f'{seed}: V3125 identity drift')
+                  if summary['controlCount'] != 30:
+                      raise RuntimeError(f'{seed}: control count drift')
+                  if summary['causalDelta']['changedRoles'] != expected_paws or summary['causalDelta']['changedRoleCount'] != 4:
+                      raise RuntimeError(f'{seed}: R12 paw delta drift')
+                  if summary['pawSupportRadiusPitches'] != 4.0:
+                      raise RuntimeError(f'{seed}: paw radius drift')
+                  gate=summary['aliasSemanticWeightGate']
+                  if sorted(gate) != sorted(expected_paws):
+                      raise RuntimeError(f'{seed}: paw gate role set drift')
+                  for role in expected_paws:
+                      g=gate[role]
+                      if g['actualDomain'] != g['expectedDomain'] or not (g['ownRoleNormalizedWeightAtAlias'] > 0.0):
+                          raise RuntimeError(f'{seed}: paw alias/domain/weight gate failed {role}')
+                  if not summary['rasterAll37ByteIdentical']:
+                      raise RuntimeError(f'{seed}: 37-yaw raster identity failed')
+                  if not summary['exactFront']['byteIdentical'] or float(summary['exactFront']['yawDeg']) != 0.0:
+                      raise RuntimeError(f'{seed}: exact-front identity/report failed')
+                  if len(summary['primaryRaster']) != 5:
+                      raise RuntimeError(f'{seed}: expected five primary views')
+                  raster=json.loads((D/'raster_identity.json').read_text())
+                  if len(raster) != 37 or not all(x['byteIdentical'] for x in raster):
+                      raise RuntimeError(f'{seed}: raster identity cardinality/content failed')
+                  jac=json.loads((D/'jacobian.json').read_text())
+                  jt=json.dumps(jac,sort_keys=True)
+                  for role in expected_paws + expected_tail:
+                      if role not in jt:
+                          raise RuntimeError(f'{seed}: Jacobian evidence missing {role}')
+                  scaffold=json.loads((D/'scaffold.json').read_text())
+                  if len(scaffold) != 30:
+                      raise RuntimeError(f'{seed}: scaffold count drift')
+                  roles=[x['role'] for x in scaffold]
+                  if len(set(roles)) != 30:
+                      raise RuntimeError(f'{seed}: scaffold role duplication')
+
+              obs_status=json.loads((E/'tail_observer/status.json').read_text())
+              if obs_status != {'seed1ExitCode':0,'seed777ExitCode':0}:
+                  raise RuntimeError(f'tail observer process failure: {obs_status}')
+              oba=(E/'tail_observer/seed1.json').read_bytes()
+              obb=(E/'tail_observer/seed777.json').read_bytes()
+              if oba != obb:
+                  raise RuntimeError('tail observer seed drift')
+              obs=json.loads(oba)
+              if obs['classification']['primary'] != 'COINCIDENT_BRANCH_ROOT_WITH_NONVACUOUS_TAIL_SUPPORT':
+                  raise RuntimeError(f'tail observer classification drift: {obs["classification"]["primary"]}')
+              arc=obs['tailWeightedArcAudit']
+              if not arc['strictRootToTipCentroidOrdering']:
+                  raise RuntimeError('tail weighted-arc ordering failed')
+              if not arc['allAdjacentPositiveSupportOverlap']:
+                  raise RuntimeError('adjacent tail support overlap failed')
+              if not obs['downstreamTailJacobianAudit']['allDownstreamTailControlsPassFrozenDeadAndDomainGate']:
+                  raise RuntimeError('downstream tail inherited Jacobian gate failed')
+              if not obs['identity']['mutationFreeBeforeAfter']:
+                  raise RuntimeError('tail observer mutated frozen state')
+
+              out['checks'].update({
+                  'dar1Stage0SeedByteIdentical': True,
+                  'dar1AxisChangedRoleExact': ['TAIL_ROOT_CTRL'],
+                  'fullStage1SeedDirectoriesByteIdentical': True,
+                  'r12PawGatesAllFour': True,
+                  'jacobianCriticalRolesPresent': expected_paws + expected_tail,
+                  'fivePrimaryViews': True,
+                  'all37YawNeutralByteIdentical': True,
+                  'exactFrontDedicatedIdentity': True,
+                  'tailRootToTipCentroidOrdering': True,
+                  'allAdjacentTailSupportOverlap': True,
+                  'downstreamTailInheritedJacobianGate': True,
+                  'tailObserverMutationFree': True,
+                  'tailObserverSeedByteIdentical': True,
+              })
+              out['sha256']={
+                  'stage0Audit': hashlib.sha256(s0a).hexdigest(),
+                  'stage1Summary': hashlib.sha256((E/'seed1/summary.json').read_bytes()).hexdigest(),
+                  'jacobian': hashlib.sha256((E/'seed1/jacobian.json').read_bytes()).hexdigest(),
+                  'tailObserver': hashlib.sha256(oba).hexdigest(),
+              }
+              out['pass']=True
+          except Exception as exc:
+              out['failure']=repr(exc)
+          (E/'DAR1_STAGE1_VALIDATION.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          if not out['pass']:
+              raise SystemExit(1)
+          PY
+
+      - name: Record environment and evidence manifest
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          E='mobi/p1-c-dar1-stage1/evidence'
+          mkdir -p "$E"
+          python - <<'PY' > "$E/environment.txt"
+          import platform,sys
+          print(sys.version)
+          print(platform.platform())
+          try:
+              import numpy,fast_simplification,trimesh,skimage,scipy
+              print('numpy',numpy.__version__)
+              print('fast-simplification',fast_simplification.__version__)
+              print('trimesh',trimesh.__version__)
+              print('scikit-image',skimage.__version__)
+              print('scipy',scipy.__version__)
+          except Exception as exc:
+              print('dependency-report-error',repr(exc))
+          PY
+          find "$E" -type f ! -name DAR1_STAGE1_EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/DAR1_STAGE1_EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobi-p1-c-dar1-revised-stage1-${{ github.run_id }}
+          path: mobi/p1-c-dar1-stage1/evidence
+          if-no-files-found: warn
+          retention-days: 30
