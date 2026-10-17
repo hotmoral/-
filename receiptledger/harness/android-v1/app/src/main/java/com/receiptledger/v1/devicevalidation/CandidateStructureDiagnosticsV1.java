@@ -1,5 +1,6 @@
 package com.receiptledger.v1.devicevalidation;
 
+import com.receiptledger.v1.BuildConfig;
 import com.receiptledger.v1.item.ItemTuple;
 import com.receiptledger.v1.item.ItemTupleResult;
 import com.receiptledger.v1.item.QuantityCandidate;
@@ -10,6 +11,8 @@ import com.receiptledger.v1.structure.StructuredRow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** Debug evidence projection. Emits candidate counts/relative regions only, never receipt values/text. */
 public final class CandidateStructureDiagnosticsV1 {
@@ -58,7 +61,23 @@ public final class CandidateStructureDiagnosticsV1 {
         }
     }
 
+    private static final Map<String,List<Summary>> BY_RECEIPT = new ConcurrentHashMap<>();
+
     private CandidateStructureDiagnosticsV1() {}
+
+    public static void publishForReceipt(String receiptId, ReceiptStructure structure, ItemTupleResult tupleResult) {
+        if (!BuildConfig.DEBUG || receiptId == null || receiptId.isEmpty() || structure == null || tupleResult == null) return;
+        List<Summary> summaries = new ArrayList<>();
+        for (int i = 0; i < tupleResult.items.size(); i++) summaries.add(summarize(structure, tupleResult, i));
+        BY_RECEIPT.put(receiptId, Collections.unmodifiableList(summaries));
+    }
+
+    public static Summary takeForReceipt(String receiptId, int targetOrdinal) {
+        if (!BuildConfig.DEBUG || receiptId == null) return unavailable();
+        List<Summary> summaries = BY_RECEIPT.remove(receiptId);
+        if (summaries == null || targetOrdinal < 0 || targetOrdinal >= summaries.size()) return unavailable();
+        return summaries.get(targetOrdinal);
+    }
 
     public static Summary summarize(ReceiptStructure structure, ItemTupleResult tupleResult, int targetOrdinal) {
         if (structure == null || tupleResult == null || targetOrdinal < 0
