@@ -1,0 +1,69 @@
+{
+  "version": "P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_IDENTITY_V1",
+  "selectionToken": "P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_SELECTED",
+  "contractToken": "P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_CONTRACT_FROZEN",
+  "freezeToken": "P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_IMPLEMENTATION_FREEZE",
+  "poseId": "FPD1_FOREQUARTER_PIVOT_NECK_HEAD_YAW_LEFT_8DEG",
+  "publicBranch": "mobi/run-p1-c-fpd1-canonical-weight-replay-20261017",
+  "frozenBaseHead": "263dd07a07a67f31947e9be24b63fb1c3b62e671",
+  "executableQaHead": "3abd89f8d91b3249ef2ffade432ac6b7eb676c4c",
+  "files": {
+    "adapter": {
+      "path": "mobi/p1-b2/geometry/p1_c_fpd1_canonical_weight_replay_v1.py",
+      "gitBlobSha1": "d91b434172ee30cd233b5647ba52295a89e1a925",
+      "sha256": "76c7fad97ad7820b59b4935b4206fb67e74c866a12d0097bd7b11e70bbddeb41"
+    },
+    "tests": {
+      "path": "mobi/p1-b2/geometry/test_p1_c_fpd1_canonical_weight_replay_v1.py",
+      "gitBlobSha1": "f211f6e2d6aa6573df79d9ab4925f1d34ebe402c",
+      "sha256": "6d04dcd1b09a52e565f5f2c58e15be28501ba3a07bdb672897a181cf10b2b356"
+    },
+    "preEvidenceQaWorkflow": {
+      "path": ".github/workflows/mobi-p1-c-fpd1-canonical-weight-replay-pre-evidence-qa.yml",
+      "gitBlobSha1": "b1c056d64c8b8c825308c79e35f412b93bf9d95e",
+      "sha256": "ca619ee745c4bb68a2709e36a84ee8c6913fd5cfdcf94810d6e16f0045b672a4"
+    }
+  },
+  "frozenFpd1Evaluator": {
+    "gitBlobSha1": "b76d4034cc23555c382d2508aaaa31e7578797ec",
+    "sha256": "157ca0408f27e67330d10e49dff8b91446c0d674d4c106ec548bfbe001b8f097"
+  },
+  "canonicalWeightAuthority": {
+    "sourceRunId": 38999151364,
+    "sourceArtifactId": 12088123879,
+    "sourceArtifactDigest": "sha256:a395cf71206d3459c9ed052c37ff51ad1c0be097bc66fb5ebb02f7e208b97c84",
+    "sourceMember": "neutral_stage1_regression/weights.bin",
+    "bytes": 112532,
+    "serializedSha256": "171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c",
+    "indicesSha256": "1907a206446b8da3497cb1e6adba4f59120f3af41bd5b003fabe513db64f871b",
+    "weightFloatsSha256": "aa3569c6d2c3350bf21493d8c4fc8acc8d15db366cdcf51c8c81c7cdafa57411"
+  },
+  "preEvidenceQa": {
+    "runId": 39003049219,
+    "jobId": 117309812491,
+    "attempt": 1,
+    "event": "push",
+    "conclusion": "success",
+    "artifactId": 12089912679,
+    "artifactSizeBytes": 9089511,
+    "artifactDigest": "sha256:dbafb146d4abd71992a39eea6aca75cd0e96911b7be7f76fd58d7d990852703f",
+    "independentManifestPass": "43/43",
+    "seed1Seed777ByteIdentical": true,
+    "preEvidenceReplayJsonSha256": "830dab53baa7ab4507ceb359660372f8c19f4e05bc262c8887d1a18d69981f39",
+    "tests": {
+      "r11": "8/8 PASS",
+      "r12": "4/4 PASS",
+      "dar1": "8/8 PASS",
+      "fpd1": "9/9 PASS",
+      "canonicalReplay": "7/7 PASS"
+    }
+  },
+  "executionBoundary": {
+    "actualFinitePoseEvidenceExecuted": false,
+    "deformedV3125Produced": false,
+    "rasterEvidenceExecuted": false,
+    "perceptualReviewExecuted": false,
+    "finitePoseEvidenceRunAuthorizedByThisFreeze": false,
+    "nextIntentionalStep": "PRIVATE_REPLAY_ADAPTER_IMPORT_THEN_SEPARATE_CANONICAL_REPLAY_EVIDENCE_GROUP"
+  }
+}
