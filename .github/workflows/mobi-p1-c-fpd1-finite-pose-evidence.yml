@@ -28,8 +28,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          BASE='263dd07a07a67f31947e9be24b63fb1c3b62e671'
           test "$GITHUB_REF" = 'refs/heads/mobi/run-p1-c-fpd1-evidence-20261017'
-          test "$(git rev-parse HEAD^)" = '263dd07a07a67f31947e9be24b63fb1c3b62e671'
+          test "$(git merge-base HEAD "$BASE")" = "$BASE"
+          test "$(git diff --name-only "$BASE"...HEAD)" = '.github/workflows/mobi-p1-c-fpd1-finite-pose-evidence.yml'
           test "$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py)" = 'b76d4034cc23555c382d2508aaaa31e7578797ec'
           test "$(sha256sum mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py | awk '{print $1}')" = '157ca0408f27e67330d10e49dff8b91446c0d674d4c106ec548bfbe001b8f097'
           test "$(git hash-object mobi/p1-b2/geometry/test_p1_c_fpd1_finite_pose_discriminator_v1.py)" = '06d65f0aeddc2c854b8d8dce6e265eb729f6dbb9'
@@ -44,13 +46,19 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          x=json.loads(Path('mobi/p1-b2/geometry/P1_C_FPD1_IMPLEMENTATION_IDENTITY.json').read_text())
-          assert x['implementationFreezeToken']=='P1_C_FPD1_IMPLEMENTATION_FREEZE'
-          assert x['finitePoseEvidenceRunAuthorizedByThisIdentity'] is False
-          assert x['actualFinitePoseEvidenceExecuted'] is False
-          assert x['deformedV3125Produced'] is False
-          assert x['rasterEvidenceExecuted'] is False
-          assert x['perceptualReviewExecuted'] is False
+          p=Path('mobi/p1-b2/geometry/P1_C_FPD1_IMPLEMENTATION_IDENTITY.json')
+          x=json.loads(p.read_text())
+          assert x['freezeToken']=='P1_C_FPD1_IMPLEMENTATION_FREEZE'
+          b=x['executionBoundary']
+          assert b['finitePoseEvidenceRunAuthorizedByThisFreeze'] is False
+          assert b['actualFinitePoseEvidenceExecuted'] is False
+          assert b['deformedV3125Produced'] is False
+          assert b['deformedRasterEvidenceProduced'] is False
+          assert b['perceptualReviewExecuted'] is False
+          wf=Path('.github/workflows/mobi-p1-c-fpd1-finite-pose-evidence.yml').read_text()
+          token='--evaluate'+'-pose'
+          assert wf.count(token)==1, f'actual pose invocation count drift: {wf.count(token)}'
+          print('FPD1 frozen identity and single-invocation boundary PASS')
           PY
 
       - name: Assemble and verify exact frozen R11 implementation
@@ -201,7 +209,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          set -euo pipefail
+          set -u
           E=mobi/p1-c-fpd1/evidence
           mkdir -p "$E"
           {
@@ -215,18 +223,24 @@ jobs:
             echo "fpd1_tests_sha256=$(sha256sum mobi/p1-b2/geometry/test_p1_c_fpd1_finite_pose_discriminator_v1.py | awk '{print $1}')"
             echo "dar1_blob=$(git hash-object mobi/p1-b2/geometry/p1_c_dar1_diagnostic_axis_revision_v1.py)"
             echo "r12_blob=$(git hash-object mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py)"
-            echo "r11_assembled_sha256=$(sha256sum mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py | awk '{print $1}')"
+            if test -f mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py; then
+              echo "r11_assembled_sha256=$(sha256sum mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py | awk '{print $1}')"
+            else
+              echo 'r11_assembled_sha256=NOT_ASSEMBLED_BEFORE_FAILURE'
+            fi
           } > "$E/execution_identity.txt"
           python - <<'PY' > "$E/environment.txt"
-          import platform,sys
-          import numpy,fast_simplification,trimesh,skimage,scipy
+          import importlib, platform, sys
           print(sys.version)
           print(platform.platform())
-          print('numpy',numpy.__version__)
-          print('fast-simplification',fast_simplification.__version__)
-          print('trimesh',trimesh.__version__)
-          print('scikit-image',skimage.__version__)
-          print('scipy',scipy.__version__)
+          for module,label in [
+              ('numpy','numpy'),('fast_simplification','fast-simplification'),
+              ('trimesh','trimesh'),('skimage','scikit-image'),('scipy','scipy')]:
+              try:
+                  m=importlib.import_module(module)
+                  print(label,getattr(m,'__version__','UNKNOWN'))
+              except Exception as exc:
+                  print(label,'NOT_AVAILABLE',type(exc).__name__)
           PY
           find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
 
