@@ -1,0 +1,197 @@
+name: Mobi P1-C FPD1 Weight Repro Diagnostic
+
+on:
+  push:
+    branches:
+      - mobi/diag-p1-c-fpd1-weight-repro-20261017
+    paths:
+      - '.github/workflows/mobi-p1-c-fpd1-weight-repro-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fpd1-weight-repro-diagnostic:
+    if: github.ref == 'refs/heads/mobi/diag-p1-c-fpd1-weight-repro-20261017'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify frozen implementation and diagnostic-only boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='263dd07a07a67f31947e9be24b63fb1c3b62e671'
+          test "$(git merge-base HEAD "$BASE")" = "$BASE"
+          test "$(git diff --name-only "$BASE"...HEAD)" = '.github/workflows/mobi-p1-c-fpd1-weight-repro-diagnostic.yml'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py)" = 'b76d4034cc23555c382d2508aaaa31e7578797ec'
+          test "$(sha256sum mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py | awk '{print $1}')" = '157ca0408f27e67330d10e49dff8b91446c0d674d4c106ec548bfbe001b8f097'
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/mobi-p1-c-fpd1-weight-repro-diagnostic.yml').read_text()
+          forbidden='--evaluate'+'-pose'
+          if forbidden in text:
+              raise SystemExit('diagnostic must not contain actual finite-pose invocation')
+          print('diagnostic-only boundary PASS')
+          PY
+
+      - name: Assemble exact frozen R11
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+
+      - name: Install exact frozen runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+
+      - name: Acquire exact Standing Cat source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p mobi/p1-c-fpd1-weight-repro/source
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 \
+            -A 'Mobi FPD1 weight reproducibility diagnostic/1.0' \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o mobi/p1-c-fpd1-weight-repro/source/cat-original.glb
+          echo '6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  mobi/p1-c-fpd1-weight-repro/source/cat-original.glb' | sha256sum -c -
+
+      - name: Record platform and NumPy numerical backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-fpd1-weight-repro/evidence
+          mkdir -p "$E"
+          uname -a > "$E/uname.txt"
+          lscpu > "$E/lscpu.txt"
+          python - <<'PY' > mobi/p1-c-fpd1-weight-repro/evidence/python_numpy_config.txt
+          import platform, sys, numpy as np
+          print(sys.version)
+          print(platform.platform())
+          print('numpy',np.__version__)
+          np.show_config()
+          PY
+          env | LC_ALL=C sort | grep -E '^(OPENBLAS|OMP|MKL|BLAS|LAPACK|NUMEXPR|PYTHONHASHSEED)=' > "$E/numerical_env.txt" || true
+
+      - name: Reconstruct raw frozen state in three independent processes
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          SRC=mobi/p1-c-fpd1-weight-repro/source/cat-original.glb
+          E=mobi/p1-c-fpd1-weight-repro/evidence
+          run_one() {
+            local out="$1" seed="$2" threads="$3"
+            mkdir -p "$out"
+            PYTHONHASHSEED="$seed" OPENBLAS_NUM_THREADS="$threads" OMP_NUM_THREADS="$threads" OUT="$out" SRC="$SRC" G="$G" python - <<'PY'
+          import hashlib, importlib.util, json, os, sys
+          from pathlib import Path
+          import numpy as np
+          G=Path(os.environ['G']); SRC=Path(os.environ['SRC']); OUT=Path(os.environ['OUT'])
+          target=G/'p1_c_fpd1_finite_pose_discriminator_v1.py'
+          spec=importlib.util.spec_from_file_location('fpd1_weight_repro',target)
+          mod=importlib.util.module_from_spec(spec); sys.modules[spec.name]=mod; spec.loader.exec_module(mod)
+          s=mod.reconstruct_frozen_state(SRC,G)
+          r11=s['r11']; idx=np.asarray(s['indices'],dtype=np.uint8,order='C'); w=np.asarray(s['weights'],dtype='<f8',order='C')
+          ib=idx.tobytes(order='C'); wb=w.tobytes(order='C'); sb=r11.serialize_weights(idx,w)
+          (OUT/'indices.u8.bin').write_bytes(ib)
+          (OUT/'weights.f64le.bin').write_bytes(wb)
+          (OUT/'serialized_weights.bin').write_bytes(sb)
+          domains='\n'.join(map(str,s['domains'].tolist()))+'\n'
+          (OUT/'domains.txt').write_text(domains)
+          cm=mod.control_map(s['controls'])
+          controls={k:[float(x) for x in cm[k]] for k in r11.ROLE_ORDER}
+          report={
+            'pythonHashSeed':os.environ.get('PYTHONHASHSEED'),
+            'openblasThreads':os.environ.get('OPENBLAS_NUM_THREADS'),
+            'vertexCount':int(len(s['vertices'])),
+            'faceCount':int(len(s['faces'])),
+            'meshArraySha256':s['identity']['meshArraySha256'],
+            'indicesSha256':hashlib.sha256(ib).hexdigest(),
+            'weightsRawSha256':hashlib.sha256(wb).hexdigest(),
+            'serializedWeightsSha256':hashlib.sha256(sb).hexdigest(),
+            'indicesBytes':len(ib),'weightsRawBytes':len(wb),'serializedBytes':len(sb),
+            'weightMin':float(w.min()),'weightMax':float(w.max()),
+            'weightSumMin':float(w.sum(axis=1).min()),'weightSumMax':float(w.sum(axis=1).max()),
+            'nonzeroWeightCount':int(np.count_nonzero(w)),
+            'domainCounts':{d:int(np.count_nonzero(s['domains']==d)) for d in r11.DOMAIN_ORDER},
+            'controls':controls,
+            'restMaxNormalized':s['restMaxNormalized'],'restRmsNormalized':s['restRmsNormalized'],
+          }
+          (OUT/'summary.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(report,sort_keys=True))
+          PY
+          }
+          run_one "$E/default_seed1" 1 0
+          run_one "$E/default_seed777" 777 0
+          run_one "$E/singlethread_seed1" 1 1
+
+      - name: Compare within-run reconstruction bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-fpd1-weight-repro/evidence
+          for f in indices.u8.bin weights.f64le.bin serialized_weights.bin domains.txt; do
+            cmp "$E/default_seed1/$f" "$E/default_seed777/$f"
+          done
+          cp "$E/default_seed1/summary.json" "$E/default_seed1_summary.json"
+          cp "$E/default_seed777/summary.json" "$E/default_seed777_summary.json"
+          cp "$E/singlethread_seed1/summary.json" "$E/singlethread_seed1_summary.json"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          E=Path('mobi/p1-c-fpd1-weight-repro/evidence')
+          a=json.loads((E/'default_seed1/summary.json').read_text())
+          b=json.loads((E/'default_seed777/summary.json').read_text())
+          c=json.loads((E/'singlethread_seed1/summary.json').read_text())
+          keys=['indicesSha256','weightsRawSha256','serializedWeightsSha256']
+          result={
+            'defaultSeed1Vs777ByteIdentical': all(a[k]==b[k] for k in keys),
+            'defaultVsSingleThreadByteIdentical': all(a[k]==c[k] for k in keys),
+            'default':{k:a[k] for k in keys},
+            'singleThread':{k:c[k] for k in keys},
+            'canonicalExpectedSerializedWeightsSha256':'171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c'
+          }
+          (E/'comparison.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(result,indent=2,sort_keys=True))
+          PY
+
+      - name: Record diagnostic manifest
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=mobi/p1-c-fpd1-weight-repro/evidence
+          mkdir -p "$E"
+          {
+            echo "git_head=$GITHUB_SHA"
+            echo "workflow_blob=$(git hash-object .github/workflows/mobi-p1-c-fpd1-weight-repro-diagnostic.yml)"
+            echo "fpd1_impl_blob=$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py)"
+            echo "r11_assembled_sha256=$(sha256sum mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py | awk '{print $1}')"
+          } > "$E/execution_identity.txt"
+          find "$E" -type f ! -name DIAGNOSTIC_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/DIAGNOSTIC_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobi-p1-c-fpd1-weight-repro-${{ github.run_id }}
+          path: mobi/p1-c-fpd1-weight-repro/evidence
+          if-no-files-found: error
+          retention-days: 30
