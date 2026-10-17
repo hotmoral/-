@@ -12,117 +12,111 @@ Post-V1 **CP37 — Physical Device / Real-Image OCR Validation** remains open.
 
 Current state:
 
-**Remediation C — READY_FOR_PHYSICAL_PREFILL_RETEST**
+**Remediation D — READY_FOR_PHYSICAL_DIAGNOSTIC_RETEST**
 
-CP37 itself is **NOT COMPLETE**. The independent 10-receipt campaign is paused until the repeated same-receipt blank-field defect is physically rechecked.
+CP37 is **NOT COMPLETE**. The independent 10-receipt campaign remains paused.
 
 ### Active refs
 
-- branch: `receiptledger/run-post-v1-partial-row-prefill-20261017`
-- predecessor review-coverage handoff: `d4f75d8120e4a9c347b3777c64b511e4f5d224d4`
-- frozen Remediation C executable: `01b22652a45889b6bfaa474131e0c5fa7f19e96e`
-- canonical Actions: `38979684033` — SUCCESS
-- canonical job: `117237351555` — SUCCESS
-- artifact ID: `12080029714`
-- artifact digest: `sha256:55300e9525851f02232dc03f9a528fcd5b3c9c30ba68e7a30eb0bdb6634d46c2`
-- APK SHA-256: `65fe0827f3a9ebfeafbbf783c6c8f82544f8594203008692288ab74ec9eb1e0e`
-- version: `1.0.38-partial-row-prefill-validation` / versionCode 39
-- debug applicationId: `com.receiptledger.v1.rowrecovery`
-- label: `ReceiptLedger 검증 C`
+- branch: `receiptledger/run-post-v1-candidate-diagnostics-20261017`
+- predecessor Remediation C handoff: `99a7de8ba1c83771f11cefd7b6ab47e7d0590f99`
+- frozen Remediation D executable: `3e19741521b9be4039028bcb9981e400ff2ad867`
+- canonical Actions: `38987300764` — SUCCESS
+- canonical job: `117261641673` — SUCCESS
+- artifact ID: `12083716548`
+- artifact digest: `sha256:faada9ea2c87874d828e5c57fae9d42ccf4f966056ed6ce68943b33122784432`
+- APK SHA-256: `1aa0f2d6ec2510b77a7b273eefd2b037ae8f0207021849c7da81ac054cb125e9`
+- version: `1.0.39-candidate-diagnostics-validation` / versionCode 40
+- debug applicationId: `com.receiptledger.v1.candidateprobe`
+- label: `ReceiptLedger 검증 D`
 - lint: 0 errors / 0 warnings
 
 ## 2. Physical evidence sequence
 
-### Initial physical sample
+1. Initial physical sample: false address/header item found; Remediation A added narrow pre-date gating and explicit non-product item removal.
+2. Same-receipt retest: triggering false address row no longer appeared.
+3. Review-coverage instrumentation v2: first metric sample confirmed `review_scope_miss=1` with 2 corrected item ordinals outside the initially selected review set, while `false_auto_confirm=0`.
+4. Repeated same-receipt evidence: first reviewed item repeatedly showed blank quantity and unit price.
+5. Remediation C attempted a narrow arithmetic prefill while retaining PARTIAL/review-required status.
+6. Physical C retest: quantity and unit price were still blank, while the item correctly remained explicitly review-required. Therefore C failed its physical objective but did not weaken safety.
 
-A real receipt was conservatively REVIEW_REQUIRED but exposed a false address/header item and no way to remove it.
+A separate repeated OCR character-confusion pattern remains unmodified pending broader evidence.
 
-### Remediation A
+## 3. Remediation D
 
-A narrow pre-date false-item gate plus explicit non-product item removal was added. Same-receipt physical retest confirmed the false address/header row no longer appeared.
+Do not add another solver heuristic yet.
 
-### Review Coverage Instrumentation
+D adds a second privacy-preserving report line:
 
-The Remediation A retest showed only 1 of 15 items initially selected for review while full visual verification required multiple item corrections. Report schema v2 added:
+`RL_CP37_DIAG version=1 target=FIRST_REVIEW_ITEM ...`
 
-- `corrections_outside_review_items`
-- `review_scope_miss`
+It reports only candidate counts, relative regions, arithmetic-pair counts, solver resolution and sanitized reason token.
 
-The first physical v2 metric-check sample emitted:
+Important fields:
 
-- `initial_items=15`
-- `initial_review_items=1`
-- `corrections_outside_review_items=2`
-- `review_scope_miss=1`
-- `false_auto_confirm=0`
+- `money_candidates`
+- `quantity_candidates`
+- `quantity_before_first_money`
+- `quantity_between_money`
+- `quantity_after_line`
+- `exact_arithmetic_pairs`
+- `integer_unit_pairs`
+- `solver_resolution`
+- `solver_reason`
 
-This verifies the v2 metric path and confirms a real selective-review coverage miss.
-
-The same sample also reproduced a separate first-item issue across builds: quantity and unit price were blank. A package-suffix character recognition confusion also repeated, but remains unmodified pending broader evidence.
-
-## 3. Remediation C
-
-The first-item blank-field pattern matched a deterministic `ItemTupleSolver` gap: when two or more money values were recognized but the quantity token was missing, a valid printed unit-price candidate could be discarded.
-
-Remediation C now prefills quantity/unit price only when exactly one preceding printed money candidate gives an exact integer ratio to the printed line amount, with quantity 1..99.
-
-Safety boundary:
-
-- quantity origin = `INFERRED_ARITHMETIC`;
-- unit and line amount origins = `PRINTED`;
-- resolution remains `PARTIAL`;
-- explicit review remains required;
-- ambiguous or non-integral cases remain unresolved.
+The main hypothesis is that a numeric token in the product-name zone is being parsed as a quantity candidate and blocking the otherwise unique arithmetic recovery path. This is not yet proven.
 
 ## 4. Validation
 
 Canonical metric:
 
-`CP37_PARTIAL_PREFILL_METRICS version=1 item_tuple_tests=4 capture_review_tests=14 report_v2_tests=8 unique_integer_prefill=1 ambiguous_rejected=1 partial_review_preserved=1 report_v2_unchanged=1 schema_unchanged=1`
+`CP37_CANDIDATE_DIAG_METRICS version=1 candidate_tests=4 integration_tests=1 report_v2_tests=8 item_tuple_tests=4 capture_review_tests=14 product_zone_quantity_probe=1 privacy_preserved=1 behavior_unchanged=1 schema_unchanged=1`
 
-All focused tests, full unit regression, lint and APK packaging passed.
+All focused tests, full unit regression, lint, APK packaging, package/provider and permission checks passed.
 
-## 5. Frozen contracts
+## 5. Frozen behavior
 
-Unchanged:
+Unchanged from the predecessor:
 
+- `ItemTupleSolver` behavior;
+- `QuantityCandidate` parsing;
 - ML Kit OCR model/options;
-- OCR preprocessing/recovery passes;
+- recovery preprocessing/pass order;
 - Remediation A false-item gate;
-- CP33 selective-review policy itself;
+- CP33 selective-review policy;
 - report v2 semantics;
-- identity/price/search/persistence;
+- item-removal behavior;
+- identity/price/search/persistence semantics;
 - product schema 2 / receipt schema 1;
 - offline/privacy permission posture.
 
 ## 6. Exact next action
 
-Install `ReceiptLedger 검증 C` side by side and rerun the same receipt once.
+Install `ReceiptLedger 검증 D` side by side. Process the same diagnostic receipt once, visually inspect and correct all fields, save, tap `검증 결과 복사`, and return both copied lines:
 
-Confirm:
+1. `RL_CP37_SAMPLE version=2 ...`
+2. `RL_CP37_DIAG version=1 ...`
 
-1. first item quantity is no longer blank;
-2. first item unit price is no longer blank;
-3. the first item still appears in explicit review;
-4. all fields are visually checked and corrected;
-5. save and return only `RL_CP37_SAMPLE version=2 ...`.
+The repeated diagnostic receipt does not count toward the final independent 10.
 
-Do not start the independent 10-receipt campaign until this retest is analyzed.
+Do not modify solver/OCR/review policy or start the 10-receipt campaign until the diagnostic line is analyzed.
 
 ## 7. Canonical restart order
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
-4. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
-5. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_PLAN.md`
-6. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
-7. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
-8. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
-9. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-10. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-12. `receiptledger/README.md`
-13. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_CLOSEOUT.md`
+4. `receiptledger/CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_EVIDENCE.md`
+5. `receiptledger/CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_PLAN.md`
+6. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
+7. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
+8. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
+9. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
+10. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+11. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+12. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+13. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+14. `receiptledger/README.md`
+15. `receiptledger/WORK_UNIT.md`
 
 GitHub is canonical. Verify docs-only handoff HEAD and frozen executable separately.

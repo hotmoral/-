@@ -8,93 +8,97 @@ Updated: 2026-10-17 KST
 
 Current substage:
 
-**Remediation C — READY_FOR_PHYSICAL_PREFILL_RETEST**
+**Remediation D — READY_FOR_PHYSICAL_DIAGNOSTIC_RETEST**
 
-- branch: `receiptledger/run-post-v1-partial-row-prefill-20261017`
-- predecessor handoff: `d4f75d8120e4a9c347b3777c64b511e4f5d224d4`
-- frozen executable: `01b22652a45889b6bfaa474131e0c5fa7f19e96e`
-- canonical Actions: `38979684033` SUCCESS
-- job: `117237351555`
-- artifact: `12080029714`
-- artifact digest: `sha256:55300e9525851f02232dc03f9a528fcd5b3c9c30ba68e7a30eb0bdb6634d46c2`
-- APK SHA-256: `65fe0827f3a9ebfeafbbf783c6c8f82544f8594203008692288ab74ec9eb1e0e`
-- versionName: `1.0.38-partial-row-prefill-validation`
-- versionCode: 39
-- package: `com.receiptledger.v1.rowrecovery`
-- label: `ReceiptLedger 검증 C`
+- branch: `receiptledger/run-post-v1-candidate-diagnostics-20261017`
+- predecessor handoff: `99a7de8ba1c83771f11cefd7b6ab47e7d0590f99`
+- frozen executable: `3e19741521b9be4039028bcb9981e400ff2ad867`
+- canonical Actions: `38987300764` SUCCESS
+- job: `117261641673`
+- artifact: `12083716548`
+- artifact digest: `sha256:faada9ea2c87874d828e5c57fae9d42ccf4f966056ed6ce68943b33122784432`
+- APK SHA-256: `1aa0f2d6ec2510b77a7b273eefd2b037ae8f0207021849c7da81ac054cb125e9`
+- versionName: `1.0.39-candidate-diagnostics-validation`
+- versionCode: 40
+- package: `com.receiptledger.v1.candidateprobe`
+- label: `ReceiptLedger 검증 D`
 - lint: 0 errors / 0 warnings
 
 CP37 is **not complete**.
 
-## Evidence established
+## Evidence already established
 
-1. First physical sample exposed a false address/header item and no item-removal recovery.
-2. Remediation A fixed the triggering false item in same-receipt physical retest.
-3. Report v2 added item-level selective-review coverage metrics.
-4. First physical v2 sample verified the metric path and produced `review_scope_miss=1` with 2 corrected item ordinals outside initial review scope.
-5. The same receipt repeatedly showed first-item quantity and unit price blank across builds.
-6. Source review identified a bounded solver gap for multiple money values with a missing quantity token.
-7. A separate package-suffix character confusion remains OCR evidence only; no one-off substitution rule has been added.
+1. False address/header item was physically reproduced and Remediation A physically fixed the triggering row.
+2. Report v2 physically confirmed a selective-review scope miss while `false_auto_confirm=0`.
+3. The same diagnostic receipt repeatedly showed the first reviewed item with blank quantity and unit price.
+4. Remediation C preserved explicit review but failed to fill those fields in the physical retest.
+5. Therefore another solver heuristic is not authorized until candidate structure is observed.
 
-## Remediation C contract
+## Diagnostic D output
 
-For an item row with no quantity token, prefill only when exactly one printed unit-price candidate and printed line amount imply an exact integer quantity 1..99.
+The normal sanitized line remains:
 
-The recovered item remains `PARTIAL` and therefore remains explicitly review-required.
+`RL_CP37_SAMPLE version=2 ...`
 
-Ambiguous/non-integral candidates remain unresolved.
+A second line is now copied with it:
 
-Canonical metric:
+`RL_CP37_DIAG version=1 target=FIRST_REVIEW_ITEM ...`
 
-`CP37_PARTIAL_PREFILL_METRICS version=1 item_tuple_tests=4 capture_review_tests=14 report_v2_tests=8 unique_integer_prefill=1 ambiguous_rejected=1 partial_review_preserved=1 report_v2_unchanged=1 schema_unchanged=1`
+Important fields:
+
+- `money_candidates`
+- `quantity_candidates`
+- `quantity_before_first_money`
+- `quantity_between_money`
+- `quantity_after_line`
+- `exact_arithmetic_pairs`
+- `integer_unit_pairs`
+- `solver_resolution`
+- `solver_reason`
+
+No receipt value or OCR text is included.
 
 ## Current work unit
 
-No more coding is next.
+No further remediation coding is next.
 
-1. Install `ReceiptLedger 검증 C` side by side.
-2. Process the same receipt/image used for the repeated blank-field observation.
-3. Confirm first-item quantity is prefilled.
-4. Confirm first-item unit price is prefilled.
-5. Confirm that item is still shown for explicit review.
-6. Check every other recognized field against the original, including items not highlighted.
-7. Correct all factual/structural errors.
-8. Save.
-9. Tap `검증 결과 복사`.
-10. Return the `RL_CP37_SAMPLE version=2 ...` line and state whether checks 3–5 passed.
+1. Install `ReceiptLedger 검증 D` side by side.
+2. Process the same diagnostic receipt/image once.
+3. Visually inspect all recognized fields against the original.
+4. Correct all factual/structural errors.
+5. Save.
+6. Tap `검증 결과 복사`.
+7. Return both copied lines.
+8. Analyze the candidate geometry before deciding any solver change.
 
-This repeated receipt is remediation evidence and does not count toward the final independent 10.
+The repeated diagnostic receipt does not count in the final independent 10.
 
-## After successful same-receipt retest
+## Decision rule
 
-Only then begin the independent 10-receipt campaign, aiming where practical for:
+Strong evidence for a product-name-zone false quantity candidate is:
 
-- >=3 CAMERA;
-- >=3 GALLERY;
-- >=3 materially different layouts.
+- `quantity_candidates > 0`
+- `quantity_before_first_money > 0`
+- `exact_arithmetic_pairs = 0`
+- `integer_unit_pairs = 1`
 
-Aggregate:
+If the physical values differ, diagnose that actual pattern instead of forcing this hypothesis.
 
-- OCR latency/pass distribution;
-- AUTO_CONFIRMED / REVIEW_REQUIRED;
-- false_auto_confirm;
-- review_scope_miss count/rate;
-- corrections outside selected review items;
-- receipt/item correction totals;
-- crashes/hangs/save/duplicate failures.
+## Frozen boundary
 
-## Priority
+Until physical D evidence is analyzed, do not modify:
 
-1. correctness / false-auto-confirm;
-2. selective-review coverage;
-3. save/provenance;
-4. review burden;
-5. latency.
+- ItemTupleSolver / QuantityCandidate;
+- OCR/recovery;
+- structure gating;
+- selective-review policy;
+- identity/price/search;
+- schemas or permission posture.
 
 ## Public/privacy boundary
 
-Only sanitized report lines and aggregate metrics may enter public evidence. Real receipt images/text/values remain outside the repository.
+Only sanitized report/diagnostic lines and aggregate metrics may enter public evidence. Do not commit real receipts or private purchase data.
 
 ## Stop condition
 
-**Await Remediation C same-receipt physical retest.**
+**Await one same-receipt D physical report.**

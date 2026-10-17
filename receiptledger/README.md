@@ -6,16 +6,17 @@ ReceiptLedger is a personal purchase-price memory and comparison system. This na
 
 1. `PROJECT_STATUS_LATEST.md`
 2. `SESSION_HANDOFF.md`
-3. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
-4. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
-5. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_PLAN.md`
-6. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
-7. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
-8. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
-9. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-10. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-11. `PRODUCT_REBASELINE_V1_ROADMAP.md`
-12. `WORK_UNIT.md`
+3. `CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_CLOSEOUT.md`
+4. `CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_EVIDENCE.md`
+5. `CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_PLAN.md`
+6. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
+7. `CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
+8. `CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
+9. `CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+10. `CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+11. `CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+12. `PRODUCT_REBASELINE_V1_ROADMAP.md`
+13. `WORK_UNIT.md`
 
 GitHub is canonical. Verify current docs-only handoff and frozen executable separately.
 
@@ -25,51 +26,43 @@ V1 CP20–CP36: **COMPLETE**.
 
 Post-V1 CP37: **IN PROGRESS**.
 
-Current state: **Remediation C — READY_FOR_PHYSICAL_PREFILL_RETEST**.
+Current state: **Remediation D — READY_FOR_PHYSICAL_DIAGNOSTIC_RETEST**.
 
-- branch `receiptledger/run-post-v1-partial-row-prefill-20261017`
-- predecessor handoff `d4f75d8120e4a9c347b3777c64b511e4f5d224d4`
-- frozen executable `01b22652a45889b6bfaa474131e0c5fa7f19e96e`
-- Actions `38979684033` SUCCESS
-- job `117237351555`
-- artifact `12080029714`
-- digest `sha256:55300e9525851f02232dc03f9a528fcd5b3c9c30ba68e7a30eb0bdb6634d46c2`
-- APK SHA-256 `65fe0827f3a9ebfeafbbf783c6c8f82544f8594203008692288ab74ec9eb1e0e`
-- version `1.0.38-partial-row-prefill-validation` / 39
-- debug app `com.receiptledger.v1.rowrecovery`
-- label `ReceiptLedger 검증 C`
+- branch `receiptledger/run-post-v1-candidate-diagnostics-20261017`
+- predecessor handoff `99a7de8ba1c83771f11cefd7b6ab47e7d0590f99`
+- frozen executable `3e19741521b9be4039028bcb9981e400ff2ad867`
+- Actions `38987300764` SUCCESS
+- job `117261641673`
+- artifact `12083716548`
+- digest `sha256:faada9ea2c87874d828e5c57fae9d42ccf4f966056ed6ce68943b33122784432`
+- APK SHA-256 `1aa0f2d6ec2510b77a7b273eefd2b037ae8f0207021849c7da81ac054cb125e9`
+- version `1.0.39-candidate-diagnostics-validation` / 40
+- debug app `com.receiptledger.v1.candidateprobe`
+- label `ReceiptLedger 검증 D`
 
-## What Remediation C does
+## Why D exists
 
-If OCR misses the quantity token but a row has one unambiguous printed unit-price candidate and a printed line amount whose ratio is an exact quantity from 1 to 99, the app pre-fills quantity and unit price.
+The same diagnostic receipt repeatedly showed the first reviewed item with blank quantity and unit price. Remediation C attempted a narrow arithmetic prefill but the physical retest still showed both fields blank.
 
-The item deliberately remains `PARTIAL` and review-required. Ambiguous/non-integral cases remain unresolved.
+Rather than stacking another heuristic, D adds a privacy-safe second line:
 
-This reduces unnecessary retyping without weakening the review boundary.
+`RL_CP37_DIAG version=1 ...`
 
-## What it does not do
+It exposes only candidate counts/relative regions and sanitized solver tokens. Existing `RL_CP37_SAMPLE version=2` semantics are unchanged.
 
-- no OCR model change;
-- no preprocessing/recovery change;
-- no generic text substitution;
-- no change to the Remediation A false-item gate;
-- no change to selective-review policy;
-- no schema/identity/price/search change.
-
-The observed package-suffix character confusion remains tracked as physical evidence only.
+The current leading hypothesis is a numeric token in the product-name zone being parsed as a quantity candidate, but this is not yet proven.
 
 ## Next physical step
 
-Install `ReceiptLedger 검증 C` side by side and process the same receipt once more.
+Install `ReceiptLedger 검증 D`, rerun the same diagnostic receipt once, correct all factual fields, save, and return both copied lines:
 
-Verify that the first item quantity and unit price are prefilled **and** that the item still appears in explicit review. Then visually verify/correct all fields, save, and return only the generated `RL_CP37_SAMPLE version=2 ...` line.
+- `RL_CP37_SAMPLE version=2 ...`
+- `RL_CP37_DIAG version=1 ...`
 
-Do not count this repeated diagnostic receipt toward the final independent 10-receipt campaign.
+Do not begin the independent 10-receipt campaign until the diagnostic result is analyzed.
 
 ## Privacy
 
 Never commit/share publicly real receipt photos, OCR text, merchant/product names, dates, prices, IDs, file paths, private DBs/backups, credentials or signing material.
 
-## Stop condition
-
-**Do not start the independent 10-receipt campaign until the Remediation C same-receipt retest is analyzed.**
+The diagnostic report emits structural counts/flags only.

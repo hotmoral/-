@@ -10,121 +10,114 @@ Read in order:
 
 1. `receiptledger/PROJECT_STATUS_LATEST.md`
 2. `receiptledger/SESSION_HANDOFF.md`
-3. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
-4. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
-5. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_PLAN.md`
-6. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
-7. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
-8. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
-9. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
-10. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
-11. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
-12. `receiptledger/README.md`
-13. `receiptledger/WORK_UNIT.md`
+3. `receiptledger/CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_CLOSEOUT.md`
+4. `receiptledger/CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_EVIDENCE.md`
+5. `receiptledger/CP37_CANDIDATE_STRUCTURE_DIAGNOSTICS_PLAN.md`
+6. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_CLOSEOUT.md`
+7. `receiptledger/CP37_PARTIAL_ROW_PREFILL_REMEDIATION_EVIDENCE.md`
+8. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_CLOSEOUT.md`
+9. `receiptledger/CP37_SELECTIVE_REVIEW_COVERAGE_INSTRUMENTATION_EVIDENCE.md`
+10. `receiptledger/CP37_FALSE_ITEM_ROW_REMEDIATION_CLOSEOUT.md`
+11. `receiptledger/CP37_PHYSICAL_DEVICE_OCR_VALIDATION_PHASE_A_CLOSEOUT.md`
+12. `receiptledger/CP37_PHYSICAL_DEVICE_CAMPAIGN_PROTOCOL.md`
+13. `receiptledger/PRODUCT_REBASELINE_V1_ROADMAP.md`
+14. `receiptledger/README.md`
+15. `receiptledger/WORK_UNIT.md`
 
 ## 1. Current state
 
 V1 CP20–CP36 is complete. CP37 remains open.
 
-Current state: **Remediation C READY_FOR_PHYSICAL_PREFILL_RETEST**.
+Current state: **Remediation D READY_FOR_PHYSICAL_DIAGNOSTIC_RETEST**.
 
-- branch: `receiptledger/run-post-v1-partial-row-prefill-20261017`
-- predecessor handoff: `d4f75d8120e4a9c347b3777c64b511e4f5d224d4`
-- frozen executable: `01b22652a45889b6bfaa474131e0c5fa7f19e96e`
-- Actions: `38979684033` SUCCESS
-- job: `117237351555` SUCCESS
-- artifact: `12080029714`
-- artifact digest: `sha256:55300e9525851f02232dc03f9a528fcd5b3c9c30ba68e7a30eb0bdb6634d46c2`
-- APK SHA-256: `65fe0827f3a9ebfeafbbf783c6c8f82544f8594203008692288ab74ec9eb1e0e`
-- version: `1.0.38-partial-row-prefill-validation` / 39
-- package: `com.receiptledger.v1.rowrecovery`
-- label: `ReceiptLedger 검증 C`
+- branch: `receiptledger/run-post-v1-candidate-diagnostics-20261017`
+- predecessor handoff: `99a7de8ba1c83771f11cefd7b6ab47e7d0590f99`
+- frozen executable: `3e19741521b9be4039028bcb9981e400ff2ad867`
+- Actions: `38987300764` SUCCESS
+- job: `117261641673` SUCCESS
+- artifact: `12083716548`
+- artifact digest: `sha256:faada9ea2c87874d828e5c57fae9d42ccf4f966056ed6ce68943b33122784432`
+- APK SHA-256: `1aa0f2d6ec2510b77a7b273eefd2b037ae8f0207021849c7da81ac054cb125e9`
+- version: `1.0.39-candidate-diagnostics-validation` / 40
+- package: `com.receiptledger.v1.candidateprobe`
+- label: `ReceiptLedger 검증 D`
 - lint: `No issues found.`
 
-Do not mark CP37 complete.
+Do **not** mark CP37 complete.
 
-## 2. Physical findings so far
+## 2. Physical evidence sequence
 
 ### False item row
 
-The first real-device sample exposed an address/header row incorrectly treated as an item. Remediation A added a narrow pre-date gate and explicit item removal. Same-receipt retest physically confirmed the triggering false row no longer appeared.
+The first real-device sample exposed an address/header row classified as an item. Remediation A added narrow pre-date gating plus explicit non-product removal. Same-receipt retest confirmed the triggering row no longer appeared.
 
-### Selective review scope
+### Selective review coverage
 
-Report v2 was added to count corrected item ordinals outside the initial selected review set.
-
-The first v2 physical sample emitted:
-
-- initial items 15;
-- initial review items 1;
-- corrections outside selected review items 2;
-- `review_scope_miss=1`;
-- `false_auto_confirm=0`.
-
-The metric path is therefore physically verified, and a real review-scope miss exists.
+Report v2 added `corrections_outside_review_items` and `review_scope_miss`. The first v2 physical sample confirmed `review_scope_miss=1`, with 2 corrected item ordinals outside the initially selected review set. `false_auto_confirm=0`.
 
 ### Repeated first-item blank fields
 
-The same receipt, across validation builds, repeatedly showed the first item with blank quantity and unit price.
+The same diagnostic receipt repeatedly showed the first reviewed item with blank quantity and unit price. Remediation C added a narrow exact-integer arithmetic prefill while preserving PARTIAL/review-required status.
 
-Source inspection identified a bounded solver gap: multiple recognized money values plus no parsed quantity fell to unresolved PARTIAL even when one printed unit-price candidate and printed line amount had an exact integer ratio.
+Physical C retest showed the fields were still blank. The item remained review-required, so safety held but C's physical objective failed.
 
-A separate package-suffix OCR character confusion also repeated. No automatic text substitution has been added.
+## 3. Why D exists
 
-## 3. Remediation C behavior
+The C failure means the physical row did not match the C assumption. Do not add another solver rule by guess.
 
-`ItemTupleSolver` now pre-fills a missing quantity and retains the printed unit price only when:
+D observes the first initially reviewed item only and appends:
 
-- no quantity token was parsed;
-- one and only one preceding printed money candidate is a valid unit price;
-- line amount divides exactly by that unit price;
-- inferred quantity is 1..99.
+`RL_CP37_DIAG version=1 ...`
 
-The item remains `PARTIAL` with arithmetic provenance and therefore remains review-required.
+It reports candidate counts and relative regions, not receipt values.
 
-Non-integral or ambiguous cases remain unresolved.
+The primary hypothesis is a product-name-zone numeric token being parsed as a quantity candidate. Strong support would be:
 
-## 4. Verification
+- `quantity_candidates > 0`
+- `quantity_before_first_money > 0`
+- `exact_arithmetic_pairs = 0`
+- `integer_unit_pairs = 1`
+
+This remains a hypothesis until physical output confirms it.
+
+## 4. Frozen/non-goals
+
+D does not change:
+
+- `ItemTupleSolver`;
+- `QuantityCandidate`;
+- OCR/recovery;
+- structure gating;
+- selective-review policy;
+- report v2 semantics;
+- identity/price/search/persistence;
+- schemas;
+- permission posture.
+
+The debug diagnostic is captured transiently and not saved into receipt DB/issues/items.
+
+## 5. Verification
 
 Canonical metric:
 
-`CP37_PARTIAL_PREFILL_METRICS version=1 item_tuple_tests=4 capture_review_tests=14 report_v2_tests=8 unique_integer_prefill=1 ambiguous_rejected=1 partial_review_preserved=1 report_v2_unchanged=1 schema_unchanged=1`
+`CP37_CANDIDATE_DIAG_METRICS version=1 candidate_tests=4 integration_tests=1 report_v2_tests=8 item_tuple_tests=4 capture_review_tests=14 product_zone_quantity_probe=1 privacy_preserved=1 behavior_unchanged=1 schema_unchanged=1`
 
-- ItemTupleSolver: 4/4 PASS
-- CaptureReviewUxV2: 14/14 PASS
-- DeviceValidationReport v2: 8/8 PASS
-- full regression: PASS
-- lint: clean
-- APK packaging/permission checks: PASS
+Focused tests, full regression, lint and APK packaging passed. The public repo contains no real receipt image or private purchase data.
 
-## 5. Exact next task
+## 6. Exact next task
 
-This is physical confirmation, not more coding.
+This is physical diagnosis, not more coding.
 
-1. install `ReceiptLedger 검증 C` side by side;
-2. process the same receipt/image again;
-3. check that the first item quantity is prefilled;
-4. check that the first item unit price is prefilled;
-5. confirm that this item is still explicitly included in the review UI;
-6. visually inspect all other receipt fields, including items not highlighted;
-7. correct all factual/structural errors;
-8. save;
-9. return only the generated `RL_CP37_SAMPLE version=2 ...` line;
-10. separately state whether steps 3–5 passed.
+1. install `ReceiptLedger 검증 D` side by side;
+2. process the same diagnostic receipt/image once;
+3. review every field against the original;
+4. correct all factual/structural errors;
+5. save;
+6. tap `검증 결과 복사`;
+7. return both copied lines: `RL_CP37_SAMPLE version=2 ...` and `RL_CP37_DIAG version=1 ...`.
 
-The repeated diagnostic receipt does not count in the final 10 independent receipts.
-
-## 6. Frozen/non-goals
-
-Do not change before physical retest analysis:
-
-- OCR model/options or text substitutions;
-- recovery preprocessing/pass order;
-- Remediation A structure gate;
-- selective-review policy;
-- report v2 semantics;
-- identity/price/search/schema/permission posture.
+Do not start the independent 10-receipt campaign yet.
 
 ## 7. Privacy
 
-Real receipt images and values supplied in chat must not be committed to the public repository. Public evidence uses sanitized metrics and generic defect descriptions only.
+Real receipt images and values from chat must not be committed to the public repository. Public evidence remains sanitized counts/flags and generic defect descriptions only.
