@@ -26,6 +26,7 @@ public final class DeviceValidationReportV1 {
         private final String bestPass;
         private final ReceiptRecord record;
         private final CaptureReviewAssessmentV2 assessment;
+        private final CandidateStructureDiagnosticsV1.Summary candidateDiagnostic;
 
         private InitialSnapshot(
                 AcquisitionSource source,
@@ -34,7 +35,8 @@ public final class DeviceValidationReportV1 {
                 int mergedCandidates,
                 String bestPass,
                 ReceiptRecord record,
-                CaptureReviewAssessmentV2 assessment) {
+                CaptureReviewAssessmentV2 assessment,
+                CandidateStructureDiagnosticsV1.Summary candidateDiagnostic) {
             this.source = source;
             this.ocrMillis = ocrMillis;
             this.attemptedPasses = attemptedPasses;
@@ -42,6 +44,8 @@ public final class DeviceValidationReportV1 {
             this.bestPass = bestPass;
             this.record = record;
             this.assessment = assessment;
+            this.candidateDiagnostic = candidateDiagnostic == null
+                    ? CandidateStructureDiagnosticsV1.unavailable() : candidateDiagnostic;
         }
     }
 
@@ -87,6 +91,9 @@ public final class DeviceValidationReportV1 {
         if (ocrMillis < 0 || attemptedPasses < 0 || mergedCandidates < 0) {
             throw new IllegalArgumentException("validation metrics");
         }
+        int targetOrdinal = assessment.itemOrdinals.isEmpty() ? -1 : assessment.itemOrdinals.get(0);
+        CandidateStructureDiagnosticsV1.Summary diagnostic =
+                CandidateStructureDiagnosticsV1.takeForReceipt(record.id, targetOrdinal);
         return new InitialSnapshot(
                 source == null ? AcquisitionSource.UNKNOWN : source,
                 ocrMillis,
@@ -94,7 +101,8 @@ public final class DeviceValidationReportV1 {
                 mergedCandidates,
                 token(bestPass),
                 record,
-                assessment);
+                assessment,
+                diagnostic);
     }
 
     public static String savedReport(InitialSnapshot initial, ReceiptRecord finalRecord) {
@@ -106,7 +114,7 @@ public final class DeviceValidationReportV1 {
         int correctionsOutsideReviewItems = correctionsOutsideReviewItems(initial.assessment, delta);
         int reviewScopeMiss = correctionsOutsideReviewItems > 0 ? 1 : 0;
 
-        StringBuilder out = new StringBuilder(640);
+        StringBuilder out = new StringBuilder(960);
         out.append("RL_CP37_SAMPLE")
                 .append(" version=2")
                 .append(" source=").append(initial.source.name())
@@ -137,7 +145,9 @@ public final class DeviceValidationReportV1 {
                 .append(" any_correction=").append(anyCorrection)
                 .append(" false_auto_confirm=").append(falseAutoConfirm)
                 .append(" final_validation=").append(finalRecord.validationStatus.name())
-                .append(" saved=1");
+                .append(" saved=1")
+                .append('\n')
+                .append(initial.candidateDiagnostic.reportLine());
         return out.toString();
     }
 
