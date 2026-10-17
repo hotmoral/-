@@ -1,0 +1,87 @@
+{
+  "version": "P1_C_FPD1_IMPLEMENTATION_IDENTITY_V1",
+  "freezeToken": "P1_C_FPD1_IMPLEMENTATION_FREEZE",
+  "decisionToken": "P1_C_SMALL_FINITE_POSE_NECK_YAW_SELECTED",
+  "contractToken": "P1_C_SMALL_FINITE_POSE_NECK_YAW_CONTRACT_FROZEN",
+  "preflightToken": "P1_C_SMALL_FINITE_POSE_NECK_YAW_PREFLIGHT_PASS",
+  "poseId": "FPD1_FOREQUARTER_PIVOT_NECK_HEAD_YAW_LEFT_8DEG",
+  "publicRepository": "hotmoral/-",
+  "implementationBranch": "mobi/run-p1-c-fpd1-implementation-20261017",
+  "neutralAuthorityHead": "35d4a914ed4656d8a975922ae3eeac34e3ab0c52",
+  "executableQaHead": "ef82d2b67ef574154f1b397a0d688155118e9070",
+  "executableFiles": {
+    "implementation": {
+      "path": "mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py",
+      "gitBlobSha1": "b76d4034cc23555c382d2508aaaa31e7578797ec",
+      "sha256": "157ca0408f27e67330d10e49dff8b91446c0d674d4c106ec548bfbe001b8f097"
+    },
+    "tests": {
+      "path": "mobi/p1-b2/geometry/test_p1_c_fpd1_finite_pose_discriminator_v1.py",
+      "gitBlobSha1": "06d65f0aeddc2c854b8d8dce6e265eb729f6dbb9",
+      "sha256": "c6131b75e7a38abd7580c671b8a6c4fe8db0ca85ae86e86ad0e7e0f44ea5825c"
+    },
+    "preEvidenceQaWorkflow": {
+      "path": ".github/workflows/mobi-p1-c-fpd1-pre-evidence-qa.yml",
+      "gitBlobSha1": "65b77b06e3b2da7ea351453d5b83ffa7921a19e3",
+      "sha256": "2265eb1ade8e6607cf34139f7d735e5ecd231821cf3450e3003d9b1e6beacd3e"
+    }
+  },
+  "inheritedFrozenIdentities": {
+    "dar1GitBlobSha1": "d13d191499b6d734845051ba428323fdcf37dabd",
+    "dar1Sha256": "2ed9eac016c32a29a855eb26e0006c6e299a9b25d4a843b6cb4f398e6c356450",
+    "r12GitBlobSha1": "837f4abe7ff474a527893b099be8087a104f7aaa",
+    "r11AssembledSha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87",
+    "r10ReducerGitBlobSha1": "f281aad3e3a6c740c38c0a3f015718996dc45157",
+    "stageDGitBlobSha1": "5c8820fb7270e7727ececb1bb37d3a24331b24ab",
+    "standingCatSourceSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5",
+    "v3125MeshArraySha256": "839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77",
+    "frozenWeightSha256": "171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c"
+  },
+  "preEvidenceQa": {
+    "runId": 38999151364,
+    "jobId": 117298180934,
+    "attempt": 1,
+    "event": "push",
+    "conclusion": "success",
+    "artifactId": 12088123879,
+    "artifactSizeBytes": 3047732,
+    "artifactDigest": "sha256:a395cf71206d3459c9ed052c37ff51ad1c0be097bc66fb5ebb02f7e208b97c84",
+    "artifactManifestEntryCount": 36,
+    "artifactManifestIndependentRehashPass": true,
+    "seed1Seed777AuditByteIdentical": true,
+    "preEvidenceAuditSha256": "eda0f5d0680351e3453dc2b06469efbee92dff2815aab45cbb9b7e0f79e9a3ce",
+    "deterministicDiffBytes": 0,
+    "deterministicDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "contractIsolation": {
+    "pivotRole": "FOREQUARTER_CTRL",
+    "axisR10": [0.0, 1.0, 0.0],
+    "angleDeg": 8.0,
+    "angleRad": 0.13962634015954636,
+    "selectedRoles": ["NECK_BASE_CTRL", "HEAD_CTRL"],
+    "identityRoleCount": 28,
+    "selectedPositiveSupportUnionCount": 626,
+    "selectedPositiveSupportDomainCounts": {
+      "CORE": 612,
+      "FORE_L": 10,
+      "FORE_R": 4,
+      "HIND_L": 0,
+      "HIND_R": 0,
+      "TAIL": 0
+    },
+    "selectedSupportMaskSha256": "00d146898426ea970cbe9e7f17e553cb274021e549dc61c8e9910ce71c553bb5",
+    "fourFrozenPawAnchorsHaveExactZeroSelectedRoleWeight": true
+  },
+  "executionBoundary": {
+    "actualFinitePoseEvidenceExecuted": false,
+    "deformedV3125Produced": false,
+    "deformedRasterEvidenceProduced": false,
+    "perceptualReviewExecuted": false,
+    "finitePoseEvidenceRunAuthorizedByThisFreeze": false,
+    "ikAuthorized": false,
+    "gaitAuthorized": false,
+    "animationAuthorized": false,
+    "runtimeSkinningSelectionAuthorized": false
+  },
+  "nextIntentToken": "RUN_FPD1_FINITE_POSE_ONLY_AFTER_PRIVATE_IMPLEMENTATION_IMPORT_AND_SEPARATE_AUTHORIZATION"
+}
