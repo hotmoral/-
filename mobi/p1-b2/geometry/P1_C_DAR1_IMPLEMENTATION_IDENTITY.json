@@ -1,0 +1,74 @@
+{
+  "version": "P1_C_DAR1_IMPLEMENTATION_IDENTITY_V1",
+  "freezeToken": "P1_C_DAR1_IMPLEMENTATION_FREEZE",
+  "decisionToken": "POST_R12_DIAGNOSTIC_AXIS_SINGLE_CHILD_CONTINUATION_SELECTED",
+  "contractToken": "POST_R12_DIAGNOSTIC_AXIS_REVISION_CONTRACT_FROZEN",
+  "preflightToken": "POST_R12_DIAGNOSTIC_AXIS_REVISION_PREFLIGHT_PASS",
+  "variant": "DAR1_HIERARCHY_CONTINUATION_ON_EXACT_PARENT_DEGENERACY",
+  "publicRepository": "hotmoral/-",
+  "publicBranch": "mobi/run-p1-c-dar1-diagnostic-axis-revision-20261017",
+  "r12BaseHead": "4dbc13f67c0097e5bb84fd2b0ec27d71c280ac42",
+  "qaExecutableHead": "84e13cca51c5bceedccd8c74877248c2215c5b3d",
+  "preEvidenceQa": {
+    "runId": 38984440992,
+    "jobId": 117252505893,
+    "conclusion": "success",
+    "artifactId": 12082611409,
+    "artifactName": "mobi-p1-c-dar1-pre-evidence-qa-38984440992",
+    "artifactSizeBytes": 2917712,
+    "artifactDigestSha256": "19a2f7a945406be8bf93302fa5c3aa5a80331fe4fc7079e1626400ed996bb933",
+    "independentZipSha256": "19a2f7a945406be8bf93302fa5c3aa5a80331fe4fc7079e1626400ed996bb933",
+    "seed1Stage0AuditSha256": "281094895daf60dbe47a99d3cc7464241e2781c61bc3158a052ca4f26c5af6f4",
+    "seed777Stage0AuditSha256": "281094895daf60dbe47a99d3cc7464241e2781c61bc3158a052ca4f26c5af6f4",
+    "deterministicDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "deterministicDiffBytes": 0,
+    "artifactManifestIndependentlyVerified": true
+  },
+  "gitBlobSha1": {
+    "mobi/p1-b2/geometry/p1_c_dar1_diagnostic_axis_revision_v1.py": "d13d191499b6d734845051ba428323fdcf37dabd",
+    "mobi/p1-b2/geometry/test_p1_c_dar1_diagnostic_axis_revision_v1.py": "ff49605ea62ac1c346cb9469c038d73da665976c",
+    ".github/workflows/mobi-p1-c-dar1-pre-evidence-qa.yml": "23924ca07dd36ef512c9cf895966bfadcc3feccc"
+  },
+  "sha256": {
+    "mobi/p1-b2/geometry/p1_c_dar1_diagnostic_axis_revision_v1.py": "2ed9eac016c32a29a855eb26e0006c6e299a9b25d4a843b6cb4f398e6c356450",
+    "mobi/p1-b2/geometry/test_p1_c_dar1_diagnostic_axis_revision_v1.py": "4e1d129082c8eb54776c3b87a0530f016961c060ef9b69dfe84e280ccd9a231b",
+    ".github/workflows/mobi-p1-c-dar1-pre-evidence-qa.yml": "1c35ece2bc276bda8ec1f65bebb78814f32afc753c2a05ccd8bece4ea9274cc3"
+  },
+  "inheritedIdentity": {
+    "r12AdapterGitBlobSha1": "837f4abe7ff474a527893b099be8087a104f7aaa",
+    "r12AdapterSha256": "fc4096162607dbf59859749562ec5ab9ea7d0e09551aa7cd3cd1ad05e9f5594c",
+    "r11AssembledSha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87",
+    "v3125MeshArraySha256": "839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77",
+    "sourceGlbSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5"
+  },
+  "frozenAxisContract": {
+    "degenerateThreshold": 1e-15,
+    "edgeCount": 29,
+    "degenerateEdgeCount": 1,
+    "degenerateEdge": ["PELVIS_CTRL", "TAIL_ROOT_CTRL"],
+    "fallbackRole": "TAIL_ROOT_CTRL",
+    "directChildren": ["TAIL_1_CTRL"],
+    "selectedTangentR10": [0.0, 0.0090661229202611, -0.08406815248194494],
+    "selectedTangentNorm": 0.08455559618696346,
+    "selectedAxisR10": [0.0, -0.9942352283349678, -0.10722085029374898],
+    "changedDiagnosticAxisRoles": ["TAIL_ROOT_CTRL"],
+    "allNonTailRootAxesExactInherited": true
+  },
+  "preEvidenceIsolation": {
+    "controlCount": 30,
+    "controlSnapshotByteIdenticalBeforeAfter": true,
+    "weightByteIdenticalBeforeAfter": true,
+    "r12ChangedPawBindCount": 4,
+    "r12UnchangedNonPawRoleCount": 26,
+    "r12ParentDomainProvenanceUnchanged": true,
+    "domainBleedCount": 0,
+    "unweightedVertexCount": 0,
+    "neutralRestMaxNormalized": 3.0561548317486276e-16,
+    "neutralRestRmsNormalized": 5.27737336708397e-17,
+    "structuralStage1EvidenceExecuted": false,
+    "jacobianDerivativeExecuted": false,
+    "rasterEvidenceExecuted": false
+  },
+  "stage1RunAuthorized": false,
+  "finitePoseAuthorized": false
+}
