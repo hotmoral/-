@@ -1,0 +1,72 @@
+{
+  "version": "P1_C_DAR1_STAGE1_EXECUTION_IDENTITY_V1",
+  "freezeToken": "P1_C_DAR1_STAGE1_EXECUTION_FREEZE",
+  "stage1RunAuthorized": true,
+  "authorizationBasis": "explicit user authorization after private DAR1 implementation import",
+  "executionBranch": "mobi/run-p1-c-dar1-stage1-evidence-20261017",
+  "dispatchToken": "RUN_DAR1_REVISED_STAGE1_AFTER_PRIVATE_IMPORT",
+  "variant": "DAR1_HIERARCHY_CONTINUATION_ON_EXACT_PARENT_DEGENERACY",
+  "privateCanonicalAuthorizationHead": "5bf7a2fb018a2e7a1e2a636c3f10b4d74a5bc729",
+  "publicDar1FreezeHead": "cc6cd3a9dfa507d05ec33454e0d8e86550b3310f",
+  "preEvidenceExecutableHead": "84e13cca51c5bceedccd8c74877248c2215c5b3d",
+  "executionWorkflowAuthoringCommit": "ec6715c5827090432b1e3b91dce5953bba35b93c",
+  "revisedStage1RunCountBeforeDispatch": 0,
+  "sourceSha256": "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5",
+  "v3125MeshArraySha256": "839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77",
+  "r11ImplementationSha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87",
+  "r12AdapterSha256": "fc4096162607dbf59859749562ec5ab9ea7d0e09551aa7cd3cd1ad05e9f5594c",
+  "dar1AdapterSha256": "2ed9eac016c32a29a855eb26e0006c6e299a9b25d4a843b6cb4f398e6c356450",
+  "dar1TestsSha256": "4e1d129082c8eb54776c3b87a0530f016961c060ef9b69dfe84e280ccd9a231b",
+  "dar1PreEvidenceQaWorkflowSha256": "1c35ece2bc276bda8ec1f65bebb78814f32afc753c2a05ccd8bece4ea9274cc3",
+  "selectedDegenerateEdge": ["PELVIS_CTRL", "TAIL_ROOT_CTRL"],
+  "selectedDirectChild": "TAIL_1_CTRL",
+  "selectedTangentR10": [0.0, 0.0090661229202611, -0.08406815248194494],
+  "selectedTangentNorm": 0.08455559618696346,
+  "selectedDiagnosticAxisR10": [0.0, -0.9942352283349678, -0.10722085029374898],
+  "gitBlobSha1": {
+    ".github/workflows/mobi-p1-c-dar1-stage1-evidence.yml": "9949f841c9e3d9d867a957ce4866236ff339e977",
+    ".github/workflows/mobi-p1-c-dar1-pre-evidence-qa.yml": "23924ca07dd36ef512c9cf895966bfadcc3feccc",
+    "mobi/p1-b2/geometry/p1_c_dar1_diagnostic_axis_revision_v1.py": "d13d191499b6d734845051ba428323fdcf37dabd",
+    "mobi/p1-b2/geometry/test_p1_c_dar1_diagnostic_axis_revision_v1.py": "ff49605ea62ac1c346cb9469c038d73da665976c",
+    "mobi/p1-b2/geometry/p1_c_r12_surface_terminal_bind_alias_v1.py": "837f4abe7ff474a527893b099be8087a104f7aaa"
+  },
+  "historicalTailObserver": {
+    "commit": "725d49dd4ebe25a70e97fe5f3101405d91012899",
+    "path": "mobi/p1-b2/geometry/p1_c_post_r12_tail_root_degeneracy_diagnostic_v1.py",
+    "gitBlobSha1": "d5f006bab21fb1c022fb4a67011b5be9b7a0306e",
+    "use": "read-only rerun of frozen tail ordering/adjacent-overlap observer"
+  },
+  "runtime": {
+    "python": "3.12.15",
+    "numpy": "2.5.4",
+    "fast-simplification": "0.2.0",
+    "trimesh": "4.11.1",
+    "scikit-image": "0.26.0",
+    "scipy": "1.17.0"
+  },
+  "seeds": [1, 777],
+  "requiredEvidence": [
+    "exact source and V3125 identity",
+    "DAR1 stage0 isolation and exact sole diagnostic-axis change",
+    "all four R12 paw alias/domain/weight/locality gates",
+    "all applicable frozen Jacobian gates including revised tail root",
+    "downstream tail controls",
+    "tail weighted-arc root-to-tip ordering",
+    "adjacent tail positive-support overlap",
+    "neutral numeric identity",
+    "five primary 96x96 views",
+    "all 37 yaw neutral raster identities",
+    "exact-front dedicated reporting",
+    "seed 1/777 byte identity"
+  ],
+  "nonGoals": [
+    "no geometry repair",
+    "no tail-root relocation",
+    "no hierarchy/domain/weight redesign",
+    "no threshold retuning",
+    "no finite pose",
+    "no IK",
+    "no gait or animation",
+    "no production joint-axis claim"
+  ]
+}
