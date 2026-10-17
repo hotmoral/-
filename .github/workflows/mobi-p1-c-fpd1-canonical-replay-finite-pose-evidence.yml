@@ -1,0 +1,287 @@
+name: Mobi P1-C FPD1 Canonical-Replay Finite-Pose Evidence
+
+on:
+  push:
+    branches:
+      - mobi/run-p1-c-fpd1-canonical-replay-evidence-20261017
+    paths:
+      - '.github/workflows/mobi-p1-c-fpd1-canonical-replay-finite-pose-evidence.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: mobi-p1-c-fpd1-canonical-replay-finite-pose-evidence
+  cancel-in-progress: false
+
+jobs:
+  canonical-replay-finite-pose-evidence:
+    if: github.ref == 'refs/heads/mobi/run-p1-c-fpd1-canonical-replay-evidence-20261017'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact frozen execution identity and single invocation boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='f30f5a6fac315026bd870927de569cf6592375b0'
+          test "$GITHUB_REF" = 'refs/heads/mobi/run-p1-c-fpd1-canonical-replay-evidence-20261017'
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          test "$(git diff --name-only "$BASE"...HEAD)" = '.github/workflows/mobi-p1-c-fpd1-canonical-replay-finite-pose-evidence.yml'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_canonical_weight_replay_v1.py)" = 'd91b434172ee30cd233b5647ba52295a89e1a925'
+          test "$(sha256sum mobi/p1-b2/geometry/p1_c_fpd1_canonical_weight_replay_v1.py | awk '{print $1}')" = '76c7fad97ad7820b59b4935b4206fb67e74c866a12d0097bd7b11e70bbddeb41'
+          test "$(git hash-object mobi/p1-b2/geometry/test_p1_c_fpd1_canonical_weight_replay_v1.py)" = 'f211f6e2d6aa6573df79d9ab4925f1d34ebe402c'
+          test "$(sha256sum mobi/p1-b2/geometry/test_p1_c_fpd1_canonical_weight_replay_v1.py | awk '{print $1}')" = '6d04dcd1b09a52e565f5f2c58e15be28501ba3a07bdb672897a181cf10b2b356'
+          test "$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py)" = 'b76d4034cc23555c382d2508aaaa31e7578797ec'
+          test "$(sha256sum mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py | awk '{print $1}')" = '157ca0408f27e67330d10e49dff8b91446c0d674d4c106ec548bfbe001b8f097'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          identity=json.loads(Path('mobi/p1-b2/geometry/P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_IDENTITY.json').read_text())
+          assert identity['freezeToken']=='P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_IMPLEMENTATION_FREEZE'
+          assert identity['executableQaHead']=='3abd89f8d91b3249ef2ffade432ac6b7eb676c4c'
+          a=identity['files']['adapter']
+          assert a['gitBlobSha1']=='d91b434172ee30cd233b5647ba52295a89e1a925'
+          assert a['sha256']=='76c7fad97ad7820b59b4935b4206fb67e74c866a12d0097bd7b11e70bbddeb41'
+          c=identity['canonicalWeightAuthority']
+          assert c['sourceArtifactId']==12088123879
+          assert c['sourceArtifactDigest']=='sha256:a395cf71206d3459c9ed052c37ff51ad1c0be097bc66fb5ebb02f7e208b97c84'
+          assert c['serializedSha256']=='171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c'
+          assert c['indicesSha256']=='1907a206446b8da3497cb1e6adba4f59120f3af41bd5b003fabe513db64f871b'
+          b=identity['executionBoundary']
+          assert b['actualFinitePoseEvidenceExecuted'] is False
+          assert b['deformedV3125Produced'] is False
+          assert b['rasterEvidenceExecuted'] is False
+          assert b['perceptualReviewExecuted'] is False
+          wf=Path('.github/workflows/mobi-p1-c-fpd1-canonical-replay-finite-pose-evidence.yml').read_text()
+          token='--evaluate-pose-'+'canonical-replay'
+          if wf.count(token) != 1:
+              raise SystemExit(f'actual canonical replay pose invocation count drift: {wf.count(token)}')
+          print('frozen replay identity and exactly-one-pose-invocation boundary PASS')
+          PY
+
+      - name: Assemble and verify exact frozen R11
+        shell: bash
+        working-directory: mobi/p1-b2/geometry
+        run: |
+          set -euo pipefail
+          ./assemble_p1_c_r11_semantic_scaffold_v1.sh
+          echo 'af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87  p1_c_r11_semantic_scaffold_v1.py' | sha256sum -c -
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.15'
+          cache: pip
+
+      - name: Install exact frozen runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'numpy==2.5.4' \
+            'fast-simplification==0.2.0' \
+            'trimesh==4.11.1' \
+            'scikit-image==0.26.0' \
+            'scipy==1.17.0'
+          python - <<'PY'
+          import sys,numpy,fast_simplification,trimesh,skimage,scipy
+          expected={'numpy':'2.5.4','fast_simplification':'0.2.0','trimesh':'4.11.1','skimage':'0.26.0','scipy':'1.17.0'}
+          actual={'numpy':numpy.__version__,'fast_simplification':fast_simplification.__version__,'trimesh':trimesh.__version__,'skimage':skimage.__version__,'scipy':scipy.__version__}
+          if sys.version_info[:3] != (3,12,15): raise SystemExit(sys.version)
+          if actual != expected: raise SystemExit(actual)
+          print(actual)
+          PY
+
+      - name: Run all frozen regression suites before actual pose
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd mobi/p1-b2/geometry
+          python -m py_compile p1_c_fpd1_finite_pose_discriminator_v1.py p1_c_fpd1_canonical_weight_replay_v1.py
+          python -m unittest -v test_p1_c_r11_semantic_scaffold_v1.py
+          python -m unittest -v test_p1_c_r12_surface_terminal_bind_alias_v1.py
+          python -m unittest -v test_p1_c_dar1_diagnostic_axis_revision_v1.py
+          python -m unittest -v test_p1_c_fpd1_finite_pose_discriminator_v1.py
+          python -m unittest -v test_p1_c_fpd1_canonical_weight_replay_v1.py
+
+      - name: Acquire exact canonical weight bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ZIP="$RUNNER_TEMP/fpd1-canonical-artifact.zip"
+          DIR="$RUNNER_TEMP/fpd1-canonical-artifact"
+          mkdir -p "$DIR"
+          curl -L --fail --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            'https://api.github.com/repos/hotmoral/-/actions/artifacts/12088123879/zip' \
+            -o "$ZIP"
+          echo "a395cf71206d3459c9ed052c37ff51ad1c0be097bc66fb5ebb02f7e208b97c84  $ZIP" | sha256sum -c -
+          unzip -q "$ZIP" -d "$DIR"
+          W="$DIR/neutral_stage1_regression/weights.bin"
+          test "$(wc -c < "$W" | tr -d ' ')" = '112532'
+          echo "171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c  $W" | sha256sum -c -
+          mkdir -p mobi/p1-c-fpd1-canonical-replay-evidence/evidence
+          cp "$W" mobi/p1-c-fpd1-canonical-replay-evidence/evidence/canonical_weights.bin
+
+      - name: Acquire exact frozen Standing Cat source
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/cat-original.glb"
+          curl -L --fail --retry 3 --connect-timeout 20 --max-time 180 \
+            -A 'Mobi frozen FPD1 canonical-replay evidence/1.0' \
+            'https://www.innerscene.com/api/library/standing-cat-cda42538/download' \
+            -o "$SRC"
+          echo "6870facdd3c7784581382af0ede14e5d6fc8f2092ac9ff15cda1f8c3feb315e5  $SRC" | sha256sum -c -
+
+      - name: Immediate pre-pose canonical replay gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          E=mobi/p1-c-fpd1-canonical-replay-evidence/evidence
+          SRC="$RUNNER_TEMP/cat-original.glb"
+          W="$E/canonical_weights.bin"
+          PYTHONHASHSEED=1 python "$G/p1_c_fpd1_canonical_weight_replay_v1.py" "$SRC" \
+            --geometry-dir "$G" --canonical-weights-bin "$W" --pre-evidence-audit \
+            --out "$E/pre_pose_replay_audit.json"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('mobi/p1-c-fpd1-canonical-replay-evidence/evidence/pre_pose_replay_audit.json').read_text())
+          assert x['actualFinitePoseEvidenceExecuted'] is False
+          assert x['deformedV3125Produced'] is False
+          assert x['rasterEvidenceExecuted'] is False
+          assert x['perceptualReviewExecuted'] is False
+          assert x['poseId']=='FPD1_FOREQUARTER_PIVOT_NECK_HEAD_YAW_LEFT_8DEG'
+          assert x['identity']['meshArraySha256']=='839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77'
+          r=x['canonicalReplay']
+          assert r['freshIndicesByteIdenticalToCanonical'] is True
+          assert r['canonicalWeightIdentity']['serializedSha256']=='171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c'
+          assert r['canonicalWeightAudit']['domainBleedCount']==0
+          assert r['canonicalWeightAudit']['unweightedVertexCount']==0
+          s=r['canonicalSupportIsolation']
+          assert s['positiveSupportUnionCount']==626
+          for role in ('FORE_L_PAW_CTRL','FORE_R_PAW_CTRL','HIND_L_PAW_CTRL','HIND_R_PAW_CTRL'):
+              assert s['pawAnchors'][role]['selectedRoleWeight']==0.0
+          print('immediate pre-pose canonical replay gate PASS')
+          PY
+
+      - name: Execute exact frozen canonical-replay FPD1 pose once
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=mobi/p1-b2/geometry
+          E=mobi/p1-c-fpd1-canonical-replay-evidence/evidence
+          SRC="$RUNNER_TEMP/cat-original.glb"
+          W="$E/canonical_weights.bin"
+          OUT="$E/run"
+          PYTHONHASHSEED=1 python "$G/p1_c_fpd1_canonical_weight_replay_v1.py" "$SRC" \
+            --geometry-dir "$G" --canonical-weights-bin "$W" --evaluate-pose-canonical-replay \
+            --out "$OUT"
+
+      - name: Validate structural evidence invariants without product verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('mobi/p1-c-fpd1-canonical-replay-evidence/evidence/run')
+          x=json.loads((root/'summary.json').read_text())
+          assert x['version']=='P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_V1'
+          assert x['selectionToken']=='P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_SELECTED'
+          assert x['contractToken']=='P1_C_FPD1_CANONICAL_WEIGHT_REPLAY_CONTRACT_FROZEN'
+          assert x['poseId']=='FPD1_FOREQUARTER_PIVOT_NECK_HEAD_YAW_LEFT_8DEG'
+          assert x['actualFinitePoseEvidenceExecuted'] is True
+          assert x['deformedV3125Produced'] is True
+          assert x['rasterEvidenceExecuted'] is True
+          assert x['perceptualReviewExecuted'] is False
+          assert x['identity']['vertexCount']==3125 and x['identity']['faceCount']==6246
+          assert x['identity']['meshArraySha256']=='839968886420707267d0e546c080f1af62c262391bf5e7a13babdbec1be32d77'
+          assert x['canonicalWeightSerializedSha256']=='171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c'
+          assert x['canonicalIndicesSha256']=='1907a206446b8da3497cb1e6adba4f59120f3af41bd5b003fabe513db64f871b'
+          assert x['bindVertexSha256'] != x['deformedVertexSha256']
+          assert x['pawAnchorsExact'] is True
+          assert x['directViewCount']==9
+          assert x['denseViewCount']==73
+          g=x['geometryHealth']
+          assert g['finiteVertexCount']==3125 and g['vertexCount']==3125
+          assert g['nonFiniteAreaFaceCount']==0
+          assert g['outsideSelectedSupportDisplacement']['max']==0.0
+          paw=json.loads((root/'paw_anchor_report.json').read_text())
+          assert set(paw)=={'FORE_L_PAW_CTRL','FORE_R_PAW_CTRL','HIND_L_PAW_CTRL','HIND_R_PAW_CTRL'}
+          for role,row in paw.items():
+              assert row['exactByteNumericIdentity'] is True
+              assert row['displacement']==0.0
+          v=json.loads((root/'visual_evidence.json').read_text())
+          assert v['directViewCount']==9
+          assert [r['yawDeg'] for r in v['directViews']]==[-90.0,-67.5,-45.0,-22.5,0.0,22.5,45.0,67.5,90.0]
+          assert v['denseViewCount']==73
+          direct=root/'direct_deformed_only'
+          native=[p for p in direct.glob('FPD1_DEFORMED_*_96.png')]
+          enlarged=[p for p in direct.glob('FPD1_DEFORMED_*_96_8X.png')]
+          assert len(native)==10, len(native)
+          assert len(enlarged)==10, len(enlarged)
+          print('canonical-replay structural evidence invariants PASS; perceptual verdict intentionally pending')
+          PY
+
+      - name: Record immutable execution manifest
+        if: always()
+        shell: bash
+        run: |
+          set -u
+          E=mobi/p1-c-fpd1-canonical-replay-evidence/evidence
+          mkdir -p "$E"
+          {
+            echo "git_head=$GITHUB_SHA"
+            echo "git_parent=$(git rev-parse HEAD^)"
+            echo "workflow_blob=$(git hash-object .github/workflows/mobi-p1-c-fpd1-canonical-replay-finite-pose-evidence.yml)"
+            echo "workflow_sha256=$(sha256sum .github/workflows/mobi-p1-c-fpd1-canonical-replay-finite-pose-evidence.yml | awk '{print $1}')"
+            echo "replay_adapter_blob=$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_canonical_weight_replay_v1.py)"
+            echo "replay_adapter_sha256=$(sha256sum mobi/p1-b2/geometry/p1_c_fpd1_canonical_weight_replay_v1.py | awk '{print $1}')"
+            echo "fpd1_evaluator_blob=$(git hash-object mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py)"
+            echo "fpd1_evaluator_sha256=$(sha256sum mobi/p1-b2/geometry/p1_c_fpd1_finite_pose_discriminator_v1.py | awk '{print $1}')"
+            if test -f "$E/canonical_weights.bin"; then
+              echo "canonical_weights_sha256=$(sha256sum "$E/canonical_weights.bin" | awk '{print $1}')"
+              echo "canonical_weights_bytes=$(wc -c < "$E/canonical_weights.bin" | tr -d ' ')"
+            else
+              echo 'canonical_weights_sha256=NOT_ACQUIRED_BEFORE_FAILURE'
+              echo 'canonical_weights_bytes=0'
+            fi
+            if test -f mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py; then
+              echo "r11_assembled_sha256=$(sha256sum mobi/p1-b2/geometry/p1_c_r11_semantic_scaffold_v1.py | awk '{print $1}')"
+            else
+              echo 'r11_assembled_sha256=NOT_ASSEMBLED_BEFORE_FAILURE'
+            fi
+          } > "$E/execution_identity.txt"
+          python - <<'PY' > "$E/environment.txt"
+          import importlib,platform,sys
+          print(sys.version)
+          print(platform.platform())
+          for module,label in [('numpy','numpy'),('fast_simplification','fast-simplification'),('trimesh','trimesh'),('skimage','scikit-image'),('scipy','scipy')]:
+              try:
+                  m=importlib.import_module(module)
+                  print(label,getattr(m,'__version__','UNKNOWN'))
+              except Exception as exc:
+                  print(label,'NOT_AVAILABLE',type(exc).__name__)
+          PY
+          find "$E" -type f ! -name EVIDENCE_SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > "$E/EVIDENCE_SHA256SUMS.txt"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobi-p1-c-fpd1-canonical-replay-evidence-${{ github.run_id }}
+          path: mobi/p1-c-fpd1-canonical-replay-evidence/evidence
+          if-no-files-found: error
+          retention-days: 30
