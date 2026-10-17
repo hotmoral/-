@@ -1,0 +1,93 @@
+{
+  "version": "P1_C_FPD2_TAIL_BRANCH_IMPLEMENTATION_IDENTITY_V1",
+  "decisionToken": "P1_C_POST_FPD1_TAIL_BRANCH_YAW_SELECTED",
+  "contractToken": "P1_C_FPD2_TAIL_BRANCH_YAW_CONTRACT_FROZEN",
+  "preflightToken": "P1_C_FPD2_TAIL_BRANCH_YAW_PREFLIGHT_PASS",
+  "freezeToken": "P1_C_FPD2_TAIL_BRANCH_IMPLEMENTATION_FREEZE",
+  "poseId": "FPD2_TAIL_ROOT_PIVOT_FULL_TAIL_YAW_RIGHT_8DEG",
+  "publicBranch": "mobi/run-p1-c-fpd2-tail-branch-implementation-20261018",
+  "frozenBaseHead": "f30f5a6fac315026bd870927de569cf6592375b0",
+  "executableQaHead": "8a534066e2fdf4f705911e20bd24049fc7cb63d5",
+  "executableFiles": {
+    "evaluator": {
+      "path": "mobi/p1-b2/geometry/p1_c_fpd2_tail_branch_yaw_v1.py",
+      "gitBlobSha1": "5192bf66da974339eb5c080508fad327442133c5",
+      "sha256": "035fce7081507bd8d0e6f1f089d4fcbb13fdb54988d479f2528bc4076a9c1cc7"
+    },
+    "tests": {
+      "path": "mobi/p1-b2/geometry/test_p1_c_fpd2_tail_branch_yaw_v1.py",
+      "gitBlobSha1": "26aa780f819c829c0b742488fa7645fd7d7b4570",
+      "sha256": "0e1f2d6ac0a944eb0f46dbe81a161819a3600f00bd9cb6188bcd53e791836fc6"
+    },
+    "preEvidenceWorkflow": {
+      "path": ".github/workflows/mobi-p1-c-fpd2-tail-branch-pre-evidence-qa.yml",
+      "gitBlobSha1": "39f4a93fdc1305f5bb6dccc354a83a789d6ea426",
+      "sha256": "cdb5239b7979b110f7909a6239231d249256c1f46defe48b0001f0e86ad64e46"
+    }
+  },
+  "inheritedFrozenIdentity": {
+    "canonicalReplayBlob": "d91b434172ee30cd233b5647ba52295a89e1a925",
+    "canonicalReplaySha256": "76c7fad97ad7820b59b4935b4206fb67e74c866a12d0097bd7b11e70bbddeb41",
+    "fpd1EvaluatorBlob": "b76d4034cc23555c382d2508aaaa31e7578797ec",
+    "fpd1EvaluatorSha256": "157ca0408f27e67330d10e49dff8b91446c0d674d4c106ec548bfbe001b8f097",
+    "r11AssembledSha256": "af2d8ccafb1878ad96cf6fae60167ae2a33f82480aa76710ce97c8fd95a6ad87"
+  },
+  "canonicalWeightIdentity": {
+    "sourceRunId": 38999151364,
+    "sourceArtifactId": 12088123879,
+    "sourceArtifactDigest": "sha256:a395cf71206d3459c9ed052c37ff51ad1c0be097bc66fb5ebb02f7e208b97c84",
+    "bytes": 112532,
+    "serializedSha256": "171653287d416ce2fdb30db3e51356b241f0507614de8316ec0ed4ec0588b12c",
+    "indicesSha256": "1907a206446b8da3497cb1e6adba4f59120f3af41bd5b003fabe513db64f871b",
+    "weightFloatsSha256": "aa3569c6d2c3350bf21493d8c4fc8acc8d15db366cdcf51c8c81c7cdafa57411"
+  },
+  "preEvidenceQa": {
+    "runId": 39076540003,
+    "jobId": 117524749951,
+    "attempt": 1,
+    "event": "push",
+    "conclusion": "success",
+    "artifactId": 12116907842,
+    "artifactName": "mobi-p1-c-fpd2-tail-branch-pre-evidence-39076540003",
+    "artifactSizeBytes": 9090430,
+    "artifactDigest": "sha256:ed02950ca395ef6592411a1fafa162921fad3b0f17f0dc0054c5523a885d38e0",
+    "independentZipSha256": "ed02950ca395ef6592411a1fafa162921fad3b0f17f0dc0054c5523a885d38e0",
+    "manifestEntries": 43,
+    "manifestVerified": 43,
+    "seed1Seed777ByteIdentical": true,
+    "preEvidenceJsonSha256": "49ec9be0ae1abf0db5aae53a0b646e0853cd560baa43b9c05e6d6f73538a431d",
+    "tests": {
+      "r11": "8/8 PASS",
+      "r12": "4/4 PASS",
+      "dar1": "8/8 PASS",
+      "fpd1": "9/9 PASS",
+      "canonicalReplay": "7/7 PASS",
+      "fpd2": "9/9 PASS"
+    }
+  },
+  "supportIdentity": {
+    "positiveSupportUnionCount": 619,
+    "positiveSupportDomainCounts": {
+      "CORE": 0,
+      "FORE_L": 0,
+      "FORE_R": 0,
+      "HIND_L": 0,
+      "HIND_R": 0,
+      "TAIL": 619
+    },
+    "tailDomainCount": 619,
+    "selectedSupportEqualsTailDomain": true,
+    "supportMaskSha256": "72565b6b1a7db89aaa11c37097463ccbde45dd1540c524313dcdc9074e9b530e",
+    "mixedRootInterfaceCount": 19,
+    "mixedSelectedTailWeightMin": 0.2606796033855258,
+    "mixedSelectedTailWeightMax": 0.7507989280093238,
+    "fullTailSelectedCount": 600,
+    "pawSelectedTailWeightExactZero": true
+  },
+  "evidenceBoundary": {
+    "actualFinitePoseEvidenceExecuted": false,
+    "deformedV3125Produced": false,
+    "rasterEvidenceExecuted": false,
+    "perceptualReviewExecuted": false
+  }
+}
