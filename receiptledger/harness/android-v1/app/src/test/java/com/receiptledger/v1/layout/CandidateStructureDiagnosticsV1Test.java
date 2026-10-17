@@ -18,7 +18,7 @@ import org.junit.Test;
 public final class CandidateStructureDiagnosticsV1Test {
     @Test public void productZoneNumberIsSeparatedFromArithmeticEvidence() {
         ReceiptStructure structure = structure(
-                token("ITEM", 40),
+                token("PRIVATE_NAME_XYZ", 40),
                 token("12", 140),
                 token("3,980", 320),
                 token("3,980", 520));
@@ -40,7 +40,7 @@ public final class CandidateStructureDiagnosticsV1Test {
         assertEquals("NO_EXACT_ARITHMETIC_SOLUTION", summary.solverReason);
         String line = summary.reportLine();
         assertFalse(line.contains("3980"));
-        assertFalse(line.contains("ITEM"));
+        assertFalse(line.contains("PRIVATE_NAME_XYZ"));
     }
 
     @Test public void trueQuantityBetweenMoneyProducesExactPair() {
