@@ -1,0 +1,14 @@
+{
+  "name": "Wildbound — Verdant Reach",
+  "short_name": "Wildbound",
+  "description": "오리지널 몬스터 수집 · 탐험 RPG",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07100a",
+  "theme_color": "#0c1711",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
