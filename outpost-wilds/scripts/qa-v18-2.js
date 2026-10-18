@@ -5,7 +5,7 @@ const {patchSource}=require(path.join(root,'server-v18-2.js'));
 const base=fs.readFileSync(path.join(root,'server-v13.js'),'utf8');
 const compiled=patchSource(base);new vm.Script(compiled,{filename:'server-v18-2.compiled.js'});
 for(const token of ["ratio>=.8?'#e25549':ratio>=.4?'#e9a33d':'#62b86f'","label:'거점 LV.2'","cost:{wood:70,stone:35,meat:18}","해금 조건 · ${label} ${cur}/${n}","missionFallback:'story>pads>base'"])assert(client.includes(token),`V18.2 client contract missing ${token}`);
-assert(client.includes("const y=s.y-30"),'carry bar must sit directly under HP bar');
+assert(/y\s*=\s*s\.y-30/.test(client),'carry bar must sit directly under HP bar');
 assert(client.includes("story.find(o=>o.id==='base')||pads.find(o=>o.id==='base')||v182BaseObjective()"),'base objective must have authoritative fallback');
 assert(client.includes("return[{id:'final',label:'최종 작전 준비'"),'empty mission payload must not become false completion');
 assert(compiled.includes('Outpost Wilds V18.2'),'server must identify V18.2');
