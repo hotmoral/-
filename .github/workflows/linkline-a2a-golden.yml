@@ -2,6 +2,11 @@ name: Linkline A2-A Golden
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - linkline/staging-structure-audit
+    paths:
+      - .github/workflows/linkline-a2a-golden.yml
 
 permissions:
   contents: read
