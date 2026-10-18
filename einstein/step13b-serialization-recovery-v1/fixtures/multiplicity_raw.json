@@ -1,0 +1,22 @@
+{
+  "payload": {
+    "R": "SYNTHETIC_R",
+    "A": "SYNTHETIC_A",
+    "N": "SYNTHETIC_N",
+    "historicalIdentity": "SYNTHETIC_HISTORICAL_IDENTITY",
+    "aggregate": {
+      "expandedCount": 512,
+      "generatedCount": 12000,
+      "distinctStateCount": 2677,
+      "frontierCount": 11490,
+      "completeness": "BUDGET_EXHAUSTED",
+      "conclusion": "UNKNOWN"
+    },
+    "historyMultiplicity": {
+      "arrivalCount": 12000,
+      "reconvergedTargetCount": 11868
+    }
+  },
+  "compile": {"elapsedSeconds": 6.5},
+  "execution": {"elapsedSeconds": 37.875}
+}
