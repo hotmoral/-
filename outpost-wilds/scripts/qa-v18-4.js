@@ -1,0 +1,14 @@
+const assert=require('assert'),fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.join(__dirname,'..');
+const client=fs.readFileSync(path.join(root,'public','patch-v18-4.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'public','patch-v18-4.css'),'utf8');
+const {patchSource}=require(path.join(root,'server-v18-4.js'));
+const base=fs.readFileSync(path.join(root,'server-v13.js'),'utf8');
+const compiled=patchSource(base);new vm.Script(compiled,{filename:'server-v18-4.compiled.js'});
+for(const token of ['NIGHT RAID · 침공 경보','거점으로 복귀 · 방벽과 방어 시설을 확인하세요','WAVE ${next}/${total} 접근 중','현재 파동을 제거해야 다음 단계로 넘어갑니다','FINAL NIGHT · 최고 경계','잔여'])assert(client.includes(token),`V18.4 raid HUD contract missing ${token}`);
+for(const token of ['v184WarningGlow','v184-raid-warning','v184Counter','body.v184-raid-active #bossHud','body.v184-raid-active.v183-boss-visible #toast'])assert(css.includes(token),`V18.4 CSS contract missing ${token}`);
+assert(compiled.includes("phase:'warning',stage:0,totalStages:3,timer:10"),'regular raid warning must be 10s');
+assert(compiled.includes("phase:'warning',stage:0,totalStages:5,timer:12"),'final night warning must be 12s');
+assert(compiled.includes("WAVE.timer=WAVE.final?6:5"),'raid intermissions must be 5s/6s');
+assert(compiled.includes('Outpost Wilds V18.4'),'server must identify V18.4');
+console.log('[QA V18.4] PASS · cinematic raid alert · 10s/12s countdowns · wave state HUD · 5s/6s intermissions · overlay collision lanes');
