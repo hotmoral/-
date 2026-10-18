@@ -9,7 +9,7 @@ const PORT=process.env.PORT||3000;
 const PUBLIC_DIR=path.join(__dirname,"public");
 const WORLD={w:8400,h:8400};
 const TICK_HZ=30;
-const SNAP_HZ=8;
+const SNAP_HZ=12;
 const MAX_PLAYERS=100;
 const LOCAL_RADIUS=1650;
 const ITEM_RADIUS=1450;
@@ -107,7 +107,7 @@ const server=http.createServer(async(req,res)=>{
   try{
     if(req.method==="GET"&&u.pathname==="/health"){
       const now=Date.now(),active=[...players.values()].filter(p=>p.alive&&now-p.lastSeen<60000);
-      return json(res,200,{ok:true,players:players.size,connected:streams.size,mobs:mobs.length,items:items.length,predators:mobs.filter(m=>m.role==="predator").length,apex:mobs.filter(m=>m.role==="apex").length,active:active.length,world:WORLD})
+      return json(res,200,{ok:true,players:players.size,connected:streams.size,mobs:mobs.length,items:items.length,predators:mobs.filter(m=>m.role==="predator").length,apex:mobs.filter(m=>m.role==="apex").length,active:active.length,world:WORLD,snapHz:SNAP_HZ})
     }
     if(req.method==="GET"&&u.pathname==="/events"){
       const id=u.searchParams.get("id"),p=players.get(id);
@@ -157,6 +157,13 @@ function killPlayer(victim,killer=null){
   if(killer){killer.kills++;killer.mass+=Math.max(2,victim.mass*.12)}
 }
 
+function consumeMob(p,m,index){
+  p.mass+=Math.max(1.2,m.mass*.105);p.eaten++;p[m.kind]+=1;
+  p.maxHp=100+p.armor*8+Math.log2(1+p.mass)*7;
+  p.hp=Math.min(p.maxHp,p.hp+5+Math.log2(1+m.mass));
+  mobs.splice(index,1);
+}
+
 function updatePlayer(p,dt){
   if(!p.alive)return;
   const r=visualRadius(p.mass),tier=evolutionTier(p.mass),maxSpeed=Math.max(82,166-tier*5)+speedBonus(p.speed);
@@ -167,13 +174,14 @@ function updatePlayer(p,dt){
 
   for(let i=mobs.length-1;i>=0;i--){
     const m=mobs[i],rr=r+visualRadius(m.mass)*.88;
-    if(d2(p,m)>rr*rr)continue;
-    if(m.mass<p.mass*attackEatRatio(p.attack)){
-      p.mass+=Math.max(1.2,m.mass*.105);p.eaten++;p[m.kind]+=1;
-      p.maxHp=100+p.armor*8+Math.log2(1+p.mass)*7;
-      p.hp=Math.min(p.maxHp,p.hp+5+Math.log2(1+m.mass));
-      mobs.splice(i,1);continue;
+    const edible=m.mass<p.mass*attackEatRatio(p.attack);
+    if(edible){
+      const relativeSpeed=Math.hypot(p.vx-m.vx,p.vy-m.vy);
+      const assist=24+Math.min(28,relativeSpeed*.10);
+      const eatR=rr+assist;
+      if(d2(p,m)<=eatR*eatR){consumeMob(p,m,i);continue}
     }
+    if(d2(p,m)>rr*rr)continue;
     if((m.role==="predator"||m.role==="apex")&&m.mass>p.mass*1.12){
       const danger=Math.min(3,m.mass/p.mass),damage=(7+danger*4)*(1-armorReduction(p.armor));
       p.hp-=damage*dt*1.65;
@@ -182,7 +190,7 @@ function updatePlayer(p,dt){
   }
 
   for(let i=items.length-1;i>=0;i--){
-    const it=items[i],rr=r+20;if(d2(p,it)>rr*rr)continue;
+    const it=items[i],rr=r+24;if(d2(p,it)>rr*rr)continue;
     if(it.kind==="heal")p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.32);
     else if(it.kind==="mutation"){p.attack++;p.speed++;p.armor++;p.maxHp=100+p.armor*8+Math.log2(1+p.mass)*7;p.hp=Math.min(p.maxHp,p.hp+14)}
     else{p[it.kind]++;if(it.kind==="armor"){p.maxHp=100+p.armor*8+Math.log2(1+p.mass)*7;p.hp=Math.min(p.maxHp,p.hp+9)}}
@@ -210,7 +218,7 @@ function updateMobs(dt){
       const dx=p.x-m.x,dy=p.y-m.y,d=Math.sqrt(dd)||1;
       const detect=m.role==="apex"?720:m.role==="predator"?620:420;
       if(d<detect){
-        if((m.role==="wild"||m.role==="prey")&&p.mass>m.mass*1.05){ax-=dx/d*145;ay-=dy/d*145;m.flee=.65}
+        if((m.role==="wild"||m.role==="prey")&&p.mass>m.mass*1.05){ax-=dx/d*132;ay-=dy/d*132;m.flee=.58}
         else if((m.role==="predator"||m.role==="apex")&&m.mass>p.mass*1.12){const chase=m.role==="apex"?82:64;ax+=dx/d*chase;ay+=dy/d*chase}
       }
     }
@@ -218,7 +226,7 @@ function updateMobs(dt){
     else{m.phase+=dt*(.55+(m.species+1)*.06);ax+=Math.cos(m.phase*1.7)*15;ay+=Math.sin(m.phase*1.31)*15}
     m.vx+=ax*dt;m.vy+=ay*dt;
     const boost=m.role==="apex"?22:m.role==="predator"?12:0;
-    const maxSpeed=44+Math.min(88,Math.log2(1+m.mass)*10)+boost+(m.flee>0?55:0),l=mag(m.vx,m.vy);
+    const maxSpeed=44+Math.min(88,Math.log2(1+m.mass)*10)+boost+(m.flee>0?44:0),l=mag(m.vx,m.vy);
     if(l>maxSpeed){m.vx=m.vx/l*maxSpeed;m.vy=m.vy/l*maxSpeed}
     m.vx*=Math.pow(.78,dt);m.vy*=Math.pow(.78,dt);m.x+=m.vx*dt;m.y+=m.vy*dt;
     if(m.x<mr||m.x>WORLD.w-mr){m.vx*=-1;m.x=clamp(m.x,mr,WORLD.w-mr)}
@@ -326,4 +334,4 @@ setInterval(()=>{
   for(const res of streams.values())try{res.write(`: ping ${now}\n\n`)}catch{}
 },15000);
 
-server.listen(PORT,"0.0.0.0",()=>console.log(`MicroEvo balanced smooth server on 0.0.0.0:${PORT}`));
+server.listen(PORT,"0.0.0.0",()=>console.log(`MicroEvo responsive-eat server on 0.0.0.0:${PORT}`));
