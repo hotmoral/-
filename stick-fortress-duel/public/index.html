@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
+<meta name="theme-color" content="#111827"/>
+<title>Stick Fortress Duel</title>
+<link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+<div id="home" class="home hidden">
+  <div class="hero-card">
+    <div class="eyebrow">1 : 1 ONLINE ARTILLERY DUEL</div>
+    <h1>STICK<br><span>FORTRESS</span></h1>
+    <p>바람을 읽고, 움직이고, 각도를 잡아 한 발을 꽂아 넣어라.</p>
+    <button id="createBtn" class="primary">새 대전방 만들기</button>
+    <div class="feature-row"><span>턴제</span><span>실시간 1:1</span><span>파괴 지형</span></div>
+  </div>
+</div>
+<div id="game" class="app hidden">
+  <header>
+    <div class="brand"><b>STICK</b> FORTRESS</div>
+    <div class="room-chip">ROOM <b id="roomCode">-----</b></div>
+    <button id="shareBtn" class="ghost">초대 링크</button>
+  </header>
+  <section class="scorebar">
+    <div class="fighter p1"><div class="avatar-dot"></div><div class="fighter-info"><strong>BLACK</strong><div class="hp"><i id="hp0"></i></div><small id="hpText0">100 HP</small></div></div>
+    <div class="roundbox"><small>ROUND <b id="round">1</b></small><strong id="turnText">상대 접속 대기</strong><div id="wind" class="wind">WIND —</div></div>
+    <div class="fighter p2"><div class="fighter-info right"><strong>WHITE</strong><div class="hp"><i id="hp1"></i></div><small id="hpText1">100 HP</small></div><div class="avatar-dot white"></div></div>
+  </section>
+  <main class="arena-wrap">
+    <canvas id="arena" width="1000" height="600"></canvas>
+    <div id="statusToast" class="toast">연결 중...</div>
+    <div id="result" class="result hidden"><small>MATCH RESULT</small><h2 id="resultTitle">VICTORY</h2><p id="resultSub"></p><button id="rematchBtn" class="primary">재대결</button></div>
+  </main>
+  <section class="control-panel">
+    <div class="move-block">
+      <div class="label"><span>MOVE</span><b id="moveLeft">70</b></div>
+      <div class="move-buttons"><button id="leftBtn">◀</button><button id="rightBtn">▶</button></div>
+    </div>
+    <div class="weapons" id="weapons">
+      <button data-w="knife" class="selected"><span>╱</span><b>투척칼</b><small>정밀</small></button>
+      <button data-w="grenade"><span>●</span><b>수류탄</b><small>폭발</small></button>
+      <button data-w="pistol"><span>⌁</span><b>권총</b><small>직선</small></button>
+      <button data-w="rifle"><span>━</span><b>소총</b><small>강타</small></button>
+    </div>
+    <div class="aim-block">
+      <div class="slider-row"><label>ANGLE <b id="angleVal">45°</b></label><input id="angle" type="range" min="5" max="85" value="45"></div>
+      <div class="slider-row"><label>POWER <b id="powerVal">65</b></label><input id="power" type="range" min="20" max="100" value="65"></div>
+    </div>
+    <button id="fireBtn" class="fire"><span>FIRE</span><small>발사</small></button>
+  </section>
+  <footer id="roleText">관전자로 연결 중...</footer>
+</div>
+<script src="/client.js"></script>
+</body>
+</html>
