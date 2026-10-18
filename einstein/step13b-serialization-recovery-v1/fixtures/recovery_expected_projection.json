@@ -1,0 +1,1 @@
+{"classification":"SYNTHETIC_RECOVERY_CLASS","comparator":{"baselineIdentity":"SYNTHETIC_BASELINE","sample":{"profile":{"maxDepth":100,"name":"SYNTHETIC_PROFILE"},"request":{"attempts":12,"size":5},"state":{"facts":[1,2,3],"valid":true}}}}
