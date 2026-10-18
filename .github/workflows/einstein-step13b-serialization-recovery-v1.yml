@@ -1,0 +1,36 @@
+name: Einstein Step13B serialization recovery contract v1
+
+on:
+  push:
+    branches:
+      - einstein/run-step13b-serialization-recovery-v1
+    paths:
+      - 'einstein/step13b-serialization-recovery-v1/**'
+      - '.github/workflows/einstein-step13b-serialization-recovery-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  serialization-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run synthetic serialization recovery contract
+        working-directory: einstein/step13b-serialization-recovery-v1
+        run: python3 contract_test.py
