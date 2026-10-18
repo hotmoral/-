@@ -1,0 +1,11 @@
+const assert=require('assert'),fs=require('fs'),path=require('path');
+const server=fs.readFileSync(path.join(__dirname,'..','server-v15.js'),'utf8');
+const client=fs.readFileSync(path.join(__dirname,'..','public','patch-v15.js'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'..','public','patch-v15.css'),'utf8');
+for(const token of ["lootTo:e.raid?'none':'carry'","Math.min(5,p.meat)","used*10"])assert(server.includes(token),`server V15 missing ${token}`);
+assert(!server.includes('storeRaidMeat(e'),'raid meat must not be routed into stockpile');
+for(const token of ['v15ChatFeed','v15PushChat','v15PadForeground','v6DrawPad=function','drawWeapon=function','v15LoadAsset'])assert(client.includes(token),`client V15 missing ${token}`);
+assert(css.includes('pointer-events:auto!important'),'ration button must receive touch input');
+assert(css.includes('.v15ChatFeed'),'closed chat feed styling missing');
+for(const file of ['tree-v15.svg','rock-v15.svg','ore-v15.svg','wolf-v15.svg','boar-v15.svg','beast-v15.svg','spear-v15.svg','spear2-v15.svg','bow-v15.svg','crossbow-v15.svg','repeater-v15.svg'])assert(fs.existsSync(path.join(__dirname,'..','public','assets',file)),`asset missing ${file}`);
+console.log('[QA V15] PASS · passive chat feed · foreground costs · touch-safe ration · raid meat disabled · image asset pass');
