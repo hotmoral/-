@@ -1,13 +1,7 @@
 name: Linkline A2-A Golden
-# one-time-bootstrap: 1
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - linkline/staging-structure-audit
-    paths:
-      - .github/workflows/linkline-a2a-golden.yml
 
 permissions:
   contents: read
