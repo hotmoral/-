@@ -1,10 +1,10 @@
 {
   "name": "outpost-wilds",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node server-v9.js"
+    "start": "node server-v10.js"
   },
   "dependencies": {
     "express": "^4.21.2",
