@@ -1,0 +1,10 @@
+/* V7 is movement-first. Actions happen automatically by proximity. */
+#attack,#craft,#deposit{display:none!important}
+#joystick{width:124px;height:124px;bottom:max(22px,calc(env(safe-area-inset-bottom) + 16px))}.stick{left:35px;top:35px}
+#contextHint.autoAction{background:#11170fd6;border-color:#d8b9782b;color:#f1dfbd}
+@media(max-width:720px){
+ #joystick{width:122px;height:122px;left:max(21px,env(safe-area-inset-left));bottom:max(22px,calc(env(safe-area-inset-bottom) + 16px))}.stick{left:34px;top:34px}
+ #contextHint{bottom:max(30px,calc(env(safe-area-inset-bottom) + 24px));left:auto;right:max(18px,env(safe-area-inset-right));transform:none;max-width:175px;font-size:8px}
+ .carry{bottom:max(26px,calc(env(safe-area-inset-bottom) + 20px));left:160px}
+}
+@media(pointer:fine){#desktopHelp{display:block}#joystick{opacity:.24}}
