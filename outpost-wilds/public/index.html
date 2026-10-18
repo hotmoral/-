@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
   <meta name="theme-color" content="#101813"/>
   <title>Outpost Wilds</title>
-  <link rel="stylesheet" href="/style-v3.css?v=4"/>
-  <link rel="stylesheet" href="/patch-v4.css?v=4"/>
+  <link rel="stylesheet" href="/style-v3.css?v=5"/>
+  <link rel="stylesheet" href="/patch-v4.css?v=5"/>
+  <link rel="stylesheet" href="/patch-v5.css?v=5"/>
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -17,10 +18,10 @@
       <div class="card baseCard"><span>공동 거점</span><div class="row"><b id="baseLv">LV.1</b><em id="weapon">조잡한 창</em></div><div class="bar hp"><i id="baseHp"></i></div></div>
       <div class="card phase"><span id="phaseLabel">낮</span><b id="clockLabel">☀ 탐험 · 채집</b></div>
     </div>
-    <div class="resources">
-      <div><span class="ico wood">▰</span><b id="wood">0</b><small>목재</small></div>
-      <div><span class="ico stone">◆</span><b id="stone">0</b><small>돌/광석</small></div>
-      <div><span class="ico meat">●</span><b id="meat">0</b><small>식량</small></div>
+    <div class="resources" aria-label="보유 자원">
+      <div class="resourceChip" title="목재"><img src="/assets/res-wood.svg" alt="목재"><b id="wood">0</b></div>
+      <div class="resourceChip" title="돌과 광석"><img src="/assets/res-stone.svg" alt="돌"><b id="stone">0</b></div>
+      <div class="resourceChip" title="식량"><img src="/assets/res-meat.svg" alt="식량"><b id="meat">0</b></div>
     </div>
     <div class="mission card" id="mission">
       <span>공동 목표</span>
@@ -32,17 +33,18 @@
       <span>개인 성장</span>
       <div class="personalRow"><b id="meritLabel">공헌도 0</b><em id="craftLabel">LV.2에서 강화 창</em></div>
     </div>
-    <div class="carry card"><span>짐</span><b id="carryLabel">0 / 40</b><div class="bar carryBar"><i id="carryFill"></i></div></div>
+    <div class="carry card"><span>짐</span><b id="carryLabel">0%</b><div class="bar carryBar"><i id="carryFill"></i></div></div>
     <div id="bossHud" class="bossHud"><span>황폐 경계의 우두머리</span><b>잿빛 포식자</b><div class="bar bossBar"><i id="bossFill"></i></div></div>
     <div id="toast"></div>
     <div id="contextHint"></div>
   </div>
   <div id="joystick"><div class="stick"><i></i></div></div>
-  <button id="attack"><span>⚔</span><small>길게 눌러 연속 공격·채집</small></button>
+  <button id="attack"><span>⚔</span><small>공격·채집</small></button>
   <button id="craft"><span>⌁</span><small>제작</small></button>
   <button id="deposit"><span>⌂</span><small>귀환</small></button>
-  <div id="desktopHelp">WASD 이동 · SPACE 공격/채집 · Q 제작 · E 거점 반납</div>
-  <script src="/game-v3.js?v=4"></script>
-  <script src="/patch-v4.js?v=4"></script>
+  <div id="desktopHelp">WASD 이동 · SPACE 길게 공격/채집 · Q 제작 · E 거점 반납</div>
+  <script src="/game-v3.js?v=5"></script>
+  <script src="/patch-v4.js?v=5"></script>
+  <script src="/patch-v5.js?v=5"></script>
 </body>
 </html>
