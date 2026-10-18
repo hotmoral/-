@@ -1,0 +1,12 @@
+/* V6 construction-pad UI. */
+#craft,#deposit{display:none!important}
+.personal{border-color:#b9d2a126;background:linear-gradient(180deg,#17231ae8,#0d1510e5)}
+.costs{align-items:center;gap:7px}.costs i{display:inline-flex;align-items:center;gap:2px;font-style:normal}.costs i img{width:18px;height:18px;object-fit:contain;filter:drop-shadow(0 2px 3px #0008)}.costs i b{font-size:10px}.costs .done{opacity:.4;text-decoration:none}
+#contextHint{font-weight:650;letter-spacing:0;background:#09100de8;border-color:#e8c47a30;box-shadow:0 6px 24px #0007}
+.mission{border-color:#e4b86c24}
+@media(max-width:720px){
+ .mission{width:176px}.costs{gap:5px;margin-top:3px}.costs i img{width:16px;height:16px}.costs i b{font-size:9px}
+ .personal{width:154px}.personal b{font-size:9px}.personal em{font-size:7px}
+ #contextHint{bottom:max(115px,calc(env(safe-area-inset-bottom) + 109px));max-width:72vw;font-size:9px;padding:6px 9px}
+ #attack{right:max(20px,env(safe-area-inset-right));width:90px;height:90px}
+}
