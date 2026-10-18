@@ -28,7 +28,7 @@ function patchSource(input){
     .replace(/Outpost Wilds V18\.4/g,'Outpost Wilds V18.5')
     .replace(/V18\.4 bootstrap failed/g,'V18.5 bootstrap failed');
 
-  const rangeDefs=`\nconst V185_WEAPON_RANGES=[null,\n {attack:96,gather:88},\n {attack:104,gather:94},\n {attack:112,gather:100},\n {attack:118,gather:122},\n {attack:126,gather:108},\n {attack:138,gather:114},\n {attack:140,gather:132},\n {attack:154,gather:122},\n {attack:170,gather:130},\n {attack:188,gather:138},\n {attack:210,gather:146},\n {attack:360,gather:190},\n {attack:400,gather:210},\n {attack:440,gather:230},\n {attack:480,gather:250},\n {attack:525,gather:275}\n];\n`;
+  const rangeDefs=`\nconst V185_WEAPON_RANGES=[null,\n {attack:96,gather:88},\n {attack:104,gather:94},\n {attack:112,gather:100},\n {attack:118,gather:120},\n {attack:126,gather:108},\n {attack:138,gather:114},\n {attack:140,gather:132},\n {attack:154,gather:124},\n {attack:170,gather:130},\n {attack:188,gather:138},\n {attack:210,gather:146},\n {attack:360,gather:190},\n {attack:400,gather:210},\n {attack:440,gather:230},\n {attack:480,gather:250},\n {attack:525,gather:275}\n];\n`;
   src=insertBefore(src,'function weaponInfo()',rangeDefs,'range definitions');
 
   src=replaceFunction(src,'weaponInfo',`function weaponInfo(){const idx=clamp(Number(SHARED_WEAPON.tier)||1,1,V18_WEAPONS.length-1),d=V18_WEAPONS[idx],r=V185_WEAPON_RANGES[idx]||V185_WEAPON_RANGES[1],w={...d};w.damage=d.damage+facilityLevels.forge*2;w.attackRange=r.attack;w.autoRange=r.attack;w.range=r.attack;w.gatherRange=r.gather;w.level=1;w.tier=idx;w.display=d.name;return w}`);
