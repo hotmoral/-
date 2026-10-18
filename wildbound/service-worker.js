@@ -1,8 +1,5 @@
-const CACHE='wildbound-v2';
-const CORE=['./','./index.html','./styles.css','./game.js','./manifest.webmanifest','./icon.svg'];
+const CACHE='wildbound-v3';
+const CORE=['./','./index.html','./styles.css','./game.js','./manifest.webmanifest','./icon.svg','./wb3-0.dat','./wb3-1.dat','./wb3-2.dat','./wb3-3.dat','./wb3-4.dat'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET') return;
-  e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return res;}).catch(()=>caches.match('./index.html'))));
-});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;e.respondWith(fetch(e.request).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return res}).catch(()=>caches.match(e.request).then(c=>c||caches.match('./index.html'))))});
