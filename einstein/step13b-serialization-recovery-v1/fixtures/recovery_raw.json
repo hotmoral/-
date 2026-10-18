@@ -1,0 +1,18 @@
+{
+  "classification": "SYNTHETIC_RECOVERY_CLASS",
+  "comparator": {
+    "baselineIdentity": "SYNTHETIC_BASELINE",
+    "sample": {
+      "request": {"size": 5, "attempts": 12},
+      "profile": {"name": "SYNTHETIC_PROFILE", "maxDepth": 100},
+      "state": {"facts": [1, 2, 3], "valid": true}
+    }
+  },
+  "runs": [
+    {"operational": {"elapsedSeconds": 17.125}},
+    {"operational": {"elapsedSeconds": 32.5}}
+  ],
+  "validations": [
+    {"elapsedSeconds": 6.75}
+  ]
+}
