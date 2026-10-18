@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
   <meta name="theme-color" content="#101813"/>
   <title>Outpost Wilds</title>
-  <link rel="stylesheet" href="/style-v3.css?v=9"/>
-  <link rel="stylesheet" href="/patch-v4.css?v=9"/>
-  <link rel="stylesheet" href="/patch-v5.css?v=9"/>
-  <link rel="stylesheet" href="/patch-v6.css?v=9"/>
-  <link rel="stylesheet" href="/patch-v7.css?v=9"/>
+  <link rel="stylesheet" href="/style-v3.css?v=10"/>
+  <link rel="stylesheet" href="/patch-v4.css?v=10"/>
+  <link rel="stylesheet" href="/patch-v5.css?v=10"/>
+  <link rel="stylesheet" href="/patch-v6.css?v=10"/>
+  <link rel="stylesheet" href="/patch-v7.css?v=10"/>
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -17,7 +17,7 @@
     <div class="brand"><b>OUTPOST WILDS</b><span id="online">공동 월드 연결 중…</span></div>
     <div id="zoneBadge" class="zoneBadge"><span>개척 거점</span><small>안전지대</small></div>
     <div class="topcards">
-      <div class="card baseCard"><span>공동 거점</span><div class="row"><b id="baseLv">LV.1</b><em id="weapon">조잡한 창</em></div><div class="bar hp"><i id="baseHp"></i></div></div>
+      <div class="card baseCard"><span>공동 거점</span><div class="row"><b id="baseLv">LV.1</b><em id="weapon">조잡한 창 LV.1</em></div><div class="bar hp"><i id="baseHp"></i></div></div>
       <div class="card phase"><span id="phaseLabel">낮</span><b id="clockLabel">☀ 탐험 · 채집</b></div>
     </div>
     <div class="resources" aria-label="보유 자원">
@@ -32,23 +32,24 @@
       <div class="bar missionBar"><i id="missionFill"></i></div>
     </div>
     <div class="personal card">
-      <span>개인 장비</span>
-      <div class="personalRow"><b id="meritLabel">장비 · 조잡한 창</b><em id="craftLabel">장비 강화 칸에서 자원 투입</em></div>
+      <span>공용 무기</span>
+      <div class="personalRow"><b id="meritLabel">공용 · 조잡한 창 LV.1</b><em id="craftLabel">공용 무기 강화 칸에서 자원 투입</em></div>
     </div>
     <div class="carry card"><span>짐</span><b id="carryLabel">0%</b><div class="bar carryBar"><i id="carryFill"></i></div></div>
-    <div id="bossHud" class="bossHud"><span>황폐 경계의 우두머리</span><b>잿빛 포식자</b><div class="bar bossBar"><i id="bossFill"></i></div></div>
+    <div id="bossHud" class="bossHud"><span>우두머리 습격</span><b>우두머리</b><div class="bar bossBar"><i id="bossFill"></i></div></div>
     <div id="toast"></div>
     <div id="contextHint"></div>
   </div>
   <div id="joystick"><div class="stick"><i></i></div></div>
-  <div id="desktopHelp">WASD 이동 · 자동 전투/채집 · 건물/거점 칸 위 자동 투자 · 가까이 가면 선행조건 표시</div>
-  <script src="/game-v3.js?v=9"></script>
-  <script src="/patch-v4.js?v=9"></script>
-  <script src="/patch-v5.js?v=9"></script>
-  <script src="/patch-v6.js?v=9"></script>
-  <script src="/patch-v6-sync.js?v=9"></script>
-  <script src="/patch-v7.js?v=9"></script>
-  <script src="/patch-v8.js?v=9"></script>
-  <script src="/patch-v9.js?v=9"></script>
+  <div id="desktopHelp">WASD 이동 · 자동 전투/채집 · 공용 무기/건물/거점 칸 위 자동 투자 · 적은 거점을 향해 진격</div>
+  <script src="/game-v3.js?v=10"></script>
+  <script src="/patch-v4.js?v=10"></script>
+  <script src="/patch-v5.js?v=10"></script>
+  <script src="/patch-v6.js?v=10"></script>
+  <script src="/patch-v6-sync.js?v=10"></script>
+  <script src="/patch-v7.js?v=10"></script>
+  <script src="/patch-v8.js?v=10"></script>
+  <script src="/patch-v9.js?v=10"></script>
+  <script src="/patch-v10.js?v=10"></script>
 </body>
 </html>
