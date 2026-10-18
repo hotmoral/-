@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
+  <meta name="theme-color" content="#101813"/>
+  <title>Outpost Wilds</title>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="hud">
+    <div class="brand"><b>OUTPOST WILDS</b><span id="online">접속 중…</span></div>
+    <div class="topcards">
+      <div class="card"><span>거점</span><b id="baseLv">LV.1</b><div class="bar"><i id="baseHp"></i></div></div>
+      <div class="card phase"><span id="phaseLabel">낮</span><b id="clockLabel">☀ 탐험 시간</b></div>
+    </div>
+    <div class="resources">
+      <div><span class="ico wood">▰</span><b id="wood">0</b><small>목재</small></div>
+      <div><span class="ico stone">◆</span><b id="stone">0</b><small>돌</small></div>
+      <div><span class="ico meat">●</span><b id="meat">0</b><small>식량</small></div>
+    </div>
+    <div id="toast"></div>
+  </div>
+  <div id="joystick"><div class="stick"></div></div>
+  <button id="attack"><span>⚔</span><small>공격 / 채집</small></button>
+  <button id="deposit"><span>⌂</span><small>반납</small></button>
+  <div id="desktopHelp">WASD 이동 · SPACE 공격 · E 반납</div>
+  <script src="/game.js"></script>
+</body>
+</html>
