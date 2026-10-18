@@ -13,7 +13,7 @@ const SNAP_HZ=12;
 const MAX_PLAYERS=100;
 const LOCAL_RADIUS=1700;
 const ITEM_RADIUS=1450;
-const PREDATOR_TARGET=2;
+const BASE_PREDATOR_TARGET=2;
 
 const players=new Map();
 const streams=new Map();
@@ -50,7 +50,8 @@ function traitForArchetype(archetype){return TRAIT_BY_ARCHETYPE[archetype]||TRAI
 function makeMobAt(x,y,mass,role="wild",targetId=null,archetype=null){const arch=archetype||role;return{id:`m${mobSeq++}`,x,y,prevX:x,prevY:y,vx:rand(-18,18),vy:rand(-18,18),mass:Math.max(2,mass),role,targetId,archetype:arch,kind:traitForArchetype(arch),species:(rand(0,9)|0),phase:rand(0,Math.PI*2),flee:0,bornAt:nowMs()}}
 function spawnWild(){const p=randomPoint(),mass=rand(3,58)*rand(.68,1.26);mobs.push(makeMobAt(p.x,p.y,mass,"wild",null,randomGrazerType()))}
 function spawnPrey(p){const q=pointAround(p,220,980),tier=evolutionTier(p.mass),arch=(tier>=6&&Math.random()<.28)?"colony":(tier>=3&&Math.random()<.38)?"tendril":randomGrazerType();mobs.push(makeMobAt(q.x,q.y,Math.max(2,p.mass*rand(.14,.68)),"prey",p.id,arch))}
-function spawnPredator(p){const q=pointAround(p,760,1200),tier=evolutionTier(p.mass),mult=tier>=7?rand(1.18,1.42):rand(1.30,1.58);mobs.push(makeMobAt(q.x,q.y,p.mass*mult,"predator",p.id,randomPredatorType()))}
+function predatorTargetFor(p){const t=evolutionTier(p.mass);return t<2?2:t<5?3:4}
+function spawnPredator(p){const q=pointAround(p,680,1120),tier=evolutionTier(p.mass),mult=tier>=7?rand(1.20,1.46):tier>=4?rand(1.26,1.52):rand(1.32,1.60);mobs.push(makeMobAt(q.x,q.y,p.mass*mult,"predator",p.id,randomPredatorType()))}
 function spawnApex(p){const q=pointAround(p,1450,2100);mobs.push(makeMobAt(q.x,q.y,p.mass*rand(1.85,2.30),"apex",p.id,"apex"))}
 function makeItemNear(base=null){const p=base?pointAround(base,220,900):randomPoint();const r=Math.random(),kind=r<.28?"attack":r<.56?"speed":r<.84?"armor":r<.94?"heal":"mutation";return{id:`i${itemSeq++}`,x:p.x,y:p.y,kind}}
 for(let i=0;i<72;i++)spawnWild();
@@ -71,7 +72,7 @@ const server=http.createServer(async(req,res)=>{
   try{
     if(req.method==="GET"&&u.pathname==="/health"){
       const now=nowMs(),active=[...players.values()].filter(p=>p.alive&&now-p.lastSeen<60000);
-      return json(res,200,{ok:true,version:10,players:players.size,connected:streams.size,mobs:mobs.length,items:items.length,predators:mobs.filter(m=>m.role==="predator").length,apex:mobs.filter(m=>m.role==="apex").length,active:active.length,world:WORLD})
+      return json(res,200,{ok:true,version:11,players:players.size,connected:streams.size,mobs:mobs.length,items:items.length,predators:mobs.filter(m=>m.role==="predator").length,apex:mobs.filter(m=>m.role==="apex").length,active:active.length,world:WORLD})
     }
     if(req.method==="GET"&&u.pathname==="/events"){
       const id=u.searchParams.get("id"),p=players.get(id);if(!p)return json(res,404,{error:"unknown player"});const old=streams.get(id);if(old){try{old.end()}catch{}}
@@ -139,7 +140,7 @@ function updateMobs(dt){
   }
 }
 function removeMobById(id){const i=mobs.findIndex(m=>m.id===id);if(i>=0)mobs.splice(i,1)}
-function retireIfOutgrown(m,p){if(!p||!(m.role==="predator"||m.role==="apex"))return false;const edible=mobEdibleBy(p,m);if(edible){m.role="prey";m.targetId=p.id;m.flee=.8;return true}return false}
+function retireIfOutgrown(m,p){if(!p||!(m.role==="predator"||m.role==="apex"))return false;const edible=mobEdibleBy(p,m);if(edible){m.role="prey";m.targetId=p.id;m.flee=.8;p.nextPredatorAt=0;return true}return false}
 
 setInterval(()=>{
   const now=nowMs(),alive=[...players.values()].filter(p=>p.alive&&now-p.lastSeen<60000),activeIds=new Set(alive.map(p=>p.id));
@@ -147,9 +148,22 @@ setInterval(()=>{
   for(const m of mobs){if((m.role==="predator"||m.role==="apex")&&m.targetId){const t=players.get(m.targetId);if(!t||!activeIds.has(m.targetId)){m.role="wild";m.targetId=null}else retireIfOutgrown(m,t)}}
 
   for(const p of alive){
+    const target=predatorTargetFor(p);
     const threats=mobs.filter(m=>m.role==="predator"&&m.targetId===p.id&&!mobEdibleBy(p,m));
-    if(threats.length<PREDATOR_TARGET&&now>=p.nextPredatorAt){spawnPredator(p);p.nextPredatorAt=now+2800+rand(0,1800)}
-    if(threats.length>PREDATOR_TARGET){for(let i=PREDATOR_TARGET;i<threats.length;i++){threats[i].role="wild";threats[i].targetId=null}}
+    if(threats.length<target&&now>=p.nextPredatorAt){
+      const add=Math.min(2,target-threats.length);
+      for(let i=0;i<add;i++)spawnPredator(p);
+      p.nextPredatorAt=now+1200+rand(0,900);
+    }
+    if(threats.length>target){for(let i=target;i<threats.length;i++){threats[i].role="wild";threats[i].targetId=null}}
+    for(const m of threats){
+      const dd=d2(m,p);
+      if(dd>sqr(1750)){const q=pointAround(p,760,1180);m.x=q.x;m.y=q.y;m.prevX=q.x;m.prevY=q.y;m.vx=m.vy=0}
+    }
+    let nearbyLarge=0;
+    for(const m of mobs)if(m.mass>p.mass*1.08&&d2(m,p)<sqr(1450))nearbyLarge++;
+    const desiredNearby=Math.min(4,target+1);
+    if(nearbyLarge<desiredNearby&&now>=p.nextPredatorAt-350){spawnPredator(p)}
 
     let prey=0,pickups=0;for(const m of mobs)if((m.role==="prey"||m.role==="wild")&&mobEdibleBy(p,m)&&d2(m,p)<sqr(1150))prey++;for(const it of items)if(d2(it,p)<sqr(1050))pickups++;for(let i=0;i<Math.min(5,Math.max(0,11-prey));i++)spawnPrey(p);while(pickups<3){items.push(makeItemNear(p));pickups++}
   }
@@ -167,4 +181,4 @@ function playerDto(p){return{id:p.id,name:p.name,x:p.x,y:p.y,vx:p.vx,vy:p.vy,mas
 function mobDto(m){return{id:m.id,x:m.x,y:m.y,vx:m.vx,vy:m.vy,mass:m.mass,role:m.role,archetype:m.archetype,kind:m.kind,species:m.species,flee:m.flee>0,targetId:m.targetId}}
 setInterval(()=>{const now=nowMs(),activePlayers=[...players.values()].filter(p=>now-p.lastSeen<60000),playersLite=activePlayers.map(playerDto);for(const [id,res] of streams){const p=players.get(id);if(!p)continue;const localMobs=[],radarPredators=[];for(const m of mobs){const dd=d2(p,m);if(dd<sqr(LOCAL_RADIUS))localMobs.push(mobDto(m));if(m.mass>p.mass*1.08&&radarPredators.length<18)radarPredators.push({id:m.id,x:m.x,y:m.y,mass:m.mass,role:m.role==="apex"?"apex":"predator",targetId:m.targetId})}const localItems=[];for(const it of items)if(d2(p,it)<sqr(ITEM_RADIUS))localItems.push(it);const payload=JSON.stringify({t:now,players:playersLite,mobs:localMobs,items:localItems,predators:radarPredators,snapHz:SNAP_HZ});try{res.write(`data: ${payload}\n\n`)}catch{streams.delete(id)}}},1000/SNAP_HZ);
 setInterval(()=>{const now=nowMs();for(const [id,p] of players)if(!p.connected&&now-p.lastSeen>60000){players.delete(id);const s=streams.get(id);if(s){try{s.end()}catch{}streams.delete(id)}}for(const res of streams.values())try{res.write(`: ping ${now}\n\n`)}catch{}},15000);
-server.listen(PORT,"0.0.0.0",()=>console.log(`MicroEvo v10 diet evolution server on 0.0.0.0:${PORT}`));
+server.listen(PORT,"0.0.0.0",()=>console.log(`MicroEvo v11 motion-threat server on 0.0.0.0:${PORT}`));
