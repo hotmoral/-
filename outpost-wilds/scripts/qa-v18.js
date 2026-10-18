@@ -1,6 +1,7 @@
 const assert=require('assert'),fs=require('fs'),path=require('path'),vm=require('vm');
 const root=path.join(__dirname,'..');
 const client=fs.readFileSync(path.join(root,'public','patch-v18.js'),'utf8');
+const artfix=fs.readFileSync(path.join(root,'public','patch-v18-artfix.js'),'utf8');
 const css=fs.readFileSync(path.join(root,'public','patch-v18.css'),'utf8');
 const {patchSource}=require(path.join(root,'server-v18.js'));
 const base=fs.readFileSync(path.join(root,'server-v13.js'),'utf8');
@@ -12,8 +13,9 @@ for(const token of ['v18DrawActionRanges','v18DrawPadGround','v18DrawPadForegrou
 const worldIdx=client.indexOf("for(const d of world)");const playerIdx=client.indexOf('drawPlayer(me,true,t)');assert(worldIdx>=0&&playerIdx>worldIdx,'local player must render after world objects');
 assert(client.includes("return v6AllPads().filter"),'mission panel needs pads fallback');
 assert(css.includes('body.v18-chat-open #eatMeat'),'chat must hide meat action button');
-const required=['player.png','tree.png','rock.png','ore.png','berry.png','wolf.png','boar.png','brute.png','direwolf.png','tusker.png','mauler.png','siegebeast.png','alpha.png','broodmother.png','colossus.png','overlord.png','stockpile.png','signal.png'];
-for(let i=1;i<=16;i++)required.push(`weapon-${String(i).padStart(2,'0')}.png`);for(let i=1;i<=6;i++)required.push(`base-${i}.png`);for(const fid of ['workshop','storage','farm','watchtower','forge','infirmary','turret','turret2','wall'])for(let lv=1;lv<=3;lv++)required.push(`${fid}-${lv}.png`);
+assert(artfix.includes("replace(/\\.png$/i,'.svg')"),'V18 generated SVG binding missing');
+const required=['player.svg','tree.svg','rock.svg','ore.svg','berry.svg','wolf.svg','boar.svg','brute.svg','direwolf.svg','tusker.svg','mauler.svg','siegebeast.svg','alpha.svg','broodmother.svg','colossus.svg','overlord.svg','stockpile.svg','signal.svg'];
+for(let i=1;i<=16;i++)required.push(`weapon-${String(i).padStart(2,'0')}.svg`);for(let i=1;i<=6;i++)required.push(`base-${i}.svg`);for(const fid of ['workshop','storage','farm','watchtower','forge','infirmary','turret','turret2','wall'])for(let lv=1;lv<=3;lv++)required.push(`${fid}-${lv}.svg`);
 for(const f of required)assert(fs.existsSync(path.join(root,'public','assets','v18',f)),`missing V18 image asset ${f}`);
 assert(fs.existsSync(path.join(root,'docs','CORE_INTERACTION_CONTRACT_V18.md')),'missing core render contract document');
-console.log(`[QA V18] PASS · immutable ranges/pads · nonblank missions · nickname gate · ghost player · foreground avatar · 16-weapon lineage · ${required.length} independent raster assets`);
+console.log(`[QA V18] PASS · immutable ranges/pads · nonblank missions · nickname gate · ghost player · foreground avatar · 16-weapon lineage · ${required.length} independent transparent SVG assets`);
