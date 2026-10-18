@@ -1,13 +1,15 @@
 {
   "name": "outpost-wilds",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node server-v10.js"
+    "qa": "node scripts/qa-v11.js",
+    "start": "npm run qa && node server-v11.js"
   },
   "dependencies": {
     "express": "^4.21.2",
+    "pg": "^8.16.3",
     "ws": "^8.18.0"
   }
 }
