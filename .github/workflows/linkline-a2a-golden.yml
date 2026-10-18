@@ -1,0 +1,76 @@
+name: Linkline A2-A Golden
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  golden:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Verify bundle identity
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          test "$(git hash-object linkline/reference/m2_state_model.py)" = "c2bf85974d317eb18a8b02a1ac4ee7eb244fcb77"
+          test "$(git hash-object linkline/reference/m3_solver.py)" = "16b170656bbdffa8e836a891ffbf221de6c2935f"
+          test "$(git hash-object linkline/tests/oracles/a2_cognitive_oracle.py)" = "ce809e893543fc7dc47ee729e81699dc81a77624"
+          test "$(git hash-object linkline/tests/fixtures/a2_cognitive_golden_v1.json)" = "b9b739bbea6d79ad34def4b0806a8fbfa1f6e872"
+          test "$(git hash-object linkline/tests/test_a2_cognitive_oracle.py)" = "f9720adfc3dc3015e8a904d84779e36e006d344d"
+          sha256sum \
+            linkline/reference/m2_state_model.py \
+            linkline/reference/m3_solver.py \
+            linkline/tests/oracles/a2_cognitive_oracle.py \
+            linkline/tests/fixtures/a2_cognitive_golden_v1.json \
+            linkline/tests/test_a2_cognitive_oracle.py
+
+      - name: Validate seed 1
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+        run: |
+          set -euo pipefail
+          python --version
+          python -m unittest tests.test_a2_cognitive_oracle -v
+
+      - name: Validate seed 777
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "777"
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_a2_cognitive_oracle -v
+
+      - name: Report payload fingerprint
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from tests.oracles.a2_cognitive_oracle import fingerprint, golden_payload
+          value = fingerprint(golden_payload())
+          expected = "198e1418691e29b8560c0b38270c69c8226034ae439fc6d66d6e02b866772d18"
+          print(f"payload_fingerprint={value}")
+          if value != expected:
+              raise SystemExit("payload fingerprint mismatch")
+          PY
