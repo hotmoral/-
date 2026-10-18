@@ -1,11 +1,11 @@
 {
   "name": "outpost-wilds",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "qa": "node scripts/qa-v11.js && node scripts/qa-v12.js && node scripts/qa-v13.js && node scripts/qa-v14.js && node scripts/qa-v15.js && node scripts/qa-v16.js",
-    "start": "npm run qa && node server-v16.js"
+    "qa": "node scripts/qa-v11.js && node scripts/qa-v12.js && node scripts/qa-v13.js && node scripts/qa-v14.js && node scripts/qa-v15.js && node scripts/qa-v16.js && node scripts/qa-v17.js",
+    "start": "npm run qa && node server-v17.js"
   },
   "dependencies": {
     "express": "^4.21.2",
