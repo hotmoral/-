@@ -10,9 +10,9 @@
 <body>
   <canvas id="game"></canvas>
   <div id="hud">
-    <div class="brand"><b>OUTPOST WILDS</b><span id="online">접속 중…</span></div>
+    <div class="brand"><b>OUTPOST WILDS</b><span id="online">공동 월드 연결 중…</span></div>
     <div class="topcards">
-      <div class="card"><span>거점</span><b id="baseLv">LV.1</b><div class="bar"><i id="baseHp"></i></div></div>
+      <div class="card baseCard"><span>공동 거점</span><div class="row"><b id="baseLv">LV.1</b><em id="weapon">조잡한 창</em></div><div class="bar hp"><i id="baseHp"></i></div></div>
       <div class="card phase"><span id="phaseLabel">낮</span><b id="clockLabel">☀ 탐험 시간</b></div>
     </div>
     <div class="resources">
@@ -20,12 +20,20 @@
       <div><span class="ico stone">◆</span><b id="stone">0</b><small>돌</small></div>
       <div><span class="ico meat">●</span><b id="meat">0</b><small>식량</small></div>
     </div>
+    <div class="mission card" id="mission">
+      <span>공동 목표</span>
+      <b id="missionTitle">야영지를 강화하세요</b>
+      <div id="missionCost" class="costs"></div>
+      <div class="bar missionBar"><i id="missionFill"></i></div>
+    </div>
+    <div class="carry card"><span>짐</span><b id="carryLabel">0 / 40</b><div class="bar carryBar"><i id="carryFill"></i></div></div>
     <div id="toast"></div>
+    <div id="contextHint"></div>
   </div>
-  <div id="joystick"><div class="stick"></div></div>
-  <button id="attack"><span>⚔</span><small>공격 / 채집</small></button>
-  <button id="deposit"><span>⌂</span><small>반납</small></button>
-  <div id="desktopHelp">WASD 이동 · SPACE 공격 · E 반납</div>
+  <div id="joystick"><div class="stick"><i></i></div></div>
+  <button id="attack"><span>⚔</span><small>공격 · 채집</small></button>
+  <button id="deposit"><span>⌂</span><small>귀환</small></button>
+  <div id="desktopHelp">WASD 이동 · SPACE 공격/채집 · E 거점 반납</div>
   <script src="/game.js"></script>
 </body>
 </html>
