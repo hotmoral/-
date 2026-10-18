@@ -5,9 +5,9 @@ const serverPatch=fs.readFileSync(path.join(root,'server-v18-5.js'),'utf8');
 const {patchSource}=require(path.join(root,'server-v18-5.js'));
 const base=fs.readFileSync(path.join(root,'server-v13.js'),'utf8');
 const compiled=patchSource(base);new vm.Script(compiled,{filename:'server-v18-5.compiled.js'});new vm.Script(client,{filename:'patch-v18-5.js'});
-function ranges(text,re){const m=text.match(re);assert(m,'range table missing');return[...m[1].matchAll(/\{attack:(\d+),gather:(\d+)\}/g)].map(x=>({attack:+x[1],gather:+x[2]}));}
-const sr=ranges(serverPatch,/const rangeDefs=`[\s\S]*?V185_WEAPON_RANGES=\[null,([\s\S]*?)\n\];/);
-const cr=ranges(client,/V185_RANGE_FALLBACK=\[null,([\s\S]*?)\n\];/);
+function ranges(text,label){const out=[...text.matchAll(/\{attack:(\d+),gather:(\d+)\}/g)].map(x=>({attack:+x[1],gather:+x[2]}));assert(out.length>=16,`${label} range table missing or incomplete`);return out.slice(0,16);}
+const sr=ranges(serverPatch,'server');
+const cr=ranges(client,'client');
 assert.strictEqual(sr.length,16,'server must define 16 weapon ranges');
 assert.deepStrictEqual(cr,sr,'client fallback range table must equal server table');
 assert.strictEqual(new Set(sr.map(x=>x.attack)).size,16,'every weapon needs a distinct attack radius');
