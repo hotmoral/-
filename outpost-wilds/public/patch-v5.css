@@ -1,0 +1,26 @@
+/* V5 visual pass: icon-first HUD, softer survival-game materials, less prototype geometry. */
+:root{--panel:#0c1510de;--edge:#d7c39522;--warm:#d7ae68;--ink:#f7eedc}
+.card,.resources,.zoneBadge,#toast,#contextHint{background:radial-gradient(circle at 22% 0%,#293328d9 0,#121b15e8 44%,#09100cE8 100%);border-color:var(--edge);box-shadow:0 10px 26px #0006,inset 0 1px #fff1}
+.card{border-radius:18px 12px 18px 12px}.zoneBadge{border-radius:20px 13px 20px 13px}.resources{border-radius:20px 14px 20px 14px}
+.resources{display:flex;align-items:center;padding:5px 7px;gap:5px}
+.resources .resourceChip{display:flex;align-items:center;gap:2px;min-width:auto;padding:2px 7px 2px 3px;border-radius:15px 10px 15px 10px;background:linear-gradient(145deg,#ffffff08,#00000018);border:1px solid #ffffff0d;transition:transform .16s,filter .16s}
+.resources .resourceChip img{width:29px;height:29px;display:block;object-fit:contain;filter:drop-shadow(0 2px 3px #0008)}
+.resources .resourceChip b{font-size:14px;line-height:1;color:#fff1d7;min-width:19px;text-align:center;font-variant-numeric:tabular-nums}
+.resources .resourceChip.gain{animation:v5gain .34s ease-out}@keyframes v5gain{0%{transform:scale(1)}40%{transform:scale(1.18);filter:brightness(1.3)}100%{transform:scale(1)}}
+.costs{align-items:center}.costs i{display:inline-flex;align-items:center;gap:2px;font-style:normal;padding:1px 4px;border-radius:10px;background:#ffffff08}.costs i img{width:16px;height:16px;object-fit:contain}.costs i b{font-size:8px;font-weight:750;white-space:nowrap}.costs i.done{opacity:.45;text-decoration:none;filter:saturate(.35)}
+.carry{overflow:hidden}.carry:after{content:"";position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg,#86ad76,#d2b062 65%,#bb6755);transform-origin:left;transform:scaleX(var(--load,0));transition:transform .18s ease}.carry .bar{display:none}.carry b{font-variant-numeric:tabular-nums}
+#toast.iconToast{padding:6px 9px}.resourceToast{display:flex;gap:7px;align-items:center}.resourceToast span{display:flex;align-items:center;gap:1px;padding:2px 6px 2px 2px;border-radius:14px 9px 14px 9px;background:#ffffff09}.resourceToast img{width:26px;height:26px}.resourceToast b{font-size:12px;color:#fff0d2}
+#attack{border-radius:48% 52% 46% 54%/53% 45% 55% 47%;background:radial-gradient(circle at 35% 26%,#a15a43 0,#73382d 35%,#3e211b 78%);border:1px solid #f0c4a11f}#deposit{border-radius:52% 48% 55% 45%/46% 54% 48% 52%;background:radial-gradient(circle at 32% 27%,#6b835b,#405739 45%,#243426 80%)}#craft{border-radius:46% 54% 49% 51%/56% 45% 55% 44%;background:radial-gradient(circle at 34% 25%,#887655,#5c4c35 45%,#30291f 82%)}
+#attack.holding{animation:v5hold .48s ease-in-out infinite alternate}@keyframes v5hold{from{transform:scale(.96);filter:brightness(1.04)}to{transform:scale(1.01);filter:brightness(1.22)}}
+#attack small{font-size:8px;max-width:64px}.brand,.zoneBadge,.topcards,.mission,.personal,.carry,.resources{backdrop-filter:blur(7px)}
+@media(max-width:720px){
+  .resources{top:max(48px,calc(env(safe-area-inset-top) + 48px));padding:3px 5px;gap:3px}
+  .resources .resourceChip{padding:1px 5px 1px 2px;gap:1px}.resources .resourceChip img{width:25px;height:25px}.resources .resourceChip b{font-size:12px;min-width:17px}
+  .mission{top:max(82px,calc(env(safe-area-inset-top) + 82px));width:156px}.personal{top:max(82px,calc(env(safe-area-inset-top) + 82px));width:143px}
+  .costs{gap:3px}.costs i{padding:0 2px}.costs i img{width:13px;height:13px}.costs i b{font-size:6.8px}
+  .mission b{font-size:8.5px}.personal b{font-size:8.5px}.personal em{font-size:6.8px}
+  .carry{bottom:max(151px,calc(env(safe-area-inset-bottom) + 145px));width:67px;padding:5px 7px}.carry span{display:none}.carry b{font-size:9px;text-align:center;display:block}
+  #attack small{font-size:7px;line-height:1}.brand{border-radius:13px 9px 13px 9px}.zoneBadge{border-radius:16px 10px 16px 10px}
+  #contextHint{max-width:54vw;background:#09120ddd}
+}
+@media(max-width:390px){.mission{width:148px}.personal{width:132px}.resources .resourceChip img{width:23px;height:23px}.resources .resourceChip b{font-size:11px}}
