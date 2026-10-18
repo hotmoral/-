@@ -1,0 +1,21 @@
+const assert=require('assert'),fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.join(__dirname,'..');
+const client=fs.readFileSync(path.join(root,'public','patch-v18-5.js'),'utf8');
+const serverPatch=fs.readFileSync(path.join(root,'server-v18-5.js'),'utf8');
+const {patchSource}=require(path.join(root,'server-v18-5.js'));
+const base=fs.readFileSync(path.join(root,'server-v13.js'),'utf8');
+const compiled=patchSource(base);new vm.Script(compiled,{filename:'server-v18-5.compiled.js'});new vm.Script(client,{filename:'patch-v18-5.js'});
+function ranges(text,re){const m=text.match(re);assert(m,'range table missing');return[...m[1].matchAll(/\{attack:(\d+),gather:(\d+)\}/g)].map(x=>({attack:+x[1],gather:+x[2]}));}
+const sr=ranges(serverPatch,/const rangeDefs=`[\s\S]*?V185_WEAPON_RANGES=\[null,([\s\S]*?)\n\];/);
+const cr=ranges(client,/V185_RANGE_FALLBACK=\[null,([\s\S]*?)\n\];/);
+assert.strictEqual(sr.length,16,'server must define 16 weapon ranges');
+assert.deepStrictEqual(cr,sr,'client fallback range table must equal server table');
+assert.strictEqual(new Set(sr.map(x=>x.attack)).size,16,'every weapon needs a distinct attack radius');
+assert.strictEqual(new Set(sr.map(x=>x.gather)).size,16,'every weapon needs a distinct gather radius');
+assert(sr[11].attack-sr[10].attack>=140,'first ranged weapon must make a large attack-radius jump');
+assert(sr[11].gather-sr[10].gather>=40,'first ranged weapon must make a visible gather-radius jump');
+assert(sr[15].attack>=500&&sr[15].gather>=250,'final ranged weapon must have clearly extended radii');
+for(const token of ['nearestEnemy(p,w.attackRange)','nearestNode(p,w.gatherRange)','attackRange:w.attackRange','gatherRange:w.gatherRange'])assert(compiled.includes(token),`server runtime contract missing ${token}`);
+for(const token of ['Number(p.attackRange||p.autoRange)','Number(p.gatherRange)',"weaponRanges='server-authoritative'"])assert(client.includes(token),`client radius renderer missing ${token}`);
+assert(compiled.includes('Outpost Wilds V18.5'),'server must identify V18.5');
+console.log('[QA V18.5] PASS · 16 distinct attack/gather radii · spear→bow range jump · server/client radius contract');
