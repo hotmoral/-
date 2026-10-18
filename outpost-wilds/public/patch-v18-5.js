@@ -1,7 +1,7 @@
 /* Outpost Wilds V18.5: server-authoritative weapon attack/gather radii. */
 const V185_RANGE_FALLBACK=[null,
- {attack:96,gather:88},{attack:104,gather:94},{attack:112,gather:100},{attack:118,gather:122},
- {attack:126,gather:108},{attack:138,gather:114},{attack:140,gather:132},{attack:154,gather:122},
+ {attack:96,gather:88},{attack:104,gather:94},{attack:112,gather:100},{attack:118,gather:120},
+ {attack:126,gather:108},{attack:138,gather:114},{attack:140,gather:132},{attack:154,gather:124},
  {attack:170,gather:130},{attack:188,gather:138},{attack:210,gather:146},{attack:360,gather:190},
  {attack:400,gather:210},{attack:440,gather:230},{attack:480,gather:250},{attack:525,gather:275}
 ];
