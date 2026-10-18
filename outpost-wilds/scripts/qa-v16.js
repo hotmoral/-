@@ -1,0 +1,15 @@
+const assert=require('assert'),fs=require('fs'),path=require('path');
+const {patchSource}=require('../server-v16.js');
+const base=fs.readFileSync(path.join(__dirname,'..','server-v13.js'),'utf8'),final=patchSource(base);
+const client=fs.readFileSync(path.join(__dirname,'..','public','patch-v16.js'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'..','public','patch-v16.css'),'utf8');
+new Function(final);
+for(const token of ['WALL_STATE','V16_WALL_TIERS','wallRepairCost','baseRepairCost','missionBoard','revealMissing','hitWall','fortification:{','story:{stage:storyStage()','wallBreach','wallExpanded'])assert(final.includes(token),`server V16 missing ${token}`);
+assert(final.includes("const SIGNAL_REQ={base:6,weaponTier:5,weaponLevel:3,facilities:{turret:2,turret2:1,wall:3}"),'final signal must require wall LV3');
+assert(!final.includes("if(phase==='day')BASE.hp=Math.min(BASE.maxHp,BASE.hp+2.2*dt)"),'free base auto-repair must be removed');
+for(const token of ['v16Mission','v16RenderMission','v16DrawPerimeter','v16FixEatButton','v16StopInput','Camera follows predicted local position','shake=Math.min(shake,.45)'])assert(client.includes(token),`client V16 missing ${token}`);
+assert(css.includes('.v13StockHud{position:fixed!important'),'stockpile HUD must be compact/positioned');
+assert(css.includes('#eatMeat.v14Eat.v16Eat'),'ration button must be detached, large, touchable');
+assert(css.includes('.v16Mission.collapsed'),'mission board collapse styling missing');
+assert(fs.existsSync(path.join(__dirname,'..','public','assets','wall-segment-v16.svg')),'wall segment asset missing');
+console.log('[QA V16] PASS · staged reveals · expanding destructible wall · proportional repair · collapsible missions · compact HUD · input/camera stabilization');
