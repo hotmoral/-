@@ -19,11 +19,11 @@ function v8DrawActionRanges(p,s){
   const ar=V8_ATTACK_RANGES[p.gearLevel]||120,enemyHot=v8NearEnemy(p,ar),nodeHot=v8NearNode(p,V8_GATHER_RANGE);
   const pulse=.82+.18*Math.sin(v8PulseT*5.2);
   /* Gather first, attack second so the combat boundary stays readable when melee radii are close. */
-  v8RangeRing(s,V8_GATHER_RANGE,'#9fcf78',nodeHot?.68:.24,true,nodeHot?2.2:1.3);
-  v8RangeRing(s,ar,'#e88967',enemyHot?.78*pulse:.28,false,enemyHot?2.5:1.4);
+  v8RangeRing(s,V8_GATHER_RANGE,'#9fcf78',nodeHot ? .68 : .24,true,nodeHot?2.2:1.3);
+  v8RangeRing(s,ar,'#e88967',enemyHot ? .78*pulse : .28,false,enemyHot?2.5:1.4);
   /* Small non-text badges: resource icon at gather radius, weapon notch at attack radius. */
-  const wi=v5Assets.wood;if(wi?.complete){ctx.save();ctx.globalAlpha=nodeHot?.9:.48;ctx.drawImage(wi,s.x-11,s.y+3-V8_GATHER_RANGE-11,22,22);ctx.restore();}
-  ctx.save();ctx.translate(s.x,s.y+3-ar);ctx.globalAlpha=enemyHot?.95:.52;ctx.fillStyle='#e9a07f';ctx.beginPath();ctx.moveTo(-3,-10);ctx.lineTo(3,-10);ctx.lineTo(2,5);ctx.lineTo(7,10);ctx.lineTo(-7,10);ctx.lineTo(-2,5);ctx.closePath();ctx.fill();ctx.restore();
+  const wi=v5Assets.wood;if(wi?.complete){ctx.save();ctx.globalAlpha=nodeHot ? .9 : .48;ctx.drawImage(wi,s.x-11,s.y+3-V8_GATHER_RANGE-11,22,22);ctx.restore();}
+  ctx.save();ctx.translate(s.x,s.y+3-ar);ctx.globalAlpha=enemyHot ? .95 : .52;ctx.fillStyle='#e9a07f';ctx.beginPath();ctx.moveTo(-3,-10);ctx.lineTo(3,-10);ctx.lineTo(2,5);ctx.lineTo(7,10);ctx.lineTo(-7,10);ctx.lineTo(-2,5);ctx.closePath();ctx.fill();ctx.restore();
 }
 
 /* Put the boundaries on the ground immediately before the local survivor. */
