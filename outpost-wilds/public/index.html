@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
   <meta name="theme-color" content="#101813"/>
   <title>Outpost Wilds</title>
-  <link rel="stylesheet" href="/style-v3.css?v=5"/>
-  <link rel="stylesheet" href="/patch-v4.css?v=5"/>
-  <link rel="stylesheet" href="/patch-v5.css?v=5"/>
+  <link rel="stylesheet" href="/style-v3.css?v=6"/>
+  <link rel="stylesheet" href="/patch-v4.css?v=6"/>
+  <link rel="stylesheet" href="/patch-v5.css?v=6"/>
+  <link rel="stylesheet" href="/patch-v6.css?v=6"/>
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -24,14 +25,14 @@
       <div class="resourceChip" title="식량"><img src="/assets/res-meat.svg" alt="식량"><b id="meat">0</b></div>
     </div>
     <div class="mission card" id="mission">
-      <span>공동 목표</span>
-      <b id="missionTitle">야영지를 강화하세요</b>
+      <span>건설 목표</span>
+      <b id="missionTitle">건설 칸에 자원을 운반하세요</b>
       <div id="missionCost" class="costs"></div>
       <div class="bar missionBar"><i id="missionFill"></i></div>
     </div>
     <div class="personal card">
-      <span>개인 성장</span>
-      <div class="personalRow"><b id="meritLabel">공헌도 0</b><em id="craftLabel">LV.2에서 강화 창</em></div>
+      <span>개인 장비</span>
+      <div class="personalRow"><b id="meritLabel">장비 · 조잡한 창</b><em id="craftLabel">장비 강화 칸에서 자원 투입</em></div>
     </div>
     <div class="carry card"><span>짐</span><b id="carryLabel">0%</b><div class="bar carryBar"><i id="carryFill"></i></div></div>
     <div id="bossHud" class="bossHud"><span>황폐 경계의 우두머리</span><b>잿빛 포식자</b><div class="bar bossBar"><i id="bossFill"></i></div></div>
@@ -42,9 +43,11 @@
   <button id="attack"><span>⚔</span><small>공격·채집</small></button>
   <button id="craft"><span>⌁</span><small>제작</small></button>
   <button id="deposit"><span>⌂</span><small>귀환</small></button>
-  <div id="desktopHelp">WASD 이동 · SPACE 길게 공격/채집 · Q 제작 · E 거점 반납</div>
-  <script src="/game-v3.js?v=5"></script>
-  <script src="/patch-v4.js?v=5"></script>
-  <script src="/patch-v5.js?v=5"></script>
+  <div id="desktopHelp">WASD 이동 · SPACE 길게 공격/채집 · 건설 칸 위에서 자동 자원 투입</div>
+  <script src="/game-v3.js?v=6"></script>
+  <script src="/patch-v4.js?v=6"></script>
+  <script src="/patch-v5.js?v=6"></script>
+  <script src="/patch-v6.js?v=6"></script>
+  <script src="/patch-v6-sync.js?v=6"></script>
 </body>
 </html>
