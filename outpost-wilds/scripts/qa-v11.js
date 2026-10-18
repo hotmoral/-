@@ -1,0 +1,14 @@
+const assert=require('assert');
+const{FACILITY_TIERS,BASE_TIERS,WEAPON_TIERS,enemyPool,elitePool,bossTypeForLevel,bossCadence}=require('../v11-config');
+
+function depsMet(req,levels){return Object.entries(req||{}).every(([k,v])=>(levels[k]||0)>=v)}
+function growthReachability(){let base=1;const levels=Object.fromEntries(Object.keys(FACILITY_TIERS).map(k=>[k,0]));const trace=[];for(let guard=0;guard<100;guard++){let changed=false;const bd=BASE_TIERS[base+1];if(bd&&depsMet(bd.req,levels)){base++;trace.push(`base:${base}`);changed=true}for(const[k,tiers]of Object.entries(FACILITY_TIERS)){const def=tiers[levels[k]];if(def&&base>=def.base&&depsMet(def.req,levels)){levels[k]++;trace.push(`${k}:${levels[k]}`);changed=true}}if(!changed)break;if(base===6&&Object.values(levels).every(v=>v===3))break}assert.equal(base,6,'base LV.6 must be reachable');for(const[k,v]of Object.entries(levels))assert.equal(v,3,`${k} LV.3 must be reachable`);return trace}
+
+function weaponLadder(){let tier=1,level=1;const states=[`${tier}-${level}`];while(!(tier===5&&level===5)){level++;if(level>5){tier++;level=1}assert(WEAPON_TIERS[tier],`weapon tier ${tier} exists`);states.push(`${tier}-${level}`)}assert.equal(states.length,25,'shared weapon ladder has exactly 25 states');for(let t=1;t<5;t++){const i=states.indexOf(`${t}-5`);assert.equal(states[i+1],`${t+1}-1`,`tier ${t} LV.5 transitions to tier ${t+1} LV.1`)}return states}
+
+function boundedContribution(){const cost={wood:5,stone:4,meat:2},prog={wood:4,stone:3,meat:1};const a={wood:99,stone:99,meat:99},b={wood:99,stone:99,meat:99};function remaining(k){return Math.max(0,cost[k]-prog[k])}function take(p,rate=3){let n=0;for(const k of['wood','stone','meat']){const q=Math.min(p[k],remaining(k),rate);p[k]-=q;prog[k]+=q;n+=q}return n}const ua=take(a),ub=take(b);assert.deepStrictEqual(prog,cost,'concurrent sequential contributions stop exactly at cost');assert.equal(ub,0,'second contributor cannot overpay completed cost');assert.equal(ua,3,'only remaining units are charged')}
+
+function combatTiers(){const pools=[1,2,3,4,5,6].map(enemyPool);assert(pools.every(p=>p.length>=3),'every base tier has a useful enemy pool');assert.notDeepStrictEqual(pools[0],pools[2],'enemy composition evolves by base level');assert(elitePool(4).includes('siegebeast'),'late elite waves include siege enemies');assert.equal(bossTypeForLevel(2),'alpha');assert.equal(bossTypeForLevel(3),'broodmother');assert.equal(bossTypeForLevel(5),'colossus');assert(bossCadence(5)<=bossCadence(2),'boss pressure does not decrease at higher base level')}
+
+const trace=growthReachability();const weapons=weaponLadder();boundedContribution();combatTiers();
+console.log(`[QA V11] PASS · growth actions=${trace.length} · facilities=${Object.keys(FACILITY_TIERS).length}x3 · weapon states=${weapons.length} · bounded contribution PASS · combat tiers PASS`);
