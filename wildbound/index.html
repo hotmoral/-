@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0c1711" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Wildbound — Verdant Reach</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <div id="transitionVeil" class="transition-veil" aria-hidden="true"><div class="veil-core"></div></div>
+    <div id="regionBanner" class="region-banner" aria-live="polite"><span>VERDANT REACH</span><strong>새싹길</strong><small>바람과 오래된 수호자의 길</small></div>
+
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div class="brand-mark" aria-hidden="true"><span>W</span></div>
+        <div class="brand-copy">
+          <h1>WILDBOUND</h1>
+          <p>VERDANT REACH</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="journalBtn" class="icon-btn" aria-label="필드 노트"><span class="ui-icon">◇</span><small>도감</small></button>
+        <button id="partyBtn" class="icon-btn" aria-label="파티"><span class="ui-icon">✦</span><small>파티</small></button>
+        <button id="menuBtn" class="icon-btn" aria-label="메뉴"><span class="ui-icon">≡</span><small>메뉴</small></button>
+      </div>
+    </header>
+
+    <main>
+      <section id="worldView" class="screen world-screen is-active" aria-label="필드">
+        <div class="world-hud">
+          <div class="location-card">
+            <span class="location-kicker">현재 지역</span>
+            <div class="location-line"><strong id="areaLabel">새싹길</strong><span class="weather-dot"></span><span>맑음</span></div>
+          </div>
+          <div class="resource-rail">
+            <div class="resource-pill"><span class="res-icon coin">◆</span><strong id="coinLabel">120</strong></div>
+            <div class="resource-pill"><span class="res-icon orb">●</span><strong id="orbLabel">6</strong></div>
+          </div>
+        </div>
+
+        <div class="objective-card">
+          <div class="objective-glyph">◇</div>
+          <div><span>MAIN OBJECTIVE</span><strong id="objectiveLabel">폭풍 제단으로 향하기</strong></div>
+          <div class="objective-arrow">›</div>
+        </div>
+
+        <div class="map-frame">
+          <div class="map-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="map-corner north"><span>N</span></div>
+          <div id="map" class="map-grid" role="application" aria-label="게임 맵"></div>
+          <div class="map-vignette" aria-hidden="true"></div>
+          <div id="toast" class="toast" aria-live="polite"></div>
+        </div>
+
+        <div class="control-caption"><span>SWIPE TO MOVE</span><i></i><span>탐색 모드</span></div>
+        <div class="world-controls">
+          <div class="dpad" aria-label="이동 패드">
+            <button class="dpad-up" data-move="up" aria-label="위로"><span>▲</span></button>
+            <button class="dpad-left" data-move="left" aria-label="왼쪽"><span>◀</span></button>
+            <div class="dpad-center"><span></span></div>
+            <button class="dpad-right" data-move="right" aria-label="오른쪽"><span>▶</span></button>
+            <button class="dpad-down" data-move="down" aria-label="아래로"><span>▼</span></button>
+          </div>
+          <div class="action-cluster">
+            <button id="actionBtn" class="action-btn"><span class="action-shine"></span><small>ACTION</small><strong>조사</strong></button>
+            <span class="action-help">주변을 살펴본다</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="battleView" class="screen battle-screen" aria-label="전투">
+        <div class="battle-backdrop">
+          <div class="battle-sky" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="battle-hills back" aria-hidden="true"></div>
+          <div class="battle-hills front" aria-hidden="true"></div>
+          <div class="battle-ground" aria-hidden="true"></div>
+          <div id="battleFlash" class="battle-flash" aria-hidden="true"></div>
+          <div id="battleParticles" class="battle-particles" aria-hidden="true"></div>
+
+          <div class="battle-top-row">
+            <div class="battle-context"><span class="battle-context-dot"></span><span id="battleHint">야생 조우</span></div>
+            <button id="battleInfoBtn" class="tiny-btn">상성표 <span>?</span></button>
+          </div>
+
+          <div class="combatant enemy-side">
+            <div class="status-card enemy-status">
+              <div class="status-topline"><span id="enemyType" class="type-badge">—</span><span id="enemyLevel" class="level-chip">Lv.1</span></div>
+              <div class="status-line"><strong id="enemyName">—</strong><span class="wild-mark">WILD</span></div>
+              <div class="hp-row"><span>HP</span><div class="hp-track"><div id="enemyHpBar" class="hp-fill"></div></div></div>
+              <div class="status-meta"><span>상태 정상</span><span id="enemyHpText">—</span></div>
+            </div>
+            <div class="battle-stage enemy-stage">
+              <div class="stage-shadow"></div>
+              <div id="enemySprite" class="monster-sprite sprite-enemy"></div>
+            </div>
+          </div>
+
+          <div class="combatant player-side">
+            <div class="battle-stage player-stage">
+              <div class="stage-shadow"></div>
+              <div id="playerSprite" class="monster-sprite sprite-player"></div>
+            </div>
+            <div class="status-card player-status">
+              <div class="status-topline"><span id="playerType" class="type-badge">—</span><span id="playerLevel" class="level-chip">Lv.1</span></div>
+              <div class="status-line"><strong id="playerMonName">—</strong><span class="partner-mark">PARTNER</span></div>
+              <div class="hp-row"><span>HP</span><div class="hp-track"><div id="playerHpBar" class="hp-fill"></div></div></div>
+              <div class="status-meta"><span id="playerHpText">—</span><span>EXP</span></div>
+              <div class="xp-track"><div id="playerXpBar" class="xp-fill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="battle-panel">
+          <div class="message-shell"><span class="message-caret">◆</span><div id="battleMessage" class="battle-message">무엇을 할까?</div></div>
+          <div id="battleMainMenu" class="battle-grid">
+            <button class="battle-command primary" data-command="fight"><span class="command-icon">✦</span><span><strong>기술</strong><small>SKILLS</small></span><i>›</i></button>
+            <button class="battle-command capture" data-command="capture"><span class="command-icon">◉</span><span><strong>포획</strong><small>CAPTURE</small></span><i>›</i></button>
+            <button class="battle-command" data-command="party"><span class="command-icon">◇</span><span><strong>교대</strong><small>PARTY</small></span><i>›</i></button>
+            <button class="battle-command" data-command="run"><span class="command-icon">↗</span><span><strong>도망</strong><small>RETREAT</small></span><i>›</i></button>
+          </div>
+          <div id="moveMenu" class="move-grid hidden"></div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="starterDialog" class="sheet-dialog starter-dialog">
+      <form method="dialog" class="dialog-card wide-card starter-sheet">
+        <div class="sheet-grabber"></div>
+        <div class="eyebrow">FIRST BOND</div>
+        <h2>첫 동료를 선택하세요</h2>
+        <p class="dialog-copy">베르단트 리치의 생명들은 서로 다른 방식으로 환경에 적응했습니다. 함께 시작할 한 마리를 고르세요.</p>
+        <div id="starterChoices" class="starter-grid"></div>
+      </form>
+    </dialog>
+
+    <dialog id="partyDialog" class="sheet-dialog">
+      <div class="dialog-card">
+        <div class="sheet-grabber"></div>
+        <div class="dialog-head">
+          <div><div class="eyebrow">EXPEDITION TEAM</div><h2>파티</h2></div>
+          <button class="close-btn" data-close="partyDialog" aria-label="닫기">×</button>
+        </div>
+        <div id="partyList" class="party-list"></div>
+      </div>
+    </dialog>
+
+    <dialog id="journalDialog" class="sheet-dialog">
+      <div class="dialog-card">
+        <div class="sheet-grabber"></div>
+        <div class="dialog-head">
+          <div><div class="eyebrow">FIELD ARCHIVE</div><h2>생명 기록</h2></div>
+          <button class="close-btn" data-close="journalDialog" aria-label="닫기">×</button>
+        </div>
+        <div id="journalStats" class="journal-stats"></div>
+        <div id="journalList" class="journal-list"></div>
+      </div>
+    </dialog>
+
+    <dialog id="menuDialog" class="sheet-dialog">
+      <div class="dialog-card compact-card">
+        <div class="sheet-grabber"></div>
+        <div class="dialog-head">
+          <div><div class="eyebrow">SYSTEM</div><h2>탐사 메뉴</h2></div>
+          <button class="close-btn" data-close="menuDialog" aria-label="닫기">×</button>
+        </div>
+        <button id="saveBtn" class="menu-row"><span><b>탐사 기록 저장</b><small>현재 진행 상태를 기기에 저장</small></span><i>›</i></button>
+        <button id="healBtn" class="menu-row"><span><b>파티 회복</b><small>회복 거점에서만 사용 가능</small></span><i>›</i></button>
+        <button id="resetBtn" class="menu-row danger"><span><b>새 게임</b><small>현재 저장 데이터를 삭제</small></span><i>›</i></button>
+      </div>
+    </dialog>
+
+    <dialog id="battleInfoDialog" class="sheet-dialog">
+      <div class="dialog-card compact-card">
+        <div class="sheet-grabber"></div>
+        <div class="dialog-head">
+          <div><div class="eyebrow">COMBAT DATA</div><h2>속성 상성</h2></div>
+          <button class="close-btn" data-close="battleInfoDialog" aria-label="닫기">×</button>
+        </div>
+        <div class="type-chart">
+          <div><span class="type-swatch ember"></span><b>불꽃</b><i>강함</i><span>숲</span></div>
+          <div><span class="type-swatch grove"></span><b>숲</b><i>강함</i><span>물결</span></div>
+          <div><span class="type-swatch tide"></span><b>물결</b><i>강함</i><span>불꽃</span></div>
+          <div><span class="type-swatch volt"></span><b>전류</b><i>강함</i><span>물결</span></div>
+          <div><span class="type-swatch stone"></span><b>암석</b><i>강함</i><span>전류</span></div>
+        </div>
+      </div>
+    </dialog>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
