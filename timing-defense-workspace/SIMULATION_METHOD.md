@@ -1,186 +1,252 @@
 # Timing Defense — Headless Simulation Method
 
 ## Purpose
-Use a renderer-free combat model to validate numerical balance much faster than manual play. The simulator is not a replacement for feel/UX testing.
+Use renderer-free models to validate numerical balance, progression, team-role value and encounter structure much faster than manual play. Simulation is not a replacement for feel/UX testing and does not self-authorize live balance patches.
 
-## Mirrored prototype constants
-- Monster HP, speed, wall damage, armor and knockback resistance.
-- Stage 1–10 spawn counts and gaps.
-- Timing damage tiers.
-- EXP curve: `XP_next = 60 + 12 × (level - 1)`.
-- Local knockback magnitudes by result tier.
-- Current run-shop economy and upgrades where the test specifically includes shop modeling.
-- Five class skill kits through Lv21 for pre-implementation validation.
+## Core governance
 
-## Timing profiles
-Baseline named profiles:
-- Novice: NORMAL 45%, GOOD 45%, PERFECT 10%.
-- Average: NORMAL 25%, GOOD 55%, PERFECT 20%.
-- Skilled: NORMAL 10%, GOOD 50%, PERFECT 40%.
-- Expert: NORMAL 3%, GOOD 32%, PERFECT 65%.
-
-Each profile also uses a characteristic normal/heavy attack-cycle duration so player skill is not represented only by judgment probability.
-
-Current Average cadence:
-- normal cycle 1.14 s
-- heavy cycle 1.68 s
-
-Current Skilled cadence:
-- normal cycle 1.04 s
-- heavy cycle 1.54 s
+Required order:
+1. identify a measured difference,
+2. determine whether it comes from intentional specialization, model abstraction/artifact, or a real balance defect,
+3. report the result,
+4. discuss with the user,
+5. make an explicit design decision,
+6. only then change live gameplay values.
 
 ## Frozen semantic decisions
 
-### Archer
-Penetration is true straight-line geometry only.
-- no homing
-- no auto-retarget
-- no automatic next-enemy chain after a hit
-- only enemies intersecting the projectile's straight path may be penetrated
+### Timing profiles
+- Novice: N45 / G45 / P10.
+- Average: N25 / G55 / P20.
+- Skilled: N10 / G50 / P40.
+- Expert: N3 / G32 / P65.
 
-The headless geometric approximation uses a bounded lane/hitbox tolerance around the original arrow line. This approximates line-hitbox intersection and is not authority to turn penetration into chaining.
+Average cadence:
+- normal 1.14 s
+- heavy 1.68 s
+
+Skilled cadence:
+- normal 1.04 s
+- heavy 1.54 s
+
+### Archer
+Straight-line geometric penetration only.
+- no homing,
+- no auto-retarget,
+- no automatic next-enemy chain,
+- only intersected hitboxes can be penetrated.
 
 ### Tank
-Tank is team-specialized. Fresh-run solo Stage-10 parity is not required. A poor solo clear result is diagnostic information, not automatic evidence that Tank needs a buff.
+Team-specialist. Fresh-run solo Stage-10 parity is not required.
 
 ### Rogue / bosses
-- no same-target dagger hit cap
-- boss dagger damage scalar starting value: 0.70
-- boss knockback scalar starting value: 0.40
+- no same-target dagger hit cap,
+- boss dagger damage scalar starting value: 0.70,
+- boss knockback scalar starting value: 0.40.
 
 ### EXP
-EXP remains attached to timing attack results/events. Faster-clearing classes are allowed to level differently because they can perform fewer attack events.
+EXP remains attached to timing attack results/events. Faster-clearing classes are allowed to level differently because they may perform fewer attack events.
 
-## v1 role scenarios
-1. High-HP normal duel — validates Rogue specialist role.
-2. Boss duel — checks boss damage ordering and Rogue dagger resistance.
-3. Straight-line pack — validates Archer penetration role.
-4. Dense cluster — validates Mage density-scaling role.
-5. Wall pressure — validates Tank wall-preservation/control role.
+---
 
-## v2 campaign extension
-v2 added:
-- Stage 1–10 full campaign
-- kill coin rewards
-- stage-clear rewards
-- deterministic run-shop policies
-- ATK / CRIT / CRIT DMG / WALL HP / DEF / KNOCKBACK effects
-- Lv6 / Lv11 / Lv16 / Lv21 candidate skills
+# Simulation history
 
-Shop policies used for robustness:
-- balanced
-- offense
-- class-role-aware
+## v1 — role scenarios
+Purpose: verify basic class identity.
 
-v2 total deliberate analysis volume: 39,600 runs.
+Scenarios:
+- durable normal duel → Rogue,
+- boss duel → boss resistance behavior,
+- straight-line pack → Archer,
+- dense cluster → Mage,
+- wall pressure → Tank.
 
-Important v2 outcome: permissive Archer next-target chaining was identified as a model artifact and rejected. Subsequent campaign interpretation uses straight-line geometry.
+Result: intended role split was plausible.
 
-## v3 mastery-curve extension
-v3 studies the transition from Average → Skilled rather than treating those as only two isolated points.
+## v2 — Stage 1–10 + run shop
+Added:
+- current Stage 1–10 structure,
+- coins / clear rewards,
+- run-shop costs and upgrades,
+- Lv6/Lv11/Lv16/Lv21 candidate skills,
+- deterministic shopping policies.
 
-Nine evenly spaced interpolation points are used between:
-- Average = N25 / G55 / P20, normal 1.14 s, heavy 1.68 s
-- Skilled = N10 / G50 / P40, normal 1.04 s, heavy 1.54 s
+Deliberate volume: 39,600 runs.
 
-Two variants are compared:
-1. full mastery progression: accuracy + cadence both improve
-2. accuracy-only diagnostic: judgment probabilities improve while cadence stays at Average
+Important outcome:
+- permissive Archer next-target chaining was identified as a model artifact and rejected,
+- Tank solo weakness was discussed and accepted as role specialization,
+- EXP/attack-count coupling was explicitly retained.
 
-v3 total deliberate analysis volume: 27,500 runs.
+See `BALANCE_SIM_REPORT_V2.md`.
 
-Latest v3 interpretation:
-- Knight / Archer / Mage show a useful mastery response.
-- Rogue remains a solo-pressure specialist tradeoff and should be judged in team context.
-- Tank solo result is intentionally non-normative.
-- Cadence is a substantial skill dimension in a real-time defense game.
-- No live values were changed from v3.
+## v3 — Average → Skilled mastery curve
+Nine interpolation points between Average and Skilled plus accuracy-only diagnostics.
+
+Deliberate volume: 27,500 runs.
+
+Important outcome:
+- Knight / Archer / Mage show a strong useful mastery response,
+- Rogue remains specialist-shaped,
+- Tank solo remains non-normative,
+- cadence is a real skill axis in addition to accuracy.
 
 See `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md`.
 
-## v4 team-composition extension
+## v4 — team-composition / co-op role isolation
+Added:
+- 2/3/4-player compositions,
+- identical seeded waves,
+- targeted Lv21 role diagnostics,
+- duplicate-class checks.
 
-v4 adds team-role validation.
+Deliberate volume: 13,780 runs.
 
-### Primary matrix
-- 2-player / 3-player / 4-player compositions.
-- Average and Skilled human timing profiles.
-- same seed sets reused across class mixes where applicable.
-- current Stage 1–10 unscaled wave counts/gaps for the main saturation check.
+Important modeling boundary:
+- the main v4 matrix uses current unscaled Stage 1–10 waves,
+- multiplayer shop/economy ownership is not frozen, so v4 does not claim final co-op campaign balance.
 
-### Important boundary
-v4 intentionally excludes run-shop upgrades because true multiplayer economy ownership / shared-vs-individual purchase rules are not frozen. Therefore v4 absolute clear rates should not be compared one-to-one with v2/v3 shop-enabled solo campaign results.
-
-v4 is used to study:
-- composition ordering,
-- marginal class contribution,
-- Tank defensive value,
-- Rogue durable-normal specialization,
-- Archer/Mage geometry separation,
-- Knight generalist value,
-- duplicate-class stacking,
-- whether current waves saturate at larger team sizes.
-
-### Role diagnostics
-Additional fixed-level Lv21 stress scenarios are allowed to expose class utility that current Stage 1–10 pressure may hide. These diagnostics are not live difficulty proposals.
-
-Examples:
-- hard mixed wall pressure,
-- durable-normal waves,
-- long straight-line packs,
-- dense clusters.
-
-### v4 volume
-Total deliberate v4 analysis volume: **13,780 runs**.
-
-### v4 interpretation
-- Tank shows measurable team defensive value under meaningful pressure.
-- Rogue shows disproportionate durable-normal execution value in team mixes.
-- Archer wins long-line geometry while Mage wins dense-cluster geometry.
-- Knight remains a strong stabilizing generalist.
-- current Stage 1–10 waves saturate at 3–4 players and cannot serve as final co-op difficulty targets.
-- double-Knight stacking is flagged for re-test after exact playable Knight penetration geometry exists.
-- no live values were changed from v4.
+Important outcome:
+- Tank team defensive utility is real under meaningful pressure,
+- Rogue takes disproportionate durable-normal kills,
+- Archer wins line geometry while Mage wins dense geometry,
+- Knight remains a useful stabilizing generalist,
+- current waves saturate at 3–4 players and therefore cannot serve as final multiplayer difficulty targets.
 
 See `BALANCE_SIM_REPORT_V4_TEAM.md`.
 
-## Deterministic comparison principle
-When comparing classes or team compositions, reuse the same random seeds so monster composition, timing samples and encounter randomness remain comparable. Change the class/team configuration, not the underlying random world.
+## v5 — Tier Pressure Grammar / role opportunity
 
-## Metrics
-- Stage clear / failure.
-- Stage reached.
-- Wall HP and wall hits.
-- Total damage.
-- High-HP normal TTK / kill share.
-- Boss TTK / boss damage share.
-- Multi-hit event count.
-- Skill damage contribution.
-- Shield generation / absorption.
-- Level reached and level-after-stage profile.
-- Attack count / run duration.
-- Skill-unlock reach rate and stage.
-- Shop-rank distribution when shop is part of the model.
-- per-class team damage and target-type contribution.
+v5 moves one level above exact combat and tests **encounter structure** before concrete co-op scaling is authored.
 
-## Balance-change rule
-Simulation does not authorize a patch.
+### Pressure families
+- `S` Swarm — temporary high-count pressure.
+- `E` Elite/Heavy — one/few unusually durable threats.
+- `X` Special/Mixed — disruptive special compositions.
 
-Required order:
-1. identify a measured difference
-2. determine whether it comes from role specialization, model abstraction/artifact, or an actual balance defect
-3. report the result
-4. discuss with the user
-5. make an explicit design decision
-6. only then change live gameplay values
+### Stage complexity
+A stage may contain:
+- one pressure family,
+- two pressure families,
+- all three pressure families.
 
-## Next required extension
-Do not invent final co-op scaling yet.
+The important design choice is that all three are **not** required every stage.
 
-First discuss and freeze the team-size pressure philosophy:
-- more enemies,
-- tougher enemies,
-- mixed count + HP,
-- or additional elite/special threats.
+### Five representative 50-stage prototypes
 
-Then build v5 around that philosophy and compare 2/3/4-player compositions before any live difficulty patch.
+| Tier | 1-pattern | 2-pattern | 3-pattern |
+|---|---:|---:|---:|
+| T1 | 30 | 17 | 3 |
+| T2 | 21 | 23 | 6 |
+| T3 | 17 | 25 | 8 |
+| T4 | 11 | 25 | 14 |
+| T5 | 23 | 19 | 8 |
+
+Across 250 prototype stages:
+- 1-pattern 40.8%,
+- 2-pattern 43.6%,
+- 3-pattern 15.6%.
+
+Thus 84.4% of stages contain only one or two pressure families.
+
+### Geometry layer
+Swarm:
+- line,
+- cluster,
+- scatter.
+
+Special:
+- line,
+- cluster,
+- split.
+
+Geometry is stored as encounter data because class contribution changes materially with it.
+
+### Pressure-budget layer
+Two-pattern and three-pattern stages carry explicit internal shares rather than assuming equal 50:50 or 33:33:33 pressure.
+
+Examples:
+- T2 E-heavy pair ≈ 65/35,
+- T3 triple ≈ S45/E15/X40,
+- T4 triple ≈ S25/E20/X55,
+- T5 rotates one ~60% dominant pressure.
+
+### Timing layer
+Events use early / mid / late / final windows with tier-specific biases. Higher tiers may become harder through later spikes, longer duration, stronger internal dominance or more overlap rather than simply more pattern types.
+
+### Structural role-coverage model
+v5 does not pretend to be final DPS simulation. It uses role-response vectors derived from v1/v4 behavior and a cooperative coverage function.
+
+Exact Shapley allocation is used to estimate how much of the encounter-problem space each class helps cover.
+
+Across all 250 prototype stages:
+- Knight 18.6%,
+- Rogue 20.1%,
+- Tank 20.4%,
+- Archer 22.0%,
+- Mage 18.9%.
+
+Tier-specific peaks still appear:
+- Rogue peaks in elite-heavy T2,
+- Archer peaks in line-heavy T3,
+- Tank peaks in split/special-heavy T4,
+- Knight stays comparatively stable as generalist.
+
+This is structural evidence that local specialist moments can coexist with broad long-run opportunity balance.
+
+See:
+- `TIER_PRESSURE_GRAMMAR_V1.md`
+- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
+
+---
+
+# Deterministic comparison principle
+
+Whenever comparing classes, compositions or scaling candidates, reuse the same random seeds / authored stage grammar so the world is held constant and the tested variable changes.
+
+## Metrics by simulation layer
+
+### Combat/campaign layers
+- Stage clear / failure,
+- Stage reached,
+- wall HP / wall hits,
+- clear time,
+- target-type TTK / kill share,
+- total and skill damage,
+- shield generation/absorption,
+- level / EXP timing,
+- attack count / cadence,
+- shop rank distribution where applicable.
+
+### Encounter-grammar layer
+- 1/2/3-pattern stage counts,
+- S/E/X occurrence and pressure-budget shares,
+- pair/triple internal ratios,
+- early/mid/late/final event placement,
+- formation geometry quotas,
+- overlap rate,
+- repeated signature/run detection,
+- class pressure-coverage / Shapley share,
+- peak concurrency once concrete spawn recipes exist.
+
+---
+
+# Next required extension
+
+Translate v5 abstract pressure budgets into **concrete current-roster spawn recipes**:
+- GRUNT,
+- RUNNER,
+- BRUTE,
+- SHIELD,
+- FLYER.
+
+Then calibrate 2/3/4-player scaling while keeping class coefficients unchanged.
+
+Required questions:
+- How many extra enemies can S add before readability collapses?
+- How much HP/armor can E add before combat becomes tedious?
+- Which X recipes create role demand without unavoidable leakage?
+- How should extra human players change event budget rather than simply multiplying everything?
+- Can Average→Skilled mastery remain meaningful under co-op pressure?
+
+No live difficulty patch should occur until this concrete spawn calibration is reported and discussed.
