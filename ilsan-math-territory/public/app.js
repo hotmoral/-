@@ -1,20 +1,75 @@
 const socket=io();
 const map=L.map('map',{zoomControl:false,attributionControl:false}).setView([37.661,126.768],13.4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
-const markers=new Map(), edgeLayers=[], flowLayers=[];
-let state=null,team='spectator',selected=null,currentProblem=null;
+const markers=new Map(), hqMarkers=new Map(), edgeLayers=[], flowLayers=[];
+let state=null,team='spectator',selected=null,currentProblem=null,mapFitted=false;
 
+// Pilot HQs use real school locations. In production these are match-configured from the participating schools.
+const SCHOOL_HQS=[
+  {id:'hq-blue',team:'blue',name:'대화초등학교',short:'대화초',lat:37.67129,lng:126.73246,prod:0.180,links:[4,3,2],address:'경기도 고양시 일산서구 송포로 50'},
+  {id:'hq-red',team:'red',name:'고양백석초등학교',short:'고양백석초',lat:37.652364122448,lng:126.78947338997,prod:0.180,links:[25,20,26],address:'경기도 고양시 일산동구 강촌로 140'}
+];
+
+function school(t){return SCHOOL_HQS.find(h=>h.team===t)}
 function teamColor(t){return t==='blue'?'#3aa8ff':t==='red'?'#ff5774':'#7f8ca0'}
 function clear(arr){while(arr.length){map.removeLayer(arr.pop())}}
-function drawEdges(){ if(!state)return; clear(edgeLayers); for(const [a,b] of state.edges){ const A=state.bases[a],B=state.bases[b]; const l=L.polyline([[A.lat,A.lng],[B.lat,B.lng]],{color:'#40506a',weight:1.2,opacity:.45,interactive:false}).addTo(map); edgeLayers.push(l); }}
+function drawEdges(){
+  if(!state)return;
+  clear(edgeLayers);
+  for(const [a,b] of state.edges){
+    const A=state.bases[a],B=state.bases[b];
+    const l=L.polyline([[A.lat,A.lng],[B.lat,B.lng]],{color:'#40506a',weight:1.2,opacity:.45,interactive:false}).addTo(map);
+    edgeLayers.push(l);
+  }
+  for(const h of SCHOOL_HQS){
+    for(const baseId of h.links){
+      const B=state.bases[baseId]; if(!B) continue;
+      const l=L.polyline([[h.lat,h.lng],[B.lat,B.lng]],{color:teamColor(h.team),weight:2.1,opacity:.62,dashArray:'6 5',interactive:false}).addTo(map);
+      edgeLayers.push(l);
+    }
+  }
+}
 function markerHtml(b){ const cap=Math.max(1,b.cap),pct=Math.max(0,Math.min(1,b.garrison/cap)); const size=26+Math.round(pct*9); const cls=b.state==='PREPARING'?`node preparing ${b.control}`:`node ${b.control}`; const center=b.state==='PREPARING'?`${Math.round(b.activation)}/5`:Math.round(b.garrison); return `<div class="${cls}" style="width:${size}px;height:${size}px"><span>${center}</span><em>${b.name}</em></div>`; }
 function drawBases(){ if(!state)return; for(const b of state.bases){ const icon=L.divIcon({className:'nodeIcon',html:markerHtml(b),iconSize:[40,40],iconAnchor:[20,20]}); let m=markers.get(b.id); if(!m){m=L.marker([b.lat,b.lng],{icon,zIndexOffset:400}).addTo(map).on('click',()=>openBase(b.id));markers.set(b.id,m);} else {m.setLatLng([b.lat,b.lng]);m.setIcon(icon);} }}
+function hqHtml(h){
+  const c=teamColor(h.team);
+  return `<div style="position:relative;width:54px;height:54px;border-radius:18px;background:linear-gradient(145deg,${c},#14243d);border:3px solid rgba(255,255,255,.92);box-shadow:0 8px 28px rgba(0,0,0,.55),0 0 0 5px ${c}33;display:grid;place-items:center;color:white;font-weight:900;transform:rotate(45deg)">
+    <div style="transform:rotate(-45deg);text-align:center;line-height:1"><div style="font-size:19px">🏫</div><div style="font-size:8px;margin-top:2px">HQ</div></div>
+    <div style="position:absolute;left:50%;bottom:-23px;transform:translateX(-50%) rotate(-45deg);white-space:nowrap;background:rgba(3,8,18,.92);border:1px solid ${c}88;border-radius:8px;padding:3px 6px;color:#fff;font-size:8px">${h.short} · ${h.prod.toFixed(2)}/s</div>
+  </div>`;
+}
+function drawHQs(){
+  for(const h of SCHOOL_HQS){
+    const icon=L.divIcon({className:'nodeIcon',html:hqHtml(h),iconSize:[58,58],iconAnchor:[29,29]});
+    let m=hqMarkers.get(h.id);
+    if(!m){
+      m=L.marker([h.lat,h.lng],{icon,zIndexOffset:800}).addTo(map).on('click',()=>toast(`${h.name} 본진 · 점령 불가 · 생산 ${h.prod.toFixed(2)}/s`));
+      hqMarkers.set(h.id,m);
+    }else{m.setLatLng([h.lat,h.lng]);m.setIcon(icon)}
+  }
+}
 function drawFlows(){ if(!state)return; clear(flowLayers); for(const f of state.flows){ if(f.rate<.004)continue; const A=state.bases[f.from],B=state.bases[f.to],color=teamColor(f.team); const w=1.6+Math.min(4,f.rate*28); const line=L.polyline([[A.lat,A.lng],[B.lat,B.lng]],{color,weight:w,opacity:.82,interactive:false}).addTo(map); flowLayers.push(line); const lat=(A.lat+B.lat)/2,lng=(A.lng+B.lng)/2; const label=L.marker([lat,lng],{interactive:false,icon:L.divIcon({className:'',html:`<div class="flowLabel">${f.rate.toFixed(2)}/s →</div>`,iconSize:[45,15],iconAnchor:[22,7]})}).addTo(map);flowLayers.push(label); }}
-function render(){ if(!state)return; document.querySelector('#blueScore').textContent=state.score.blue;document.querySelector('#redScore').textContent=state.score.red;document.querySelector('#prepScore').textContent=state.score.preparing; drawEdges();drawBases();drawFlows(); if(selected!=null&&!document.querySelector('#sheet').classList.contains('hidden'))fillSheet(); }
+function updateSchoolLabels(){
+  const blue=school('blue'),red=school('red');
+  document.querySelector('.score.blue span').textContent=blue.short;
+  document.querySelector('.score.red span').textContent=red.short;
+  const blueChoice=document.querySelector('[data-team="blue"]'),redChoice=document.querySelector('[data-team="red"]');
+  blueChoice.querySelector('b').textContent=blue.name; blueChoice.querySelector('span').textContent='실제 학교 위치 본진';
+  redChoice.querySelector('b').textContent=red.name; redChoice.querySelector('span').textContent='실제 학교 위치 본진';
+  if(team==='blue') document.querySelector('#teamBtn').textContent=blue.short;
+  if(team==='red') document.querySelector('#teamBtn').textContent=red.short;
+}
+function fitBattlefield(){
+  if(mapFitted||!state)return;
+  const pts=[...state.bases.map(b=>[b.lat,b.lng]),...SCHOOL_HQS.map(h=>[h.lat,h.lng])];
+  map.fitBounds(L.latLngBounds(pts),{paddingTopLeft:[22,135],paddingBottomRight:[22,92],maxZoom:14});
+  mapFitted=true;
+}
+function render(){ if(!state)return; updateSchoolLabels(); document.querySelector('#blueScore').textContent=state.score.blue;document.querySelector('#redScore').textContent=state.score.red;document.querySelector('#prepScore').textContent=state.score.preparing; drawEdges();drawBases();drawHQs();drawFlows();fitBattlefield(); if(selected!=null&&!document.querySelector('#sheet').classList.contains('hidden'))fillSheet(); }
 function openBase(id){selected=id;fillSheet();document.querySelector('#sheet').classList.remove('hidden')}
 function pct(n,d){return `${Math.max(0,Math.min(100,d?100*n/d:0))}%`}
-function fillSheet(){ const b=state.bases[selected];if(!b)return;document.querySelector('#baseName').textContent=`${b.name} · ${b.problemLabel}`;document.querySelector('#baseLevel').textContent=`Lv.${b.level}`;document.querySelector('#baseStatus').textContent=b.state==='PREPARING'?`${b.control==='blue'?'파랑':'빨강'} 점령 중`:'ACTIVE';document.querySelector('#baseTroops').textContent=`${Math.round(b.garrison)} / ${Math.round(b.cap)}`;document.querySelector('#troopBar').style.width=pct(b.garrison,b.cap);if(b.state==='PREPARING'){document.querySelector('#maintLabel').textContent='활성화';document.querySelector('#baseMaint').textContent=`${Math.round(b.activation)} / 5`;document.querySelector('#maintBar').style.width=pct(b.activation,5);document.querySelector('#baseGrowth').textContent='가동 전';document.querySelector('#growthBar').style.width='0%';document.querySelector('#baseMessage').textContent=`${Math.max(0,5-Math.round(b.activation))}문제만 더 풀면 공식 영토가 됩니다.`;}else{document.querySelector('#maintLabel').textContent='유지';document.querySelector('#baseMaint').textContent=`${Math.round(b.maintenance)} / ${b.maintReq}`;document.querySelector('#maintBar').style.width=pct(b.maintenance,b.maintReq);document.querySelector('#baseGrowth').textContent=b.growReq?`${Math.round(b.growth)} / ${b.growReq}`:'MAX';document.querySelector('#growthBar').style.width=b.growReq?pct(b.growth,b.growReq):'100%';document.querySelector('#baseMessage').textContent=b.control===team?'문제를 풀면 유지와 성장에 자동 반영됩니다.':'상대 학교 거점입니다.';}document.querySelector('#baseProd').textContent=`${b.prod.toFixed(3)}/s`;const btn=document.querySelector('#solveBtn');btn.disabled=team==='spectator'||b.control!==team;btn.textContent=team==='spectator'?'학교를 선택하세요':b.control!==team?'우리 학교 통제 거점이 아닙니다':'문제 5개 풀기';btn.style.opacity=btn.disabled?0.45:1; }
-function setTeam(t){team=t;socket.emit('joinTeam',t);document.querySelector('#teamModal').classList.add('hidden');const btn=document.querySelector('#teamBtn');btn.textContent=t==='blue'?'파랑학교':t==='red'?'빨강학교':'관전 중';btn.style.color=teamColor(t);}
+function fillSheet(){ const b=state.bases[selected];if(!b)return;document.querySelector('#baseName').textContent=`${b.name} · ${b.problemLabel}`;document.querySelector('#baseLevel').textContent=`Lv.${b.level}`;document.querySelector('#baseStatus').textContent=b.state==='PREPARING'?`${b.control==='blue'?school('blue').short:school('red').short} 점령 중`:'ACTIVE';document.querySelector('#baseTroops').textContent=`${Math.round(b.garrison)} / ${Math.round(b.cap)}`;document.querySelector('#troopBar').style.width=pct(b.garrison,b.cap);if(b.state==='PREPARING'){document.querySelector('#maintLabel').textContent='활성화';document.querySelector('#baseMaint').textContent=`${Math.round(b.activation)} / 5`;document.querySelector('#maintBar').style.width=pct(b.activation,5);document.querySelector('#baseGrowth').textContent='가동 전';document.querySelector('#growthBar').style.width='0%';document.querySelector('#baseMessage').textContent=`${Math.max(0,5-Math.round(b.activation))}문제만 더 풀면 공식 영토가 됩니다.`;}else{document.querySelector('#maintLabel').textContent='유지';document.querySelector('#baseMaint').textContent=`${Math.round(b.maintenance)} / ${b.maintReq}`;document.querySelector('#maintBar').style.width=pct(b.maintenance,b.maintReq);document.querySelector('#baseGrowth').textContent=b.growReq?`${Math.round(b.growth)} / ${b.growReq}`:'MAX';document.querySelector('#growthBar').style.width=b.growReq?pct(b.growth,b.growReq):'100%';document.querySelector('#baseMessage').textContent=b.control===team?'문제를 풀면 유지와 성장에 자동 반영됩니다.':'상대 학교 거점입니다.';}document.querySelector('#baseProd').textContent=`${b.prod.toFixed(3)}/s`;const btn=document.querySelector('#solveBtn');btn.disabled=team==='spectator'||b.control!==team;btn.textContent=team==='spectator'?'학교를 선택하세요':b.control!==team?'우리 학교 통제 거점이 아닙니다':'문제 5개 풀기';btn.style.opacity=btn.disabled?0.45:1; }
+function setTeam(t){team=t;socket.emit('joinTeam',t);document.querySelector('#teamModal').classList.add('hidden');const btn=document.querySelector('#teamBtn');btn.textContent=t==='blue'?school('blue').short:t==='red'?school('red').short:'관전 중';btn.style.color=teamColor(t);}
 function startProblems(){document.querySelector('#problemProgress').textContent='1 / 5';document.querySelector('#feedback').textContent='5문제를 풀면 한 번에 거점에 반영됩니다.';document.querySelector('#feedback').className='feedback';socket.emit('startSession',selected);document.querySelector('#problemModal').classList.remove('hidden');document.querySelector('#sheet').classList.add('hidden');document.querySelector('#feedback').textContent='5문제를 풀면 한 번에 거점에 반영됩니다.';}
 function showProblem(p){currentProblem=p;document.querySelector('#problemType').textContent=state.bases[p.baseId]?.problemLabel+' 거점';document.querySelector('#problemText').textContent=p.text;const choice=document.querySelector('#choiceRow'),answer=document.querySelector('#answerRow'),input=document.querySelector('#answerInput');if(p.choices){choice.innerHTML='';choice.classList.remove('hidden');answer.classList.add('hidden');for(const c of p.choices){const b=document.createElement('button');b.textContent=c;b.onclick=()=>socket.emit('answer',c);choice.appendChild(b)}}else{choice.classList.add('hidden');answer.classList.remove('hidden');input.value='';setTimeout(()=>input.focus(),80)} }
 function toast(msg){const t=document.querySelector('#toast');t.textContent=msg;t.classList.remove('hidden');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.add('hidden'),1800)}
@@ -24,5 +79,6 @@ socket.on('problem',showProblem);
 socket.on('answerResult',r=>{document.querySelector('#problemProgress').textContent=`${Math.min(5,r.total+1)} / 5`;const f=document.querySelector('#feedback');f.textContent=r.ok?'정답! 거점 기여가 쌓였습니다.':'아쉬워요. 다음 문제로 넘어갑니다.';f.className='feedback '+(r.ok?'good':'bad')});
 socket.on('sessionComplete',r=>{document.querySelector('#problemModal').classList.add('hidden');toast(`정답 ${r.correct}/5 · 거점 반영 +${r.applied}`);socket.emit('requestState')});
 
-document.querySelector('#sheetClose').onclick=()=>document.querySelector('#sheet').classList.add('hidden');document.querySelector('#solveBtn').onclick=startProblems;document.querySelector('#problemClose').onclick=()=>document.querySelector('#problemModal').classList.add('hidden');document.querySelector('#submitAnswer').onclick=()=>{const v=document.querySelector('#answerInput').value.trim();if(v)socket.emit('answer',v)};document.querySelector('#answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')document.querySelector('#submitAnswer').click()});document.querySelector('#teamBtn').onclick=()=>document.querySelector('#teamModal').classList.remove('hidden');document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>setTeam(b.dataset.team));document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(b.dataset.tab==='learn')toast('지도에서 점령 중 거점을 눌러 바로 학습하세요.');if(b.dataset.tab==='school')toast(`${team==='blue'?'파랑':team==='red'?'빨강':'관전'} 모드 · 실시간 파일럿`)});
+document.querySelector('#sheetClose').onclick=()=>document.querySelector('#sheet').classList.add('hidden');document.querySelector('#solveBtn').onclick=startProblems;document.querySelector('#problemClose').onclick=()=>document.querySelector('#problemModal').classList.add('hidden');document.querySelector('#submitAnswer').onclick=()=>{const v=document.querySelector('#answerInput').value.trim();if(v)socket.emit('answer',v)};document.querySelector('#answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')document.querySelector('#submitAnswer').click()});document.querySelector('#teamBtn').onclick=()=>document.querySelector('#teamModal').classList.remove('hidden');document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>setTeam(b.dataset.team));document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(b.dataset.tab==='learn')toast('지도에서 점령 중 거점을 눌러 바로 학습하세요.');if(b.dataset.tab==='school')toast(`${team==='blue'?school('blue').name:team==='red'?school('red').name:'관전'} · 실제 학교 위치 본진`)});
+updateSchoolLabels();
 setTimeout(()=>document.querySelector('#teamModal').classList.remove('hidden'),350);
