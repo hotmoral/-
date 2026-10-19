@@ -2,145 +2,154 @@
 
 ## Core combat
 - Primary input is timing, not free movement.
-- Timing result must create immediate visible combat consequence.
-- One square, four-attack rhythm: `X → X → X → X+Y`.
-- Fourth attack is charged/heavy and should feel substantially more energetic than attacks 1–3.
-- P×P on the heavy attack produces CRITICAL.
-- Tap-anywhere input remains the intended control model.
+- One-square rhythm: `X → X → X → X+Y`.
+- Fourth attack is charged/heavy and must feel substantially stronger.
+- P×P on heavy = CRITICAL.
+- Tap-anywhere remains the intended control model.
 
 ## Class roles
-The classes must differ by the combat problem they solve, not only by DPS coefficients.
+The classes solve different combat problems rather than converging to identical DPS.
 
 ### Knight
-Generalist / stable frontline damage / penetration / strong heavy attack.
-Should be consistently good without owning every specialist benchmark.
+Generalist / stable frontline / penetration / strong heavy.
+Should be consistently useful without owning a specialist benchmark.
 
 ### Rogue
-Fast multihit / crit / high-HP normal-enemy execution.
-Rogue is allowed to delete BRUTE-like high-HP normal enemies faster than other classes.
-Do NOT cap repeated dagger hits on the same target; repeated impacts are core to Rogue feel.
-
-Boss balancing rule instead:
-- Boss dagger damage scalar initial value: `0.70`.
-- All dagger visuals and hit events still occur.
-- Resistance reduces final HP loss, not the number of hits.
+Fast multihit / crit / high-HP normal execution.
+- No same-target dagger hit cap.
+- Repeated impacts are core to class feel.
+- Boss dagger damage scalar starting value: `0.70`.
 
 ### Tank
 Knockback / wall protection / battlefield control.
-Tank is explicitly a team-specialist class and is NOT required to have solo Stage-10 clear performance comparable to the damage-oriented classes at fresh-run power.
-A future permanent-stat/meta-progression layer may eventually make solo completion practical without changing Tank's team identity.
-Tank is not required to win DPS comparisons.
-Bosses receive reduced knockback because of mass:
-- Boss knockback scalar initial value: `0.40`.
-- Bosses are not fully knockback-immune.
+- Explicit team-specialist.
+- Fresh-run solo Stage-10 parity is not required.
+- Future permanent/meta stats may make solo completion practical.
+- Boss knockback scalar starting value: `0.40`.
 
 ### Archer
 Straight-line penetration / rear-target access / long-range pressure.
-Archer penetration is geometric and strictly line-based:
-- The arrow continues only on its current straight trajectory.
-- Only enemies whose hitboxes intersect that trajectory may be penetrated.
-- No auto-retarget, steering, homing, or "next enemy" chaining after a hit.
-Archer should outperform Rogue when enemies are arranged in a line, while Rogue should outperform Archer against one very durable normal enemy.
+- Arrow continues only on its current trajectory.
+- Only hitboxes intersecting that line may be penetrated.
+- No homing, retargeting or automatic next-target chaining.
 
 ### Mage
 Area damage / dense-pack deletion / chained explosions.
-Mage should scale with enemy density and should not become a top single-target boss killer.
+Should become stronger with density, not a top single-target boss killer.
 
-## Balance principle
-Do not normalize every class to identical DPS or identical solo clear rate. Balance by role value:
-- Rogue: high-HP normal target TTK
-- Archer: line-pack clear and strong boss pressure
-- Mage: dense-cluster clear
-- Tank: wall preservation / control / team utility
-- Knight: general-purpose consistency
+## Balance philosophy
+Do not normalize all classes to equal DPS or equal solo clear rate.
+Evaluate by role:
+- Rogue: durable-normal TTK.
+- Archer: line-pack clear / rear pressure.
+- Mage: dense-cluster clear.
+- Tank: wall preservation / control / team utility.
+- Knight: general-purpose consistency.
 
-## Player-skill model and difficulty philosophy
-The current simulation profile named `Skilled` means approximately:
-- NORMAL 10%
-- GOOD 50%
-- PERFECT 40%
+## Player mastery
+Simulation reference:
+- Average = N25 / G55 / P20.
+- Skilled = N10 / G50 / P40 plus modestly faster commitment.
 
-This corresponds to about 90% GOOD-or-better timing and approximately 16% P×P CRITICAL on heavy attacks before other considerations.
-This is considered a plausible learned-player state rather than an extreme expert-only state. The design should leave visible room for players to improve from Average toward Skilled, and it is acceptable if the Stage-10 results become much better once that level of timing consistency is reached.
-Do not automatically nerf classes merely because Skilled players perform strongly.
+Skilled is treated as an attainable learned-player state, not an extreme expert state. Strong Average→Skilled improvement is desirable and must not automatically trigger nerfs.
 
-Latest v3 mastery-curve interpretation:
-- The strong performance rise from Average toward Skilled is intentional and desirable as a player-mastery reward, not automatically a difficulty defect.
-- Skilled play includes both better judgment accuracy and somewhat faster recognition/commitment to the timing window.
-- A modest cadence improvement can materially improve defense survival because enemies advance continuously in real time.
-- The user expects players to reach this Skilled state relatively quickly, so the game should preserve clear room to learn rather than flatten the mastery curve prematurely.
-
-## Experience progression
-Keep the current experience acquisition philosophy:
-- EXP is awarded from timing attack results / attack events as currently designed.
-- Do not compensate a strong class merely because it kills faster and therefore performs fewer attack events.
-- The resulting difference in level-up pace is accepted as part of overall class/run balance unless later evidence shows a concrete progression failure.
-
-## Boss resistance philosophy
-Boss resistance is not a class shutdown mechanic. It exists only to prevent a specialist from becoming the universal best answer.
-
-Current starting values:
-- Rogue dagger damage vs boss: `70%`
-- Tank knockback vs boss: `40%`
-
-These remain tuning values and may move after automated and human validation, but no balance patch should be applied solely because a simulation exposes a performance gap. Report the gap, identify its cause, and discuss it before changing live balance.
+## EXP philosophy
+- EXP remains tied to timing attack results/events.
+- Faster-killing classes are not compensated simply because they perform fewer attacks and therefore may level more slowly.
+- Different growth pace is accepted as part of overall run balance unless a concrete progression failure appears later.
 
 ## Balance-change governance
 Simulation is diagnostic first.
-- A large class-performance difference is not by itself authorization to patch.
-- First determine whether the difference is intentional role specialization, a simulation-model artifact, or an actual balance defect.
-- Report the result and discuss the design implication before changing gameplay values.
-- Playable/live code must remain unchanged until the balance decision is explicitly agreed.
 
-## Encounter-pressure philosophy
+Required order:
+`model/simulate → identify cause or model artifact or intentional specialization → report → discuss → explicit decision → live patch`
 
-Co-op pressure should **not** be implemented as one flat global multiplier that simply raises all monster HP or all monster counts from start to finish.
+A large measured gap never self-authorizes a balance change.
 
-Use three pressure families:
-- `S` Swarm — sudden/high-density count pressure.
-- `E` Elite/Heavy — a small number of unusually durable / armored threats.
-- `X` Special/Mixed — speed, flight, shield, split-lane or other disruptive compositions.
+---
 
-The normal encounter language is primarily special/mixed composition, while S and E create differently timed pressure spikes.
+# Encounter-pressure philosophy
 
-A stage may contain one, two or all three pressure families. Do **not** force all three into every stage.
+## Pressure families
+- `S` Swarm — temporary high-count pressure.
+- `E` Elite/Heavy — one/few unusually durable threats.
+- `X` Special/Mixed — speed, flight, shield, split or other disruptive compositions.
 
-For a 50-stage tier, identity is created by:
-- the proportion of 1-pattern / 2-pattern / 3-pattern stages,
-- which S/E/X families occur most often,
-- internal ratios inside 2-pattern and 3-pattern stages,
-- event timing within the stage,
-- duration/intensity,
+`X` is the primary co-op scaling language. `S` and `E` are time-separated spike tools.
+
+## Stage grammar
+A stage may use one, two or all three pressure families. Do **not** force S+E+X into every stage.
+
+A 50-stage tier receives identity through:
+- 1/2/3-pattern stage proportions,
+- S/E/X frequency,
+- internal pair/triple ratios,
+- early/mid/late/final timing,
 - formation geometry,
+- duration/intensity,
 - overlap frequency.
 
-Higher tier does **not** mean monotonically increasing the number of active pressure families. A high tier may return to many 1-pattern stages if that single pressure is much more extreme.
+Higher tier does not automatically mean more active pattern types. A high tier may return to focused 1-pattern stages with much stronger intensity.
 
-3-pattern stages should remain a minority globally so that a stage containing all three pressures feels special rather than routine.
+Three-pattern stages remain a minority globally so they retain a chaos/event identity.
 
-Geometry is part of encounter design, not decoration:
-- aligned line pressure creates Archer opportunities,
-- dense clusters create Mage opportunities,
+## Geometry is gameplay data
+- line pressure creates Archer opportunities,
+- dense cluster creates Mage opportunities,
 - durable anchors create Rogue opportunities,
-- dangerous split/special pressure creates Tank opportunities,
-- awkward/mixed transitions preserve Knight's generalist value.
+- split/special leakage creates Tank opportunities,
+- awkward transitions preserve Knight generalist value.
 
-Time-separated role switching is the default. Heavy simultaneous overlap is a deliberate chaos tool used more sparingly.
+## Concrete recipe candidate after v6
+See `PRESSURE_RECIPES_V1.md`.
 
-The current structural candidate is documented in `TIER_PRESSURE_GRAMMAR_V1.md`; its exact prototype counts are not yet final production data.
+### Swarm burst counts
+- S-line: 2P/3P/4P = `8 / 11 / 14`.
+- S-cluster: `7 / 10 / 13`.
+- S-scatter: `9 / 12 / 16`.
+
+Do not solve 4-player difficulty by dumping 20–30 ordinary enemies into every spike.
+
+### Special/mixed scaling
+Additional players primarily add role-bearing anchors and disruptive composition:
+- extra SHIELD / BRUTE anchors,
+- more RUNNER / FLYER pressure,
+- split geometry,
+- event-budget density.
+
+Avoid one flat global all-monster HP multiplier.
+
+### Elite durability
+Treat E as an **effective durability budget**, not permission to create one absurd health bar.
+Distribute the budget through moderate HP, armor, an extra durable target and type/timing composition.
+
+### Readability envelope
+Current candidate structural calibration across 250 prototype stages per team-size model keeps approximately:
+- 2P P95 4-second spawn burst ≈ 11,
+- 3P ≈ 15,
+- 4P ≈ 18.
+
+This is an authoring/reference envelope, not a permanent engine cap. Exceptional chaos stages may deliberately exceed it after human visual testing.
+
+## Current pressure status
+v5 validated the abstract grammar. v6 converted it to current-roster recipes and confirmed that role rotation survives the conversion.
+
+Final co-op difficulty is **not** frozen yet because exact human multiplayer cadence and exact Lv11–21 implemented skill behavior do not yet exist.
+
+---
 
 ## UI hierarchy
-- Charge stack stays above Timing Square.
-- Learned skill icons stay below Timing Square.
-- EXP gauge stays immediately right of Timing Square.
-- Do not keep permanent skill-name text beside EXP because it overlaps EXP gain feedback.
-- Timing Square must render above monsters.
+- Charge stack above Timing Square.
+- Learned skill icons below Timing Square.
+- EXP gauge immediately right of Timing Square.
+- No permanent skill-name text beside EXP.
+- Timing Square renders above monsters.
 
 ## Class color language
-- Knight: gold / bright steel
-- Rogue: charcoal / silver / minimal red accent
-- Tank: blue / dark steel
-- Archer: green
-- Mage: purple
+- Knight: gold / bright steel.
+- Rogue: charcoal / silver / minimal red accent.
+- Tank: blue / dark steel.
+- Archer: green.
+- Mage: purple.
 
-The same palette propagates into character clothing, weapons, projectiles, Timing Square, EXP gauge, skill icon and impact VFX.
+The palette propagates through character clothing, weapons, projectiles, Timing Square, EXP gauge, skill icon and impact VFX.
