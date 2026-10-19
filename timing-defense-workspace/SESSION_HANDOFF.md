@@ -3,7 +3,6 @@
 Updated: 2026-10-20 KST
 
 ## Canonical locations
-
 - Public repository: `hotmoral/-`
 - Persistent planning/balance branch: `timing-defense-workspace`
 - Live playable branch: `timing-defense-live-v011`
@@ -13,140 +12,156 @@ Updated: 2026-10-20 KST
 The workspace branch is the source of truth for design decisions, balance interpretation, simulation reports and session handoff. The live branch is separate so analysis/documentation changes do not deploy automatically.
 
 ## Current playable state
-
-Five classes are playable: Knight / Rogue / Tank / Archer / Mage.
-Current live growth implementation contains the Lv6 skill layer only.
-Planned unlock levels are:
-
-`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`
-
-Stage prototype is 1–10. Run EXP, coins and shop upgrades reset each run.
+- Five classes: Knight / Rogue / Tank / Archer / Mage.
+- Live growth implementation: Lv6 skill layer only.
+- Planned unlocks: `Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`.
+- Current playable stage prototype: 1–10.
+- Run EXP / coins / shop reset each run.
 
 ## Frozen class-role decisions
-
 - Knight: generalist / stable frontline / penetration / strong heavy.
-- Rogue: fast multihit / crit / high-HP normal target execution.
+- Rogue: fast multihit / crit / high-HP normal execution.
 - Tank: team-specialist / knockback / wall protection / battlefield control. Fresh-run solo Stage-10 parity is NOT required.
-- Archer: straight-line geometric penetration only. No retargeting, homing or automatic next-enemy chaining.
+- Archer: straight-line geometric penetration only. No retargeting/homing/automatic next-enemy chain.
 - Mage: density specialist / area burst / chained explosions.
 
-## Frozen boss interaction rules
-
+## Frozen boss/progression decisions
 - Rogue dagger hits have no same-target hit cap.
-- Boss dagger damage scalar: `0.70` starting value.
-- Boss knockback scalar: `0.40` starting value.
-- These are tuning values, but they are NOT to be changed automatically from simulation output.
+- Boss dagger damage scalar starting value: `0.70`.
+- Boss knockback scalar starting value: `0.40`.
+- EXP remains tied to timing attack results/events.
+- Faster-killing classes are not compensated merely because they perform fewer attacks.
 
-## Frozen progression philosophy
+## Player-mastery interpretation
+`Skilled` ≈ N10 / G50 / P40 plus modestly faster commitment than Average.
 
-- EXP stays tied to timing attack results/events.
-- Faster-killing classes are not compensated merely because they perform fewer attacks and therefore may gain EXP more slowly.
-- `Skilled` simulation profile means approximately `NORMAL 10% / GOOD 50% / PERFECT 40%`, plus modestly faster attack commitment than Average.
-- Strong Skilled performance is acceptable because player mastery is intended to materially reduce difficulty.
-- The user expects players to reach Skilled consistency relatively quickly; preserve room for that mastery progression.
+This is treated as an attainable learned-player state, not an extreme expert-only state. Strong Average→Skilled improvement is desirable.
 
 ## Balance governance
-
-**Never patch solely because a simulation exposes a large performance gap.**
+Never patch solely because simulation shows a large performance gap.
 
 Required order:
-
-`simulate → identify cause/model artifact/intentional specialization → report → discuss with user → explicit decision → only then patch live gameplay`
+`model/simulate → identify cause → report → discuss → explicit decision → live patch`
 
 ## Simulation status
 
-### v1
-Role-scenario validation established the intended identity split:
-- Rogue strongest vs durable normal targets.
-- Archer strongest in aligned line packs.
-- Mage strongest in dense clusters.
-- Tank strongest in wall preservation/control.
-- Knight stable generalist.
+### v1 — role separation
+Established the intended class identity split.
 
-### v2
-Added Stage 1–10 + shop simulation. Important discoveries:
-- permissive Archer auto-chain penetration badly overestimated Archer, so penetration semantics were explicitly frozen to straight-line geometry.
-- Tank's poor solo result was discussed and accepted as team specialization.
-- EXP/attack-count coupling was discussed and intentionally retained.
+### v2 — Stage 1–10 + run shop
+- exposed Archer auto-chain model artifact,
+- froze Archer to true straight-line penetration,
+- accepted Tank solo weakness as role specialization,
+- retained EXP/attack-count coupling.
 
-Report: `BALANCE_SIM_REPORT_V2.md`
+### v3 — mastery curve
+- confirmed useful Average→Skilled progression,
+- confirmed cadence is a real skill dimension,
+- no live change.
 
-### v3
-Average→Skilled mastery curve confirmed a strong but plausible player-skill progression.
+### v4 — team composition / co-op role isolation
+Deliberate volume: 13,780 runs.
 
-Main endpoint:
-- Skilled = N10 / G50 / P40 with modestly faster cadence.
-- Knight / Archer / Mage become highly reliable Stage-10 solo performers.
-- Rogue remains a specialist rather than a general solo clearer.
-- Tank solo result remains non-normative.
-- No live change was applied.
-
-Report: `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md`
-
-### v4 — latest completed validation
-Team-composition / co-op role validation was run as a report-only role-isolation model.
-
-Important modeling boundary:
-- primary Stage 1–10 comparisons use current unscaled wave counts/gaps.
-- all human teammates use the same named proficiency in a comparison.
-- sync bonuses are not modeled yet.
-- multiplayer shop/economy ownership is not frozen, so v4 intentionally excludes run-shop upgrades and should not be compared 1:1 to v2/v3 absolute clear rates.
-
-Deliberate v4 volume: **13,780 runs**.
-
-Key results:
-- **Tank team utility is real under meaningful wall pressure.** In hard Lv21 diagnostics it reduced net wall HP loss through mitigation, shield refresh and knockback even while killing fewer enemies.
-- **Rogue team niche is real.** In several 3-player mixes Rogue took about 39–42% of BRUTE/SHIELD kills while representing only one third of the team.
-- **Archer and Mage remain geometrically distinct.** In long-line packs Archer produced about 66.8% of pair damage; in dense clusters Mage produced about 58.4%.
-- **Knight remains a strong generalist/stabilizer** and is often the safest third member.
-- **Current Stage 1–10 waves saturate at 3–4 players.** At Average, 9/10 unique 3-player teams were already 100% clear; all unique 4-player teams were 100%. At Skilled all 3-player and 4-player unique compositions were 100% clear.
-- Therefore current waves cannot be treated as final 3–4 player balance targets. Co-op pressure scaling must eventually be designed explicitly.
-- Duplicate diagnostic flagged **Knight + Knight** as unusually strong at Average (~93% clear versus ~51–57% for mixed Knight pairs), but this is NOT a balance verdict because the headless Knight Lv11 penetration geometry is still approximate. Re-test after exact playable collision implementation.
-
-No live balance value was changed from v4.
+Main findings:
+- Tank produces real team defensive value under meaningful wall pressure.
+- Rogue takes disproportionate BRUTE/SHIELD kills in mixed teams.
+- Archer wins long-line geometry; Mage wins dense-cluster geometry.
+- Knight remains a strong stabilizing generalist.
+- current unscaled Stage 1–10 waves saturate at 3–4 players.
+- double-Knight remains a re-test flag only because exact playable Knight penetration is not implemented yet.
 
 Report: `BALANCE_SIM_REPORT_V4_TEAM.md`
 
-## Current skill-design candidate through Lv21
+### v5 — latest: Tier Pressure Grammar / role opportunity
+The co-op pressure philosophy is now formalized structurally.
 
-See `SKILL_PLAN_LV6_31.md` for complete Lv6–31 plan.
+Pressure families:
+- `S` Swarm = temporary high-count pressure.
+- `E` Elite/Heavy = one/few unusually durable threats.
+- `X` Special/Mixed = disruptive speed/flight/shield/split compositions.
+
+Important decision:
+- a stage may use 1, 2 or 3 pressure families,
+- do NOT force all three into every stage,
+- tier identity comes from stage-type proportions, S/E/X frequency, internal pressure ratios, geometry, timing, duration/intensity and overlap,
+- higher tier does NOT automatically mean more pattern types; high tiers may return to extreme 1-pattern stages.
+
+Five representative 50-stage prototypes were tested:
+
+| Tier | 1-pattern | 2-pattern | 3-pattern | Identity |
+|---|---:|---:|---:|---|
+| T1 Foundations | 30 | 17 | 3 | balanced pressure literacy |
+| T2 Breakers | 21 | 23 | 6 | elite/durability |
+| T3 Rushline | 17 | 25 | 8 | swarm + line/special tempo |
+| T4 Crossfire | 11 | 25 | 14 | mixed/split special pressure |
+| T5 Extremes | 23 | 19 | 8 | focused extremes / late spikes |
+
+Across 250 prototype stages:
+- 1-pattern = 40.8%
+- 2-pattern = 43.6%
+- 3-pattern = 15.6%
+- therefore 84.4% use only one or two pressure families.
+
+Structural class role-coverage across all 250 prototype stages:
+- Knight 18.6%
+- Rogue 20.1%
+- Tank 20.4%
+- Archer 22.0%
+- Mage 18.9%
+
+Tier-local specialist peaks still appear:
+- Rogue peaks in T2,
+- Archer peaks in T3,
+- Tank peaks in T4,
+- Knight remains comparatively stable.
+
+This is a structural opportunity score, not final DPS share.
+
+Files:
+- `TIER_PRESSURE_GRAMMAR_V1.md`
+- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
+
+## Current skill-design candidate through Lv21
+See `SKILL_PLAN_LV6_31.md`.
 
 Through Lv21:
 - Knight: Lv6 +12% blade-wave damage; Lv11 penetration; Lv16 PERFECT enhancement; Lv21 large heavy blade wave.
-- Rogue: Lv6 second dagger 55%; Lv11 +6%p class crit; Lv16 PERFECT cycle reduction; Lv21 five-dagger heavy.
-- Tank: Lv6 width/knockback enhancement; Lv11 wall incoming damage -10%; Lv16 80 shield / 3 s refresh non-stack; Lv21 broad heavy shockwave.
-- Archer: Lv6 straight-line penetration; Lv11 speed +25% and damage +10%; Lv16 PERFECT armor-ignoring preserved penetration; Lv21 triple shot.
-- Mage: Lv6 burst; Lv11 larger/stronger burst; Lv16 outer-ring resonance excluding original center target; Lv21 greater arcane orb.
+- Rogue: Lv6 second dagger 55%; Lv11 +6%p crit; Lv16 PERFECT cycle reduction; Lv21 five-dagger heavy.
+- Tank: Lv6 width/knockback; Lv11 wall incoming damage -10%; Lv16 80 shield / 3 s refresh/non-stack; Lv21 broad heavy shockwave.
+- Archer: Lv6 straight-line penetration; Lv11 speed +25% and damage +10%; Lv16 PERFECT armor-ignore/preserved penetration; Lv21 triple shot.
+- Mage: Lv6 burst; Lv11 larger/stronger burst; Lv16 outer-ring resonance excluding center target; Lv21 greater arcane orb.
 
-These remain candidate implementation values, not authority to deploy without the normal discussion/implementation boundary.
+These remain candidate values, not automatic deploy authority.
 
 ## Exact next work boundary
+Do NOT patch live difficulty or class coefficients yet.
 
-Do NOT immediately alter live numerical balance.
+Next analysis slice:
+1. translate abstract S/E/X pressure budgets into concrete recipes using GRUNT/RUNNER/BRUTE/SHIELD/FLYER,
+2. define candidate swarm sizes, elite HP/armor packages and special compositions,
+3. preserve v5 timing/ratio/geometry grammar,
+4. run 2/3/4-player headless calibration,
+5. measure clear rate, wall HP, peak enemy concurrency/readability, target-type contribution and Average→Skilled response,
+6. report before any live difficulty change.
 
-The next design question is now **co-op team-size pressure philosophy**, because current Stage 1–10 waves are saturated by 3–4 players.
-
-Before building a v5 pressure model, discuss and choose whether additional human players should primarily create:
-1. more enemies,
-2. tougher enemies,
-3. a mix of count + HP,
-4. or additional elite/special threats while keeping ordinary enemies readable.
-
-Also still unresolved:
-- multiplayer shop/economy ownership and timing,
-- duplicated-class policy,
-- exact network/sync attack bonus implementation.
-
-After co-op pressure philosophy is agreed, build v5 simulation first. Report → discuss → decide before any live difficulty patch.
+Still unresolved:
+- exact 2/3/4-player scaling multipliers,
+- exact S count / E durability / X recipe values,
+- final number/names/order of tiers,
+- final stage length and boss/checkpoint schedule,
+- multiplayer shop/economy ownership,
+- duplicate-class policy,
+- sync round/bonus implementation.
 
 ## New-session read order
-
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `DESIGN_DECISIONS.md`
-4. `SKILL_PLAN_LV6_31.md`
-5. `BALANCE_SIM_REPORT_V2.md`
-6. `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md`
-7. `BALANCE_SIM_REPORT_V4_TEAM.md`
+4. `TIER_PRESSURE_GRAMMAR_V1.md`
+5. `SKILL_PLAN_LV6_31.md`
+6. `BALANCE_SIM_REPORT_V4_TEAM.md`
+7. `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
 8. `SIMULATION_METHOD.md`
 9. `NEXT_WORK.md`
+
+Older v1/v2/v3 reports remain available for historical reasoning and numerical provenance.
