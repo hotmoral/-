@@ -64,6 +64,12 @@ This corresponds to about 90% GOOD-or-better timing and approximately 16% P×P C
 This is considered a plausible learned-player state rather than an extreme expert-only state. The design should leave visible room for players to improve from Average toward Skilled, and it is acceptable if the Stage-10 results become much better once that level of timing consistency is reached.
 Do not automatically nerf classes merely because Skilled players perform strongly.
 
+Latest v3 mastery-curve interpretation:
+- The strong performance rise from Average toward Skilled is intentional and desirable as a player-mastery reward, not automatically a difficulty defect.
+- Skilled play includes both better judgment accuracy and somewhat faster recognition/commitment to the timing window.
+- A modest cadence improvement can materially improve defense survival because enemies advance continuously in real time.
+- The user expects players to reach this Skilled state relatively quickly, so the game should preserve clear room to learn rather than flatten the mastery curve prematurely.
+
 ## Experience progression
 Keep the current experience acquisition philosophy:
 - EXP is awarded from timing attack results / attack events as currently designed.
