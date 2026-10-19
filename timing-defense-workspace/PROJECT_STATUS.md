@@ -13,76 +13,133 @@ Updated: 2026-10-20 KST
 - Landscape mobile/browser defense prototype.
 - Local player fixed near left-side wall; monsters approach from the right.
 - Local timing input uses one Timing Square.
-- Attack rhythm: first three attacks use X timing, fourth/heavy uses X then Y.
-- Judgments: NORMAL / GOOD / PERFECT and heavy outcomes HEAVY / HEAVY+ / GREAT / SUPER / CRITICAL.
-- Five playable classes: Knight / Rogue / Tank / Archer / Mage.
+- Attack rhythm: X → X → X → X+Y.
+- Judgments: NORMAL / GOOD / PERFECT and heavy HEAVY / HEAVY+ / GREAT / SUPER / CRITICAL.
+- Five classes: Knight / Rogue / Tank / Archer / Mage.
 - Team controls: solo through +3 AI.
 - Monsters: GRUNT / RUNNER / BRUTE / SHIELD / FLYER.
-- Stage prototype: 1–10, with boss-like BRUTE at stages 5 and 10.
-- Run-only EXP / levels / coins / shop upgrades.
-- Current implemented skill layer: Lv6 class skill only.
-- Skill icon is displayed below Timing Square; charge stack UI stays above it.
-- Timing Square is rendered above monsters so approaching enemies cannot obscure it.
-- Class palettes are visually separated in character clothing, weapons, Timing Square and VFX.
+- Current playable stage prototype: 1–10.
+- Run-only EXP / level / coin / shop system.
+- Current live skill layer: Lv6 only.
 
-## Growth structure
-Planned automatic skill unlocks:
+## Planned growth structure
+Automatic skill unlocks:
 `Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`
 
-Lv21 is the first major transformation point for the 4th/heavy attack. Lv31 P×P CRITICAL is intended to become the class-signature finisher.
+Lv21 is the first major fourth-attack transformation point. Lv31 P×P CRITICAL is intended to become the class-signature finisher.
 
-## Frozen role/balance decisions
-- Archer penetration is true straight-line geometry only; no homing/retarget/next-enemy auto-chain.
-- Tank is intentionally team-specialized and does not need fresh-run solo Stage-10 parity.
+## Frozen class/balance decisions
+- Archer penetration is true straight-line geometry only.
+- Tank is team-specialized; fresh-run solo Stage-10 parity is not required.
 - Rogue has no same-target dagger hit cap.
-- Boss dagger damage scalar starting value: `0.70`.
-- Boss knockback scalar starting value: `0.40`.
-- EXP remains tied to timing attack results/events. Faster-clearing classes are not automatically compensated for fewer attack events.
-- Simulation results are diagnostic. Large performance gaps must be reported and discussed before any live numerical patch.
+- Boss dagger damage scalar starting value: 0.70.
+- Boss knockback scalar starting value: 0.40.
+- EXP remains tied to timing attack results/events.
+- Faster-clearing classes are not automatically compensated for fewer attack events.
+- Simulation is diagnostic. Report/discuss before any numerical live patch.
 
 ## Player-skill interpretation
-Current simulation endpoints:
-- Average: NORMAL 25% / GOOD 55% / PERFECT 20%.
-- Skilled: NORMAL 10% / GOOD 50% / PERFECT 40%, with modestly faster attack commitment.
+- Average = N25 / G55 / P20.
+- Skilled = N10 / G50 / P40 with modestly faster commitment.
 
-The Skilled state is treated as an attainable learned-player level, not an extreme expert-only state. A strong improvement from Average → Skilled is desirable because player mastery should materially reduce difficulty.
+Skilled is treated as an attainable learned-player state. Strong improvement from Average → Skilled is desirable.
 
-## Balance-simulation status
+## Simulation status
 
-### v1
-Role benchmarks validated the intended specialization split.
+### v1 — role separation
+Established the intended class identity split.
 
-### v2
-Added Stage 1–10 + run-shop campaign simulation. It exposed the Archer penetration-model artifact, Tank solo/team-role question and EXP/attack-count coupling. Those items were discussed and explicit design decisions were made before any patch.
+### v2 — Stage 1–10 + run shop
+Exposed and resolved the Archer auto-chain artifact, Tank solo/team interpretation and EXP/attack-count coupling.
 
-### v3
-Average→Skilled mastery progression was simulated after the above decisions were frozen. Knight / Archer / Mage showed a strong but plausible mastery response; Rogue remained a specialist; Tank solo remained non-normative. No live value changed.
+### v3 — mastery curve
+Confirmed a useful Average→Skilled progression. No live change.
 
-### v4 — latest completed
-Team-composition / co-op role validation, 13,780 deliberate runs.
+### v4 — team composition
+13,780 deliberate runs.
 
-Main findings:
-- Tank has measurable team defensive value under meaningful pressure.
-- Rogue takes a disproportionate share of durable-normal kills in 3-player teams (~39–42% in several tested mixes).
-- Archer and Mage remain geometrically distinct: long-line pack favored Archer (~66.8% pair damage), dense cluster favored Mage (~58.4%).
-- Knight remains a useful generalist/stabilizer.
-- Current Stage 1–10 waves saturate at 3–4 players: most/all 3-player teams and all 4-player teams clear at very high rates even at Average.
-- Double-Knight looked unusually strong in the current headless Lv11 penetration approximation; this is flagged for re-test after exact playable collision implementation, not for an immediate nerf.
-
-No playable balance values were changed from v4.
+Key result:
+- Tank team utility is real under pressure.
+- Rogue durable-normal niche is real.
+- Archer and Mage remain line-vs-density distinct.
+- Knight remains a useful stabilizer.
+- current unscaled Stage 1–10 waves saturate with 3–4 players.
 
 Report: `BALANCE_SIM_REPORT_V4_TEAM.md`
 
+### v5 — latest completed: Tier Pressure Grammar
+The co-op pressure philosophy has now been formalized structurally.
+
+Pressure families:
+- S = Swarm,
+- E = Elite/Heavy,
+- X = Special/Mixed.
+
+Stages may use 1, 2 or 3 pressure families. All three are **not** forced into every stage.
+
+Five representative 50-stage tier prototypes were generated:
+- T1 Foundations: 30 / 17 / 3 single/double/triple stages.
+- T2 Breakers: 21 / 23 / 6.
+- T3 Rushline: 17 / 25 / 8.
+- T4 Crossfire: 11 / 25 / 14.
+- T5 Extremes: 23 / 19 / 8.
+
+Across the 250 prototype stages:
+- 1-pattern 40.8%,
+- 2-pattern 43.6%,
+- 3-pattern 15.6%.
+
+Thus 84.4% of stages use only one or two pressure families.
+
+The prototype also stores:
+- S/E/X frequency,
+- pair/triple internal pressure ratios,
+- line/cluster/scatter/split geometry,
+- early/mid/late/final timing bias,
+- overlap tendency,
+- focused-extreme behavior.
+
+Structural role-coverage across all 250 prototype stages:
+- Knight 18.6%
+- Rogue 20.1%
+- Tank 20.4%
+- Archer 22.0%
+- Mage 18.9%
+
+Tier-specific peaks still exist, which is intentional:
+- Rogue peaks in elite-heavy T2,
+- Archer peaks in line-heavy T3,
+- Tank peaks in split/special-heavy T4,
+- Knight remains comparatively stable.
+
+This supports the pressure-grammar concept but does not freeze the exact final stage data.
+
+See:
+- `TIER_PRESSURE_GRAMMAR_V1.md`
+- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
+
 ## Current next boundary
-Do not immediately patch live balance.
+Do not patch live difficulty yet.
 
-The next major design question is **co-op pressure scaling by team size**. Before a v5 simulation, decide whether extra players should primarily increase enemy count, enemy durability, a mix of both, or elite/special-threat density.
+Next analysis:
+1. convert S/E/X pressure budgets into concrete spawn recipes using GRUNT/RUNNER/BRUTE/SHIELD/FLYER,
+2. then run 2/3/4-player headless scaling calibration,
+3. measure clear rate, wall pressure, concurrency/readability, target-type contribution and Average→Skilled response,
+4. report and discuss before any live difficulty change.
 
-Multiplayer shop/economy ownership, duplicate-class policy and sync-bonus rules are also not frozen yet.
+Still not frozen:
+- exact player-count scaling multipliers,
+- exact S enemy counts,
+- exact E HP/armor multipliers,
+- exact X compositions,
+- multiplayer shop/economy ownership,
+- duplicate-class policy,
+- sync-bonus implementation.
 
 ## Important live-game UX decisions
-- No `X LOCK` explanatory text after first tap of heavy attack.
-- Shop never auto-advances; user presses READY / NEXT.
-- Shop opens with short input protection to prevent accidental purchase/advance.
-- Top duplicate LV/EXP text removed; the Timing Square-side EXP gauge is the primary growth HUD.
-- Persistent skill-name text beside EXP gauge removed to prevent overlap.
+- No X LOCK explanatory text after first heavy tap.
+- Shop does not auto-advance.
+- Short shop input protection prevents accidental purchase/advance.
+- Timing Square-side EXP is the primary growth HUD.
+- Persistent skill-name text beside EXP remains removed.
+- Timing Square renders above monsters.
