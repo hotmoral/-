@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#07101f"/>
+  <title>일산 수학 영토전</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand"><span class="brandMark">M</span><div><b>일산 수학 영토전</b><small>ILSΑN MATH FRONT</small></div></div>
+      <button id="teamBtn" class="teamPill">관전 중</button>
+    </header>
+    <section class="scorebar">
+      <div class="score blue"><span>파랑학교</span><strong id="blueScore">15</strong></div>
+      <div class="contest"><strong id="prepScore">0</strong><span>점령 중</span></div>
+      <div class="score red"><strong id="redScore">15</strong><span>빨강학교</span></div>
+    </section>
+    <main id="map"></main>
+    <div class="mapHint"><span class="liveDot"></span><span>파일럿 전투속도 ×60</span><span>•</span><span>거점을 눌러 문제를 풀어 강화하세요</span></div>
+    <nav class="bottomNav">
+      <button class="nav active" data-tab="map"><span>⌖</span>지도</button>
+      <button class="nav" data-tab="learn"><span>∑</span>학습</button>
+      <button class="nav" data-tab="school"><span>▦</span>우리학교</button>
+    </nav>
+  </div>
+
+  <div id="sheet" class="sheet hidden">
+    <div class="grab"></div>
+    <button class="closeBtn" id="sheetClose">×</button>
+    <div class="sheetTitle"><div><span id="baseStatus" class="statusTag">ACTIVE</span><h2 id="baseName">거점</h2></div><span id="baseLevel" class="levelBadge">Lv.1</span></div>
+    <div class="statGrid">
+      <div class="stat"><span>병력</span><b id="baseTroops">0 / 50</b><div class="bar"><i id="troopBar"></i></div></div>
+      <div class="stat"><span id="maintLabel">유지</span><b id="baseMaint">0 / 8</b><div class="bar"><i id="maintBar"></i></div></div>
+      <div class="stat"><span>성장</span><b id="baseGrowth">0 / 20</b><div class="bar"><i id="growthBar"></i></div></div>
+      <div class="stat compact"><span>생산</span><b id="baseProd">0.000/s</b></div>
+    </div>
+    <div id="baseMessage" class="baseMessage"></div>
+    <button id="solveBtn" class="primaryBtn">문제 풀기</button>
+  </div>
+
+  <div id="problemModal" class="modal hidden">
+    <div class="problemCard">
+      <div class="problemTop"><div><span id="problemType">계산 거점</span><b id="problemProgress">1 / 5</b></div><button id="problemClose">×</button></div>
+      <div id="problemText" class="problemText">36 × □ = 252</div>
+      <div id="choiceRow" class="choiceRow hidden"></div>
+      <div id="answerRow" class="answerRow"><input id="answerInput" inputmode="numeric" autocomplete="off" placeholder="답 입력"/><button id="submitAnswer">확인</button></div>
+      <div id="feedback" class="feedback">5문제를 풀면 한 번에 거점에 반영됩니다.</div>
+    </div>
+  </div>
+
+  <div id="teamModal" class="modal hidden">
+    <div class="teamCard">
+      <span class="eyebrow">TEAM SELECT</span><h2>어느 학교로 참여할까요?</h2><p>같은 링크에 접속한 사람들과 실시간으로 같은 전장을 봅니다.</p>
+      <button data-team="blue" class="teamChoice blueChoice"><b>파랑학교</b><span>서쪽 본진</span></button>
+      <button data-team="red" class="teamChoice redChoice"><b>빨강학교</b><span>동쪽 본진</span></button>
+      <button data-team="spectator" class="teamChoice spectatorChoice"><b>관전하기</b><span>문제풀이 없이 전장 보기</span></button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
