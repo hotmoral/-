@@ -8,22 +8,24 @@ This directory is the persistent planning / balance / simulation / handoff works
 - Public service: https://timing-defense-v011.onrender.com
 - Current playable prototype: `v0.15`
 
-The workspace branch is intentionally separated from the Render deployment branch so documentation and balance work do not trigger a live deploy.
+The workspace branch is separated from the Render deployment branch so analysis/documentation work does not deploy automatically.
 
-## Read order for a new session
+## New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `DESIGN_DECISIONS.md`
 4. `TIER_PRESSURE_GRAMMAR_V1.md`
-5. `SKILL_PLAN_LV6_31.md`
-6. `BALANCE_SIM_REPORT_V4_TEAM.md`
-7. `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
-8. `SIMULATION_METHOD.md`
-9. `NEXT_WORK.md`
+5. `PRESSURE_RECIPES_V1.md`
+6. `SKILL_PLAN_LV6_31.md`
+7. `BALANCE_SIM_REPORT_V4_TEAM.md`
+8. `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
+9. `BALANCE_SIM_REPORT_V6_CONCRETE_RECIPES.md`
+10. `SIMULATION_METHOD.md`
+11. `NEXT_WORK.md`
 
 Older v1/v2/v3 reports remain available for historical reasoning and numerical provenance.
 
-## Current project boundary
+## Core project
 Timing-action side defense prototype with five classes:
 - Knight
 - Rogue
@@ -31,47 +33,62 @@ Timing-action side defense prototype with five classes:
 - Archer
 - Mage
 
-Core timing rhythm is `X → X → X → X+Y`; the fourth attack is charged/heavy. Timing judgment directly drives projectile outcome, EXP and class growth.
+Core rhythm is `X → X → X → X+Y`. The fourth attack is charged/heavy. Timing judgment drives combat outcome, EXP and class growth.
 
 ## Working principle
-Automated simulation is used for numerical balance, growth speed, encounter difficulty, team-role validation and now encounter-grammar design. Human playtesting is reserved for timing feel, readability, hit impact, VFX density and subjective fun.
+Automated simulation is used for:
+- numerical balance,
+- growth speed,
+- encounter difficulty,
+- team-role validation,
+- tier encounter grammar,
+- concrete spawn-recipe calibration.
 
-Simulation is diagnostic, not self-authorizing. A measured gap must be explained and discussed before a live balance patch.
+Human playtesting is reserved for feel, readability, impact, VFX density and subjective fun.
 
-## Latest completed analysis — v5
-v5 formalized a reusable **Tier Pressure Grammar** for future 50-stage tiers.
+Simulation is diagnostic, not self-authorizing. A measured gap must be explained and discussed before live balance changes.
 
-Pressure families:
+---
+
+# Latest completed analysis — v6
+
+v5 created the abstract Tier Pressure Grammar:
 - S = Swarm,
 - E = Elite/Heavy,
 - X = Special/Mixed.
 
-Stages may use one, two or all three pressure families. All three are intentionally **not** used every stage.
+v6 translated that grammar into current-roster GRUNT/RUNNER/BRUTE/SHIELD/FLYER recipes.
 
-Five representative 50-stage tier prototypes produce, across 250 stages:
-- 1-pattern: 40.8%
-- 2-pattern: 43.6%
-- 3-pattern: 15.6%
+## Current candidate Swarm burst envelope
+- S-line 2P/3P/4P = 8 / 11 / 14.
+- S-cluster = 7 / 10 / 13.
+- S-scatter = 9 / 12 / 16.
 
-Therefore 84.4% of stages use only one or two pressure families.
+## Concrete scaling philosophy
+- X carries most multiplayer scaling through role-bearing composition.
+- S creates readable temporary count spikes.
+- E creates durable-anchor moments through an effective durability budget rather than one mandatory giant HP multiplier.
 
-The grammar also varies:
-- pair/triple internal pressure ratio,
-- line/cluster/scatter/split geometry,
-- early/mid/late/final timing,
-- duration/intensity,
-- overlap rate.
+## Readability result
+Across 250 prototype stages per team-size model, P95 4-second spawn density is approximately:
+- 2P = 11,
+- 3P = 15,
+- 4P = 18.
 
-Structural role-coverage across all 250 prototype stages is broadly distributed:
-- Knight 18.6%
-- Rogue 20.1%
-- Tank 20.4%
-- Archer 22.0%
-- Mage 18.9%
+## Combat-envelope result
+Conservative one-human + current-AI-like teammate diagnostic, 7,000 runs:
+- 2P Average/Skilled = 100 / 100% clear,
+- 3P = 88.4 / 94.9%,
+- 4P = 68.3 / 83.0%.
 
-Tier-specific specialist peaks still appear, which is intentional.
+A fully capable all-human candidate-Lv21 upper-bound model still saturates near 100% in representative slices. Therefore final co-op difficulty is not frozen yet.
 
-No live gameplay value was changed by v5.
+Files:
+- `PRESSURE_RECIPES_V1.md`
+- `BALANCE_SIM_REPORT_V6_CONCRETE_RECIPES.md`
+- `pressure_recipe_sim_v1.py`
+
+No live gameplay value changed from v6.
 
 ## Current next boundary
-Translate abstract S/E/X pressure budgets into concrete GRUNT/RUNNER/BRUTE/SHIELD/FLYER spawn recipes, then calibrate 2/3/4-player pressure headlessly before any live difficulty patch.
+Implement the playable Lv6–21 multi-skill block first, then mirror the exact implementation back into the simulator and rerun concrete pressure calibration before any final co-op difficulty tuning.
