@@ -1,12 +1,13 @@
 {
   "name": "outpost-wilds",
-  "version": "0.18.5",
+  "version": "0.18.6",
   "private": true,
   "type": "commonjs",
   "scripts": {
     "generate-assets": "node scripts/generate-v18-assets.js",
-    "qa": "node scripts/qa-v11.js && node scripts/qa-v12.js && node scripts/qa-v13.js && node scripts/qa-v14.js && node scripts/qa-v15.js && node scripts/qa-v16.js && node scripts/qa-v17.js && node scripts/qa-v17-1.js && node scripts/qa-v18.js && node scripts/qa-v18-1.js && node scripts/qa-v18-2.js && node scripts/qa-v18-3.js && node scripts/qa-v18-4.js && node scripts/qa-v18-5.js",
-    "start": "npm run generate-assets && npm run qa && node server-v18-5.js"
+    "install-authored-assets": "node scripts/install-v18-6-atlas.js",
+    "qa": "node scripts/qa-v11.js && node scripts/qa-v12.js && node scripts/qa-v13.js && node scripts/qa-v14.js && node scripts/qa-v15.js && node scripts/qa-v16.js && node scripts/qa-v17.js && node scripts/qa-v17-1.js && node scripts/qa-v18.js && node scripts/qa-v18-1.js && node scripts/qa-v18-2.js && node scripts/qa-v18-3.js && node scripts/qa-v18-4.js && node scripts/qa-v18-5.js && node scripts/qa-v18-6.js",
+    "start": "npm run generate-assets && npm run install-authored-assets && npm run qa && node server-v18-6.js"
   },
   "dependencies": {
     "express": "^4.21.2",
