@@ -18,6 +18,7 @@ const READY_COUNTDOWN_MS = 5_000;
 const DISCONNECT_GRACE_MS = 30_000;
 const TICK_MS = 50;
 const SNAPSHOT_MS = 100;
+const PLAYER_SPEED = 170;
 
 const resourceTemplates = [
   { id: 'food-a', type: 'food', label: '편의점', x: 225, y: 195, r: 48, stock: 20 },
@@ -69,8 +70,8 @@ function makePlayer(resumeToken, name = '생존자') {
     name: String(name || '생존자').slice(0, 16),
     x: WORLD.base.x + (Math.random() - 0.5) * 70,
     y: WORLD.base.y + (Math.random() - 0.5) * 70,
-    tx: WORLD.base.x,
-    ty: WORLD.base.y,
+    inputX: 0,
+    inputY: 0,
     hp: 100,
     maxHp: 100,
     ammo: 18,
@@ -103,7 +104,11 @@ function readyStatus() {
 function setPhase(phase) {
   state.phase = phase;
   state.countdownEndsAt = null;
-  for (const p of state.players.values()) p.ready = false;
+  for (const p of state.players.values()) {
+    p.ready = false;
+    p.inputX = 0;
+    p.inputY = 0;
+  }
 
   if (phase === 'day') {
     state.hasEverStarted = true;
@@ -116,7 +121,6 @@ function setPhase(phase) {
         p.hp = Math.max(p.hp, 70);
         p.x = WORLD.base.x + (Math.random() - 0.5) * 75;
         p.y = WORLD.base.y + (Math.random() - 0.5) * 75;
-        p.tx = p.x; p.ty = p.y;
       }
     }
     spawnZombies(8 + Math.min(8, state.day * 2), false);
@@ -129,7 +133,8 @@ function setPhase(phase) {
     state.phaseEndsAt = null;
     state.zombies.clear();
     for (const p of state.players.values()) {
-      p.tx = WORLD.base.x; p.ty = WORLD.base.y;
+      p.inputX = 0;
+      p.inputY = 0;
       if (p.connected) {
         p.x = WORLD.base.x + (Math.random() - 0.5) * 70;
         p.y = WORLD.base.y + (Math.random() - 0.5) * 70;
@@ -198,30 +203,38 @@ function gather(p, t) {
 }
 
 function movePlayer(p, dt, t) {
-  if (!p.connected || p.pending) return;
-  if (p.downUntil > t) return;
+  if (!p.connected || p.pending || p.downUntil > t) return;
+  let ix = clamp(Number(p.inputX) || 0, -1, 1);
+  let iy = clamp(Number(p.inputY) || 0, -1, 1);
+  const len = Math.hypot(ix, iy);
+  if (len > 1) { ix /= len; iy /= len; }
+
+  p.x += ix * PLAYER_SPEED * dt;
+  p.y += iy * PLAYER_SPEED * dt;
+
   if (state.phase === 'maintenance') {
-    p.tx = clamp(p.tx, WORLD.base.x - WORLD.base.r + 12, WORLD.base.x + WORLD.base.r - 12);
-    p.ty = clamp(p.ty, WORLD.base.y - WORLD.base.r + 12, WORLD.base.y + WORLD.base.r - 12);
-  }
-  const dx = p.tx - p.x, dy = p.ty - p.y;
-  const d = Math.hypot(dx, dy);
-  if (d > 2) {
-    const speed = 125;
-    const step = Math.min(d, speed * dt);
-    p.x += dx / d * step;
-    p.y += dy / d * step;
+    const dx = p.x - WORLD.base.x;
+    const dy = p.y - WORLD.base.y;
+    const d = Math.hypot(dx, dy);
+    const maxR = WORLD.base.r - 14;
+    if (d > maxR) {
+      p.x = WORLD.base.x + dx / d * maxR;
+      p.y = WORLD.base.y + dy / d * maxR;
+    }
+  } else {
     p.x = clamp(p.x, 8, WORLD.width - 8);
     p.y = clamp(p.y, 8, WORLD.height - 8);
   }
+
   depositAtBase(p);
   gather(p, t);
 }
 
 function nearestLivingPlayer(z) {
   let best = null, bestD = Infinity;
+  const t = now();
   for (const p of state.players.values()) {
-    if (!p.connected || p.pending || p.downUntil > now()) continue;
+    if (!p.connected || p.pending || p.downUntil > t) continue;
     const d = dist(z, p);
     if (d < bestD) { best = p; bestD = d; }
   }
@@ -245,6 +258,8 @@ function updateZombie(z, dt, t) {
     if (target.hp <= 0) {
       target.hp = 0;
       target.downUntil = t + 8000;
+      target.inputX = 0;
+      target.inputY = 0;
       target.carry = { food: 0, scrap: 0, meds: 0, ammo: 0 };
       pushEvent(`${target.name}이(가) 쓰러졌습니다.`, 'danger');
     }
@@ -287,7 +302,8 @@ function revivePlayers(t) {
       p.downUntil = 0;
       p.x = WORLD.base.x + (Math.random() - 0.5) * 55;
       p.y = WORLD.base.y + (Math.random() - 0.5) * 55;
-      p.tx = p.x; p.ty = p.y;
+      p.inputX = 0;
+      p.inputY = 0;
     }
   }
 }
@@ -358,7 +374,7 @@ function publicState() {
     })),
     zombies: [...state.zombies.values()],
     resources: state.resources,
-    events: state.events.slice(-7)
+    events: state.events.slice(-5)
   };
 }
 
@@ -388,6 +404,8 @@ wss.on('connection', ws => {
         p.connected = true;
         p.disconnectedAt = null;
         p.ws = ws;
+        p.inputX = 0;
+        p.inputY = 0;
         if (msg.name) p.name = String(msg.name).slice(0, 16);
       } else {
         p = makePlayer(resumeToken || null, msg.name);
@@ -404,9 +422,13 @@ wss.on('connection', ws => {
     const p = state.players.get(ws.playerId);
     if (!p) return;
 
-    if (msg.type === 'move' && !p.pending) {
-      p.tx = clamp(Number(msg.x) || p.x, 0, WORLD.width);
-      p.ty = clamp(Number(msg.y) || p.y, 0, WORLD.height);
+    if (msg.type === 'input' && !p.pending) {
+      let x = clamp(Number(msg.x) || 0, -1, 1);
+      let y = clamp(Number(msg.y) || 0, -1, 1);
+      const d = Math.hypot(x, y);
+      if (d > 1) { x /= d; y /= d; }
+      p.inputX = x;
+      p.inputY = y;
     }
     if (msg.type === 'ready' && state.phase === 'maintenance' && !p.pending) {
       p.ready = Boolean(msg.value);
@@ -422,6 +444,8 @@ wss.on('connection', ws => {
       p.connected = false;
       p.disconnectedAt = now();
       p.ready = false;
+      p.inputX = 0;
+      p.inputY = 0;
       updateReadyCountdown(now());
     }
   });
