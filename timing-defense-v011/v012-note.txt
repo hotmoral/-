@@ -1,0 +1,1 @@
+v0.12 verified locally: stage loop, run upgrades, Lv6 skills, safe vertical monster corridor, right-edge-only spawning.
