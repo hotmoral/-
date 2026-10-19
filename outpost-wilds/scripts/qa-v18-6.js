@@ -1,0 +1,16 @@
+const assert=require('assert'),fs=require('fs'),path=require('path'),crypto=require('crypto'),vm=require('vm');
+const root=path.join(__dirname,'..'),EXPECTED='c5532dc5229c6da7d53eb0554d1bd2986dd96585a4bb2b5c7e399f7ec8cc9650';
+const atlasPath=path.join(root,'public','assets','v186','atlas.webp');
+assert(fs.existsSync(atlasPath),'authored atlas was not installed');
+const atlas=fs.readFileSync(atlasPath),hash=crypto.createHash('sha256').update(atlas).digest('hex');
+assert.strictEqual(hash,EXPECTED,'authored atlas sha256 mismatch');
+assert.strictEqual(atlas.length,305044,'authored atlas byte length changed');
+const client=fs.readFileSync(path.join(root,'public','patch-v18-6.js'),'utf8');new vm.Script(client,{filename:'patch-v18-6.js'});
+const start=client.indexOf('const V186_RECTS='),end=client.indexOf(';\n  const atlas=',start);assert(start>=0&&end>start,'V18.6 atlas manifest missing');
+const rects=JSON.parse(client.slice(start+'const V186_RECTS='.length,end));assert.strictEqual(Object.keys(rects).length,67,'V18.6 must map exactly 67 authored sprites');
+for(const k of ['player','tree','rock','ore','berry','alpha','overlord','base1','base6','stockpile','signal','workshop1','workshop3','wall1','wall3','weapon1','weapon16'])assert(rects[k],`V18.6 manifest missing ${k}`);
+for(const token of ['Math.min(w/r.w,h/r.h)','||fallbackImg(','weaponKind||V18_WEAPON_KIND','v17DrawFortification()','signalBuilt','assetCount:Object.keys(V186_RECTS).length'])assert(client.includes(token),`V18.6 client contract missing ${token}`);
+const index=fs.readFileSync(path.join(root,'public','index.html'),'utf8');assert(index.includes('/patch-v18-6.js?v=186'),'index must load V18.6 patch');assert(index.indexOf('patch-v18-6.js')>index.indexOf('patch-v18-5.js'),'V18.6 patch must load after V18.5');
+const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));assert.strictEqual(pkg.version,'0.18.6');assert(pkg.scripts.start.includes('install-authored-assets'),'start must install authored atlas');assert(pkg.scripts.start.includes('server-v18-6.js'),'start must launch V18.6 server');
+const {patchSource}=require(path.join(root,'server-v18-6.js')),base=fs.readFileSync(path.join(root,'server-v13.js'),'utf8'),compiled=patchSource(base);new vm.Script(compiled,{filename:'server-v18-6.compiled.js'});assert(compiled.includes('Outpost Wilds V18.6'),'server must identify V18.6');assert(compiled.includes('[V18.6 persistence]'),'V18.6 persistence log missing');
+console.log('[QA V18.6] PASS · authored 67-sprite atlas · aspect-safe rendering · SVG fallback · verified atlas sha256');
