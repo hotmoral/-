@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#0b0f14">
-<title>Timing Defense P0-A v0.12</title>
+<title>Timing Defense P0-A v0.11</title>
 <style>
 :root{--bg:#0b0f14;--text:#eef4fb;--muted:#8291a0;--line:rgba(255,255,255,.14)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:manipulation}body{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}#ui{position:fixed;inset:0;pointer-events:none}
@@ -9,26 +9,17 @@
 #classControls{position:absolute;right:calc(env(safe-area-inset-right) + 10px);top:calc(env(safe-area-inset-top) + 47px);display:flex;gap:5px;pointer-events:auto;background:rgba(7,10,14,.64);border:1px solid rgba(255,255,255,.10);border-radius:10px;padding:5px;backdrop-filter:blur(7px)}
 #controls{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 7px);display:flex;align-items:center;gap:7px;pointer-events:auto;background:rgba(7,10,14,.74);backdrop-filter:blur(9px);padding:6px 8px;border:1px solid var(--line);border-radius:12px}.group{display:flex;align-items:center;gap:4px}.label{font-size:9px;color:#718090}
 button{border:1px solid rgba(255,255,255,.12);background:#151c25;color:#cbd6e2;padding:6px 8px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.015em}button.active{background:#edf4fb;color:#0d1117;border-color:#edf4fb}button:active{transform:translateY(1px)}
-#hint{position:absolute;left:26%;top:86%;transform:translate(-50%,-50%);font-size:10px;color:rgba(255,255,255,.33);white-space:nowrap}
-#runStatus{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);font-size:11px;font-weight:900;letter-spacing:.04em;color:rgba(245,249,253,.82);text-align:center;white-space:nowrap}
-#shop{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(720px,76vw);max-height:72vh;overflow:auto;pointer-events:auto;background:rgba(8,12,17,.94);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:14px 16px;box-shadow:0 18px 50px rgba(0,0,0,.42);backdrop-filter:blur(10px)}
-#shop.show{display:block}.shopHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.shopTitle{font-size:14px;font-weight:950;letter-spacing:.05em}.shopMeta{font-size:10px;color:#97a7b6}.upgradeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.upgrade{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-radius:10px;background:#121923;border:1px solid rgba(255,255,255,.08)}.upgradeText{min-width:0}.upgradeName{font-size:10px;font-weight:900}.upgradeSub{font-size:9px;color:#8493a2;margin-top:2px}.upgrade button{min-width:70px}.shopFoot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;font-size:10px;color:#8fa0af}#nextBtn{padding:7px 13px} @media(max-height:520px){#shop{top:47%;max-height:66vh;padding:9px 11px}.upgradeGrid{gap:5px}.upgrade{padding:6px 8px}}#orientation{display:none;position:fixed;inset:0;z-index:20;background:#0b0f14;align-items:center;justify-content:center;text-align:center;padding:30px;font-size:16px;line-height:1.6}@media(orientation:portrait){#orientation{display:flex}}
+#hint{position:absolute;left:26%;top:86%;transform:translate(-50%,-50%);font-size:10px;color:rgba(255,255,255,.33);white-space:nowrap}#orientation{display:none;position:fixed;inset:0;z-index:20;background:#0b0f14;align-items:center;justify-content:center;text-align:center;padding:30px;font-size:16px;line-height:1.6}@media(orientation:portrait){#orientation{display:flex}}
 </style></head><body>
 <canvas id="game"></canvas>
 <div id="ui">
-<div id="topbar"><div><div id="title">TIMING DEFENSE · STAGE / RUN GROWTH TEST</div><div id="attackLabel">KNIGHT · ATTACK 1 · NORMAL · X</div></div><div id="stats">N 0 · G 0 · P 0 · C 0<br>AVG 0.00s</div></div>
-<div id="runStatus">STAGE 1 · LV 1 · EXP 0/60</div>
+<div id="topbar"><div><div id="title">TIMING DEFENSE · MONSTER RUSH TEST</div><div id="attackLabel">KNIGHT · ATTACK 1 · NORMAL · X</div></div><div id="stats">N 0 · G 0 · P 0 · C 0<br>AVG 0.00s</div></div>
 <div id="classControls"><button data-class="knight" class="active">KNIGHT</button><button data-class="rogue">ROGUE</button><button data-class="tank">TANK</button></div>
 <div id="hint">내 Timing Square만 보고 탭</div>
 <div id="controls">
  <div class="group"><span class="label">TEAM</span><button data-team="1" class="active">SOLO</button><button data-team="2">+1 AI</button><button data-team="3">+2 AI</button><button data-team="4">+3 AI</button></div>
  <div class="group"><span class="label">SPEED</span><button data-speed="slow">SLOW</button><button data-speed="normal" class="active">NORMAL</button><button data-speed="fast">FAST</button></div>
  <button id="resetBtn">RESET</button>
-</div>
-<div id="shop">
- <div class="shopHead"><div><div class="shopTitle">STAGE CLEAR · RUN UPGRADE</div><div class="shopMeta" id="shopStage">Stage 1 complete</div></div><div class="shopMeta" id="shopTimer">NEXT 8.0</div></div>
- <div class="upgradeGrid" id="upgradeGrid"></div>
- <div class="shopFoot"><span id="shopCoin">COIN 0</span><button id="nextBtn">READY / NEXT</button></div>
 </div></div>
 <div id="orientation">휴대폰을 가로로 돌려주세요.<br><small style="color:#8793a0">가로 화면 기준입니다.</small></div>
 <script src="part1.js"></script>
