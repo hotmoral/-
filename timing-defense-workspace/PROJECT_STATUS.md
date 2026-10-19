@@ -25,13 +25,6 @@ Updated: 2026-10-20 KST
 - Timing Square is rendered above monsters so approaching enemies cannot obscure it.
 - Class palettes are visually separated in character clothing, weapons, Timing Square and VFX.
 
-## Class palette
-- Knight: gold + bright steel
-- Rogue: charcoal / dark gray + silver, tiny red accent
-- Tank: strong blue + dark steel
-- Archer: green
-- Mage: purple
-
 ## Growth structure
 Planned automatic skill unlocks:
 `Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`
@@ -62,23 +55,30 @@ Role benchmarks validated the intended specialization split.
 ### v2
 Added Stage 1–10 + run-shop campaign simulation. It exposed the Archer penetration-model artifact, Tank solo/team-role question and EXP/attack-count coupling. Those items were discussed and explicit design decisions were made before any patch.
 
-### v3 — latest completed
-Average→Skilled mastery progression was simulated after the decisions above were frozen.
+### v3
+Average→Skilled mastery progression was simulated after the above decisions were frozen. Knight / Archer / Mage showed a strong but plausible mastery response; Rogue remained a specialist; Tank solo remained non-normative. No live value changed.
 
-Confirmed 500-seed/class clear rates:
-- at PERFECT 30%: Knight 32.6%, Rogue 0%, Archer 12.4%, Mage 19.4%.
-- at PERFECT 35%: Knight 79.8%, Rogue 5.2%, Archer 60.2%, Mage 73.8%.
-- at PERFECT 37.5%: Knight 94.8%, Rogue 15.8%, Archer 80.8%, Mage 92.6%.
-- at Skilled PERFECT 40%: Knight 98.4%, Rogue 32.8%, Archer 94.6%, Mage 97.0%.
+### v4 — latest completed
+Team-composition / co-op role validation, 13,780 deliberate runs.
 
-No playable balance values were changed from v3.
+Main findings:
+- Tank has measurable team defensive value under meaningful pressure.
+- Rogue takes a disproportionate share of durable-normal kills in 3-player teams (~39–42% in several tested mixes).
+- Archer and Mage remain geometrically distinct: long-line pack favored Archer (~66.8% pair damage), dense cluster favored Mage (~58.4%).
+- Knight remains a useful generalist/stabilizer.
+- Current Stage 1–10 waves saturate at 3–4 players: most/all 3-player teams and all 4-player teams clear at very high rates even at Average.
+- Double-Knight looked unusually strong in the current headless Lv11 penetration approximation; this is flagged for re-test after exact playable collision implementation, not for an immediate nerf.
 
-Important v3 finding: mastery includes both timing accuracy and faster recognition/commitment. Keeping Skilled accuracy but Average attack cadence reduced clear rates sharply, so timing cadence itself is a meaningful skill dimension.
+No playable balance values were changed from v4.
+
+Report: `BALANCE_SIM_REPORT_V4_TEAM.md`
 
 ## Current next boundary
 Do not immediately patch live balance.
 
-Next highest-value validation is **2/3/4-player team-composition simulation**, especially Tank team utility and Rogue specialist value. Results must be reported and discussed before changing live gameplay.
+The next major design question is **co-op pressure scaling by team size**. Before a v5 simulation, decide whether extra players should primarily increase enemy count, enemy durability, a mix of both, or elite/special-threat density.
+
+Multiplayer shop/economy ownership, duplicate-class policy and sync-bonus rules are also not frozen yet.
 
 ## Important live-game UX decisions
 - No `X LOCK` explanatory text after first tap of heavy attack.
