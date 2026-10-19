@@ -92,6 +92,43 @@ Simulation is diagnostic first.
 - Report the result and discuss the design implication before changing gameplay values.
 - Playable/live code must remain unchanged until the balance decision is explicitly agreed.
 
+## Encounter-pressure philosophy
+
+Co-op pressure should **not** be implemented as one flat global multiplier that simply raises all monster HP or all monster counts from start to finish.
+
+Use three pressure families:
+- `S` Swarm — sudden/high-density count pressure.
+- `E` Elite/Heavy — a small number of unusually durable / armored threats.
+- `X` Special/Mixed — speed, flight, shield, split-lane or other disruptive compositions.
+
+The normal encounter language is primarily special/mixed composition, while S and E create differently timed pressure spikes.
+
+A stage may contain one, two or all three pressure families. Do **not** force all three into every stage.
+
+For a 50-stage tier, identity is created by:
+- the proportion of 1-pattern / 2-pattern / 3-pattern stages,
+- which S/E/X families occur most often,
+- internal ratios inside 2-pattern and 3-pattern stages,
+- event timing within the stage,
+- duration/intensity,
+- formation geometry,
+- overlap frequency.
+
+Higher tier does **not** mean monotonically increasing the number of active pressure families. A high tier may return to many 1-pattern stages if that single pressure is much more extreme.
+
+3-pattern stages should remain a minority globally so that a stage containing all three pressures feels special rather than routine.
+
+Geometry is part of encounter design, not decoration:
+- aligned line pressure creates Archer opportunities,
+- dense clusters create Mage opportunities,
+- durable anchors create Rogue opportunities,
+- dangerous split/special pressure creates Tank opportunities,
+- awkward/mixed transitions preserve Knight's generalist value.
+
+Time-separated role switching is the default. Heavy simultaneous overlap is a deliberate chaos tool used more sparingly.
+
+The current structural candidate is documented in `TIER_PRESSURE_GRAMMAR_V1.md`; its exact prototype counts are not yet final production data.
+
 ## UI hierarchy
 - Charge stack stays above Timing Square.
 - Learned skill icons stay below Timing Square.
