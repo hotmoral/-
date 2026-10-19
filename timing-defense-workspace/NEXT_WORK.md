@@ -1,84 +1,123 @@
 # Timing Defense — Next Work Boundary
 
-## Current boundary after v4
+## Current boundary after v5
 
 Do **not** immediately change live numerical balance and do not treat a simulation gap as authorization to patch.
 
 Required governance:
 
-`simulate → identify intentional specialization vs model artifact vs actual defect → report → discuss → explicit decision → patch`
+`model → simulate → identify intentional specialization vs model artifact vs actual defect → report → discuss → explicit decision → patch`
 
-The latest v4 team-role result was coherent enough to continue without changing current class coefficients.
+The v5 pressure-grammar model is structurally coherent enough to continue. No class coefficient or live Stage rule was changed.
 
-## v4 conclusions now accepted as analysis state
+## Accepted pressure philosophy
 
-- Tank has measurable defensive team value under meaningful wall pressure.
-- Rogue's durable-normal execution niche appears in real team mixes.
-- Archer and Mage remain distinct through line-vs-density geometry.
-- Knight remains a strong generalist/stabilizer.
-- Current unscaled Stage 1–10 waves saturate badly at 3–4 players, so those waves cannot be used as final co-op balance targets.
-- Double-Knight stacking is flagged but NOT judged yet because Knight Lv11 penetration geometry is still approximate in the headless model.
+Co-op difficulty should not be one flat HP/count multiplier.
 
-## Immediate next design discussion
+Use three encounter-pressure families:
+- `S` Swarm — temporary high-count pressure.
+- `E` Elite/Heavy — one/few unusually durable threats.
+- `X` Special/Mixed — disruptive special compositions.
 
-Before building v5, freeze the **co-op pressure philosophy** for additional human players.
+A stage may use 1, 2 or 3 families. Do not force all three into every stage.
 
-Candidate directions:
-1. mainly increase enemy count,
-2. mainly increase enemy HP/durability,
-3. mix count + HP,
-4. keep ordinary enemies similar but add more elite/special threats.
+A 50-stage tier receives identity through:
+- 1/2/3-pattern stage proportions,
+- S/E/X frequency,
+- internal pair/triple pressure ratios,
+- event timing,
+- formation geometry,
+- duration/intensity,
+- overlap frequency.
 
-The goal is not simply to make co-op harder. The goal is to preserve:
-- readable battlefield density,
-- distinct class roles,
-- meaningful Tank utility,
-- Rogue access to durable normal targets,
-- Archer line opportunities,
-- Mage cluster opportunities,
-- room for player mastery.
+Higher tiers are allowed to return to many 1-pattern stages if that single pressure becomes more extreme.
 
-## v5 simulation only after philosophy is agreed
+See:
+- `TIER_PRESSURE_GRAMMAR_V1.md`
+- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
 
-Required v5 scope:
-- 2 / 3 / 4 player pressure scaling.
-- identical seeded waves across scaling candidates.
-- Average and Skilled profiles.
-- wall HP / wall hits / clear rate / time-to-clear.
-- class contribution by target type.
-- repeated-class checks.
-- avoid changing current class coefficients while evaluating encounter scaling.
+## v5 structural result
 
-Report first. Do not patch.
+Across five representative 50-stage prototype tiers:
+- 1-pattern = 40.8%
+- 2-pattern = 43.6%
+- 3-pattern = 15.6%
 
-## Other unresolved multiplayer rules
+So 84.4% of stages use only one or two pressure families.
 
-- individual vs shared coins.
-- individual vs shared shop timing.
-- whether shops pause the whole team.
-- duplicate-class policy.
-- Attack Round IDs / sync window.
-- DUO / TRIPLE / FULL SYNC reward magnitude.
+The role-coverage model across all 250 prototype stages produced:
+- Knight 18.6%
+- Rogue 20.1%
+- Tank 20.4%
+- Archer 22.0%
+- Mage 18.9%
 
-These should not be silently invented inside the simulator if they materially affect results.
+Tier-specific peaks still occurred (e.g. Rogue in durability-heavy T2, Archer in line-heavy T3, Tank in split-special T4), while Knight stayed stable as a generalist.
 
-## After co-op pressure closes
+This supports the grammar concept but does **not** freeze exact production stage counts.
 
-If the team-pressure model is coherent, the first multi-skill playable implementation candidate remains:
-- Lv6 / Lv11 / Lv16 / Lv21 skills for all five classes.
-- multi-skill HUD strip below Timing Square.
-- exact straight-line Archer collision.
-- boss resistance rules already documented.
+## Immediate next analysis slice — concrete spawn recipes
 
-After implementation, re-run the simulator using exact implemented formulas and human-play only the suspicious stages/skills identified numerically.
+Translate abstract pressure budgets into actual monster recipes using the current roster:
+- GRUNT
+- RUNNER
+- BRUTE
+- SHIELD
+- FLYER
 
-## Later boundary
+Required mapping work:
+1. `S` recipes — burst size, spacing, line/cluster/scatter geometry, weak/medium mix.
+2. `E` recipes — which monsters become durable anchors, HP/armor scaling, one-vs-two-vs-three elite timing.
+3. `X` recipes — RUNNER/FLYER/SHIELD combinations, split pressure and geometry.
+4. pair/triple stages — convert abstract internal pressure shares into spawn budgets without stacking all maximum pressures at once.
+5. 1-pattern extremes — define how long/intense one pressure can become without visual overload.
 
-Only after the Lv6–21 block and its role validation close should the project proceed to:
-- Lv26 skills,
-- Lv31 signature P×P CRITICAL finishers,
-- larger stage range,
-- permanent/meta-stat layer.
+## Then calibrate team-size scaling
+
+Only after concrete recipes exist, run 2/3/4-player headless calibration.
+
+Keep class coefficients unchanged while tuning encounter pressure.
+
+Measure:
+- clear/fail rate,
+- wall HP / wall hits,
+- stage clear time,
+- per-class target-type contribution,
+- battlefield concurrency / peak living enemies,
+- durable-anchor TTK,
+- swarm clear delay,
+- special-threat leakage,
+- Average vs Skilled mastery response,
+- duplicate-class compositions.
+
+Primary question:
+
+> Can additional players increase encounter variety and role demand without turning the battlefield into permanent visual clutter or flattening all classes into raw DPS?
+
+## Important not-yet-frozen values
+
+- exact 2/3/4-player pressure multiplier,
+- exact monster count per S budget,
+- exact E HP/armor multiplier,
+- exact X composition recipes,
+- final number/names/order of tiers,
+- stage length,
+- boss/checkpoint schedule,
+- multiplayer shop/economy ownership,
+- duplicate-class policy,
+- sync bonus magnitude / round-ID implementation.
+
+These must not be silently invented as production decisions merely to make a simulation pass.
+
+## Multi-skill implementation remains pending
+
+The first playable multi-skill implementation candidate is still:
+- Lv6 / Lv11 / Lv16 / Lv21 skills for all five classes,
+- multi-skill HUD strip below Timing Square,
+- exact straight-line Archer collision,
+- current documented boss resistance rules.
+
+Whether this implementation occurs before or after concrete co-op spawn calibration is a project sequencing decision; it is not authorized merely by v5.
 
 ## Human-play focus remains
 Simulation does not replace checks for:
@@ -86,6 +125,6 @@ Simulation does not replace checks for:
 - VFX readability,
 - Timing Square readability,
 - projectile visibility,
-- skill icon density,
-- whether the fourth attack feels meaningfully stronger,
+- screen crowding during swarm events,
+- whether role-switching stages remain readable,
 - subjective class fun.
