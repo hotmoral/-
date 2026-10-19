@@ -9,7 +9,7 @@ Use a renderer-free combat model to validate numerical balance much faster than 
 - Timing damage tiers.
 - EXP curve: `XP_next = 60 + 12 × (level - 1)`.
 - Local knockback magnitudes by result tier.
-- Current run-shop economy and upgrades.
+- Current run-shop economy and upgrades where the test specifically includes shop modeling.
 - Five class skill kits through Lv21 for pre-implementation validation.
 
 ## Timing profiles
@@ -29,7 +29,7 @@ Current Skilled cadence:
 - normal cycle 1.04 s
 - heavy cycle 1.54 s
 
-## Frozen semantic decisions used after v2
+## Frozen semantic decisions
 
 ### Archer
 Penetration is true straight-line geometry only.
@@ -38,7 +38,7 @@ Penetration is true straight-line geometry only.
 - no automatic next-enemy chain after a hit
 - only enemies intersecting the projectile's straight path may be penetrated
 
-The current headless geometric approximation uses a bounded Y-lane tolerance around the original arrow line. This is an approximation of hitbox-line intersection, not authority to turn penetration into chaining.
+The headless geometric approximation uses a bounded lane/hitbox tolerance around the original arrow line. This approximates line-hitbox intersection and is not authority to turn penetration into chaining.
 
 ### Tank
 Tank is team-specialized. Fresh-run solo Stage-10 parity is not required. A poor solo clear result is diagnostic information, not automatic evidence that Tank needs a buff.
@@ -87,18 +87,62 @@ Two variants are compared:
 1. full mastery progression: accuracy + cadence both improve
 2. accuracy-only diagnostic: judgment probabilities improve while cadence stays at Average
 
-This separates "better timing precision" from "recognizes the window and commits faster".
-
 v3 total deliberate analysis volume: 27,500 runs.
 
-Latest interpretation:
+Latest v3 interpretation:
 - Knight / Archer / Mage show a useful mastery response.
-- Rogue remains a solo-pressure specialist tradeoff and should be judged in team context next.
+- Rogue remains a solo-pressure specialist tradeoff and should be judged in team context.
 - Tank solo result is intentionally non-normative.
 - Cadence is a substantial skill dimension in a real-time defense game.
 - No live values were changed from v3.
 
 See `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md`.
+
+## v4 team-composition extension
+
+v4 adds team-role validation.
+
+### Primary matrix
+- 2-player / 3-player / 4-player compositions.
+- Average and Skilled human timing profiles.
+- same seed sets reused across class mixes where applicable.
+- current Stage 1–10 unscaled wave counts/gaps for the main saturation check.
+
+### Important boundary
+v4 intentionally excludes run-shop upgrades because true multiplayer economy ownership / shared-vs-individual purchase rules are not frozen. Therefore v4 absolute clear rates should not be compared one-to-one with v2/v3 shop-enabled solo campaign results.
+
+v4 is used to study:
+- composition ordering,
+- marginal class contribution,
+- Tank defensive value,
+- Rogue durable-normal specialization,
+- Archer/Mage geometry separation,
+- Knight generalist value,
+- duplicate-class stacking,
+- whether current waves saturate at larger team sizes.
+
+### Role diagnostics
+Additional fixed-level Lv21 stress scenarios are allowed to expose class utility that current Stage 1–10 pressure may hide. These diagnostics are not live difficulty proposals.
+
+Examples:
+- hard mixed wall pressure,
+- durable-normal waves,
+- long straight-line packs,
+- dense clusters.
+
+### v4 volume
+Total deliberate v4 analysis volume: **13,780 runs**.
+
+### v4 interpretation
+- Tank shows measurable team defensive value under meaningful pressure.
+- Rogue shows disproportionate durable-normal execution value in team mixes.
+- Archer wins long-line geometry while Mage wins dense-cluster geometry.
+- Knight remains a strong stabilizing generalist.
+- current Stage 1–10 waves saturate at 3–4 players and cannot serve as final co-op difficulty targets.
+- double-Knight stacking is flagged for re-test after exact playable Knight penetration geometry exists.
+- no live values were changed from v4.
+
+See `BALANCE_SIM_REPORT_V4_TEAM.md`.
 
 ## Deterministic comparison principle
 When comparing classes or team compositions, reuse the same random seeds so monster composition, timing samples and encounter randomness remain comparable. Change the class/team configuration, not the underlying random world.
@@ -108,15 +152,16 @@ When comparing classes or team compositions, reuse the same random seeds so mons
 - Stage reached.
 - Wall HP and wall hits.
 - Total damage.
-- High-HP normal TTK.
-- Boss TTK.
+- High-HP normal TTK / kill share.
+- Boss TTK / boss damage share.
 - Multi-hit event count.
 - Skill damage contribution.
-- Shield absorption.
+- Shield generation / absorption.
 - Level reached and level-after-stage profile.
 - Attack count / run duration.
 - Skill-unlock reach rate and stage.
-- Shop-rank distribution.
+- Shop-rank distribution when shop is part of the model.
+- per-class team damage and target-type contribution.
 
 ## Balance-change rule
 Simulation does not authorize a patch.
@@ -130,16 +175,12 @@ Required order:
 6. only then change live gameplay values
 
 ## Next required extension
-Add team-composition / co-op role simulation.
+Do not invent final co-op scaling yet.
 
-Required scope:
-- 2-player / 3-player / 4-player compositions
-- identical seeded waves across composition comparisons
-- explicit teammate timing/AI assumptions
-- Tank wall/control contribution
-- Rogue high-HP-target contribution
-- Archer line geometry vs Mage density geometry
-- Knight generalist contribution
-- duplicated-class composition checks
+First discuss and freeze the team-size pressure philosophy:
+- more enemies,
+- tougher enemies,
+- mixed count + HP,
+- or additional elite/special threats.
 
-This extension is report-only until its results are discussed.
+Then build v5 around that philosophy and compare 2/3/4-player compositions before any live difficulty patch.
