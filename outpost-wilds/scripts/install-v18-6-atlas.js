@@ -1,0 +1,10 @@
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.join(__dirname,'..'),dir=path.join(root,'assets-bundles','v18-6'),outDir=path.join(root,'public','assets','v186'),out=path.join(outDir,'atlas.webp');
+const EXPECTED='c5532dc5229c6da7d53eb0554d1bd2986dd96585a4bb2b5c7e399f7ec8cc9650';
+const parts=fs.readdirSync(dir).filter(n=>/^atlas\.b64\.part\d+$/.test(n)).sort();
+if(parts.length!==4)throw new Error(`[V18.6 art] expected 4 atlas parts, found ${parts.length}`);
+const text=parts.map(n=>fs.readFileSync(path.join(dir,n),'utf8').trim()).join('');
+const buf=Buffer.from(text,'base64'),hash=crypto.createHash('sha256').update(buf).digest('hex');
+if(hash!==EXPECTED)throw new Error(`[V18.6 art] atlas sha256 mismatch: ${hash}`);
+fs.mkdirSync(outDir,{recursive:true});fs.writeFileSync(out,buf);
+console.log(`[V18.6 art] installed authored atlas · 67 sprites · ${buf.length} bytes · sha256=${hash}`);
