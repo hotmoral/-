@@ -14,14 +14,14 @@ The workspace branch is intentionally separated from the Render deployment branc
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `DESIGN_DECISIONS.md`
-4. `SKILL_PLAN_LV6_31.md`
-5. `BALANCE_SIM_REPORT_V2.md`
-6. `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md`
-7. `BALANCE_SIM_REPORT_V4_TEAM.md`
+4. `TIER_PRESSURE_GRAMMAR_V1.md`
+5. `SKILL_PLAN_LV6_31.md`
+6. `BALANCE_SIM_REPORT_V4_TEAM.md`
+7. `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
 8. `SIMULATION_METHOD.md`
 9. `NEXT_WORK.md`
 
-`BALANCE_SIM_REPORT_V1.md` remains useful as the original role-separation baseline, but v2/v3/v4 supersede it for current interpretation.
+Older v1/v2/v3 reports remain available for historical reasoning and numerical provenance.
 
 ## Current project boundary
 Timing-action side defense prototype with five classes:
@@ -31,24 +31,47 @@ Timing-action side defense prototype with five classes:
 - Archer
 - Mage
 
-Core timing rhythm is `X → X → X → X+Y`; the 4th attack is the charged/heavy attack. Timing judgment directly drives projectile outcome, EXP and class growth.
+Core timing rhythm is `X → X → X → X+Y`; the fourth attack is charged/heavy. Timing judgment directly drives projectile outcome, EXP and class growth.
 
 ## Working principle
-Automated simulation is used for numerical balance, growth speed, encounter difficulty and class-role validation. Human playtesting is reserved for timing feel, readability, hit impact, VFX density and subjective fun.
+Automated simulation is used for numerical balance, growth speed, encounter difficulty, team-role validation and now encounter-grammar design. Human playtesting is reserved for timing feel, readability, hit impact, VFX density and subjective fun.
 
-Simulation is diagnostic, not self-authorizing. A large measured class gap must be explained and discussed before any live balance patch is made.
+Simulation is diagnostic, not self-authorizing. A measured gap must be explained and discussed before a live balance patch.
 
-## Current simulation boundary
-The latest completed analysis is **v4 team-composition / co-op role validation**.
+## Latest completed analysis — v5
+v5 formalized a reusable **Tier Pressure Grammar** for future 50-stage tiers.
 
-Current accepted interpretation:
-- Tank has real team defensive utility under meaningful pressure.
-- Rogue has real durable-normal execution value in teams.
-- Archer and Mage remain geometrically distinct.
-- Knight remains a useful generalist.
-- the current Stage 1–10 wave saturates with 3–4 players, so co-op pressure scaling must be designed before final multiplayer balance can be judged.
-- double-Knight stacking is flagged for exact-implementation re-test, not for an immediate nerf.
+Pressure families:
+- S = Swarm,
+- E = Elite/Heavy,
+- X = Special/Mixed.
 
-No live balance change was made from v4.
+Stages may use one, two or all three pressure families. All three are intentionally **not** used every stage.
 
-The next design discussion is the philosophy for team-size enemy-pressure scaling before building v5.
+Five representative 50-stage tier prototypes produce, across 250 stages:
+- 1-pattern: 40.8%
+- 2-pattern: 43.6%
+- 3-pattern: 15.6%
+
+Therefore 84.4% of stages use only one or two pressure families.
+
+The grammar also varies:
+- pair/triple internal pressure ratio,
+- line/cluster/scatter/split geometry,
+- early/mid/late/final timing,
+- duration/intensity,
+- overlap rate.
+
+Structural role-coverage across all 250 prototype stages is broadly distributed:
+- Knight 18.6%
+- Rogue 20.1%
+- Tank 20.4%
+- Archer 22.0%
+- Mage 18.9%
+
+Tier-specific specialist peaks still appear, which is intentional.
+
+No live gameplay value was changed by v5.
+
+## Current next boundary
+Translate abstract S/E/X pressure budgets into concrete GRUNT/RUNNER/BRUTE/SHIELD/FLYER spawn recipes, then calibrate 2/3/4-player pressure headlessly before any live difficulty patch.
