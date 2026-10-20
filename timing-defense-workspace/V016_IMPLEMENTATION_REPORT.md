@@ -1,99 +1,108 @@
 # Timing Defense — v0.16 Multi-Skill Implementation Report
 
-Date: 2026-10-20 KST
-Status: **SOURCE IMPLEMENTED / PUBLIC DEPLOY AUTO-TRIGGER NOT YET OBSERVED AT REPORT TIME**
+Updated: 2026-10-20 KST  
+Status: **IMPLEMENTED + DEPLOYED LIVE**
 
-## Live-source branch
-- Repository: `hotmoral/-`
-- Branch: `timing-defense-live-v011`
-- v0.16 source HEAD: `caa7e249f4b52aa3b6215ff2677b0c4973f3eb17`
-- Loader: `timing-defense-v011/v016.html`
-- Patch files:
-  - `timing-defense-v011/v016-core.js`
-  - `timing-defense-v011/v016-ui.js`
-  - `timing-defense-v011/v016-render.js`
+## Public deployment
+- Public URL: `https://timing-defense-v011.onrender.com/v016.html`
+- Live source branch: `timing-defense-live-v011`
+- Final v0.16 source HEAD at this report boundary: `b8b823742bd5fb16026090045cd347feb0f9275e`
+- Render deploy: `dep-dbbb6pom7kps73ebd0eg`
+- Render status: `live`
+- Finished: `2026-10-20T00:19:08Z`
 
-v0.15 is preserved unchanged as the rollback/stable version.
+v0.15 remains preserved as the previous rollback/stable page.
 
-## Implemented scope
+## Files
+- `timing-defense-v011/v016.html`
+- `timing-defense-v011/v016-core.js`
+- `timing-defense-v011/v016-ui.js`
+- `timing-defense-v011/v016-render.js`
 
-### Common
-- Automatic skill milestones: Lv6 / Lv11 / Lv16 / Lv21, while the six-slot HUD also reserves Lv26 / Lv31 positions.
-- The old single learned-skill icon is replaced in v0.16 by a compact six-slot horizontal strip below the Timing Square.
-- Newly reached skill slots pulse temporarily; permanent skill-name text remains absent.
-- Existing Timing Square / EXP / charge hierarchy is preserved.
+## Implemented growth scope
+Automatic skill milestones now function at:
+`Lv6 / Lv11 / Lv16 / Lv21`
+
+The HUD reserves all six long-term positions:
+`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`.
+
+A compact six-slot strip sits below Timing Square. Newly unlocked slots pulse temporarily; permanent skill-name text is still omitted.
+
+## Class implementation through Lv21
 
 ### Knight
-- Lv6: +12% blade-wave damage; existing enhanced-wave presentation retained.
-- Lv11: normal blade wave can hit one additional nearby-forward enemy at 85%; heavy can hit two additional enemies.
-- Lv16: attacks whose actual timing inputs contain PERFECT gain +18% damage and +20% knockback.
-- Lv21: heavy damage +20%, larger signature wave VFX, up to three additional penetrations.
+- Lv6: +12% blade-wave damage.
+- Lv11: normal +1 penetration at 85%; heavy +2 penetration targets.
+- Lv16: attacks containing PERFECT gain +18% damage and +20% knockback.
+- Lv21: heavy +20%, large blade-wave presentation, up to 3 extra penetrations.
 
 ### Rogue
-- Lv6: second dagger = 55% of main hit.
+- Lv6: second dagger = 55%.
 - Lv11: +6 percentage points native proc-crit chance.
-- Lv16: an attack containing PERFECT shortens the next recovery from 390 ms to 312 ms (20%).
-- Lv21: heavy becomes five daggers total: main 100% + four 45% follow-ups.
-- Same-target dagger hits remain uncapped.
-- Bosses take 70% dagger damage.
+- Lv16: PERFECT-containing attack changes recovery from 390 ms to 312 ms.
+- Lv21: five daggers total = main 100% + four 45% follow-ups.
+- repeated hits on one target remain uncapped.
+- boss dagger damage scalar = 0.70.
 
 ### Tank
-- Lv6: knockback ×1.30; enhanced shockwave presentation retained.
-- Lv11: wall incoming damage -10% while the local player is Tank; non-stacking by construction in the current local-player model.
-- Lv16: an attack containing PERFECT refreshes an 80-point wall shield for 3 s; value/duration refresh, no stacking.
-- Lv21: heavy becomes Ground Impact with broad nearby multi-target coverage and ×2.0 Tank heavy knockback.
-- Boss knockback is globally scaled to 40% of normal.
-- Temporary wall-shield HUD/VFX added.
+- Lv6: knockback ×1.30 with enhanced shockwave presentation.
+- Lv11: wall incoming damage -10% for local Tank; non-stacking in current model.
+- Lv16: PERFECT refreshes 80 wall shield / 3 s / no stacking.
+- Lv21: Ground Impact broad multi-target heavy, Tank heavy knockback ×2.0.
+- boss knockback scalar = 0.40.
 
 ### Archer
-- Lv6: up to two additional penetration targets.
-- Penetration now uses actual straight-line geometry: projection along the fired line plus a monster-size hit corridor; no homing, retarget chain or next-enemy-by-X shortcut.
-- Pre-Lv16 secondary penetrations retain the known live 52% damage coefficient.
-- Lv11: projectile travel time reduced by 25% equivalent speed increase; base damage +10%.
-- Lv16: attacks containing PERFECT ignore armor and preserve 100% damage through penetration.
-- Lv21: heavy becomes three arrows: 100% + 65% + 65%, with separated parallel trajectories.
+- Lv6: up to 2 additional penetrations.
+- pre-Lv16 penetration damage uses the current 52% secondary coefficient.
+- Lv11: projectile speed +25%, base damage +10%.
+- Lv16: PERFECT-containing arrow ignores armor and preserves 100% penetration damage.
+- Lv21: triple shot = 100% + 65% + 65%.
 
 ### Mage
-- Lv6: splash = 50% around the impact target.
-- Lv11: splash radius +35%, splash damage 60%.
-- Lv16: attacks containing PERFECT schedule a second 55% outer-ring Resonance after ~180 ms; original center target is explicitly excluded.
-- Lv21: heavy damage +20%, explosion radius ×1.6, slightly slower/larger Greater Arcane Orb presentation.
+- Lv6: 50% splash.
+- Lv11: radius +35%, splash 60%.
+- Lv16: PERFECT schedules ~180 ms delayed 55% outer-ring Resonance; original center target excluded.
+- Lv21: heavy +20%, blast radius ×1.6, larger/slightly slower Greater Arcane Orb.
 
-## Implementation method
-v0.16 is layered on top of v0.15 rather than rewriting the stable base:
+## Important Archer semantic defect found and fixed
 
-`index/v0.13 runtime → v0.14 UI/combat/character → v0.15 palette → v0.16 core/UI → v0.14 render → v0.16 render overlay`
+Initial v0.16 made *penetration selection* straight-line geometric, but inherited the generic projectile fallback:
 
-This preserves rollback and limits regression surface.
+`dead original target -> nearestMonster() retarget`
+
+This could make Lv21 side arrows bend toward an off-line target, which violated the frozen Archer identity.
+
+Fixed in commit:
+`b8b823742bd5fb16026090045cd347feb0f9275e`
+
+Final rule:
+- Archer trajectory locks at launch.
+- Archer projectiles do not retarget or bend after launch.
+- if the intended target disappears, only a live hitbox intersecting the locked path can become the primary impact.
+- all subsequent penetration remains on that same geometric line.
+
+This was an implementation-fidelity fix, **not a numerical balance patch**.
 
 ## Validation completed
-- `node --check` PASS for `v016-core.js`.
-- `node --check` PASS for `v016-ui.js`.
-- `node --check` PASS for `v016-render.js`.
-- Loader dependency check PASS.
-- GitHub live branch confirmed at source HEAD `caa7e249...`.
+- `node --check` PASS for v0.16 JS files before deployment.
+- final Archer-lock `v016-core.js` syntax PASS.
+- loader dependency check PASS.
+- Render final deployment PASS / LIVE at exact fix commit.
+- exact-formula headless re-run completed after implementation; see `BALANCE_SIM_REPORT_V7_V016_EXACT.md`.
 
-## Deployment status boundary
-Render service reports `autoDeploy=yes` on branch `timing-defense-live-v011`.
+## Validation caveat
+Render LIVE proves the built static source is published; it does not by itself prove visual/device behavior. Direct browser-render inspection was not available in the current tool lane.
 
-At report time the latest Render deployment list still showed v0.15 commit `4ce695f...`; no new automatic deployment had appeared yet. Because auto-deploy is enabled, no duplicate manual deployment was triggered.
+Human/device checks still required for:
+- six-slot strip fit/readability,
+- Lv21 VFX overlap,
+- visually straight Archer paths with off-line enemies nearby,
+- Tank shield expiry/absorption feel,
+- Mage Resonance center exclusion readability,
+- repeated Rogue dagger impact feel.
 
-Therefore do **not** claim v0.16 public URL is live until Render shows a deployment containing `caa7e249...` or a later v0.16 commit.
+## Balance governance
+No numerical class coefficient was changed in response to v7 performance differences.
 
-## Important validation caveat
-Source/syntax validation is not visual/device validation. After public deployment appears, verify:
-- page loads without console/runtime errors,
-- six skill slots fit below Timing Square on target landscape sizes,
-- each class can naturally unlock and execute Lv11/Lv16/Lv21 behavior,
-- Archer straight-line penetration does not bend toward off-line enemies,
-- Tank shield absorbs wall damage and expires correctly,
-- Rogue barrage preserves repeated impacts,
-- Mage Resonance excludes the original center target,
-- Lv21 heavy VFX remains readable under monster overlap.
-
-## Next boundary after public smoke test
-1. fix implementation defects only; do not rebalance merely from first impressions,
-2. extract exact v0.16 formulas into the headless simulator,
-3. rerun `PRESSURE_RECIPES_V1` with exact implementation behavior,
-4. report role/mastery/co-op differences before numerical balance changes,
-5. human-play suspicious pressure windows only.
+Required sequence remains:
+`measure -> explain -> report -> discuss -> explicit decision -> numerical patch`.
