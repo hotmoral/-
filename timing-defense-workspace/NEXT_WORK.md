@@ -1,37 +1,38 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.25**
-- URL: `https://timing-defense-v011.onrender.com/v025.html`
-- Live source HEAD: `fce42eb1261ff43277c27d844617b96a546d6d1a`
-- Render deploy: `dep-dbbga8c9v7es73f567b0` / LIVE
+- Public LIVE version: **v0.26**
+- URL: `https://timing-defense-v011.onrender.com/v026.html`
+- Live source HEAD: `8aee137de2f775cda3537b6cc0b9404f6692a55b`
+- Render deploy: `dep-dbbgvjjbc2fs73b657s0` / LIVE
 
 ## Balance governance remains unchanged
 Do **not** production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
 Required order:
 `implement/test → measure → classify intent/artifact/defect → report → discuss → explicit decision → numerical freeze/patch`.
 
+**Specific v0.26 guard:** do not change combo display/size/position/animation from the latest overlap feedback. User explicitly clarified that the combat title was the defect.
+
 ---
 
-# Immediate device validation — v0.25
+# Immediate device validation — v0.26
 
-## Character-select vertical hierarchy
-Test on the same Android landscape/browser used for the v0.24 recording:
-- top brand/nickname whitespace is materially reduced,
-- nickname remains easy to use,
-- character-selection window is visibly taller,
-- hero has more vertical presence,
-- footer/PLAY SETTING remains reachable,
-- no clipping against browser safe areas.
+## Character-select skill cards
+Verify on the same Android landscape setup:
+- all six cards remain `3 × 2`,
+- icon stays beside skill name,
+- `습득 LV N` is directly below every skill name,
+- description uses the full card width below the icon/name row,
+- formerly blank lower-left space is now used,
+- larger text still fits without clipping.
 
 ## Left combat profile
 Verify:
-- COMBAT PROFILE / Korean class name / large English class name / tag are readable,
-- radar labels are materially larger than v0.24,
-- all six labels fit: 공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역,
-- five rings remain visible,
-- role summary + one-sentence class description restore the richer character flavor,
-- class-switch animation still cancels stale frames and restarts cleanly.
+- radar is visibly higher,
+- all six labels and five rings remain readable,
+- role summary is fully visible,
+- one-sentence description is fully visible and not clipped,
+- approved radar animation/data remain unchanged.
 
 Approved profiles remain frozen presentation data:
 - Knight `4/2/3/3/4/2`
@@ -40,28 +41,54 @@ Approved profiles remain frozen presentation data:
 - Archer `3/2/4/1/5/2`
 - Mage `4/2/2/1/1/5`
 
-## Right skill panel
+## Hero + navigation
 Verify:
-- six skill cards remain `3 × 2`,
-- icons/names/levels/descriptions use the extra vertical room cleanly,
-- no card overlaps the hero,
-- no description clipping on the target device.
+- class name is above the hero head,
+- no duplicate class name remains under the hero,
+- arrows stay at fixed screen coordinates when pressed,
+- rapid repeated taps register reliably,
+- carousel swipe remains functional away from arrow buttons.
 
-## Existing v0.24 regression checks
-- TEAM lineup class buttons remain fully visible in two rows,
-- bottom SUMMARY remains removed,
+## Combat HUD
+Verify:
+- legacy `TIMING DEFENSE` battle title is absent,
+- combo visual is unchanged,
+- BASE HP appears top-center as a long gauge with current/max value,
+- BASE HP is immediately noticeable during play,
+- top-right order is exactly: STAGE → LV → KILLS,
+- each status has its icon before the text,
+- old bottom status strings are no longer duplicated.
+
+## Home base
+Verify the base now reads as a fortified structure rather than a plain vertical slab:
+- armored cap,
+- crenellations,
+- reinforced columns,
+- four character bays/platforms,
+- characters remain correctly layered on top.
+
+## Combat skill strip
+Verify the six slots below Timing Square:
+- use the same skill artwork as character select,
+- learned skills are full-color/readable,
+- locked skills use the same icon dimmed/grayscaled,
+- slot order stays Lv6 / 11 / 16 / 21 / 26 / 31,
+- strip does not collide with Timing Square/EXP UI.
+
+## Existing regression checks
 - Rogue Timing Square/charge/EXP remains charcoal/black + silver,
-- all valid timing EXP gains show `+EXP N`,
+- all valid timing EXP gains still show `+EXP N`,
 - projectile contrast/trails remain visible over natural scenery,
 - projectile travel timing remains unchanged,
-- READY → START, inside-square judgment and result board remain intact.
+- READY → START and inside-square judgment remain intact,
+- result/retry/lobby flow remains reachable.
 
-Fix visual/implementation defects directly. Do not change numerical combat balance from this validation.
+Fix visual/implementation defects directly. Do not change numerical combat balance or combo presentation from this validation.
 
 ---
 
 # Next implementation slice — waiting-room UX
-After v0.25 visual validation, implement the deferred TEAM waiting states without pretending networking already works.
+After v0.26 visual validation, implement the deferred TEAM waiting states without pretending networking already works.
 
 ## FRIEND
 - waiting-room surface,
@@ -121,7 +148,7 @@ Combo:
 - 30+ +15% cap
 - milestone budgets 60 / 90 / 150 / 210 cap.
 
-No retuning from lobby/readability observations.
+No retuning from lobby/HUD/readability observations.
 
 ## Still unresolved
 - final passive damage/interval,
