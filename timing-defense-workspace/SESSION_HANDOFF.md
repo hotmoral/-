@@ -6,10 +6,13 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.30**
-- Public URL: `https://timing-defense-v011.onrender.com/v030.html`
-- Live source HEAD: `a235bf2dc0bd5bb5138b4bd89d81512345ec6713`
-- Render deploy: `dep-dbbhud8n74is73cp0rug` / LIVE
+- Current public LIVE prototype: **v0.31**
+- Public URL: `https://timing-defense-v011.onrender.com/v031.html`
+- Live source HEAD: `714e1e3060cbbd2c20a65114d2152b37f861ef22`
+- Static Render deploy: `dep-dbbioegae00c73dd8cn0` / LIVE
+- Multiplayer backend: `https://timing-defense-mp.onrender.com`
+- Backend service ID: `srv-dbbimre1egvs73861d80`
+- Backend initial deploy: `dep-dbbims61egvs73861f10` / LIVE
 
 Workspace remains canonical for design decisions, simulation interpretation, and new-session recovery.
 
@@ -25,7 +28,7 @@ Workspace remains canonical for design decisions, simulation interpretation, and
 - Boss knockback scalar `0.40`.
 - EXP remains tied to valid timing events; passive attacks grant no EXP.
 - Balance gaps must be reported/discussed before numerical patching.
-- Current combo presentation is approved; do not change unless explicitly requested.
+- Current combo display/size/position/animation is approved; do not change unless explicitly requested.
 
 Experimental values remain not production-frozen:
 - passive 40 raw / 2.0 s,
@@ -58,130 +61,106 @@ Values:
 - Archer `3/2/4/1/5/2`
 - Mage `4/2/2/1/1/5`
 
-Five visual levels. Equal levels are allowed. Radar is class-identity presentation, not literal raw-stat output.
+Five visual levels. Equal levels allowed. Radar is presentation data, not literal raw-stat output.
 
 ---
 
-# Stable presentation foundation through v0.26
-- Character select with nickname + five-class carousel.
-- Left profile / center hero / right 3×2 skills.
-- Animated class radar.
-- Rich role/detail copy.
-- `습득 LV N` skill card presentation.
-- Rogue HUD charcoal/black + silver.
-- Projectile visibility pass without travel-time change.
-- BASE HP top-center gauge.
-- Top-right STAGE → LV → KILLS.
-- Combat title removed; combo untouched.
-- Fortified home-base visual.
-- Combat skill strip reuses lobby skill artwork.
+# Stable UI/runtime foundation
+- v0.26 provides the stable lobby/combat HUD foundation.
+- v0.27 desired UX: one-line skill headers, radar aspect fix, Android swipe, result class badges, TEAM waiting UI.
+- v0.27 contained a self-retriggering skill-level MutationObserver regression.
+- v0.30 blocks only that defective observer and restores stable device rendering.
+- v0.28/v0.29 viewport-forcing experiments are superseded and not loaded.
+- Device validation after v0.30 confirmed portrait gate, full-width landscape lobby, and full-width combat.
 
----
-
-# v0.27 intended features and regression
-Read `V027_DEVICE_FIX_WAITING_UX_REPORT.md` and `V030_ROOT_CAUSE_RECOVERY_REPORT.md`.
-
-Intended v0.27 features:
-- one-line skill name and acquisition level,
-- correct radar aspect ratio,
-- Android horizontal swipe,
-- fixed arrows,
-- result PLAYER / CLASS collision fix,
-- local TEAM waiting UX for FRIEND / LINK / RANDOM.
-
-Critical regression found after device audit:
-
-```js
-function normalizeSkillLevels(){
-  root?.querySelectorAll('.v024SkillLv').forEach(el=>{
-    const n=(el.textContent||'').match(/\d+/)?.[0]||'';
-    if(n) el.textContent=`습득 LV ${n}`;
-  })
-}
-new MutationObserver(normalizeSkillLevels).observe(root,{childList:true,subtree:true});
-```
-
-Because the callback rewrites `textContent` even when it is already identical, the observer can retrigger itself indefinitely. v0.26 had an equality guard and did not have this defect.
-
-This is the primary known root cause for the severe partial-render/freeze behavior introduced at v0.27.
-
----
-
-# v0.28 / v0.29 superseded
-The viewport/orientation recovery experiments were based on the half-width symptom before the observer loop was found.
-
-Do not continue their strategy by default:
-- no numeric viewport-meta width rewriting,
-- no physical-screen-width forcing,
-- no screen/outer/inner width heuristics unless clean v0.30 evidence later proves a separate viewport defect.
-
-v0.30 does not load v0.28 or v0.29 scripts.
-
----
-
-# Current implementation — v0.30
-Files:
-- `timing-defense-v011/v030-safety.js`
-- `timing-defense-v011/v030.html`
-
-Read first:
+Read:
 - `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
-
-Loader strategy:
-1. load through the known v0.26 foundation,
-2. run `v030-safety.js`,
-3. run existing `v027-polish.js`.
-
-`v030-safety.js` intercepts only the defective redundant `normalizeSkillLevels` MutationObserver. The safe v0.26 normalizer remains active and already provides `습득 LV N`.
-
-Orientation:
-- game is landscape-only,
-- portrait is blocked with a simple max-z-index overlay,
-- no viewport width/meta manipulation occurs.
-
-Preserved v0.27 UX:
-- skill one-line headers,
-- radar aspect fix,
-- swipe + arrows,
-- result class badge layout,
-- TEAM local waiting screens.
-
-No combat, combo, balance, projectile timing, or multiplayer-authority behavior changed.
+- `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
+- `V026_HUD_LAYOUT_REPORT.md`
 
 ---
 
-# Network truth boundary
-Actual multiplayer is still **not implemented**.
-Do not claim multiplayer is live until two independent clients join the same authoritative room and synchronize game state.
+# Current implementation — v0.31 multiplayer foundation
+Read `V031_MULTIPLAYER_FOUNDATION_REPORT.md` first.
 
-TEAM slot rule:
-- SOLO: AI 0–3
-- TEAM: AI FILL 0–2, leaving at least one human slot.
+## Client
+Files:
+- `timing-defense-v011/v031-network.js`
+- `timing-defense-v011/v031.html`
 
-FRIEND/LINK/RANDOM are local waiting UX only.
+The v0.31 client upgrades the TEAM waiting room from local-only presentation to a real server-backed room state.
+
+## Server
+Files:
+- `timing-defense-server/server.js`
+- `timing-defense-server/package.json`
+
+Render service:
+- `timing-defense-mp`
+- Singapore
+- public backend URL: `https://timing-defense-mp.onrender.com`
+
+Transport/design:
+- authoritative HTTP POST mutations,
+- SSE room-state stream,
+- heartbeat/session expiry,
+- in-memory room/ticket state for prototype phase,
+- no external runtime dependency.
+
+## Real shared state implemented
+- room code,
+- FRIEND/LINK room create/join,
+- invite URL with `?room=<CODE>`,
+- participant slots,
+- nickname/class,
+- host ownership,
+- READY state,
+- TEAM AI FILL state,
+- leave/host reassignment,
+- RANDOM matchmaking queue,
+- server-authoritative future `startAt` gate.
+
+START policy:
+- at least two human participants,
+- every human READY,
+- only server-recognized host may START,
+- server publishes one future `startAt` to all clients.
+
+## Truth boundary
+**Actual shared combat is not yet implemented.**
+
+Safe claim:
+- real authoritative shared room exists,
+- two clients can share participant/READY state,
+- START gate is authoritative and synchronized.
+
+Do not claim full multiplayer gameplay until actual run/combat state is synchronized.
 
 ---
 
 # Exact next work boundary
-1. Device-test public v0.30 on the same Samsung Browser device.
-2. Confirm direct landscape load fills the full content width and remains responsive.
-3. Confirm no gradual/partial render freeze.
-4. Verify skill name + `습득 LV N`, radar shape, arrows, and swipe.
-5. Rotate portrait and verify only the landscape-only gate.
-6. Rotate back and verify the full-width lobby returns without width forcing.
-7. Verify result board and TEAM waiting screens.
-8. Fix only defects reproducible from the clean v0.30 chain.
-9. Then design actual multiplayer architecture.
-10. After network foundation, continue Lv26/Lv31 implementation and full-run balance simulation.
+1. Two independent clients/device sessions test v0.31 room create/join.
+2. Verify participant/class/READY changes propagate without reload.
+3. Verify host-only START and common `startAt`.
+4. Verify leave and host reassignment.
+5. Verify RANDOM matching with two searches.
+6. Fix only reproducible room/session/UI defects.
+7. Then implement authoritative run snapshot and synchronized run start.
+8. Synchronize Attack Round/timing-result events.
+9. Synchronize enemies, wall, coin, EXP/level and stage transitions.
+10. Add disconnect/reconnect snapshot recovery and desync reconciliation.
+11. Add multiplayer shop/economy authority.
+12. After networking stabilizes, implement Lv26/Lv31 and rerun Solo/2P/3P/4P balance simulations.
 
 ## Still unresolved
-- actual room/network backend,
-- invite/link security contract,
-- matchmaking policy,
-- reconnect/reconciliation,
-- multiplayer economy/shop ownership,
+- durable/persistent multiplayer room store,
+- horizontal scaling strategy,
+- reconnect grace/session recovery contract,
+- invite-link security/token policy,
+- combat-event authority/reconciliation,
+- multiplayer shop/economy ownership,
 - duplicate-class policy,
-- DUO/TRIPLE/FULL synchronization,
+- DUO/TRIPLE/FULL combat synchronization,
 - Lv26/Lv31 coefficients,
 - final passive/HP/combo coefficients,
 - final E/X/tier values,
@@ -192,17 +171,16 @@ FRIEND/LINK/RANDOM are local waiting UX only.
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
-4. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
-5. `V026_HUD_LAYOUT_REPORT.md`
-6. `V025_LAYOUT_POLISH_REPORT.md`
-7. `V024_RADAR_READABILITY_REPORT.md`
-8. `CHARACTER_PROFILE_RADAR_V1.md`
-9. `DESIGN_DECISIONS.md`
-10. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-12. `SKILL_PLAN_LV6_31.md`
-13. `TIER_PRESSURE_GRAMMAR_V1.md`
-14. `PRESSURE_RECIPES_V1.md`
-15. `SIMULATION_METHOD.md`
-16. `NEXT_WORK.md`
+3. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+4. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
+5. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
+6. `V026_HUD_LAYOUT_REPORT.md`
+7. `CHARACTER_PROFILE_RADAR_V1.md`
+8. `DESIGN_DECISIONS.md`
+9. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+10. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+11. `SKILL_PLAN_LV6_31.md`
+12. `TIER_PRESSURE_GRAMMAR_V1.md`
+13. `PRESSURE_RECIPES_V1.md`
+14. `SIMULATION_METHOD.md`
+15. `NEXT_WORK.md`
