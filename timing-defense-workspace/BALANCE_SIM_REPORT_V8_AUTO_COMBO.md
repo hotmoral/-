@@ -1,203 +1,175 @@
-# Timing Defense — v8 Auto-Attack + PERFECT Combo Diagnostic
+# Timing Defense — Balance Simulation V8: Passive Basic Attack + PERFECT Combo
 
-Updated: 2026-10-20 KST
-Status: **DESIGN / SIMULATION ONLY for auto-attack and combo numbers; no live auto-attack/combo balance patch yet**
+Date: 2026-10-20 KST  
+Status: **REPORT / CALIBRATION ONLY** — passive basic attack, enemy HP compensation, and combo power rewards are not live-balance-frozen.
 
-## Purpose
-Evaluate the newly approved directions:
-1. passive/basic auto-attack so the player can briefly read the battlefield without combat becoming completely idle,
-2. an unbounded consecutive-PERFECT combo counter whose rising visible number increases psychological pressure,
-3. avoid making auto-attack strong enough to clear content by itself,
-4. keep timing play as the primary damage source.
+## 1. Frozen / agreed behavior entering v8
 
-Low-risk UX/system work is separated from balance work. v0.17 implements AI internal growth, persistent/faded Timing Square, and slightly wider party spacing, but **does not yet enable auto-attack or combo rewards**.
+- PERFECT streak counter is unbounded: 1, 2, 3 … 30 … 40 … continues until a non-PERFECT judgment or MISS.
+- Fourth attack has two judgments; P+P contributes +2 combo.
+- GOOD / NORMAL / MISS resets the PERFECT streak.
+- Combo count must be visible from **1 COMBO**, not only at milestones.
+- Display should sit near the Timing Square.
+- Visual intensity may cap at 30+, while the numeric counter continues upward without a cap.
+- Combo height must never secretly shrink the PERFECT zone or speed up the sweep.
+- Passive basic attacks must not earn EXP, charge, combo, crit, or skill procs.
 
----
+## 2. Combo rarity Monte Carlo
 
-# 1. Auto-attack baseline math
+Independent judgment model, no artificial high-combo difficulty penalty. Therefore high-streak rates below are an **upper bound**; real human tension may reduce them.
 
-Current timing-only expected raw single-target output before class skills/upgrades:
+### Chance of reaching a streak at least once within ~150 judgment opportunities
 
-| Profile | Expected normal hit | Expected heavy | 4-attack cycle time | Approx timing DPS |
-|---|---:|---:|---:|---:|
-| Average | 142.0 | 307.3 | 5.10 s | 143.8 |
-| Skilled | 160.0 | 379.8 | 4.66 s | 184.5 |
-| Expert | 177.8 | 466.9 | 4.39 s | 227.9 |
+| Timing profile | 5 combo | 10 combo | 20 combo | 30 combo | 40 combo |
+|---|---:|---:|---:|---:|---:|
+| Average P20 | 3.6% | <0.01% | ~0% | ~0% | ~0% |
+| Skilled P40 | 61.0% | 0.87% | ~0% | ~0% | ~0% |
+| Expert P65 | ~100% | 50.6% | 0.83% | 0.014% | ~0% |
+| Master-test P80 | 100% | 98.4% | 27.8% | 3.23% | 0.30% |
 
-Candidate auto-attack `40 damage every 2.0 s` = **20 DPS**.
+This supports the intended psychology:
+- 5 combo is a realistic learned-player event,
+- 10 combo is already notable for Skilled,
+- 20+ is mainly expert/master territory,
+- 30/40 is rare enough to become a memorable pressure event.
 
-That is approximately:
-- 13.9% of Average timing DPS,
-- 10.8% of Skilled timing DPS,
-- 8.8% of Expert timing DPS.
+## 3. Combo reward candidate tested
 
-This is strong enough to make a short observation pause less punishing, but far below enough to replace active timing attacks.
+The balanced candidate keeps **power capped even though the counter is not capped**.
 
-## Candidate enemy-HP compensation
+Persistent timing-attack bonus while the streak survives:
+- 5–9: +5%
+- 10–19: +8%
+- 20–29: +12%
+- 30+: +15% cap
 
-With auto-attack 40 / 2.0 s:
+Milestone class attack budget used for stress testing:
+- 5: small class echo (~60 raw-equivalent in the reward-only model)
+- 10: medium class proc (~90)
+- 20: large class proc (~150)
+- 30+: maximum class proc (~210), repeated again at 40 / 50 / 60 … without increasing the proc strength further
 
-| Global HP candidate | Average effective pace | Skilled effective pace | Expert effective pace |
-|---|---:|---:|---:|
-| +8% | +5.5% easier | +2.6% easier | +0.7% easier |
-| +10% | +3.6% easier | +0.8% easier | -1.1% harder |
-| +12% | +1.7% easier | -1.0% harder | -2.9% harder |
-| +15% | -0.9% harder | -3.6% harder | -5.4% harder |
+Approximate mean total damage uplift over 120 attacks (~150 judgment opportunities), including the small 5-combo proc:
+
+| Profile | Mean combo-power uplift |
+|---|---:|
+| Average | ~0.01% |
+| Skilled | ~0.26% |
+| Expert | ~1.99% |
+| Master-test P80 | ~4.74% |
 
 Interpretation:
-- +10% almost mathematically cancels the Skilled benefit and leaves too little of the intended breathing-room effect.
-- +8% leaves a small but real margin at all skill levels.
-- Therefore **40 damage / 2.0 s + roughly +8% global ordinary-monster HP** is the leading first playable experiment, not a frozen production value.
+- reward power does not materially inflate ordinary Average/Skilled balance,
+- expert players receive a meaningful but not runaway edge,
+- the primary value of 20/30/40 combo remains psychological pressure, visual prestige and rare burst moments rather than permanent DPS snowballing.
 
-Do not compensate 1:1 for every auto-attack point. The system is intentionally supposed to create a small amount of real breathing room.
+## 4. Passive basic attack candidate
 
-## Auto-attack semantic candidate
-- independent basic projectile every ~2.0 s,
-- initial raw damage = 40,
-- no timing judgment,
-- no CRIT/proc-crit,
-- no charge generation,
-- no PERFECT combo contribution,
-- no skill trigger,
-- no EXP,
-- minimal or zero knockback,
-- ordinary class weapon visual may be used, but presentation must remain weaker than a timing attack.
+Three bands were explored around the agreed idea. The best first playable A/B candidate is:
 
-The no-EXP rule preserves the already accepted principle that timing participation drives run leveling.
+- **40 raw damage every 2.0 s**
+- enemy HP compensation candidate: **+10%**
+- no EXP
+- no charge
+- no combo contribution
+- no crit
+- no class skill proc
+- no meaningful knockback
 
----
+At no-skill timing baseline, raw timing DPS is approximately:
+- Average: 143.8 DPS
+- Skilled: 184.5 DPS
+- Expert: 227.9 DPS
 
-# 2. PERFECT combo semantics — frozen direction
+40 / 2.0 s contributes 20 passive DPS, equal to roughly:
+- 13.9% of Average timing DPS,
+- 10.8% of Skilled,
+- 8.8% of Expert.
 
-Combo is **unbounded**.
+After +10% enemy HP compensation, simple raw-DPS headroom versus the pre-passive baseline is approximately:
+- Average: +3.6%
+- Skilled: +0.8%
+- Expert: -1.1% before combo rewards.
 
-- Only a PERFECT timing input increments the combo.
-- GOOD / NORMAL / MISS break it to zero.
-- Attacks 1–3 provide one possible combo increment each.
-- The fourth attack provides two independent increments: X and Y.
-- Therefore one completely PERFECT 1→4 sequence adds **5 combo**.
-- Reaching 5 / 10 / 20 / 30 / 40 etc. never consumes or resets the combo.
-- Stage/shop downtime does not itself count as a miss; the combo should only break on an actual non-PERFECT timing judgment unless later explicitly changed.
+This is intentionally much less than full 1:1 compensation: the passive system must leave some real breathing room.
 
-Most important design rule:
-**Do not secretly shrink timing windows, accelerate the sweep, or reduce PERFECT probability as combo rises.**
-The extra difficulty should come from player tension caused by the visible streak and increasing stakes, not hidden dynamic cheating.
+## 5. Exact-AI-bound combat check at Lv6
 
----
+Fixed Lv6 team members using the current v0.17 skill-equivalent AI logic. Same-seed comparison, current S/E/X concrete pressure generator.
 
-# 3. How rare are high combos?
+### Continuous active play
 
-Monte Carlo diagnostic assuming independent PERFECT probability per timing judgment.
-This is not a human psychology model; real streaks may cluster and pressure may increase mistakes.
+| Team | Profile | Current baseline | Passive40/2s + HP10% + balanced combo | Δ clear |
+|---|---|---:|---:|---:|
+| 3P | Average | 67.9% | 72.4% | +4.5pp |
+| 3P | Skilled | 79.2% | 80.9% | +1.7pp |
+| 4P | Average | 54.2% | 56.4% | +2.2pp |
+| 4P | Skilled | 58.8% | 62.2% | +3.4pp |
 
-## Rough 150-judgment run segment
+The candidate is stronger, but not by enough to erase pressure or mastery separation.
 
-| Player accuracy | Reach 5 | Reach 10 | Reach 20 | Reach 30 | Reach 40 |
-|---|---:|---:|---:|---:|---:|
-| Average P20 | 3.7% | ~0.002% | ~0 | ~0 | ~0 |
-| Skilled P40 | 60.9% | 0.8% | ~0 | ~0 | ~0 |
-| Expert P65 | ~100% | 50.9% | 0.8% | 0.016% | ~0 |
-| Master-like P80 | 100% | 98.5% | 27.5% | 2.9% | 0.3% |
+## 6. “Look at the battlefield” test
 
-## Rough 300-judgment long run
+To directly test the design goal, the local player was forced to stop timing input for **2 seconds every 12 seconds** (~16.7% observation downtime).
 
-| Player accuracy | Reach 5 | Reach 10 | Reach 20 | Reach 30 | Reach 40 |
-|---|---:|---:|---:|---:|---:|
-| Average P20 | 7.1% | ~0 | ~0 | ~0 | ~0 |
-| Skilled P40 | 84.7% | 1.8% | ~0 | ~0 | ~0 |
-| Expert P65 | 100% | 76.6% | 1.8% | 0.03% | ~0 |
-| Master-like P80 | 100% | ~100% | 49.7% | 6.6% | 0.7% |
+Lv6 exact-AI-bound confirmation:
 
-This supports the design intuition:
-- 5 combo is a reachable learned-player event,
-- 10 is meaningful,
-- 20 is already exceptional unless the player is extremely accurate,
-- 30/40 naturally become high-tension bragging moments rather than routine rotation.
+| Team | Profile | No pause / current | 2s pause / current | 2s pause + passive40/2s + HP10% |
+|---|---|---:|---:|---:|
+| 3P | Average | 63.7% | 61.3% | **65.7%** |
+| 3P | Skilled | 76.7% | 72.7% | **75.9%** |
+| 4P | Average | 56.8% | 54.4% | **57.2%** |
+| 4P | Skilled | 63.0% | 60.8% | **64.2%** |
 
-The unbounded counter therefore has value even if mechanical reward strength eventually plateaus.
+This is the strongest positive v8 result.
 
----
+Without a passive attack, deliberately looking away from the Timing Square costs clear probability. With 40/2s passive fire plus +10% HP compensation, most of that penalty is recovered without producing a large overall difficulty collapse.
 
-# 4. Combo visual-pressure ladder
+In other words, the passive attack is doing the job it was proposed for: **buying attention bandwidth, not replacing the timing game**.
 
-Candidate presentation hierarchy:
+## 7. Passive-only sanity check
 
-### 1–4
-- small persistent combo number near the Timing Square only.
+Under the current concrete pressure samples with **all timing attacks disabled** and only 40/2s passive fire:
+- 3P individual-stage clear: 0% in the confirmation sample,
+- 4P individual-stage clear: 0%,
+- 2P individual-stage clear: ~12.2%.
 
-### 5–9
-- combo number begins appearing at the struck monster on PERFECT hits,
-- mild class-color glow.
+The 2P exceptions occur mostly because the wall barely survives after enemies reach it, not because passive DPS is sufficient. Among those 2P stage clears, surviving wall HP averaged only ~357 / 2000 (median ~360).
 
-### 10–19
-- larger hit-side `10 COMBO`, `11 COMBO` etc.,
-- stronger pulse / brief accent,
-- persistent HUD counter becomes more prominent.
+Because the real run carries wall damage forward, this does **not** imply passive-only run completion. A full-run progression simulation is still required before freezing the final passive value.
 
-### 20–29
-- stronger impact ring / typography / class-color flare,
-- still no screen-obscuring full-screen effect.
+## 8. v8 recommendation
 
-### 30+
-- maximum visual tier may plateau here,
-- **the numeric combo itself continues indefinitely**: 31, 32, 40, 50, ...
-- the player must always be able to see exactly what streak is at risk.
+### Safe to implement immediately
+- combo counter from **1 COMBO**,
+- counter positioned near Timing Square,
+- visual tiers: 1–4 / 5–9 / 10–19 / 20–29 / 30+,
+- 30+ visual intensity cap while number remains unbounded.
 
-This uses the combo number itself as pressure. The game should not artificially sabotage the player's timing.
+### Candidate for next playable A/B, not frozen
+- passive attack = **40 / 2.0 s**,
+- enemy HP = **+10%** starting compensation,
+- combo persistent bonuses = **5 / 8 / 12 / 15%** at 5/10/20/30,
+- class milestone proc at 5/10/20/30 and every 10 after 30, with power capped at the 30 tier.
 
----
+### Do not do
+- no hidden high-combo timing-window shrink,
+- no sweep-speed punishment at high combo,
+- no combo reset at 20/30 merely to control power,
+- no passive EXP / charge / skill activation,
+- no exact passive-DPS-for-HP compensation that deletes the intended breathing room.
 
-# 5. Mechanical combo reward — not frozen yet
+## 9. Implementation state
 
-Do not use an ever-growing permanent damage multiplier. That would create runaway balance and make the streak mandatory rather than exciting.
+A v0.18 source patch has been added for the **visible counter only**. It does not yet apply combo damage rewards or passive basic attacks.
 
-The safer design space is **milestone-triggered one-off class rewards** while the counter keeps climbing.
+The counter:
+- appears at 1 COMBO,
+- updates on each accepted PERFECT judgment,
+- counts both X and Y on the heavy attack separately,
+- resets on GOOD / NORMAL / MISS,
+- renders near the Timing Square,
+- scales visual weight at 5 / 10 / 20 / 30,
+- keeps numerical count unbounded above 30.
 
-Candidate test family for the next combat simulation:
-- 5 combo: small next-hit or class echo reward,
-- 10 combo: meaningful class-specific follow-up,
-- 20 combo: stronger class-specific follow-up,
-- 30 combo and then every +10: high-tier follow-up; mechanical strength may plateau while visuals/numeric tension continue.
-
-Possible class language:
-- Knight: extra blade wave / stronger frontline break,
-- Rogue: bonus dagger burst,
-- Tank: shockwave / protection pulse,
-- Archer: bonus straight-line shot,
-- Mage: secondary explosion.
-
-Exact coefficients remain intentionally unfrozen until combat simulation measures how often each milestone actually contributes damage.
-
----
-
-# 6. Current implementation boundary
-
-Already authorized and implemented separately in v0.17:
-- AI teammates gain their own EXP and levels internally,
-- AI timing outcomes are internally simulated; no extra Timing Squares are drawn,
-- AI can unlock/use Lv6/11/16/21 class mechanics,
-- 1–4 Timing Square continuity: after input the square remains visible at reduced opacity rather than vanishing,
-- charge UI therefore remains visually anchored,
-- party vertical spacing widened slightly for character silhouette readability.
-
-Not yet live-enabled:
-- passive auto-attack,
-- PERFECT combo counter/rewards,
-- enemy HP compensation for auto-attack.
-
-These remain behind the report/discuss boundary until the next exact combat test confirms candidate values.
-
----
-
-# 7. Leading next-test candidate
-
-For the next simulation/playable experiment, start with:
-- auto-attack: **40 raw damage every 2.0 s**,
-- auto-attack has no EXP/charge/crit/skill/combo,
-- ordinary monster HP baseline: **+8% candidate**, with boss/elite compensation evaluated separately instead of blindly applying the same percentage,
-- combo: unlimited counter, only consecutive PERFECT,
-- no dynamic timing-window penalty from combo,
-- visual escalation tiers at 5 / 10 / 20 / 30+, numeric counter never capped,
-- mechanical milestone rewards simulated in conservative/medium/aggressive variants before selection.
-
-No production balance value is frozen by this document.
+Passive basic attack and numerical combo rewards remain pending explicit post-report implementation.
