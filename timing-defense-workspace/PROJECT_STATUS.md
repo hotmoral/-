@@ -6,13 +6,15 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.35**
-- Public URL: `https://timing-defense-v011.onrender.com/v035.html`
-- Live source HEAD: `cdfdb60b4d20047d372316224d5815dc6edd3bef`
-- Static Render deploy: `dep-dbblp8s9v7es73flhq40` / LIVE
-- Multiplayer backend: `https://timing-defense-mp.onrender.com`
-- Backend service: `srv-dbbimre1egvs73861d80`
-- Backend deploy: `dep-dbblpauq1p3s73d1v2mg` / LIVE
+- Latest implemented prototype: **v0.35**
+- Previous device-validated prototype: **v0.34**
+- Old Render game URL: `https://timing-defense-v011.onrender.com/v035.html` — **SUSPENDED / Monthly Quota Exceeded**
+- Old Render multiplayer backend: `https://timing-defense-mp.onrender.com` — **SUSPENDED / Monthly Quota Exceeded**
+- Last successful v0.35 static deploy: `dep-dbblp8s9v7es73flhq40`
+- Last successful v0.35 backend deploy: `dep-dbblpauq1p3s73d1v2mg`
+- Current live-branch portable-host preparation HEAD: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
+
+Important: v0.35 was built/deployed successfully, then both Render services were suspended around 12:39 UTC because the monthly quota was exceeded. This is a hosting outage, not a confirmed v0.35 gameplay/runtime regression. Read `V035_RENDER_QUOTA_OUTAGE_REPORT.md`.
 
 ## Core playable scope
 - Landscape timing-action side defense.
@@ -20,7 +22,7 @@ Updated: 2026-10-20 KST
 - Classes: Knight / Rogue / Tank / Archer / Mage.
 - Monsters: GRUNT / RUNNER / BRUTE / SHIELD / FLYER.
 - Solo prototype: Stage 1–10 with EXP / level / coin / shop.
-- Multiplayer prototype: real shared waiting room + authoritative Stage 1 -> team shop -> Stage 2 bounded slice.
+- Multiplayer prototype code: real shared waiting room + authoritative Stage 1 -> team shop -> Stage 2 bounded slice.
 - Local/solo skills implemented through Lv21; Lv26/Lv31 planned.
 - Multiplayer Lv6+ skill authority is not complete.
 
@@ -89,7 +91,7 @@ User confirmed:
 Server authority remained unchanged; rendering is visual-only interpolation/VFX.
 
 ## v0.35 — reconnect + authoritative team shop + Stage 2
-Read `V035_RECONNECT_SHOP_STAGE2_REPORT.md`.
+Read `V035_RECONNECT_SHOP_STAGE2_REPORT.md` and `V035_RENDER_QUOTA_OUTAGE_REPORT.md`.
 
 Implemented:
 - 180 s in-memory reconnect/session grace,
@@ -105,19 +107,26 @@ Implemented:
 
 Shop uses the existing upgrade/cost grammar without numerical rebalance. Human offensive ranks are resolved by the server. WALL HP and DEF currently map to the shared base as a prototype team-wall rule; this mapping is not production-frozen.
 
-Local server/API integration test passed create/join/START -> Stage 1 -> shop -> purchases -> READY/NEXT -> Stage 2 -> resume. Android + PC device validation is still required for v0.35.
+Android + PC device validation did **not** complete because Render suspended both services for `Monthly Quota Exceeded` after successful deployment.
+
+Portable-host recovery files now exist on the live branch:
+- `timing-defense-v011/v035-host-adapter.js`
+- `timing-defense-v011/v035-portable.html`
+- `timing-defense-server/portable-host.js`
+
+These allow the game and authoritative Node backend to be deployed together on a replacement full-stack Node host.
 
 ---
 
 # Multiplayer truth boundary
 Safe today:
-- real authoritative shared room/READY/START,
-- real authoritative Stage 1 combat,
+- real authoritative shared room/READY/START validated through v0.34,
+- real authoritative Stage 1 combat validated,
 - remote smoothing/projectiles validated on Android + PC,
-- authoritative Stage 1 team shop and Stage 2 code deployed,
-- bounded in-memory reconnect/reload recovery code deployed.
+- v0.35 reconnect/team-shop/Stage-2 code exists and passed local API/integration checks,
+- portable hosting recovery path is prepared.
 
-Do not claim device-PASS for v0.35 until Android + PC validation is completed.
+Do not claim device-PASS for v0.35 until replacement hosting is live and Android + PC validation is completed.
 Do not claim:
 - durable recovery after backend restart,
 - Stage 3–10 multiplayer,
@@ -128,17 +137,20 @@ Do not claim:
 ---
 
 # Immediate next boundary
-1. Android + PC validate v0.35 Stage 1 -> shared shop.
-2. Confirm independent purchases/ranks/coins stay synchronized.
-3. Confirm READY both clients and host-only NEXT.
-4. Confirm both enter synchronized Stage 2 and share GRUNT/RUNNER HP/deaths/BASE HP.
-5. Refresh one client during Stage 1, shop and Stage 2; verify same slot/run recovery without old-shot replay.
-6. Fix only reproducible v0.35 network/runtime/UI defects.
-7. Generalize the same authoritative stage/shop contract through Stage 3–10.
-8. Move Lv6/Lv11/Lv16/Lv21 multiplayer skill consequences under server authority.
-9. Then implement Lv26/Lv31 and rerun Solo/2P/3P/4P simulations before numerical freeze.
+1. Move v0.35 to a replacement full-stack Node host; Render cannot currently serve it because the monthly quota is exhausted.
+2. Validate the replacement host's root/static/API/SSE paths.
+3. Android + PC validate v0.35 Stage 1 -> shared shop.
+4. Confirm independent purchases/ranks/coins stay synchronized.
+5. Confirm READY both clients and host-only NEXT.
+6. Confirm both enter synchronized Stage 2 and share GRUNT/RUNNER HP/deaths/BASE HP.
+7. Refresh one client during Stage 1, shop and Stage 2; verify same slot/run recovery without old-shot replay.
+8. Fix only reproducible v0.35 network/runtime/UI defects.
+9. Generalize the same authoritative stage/shop contract through Stage 3–10.
+10. Move Lv6/Lv11/Lv16/Lv21 multiplayer skill consequences under server authority.
+11. Then implement Lv26/Lv31 and rerun Solo/2P/3P/4P simulations before numerical freeze.
 
 ## Still unresolved / not production-frozen
+- replacement production/prototype host,
 - durable multiplayer storage / server-restart recovery,
 - horizontal scaling strategy,
 - invite-link security/token policy,
