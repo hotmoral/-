@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.27**
-- Public URL: `https://timing-defense-v011.onrender.com/v027.html`
-- Live source HEAD: `6208e5d4665ca6acb6ebbd1105c50c0551c03630`
-- Render deploy: `dep-dbbhfp3rjlhs73e9nvp0` / LIVE
+- Current public LIVE prototype: **v0.28**
+- Public URL: `https://timing-defense-v011.onrender.com/v028.html`
+- Live source HEAD: `df6a18a2722e42e4e4046ff4e6c0b4fb44af894d`
+- Render deploy: `dep-dbbhkonavr4c73dtoe0g` / LIVE
 
 ## Core playable scope
 - Landscape timing-action side defense.
@@ -68,49 +68,49 @@ See `V026_HUD_LAYOUT_REPORT.md`.
 - Home base received fortified structure art.
 - Combat six-skill strip now reuses the character-select skill artwork.
 
----
-
-# v0.27 — current
+## v0.27
 See `V027_DEVICE_FIX_WAITING_UX_REPORT.md`.
 
-## Character select fixes
+Character-select fixes:
 - Skill names never wrap.
 - `습득 LV N` never wraps.
-- Skill/card fonts are slightly reduced to preserve one-line headers.
+- Skill/card fonts slightly reduced to preserve one-line headers.
 - Radar canvas preserves its native `330:280` aspect ratio, preventing vertical squash.
-- Radar data and animation are unchanged.
-- Carousel swipe replaced with pointer capture + horizontal-intent detection for Android reliability.
+- Carousel swipe uses pointer capture + horizontal-intent detection.
 - Arrow navigation remains fixed and separate.
 
-## End-run board
+End-run board:
 - PLAYER / CLASS overlap fixed structurally.
 - Player/CPU name is single-line.
-- Class is a compact same-row badge instead of a second line.
+- Class is a compact same-row badge.
 - Four-player row spacing recalculated.
-- RETRY / LOBBY separation improved.
 
-## TEAM waiting-room UX
-TEAM start now opens a real UI state rather than a temporary text flash.
-
-Shared:
+TEAM waiting-room UX:
 - nickname/class preserved,
 - AI FILL position/class preserved,
 - P1 local player,
 - P2/P3/P4 = AI FILL or HUMAN SLOT,
 - local READY toggle,
 - back to PLAY SETTING,
-- START disabled until real network authority exists.
+- START remains disabled until real network authority exists.
+- FRIEND/LINK/RANDOM expose truthful local-only waiting states and never fake remote joins/match success.
 
-FRIEND:
-- INVITE affordance, truthful “network not connected” feedback.
+---
 
-LINK:
-- ROOM LINK affordance, no fake URL generation.
+# v0.28 — current orientation / viewport hotfix
+See `V028_ORIENTATION_HOTFIX_REPORT.md`.
 
-RANDOM:
-- SEARCH / CANCEL SEARCH UI state,
-- explicitly marked `NETWORK NOT CONNECTED`,
-- no fake match success.
+Device feedback exposed a broken orientation transition where Samsung Browser could keep a portrait-width visual viewport while the phone was physically landscape. The lobby then rendered only on the left portion of the screen with a black right side.
+
+v0.28 makes the landscape-only contract explicit:
+- portrait mode is fully blocked by a dedicated orientation gate,
+- the underlying lobby/combat/result UI is not interactable while blocked,
+- orientation state is revalidated on orientation/resize/VisualViewport changes,
+- a physical-landscape + portrait-width viewport mismatch triggers a viewport-meta repair/reflow attempt,
+- if that repair still fails, the broken half-width layout is hidden and a safe recovery screen with `가로 상태에서 새로고침` is shown,
+- valid landscape restores the main surfaces to full `100vw` width.
+
+No combat, combo, radar, skill, waiting-room, or balance behavior changed in v0.28.
 
 ---
 
@@ -125,12 +125,12 @@ TEAM slot rule:
 ---
 
 # Next boundary
-1. Device-test v0.27 on the same Android landscape device.
-2. Verify skill title/level one-line behavior.
-3. Verify radar proportions.
-4. Verify swipe and arrow navigation together.
-5. Verify result rows no longer overlap.
-6. Verify TEAM waiting screens for FRIEND/LINK/RANDOM.
+1. Device-test v0.28 on the same Samsung Browser / Android landscape device.
+2. Confirm normal landscape fills the full content width.
+3. Rotate to portrait and confirm only the orientation gate is visible.
+4. Rotate back to landscape and confirm the lobby returns full-width.
+5. If Samsung Browser retains stale portrait width, confirm broken UI is hidden and the recovery screen appears.
+6. Reconfirm v0.27 fixes: skill title/level one-line behavior, radar proportions, swipe + arrows, result rows, TEAM waiting screens.
 7. Fix only implementation/visual defects from validation.
 8. Then design and implement actual multiplayer room/network architecture.
 9. Later return to Lv26/Lv31 implementation, full-run pressure simulation, and final balance freeze.
