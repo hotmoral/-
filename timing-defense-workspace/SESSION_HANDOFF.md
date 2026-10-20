@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.23**
-- Public URL: `https://timing-defense-v011.onrender.com/v023.html`
-- Live source HEAD: `6a7a4acafda9fe7dc405455c73adc3d7065f1285`
-- Render deploy: `dep-dbbfierrjlhs73e3mfeg` / LIVE
+- Current public LIVE prototype: **v0.24**
+- Public URL: `https://timing-defense-v011.onrender.com/v024.html`
+- Live source HEAD: `61ad74d833148d409dc65292f302bb9086c4e7c9`
+- Render deploy: `dep-dbbg528m7kps73esejbg` / LIVE
 
 Workspace is canonical for design decisions, simulation interpretation and new-session recovery.
 
@@ -46,6 +46,8 @@ Experimental values remain **not production-frozen**:
 - combo persistent 5/8/12/15% tiers,
 - combo milestone raw-equivalent 60/90/150/210 cap.
 
+Passive auto-attack interval is currently common across all classes at `2.0 s`; class projectile visual travel times differ.
+
 ---
 
 # Presentation history
@@ -63,59 +65,88 @@ Experimental values remain **not production-frozen**:
 - battle class selector and bottom prototype controls hidden,
 - FRIEND/LINK/RANDOM front-end choice only; no real remote connectivity.
 
+## v0.23
+- left info / center hero / right skill detail hierarchy,
+- every valid timing EXP event shows `+EXP N`,
+- TEAM reserves at least one human slot; TEAM AI FILL max +2,
+- result board row spacing + nickname cleanup,
+- attack debug label hidden.
+
 ---
 
-# Current implementation — v0.23
+# Current implementation — v0.24
 Files:
-- `timing-defense-v011/v023-polish.js`
-- `timing-defense-v011/v023-results.js`
-- `timing-defense-v011/v023.html`
+- `timing-defense-v011/v024-polish.js`
+- `timing-defense-v011/v024.html`
 
-See `V023_LOBBY_POLISH_REPORT.md`.
+See:
+- `V024_RADAR_READABILITY_REPORT.md`
+- `CHARACTER_PROFILE_RADAR_V1.md`
 
-## Character selection
-User feedback changed the layout from `character-left + skill-cards-right` to a landscape three-zone hierarchy:
-- left fixed info = class name/role/play style,
-- center = only the hero slides horizontally,
-- right fixed info = six skill icons + selected skill full detail.
+## Character-selection hierarchy
+Three-zone landscape presentation is now:
+- **left** = animated combat-profile radar,
+- **center** = larger/taller hero only,
+- **right** = six skill cards arranged `3 × 2`.
 
-Arrow + swipe navigation remains.
-All six milestones `6/11/16/21/26/31` are visible simultaneously.
-Skill descriptions are no longer intentionally truncated.
+Hero navigation remains arrow + horizontal swipe. Arrows sit closer to the hero. Header/nickname/footer heights are reduced on short landscape displays to free more hero height.
 
-## Character/icon direction
-- Geometric prototype characters remain, with a second small detail pass for silhouette/gear readability.
-- Skill icons stay mechanic-specific: multiple blades/daggers/arrows where the mechanic contains multiples; shields, cracks, shockwaves, linked orbs etc. must visually indicate the effect.
+## Approved profile radar
+Six axes:
+`공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역`.
 
-## Rogue HUD contrast
-Natural scenery made Rogue's gray HUD too weak.
-v0.23 adds a brighter red/silver **HUD-only** contrast accent to Timing Square edge + charge pips. No Rogue numerical buff.
+Five visual levels. The UI does not need to print 1–5 values.
 
-## EXP popup integrity
-Every valid local `awardXP(amount)` now independently arms `+EXP N` beside the gauge, including gains between level-ups.
-Lower-left EXP float stays removed.
+Approved class profiles:
+- Knight `4 / 2 / 3 / 3 / 4 / 2`
+- Rogue `2 / 5 / 5 / 1 / 1 / 1`
+- Tank `2 / 1 / 1 / 5 / 1 / 3`
+- Archer `3 / 2 / 4 / 1 / 5 / 2`
+- Mage `4 / 2 / 2 / 1 / 1 / 5`
 
-## TEAM slot semantics
-TEAM must reserve at least one human participant slot.
-- SOLO: AI 0–3.
-- TEAM: AI FILL 0–2 only.
-- Switching TEAM while +3 AI is active falls back to +2 AI.
+Equal values are allowed. The radar is a class-identity graphic, not a forced class ranking.
 
-This does not implement networking yet.
+Animation contract:
+- five-ring hex web,
+- center-out class-color scan,
+- staggered six-vertex outward growth (`띠리리릭` feel),
+- class-color polygon fill/glow,
+- vertex landing pulse,
+- short settling pulse,
+- roughly one-second total transition.
 
-## AI setting readability
-K/R/T/A/M-only controls replaced visually by compact role glyph + `KNI/ROG/TNK/ARC/MAG` labels.
-Layout spacing compressed to reduce the previous short-landscape clipping.
+## Skill roadmap
+The prior six-icon strip + one selected detail is replaced with six direct cards in `3 × 2`.
+Each card contains icon, skill name, unlock level and description. Mechanic-specific icon semantics remain frozen direction.
 
-## Result board
-- centered final redraw,
-- larger row spacing,
-- local nickname used when available,
-- metrics remain KILLS / DMG / COIN / LV / MAX COMBO,
-- per-column rank colors retained.
+## TEAM lineup
+- redundant bottom SUMMARY removed,
+- right lineup panel receives more width,
+- five class buttons wrap into two rows for each AI unit,
+- AI row height increased,
+- TEAM AI FILL max remains +2; SOLO AI max remains +3.
 
-## Debug cleanup
-The battle `CLASS · ATTACK N · RESULT · AXIS` label is hidden.
+## Rogue HUD identity
+Rogue HUD changes from v0.23 red/silver to **charcoal/black + silver**:
+- Timing Square,
+- charge pips,
+- charge/heavy text,
+- EXP gauge,
+- LV/EXP labels,
+- `+EXP N` popup.
+
+This is presentation-only. Rogue damage/crit/skill coefficients are unchanged.
+
+## Projectile readability
+Natural scenery made attack projectiles too faint/blur-like.
+v0.24 does **not** slow travel numerically. It adds visual contrast/trails over the existing renderer:
+- Knight: deep amber + bright gold edge,
+- Rogue: charcoal blade + silver edge/trail,
+- Tank: dark navy + cyan edge,
+- Archer: forest green + pale edge/trail,
+- Mage: deep purple + pale violet ring/trail.
+
+If device validation still finds projectiles hard to read, discuss a small travel-time change before applying it.
 
 ---
 
@@ -124,23 +155,23 @@ Actual multiplayer is **not yet implemented**.
 FRIEND/LINK/RANDOM remain selection states only.
 Do not claim a remote player joined until two independent clients share authoritative room/game state.
 
-The originally planned v0.23 waiting-room slice is deferred one version because v0.23 was used for device-feedback polish.
-Next waiting-room target is **v0.24**.
+The waiting-room slice has been deferred again because v0.24 was used for the approved radar/readability patch. It becomes the next version after v0.24 device validation.
 
 ---
 
 # Exact next work boundary
-1. Device-test public v0.23.
-2. Check center-only hero slide and fixed left/right information wings.
-3. Check all six skill icons/full descriptions on short Android landscape.
-4. Check Rogue square/charge readability over natural background.
-5. Verify every local timing EXP event shows `+EXP N`.
-6. Verify TEAM cannot select +3 AI; at least one human slot remains.
-7. Verify result table no longer has player/class row collisions.
-8. Fix visual/implementation defects only.
-9. Implement v0.24 waiting-room UX for FRIEND / LINK / RANDOM.
-10. After waiting UX, design/wire actual room/invite/random network architecture.
-11. Continue full-run progression simulation before freezing passive/HP/combo values.
+1. Device-test public v0.24.
+2. Verify radar labels/rings do not clip on short Android landscape.
+3. Verify radar animation replays cleanly per class switch and stale animations cancel.
+4. Verify center hero gets visibly more vertical presence and no longer collides with right panel.
+5. Verify six skill cards in 3×2 remain readable.
+6. Verify TEAM lineup shows all five class choices without clipping.
+7. Verify Rogue Timing Square/charge/EXP read as black/charcoal + silver, not red.
+8. Verify projectiles are recognizable objects rather than only fast blur streaks.
+9. If still weak, report/discuss whether a small projectile travel-time adjustment is needed.
+10. Then implement FRIEND/LINK/RANDOM waiting-room UX without faking connectivity.
+11. After waiting UX, design/wire actual room/invite/random network architecture.
+12. Continue full-run progression simulation before freezing passive/HP/combo values.
 
 ## Still unresolved
 - final passive/HP/combo coefficients,
@@ -157,15 +188,17 @@ Next waiting-room target is **v0.24**.
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V023_LOBBY_POLISH_REPORT.md`
-4. `V022_LOBBY_IMPLEMENTATION_REPORT.md`
-5. `V021_IMPLEMENTATION_REPORT.md`
-6. `V020_IMPLEMENTATION_REPORT.md`
-7. `DESIGN_DECISIONS.md`
-8. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-9. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-10. `SKILL_PLAN_LV6_31.md`
-11. `TIER_PRESSURE_GRAMMAR_V1.md`
-12. `PRESSURE_RECIPES_V1.md`
-13. `SIMULATION_METHOD.md`
-14. `NEXT_WORK.md`
+3. `V024_RADAR_READABILITY_REPORT.md`
+4. `CHARACTER_PROFILE_RADAR_V1.md`
+5. `V023_LOBBY_POLISH_REPORT.md`
+6. `V022_LOBBY_IMPLEMENTATION_REPORT.md`
+7. `V021_IMPLEMENTATION_REPORT.md`
+8. `V020_IMPLEMENTATION_REPORT.md`
+9. `DESIGN_DECISIONS.md`
+10. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+12. `SKILL_PLAN_LV6_31.md`
+13. `TIER_PRESSURE_GRAMMAR_V1.md`
+14. `PRESSURE_RECIPES_V1.md`
+15. `SIMULATION_METHOD.md`
+16. `NEXT_WORK.md`
