@@ -58,6 +58,8 @@ npx wrangler deploy
 
 The Worker uses the current declarative Durable Object `exports` configuration and SQLite storage.
 
+Cloudflare Workers Builds production branch is `timing-defense-cloudflare-do-poc`. A push to this branch should trigger the production build automatically after the Git integration is configured.
+
 ## Explicit non-goals
 This PoC does **not** yet contain:
 - existing v0.35 UI,
