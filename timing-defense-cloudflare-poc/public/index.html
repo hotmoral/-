@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Timing Defense · Durable Object PoC</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color:#f3f6f4;background:#101713}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#263b31,#101713 55%);padding:22px}.wrap{max-width:780px;margin:auto}.card{background:rgba(17,27,22,.9);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 18px 60px rgba(0,0,0,.2)}h1{font-size:22px;margin:0 0 7px}.sub{font-size:12px;color:#9eaea5;line-height:1.55}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}input,select,button{border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:10px 12px;background:#17231d;color:#fff;font-weight:800}input{min-width:160px;flex:1}button{cursor:pointer}button.primary{background:#efdfa8;color:#17201b;border-color:#efdfa8}button:disabled{opacity:.35;cursor:not-allowed}.code{font:1000 26px ui-monospace,monospace;letter-spacing:.15em;color:#efdfa8}.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.06);font-size:11px;font-weight:900;margin:3px}.players{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.player{padding:10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:12px}.monster{margin-top:12px;padding:16px;border-radius:14px;background:#2a1717;border:1px solid rgba(255,130,130,.22)}.hp{height:12px;border-radius:99px;background:#381d1d;overflow:hidden;margin-top:8px}.hp>div{height:100%;background:#e9b7a9;transition:width .15s ease}.log{height:150px;overflow:auto;background:#0a0f0c;border-radius:10px;padding:10px;font:12px/1.55 ui-monospace,monospace;white-space:pre-wrap}.ok{color:#9be6b3}.warn{color:#f1d58c}.err{color:#ff9c9c}@media(max-width:600px){body{padding:10px}.players{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>TIMING DEFENSE · DO PoC</h1>
+    <div class="sub">목표: 두 기기가 같은 방에 접속하고 READY → START → 같은 몬스터 HP를 공유하는지 확인합니다. 본 게임 UI/밸런스와 분리된 네트워크 실험판입니다.</div>
+    <div class="row">
+      <input id="nickname" maxlength="12" value="PLAYER" aria-label="nickname">
+      <select id="classId">
+        <option value="knight">KNIGHT</option><option value="rogue">ROGUE</option><option value="tank">TANK</option><option value="archer">ARCHER</option><option value="mage">MAGE</option>
+      </select>
+      <button id="create" class="primary">새 방 만들기</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sub">ROOM</div>
+    <div id="roomCode" class="code">------</div>
+    <div class="row">
+      <input id="joinCode" maxlength="6" placeholder="ROOM CODE">
+      <button id="connect" class="primary">방 연결</button>
+      <button id="copy">링크 복사</button>
+    </div>
+    <div id="connection" class="sub">연결 안 됨</div>
+  </div>
+
+  <div class="card">
+    <div id="status"><span class="pill">WAITING</span></div>
+    <div id="players" class="players"></div>
+    <div class="row">
+      <button id="ready">READY</button>
+      <button id="start">START</button>
+      <button id="attack" class="primary">ATTACK -100 HP</button>
+    </div>
+    <div id="monster"></div>
+  </div>
+
+  <div class="card"><div class="sub">EVENT LOG</div><div id="log" class="log"></div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let ws=null,state=null,session=null,slot=null,attackSeq=0;
+const qs=new URL(location.href).searchParams;
+const initialRoom=(qs.get('room')||'').toUpperCase();
+$('joinCode').value=initialRoom;$('roomCode').textContent=initialRoom||'------';
+$('nickname').value=localStorage.getItem('td-do-poc-nick')||'PLAYER';
+$('classId').value=localStorage.getItem('td-do-poc-class')||'knight';
+if(initialRoom)session=localStorage.getItem('td-do-poc-session-'+initialRoom)||null;
+
+function log(text,cls=''){
+  const line=document.createElement('div');line.textContent=`${new Date().toLocaleTimeString()} ${text}`;if(cls)line.className=cls;
+  $('log').appendChild(line);$('log').scrollTop=$('log').scrollHeight;
+}
+function roomUrl(code){const u=new URL(location.href);u.searchParams.set('room',code);return u.toString()}
+function saveIdentity(){localStorage.setItem('td-do-poc-nick',$('nickname').value.trim()||'PLAYER');localStorage.setItem('td-do-poc-class',$('classId').value)}
+function render(){
+  const code=state?.code||$('joinCode').value.toUpperCase();$('roomCode').textContent=code||'------';
+  $('status').innerHTML=`<span class="pill">${state?.status?.toUpperCase()||'OFFLINE'}</span>${state?`<span class="pill">REV ${state.revision}</span><span class="pill">HOST P${state.hostSlot||'-'}</span>`:''}`;
+  $('players').innerHTML=(state?.participants||[]).map(p=>`<div class="player"><b>P${p.slot} ${escapeHtml(p.nickname)}</b>${p.host?' · HOST':''}<br>${p.classId.toUpperCase()} · ${p.ready?'READY ✓':'NOT READY'} · ${p.connected?'ONLINE':'OFFLINE'}</div>`).join('')||'<div class="sub">참가자 없음</div>';
+  const me=state?.participants?.find(p=>p.slot===slot);
+  $('ready').textContent=me?.ready?'READY ✓ · 취소':'READY';
+  $('ready').disabled=!ws||ws.readyState!==WebSocket.OPEN||state?.status!=='waiting';
+  $('start').disabled=!state?.canStart||state?.hostSlot!==slot;
+  $('attack').disabled=state?.status!=='combat'||!state?.monster||state.monster.hp<=0;
+  if(state?.monster){
+    const pct=Math.max(0,Math.min(100,state.monster.hp/state.monster.maxHp*100));
+    $('monster').innerHTML=`<div class="monster"><b>AUTHORITATIVE TEST MONSTER</b><br>HP ${state.monster.hp} / ${state.monster.maxHp}<div class="hp"><div style="width:${pct}%"></div></div></div>`;
+  }else $('monster').innerHTML='';
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+async function createRoom(){
+  saveIdentity();
+  const r=await fetch('/api/room/create',{method:'POST'}),d=await r.json();
+  if(!r.ok)throw Error(d.error||`HTTP ${r.status}`);
+  history.replaceState(null,'',roomUrl(d.code));$('joinCode').value=d.code;$('roomCode').textContent=d.code;session=null;
+  log(`방 ${d.code} 생성`,'ok');connect();
+}
+function connect(){
+  saveIdentity();
+  const code=$('joinCode').value.trim().toUpperCase();if(code.length!==6){log('6자리 방 코드를 입력하세요.','err');return}
+  if(ws)try{ws.close()}catch(_){}
+  session=localStorage.getItem('td-do-poc-session-'+code)||session;
+  const proto=location.protocol==='https:'?'wss:':'ws:';
+  const u=new URL(`${proto}//${location.host}/ws/${code}`);
+  u.searchParams.set('nickname',$('nickname').value.trim()||'PLAYER');u.searchParams.set('classId',$('classId').value);if(session)u.searchParams.set('session',session);
+  $('connection').textContent='연결 중…';ws=new WebSocket(u);
+  ws.onopen=()=>{history.replaceState(null,'',roomUrl(code));$('connection').textContent='WebSocket 연결됨';log('WebSocket 연결 성공','ok')};
+  ws.onmessage=e=>{
+    const d=JSON.parse(e.data);
+    if(d.type==='welcome'){
+      session=d.session;slot=d.slot;state=d.state;localStorage.setItem('td-do-poc-session-'+code,session);log(`P${slot} 세션 연결`,'ok');render();return
+    }
+    if(d.type==='state'){state=d.state;render();return}
+    if(d.type==='event'){log(`EVENT ${d.event.kind}${d.event.damage?` · P${d.event.slot} -${d.event.damage} · HP ${d.event.hp}`:''}`,'warn');return}
+    if(d.type==='error')log(`SERVER ERROR: ${d.error}`,'err');
+  };
+  ws.onclose=e=>{$('connection').textContent=`연결 종료 (${e.code})`;log(`WebSocket 종료 ${e.code}`,'err');render()};
+  ws.onerror=()=>log('WebSocket 오류','err');
+}
+function send(payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
+
+$('create').onclick=()=>createRoom().catch(e=>log(e.message,'err'));
+$('connect').onclick=connect;
+$('copy').onclick=async()=>{const code=(state?.code||$('joinCode').value).toUpperCase();if(!code)return;await navigator.clipboard?.writeText(roomUrl(code));log('초대 링크 복사','ok')};
+$('ready').onclick=()=>{const me=state?.participants?.find(p=>p.slot===slot);send({type:'ready',ready:!me?.ready})};
+$('start').onclick=()=>send({type:'start'});
+$('attack').onclick=()=>send({type:'attack',seq:++attackSeq});
+render();
+</script>
+</body>
+</html>
