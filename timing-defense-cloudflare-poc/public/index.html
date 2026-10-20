@@ -82,7 +82,7 @@ async function createRoom(){
   saveIdentity();
   const r=await fetch('/api/room/create',{method:'POST'}),d=await r.json();
   if(!r.ok)throw Error(d.error||`HTTP ${r.status}`);
-  history.replaceState(null,'',roomUrl(d.code));$('joinCode').value=d.code;$('roomCode').textContent=d.code;session=null;
+  history.replaceState(null,'',roomUrl(d.code));$('joinCode').value=d.code;$('roomCode').textContent=d.code;session=null;attackSeq=0;
   log(`방 ${d.code} 생성`,'ok');connect();
 }
 function connect(){
@@ -98,7 +98,7 @@ function connect(){
   ws.onmessage=e=>{
     const d=JSON.parse(e.data);
     if(d.type==='welcome'){
-      session=d.session;slot=d.slot;state=d.state;localStorage.setItem('td-do-poc-session-'+code,session);log(`P${slot} 세션 연결`,'ok');render();return
+      session=d.session;slot=d.slot;attackSeq=Number(d.lastSeq||0);state=d.state;localStorage.setItem('td-do-poc-session-'+code,session);log(`P${slot} 세션 연결 · seq ${attackSeq}`,'ok');render();return
     }
     if(d.type==='state'){state=d.state;render();return}
     if(d.type==='event'){log(`EVENT ${d.event.kind}${d.event.damage?` · P${d.event.slot} -${d.event.damage} · HP ${d.event.hp}`:''}`,'warn');return}
