@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.24**
-- Public URL: `https://timing-defense-v011.onrender.com/v024.html`
-- Live source HEAD: `61ad74d833148d409dc65292f302bb9086c4e7c9`
-- Render deploy: `dep-dbbg528m7kps73esejbg` / LIVE
+- Current public LIVE prototype: **v0.25**
+- Public URL: `https://timing-defense-v011.onrender.com/v025.html`
+- Live source HEAD: `fce42eb1261ff43277c27d844617b96a546d6d1a`
+- Render deploy: `dep-dbbga8c9v7es73f567b0` / LIVE
 
 ## Core playable scope
 - Landscape timing-action side defense.
@@ -29,7 +29,7 @@ Updated: 2026-10-20 KST
 - Boss dagger scalar = `0.70`.
 - Boss knockback scalar = `0.40`.
 - EXP remains tied to valid timing events; passive attacks grant no EXP.
-- Simulation never self-authorizes a numerical rebalance.
+- Simulation never self-authorizes numerical rebalance.
 
 Mastery reference:
 - Average = N25 / G55 / P20.
@@ -51,19 +51,20 @@ Mastery reference:
 ## Stage start
 `STAGE N / READY → fade → START! + combat`
 
-## Passive A/B — not production-frozen
+## Experimental values — not production-frozen
+Passive:
 - `40 raw / 2.0 s`
 - no EXP / charge / crit / skill / combo
 - knockback suppressed
 - ordinary non-boss HP +10%
 
-## PERFECT combo A/B
-- PERFECT-only unbounded streak.
-- GOOD/NORMAL/MISS reset.
-- Heavy X/Y count separately.
-- No hidden high-combo timing penalty.
-- Persistent bonus candidate: 5–9 +5%, 10–19 +8%, 20–29 +12%, 30+ +15% cap.
-- Milestone raw-equivalent budgets: 60 / 90 / 150 / 210 cap.
+PERFECT combo:
+- PERFECT-only unbounded streak
+- GOOD/NORMAL/MISS reset
+- Heavy X/Y count separately
+- no hidden high-combo timing penalty
+- persistent candidate 5/8/12/15%
+- milestone raw-equivalent budgets 60 / 90 / 150 / 210 cap
 
 ---
 
@@ -78,70 +79,77 @@ Mastery reference:
 - Debug stats/hint hidden.
 
 ## v0.22
-- Nickname.
-- Five-class horizontal carousel.
+- Nickname + five-class carousel.
 - Mechanic-specific skill icons.
 - Button-based SOLO/TEAM/AI/Tier settings.
 - Solo + selected AI starts immediately.
 - FRIEND/LINK/RANDOM visible but not network-connected.
 
 ## v0.23
-See `V023_LOBBY_POLISH_REPORT.md`.
-- Character selection reorganized into left info / center hero / right skill detail.
+- Character selection reorganized as left info / center hero / right skill detail.
 - Every valid local timing EXP event arms `+EXP N`.
 - TEAM reserves at least one human slot; TEAM AI FILL max +2.
-- Result-board row spacing and nickname improved.
-- Battle debug attack label hidden.
+- Result-board row spacing/nickname improved.
+- Battle attack debug line hidden.
+
+## v0.24
+See `V024_RADAR_READABILITY_REPORT.md` and `CHARACTER_PROFILE_RADAR_V1.md`.
+- Added animated five-level six-axis class radar.
+- Radar axes frozen: `공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역`.
+- Approved profiles:
+  - Knight `4/2/3/3/4/2`
+  - Rogue `2/5/5/1/1/1`
+  - Tank `2/1/1/5/1/3`
+  - Archer `3/2/4/1/5/2`
+  - Mage `4/2/2/1/1/5`
+- Right skill layout changed to `3 × 2` direct cards.
+- TEAM lineup SUMMARY removed; class choices wrap to two rows.
+- Rogue HUD changed to charcoal/black + silver.
+- Projectile visibility increased with darker silhouettes/brighter edges/trails; travel timing unchanged.
 
 ---
 
-# v0.24 — current radar / readability polish
-See `V024_RADAR_READABILITY_REPORT.md` and `CHARACTER_PROFILE_RADAR_V1.md`.
+# v0.25 — current character-select vertical/layout polish
+See `V025_LAYOUT_POLISH_REPORT.md`.
 
-## Character profile radar
-Six fixed axes:
-`공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역`.
+Android screen recording showed that the v0.24 top brand/nickname area still consumed too much real-device vertical space. v0.25 fixes the layout rather than merely scaling the hero.
 
-Five visual levels; equal levels between classes are allowed.
-Approved profiles:
-- Knight `4 / 2 / 3 / 3 / 4 / 2`
-- Rogue `2 / 5 / 5 / 1 / 1 / 1`
-- Tank `2 / 1 / 1 / 5 / 1 / 3`
-- Archer `3 / 2 / 4 / 1 / 5 / 2`
-- Mage `4 / 2 / 2 / 1 / 1 / 5`
+## Vertical reclaim
+- Lobby top header reduced again.
+- Nickname row compressed and moved upward.
+- Footer reduced.
+- Recovered height is assigned directly to the character-selection panel.
+- Center hero maximum height increased again.
 
-Radar animation uses center-out scan, staggered vertex growth, class-color fill/glow and short settling pulse.
-The radar is an identity graphic, not a literal exposure of raw combat coefficients.
+## Left combat profile restored
+The radar remains, but the sparse v0.24 left panel now again contains richer class identity:
+- COMBAT PROFILE label,
+- Korean class name,
+- large English class name,
+- class tag,
+- animated radar,
+- role summary,
+- fuller one-sentence play-style description.
 
-## Character-selection layout
-- left = animated combat-profile radar,
-- center = larger/taller hero,
-- right = six skill cards in a `3 × 2` grid,
-- arrows moved closer to the hero,
-- short-landscape header/nickname/footer height reduced to give the hero more vertical space.
+Radar axis labels are significantly larger. The animation still uses center-out scan, staggered vertex growth, class-color fill/glow, landing nodes and a final ripple.
 
-## TEAM lineup
-- Bottom SUMMARY removed.
-- Lineup gets more width.
-- Five class choices wrap into two rows per AI unit.
-- AI row height increased to prevent class clipping.
-- TEAM AI FILL remains 0–2; SOLO AI remains 0–3.
+## Right skill area
+- Keeps six cards as `3 × 2`.
+- Uses the newly available height for slightly larger icons/text/spacing rather than returning to a single-row strip.
 
-## Rogue identity
-Rogue HUD is now charcoal/black + silver instead of v0.23 red/silver:
-- Timing Square,
-- charge pips,
-- charge/heavy text,
-- EXP gauge and labels,
-- `+EXP N` popup.
+## Non-goals
+- No combat coefficient changed.
+- Projectile travel timing unchanged.
+- Actual multiplayer networking still not implemented.
 
-No Rogue balance value changed.
+---
 
-## Projectile visibility
-Projectile travel times remain unchanged.
-A visual-only contrast pass adds darker class-color silhouettes, brighter edges and stronger short trails so projectiles remain recognizable over the brighter natural background.
+# Team / network truth boundary
+TEAM always reserves at least one human slot:
+- SOLO AI: 0–3
+- TEAM AI FILL: 0–2
 
-Do not numerically slow projectile travel unless device validation shows this visual pass is still insufficient; report/discuss before changing travel timing.
+FRIEND / LINK / RANDOM are still only front-end intent states. Do not claim remote connectivity until two independent clients share authoritative state.
 
 ---
 
@@ -153,8 +161,6 @@ Rows follow actual character slot order. Per-column rank colors remain gold/silv
 
 # Encounter framework retained
 Pressure families: S Swarm / E Elite-Heavy / X Special-Mixed.
-Tier identity uses varied 1/2/3-pattern distributions rather than all three every stage.
-
 Current Swarm candidate bursts:
 - line 2P/3P/4P = 8 / 11 / 14
 - cluster = 7 / 10 / 13
@@ -168,17 +174,17 @@ P95 four-second spawn-density reference:
 ---
 
 # Current next boundary
-1. Device/browser validation of public v0.24.
-2. Verify radar labels and five rings fit on short Android landscape.
-3. Verify class-switch radar animation feels premium and never stacks stale frames.
-4. Verify center hero no longer collides with the right 3×2 skill panel.
-5. Verify all six skill descriptions remain readable.
-6. Verify TEAM lineup shows all five class choices without clipping.
-7. Verify Rogue HUD reads black/charcoal, not red.
-8. Verify projectiles are recognizable as objects rather than only blur streaks.
-9. If projectile visibility is still weak, discuss a small travel-time adjustment before applying it.
-10. After this visual validation, implement the deferred FRIEND/LINK/RANDOM waiting-room UX as the next version.
-11. Actual network transport remains a separate later boundary.
+1. Device/browser validation of public v0.25 on the same Android landscape setup.
+2. Verify top whitespace is materially reduced.
+3. Verify selection panel is visibly taller, not merely scaled internally.
+4. Verify radar labels are readable without squinting.
+5. Verify restored class description has enough presence without crowding the radar.
+6. Verify center hero and 3×2 skill panel do not overlap.
+7. Recheck TEAM lineup class buttons for clipping.
+8. Recheck Rogue black/silver HUD and projectile visibility during combat.
+9. Fix visual defects only from that validation.
+10. Then implement deferred FRIEND/LINK/RANDOM waiting-room UX.
+11. Actual room/network transport remains a separate later boundary.
 12. Continue full-run progression simulation before freezing passive/combo/HP coefficients.
 
 ## Still unresolved / not production-frozen
