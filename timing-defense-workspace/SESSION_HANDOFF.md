@@ -6,13 +6,13 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.32**
-- Public URL: `https://timing-defense-v011.onrender.com/v032.html`
-- Live source HEAD: `16b602221caf1d19c062e17363ac786d2bd20d18`
-- Static Render deploy: `dep-dbbivgjrjlhs73ee5bm0` / LIVE
+- Current public LIVE prototype: **v0.33**
+- Public URL: `https://timing-defense-v011.onrender.com/v033.html`
+- Live source HEAD: `dfb369ed6aaeb8c2768f50e5a2995a7223ac921d`
+- Static Render deploy: `dep-dbbkbpks728c738o5feg` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service ID: `srv-dbbimre1egvs73861d80`
-- Backend deploy: `dep-dbbims61egvs73861f10` / LIVE
+- Backend deploy: `dep-dbbkbno473hc73cldb30` / LIVE
 
 Workspace remains canonical for design decisions, simulation interpretation, and new-session recovery.
 
@@ -40,7 +40,7 @@ Experimental values remain not production-frozen:
 
 # Core combat state
 - Rhythm `X → X → X → X+Y`.
-- Skills implemented through Lv21; Lv26/Lv31 planned.
+- Local/solo skills implemented through Lv21; Lv26/Lv31 planned.
 - New timing turn starts only with a visible target.
 - Empty-target turns do not grant EXP.
 - Already-started valid turns survive target disappearance.
@@ -53,125 +53,148 @@ Experimental values remain not production-frozen:
 
 # Approved class radar
 Axes: `공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역`
-
 Values:
 - Knight `4/2/3/3/4/2`
 - Rogue `2/5/5/1/1/1`
 - Tank `2/1/1/5/1/3`
 - Archer `3/2/4/1/5/2`
 - Mage `4/2/2/1/1/5`
-
-Five visual levels. Equal levels allowed. Radar is presentation data, not literal raw-stat output.
+Five visual levels; equal levels allowed; presentation data only.
 
 ---
 
 # Stable UI/runtime foundation
-- v0.26 provides the stable lobby/combat HUD foundation.
-- v0.27 desired UX: one-line skill headers, radar aspect fix, Android swipe, result class badges, TEAM waiting UI.
-- v0.27 contained a self-retriggering skill-level MutationObserver regression.
-- v0.30 blocks only that defective observer and restores stable device rendering.
-- v0.28/v0.29 viewport-forcing experiments are superseded and not loaded.
-- Device validation after v0.30 confirmed portrait gate, full-width landscape lobby, and full-width combat.
+- v0.26 stable lobby/combat HUD foundation.
+- v0.27 desired UX: one-line skill headers, radar aspect fix, Android swipe, result badges, TEAM waiting UI.
+- v0.27 observer regression is blocked by v0.30 safety layer.
+- v0.28/v0.29 viewport forcing is superseded and not loaded.
+- Samsung Browser device validation confirmed portrait gate, full-width landscape lobby/combat.
+- v0.32 fixes FRIEND/LINK lower-content clipping without changing network semantics.
 
 Read:
+- `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
 - `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
 - `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
 - `V026_HUD_LAYOUT_REPORT.md`
 
 ---
 
-# Current implementation — v0.32 multiplayer waiting-room foundation + layout hotfix
-Read in order:
-1. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
-2. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+# Multiplayer foundation verified before v0.33
+v0.31/v0.32 real shared waiting-room behavior was tested with two independent clients.
 
-## Client
-Files:
-- `timing-defense-v011/v031-network.js`
-- `timing-defense-v011/v032-waiting-layout.js`
-- `timing-defense-v011/v032.html`
+Verified by user:
+- same room participant appears remotely,
+- class/nickname/slot shared,
+- READY state shared both ways,
+- START enables only when all humans READY,
+- host presses START,
+- both clients receive RUN STARTING / shared server start gate.
 
-v0.31 upgraded the TEAM waiting room from local-only presentation to a real server-backed room state. v0.32 fixes FRIEND/LINK left-panel clipping on short Android landscape viewports without changing networking semantics.
+This closes the waiting-room START-gate milestone.
 
-## Server
-Files:
+---
+
+# Current implementation — v0.33 authoritative Stage 1 combat slice
+Read `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md` first.
+
+## Client files
+- `timing-defense-v011/v033-combat-sync.js`
+- `timing-defense-v011/v033.html`
+
+## Server file
 - `timing-defense-server/server.js`
-- `timing-defense-server/package.json`
 
-Render service:
-- `timing-defense-mp`
-- Singapore
-- public backend URL: `https://timing-defense-mp.onrender.com`
+## Server now creates a run at START
+Authoritative run state includes:
+- run id / seed,
+- server `startAt`,
+- Stage 1 intro/combat phase,
+- Stage 1 GRUNT spawn state,
+- enemy ids / normalized position / HP,
+- base HP,
+- per-human level / EXP / charge / combo / kills / coin / damage,
+- passive attacks,
+- AI FILL attacks,
+- ordered combat events,
+- Stage 1 clear / game-over.
 
-Transport/design:
-- authoritative HTTP POST mutations,
-- SSE room-state stream,
-- heartbeat/session expiry,
-- in-memory room/ticket state for prototype phase,
-- no external runtime dependency.
+Simulation cadence:
+- 50 ms server tick,
+- approximately 100 ms shared snapshots while run is starting/running.
 
-## Real shared state implemented
-- room code,
-- FRIEND/LINK room create/join,
-- invite URL with `?room=<CODE>`,
-- participant slots,
-- nickname/class,
-- host ownership,
-- READY state,
-- TEAM AI FILL state,
-- leave/host reassignment,
-- RANDOM matchmaking queue,
-- server-authoritative future `startAt` gate.
+## Authority split
+Client:
+- owns local Timing Square interaction,
+- captures X/Y NORMAL/GOOD/PERFECT judgments,
+- sends monotonic action sequence.
 
-START policy:
-- at least two human participants,
-- every human READY,
-- only server-recognized host may START,
-- server publishes one future `startAt` to all clients.
+Server:
+- validates action sequence,
+- decides normal vs charged heavy from server charge,
+- derives final tier,
+- applies current combo multiplier candidate,
+- selects target,
+- resolves damage / knockback / kill,
+- resolves coin / EXP / level / charge,
+- owns enemy/base world state.
 
-## v0.32 presentation fix
-- invite URL is one-line with ellipsis,
-- READY / INVITE / COPY LINK remain visible,
-- local card/status spacing is compacted,
-- extra compact rules apply on short landscape height,
-- RANDOM flow is unchanged.
+## Client runtime behavior
+At shared START:
+- schedules actual run transition from server `startAt`,
+- hides waiting/lobby UI,
+- starts existing Stage 1 intro,
+- disables local enemy spawn authority,
+- disables local AI attack authority,
+- disables local passive damage authority,
+- reconciles server snapshots into the existing combat renderer,
+- sends completed local timing attacks to server,
+- shows other humans/AI in the party area.
 
-## Truth boundary
-**Actual shared combat is not yet implemented.**
-
+## v0.33 truth boundary
 Safe claim:
-- real authoritative shared room exists,
-- two clients can share participant/READY state,
-- START gate is authoritative and synchronized.
+- real room/READY/START,
+- real shared Stage 1 start,
+- server-owned Stage 1 monsters/base HP,
+- server-resolved local timing attacks,
+- shared passive/AI Stage 1 consequences,
+- shared Stage 1 clear/game-over.
 
-Do not claim full multiplayer gameplay until actual run/combat state is synchronized.
+Do NOT yet claim:
+- synchronized Stage 2–10,
+- multiplayer shop/economy,
+- full multiplayer Lv6+ skill behavior,
+- reconnect/rejoin recovery,
+- durable room persistence,
+- complete remote projectile/VFX fidelity,
+- production anti-cheat.
 
 ---
 
 # Exact next work boundary
-1. On the same Samsung Browser device, verify FRIEND/LINK v0.32 no longer clip lower content.
-2. Two independent clients/device sessions test room create/join.
-3. Verify participant/class/READY changes propagate without reload.
-4. Verify host-only START and common `startAt`.
-5. Verify leave and host reassignment.
-6. Verify RANDOM matching with two searches.
-7. Fix only reproducible room/session/UI defects.
-8. Then implement authoritative run snapshot and synchronized run start.
-9. Synchronize Attack Round/timing-result events.
-10. Synchronize enemies, wall, coin, EXP/level and stage transitions.
-11. Add disconnect/reconnect snapshot recovery and desync reconciliation.
-12. Add multiplayer shop/economy authority.
-13. After networking stabilizes, implement Lv26/Lv31 and rerun Solo/2P/3P/4P balance simulations.
+1. Two independent clients test v0.33 START -> actual Stage 1.
+2. Confirm both see same enemy count/HP trend.
+3. A attacks -> B sees same HP reduction; B attacks -> A sees same HP reduction.
+4. Confirm BASE HP remains identical.
+5. Confirm EXP/LV/charge are reconciled from server.
+6. Confirm passive/AI damage is not duplicated locally.
+7. Confirm Stage 1 clear/game-over occurs on both clients.
+8. Fix only reproducible Stage 1 sync defects.
+9. Implement reconnect snapshot recovery.
+10. Extend authority through Stage 2 + shop, then through Stage 10.
+11. Integrate Lv6/Lv11/Lv16/Lv21 multiplayer skill authority.
+12. After network stabilization, implement Lv26/Lv31 and rerun Solo/2P/3P/4P balance simulations.
 
 ## Still unresolved
-- durable/persistent multiplayer room store,
-- horizontal scaling strategy,
 - reconnect grace/session recovery contract,
+- Stage 2–10 multiplayer state,
+- durable/persistent room/run store,
+- horizontal scaling strategy,
 - invite-link security/token policy,
-- combat-event authority/reconciliation,
 - multiplayer shop/economy ownership,
 - duplicate-class policy,
-- DUO/TRIPLE/FULL combat synchronization,
+- DUO/TRIPLE/FULL reconciliation,
+- complete remote projectile/VFX fidelity,
+- multiplayer Lv6+ skill authority,
 - Lv26/Lv31 coefficients,
 - final passive/HP/combo coefficients,
 - final E/X/tier values,
@@ -182,17 +205,18 @@ Do not claim full multiplayer gameplay until actual run/combat state is synchron
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
-4. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
-5. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
-6. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
-7. `V026_HUD_LAYOUT_REPORT.md`
-8. `CHARACTER_PROFILE_RADAR_V1.md`
-9. `DESIGN_DECISIONS.md`
-10. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-12. `SKILL_PLAN_LV6_31.md`
-13. `TIER_PRESSURE_GRAMMAR_V1.md`
-14. `PRESSURE_RECIPES_V1.md`
-15. `SIMULATION_METHOD.md`
-16. `NEXT_WORK.md`
+3. `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`
+4. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
+5. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+6. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
+7. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
+8. `V026_HUD_LAYOUT_REPORT.md`
+9. `CHARACTER_PROFILE_RADAR_V1.md`
+10. `DESIGN_DECISIONS.md`
+11. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+12. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+13. `SKILL_PLAN_LV6_31.md`
+14. `TIER_PRESSURE_GRAMMAR_V1.md`
+15. `PRESSURE_RECIPES_V1.md`
+16. `SIMULATION_METHOD.md`
+17. `NEXT_WORK.md`
