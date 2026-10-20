@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Public repository: `hotmoral/-`
 - Planning / balance / handoff branch: `timing-defense-workspace`
 - Live source branch: `timing-defense-live-v011`
-- Current public LIVE prototype: **v0.18**
-- Public URL: `https://timing-defense-v011.onrender.com/v018.html`
-- Live source HEAD: `bacc0b86e356e003bdf697187ff6ea313130fc73`
-- Render deploy: `dep-dbbcntjbc2fs73anb9rg` / LIVE
+- Current public LIVE prototype: **v0.19**
+- Public URL: `https://timing-defense-v011.onrender.com/v019.html`
+- Live source HEAD: `0e51e172dc1ea11a78e67eb62c557d9ac4c373bc`
+- Render deploy: `dep-dbbd6duq1p3s73c659cg` / LIVE
 
 Workspace is canonical for design decisions, simulation interpretation, and new-session recovery. Live branch remains separate.
 
@@ -38,130 +38,156 @@ Balance governance:
 
 ---
 
-# Current playable implementation — v0.18
+# Current playable implementation — v0.19
 
-v0.18 layers on the v0.17 AI/UX changes and v0.16 Lv6–21 skill block.
+v0.19 keeps the v0.18 passive/combo A/B values unchanged and adds targeting integrity + presentation/results UX.
 
 ## Foundation retained
-- Lv6 / 11 / 16 / 21 skills implemented for all five classes.
+- Lv6 / 11 / 16 / 21 skills for all five classes.
 - Six-slot skill strip reserves Lv26 / Lv31.
 - Archer locked-line collision.
-- Tank shield and wall mitigation.
+- Tank shield/wall mitigation.
 - Mage center-excluding Resonance.
 - AI internal EXP/level/skill growth; no visible AI Timing Squares.
-- Timing Square remains visible at ~42% opacity during projectile/recovery.
-- Four-player spacing widened to approx `.285/.405/.525/.645`.
-
-## PERFECT combo
-- Visible from **1 COMBO** near Timing Square.
-- Only PERFECT increments.
-- GOOD / NORMAL / MISS reset.
-- Heavy X/Y are separate combo judgments.
-- Counter unbounded: 20 / 30 / 40 / 50+.
-- Milestones never consume/reset streak.
-- No hidden timing-window shrink or sweep acceleration.
-- Visual tiers: 1–4 / 5–9 / 10–19 / 20–29 / 30+.
-- 30+ visual intensity may plateau while number continues indefinitely.
-
-### Experimental persistent bonus
-- 5–9: +5%
-- 10–19: +8%
-- 20–29: +12%
-- 30+: +15% cap
-
-### Experimental milestone follow-up
-Milestones:
-- 5,
-- 10,
-- 20,
-- 30,
-- every +10 thereafter.
-
-Raw-equivalent first-playable budgets:
-- 5 = 60
-- 10 = 90
-- 20 = 150
-- 30+ = 210 cap
-
-Class language:
-- Knight: extra blade/frontline break.
-- Rogue: dagger burst.
-- Tank: local shockwave follow-up.
-- Archer: extra straight-line shot.
-- Mage: compact secondary explosion.
+- Timing Square remains visible at reduced opacity during projectile/recovery.
 
 ## Passive basic attack — experimental
-- `40 raw / 2.0 s`.
-- local player only in current A/B implementation.
-- no EXP.
-- no charge.
-- no crit/proc crit.
-- no skill trigger.
-- no combo contribution.
+- local passive = `40 raw / 2.0 s`.
+- no EXP / charge / crit / skill proc / combo contribution.
 - knockback suppressed.
+- non-boss monsters +10% HP.
 
-## Enemy compensation — experimental
-- non-boss spawned monsters receive `+10% HP`.
-- bosses are not automatically given the same +10%.
-- compensation is intentionally below full passive-DPS equivalence so the system actually creates attention bandwidth.
+## PERFECT combo — experimental power, frozen semantics
+- only PERFECT increments.
+- GOOD / NORMAL / MISS reset.
+- heavy X/Y count separately.
+- counter unbounded.
+- no hidden high-combo timing penalty.
+
+Persistent bonus:
+- 5–9 +5%
+- 10–19 +8%
+- 20–29 +12%
+- 30+ +15% cap
+
+Milestone follow-ups:
+- 5 / 10 / 20 / 30 / every +10 after 30.
+- raw-equivalent budgets 60 / 90 / 150 / 210 cap.
+
+## v0.19 visible-target rule
+Legacy targeting could select monsters still beyond the right edge because they had already spawned.
+
+v0.19:
+- nearest-target selection ignores enemies until their aim point enters the viewport,
+- damage, pierce and AoE spill to not-yet-visible enemies are rejected,
+- therefore unseen kills cannot award kill coin,
+- an input may still fire an empty attack if no visible target exists.
+
+This is a gameplay-integrity correction, not a numerical balance change.
+
+## v0.19 character spacing
+Slot Y candidate:
+`.255 / .405 / .555 / .705`
+
+Character scale remains `.41`.
+The temporary prototype mode controls are not treated as production layout constraints.
+
+## v0.19 combo presentation
+The old persistent rectangular combo display is not used in v0.19.
+
+Instead:
+- every PERFECT produces a short popup near the Timing Square,
+- visible from `1 COMBO!`,
+- slightly tilted and scaled/punched in,
+- fades after roughly 460 ms,
+- no combo box remains between hits,
+- 5 / 10 / 20 / 30+ increase visual emphasis,
+- numeric streak remains unbounded above 30.
+
+## v0.19 end-run team contribution board
+On clear/game-over, rows follow character order:
+1. YOU
+2. CPU 1
+3. CPU 2
+4. CPU 3
+
+Columns:
+- KILLS
+- DMG
+- COIN (kill-reward contribution)
+- LV
+- MAX COMBO
+
+Every metric receives explicit 1..N ranking.
+- 1st gold
+- 2nd silver
+- 3rd bronze
+- 4th muted blue-gray
+
+The board tracks per-slot damage/kills/kill-coin and AI internal PERFECT/max-streak data. Local max combo comes from the actual timing-combo state.
 
 Files:
-- `timing-defense-v011/v018-combo-ui.js`
-- `timing-defense-v011/v018-auto-combo.js`
-- `timing-defense-v011/v018.html`
+- `timing-defense-v011/v019-combo-pop.js`
+- `timing-defense-v011/v019-ux-results.js`
+- `timing-defense-v011/v019.html`
 
-See `V018_IMPLEMENTATION_REPORT.md`.
+See `V019_IMPLEMENTATION_REPORT.md`.
 
 ---
 
-# v8 simulation evidence behind v0.18 A/B
+# Device feedback that led to v0.19
 
+User played v0.18 on landscape Android and reported:
+- game feel clearly improved,
+- visible combo count creates useful tension,
+- passive fire gives some time to inspect the battlefield,
+- persistent combo HUD was too static/box-like,
+- party still felt too tightly packed,
+- attacks seemed to hit enemies outside the visible screen,
+- Stage 10 clear presentation was promising and should expand into per-player contribution rankings.
+
+This feedback authorized UX/integrity implementation, not numerical retuning.
+
+---
+
+# Simulation status
+
+## v7 — exact v0.16 formula rerun
+- Lv21 3P Average/Skilled clear = 81.6 / 96.4%.
+- Lv21 4P = 52.8 / 73.6%.
+- Rogue remains best durable-normal killer.
+- Archer wins line geometry; no numerical class rebalance authorized.
+
+## v8 — passive / combo calibration
 See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
-## High-combo rarity (~150 judgments)
+High-combo rarity around 150 judgments:
 - Skilled P40: 5 ~61%, 10 ~0.87%, 20 ~0.
 - Expert P65: 10 ~50.6%, 20 ~0.83%, 30 ~0.014%.
 - Master-test P80: 20 ~27.8%, 30 ~3.23%, 40 ~0.30%.
 
-These are independent-probability upper bounds; real psychological pressure may make high streaks rarer.
-
-## Combo reward average uplift
+Mean combo reward uplift:
 - Average ~0.01%
 - Skilled ~0.26%
 - Expert ~1.99%
 - Master-test P80 ~4.74%
 
-## Passive contribution
-40 / 2.0 s = 20 raw DPS, about:
-- 13.9% of Average no-skill timing DPS,
-- 10.8% of Skilled,
-- 8.8% of Expert.
+Forced battlefield-reading pause (2s every 12s):
+- 3P Average: `63.7 → 61.3 → 65.7%`
+- 3P Skilled: `76.7 → 72.7 → 75.9%`
+- 4P Average: `56.8 → 54.4 → 57.2%`
+- 4P Skilled: `63.0 → 60.8 → 64.2%`
 
-## Battlefield-reading test
-Forced timing pause = 2 s every 12 s.
-
-3P Average: `63.7 → 61.3 → 65.7%`
-3P Skilled: `76.7 → 72.7 → 75.9%`
-4P Average: `56.8 → 54.4 → 57.2%`
-4P Skilled: `63.0 → 60.8 → 64.2%`
-
-Sequence = current no pause → current with pause → candidate with same pause.
-
-Interpretation: passive fire recovers most of the attention cost of checking the battlefield while retaining timing as the dominant source of power.
-
-Passive-only stage sanity:
-- 3P = 0% clear,
-- 4P = 0%,
-- 2P ~12.2%, with ~357/2000 average surviving wall HP among those rare clears.
+Sequence = current no pause → current with pause → passive40/2s + HP10% with same pause.
 
 ---
 
 # Encounter framework remains accepted
 
 Pressure families:
-- S = Swarm,
-- E = Elite/Heavy,
-- X = Special/Mixed.
+- S = Swarm
+- E = Elite/Heavy
+- X = Special/Mixed
 
 Rules:
 - X is primary co-op scaling language.
@@ -171,28 +197,29 @@ Rules:
 - tier identity comes from frequency, ratio, timing, geometry, intensity and overlap.
 
 Current candidate Swarm bursts:
-- line 2P/3P/4P = 8 / 11 / 14,
-- cluster = 7 / 10 / 13,
-- scatter = 9 / 12 / 16.
+- line 2P/3P/4P = 8 / 11 / 14
+- cluster = 7 / 10 / 13
+- scatter = 9 / 12 / 16
 
 ---
 
 # Exact next work boundary
 
-1. Human/device/browser check public v0.18.
-2. Verify combo counter placement relative to charge, EXP and skill strip.
-3. Verify 1 COMBO appears immediately; X/Y and reset semantics are exact.
-4. Verify passive projectile cadence/visual weakness and no EXP/charge/combo side effects.
-5. Verify 5/10/20 milestone attacks are class-distinct and readable.
-6. Verify non-boss +10% HP does not make ordinary enemies feel sponge-like.
-7. Run full-run progression simulation with wall HP carried stage-to-stage before production-freezing passive/HP values.
-8. Report/discuss before revising experimental coefficients.
+1. Human/device/browser check public v0.19.
+2. Confirm unseen enemies receive no damage/kill reward.
+3. Check widened party spacing/full-body readability.
+4. Check transient combo popup position, tilt, scale, fade and overlap.
+5. Check result-board density/ranking on landscape Android.
+6. Decide whether KILLS / DMG / COIN / LV / MAX COMBO is the right first metric set.
+7. Fix implementation/visual defects only.
+8. Continue full-run progression simulation before production-freezing passive/HP/combo numbers.
 
 ## Still unresolved / not production-frozen
 - final passive attack damage/interval,
 - final ordinary/elite/boss HP compensation,
 - final persistent combo bonus coefficients,
 - final milestone proc coefficients/visuals,
+- final result-board metric/presentation set,
 - final E HP/armor package,
 - final X hardened values,
 - final stage duration,
@@ -208,13 +235,14 @@ Current candidate Swarm bursts:
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V018_IMPLEMENTATION_REPORT.md`
-4. `DESIGN_DECISIONS.md`
-5. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-6. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-7. `V016_IMPLEMENTATION_REPORT.md`
-8. `SKILL_PLAN_LV6_31.md`
-9. `TIER_PRESSURE_GRAMMAR_V1.md`
-10. `PRESSURE_RECIPES_V1.md`
-11. `SIMULATION_METHOD.md`
-12. `NEXT_WORK.md`
+3. `V019_IMPLEMENTATION_REPORT.md`
+4. `V018_IMPLEMENTATION_REPORT.md`
+5. `DESIGN_DECISIONS.md`
+6. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+7. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+8. `V016_IMPLEMENTATION_REPORT.md`
+9. `SKILL_PLAN_LV6_31.md`
+10. `TIER_PRESSURE_GRAMMAR_V1.md`
+11. `PRESSURE_RECIPES_V1.md`
+12. `SIMULATION_METHOD.md`
+13. `NEXT_WORK.md`
