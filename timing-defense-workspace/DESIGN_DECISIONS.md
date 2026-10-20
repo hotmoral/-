@@ -2,347 +2,217 @@
 
 ## Core combat
 - Primary input is timing, not free movement.
-- One-square rhythm: `X → X → X → X+Y`.
-- Fourth attack is charged/heavy and must feel substantially stronger.
+- Rhythm: `X → X → X → X+Y`.
+- Fourth attack is charged/heavy.
 - P×P on heavy = CRITICAL.
-- Tap-anywhere remains the intended combat control model.
+- Tap-anywhere remains intended combat control.
 
-## Target visibility / turn-boundary integrity
-- A monster may be targeted/damaged only after its aim point enters the visible viewport.
-- Spawning beyond the right edge does not make an enemy targetable.
-- Local, AI, passive, pierce and AoE damage obey the same visibility rule.
-- Unseen/off-screen kills must not award rewards.
-- Attack input must not force-spawn an invisible target.
-
-### Timing-turn gating
-- A **new** Timing Square turn starts only while a valid visible enemy exists.
-- If no visible target exists at the next-turn boundary, the square pauses and does not sweep.
-- Passive and AI attacks wait too.
-- Empty timing turns must not generate EXP.
-
-### In-progress turn continuity
-Once a timing turn begins with a visible target, that entire timing turn is locked as valid.
-If the final visible target disappears due to AI/passive/team damage while the needle is moving:
-- do not cancel/snap-stop the current turn,
-- normal X remains tappable,
-- fourth-attack X may continue into Y,
-- the full X→Y sequence may finish,
-- that already-valid turn may resolve normal judgment/EXP,
-- only the following turn waits if no target is visible.
-
-Reason: cancelling mid-turn because a teammate killed the target looks like lag, dropped input or an unresponsive Timing Square.
-
-Target-wait does not break PERFECT combo. Stage-clear/shop/final-clear should wait for an already-valid local turn to finish or naturally time out.
-
----
+## Target visibility / turn integrity
+- Off-screen enemies cannot be targeted/damaged/rewarded.
+- New timing turn starts only with a visible target.
+- No visible target at next-turn boundary = Timing Square / AI / passive wait.
+- Empty turns cannot generate EXP.
+- A turn already started with a valid target is allowed to finish even if teammates remove the final enemy.
+- Heavy X→Y may complete fully.
+- Target-wait itself does not break PERFECT combo.
 
 ## Class roles
-Classes solve different combat problems rather than converging on identical DPS.
+- Knight: stable generalist / frontline / penetration.
+- Rogue: fast multihit / crit / durable-normal execution; no same-target dagger cap; boss dagger scalar `0.70`.
+- Tank: team-specialist / knockback / wall protection; solo parity not required; boss knockback scalar `0.40`.
+- Archer: strict straight-line penetration; no bending/homing/next-target chaining.
+- Mage: density/AoE specialist.
 
-### Knight
-Generalist / stable frontline / penetration / strong heavy.
+Do not normalize all classes to identical DPS/solo clear. Role-specific benchmarks govern interpretation.
 
-### Rogue
-Fast multihit / crit / high-HP normal execution.
-- No same-target dagger hit cap.
-- Boss dagger damage scalar starting value `0.70`.
-
-### Tank
-Knockback / wall protection / battlefield control.
-- Explicit team-specialist.
-- Fresh-run solo Stage-10 parity not required.
-- Future permanent/meta stats may make solo completion practical.
-- Boss knockback scalar starting value `0.40`.
-
-### Archer
-Straight-line penetration / rear-target access / long-range pressure.
-- Arrow continues only on its current launch trajectory.
-- Only hitboxes intersecting that line may be penetrated.
-- No homing, bending or automatic next-target chaining.
-
-### Mage
-Area damage / dense-pack deletion / chained explosions.
-Should become stronger with density, not become top single-target boss DPS.
-
-## Balance philosophy
-Do not normalize all classes to equal DPS or equal solo clear.
-Evaluate by role:
-- Rogue: durable-normal TTK.
-- Archer: line-pack clear/rear pressure.
-- Mage: dense-cluster clear.
-- Tank: wall preservation/control/team utility.
-- Knight: general-purpose consistency.
-
-## Player mastery
-Simulation references:
+## Mastery / balance governance
 - Average = N25 / G55 / P20.
 - Skilled = N10 / G50 / P40 plus modestly faster commitment.
+- Skilled is intentionally attainable.
+- Simulation is diagnostic, not self-authorizing.
+- Required order: `simulate/measure → classify cause → report → discuss → explicit decision → numerical patch`.
 
-Skilled is considered attainable. Strong Average→Skilled improvement is intended and does not self-authorize nerfs.
-
-## EXP philosophy
-- EXP remains tied to valid timing attack results/events.
-- Faster-killing classes are not compensated merely because they perform fewer attacks.
-- Passive auto-attacks do not grant EXP.
-- A turn that was valid when started may grant normal EXP even if the target disappears during that same turn.
-- No visible target = no new timing turn solely for EXP farming.
-
-## Balance-change governance
-Required order:
-`model/simulate → identify intent/artifact/defect → report → discuss → explicit decision → numerical live patch`
-
-A large measured gap never self-authorizes a balance change.
+## EXP
+- EXP is tied to valid timing events.
+- Passive attacks grant no EXP.
+- A valid already-started turn may still award EXP if its target disappears mid-turn.
+- Every valid local EXP event should visibly produce `+EXP N` beside the EXP gauge.
+- No separate lower-left EXP float.
 
 ---
 
-# Encounter-pressure philosophy
+# Passive attack — approved concept, coefficients not frozen
+Purpose: preserve battlefield-reading bandwidth while timing attacks remain mandatory.
 
-Pressure families:
-- `S` Swarm
-- `E` Elite/Heavy
-- `X` Special/Mixed
-
-`X` is the primary co-op scaling language. `S` and `E` are time-separated spike tools.
-
-## Stage grammar
-A stage may use one, two or all three pressure families. Do not force S+E+X into every stage.
-A 50-stage tier gets identity through:
-- 1/2/3-pattern proportions,
-- S/E/X frequency,
-- pair/triple ratios,
-- early/mid/late/final timing,
-- geometry,
-- duration/intensity,
-- overlap frequency.
-
-Higher tiers do not automatically mean more simultaneous pattern types; focused one-pattern stages may return at much higher intensity.
-
-Current concrete Swarm candidates:
-- S-line 2P/3P/4P = `8 / 11 / 14`
-- S-cluster = `7 / 10 / 13`
-- S-scatter = `9 / 12 / 16`
-
-Reference P95 four-second spawn density:
-- 2P ≈ 11
-- 3P ≈ 15
-- 4P ≈ 18
-
-X carries multiplayer scaling through role-bearing composition. E is an effective durability budget rather than one giant HP sponge.
-
----
-
-# Passive basic attack — approved concept, coefficients not frozen
-Purpose: let the player briefly inspect the battlefield without combat going completely idle while timing remains dominant.
-
-Rules:
-- only fires while a valid visible combat target exists,
-- no timing judgment,
-- no crit/proc crit,
-- no skill trigger,
-- no charge,
-- no PERFECT combo,
-- no EXP,
-- minimal/zero knockback.
-
-Leading A/B candidate:
+Current A/B:
 - `40 raw / 2.0 s`
+- no EXP / charge / crit / skill / combo
+- minimal/zero knockback
 - ordinary non-boss HP +10%
-- boss/elite compensation calibrated separately.
 
-Do not compensate passive damage 1:1; some real breathing room is intentional.
+Do not compensate passive damage 1:1; some genuine breathing room is intended.
 
 ---
 
 # Consecutive PERFECT combo
-
-## Counter
 - PERFECT only increments.
 - GOOD/NORMAL/MISS reset.
-- attacks 1–3 each can add +1.
-- heavy X and heavy Y each can add +1.
-- fully PERFECT 1→4 sequence = +5 combo.
-- count is unbounded: 20/30/40/50+.
-- milestones do not consume/reset the streak.
-- stage/shop/target-wait downtime does not break combo.
+- Attacks 1–3 each +1; heavy X and Y each +1.
+- Fully PERFECT 1→4 sequence = +5.
+- Count is unbounded.
+- Stage/shop/target-wait downtime does not break combo.
+- No hidden high-combo timing difficulty increase.
 
-## Psychological pressure
-High visible streaks should make the player nervous naturally.
-Do not secretly shrink timing windows, accelerate sweeps or apply hidden accuracy penalties at high combo.
+Presentation:
+- show from `1 COMBO!`,
+- transient tilted punch popup near Timing Square,
+- visual tiers 1–4 / 5–9 / 10–19 / 20–29 / 30+,
+- visual intensity may cap at 30+, number never caps.
 
-## Presentation
-- show from `1 COMBO!`.
-- near Timing Square.
-- transient, slightly tilted punch/scale pop on each PERFECT; no permanent rectangular box.
-- visual tiers 1–4 / 5–9 / 10–19 / 20–29 / 30+.
-- visual intensity may cap at 30+, numeric count never caps.
-
-## Mechanical A/B candidate
-Persistent bonus:
+Current A/B reward:
 - 5–9 +5%
 - 10–19 +8%
 - 20–29 +12%
 - 30+ +15% cap
-
-Milestone follow-up:
-- 5 small
-- 10 medium
-- 20 strong
-- 30 maximum
-- 40/50/60… repeat 30-tier power.
-
-Current raw-equivalent budgets: `60 / 90 / 150 / 210 cap`.
-
-Class reward language:
-- Knight: blade/frontline break.
-- Rogue: dagger burst.
-- Tank: shockwave/protection.
-- Archer: straight-line shot.
-- Mage: secondary explosion.
+- milestone raw-equivalent 60 / 90 / 150 / 210 cap, repeated every +10 after 30 at max tier.
 
 ---
 
 # Stage-start presentation
-Approved flow:
-`STAGE N / READY → fade out → combat begins + START!`
-
-While STAGE/READY is present:
-- no enemy progression,
-- no AI/passive attack,
-- no Timing Square sweep/input.
-
-Combo is preserved.
+`STAGE N / READY → fade → START! + combat`.
+While intro is active: no enemy progression, AI/passive attack or Timing Square input/sweep.
 
 ---
 
 # Combat UI hierarchy
-- Charge stack above Timing Square.
-- Learned skill icons below Timing Square.
-- EXP gauge immediately right of Timing Square.
-- EXP gain feedback beside gauge uses explicit `+EXP N`.
-- No separate lower-left EXP floating message.
-- Judgment result appears **inside Timing Square** as a very short impact-style pop.
-- Result tiers use different size/color/glow; PERFECT/CRITICAL are more emphatic than GOOD/NORMAL.
-- Pop must fade quickly enough not to obstruct the next sweep.
-- Timing Square renders above monsters.
-- Between attacks/waits, square remains visibly present/paused rather than disappearing.
-- Combo pop stays near the square at PERFECT moments.
-- Stage-start message is centered and prominent.
-- Debug/prototype stats should not consume battlefield visibility.
+- Charge above Timing Square.
+- Skill icons below.
+- EXP gauge immediately right.
+- `+EXP N` beside gauge on every valid gain.
+- Timing judgment appears briefly **inside** Timing Square with tier-specific color/size/glow.
+- Timing Square remains visible/paused between active turns.
+- Combo pop appears only on PERFECT moments.
+- Natural battlefield background replaces black grid.
+- Debug/prototype statistics should not consume battlefield visibility.
 
-## Battlefield background
-The black/grid prototype background is no longer the product direction.
-Use a restrained natural environment with enough tonal separation for:
-- monsters,
-- projectiles,
-- character silhouettes,
-- Timing Square.
-
-Natural scenery should be atmospheric rather than highly detailed/competitive with combat.
-
----
-
-# Team / character presentation
-- AI teammates do not render Timing Squares.
-- AI internally receives timing results, EXP, levels and automatic skills.
-- Four-character spacing must preserve full-body silhouettes and weapons.
-- Temporary prototype controls do not define the production battlefield layout.
-- Class color language:
-  - Knight gold/bright steel
-  - Rogue charcoal/silver/red accent
-  - Tank blue/dark steel
-  - Archer green
-  - Mage purple
+### Rogue contrast rule
+Rogue's charcoal/silver identity must remain readable over brighter natural scenery.
+Combat HUD may use a stronger red/silver accent for Timing Square/charge pips without changing Rogue combat values.
 
 ---
 
 # End-run contribution presentation
-Rows follow top-to-bottom character order.
-Current metrics:
+Rows follow top-to-bottom slot order.
+Metrics:
 - KILLS
 - DMG
-- COIN contribution
+- COIN
 - LV
 - MAX COMBO
 
-Every metric must expose ranking at a glance:
-- 1st gold
-- 2nd silver
-- 3rd bronze
-- 4th muted
-
-Do not force one global MVP; different roles should be socially legible through different category wins.
-The results panel should be visually centered in the viewport.
+Each metric exposes rank: gold / silver / bronze / muted.
+No forced global MVP.
+Result board is centered and must preserve clear row spacing.
+Local nickname may replace hard-coded `YOU`.
 
 ---
 
-# Pre-game lobby / entry flow — approved direction
+# Pre-game lobby / entry flow
+Production-direction flow:
+`nickname → character selection → play settings → run / team waiting → stage intro → combat`.
 
-Production-direction entry flow:
-`nickname → character selection → play settings → run / team waiting → stage intro → combat`
+Battle screen is not a configuration menu. In-combat class switch and prototype TEAM/SPEED/RESET controls remain hidden.
 
-The battle screen should not be used as a configuration menu. Old in-combat class-switch and TEAM/SPEED debug controls are removed from the production-facing flow.
+## Character selection layout — v0.23 direction
+Landscape uses three visual zones:
+- **left fixed info:** class identity / role / play-style,
+- **center:** only the character hero slides horizontally,
+- **right fixed info:** six skill icons + selected full skill detail.
 
-## Nickname
-- Player creates/enters a nickname before play.
-- Reuse locally where possible.
-- Later network identity rules can supersede local-only persistence.
+Navigation:
+- explicit left/right arrows,
+- horizontal swipe,
+- smooth class change.
 
-## Character selection
-Use a **horizontal card/carousel** presentation:
-- one class prominently shown at a time,
-- swipe left/right and explicit arrow controls,
-- smooth slide motion,
-- class role and play style visible,
-- weapon/clothing silhouette strongly differentiated even with geometric prototype art,
-- six-skill roadmap visible before selecting.
+The user should perceive the character as the moving object; surrounding information updates in place.
+
+## Character prototype art
+Geometric/vector construction is acceptable during prototype stage, but class silhouette, clothing, weapon and equipment details must differ enough that identity is not carried by color alone.
 
 ## Skill-icon semantic rule — frozen direction
-Skill icons must communicate the mechanic through **shape + color**, not merely class color or generic numbered glyphs.
+Icons must communicate mechanic by **shape + color**.
+- Double/multiple attacks visibly use multiple blades/daggers/arrows.
+- Penetration shows through-line/targets.
+- Shield/guard uses defensive silhouette.
+- Ground impact uses crack/impact language.
+- Chain explosion uses linked blast nodes.
+- Different skills in one class must not be generic recolors.
 
-Examples:
-- a double blade-wave mechanic should visibly contain two blade/slash forms,
-- triple shot should visibly contain three arrows,
-- penetrating shot should show a line passing through targets/plates,
-- shield skills should read as shield/guard,
-- ground impact should read as impact/crack,
-- chain explosion should read as connected blast nodes.
-
-Different skills in the same class should not all look like recolors of one symbol.
-This rule applies to both lobby roadmap icons and future final HUD assets.
+All six milestones `Lv6 / 11 / 16 / 21 / 26 / 31` should be visible in the roadmap. Selecting an icon exposes full skill name/level/description; core descriptions should not be ellipsized away.
 
 ## Play-setting interaction
-Dropdowns are not mandatory.
-For small fixed choice sets on mobile, prefer **visible buttons / segmented controls** when faster and easier to understand.
+For small fixed option sets, prefer visible buttons/segmented controls over dropdowns when faster on mobile.
 
-Current intended settings:
+Settings:
 - SOLO / TEAM
-- AI count 0–3 in either mode where applicable
+- AI count/fill
 - AI class
 - AI position P2/P3/P4
 - TEAM method FRIEND / LINK / RANDOM
-- TIER selection
+- Tier
 
 Defaults:
 - SOLO
-- AI NONE
-- highest unlocked/available tier
+- no AI
+- highest available tier (currently Tier1).
 
-Currently only Tier1 exists, so Tier1 is both default and highest.
+### TEAM slot rule — frozen direction
+TEAM must reserve at least one slot for another human participant.
+- SOLO may use AI 0–3.
+- TEAM uses `AI FILL` and may use at most AI 0–2.
+- TEAM +3 AI is invalid.
 
-## Team networking truth boundary
-FRIEND/LINK/RANDOM may be designed in the front-end before backend networking exists, but UI must not falsely imply a remote player joined.
+Human slots take conceptual priority over AI filler.
 
-Planned sequence:
-1. waiting-room/invite/link/random UX,
-2. actual room authority and network transport,
-3. real friend/link/random join flow,
-4. disconnect/rejoin/state reconciliation.
+### AI selector readability
+Avoid developer-only single-letter class controls when possible. Use a compact class glyph plus readable short label such as KNI/ROG/TNK/ARC/MAG.
 
-For AI-only/solo configurations, start immediately without waiting.
+## Networking truth boundary
+FRIEND/LINK/RANDOM may exist as front-end states before backend completion, but UI must not falsely report a remote player connection.
+
+Sequence:
+1. waiting-room UX,
+2. room authority/network transport,
+3. real invite/link/random join,
+4. reconnect/reconciliation.
+
+AI-only/SOLO starts immediately.
+
+---
+
+# Encounter pressure
+Pressure families:
+- S Swarm
+- E Elite/Heavy
+- X Special/Mixed
+
+Do not force all three into every stage. Tier identity comes from 1/2/3-pattern distribution, geometry, timing and intensity.
+
+Current Swarm candidate bursts:
+- line 2P/3P/4P = 8 / 11 / 14
+- cluster = 7 / 10 / 13
+- scatter = 9 / 12 / 16
+
+Reference P95 4-second spawn density:
+- 2P ≈ 11
+- 3P ≈ 15
+- 4P ≈ 18.
 
 ---
 
 # Current implementation mapping
-- v0.20: target turn-gating + stage READY.
-- v0.21: natural battlefield + inside-square judgment + EXP cleanup + START + centered results.
-- v0.22: nickname/class carousel/skill roadmap/button settings/AI lineup; real TEAM networking still pending.
+- v0.20: target turn-gating + READY.
+- v0.21: natural battlefield + judgment/EXP cleanup + START + centered results.
+- v0.22: nickname / class carousel / skill roadmap / button settings / AI lineup.
+- v0.23: three-zone character selection, full skill detail, Rogue HUD contrast, robust every-gain EXP pop, TEAM human-slot reservation, AI selector/result layout polish.
+- Next: v0.24 FRIEND/LINK/RANDOM waiting-room UX; actual networking remains separate.
