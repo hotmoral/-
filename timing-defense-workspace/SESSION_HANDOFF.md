@@ -6,10 +6,13 @@ Updated: 2026-10-20 KST
 - Public repository: `hotmoral/-`
 - Planning / balance / handoff branch: `timing-defense-workspace`
 - Live source branch: `timing-defense-live-v011`
-- Current public prototype: **v0.17**
-- Public URL: `https://timing-defense-v011.onrender.com/v017.html`
-- Current live source HEAD: `8f46b2460f0d16b6103e0f10bec0b5206aa93ae6`
+- Current public LIVE prototype: **v0.17**
+- Public LIVE URL: `https://timing-defense-v011.onrender.com/v017.html`
 - Current Render deploy: `dep-dbbc3emq1p3s73c29csg` / LIVE
+- New v0.18 source HEAD: `8c4314831dd1b1ff6c8fd56d3bbc234ec2c87ed6`
+- v0.18 loader: `timing-defense-v011/v018.html`
+
+At the latest Render check, no v0.18 deploy had been created yet. Do not claim v0.18 public-live until Render reports `8c431483...` or later.
 
 The workspace branch is canonical for design decisions, simulation interpretation and new-session recovery. The live branch remains separate.
 
@@ -26,6 +29,7 @@ The workspace branch is canonical for design decisions, simulation interpretatio
 - Boss knockback scalar = `0.40`.
 - EXP remains tied to timing attack results/events.
 - Faster clear does not receive compensating EXP merely for fewer attacks.
+- Passive basic attacks, if enabled, do not grant EXP.
 
 Player mastery reference:
 - Average = N25 / G55 / P20.
@@ -37,16 +41,14 @@ Balance governance:
 
 ---
 
-# Current playable implementation — v0.17
-
-v0.17 layers on top of the stable v0.16 Lv6–21 block.
+# Current public implementation — v0.17
 
 Files:
 - `timing-defense-v011/v017-ux-ai.js`
 - `timing-defense-v011/v017.html`
 
 ## AI teammate growth parity
-AI teammates now internally maintain:
+AI teammates internally maintain:
 - EXP,
 - level,
 - skill milestones Lv6/11/16/21,
@@ -55,7 +57,7 @@ AI teammates now internally maintain:
 
 No extra AI Timing Squares are rendered.
 
-AI timing currently uses an internal N/G/P profile approximately 28/54/18, with the heavy fourth attack resolved from two internal judgments rather than a separate arbitrary heavy-tier roll.
+AI timing currently uses an internal N/G/P profile approximately 28/54/18, with the heavy fourth attack resolved from two internal judgments.
 
 AI class behavior includes:
 - Knight Lv6/11/16/21 damage/penetration/knock behavior,
@@ -79,26 +81,33 @@ while character scale remains unchanged.
 
 Intent: improve full-body and weapon silhouette readability without making the party tiny.
 
-## Previous v0.16 foundation remains
-- Lv6/11/16/21 for all five classes,
-- six-slot skill strip,
-- exact locked-line Archer collision,
-- Tank shield,
-- Mage center-excluding Resonance,
-- class-specific Lv21 heavy transforms.
+---
 
-v0.16 remains available as rollback/reference:
-`https://timing-defense-v011.onrender.com/v016.html`
+# v0.18 source implementation — visible combo counter only
+
+Files:
+- `timing-defense-v011/v018-combo-ui.js`
+- `timing-defense-v011/v018.html`
+
+Implemented source behavior:
+- counter appears starting at **1 COMBO**,
+- only accepted PERFECT timing judgments increment,
+- heavy X and Y each increment separately when PERFECT,
+- GOOD / NORMAL / MISS reset to 0,
+- number is rendered near the Timing Square rather than at monster impact,
+- presentation escalates at 5 / 10 / 20 / 30,
+- 30+ visual intensity is capped but numeric combo continues without limit.
+
+This patch has **no combo damage rewards** and **no passive auto-attack** yet.
 
 ---
 
-# New approved combat directions after v0.17
+# New approved combat directions
 
 ## Passive/basic auto-attack
 Purpose: allow brief battlefield observation without letting the game play itself.
 
-Leading first experiment from v8:
-- 40 raw damage every ~2.0 s,
+Semantic rules:
 - no EXP,
 - no charge,
 - no crit/proc-crit,
@@ -106,35 +115,53 @@ Leading first experiment from v8:
 - no combo contribution,
 - minimal/zero knockback.
 
-Do not offset the passive damage 1:1 with enemy HP.
-Current leading ordinary-monster compensation candidate ≈ +8%, because it retains small real breathing room.
+Do not offset passive damage 1:1 with enemy HP. Some real breathing room is intentional.
 
-This is **not yet live-enabled or frozen**.
+After v8 combat and forced-observation simulation, leading A/B candidate:
+- `40 raw damage every 2.0 s`,
+- ordinary-monster HP compensation around `+10%`,
+- bosses/elites calibrated separately.
+
+This is not frozen production balance and is not live-enabled yet.
 
 ## Consecutive PERFECT combo
 Frozen semantics:
 - only PERFECT increments,
-- GOOD/NORMAL/MISS reset,
+- GOOD / NORMAL / MISS reset,
 - attacks 1–3 = one possible increment each,
 - heavy X + heavy Y = two possible increments,
 - fully PERFECT 1→4 sequence = +5 combo,
-- counter is **unbounded**: 20/30/40/50+,
-- milestones do not consume/reset combo,
-- stage/shop downtime does not itself break combo.
+- counter is **unbounded**: 20 / 30 / 40 / 50+,
+- milestones never consume/reset combo,
+- stage/shop downtime does not itself break combo unless later explicitly changed.
 
 Psychological-pressure principle:
 - the visible high streak and valuable reward should make the player nervous,
 - **do not secretly shrink timing windows or speed up the sweep** at high combo.
 
-Visual candidate:
-- 1–4 small HUD,
-- 5+ struck-monster combo number,
-- 10/20 stronger presentation,
-- 30+ maximum visual tier may plateau while numeric counter continues indefinitely.
+Counter presentation:
+- visible from 1 combo,
+- stays near the Timing Square,
+- 1–4 quiet,
+- 5–9 mild emphasis,
+- 10–19 larger pulse/glow,
+- 20–29 stronger frame/impact feedback,
+- 30+ presentation can plateau while number continues indefinitely.
 
-Mechanical reward coefficients remain unfrozen. Prefer milestone-triggered class-specific one-off rewards rather than an endlessly stacking permanent multiplier.
+Leading mechanical reward candidate after v8:
+- 5–9 timing damage +5%,
+- 10–19 +8%,
+- 20–29 +12%,
+- 30+ +15% cap,
+- class-specific follow-up at 5 / 10 / 20 / 30 and every +10 after 30,
+- 40 / 50 / 60 etc. repeat the 30-tier power rather than scaling forever.
 
-See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
+Class language:
+- Knight: extra blade/frontline break,
+- Rogue: dagger burst,
+- Tank: shockwave/protection,
+- Archer: extra straight-line shot,
+- Mage: secondary explosion.
 
 ---
 
@@ -151,42 +178,95 @@ Files:
 - `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
 - `combat_exact_v016.py`
 
-## v8 — auto-attack/combo diagnostic
-Auto 40 / 2.0 s contributes roughly:
-- 13.9% of Average timing DPS,
-- 10.8% of Skilled,
-- 8.8% of Expert.
+## v8 — passive attack / combo calibration
+File:
+- `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
 
-With +8% ordinary HP candidate, net baseline pace remains slightly easier:
-- Average +5.5%,
-- Skilled +2.6%,
-- Expert +0.7%.
+### High-combo rarity
+Approx 150 judgment opportunities:
+- Skilled P40: 5 combo ~61%, 10 ~0.87%, 20 ~0,
+- Expert P65: 10 ~50.6%, 20 ~0.83%, 30 ~0.014%,
+- Master-test P80: 20 ~27.8%, 30 ~3.23%, 40 ~0.30%.
 
-High-combo rarity supports unbounded counting. Approx 150-judgment reach rate:
-- Skilled P40: 5 combo 60.9%, 10 combo 0.8%, 20 ~0,
-- Expert P65: 10 50.9%, 20 0.8%, 30 0.016%,
-- Master-like P80: 20 27.5%, 30 2.9%, 40 0.3%.
+These are no-pressure independence-model upper bounds; real player tension may make high streaks rarer.
 
-These are independence-model diagnostics only; actual human pressure may create more mistakes.
+### Combo reward power
+Balanced reward-only estimate over ~150 judgments:
+- Average mean damage uplift ~0.01%,
+- Skilled ~0.26%,
+- Expert ~1.99%,
+- Master-test P80 ~4.74%.
+
+Therefore mechanical reward can be noticeable at milestones without making ordinary Skilled play explode numerically.
+
+### Passive candidate
+40 / 2.0 s = 20 passive raw DPS.
+Approx share of no-skill timing DPS:
+- Average 13.9%,
+- Skilled 10.8%,
+- Expert 8.8%.
+
+Leading HP compensation after combat testing: **+10% ordinary HP** for the next A/B, not frozen.
+
+### Continuous-play Lv6 exact-AI-bound check
+3P:
+- Average 67.9 → 72.4%,
+- Skilled 79.2 → 80.9%.
+
+4P:
+- Average 54.2 → 56.4%,
+- Skilled 58.8 → 62.2%.
+
+### Battlefield-reading test
+Forced local timing pause = 2 seconds every 12 seconds.
+
+3P Average:
+- current no pause 63.7,
+- current + pause 61.3,
+- candidate + same pause **65.7%**.
+
+3P Skilled:
+- 76.7 → 72.7 → **75.9%**.
+
+4P Average:
+- 56.8 → 54.4 → **57.2%**.
+
+4P Skilled:
+- 63.0 → 60.8 → **64.2%**.
+
+Interpretation: passive fire recovers most of the gameplay penalty from briefly looking at the battlefield while preserving pressure. This is the strongest evidence for continuing the 40/2s + HP10% experiment.
+
+### Passive-only sanity
+Current concrete pressure samples with timing disabled:
+- 3P individual-stage clear 0%,
+- 4P 0%,
+- 2P ~12.2%; surviving 2P clears average only ~357/2000 wall HP.
+
+This is stage-local. Full-run wall carry/progression simulation is still required before final passive values can be frozen.
 
 ---
 
 # Exact next work boundary
 
-1. Human/device check v0.17:
-   - Timing Square fade continuity,
-   - four-player spacing,
-   - AI skill progression/behavior.
-2. Fix implementation defects only.
-3. Build the auto-attack + combo **experimental** block from v8 candidate values.
-4. Run no-timing / Average / Skilled / Expert comparisons.
-5. Simulate several milestone reward strengths before freezing combo rewards.
-6. Report/discuss before final HP compensation or reward coefficients.
+1. Re-check Render for v0.18 publication.
+2. Device/browser check v0.18 counter placement:
+   - visible from 1,
+   - no overlap with charge / EXP / skill strip,
+   - escalation readable at 5 / 10 / 20 / 30,
+   - counter reset behavior correct.
+3. Do **not** live-enable passive attack or combo reward coefficients solely from v8.
+4. Next experimental block candidate:
+   - passive 40 / 2.0 s,
+   - ordinary HP +10%,
+   - 5/8/12/15% combo damage cap,
+   - class follow-ups at milestones.
+5. Run full-run progression simulation with persistent wall HP and actual level growth before freezing the passive system.
+6. Report/discuss before production coefficients are finalized.
 
 ## Still unresolved
-- final auto-attack damage/interval,
-- final enemy HP compensation,
-- exact 5/10/20/30+ combo mechanical rewards,
+- final passive attack damage/interval,
+- final ordinary/elite/boss HP compensation,
+- exact combo milestone proc coefficients and final visuals,
 - final E HP/armor package,
 - final X hardened values,
 - final stage duration,
