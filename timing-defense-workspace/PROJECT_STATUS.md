@@ -6,10 +6,13 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.30**
-- Public URL: `https://timing-defense-v011.onrender.com/v030.html`
-- Live source HEAD: `a235bf2dc0bd5bb5138b4bd89d81512345ec6713`
-- Render deploy: `dep-dbbhud8n74is73cp0rug` / LIVE
+- Current public LIVE prototype: **v0.31**
+- Public URL: `https://timing-defense-v011.onrender.com/v031.html`
+- Live source HEAD: `714e1e3060cbbd2c20a65114d2152b37f861ef22`
+- Static Render deploy: `dep-dbbioegae00c73dd8cn0` / LIVE
+- Multiplayer backend: `https://timing-defense-mp.onrender.com`
+- Backend service: `srv-dbbimre1egvs73861d80`
+- Backend initial deploy: `dep-dbbims61egvs73861f10` / LIVE
 
 ## Core playable scope
 - Landscape timing-action side defense.
@@ -51,106 +54,108 @@ Five visual levels. Equal levels are allowed. Radar is class-identity presentati
 
 ---
 
-# Presentation / UX state
-
-## v0.24–v0.26 foundation
-- Animated five-level radar.
-- Skill roadmap `3 × 2`.
+# Presentation / UX foundation
+- Animated class radar.
+- Character select = left profile / center hero / right `3 × 2` skill roadmap.
+- Skill name + `습득 LV N` one-line headers.
 - Rich class role/detail copy.
 - Rogue HUD charcoal/black + silver.
-- Skill cards = icon + name / `습득 LV N` + full-width description.
-- Hero class name above the character.
-- Combat title removed; combo untouched.
+- Projectile visibility pass without projectile travel-time change.
 - BASE HP formal top-center gauge.
-- Top-right HUD order: STAGE → LV → KILLS.
+- Top-right HUD: STAGE → LV → KILLS.
 - Fortified home-base visual.
-- Combat six-skill strip reuses lobby skill artwork.
+- Combat six-skill strip reuses lobby skill art.
+- Combat title removed; combo untouched.
+- Landscape-only orientation gate.
 
-## v0.27 desired UX features
-Read `V027_DEVICE_FIX_WAITING_UX_REPORT.md`.
-
-Desired features retained by v0.30:
-- skill names stay one line,
-- `습득 LV N` stays one line,
-- radar preserves `330:280` aspect ratio,
-- Android swipe uses pointer capture + horizontal-intent detection,
-- arrows remain fixed,
-- result board uses same-row class badge to avoid PLAYER / CLASS collision,
-- TEAM waiting UX exists for FRIEND / LINK / RANDOM without fake networking.
-
-## v0.27 regression found after device audit
-A concrete infinite MutationObserver loop exists in the skill-level normalizer:
-- observer watches lobby subtree child changes,
-- callback writes `.textContent` even when the text is already identical,
-- that write can retrigger the same observer indefinitely.
-
-The earlier v0.26 normalizer had an equality guard; v0.27 lost it.
-
-This regression is now treated as the primary root cause of the severe partial-render/freeze state first observed after v0.27.
-
-## v0.28 / v0.29 status
-These viewport-repair experiments are **superseded and not loaded by v0.30**.
-They attempted to repair a half-width symptom before the v0.27 observer loop was identified. Do not continue numerical/physical viewport forcing from those versions unless new evidence requires it.
-
----
-
-# v0.30 — current recovery build
+## v0.30 runtime recovery
 Read `V030_ROOT_CAUSE_RECOVERY_REPORT.md`.
 
-Files:
-- `timing-defense-v011/v030-safety.js`
-- `timing-defense-v011/v030.html`
-
-Loader strategy:
-1. load the known v0.26 foundation,
-2. load `v030-safety.js`,
-3. load existing v0.27 UX patch.
-
-`v030-safety.js` intercepts only the redundant v0.27 `normalizeSkillLevels` MutationObserver before it is created. The already-safe v0.26 normalizer remains responsible for `습득 LV N` text.
-
-Orientation:
-- game remains landscape-only,
-- portrait uses a simple maximum-z-index blocking gate,
-- v0.30 does not rewrite viewport meta width,
-- does not force numeric screen widths,
-- does not resize lobby/canvas from physical screen metrics.
-
-No combat, combo, balance, radar values, projectile travel timing, or networking semantics changed.
+- v0.27 introduced a self-retriggering skill-level MutationObserver.
+- v0.30 blocks only that defective observer while preserving intended v0.27 UX.
+- v0.28/v0.29 viewport-forcing experiments are superseded and are not loaded.
+- Samsung Browser device validation confirmed portrait gate, full-width landscape lobby, and full-width combat were restored.
 
 ---
 
-# Network truth boundary
-Actual multiplayer is **not yet implemented**.
-Do not claim remote connectivity until two independent clients join one authoritative room and share synchronized game state.
+# v0.31 — authoritative multiplayer-room foundation
+Read `V031_MULTIPLAYER_FOUNDATION_REPORT.md`.
 
-TEAM slot rule:
-- SOLO AI: 0–3
-- TEAM AI FILL: 0–2, preserving at least one human slot.
+## Backend
+Source:
+- `timing-defense-server/server.js`
+- `timing-defense-server/package.json`
 
-FRIEND / LINK / RANDOM currently provide local waiting UX only.
+Transport:
+- authoritative HTTP mutation endpoints,
+- Server-Sent Events for shared room state,
+- heartbeat/session expiry,
+- in-memory prototype room store.
+
+Server currently owns:
+- room code/method,
+- host session,
+- participant slots,
+- nickname/class,
+- READY state,
+- AI FILL positions/classes,
+- room status,
+- future synchronized `startAt`,
+- room revision.
+
+Implemented:
+- FRIEND/LINK room creation and join,
+- real invite URL `?room=<CODE>`,
+- shared participant/READY state,
+- server-authoritative host START gate,
+- RANDOM matchmaking queue,
+- leave/host reassignment,
+- room heartbeat/cleanup.
+
+TEAM rule remains:
+- SOLO AI 0–3,
+- TEAM AI FILL 0–2,
+- 4 total slots maximum,
+- at least one human slot preserved when configuring TEAM AI FILL.
+
+## Multiplayer truth boundary
+**Full multiplayer gameplay is not yet complete.**
+
+v0.31 can legitimately claim a real shared authoritative waiting room and synchronized START gate.
+It must not yet claim synchronized combat.
+
+Required next network slice:
+- authoritative run snapshot,
+- synchronized local run start at `startAt`,
+- Attack Round/timing-result event synchronization,
+- enemy/wall/coin/EXP/level state ownership,
+- disconnect/reconnect snapshot recovery,
+- shop/economy authority,
+- desync detection/reconciliation.
 
 ---
 
 # Immediate next boundary
-1. Device-test v0.30 on the same Samsung Browser / Android landscape device.
-2. Confirm direct landscape load fills the full content width and remains responsive.
-3. Verify skill title/level one-line behavior, radar proportions, arrows, and horizontal swipe.
-4. Rotate portrait → confirm only orientation gate.
-5. Rotate back → confirm full-width lobby returns without viewport manipulation.
-6. Verify result rows and TEAM waiting screens.
-7. If any visual defect remains, fix from the clean v0.30 chain only.
-8. After UI/runtime stability is confirmed, move to actual multiplayer architecture.
-9. Later continue Lv26/Lv31 and full-run pressure/balance simulation.
+1. Two independent clients validate v0.31 room create/join.
+2. Verify nickname/class/slots/READY sync both directions.
+3. Verify host START remains disabled until every human is READY.
+4. Verify both clients receive the same `starting` state and `startAt`.
+5. Verify leave removes participant and host authority transfers if required.
+6. Verify RANDOM with two independent searches.
+7. Fix network/UI defects only.
+8. Then implement synchronized combat/run state.
+9. After network foundation stabilizes, implement Lv26/Lv31 skills.
+10. Then rerun full-run Solo/2P/3P/4P simulations before numerical balance freeze.
 
 ## Still unresolved / not production-frozen
-- actual room authority / backend transport,
-- invite-link security contract,
-- random matchmaking queue,
-- disconnect/reconnect/reconciliation,
+- combat-state network authority,
+- reconnect grace and durable session recovery,
+- invite-link security/token contract,
+- persistent/horizontally-scaled room storage,
 - multiplayer shop/economy ownership,
 - duplicate-class policy,
-- DUO/TRIPLE/FULL synchronization rules,
-- Lv26/Lv31 implementation coefficients,
+- DUO/TRIPLE/FULL combat synchronization details,
+- Lv26/Lv31 coefficients,
 - final passive/HP/combo coefficients,
 - final E/X pressure values and tier structure,
 - final result-board metric policy.
