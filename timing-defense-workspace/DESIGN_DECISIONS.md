@@ -57,6 +57,7 @@ Skilled is treated as an attainable learned-player state, not an extreme expert 
 - EXP remains tied to timing attack results/events.
 - Faster-killing classes are not compensated simply because they perform fewer attacks and therefore may level more slowly.
 - Different growth pace is accepted as part of overall run balance unless a concrete progression failure appears later.
+- Passive auto-attacks, if enabled, do **not** grant EXP.
 
 ## Balance-change governance
 Simulation is diagnostic first.
@@ -131,10 +132,82 @@ Current candidate structural calibration across 250 prototype stages per team-si
 
 This is an authoring/reference envelope, not a permanent engine cap. Exceptional chaos stages may deliberately exceed it after human visual testing.
 
-## Current pressure status
-v5 validated the abstract grammar. v6 converted it to current-roster recipes and confirmed that role rotation survives the conversion.
+---
 
-Final co-op difficulty is **not** frozen yet because exact human multiplayer cadence and exact Lv11–21 implemented skill behavior do not yet exist.
+# Auto-attack direction — approved concept, numbers not frozen
+
+Purpose: let the player briefly read the battlefield without combat going completely idle, while timing remains the overwhelmingly dominant source of power.
+
+Candidate first experiment from v8:
+- passive/basic attack every ~2.0 s,
+- raw damage around `40` (40% of no-skill NORMAL timing hit),
+- no crit/proc-crit,
+- no skill trigger,
+- no charge generation,
+- no PERFECT combo contribution,
+- no EXP,
+- minimal/zero knockback.
+
+Do not compensate enemy HP 1:1 for the full passive contribution. The passive system must create a small amount of real breathing room.
+
+Current leading test envelope:
+- auto = 40 / 2.0 s,
+- ordinary-monster HP compensation ≈ +8% candidate,
+- boss/elite compensation evaluated separately.
+
+These are test values only, not frozen production balance.
+
+---
+
+# Consecutive PERFECT combo — approved direction
+
+## Counter rule
+- Only PERFECT increments combo.
+- GOOD / NORMAL / MISS reset combo to zero.
+- Attacks 1–3 can each add +1.
+- Heavy X and heavy Y can each add +1.
+- Therefore a fully PERFECT 1→4 sequence adds **5 combo**.
+- Combo is **unbounded**: 20, 30, 40, 50+ remain valid.
+- Reaching a milestone never consumes/resets the counter.
+- Stage/shop downtime does not itself break combo; only a non-PERFECT timing judgment does, unless later explicitly changed.
+
+## Psychological-pressure rule
+The rising visible streak is itself part of the difficulty.
+
+Do **not** secretly make timing harder at high combo:
+- no shrinking PERFECT window,
+- no sweep acceleration,
+- no hidden accuracy penalty.
+
+The intended tension is: the player sees a valuable 20/30/40 streak, becomes increasingly conscious of what can be lost, and is more likely to make a genuine input mistake.
+
+## Visual escalation
+Candidate ladder:
+- 1–4: small persistent number,
+- 5–9: combo value begins appearing at the struck monster,
+- 10–19: larger number/pulse,
+- 20–29: stronger class-color impact feedback,
+- 30+: maximum visual tier may plateau, but the numeric counter continues indefinitely.
+
+## Mechanical reward
+Mechanical reward values are not frozen.
+Prefer milestone-triggered one-off class rewards over an indefinitely stacking permanent damage multiplier.
+
+Test milestones:
+- 5,
+- 10,
+- 20,
+- 30,
+- then every +10 while the counter continues.
+
+Class reward language should preserve identity:
+- Knight: extra blade/frontline break,
+- Rogue: dagger burst,
+- Tank: shockwave/protection,
+- Archer: extra straight-line shot,
+- Mage: secondary explosion.
+
+See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
 ---
 
@@ -144,6 +217,13 @@ Final co-op difficulty is **not** frozen yet because exact human multiplayer cad
 - EXP gauge immediately right of Timing Square.
 - No permanent skill-name text beside EXP.
 - Timing Square renders above monsters.
+- Between timing attacks, the Timing Square should remain visible at reduced opacity instead of disappearing, so charge/location remain continuously readable.
+
+## Team presentation
+- AI teammates do not receive visible Timing Squares.
+- AI internally receives timing results, EXP, levels and automatic class skill unlocks.
+- AI progression is independent state, intended to be a closer stand-in for future human teammates.
+- Four-character vertical spacing should be slightly wider than v0.16 so full silhouettes/weapons remain readable.
 
 ## Class color language
 - Knight: gold / bright steel.
