@@ -4,176 +4,167 @@ Updated: 2026-10-20 KST
 
 ## Canonical locations
 - Public repo: `hotmoral/-`
-- Live branch: `timing-defense-live-v011`
+- Live source branch: `timing-defense-live-v011`
 - Planning/balance/handoff branch: `timing-defense-workspace`
-- Current playable prototype: `v0.15`
-- Public play URL: https://timing-defense-v011.onrender.com/v015.html
+- Stable public prototype: `v0.15`
+- Stable URL: https://timing-defense-v011.onrender.com/v015.html
+- v0.16 source loader: `timing-defense-v011/v016.html`
+- v0.16 source HEAD: `caa7e249f4b52aa3b6215ff2677b0c4973f3eb17`
 
-## Current playable scope
-- Landscape mobile/browser timing-defense prototype.
-- Fixed player position near the left wall; monsters approach from the right.
-- Rhythm: `X → X → X → X+Y`.
-- Judgments: NORMAL / GOOD / PERFECT plus HEAVY / HEAVY+ / GREAT / SUPER / CRITICAL.
+## Deployment status
+v0.16 source is implemented on the live branch, but at the last check Render still reported the v0.15 deployment as current. Render has `autoDeploy=yes`; no duplicate manual deploy was triggered. Do not call v0.16 publicly live until Render reports a deploy containing the v0.16 source HEAD or later.
+
+## Core playable design
+- Landscape timing-defense game.
+- Fixed player near the left wall; monsters approach from the right.
+- Timing rhythm: `X → X → X → X+Y`.
+- NORMAL / GOOD / PERFECT; heavy outcomes HEAVY / HEAVY+ / GREAT / SUPER / CRITICAL.
 - Classes: Knight / Rogue / Tank / Archer / Mage.
-- Team controls: solo through +3 AI.
-- Monsters: GRUNT / RUNNER / BRUTE / SHIELD / FLYER.
-- Current playable Stage 1–10 prototype.
-- Run-only EXP / level / coin / shop upgrades.
-- Live class-skill implementation currently stops at Lv6.
+- Current Stage prototype: 1–10.
+- Run EXP / level / coin / shop upgrades.
+- Team controls currently support solo through +3 AI.
 
-## Planned growth
-Automatic skill unlocks:
-`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`
-
-Lv21 is the first major fourth-attack transformation. Lv31 P×P CRITICAL is intended to become the class-signature finisher.
-
-## Frozen class / progression decisions
-- Archer penetration = true straight-line geometry only.
+## Frozen class/progression decisions
+- Archer penetration = true straight-line geometry only; no homing or automatic next-target chain.
 - Tank = team-specialist; fresh-run solo parity is not required.
-- Rogue same-target dagger hits are uncapped.
-- Boss dagger damage scalar starting value = `0.70`.
-- Boss knockback scalar starting value = `0.40`.
+- Rogue same-target dagger hits remain uncapped.
+- Boss dagger damage scalar = `0.70` starting value.
+- Boss knockback scalar = `0.40` starting value.
 - EXP remains tied to timing attack events/results.
-- Faster clear does not receive compensating EXP merely because it generated fewer attack events.
+- Faster clear does not receive compensating EXP merely because it generated fewer attacks.
 - Simulation never self-authorizes a live balance patch.
 
 ## Player mastery reference
 - Average = N25 / G55 / P20.
 - Skilled = N10 / G50 / P40 plus modestly faster commitment.
-
-Skilled is considered an attainable learned-player state. A strong mastery curve is intended.
+- Skilled is an attainable learned-player state; strong Average→Skilled improvement is intended.
 
 ---
 
-# Simulation / design status
+# v0.16 implementation state
 
-## v1 — role separation
-Established the intended class identity split.
+v0.16 is layered on top of v0.15 and preserves v0.15 as rollback.
 
-## v2 — Stage 1–10 + run shop
-Resolved:
-- Archer auto-chain model artifact → straight-line only,
-- Tank solo weakness → accepted team specialization,
-- EXP/attack-count coupling → retained.
+Files:
+- `v016-core.js`
+- `v016-ui.js`
+- `v016-render.js`
+- `v016.html`
 
-## v3 — mastery curve
-Confirmed meaningful Average→Skilled improvement. No live change.
+Implemented automatic growth block:
+`Lv6 / Lv11 / Lv16 / Lv21`
 
-## v4 — team composition
-13,780 deliberate runs.
+The HUD reserves all six milestones:
+`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`
 
-Findings:
-- Tank has real defensive team value under pressure.
-- Rogue takes a disproportionate share of durable-normal kills.
-- Archer wins line geometry; Mage wins dense geometry.
-- Knight remains a strong stabilizing generalist.
-- current unscaled Stage 1–10 waves saturate at 3–4 players.
+### Knight
+- Lv6 +12% blade-wave damage.
+- Lv11 penetration: normal +1 target at 85%; heavy +2.
+- Lv16 attacks containing PERFECT: +18% damage / +20% knockback.
+- Lv21 heavy: +20% damage, larger signature wave, up to +3 penetrations.
 
-Report: `BALANCE_SIM_REPORT_V4_TEAM.md`
+### Rogue
+- Lv6 second dagger 55%.
+- Lv11 +6%p native crit.
+- Lv16 PERFECT-containing attack shortens next recovery 390→312 ms.
+- Lv21 heavy = 5 daggers total: 100% + 45%×4.
+- Boss dagger scalar 0.70 applied without deleting hit events.
+
+### Tank
+- Lv6 knockback ×1.30.
+- Lv11 wall incoming damage -10%.
+- Lv16 PERFECT-containing attack refreshes 80 wall shield / 3 s / non-stack.
+- Lv21 heavy Ground Impact = broad multi-target control + Tank heavy knockback ×2.0.
+- Boss knockback scalar 0.40.
+
+### Archer
+- Lv6 up to 2 additional straight-line targets.
+- Real line-projection/hit-corridor collision; no bend/retarget chain.
+- Pre-Lv16 secondary penetration keeps the known 52% coefficient.
+- Lv11 projectile speed +25% equivalent and base damage +10%.
+- Lv16 PERFECT-containing attack ignores armor and preserves penetration damage.
+- Lv21 heavy = 3 parallel arrows: 100% + 65% + 65%.
+
+### Mage
+- Lv6 splash 50%.
+- Lv11 radius +35%, splash 60%.
+- Lv16 PERFECT-containing attack: delayed ~180 ms Resonance at 55%, original center excluded.
+- Lv21 heavy: +20% damage, radius ×1.6, larger/slower Greater Arcane Orb.
+
+### UI/VFX
+- single skill icon replaced by six-slot horizontal skill strip below Timing Square,
+- newly unlocked slot pulses temporarily,
+- no permanent skill-name text,
+- Tank temporary shield HUD,
+- Lv21 Knight/Tank/Mage signature heavy overlays.
+
+Validation completed:
+- Node syntax PASS for all three v0.16 JS patches,
+- loader dependency check PASS,
+- GitHub live branch confirmed at `caa7e249...`.
+
+See `V016_IMPLEMENTATION_REPORT.md`.
+
+---
+
+# Encounter / simulation state
+
+## v4 — team roles
+- Tank defensive utility confirmed under pressure.
+- Rogue durable-normal niche confirmed.
+- Archer line vs Mage cluster distinction confirmed.
+- Knight remains generalist/stabilizer.
+- unscaled Stage 1–10 saturates with 3–4 players.
 
 ## v5 — Tier Pressure Grammar
-Formalized future 50-stage tier encounter grammar.
-
 Pressure families:
 - S = Swarm,
 - E = Elite/Heavy,
 - X = Special/Mixed.
 
-Across five representative 50-stage tier prototypes:
-- 1-pattern = 40.8%,
-- 2-pattern = 43.6%,
-- 3-pattern = 15.6%.
+Across five 50-stage prototypes:
+- 1-pattern 40.8%,
+- 2-pattern 43.6%,
+- 3-pattern 15.6%.
 
-So 84.4% of stages use only one or two pressure families.
+Tier identity is controlled by family mix, internal ratios, geometry, timing, intensity and overlap rather than forcing S+E+X every stage.
 
-Tier identity varies through pattern frequency, internal ratios, geometry, timing, intensity and overlap rather than forcing all three patterns every stage.
+## v6 — concrete current-roster recipes
+Candidate Swarm burst sizes:
+- line 2P/3P/4P = 8 / 11 / 14,
+- cluster = 7 / 10 / 13,
+- scatter = 9 / 12 / 16.
+
+Candidate P95 4-second spawn density:
+- 2P ≈ 11,
+- 3P ≈ 15,
+- 4P ≈ 18.
+
+X is the main co-op scaling language through role-bearing compositions. E is an effective durability budget, not a single absurd HP multiplier.
 
 Files:
 - `TIER_PRESSURE_GRAMMAR_V1.md`
-- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
-
-## v6 — latest completed: concrete current-roster pressure recipes
-v6 translated S/E/X into GRUNT/RUNNER/BRUTE/SHIELD/FLYER recipes and ran structural + combat-envelope diagnostics.
-
-### Candidate Swarm burst sizes
-- S-line 2P/3P/4P = `8 / 11 / 14`.
-- S-cluster = `7 / 10 / 13`.
-- S-scatter = `9 / 12 / 16`.
-
-### Candidate X philosophy
-X carries most multiplayer scaling through extra role-bearing threats rather than blanket HP:
-- more SHIELD/BRUTE anchors,
-- more RUNNER/FLYER disruption,
-- line/cluster/split geometry.
-
-### Readability result
-Across 250 generated tier stages per team-size model, current candidate short-window P95 is approximately:
-- 2P: 11 spawns / 4 s,
-- 3P: 15 / 4 s,
-- 4P: 18 / 4 s.
-
-This replaced an earlier overpacked candidate that produced 20+ ordinary enemies in one event.
-
-### Role-opportunity preservation
-Concrete recipe aggregate structural opportunity stays broad:
-- 2P: Knight 20.5 / Rogue 19.0 / Tank 20.2 / Archer 21.1 / Mage 19.2%.
-- 3P: 20.4 / 19.0 / 20.7 / 21.2 / 18.8%.
-- 4P: 20.4 / 19.1 / 20.5 / 21.2 / 18.8%.
-
-Tier-local specialist peaks remain, so concrete monster conversion did not erase role rotation.
-
-### Combat-envelope diagnostic
-A 7,000-run conservative bound used one human local player plus teammates approximating current live AI cadence/result quality.
-
-Aggregate clear rates:
-- 2P: Average 100%, Skilled 100%.
-- 3P: Average 88.4%, Skilled 94.9%.
-- 4P: Average 68.3%, Skilled 83.0%.
-
-T4 Crossfire was the hardest identity in that bound:
-- 3P Average 77.7%, Skilled 90.3%.
-- 4P Average 48.0%, Skilled 77.5%.
-
-A fully capable all-human candidate-Lv21 upper-bound model still saturates near 100% in representative slices. Therefore **final co-op clear-rate targets are not frozen** until exact Lv11–21 playable behavior and a real-human multiplayer cadence model exist.
-
-Files:
 - `PRESSURE_RECIPES_V1.md`
+- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
 - `BALANCE_SIM_REPORT_V6_CONCRETE_RECIPES.md`
-- `pressure_recipe_sim_v1.py`
-
-No live monster, class, stage, EXP, shop or boss value changed from v6.
 
 ---
 
 # Current next boundary
-The highest-value next implementation step is now the first playable multi-skill block:
-- Lv6 / Lv11 / Lv16 / Lv21 for all five classes,
-- exact straight-line Archer collision,
-- multi-skill HUD strip below Timing Square,
-- documented boss resistance rules,
-- agreed Mage/Tank candidate behavior.
-
-After implementation:
-1. extract exact formulas back into the simulator,
-2. rerun concrete pressure recipes,
-3. identify suspicious stages/pressure windows,
-4. human-play only those targeted slices,
-5. report/discuss before any live numerical rebalance.
+1. wait for / verify Render auto-deploy of v0.16,
+2. public smoke test v0.16 for runtime/UI/mechanics defects,
+3. fix implementation defects only — do not rebalance from first impressions,
+4. extract exact v0.16 formulas back into the headless simulator,
+5. rerun concrete pressure recipes for 2/3/4-player models,
+6. report/discuss before numerical rebalance.
 
 Still not frozen:
-- literal E HP/armor package,
+- final E HP/armor package,
 - final X hardened values,
 - final stage duration,
-- true human multiplayer cadence,
+- human multiplayer cadence/network behavior,
 - multiplayer shop/economy ownership,
 - duplicate-class policy,
-- sync-bonus implementation,
-- final number/names/order of tiers.
-
-## Important live UX decisions
-- No `X LOCK` explanatory text after first heavy tap.
-- Shop does not auto-advance.
-- Short shop input protection prevents accidental purchase/advance.
-- Timing Square-side EXP remains primary growth HUD.
-- Permanent skill-name text beside EXP remains removed.
-- Timing Square renders above monsters.
+- sync bonus implementation,
+- final tier count/names/order,
+- Lv26/Lv31 exact coefficients.
