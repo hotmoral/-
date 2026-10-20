@@ -2,6 +2,11 @@
 
 Updated: 2026-10-20 KST
 
+## Final handoff synchronization
+- Final freeze checkpoint: `HANDOFF_FREEZE_2026-10-20_2334KST.md`
+- This session is closed for implementation after synchronization.
+- The next GPT must recover canonical GitHub state before executing anything.
+
 ## Current state
 - Latest implemented prototype: **v0.35**
 - Previous device-validated prototype: **v0.34**
@@ -29,7 +34,7 @@ Required order:
 Do not begin Stage 3 or new gameplay work before this group closes.
 
 ## A. Verify canonical state
-1. Read `SESSION_HANDOFF.md`, `PROJECT_STATUS.md`, `V035_RENDER_QUOTA_OUTAGE_REPORT.md`.
+1. Read `HANDOFF_FREEZE_2026-10-20_2334KST.md`, `SESSION_HANDOFF.md`, `PROJECT_STATUS.md`, `V035_RENDER_QUOTA_OUTAGE_REPORT.md`.
 2. Verify live branch HEAD and the portable-host files:
    - `timing-defense-v011/v035-host-adapter.js`
    - `timing-defense-v011/v035-portable.html`
