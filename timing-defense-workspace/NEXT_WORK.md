@@ -1,161 +1,127 @@
 # Timing Defense — Next Work Boundary
 
-Updated: 2026-10-20 KST
+Updated: 2026-10-21 KST
 
-## Final handoff synchronization
-- Final freeze checkpoint: `HANDOFF_FREEZE_2026-10-20_2334KST.md`
-- This session is closed for implementation after synchronization.
-- The next GPT must recover canonical GitHub state before executing anything.
+## Superseding architecture decision
+The replacement always-on Node-host deployment lane is no longer the primary next action.
+
+User-approved direction:
+**Cloudflare Workers + Durable Objects PoC first.**
+
+Read `CLOUDFLARE_DO_MIGRATION_DECISION_2026-10-21.md` before execution.
+
+The existing portable Node host remains a fallback artifact only. Do not deploy it as the primary recovery path unless the Durable Objects PoC is rejected by evidence.
 
 ## Current state
-- Latest implemented prototype: **v0.35**
-- Previous device-validated prototype: **v0.34**
-- Old Render game URL: `https://timing-defense-v011.onrender.com/v035.html` — **SUSPENDED**
-- Old Render backend: `https://timing-defense-mp.onrender.com` — **SUSPENDED**
-- Suspension reason on both services: **Monthly Quota Exceeded**
-- Last successful v0.35 static deploy: `dep-dbblp8s9v7es73flhq40`
-- Last successful v0.35 backend deploy: `dep-dbblpauq1p3s73d1v2mg`
-- Live portable-host preparation HEAD: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
+- Latest implemented game prototype: **v0.35**.
+- Last Android + PC device-PASS multiplayer baseline: **v0.34**.
+- Render static/backend services remain suspended for **Monthly Quota Exceeded**.
+- Live branch remains `timing-defense-live-v011` at `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a` unless later verified otherwise.
+- Experimental architecture branch: `timing-defense-cloudflare-do-poc`.
+- Current PoC code is isolated under `timing-defense-cloudflare-poc/`.
+- The PoC does not modify v0.35 gameplay or balance values.
 
-The old public URL being unreachable is a hosting outage, not evidence that v0.35 code failed.
-Read `V035_RENDER_QUOTA_OUTAGE_REPORT.md` before execution.
+## Balance / UI guard
+Do not numerically patch or production-freeze attack damage, monster HP, passive interval, combo coefficients, EXP, shop costs, knockback, stage count/gaps or class balance during this architecture migration.
 
-## Balance governance
-Do not production-freeze or numerically patch passive/combo/enemy HP/projectile speed from UX feedback alone.
-Required order:
-`implement/test → measure → classify → report → discuss → explicit decision → numerical patch/freeze`.
+Required numerical workflow remains:
+`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> numerical patch/freeze`.
 
-**Combo guard:** current combo visual/size/position/animation is approved. Do not change it unless explicitly requested.
+Current combo display/size/position/animation remains approved and frozen unless explicitly requested.
 
 ---
 
-# Immediate execution group — replacement hosting recovery
+# Immediate execution group — Durable Objects viability PoC
 
-Do not begin Stage 3 or new gameplay work before this group closes.
+Do not migrate the full v0.35 game yet.
 
-## A. Verify canonical state
-1. Read `HANDOFF_FREEZE_2026-10-20_2334KST.md`, `SESSION_HANDOFF.md`, `PROJECT_STATUS.md`, `V035_RENDER_QUOTA_OUTAGE_REPORT.md`.
-2. Verify live branch HEAD and the portable-host files:
-   - `timing-defense-v011/v035-host-adapter.js`
-   - `timing-defense-v011/v035-portable.html`
-   - `timing-defense-server/portable-host.js`
-3. Do not recreate these files unless repository verification proves them incomplete.
+## A. Isolated PoC contract
+The first public build must prove only:
+1. create one six-character authoritative room,
+2. connect two independent browser clients,
+3. synchronize participant/host state,
+4. synchronize READY,
+5. enforce host-only START,
+6. create one authoritative test monster,
+7. accept an attack from either client,
+8. broadcast identical monster HP to both clients,
+9. reconnect the same stored session without corrupting active connection ownership.
 
-## B. Replacement host deployment
-Deploy the current v0.35 portable stack to a full-stack Node host.
-Required runtime entry point:
-- `node timing-defense-server/portable-host.js`
+Diagnostic PoC constants are intentionally isolated and are not game-balance changes.
 
-Expected public behavior:
-- `/` serves `v035-portable.html`,
-- frontend static assets resolve from the same origin,
-- `/health` proxies to the authoritative backend,
-- `/api/*` proxies to the authoritative backend,
-- SSE room stream works through the same public origin.
+## B. Target platform contract
+- Frontend/static assets: Cloudflare Workers Static Assets.
+- Room authority: one SQLite-backed Durable Object per room code.
+- Transport: WebSocket Hibernation API.
+- Current Korea-centered placement hint: `apac-ne`.
+- Execution model: event-driven.
+- Do **not** reproduce the legacy 50 ms always-on Node simulation loop in the new architecture.
 
-Avoid introducing gameplay or balance changes while moving hosts.
+## C. Public PoC smoke test
+After Cloudflare deployment verify:
+- `/api/health` returns PoC architecture metadata,
+- root diagnostic page loads,
+- room create works,
+- second client joins the same room,
+- READY propagates both ways,
+- non-host cannot START,
+- host START works only after both humans READY,
+- both clients see the same 300 HP diagnostic monster,
+- an accepted attack changes 300 -> 200 on both clients,
+- the other client can change 200 -> 100 on both clients,
+- the next accepted attack changes 100 -> 0 and both clients enter `clear`.
 
-## C. Host smoke test
-Before device testing verify:
-- root returns 200,
-- required JS files return 200,
-- `/health` returns backend v0.35 health,
-- room create/join works,
-- READY state propagates,
-- SSE stream remains connected,
-- START returns one shared run state.
+## D. Device gate
+Use Android + PC as two independent clients.
 
-## D. Android + PC v0.35 device validation
-Use the pair that passed v0.34.
+PASS requires the full public sequence:
+`same room -> READY -> host START -> same monster -> A attack visible on B -> B attack visible on A -> clear`.
 
-Validate in order:
-1. join same room / READY / START,
-2. shared Stage 1 combat,
-3. Stage 1 -> Team Shop on both clients,
-4. independent coin/rank purchases,
-5. READY propagation,
-6. host-only NEXT STAGE,
-7. synchronized Stage 2 GRUNT/RUNNER combat,
-8. same enemy HP/deaths/BASE HP,
-9. v0.34 smoothing remains smooth,
-10. remote projectiles remain visible without duplicate damage.
+Also refresh/reconnect one client and confirm the same session/slot can recover without the replaced old WebSocket marking the new connection offline.
 
-## E. Reconnect validation
-Refresh one client in each state:
-- Stage 1 combat,
-- Team Shop,
-- Stage 2 combat.
+## E. Failure rule
+If the PoC fails because of a Cloudflare platform constraint, stop and classify the constraint before porting production gameplay.
 
-Expected:
-- same room/session/slot/run restored within the current 180 s same-server grace,
-- current authoritative snapshot restored,
-- no historic projectile-event burst,
-- other client remains in the same shared state.
-
-Current limit:
-- room/run data is in-memory,
-- backend process restart is not recoverable yet.
-
-## F. Closure rule
-This recovery group closes only when:
-- replacement public URL is reachable,
-- API/SSE smoke tests pass,
-- Android + PC v0.35 flow passes through Stage 2 and reconnect checks,
-- any reproducible defects are fixed,
-- canonical status/handoff docs are synchronized.
+Do not work around a platform limitation by changing gameplay/balance behavior.
 
 ---
 
-# Following implementation group — only after v0.35 device PASS
-1. Generalize authoritative Stage 2 -> shop -> Stage 3 and common stage state machine through Stage 10.
-2. Add remaining monster grammar: GRUNT / RUNNER / BRUTE / SHIELD / FLYER plus Stage 5/10 bosses.
-3. Validate full-run shop/READY/NEXT with DUO / TRIPLE / FULL.
-4. Move Lv6/Lv11/Lv16/Lv21 skill consequences under server authority.
-5. Add stronger revision/desync diagnostics and reconciliation.
-6. Decide durable room/run persistence and horizontal-scaling architecture.
-7. After networking stabilizes, implement Lv26/Lv31.
-8. Rerun Solo/2P/3P/4P simulations before numerical balance freeze.
+# Migration group — only after PoC PASS
 
-Do not claim full Stage 1–10 multiplayer until independent clients complete the whole authoritative run.
+1. Port the v0.31 authoritative room/session/READY/START contract to the Durable Object.
+2. Preserve the client-side waiting-room UX and v0.32 short-landscape fixes.
+3. Port v0.33 Stage 1 authoritative consequences: spawn identity, HP, BASE HP, actions, passive/AI consequences, EXP/LV/coin.
+4. Replace continuous 50 ms server position integration with event/time-derived authoritative movement where safe.
+5. Preserve v0.34 interpolation/extrapolation and remote projectile VFX as presentation-only behavior.
+6. Port v0.35 session recovery, Team Shop, purchase validation, READY/NEXT and Stage 2.
+7. Android + PC device-test through Stage 2 and reconnect.
+8. Fix only reproducible parity defects.
+9. Synchronize canonical docs when v0.35-equivalent Cloudflare parity is device-PASS.
 
 ---
 
-# Current authority contract
-Client owns:
-- local Timing Square movement/input,
-- captured X/Y judgment,
-- visual interpolation/projectile rendering,
-- shop UI intent only.
+# Following game implementation — only after Cloudflare v0.35 parity PASS
 
-Server owns:
-- room/session/slot/host,
-- run id/seed/start times,
-- Stage 1 and Stage 2 enemy spawn/id/position/HP,
-- BASE HP,
-- target/final tier/damage/knockback/kill,
-- coin / EXP / LV / charge / combo candidate,
-- passive/AI damage,
-- shop coin/ranks/purchase validation,
-- shop READY/NEXT gate,
-- Stage 1 -> shop -> Stage 2 transition.
+1. Generalize the authoritative stage/shop state machine through Stage 10.
+2. Add GRUNT / RUNNER / BRUTE / SHIELD / FLYER plus Stage 5/10 bosses.
+3. Validate DUO / TRIPLE / FULL room/shop/READY/NEXT behavior.
+4. Move Lv6/Lv11/Lv16/Lv21 multiplayer skill consequences under server authority.
+5. Strengthen revision/desync diagnostics and reconciliation.
+6. Decide durable room lifetime, cleanup and invite-token policy.
+7. Implement Lv26/Lv31 only after networking stabilizes.
+8. Rerun Solo/2P/3P/4P simulations before numerical freeze.
 
-Current bounded multiplayer scope:
-- Stage 1 + Team Shop + Stage 2,
-- Stage 3–10 not yet networked,
-- multiplayer Lv6+ skill authority incomplete,
-- reconnect is same-server in-memory recovery only.
+## Current truth boundary
+Safe claims:
+- v0.34 Android + PC authoritative Stage 1 is device-PASS.
+- v0.34 smoothing and remote projectile VFX are device-PASS.
+- v0.35 reconnect/shop/Stage-2 code exists and passed local API/integration checks.
+- Render outage is a hosting quota suspension, not proven gameplay regression.
+- a separate Durable Objects PoC implementation now exists for architecture validation.
 
-## Still unresolved / not production-frozen
-- replacement long-term host,
-- durable persistence / server-restart recovery,
-- horizontal scaling,
-- invite-link security/token policy,
-- Stage 3–10 authority,
-- final Team Shop/shared-wall ownership semantics,
-- complete Lv6+ skill authority,
-- duplicate-class rule,
-- DUO/TRIPLE/FULL reconciliation,
-- Lv26/Lv31 coefficients,
-- final passive/HP/combo coefficients,
-- final E/X pressure/tier values,
-- final result metrics.
+Do not claim:
+- public Cloudflare PoC PASS before deployment/device evidence,
+- v0.35 Cloudflare parity,
+- Stage 3–10 multiplayer,
+- complete Lv6+ multiplayer skill authority,
+- final production persistence/security/balance semantics.
