@@ -1,13 +1,13 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.32**
-- URL: `https://timing-defense-v011.onrender.com/v032.html`
-- Live source HEAD: `16b602221caf1d19c062e17363ac786d2bd20d18`
-- Static Render deploy: `dep-dbbivgjrjlhs73ee5bm0` / LIVE
+- Public LIVE version: **v0.33**
+- URL: `https://timing-defense-v011.onrender.com/v033.html`
+- Live source HEAD: `dfb369ed6aaeb8c2768f50e5a2995a7223ac921d`
+- Static Render deploy: `dep-dbbkbpks728c738o5feg` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service ID: `srv-dbbimre1egvs73861d80`
-- Backend deploy: `dep-dbbims61egvs73861f10` / LIVE
+- Backend deploy: `dep-dbbkbno473hc73cldb30` / LIVE
 
 ## Balance governance
 Do not production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
@@ -18,70 +18,94 @@ Required order:
 
 ---
 
-# Immediate validation — v0.32 real shared waiting room
-Use the same Samsung Browser landscape device plus a second independent browser/device when checking actual shared state.
+# v0.33 validation — authoritative synchronized Stage 1
+Use two independent clients/devices.
 
-## FRIEND / LINK layout hotfix
-1. Open TEAM + FRIEND and enter the waiting room.
-2. Confirm the left panel shows READY + INVITE and lower status/link content without clipping.
-3. Open TEAM + LINK and confirm READY + COPY LINK and lower status/link content without clipping.
-4. The long invite URL must remain one line with ellipsis and must not push actions off-screen.
-5. No internal vertical scrolling should be required for normal waiting-room use.
+## Start transition
+1. Both clients join the same FRIEND/LINK room.
+2. Both READY.
+3. Host START.
+4. Both clients must leave the waiting room from the same server-owned `startAt` and enter Stage 1.
+5. Both must see the normal Stage 1 intro before combat.
 
-## FRIEND / LINK shared-state validation
-1. Client A enters TEAM + FRIEND or LINK and receives a six-character room code.
-2. A uses INVITE / COPY LINK.
-3. Client B opens the room link and enters the TEAM waiting room.
-4. Both clients must show the same human participants, classes and AI FILL slots.
-5. READY changes on A/B must propagate to the other client without reload.
-6. Host START must remain disabled until at least two humans are present and every human is READY.
-7. Only the host may START.
-8. START must put both clients in one server-owned `starting` state with the same future `startAt` timestamp.
-9. Leaving must remove that participant from the room.
-10. If host leaves, server must reassign host to the earliest remaining human slot.
+## Shared world
+Verify continuously:
+- enemy count matches,
+- enemy HP trend matches,
+- enemy deaths match,
+- BASE HP matches,
+- Stage remains 1 on both,
+- server Stage 1 clear/game-over occurs on both.
 
-## RANDOM
-With two independent sessions:
-- both enter TEAM + RANDOM,
-- both search,
-- backend must pair them into one room,
-- both must then receive the same shared participant state.
+## Human timing actions
+- A performs timing attacks; B must observe the same target HP reduction.
+- B performs timing attacks; A must observe the same target HP reduction.
+- server charge state must agree with the local 1–3 charge presentation.
+- local EXP/LV must update from server state.
+- repeated/stale action sequence must not double-apply damage.
+
+## AI / passive
+When AI FILL is configured:
+- AI damage must occur once on server, not separately per client.
+- passive `40 / 2.0s` must occur once per human on server, not separately per client.
+- no duplicated kills/coin/base damage from local simulation.
 
 ## Runtime regression
-Recheck:
+Also recheck:
 - portrait orientation gate,
 - full-width landscape rendering,
-- skill one-line headers,
-- radar proportions,
 - swipe/arrows,
-- combo untouched,
-- BASE HP and STAGE → LV → KILLS HUD.
+- combo visual unchanged,
+- BASE HP top-center HUD,
+- STAGE → LV → KILLS HUD,
+- FRIEND/LINK waiting-room layout remains unclipped.
 
-Fix only reproducible networking/UI/runtime defects from the clean v0.32 chain.
+Fix only reproducible v0.33 synchronization/runtime defects before expanding scope.
 
 ---
 
-# Following implementation boundary — synchronized combat
-After two-client waiting-room validation passes:
-1. Define authoritative run snapshot and seed/version contract.
-2. Convert server `startAt` into an actual synchronized local run start.
-3. Define player action event envelope:
-   - room/run id,
-   - player slot,
-   - attack round id,
-   - X/Y phase,
-   - timing judgment,
-   - client monotonic sequence,
-   - server receive/order metadata.
-4. Decide authority split for timing judgments vs damage resolution.
-5. Synchronize enemy spawn/death/HP, wall HP, coin, EXP/level, charge and stage transitions.
-6. Add periodic authoritative snapshots.
-7. Add disconnect/reconnect grace handling.
-8. Add snapshot recovery and desync detection/reconciliation.
-9. Add multiplayer shop/economy authority.
+# Following network slice
+After v0.33 Stage 1 validation passes:
+1. Add reconnect/rejoin session recovery using authoritative run snapshot.
+2. Add explicit desync/revision diagnostics.
+3. Extend the server run state to Stage 2.
+4. Implement authoritative Stage 1 → shop transition.
+5. Implement multiplayer shop/economy ownership and synchronized NEXT.
+6. Validate Stage 2 after shop.
+7. Extend same contract through Stage 10.
+8. Move Lv6/Lv11/Lv16/Lv21 skill consequences under server authority.
+9. Improve remote teammate projectile/VFX fidelity without making VFX authoritative.
 10. Validate DUO / TRIPLE / FULL independently.
 
-Do not claim end-to-end multiplayer gameplay until two independent clients can start one run and observe the same authoritative combat state throughout.
+Do not claim full end-to-end multiplayer Stage 1–10 until two independent clients complete a whole run from the same authoritative state.
+
+---
+
+# Current v0.33 authority contract
+Client owns:
+- local Timing Square movement/input,
+- captured X/Y judgment.
+
+Server owns:
+- run id/seed/start time,
+- enemy spawn/id/position/HP,
+- BASE HP,
+- target selection for shared damage,
+- normal/heavy state from server charge,
+- final attack tier,
+- damage/knockback/kill,
+- coin,
+- EXP/LV,
+- charge,
+- current combo multiplier candidate,
+- passive/AI damage,
+- Stage 1 clear/game-over.
+
+Current bounded scope:
+- Stage 1 only,
+- GRUNT Stage 1 grammar,
+- no synchronized shop yet,
+- no Lv6+ server skill resolution yet.
 
 ---
 
@@ -96,14 +120,16 @@ After network foundation stabilizes:
 - finalize result-board metric policy.
 
 ## Still unresolved
+- reconnect/session recovery policy,
 - durable multiplayer state store,
 - horizontal scaling strategy,
-- reconnect/session recovery policy,
 - invite-link security/token contract,
-- exact combat authority split,
-- shop/economy authority,
+- Stage 2–10 authority,
+- multiplayer shop/economy authority,
+- complete Lv6+ skill authority,
 - duplicate-class rule,
 - DUO/TRIPLE/FULL reconciliation details,
+- remote projectile/VFX fidelity,
 - Lv26/Lv31 coefficients,
 - final passive damage/interval,
 - final HP compensation,
