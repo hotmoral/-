@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Public repo: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning/balance/handoff branch: `timing-defense-workspace`
-- Current playable prototype: **v0.16**
-- Public play URL: `https://timing-defense-v011.onrender.com/v016.html`
-- Current live source HEAD: `b8b823742bd5fb16026090045cd347feb0f9275e`
-- Current Render deploy: `dep-dbbb6pom7kps73ebd0eg` / LIVE
+- Current playable prototype: **v0.17**
+- Public play URL: `https://timing-defense-v011.onrender.com/v017.html`
+- Current live source HEAD: `8f46b2460f0d16b6103e0f10bec0b5206aa93ae6`
+- Current Render deploy: `dep-dbbc3emq1p3s73c29csg` / LIVE
 
 ## Current playable scope
 - Landscape mobile/browser timing-defense prototype.
@@ -21,7 +21,7 @@ Updated: 2026-10-20 KST
 - Monsters: GRUNT / RUNNER / BRUTE / SHIELD / FLYER.
 - Current playable Stage 1–10 prototype.
 - Run-only EXP / level / coin / shop upgrades.
-- Playable skill implementation now reaches **Lv21**.
+- Playable skill implementation reaches Lv21.
 
 ## Growth structure
 Automatic skill unlocks:
@@ -33,7 +33,7 @@ Implemented now:
 Lv21 is intentionally the first major fourth-attack transformation milestone. Lv26/Lv31 remain planned only.
 
 ## Frozen class / progression decisions
-- Archer = true straight-line geometry. Final v0.16 projectiles lock trajectory at launch and cannot retarget off-line after launch.
+- Archer = true straight-line geometry; launch trajectory is fixed and cannot retarget off-line.
 - Tank = team-specialist; fresh-run solo parity is not required.
 - Rogue repeated dagger hits on the same target are uncapped.
 - Boss dagger scalar = `0.70`.
@@ -49,29 +49,50 @@ Lv21 is intentionally the first major fourth-attack transformation milestone. Lv
 
 ---
 
+# Current playable changes — v0.17
+
+v0.17 intentionally avoids auto-attack/combo numerical balance changes and applies only the already-approved system/UX changes.
+
+### AI teammate growth parity
+AI teammates now internally carry:
+- independent EXP,
+- independent level,
+- automatic Lv6/11/16/21 unlocks,
+- internally simulated timing judgments,
+- class skill behavior including Rogue barrage, Tank protection, Archer line mechanics and Mage burst/resonance.
+
+No additional AI Timing Squares are rendered.
+
+### Timing Square continuity
+- After a timing input the square no longer disappears during projectile/recovery.
+- It remains visible at reduced opacity (~42%) until the next active timing pass.
+- Charge/location information therefore remains continuously anchored.
+
+### Party spacing
+- Four-character vertical spacing is widened slightly from v0.16.
+- Character scale is preserved so the intent is more full-body/weapon readability rather than simply shrinking everyone.
+
+Source files:
+- `timing-defense-v011/v017-ux-ai.js`
+- `timing-defense-v011/v017.html`
+
+v0.16 remains available as rollback/reference.
+
+---
+
 # Simulation / design history
 
 ## v1 — role separation
 Established the intended class-role split.
 
 ## v2 — Stage 1–10 + run shop
-Resolved:
-- Archer auto-chain model artifact → straight-line only,
-- Tank solo weakness → accepted team specialization,
-- EXP/attack-count coupling → retained.
+Resolved Archer straight-line semantics, Tank team specialization and EXP/attack-count coupling.
 
 ## v3 — mastery curve
 Confirmed meaningful Average→Skilled improvement.
 
 ## v4 — team composition
-13,780 deliberate runs.
-
-Findings:
-- Tank real defensive value under pressure.
-- Rogue disproportionate durable-normal kills.
-- Archer line geometry vs Mage dense geometry distinction.
-- Knight strong stabilizing generalist.
-- old unscaled Stage 1–10 waves saturate at 3–4 players.
+Confirmed Tank defensive utility, Rogue durable-normal niche, Archer-line/Mage-density split and Knight generalist value.
 
 ## v5 — Tier Pressure Grammar
 Future 50-stage tier grammar:
@@ -79,112 +100,80 @@ Future 50-stage tier grammar:
 - `E` Elite/Heavy,
 - `X` Special/Mixed.
 
-Across five representative 50-stage tiers:
+Representative five-tier distribution:
 - 1-pattern 40.8%,
 - 2-pattern 43.6%,
 - 3-pattern 15.6%.
 
-All three families are not forced into every stage. Tier identity comes from family frequency, ratio, geometry, timing, intensity and overlap.
-
 ## v6 — concrete pressure recipes
-Converted S/E/X into current-roster recipes.
-
 Candidate Swarm burst sizes:
 - line 2P/3P/4P = `8 / 11 / 14`,
 - cluster = `7 / 10 / 13`,
 - scatter = `9 / 12 / 16`.
 
-X is the primary co-op scaling language. E is an effective durability budget rather than one giant HP bar.
+X remains the main co-op scaling language; E is an effective durability budget.
 
-Readability candidate P95 4-second spawn density:
-- 2P ≈ 11,
-- 3P ≈ 15,
-- 4P ≈ 18.
+## v7 — exact v0.16 formula re-run
+Key Lv21 clear bounds:
+- 3P Average/Skilled = 81.6 / 96.4%,
+- 4P = 52.8 / 73.6%.
 
-## v0.16 implementation
-Implemented Lv6/11/16/21 for all five classes plus six-slot skill HUD.
+Rogue retains best durable-normal TTK. Archer remains strongest on line geometry. No numerical class rebalance authorized.
 
-Important implementation correction:
-- initial v0.16 penetration selection was geometric but generic projectile retarget could bend Archer arrows after target death,
-- fixed at live commit `b8b823742...`,
-- Archer now locks launch line and only collides with hitboxes on that line.
+Files:
+- `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+- `combat_exact_v016.py`
 
-See `V016_IMPLEMENTATION_REPORT.md`.
+## v8 — latest: auto-attack + unbounded PERFECT combo diagnostic
+Approved concept:
+- passive basic attack creates limited battlefield-reading breathing room,
+- timing remains the dominant damage/progression source,
+- consecutive PERFECT combo is unbounded and resets only on non-PERFECT judgment,
+- rising visible streak itself creates psychological pressure,
+- no hidden timing-window/sweep-speed difficulty increase at high combo.
 
-## v7 — latest: exact v0.16 formula re-run
-Final/formula-corrected analysis:
-- 12,300 campaign-bound runs,
-- 50,000 durable-normal targeted duels,
-- 20,000 static geometry trials.
+Leading first auto-attack test candidate:
+- 40 raw damage / 2.0 s,
+- no EXP / crit / charge / skill / combo,
+- ordinary-monster HP compensation around +8% as a **test candidate**, not frozen value.
 
-### Fixed-level co-op pressure bound
-3P clear:
-- Lv6 36.2 / 50.7% Average/Skilled,
-- Lv11 49.6 / 68.0%,
-- Lv16 55.6 / 77.8%,
-- Lv21 **81.6 / 96.4%**.
+Baseline math:
+- passive contribution ≈ 13.9% of Average timing DPS,
+- 10.8% of Skilled,
+- 8.8% of Expert.
 
-4P clear:
-- Lv6 22.7 / 33.0%,
-- Lv11 33.3 / 42.7%,
-- Lv16 33.7 / 49.3%,
-- Lv21 **52.8 / 73.6%**.
+At +8% ordinary HP, net pace remains slightly easier:
+- Average about +5.5%,
+- Skilled +2.6%,
+- Expert +0.7%.
 
-2P is already near saturation in this recipe/AI-bound model.
+Combo rarity supports unlimited counting. In roughly 150 judgment opportunities:
+- Skilled P40 reaches 5 combo ~60.9%, 10 combo ~0.8%, 20 essentially never,
+- Expert P65 reaches 10 ~50.9%, 20 ~0.8%, 30 ~0.016%,
+- Master-like P80 reaches 20 ~27.5%, 30 ~2.9%, 40 ~0.3%.
 
-T4 Crossfire remains hardest at Lv21:
-- 3P 63.3 / 89.3%,
-- 4P 33.0 / 59.0%.
+Mechanical milestone coefficients remain unfrozen. Visual escalation candidate: 5 / 10 / 20 / 30+, with the number continuing indefinitely.
 
-### Durable-normal specialization survives
-Mean Lv21 high-HP-normal TTK:
-- Rogue 20.54 / 15.92 s Average/Skilled,
-- Archer 25.44 / 19.76,
-- Knight 33.45 / 25.14,
-- Mage 39.98 / 31.31,
-- Tank 42.67 / 33.47.
-
-Rogue remains the intended durable-normal specialist despite lower full-wave clear.
-
-### Geometry check after Archer lock
-Average:
-- line: Archer 16.53 s vs Mage 21.40,
-- dense cluster: Archer 20.03 vs Mage 19.71.
-
-Skilled:
-- line: Archer 12.16 vs Mage 15.53,
-- cluster: Archer 15.08 vs Mage 15.59.
-
-Dense-pack separation is close and remains a watch item, not a patch decision.
-
-### v7 balance decision
-**No numerical class rebalance authorized.**
-
-Watch only:
-- Archer broad Lv21 campaign throughput,
-- 2P saturation,
-- exact Mage/Archer dense-pack separation on real rendered battlefield,
-- future real-human teammate cadence.
-
-See `BALANCE_SIM_REPORT_V7_V016_EXACT.md` and `combat_exact_v016.py`.
+See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
 ---
 
 # Current next boundary
 
-1. Human/device/browser playtest v0.16 for implementation/readability defects.
-2. Check six-slot skill strip fit on target landscape sizes.
-3. Visually verify Archer arrows remain straight with off-line enemies nearby.
-4. Verify Tank shield refresh/3 s expiry and Mage Resonance center exclusion.
-5. Verify Lv21 VFX remain readable under enemy overlap.
-6. Fix implementation defects only.
-7. Report/discuss before any numerical balance change.
-
-After visual/behavior defects close:
-- continue exact co-op pressure calibration using v7 formulas,
-- then proceed toward Lv26/Lv31 signature skills and larger tier authoring.
+1. Human/device playtest v0.17 for:
+   - faded Timing Square readability,
+   - slightly wider four-character spacing,
+   - AI growth/skill behavior.
+2. Fix implementation defects only.
+3. Build the **auto-attack + combo experimental block** using v8 candidate values, but keep it as an explicitly testable balance slice.
+4. Simulate conservative/medium/aggressive combo reward variants before freezing mechanical milestone rewards.
+5. Compare no-timing / Average / Skilled / Expert survival and clear behavior.
+6. Report/discuss before final monster-HP or reward coefficients are frozen.
 
 ## Still not frozen
+- final auto-attack interval/damage,
+- final HP compensation,
+- exact combo milestone mechanical rewards,
 - final E HP/armor package,
 - final X hardened values,
 - final stage duration,
