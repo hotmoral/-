@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.33**
-- Public URL: `https://timing-defense-v011.onrender.com/v033.html`
-- Live source HEAD: `dfb369ed6aaeb8c2768f50e5a2995a7223ac921d`
-- Static Render deploy: `dep-dbbkbpks728c738o5feg` / LIVE
+- Current public LIVE prototype: **v0.34**
+- Public URL: `https://timing-defense-v011.onrender.com/v034.html`
+- Live source HEAD: `6bfd51d7d496a0151d4448e71533b4e39de8eaa0`
+- Static Render deploy: `dep-dbbklbrbc2fs73bgtq70` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service: `srv-dbbimre1egvs73861d80`
 - Backend deploy: `dep-dbbkbno473hc73cldb30` / LIVE
@@ -20,15 +20,15 @@ Updated: 2026-10-20 KST
 - Classes: Knight / Rogue / Tank / Archer / Mage.
 - Monsters: GRUNT / RUNNER / BRUTE / SHIELD / FLYER.
 - Solo prototype: Stage 1–10 with EXP / level / coin / shop.
-- Multiplayer prototype: authoritative shared waiting room + **authoritative synchronized Stage 1 slice** in v0.33.
-- Class skills implemented locally through Lv21; multiplayer skill authority beyond base Stage 1 is not complete.
-- Lv26/Lv31 remain planned.
+- Multiplayer prototype: real shared waiting room + authoritative synchronized Stage 1 slice.
+- Local/solo skills implemented through Lv21; Lv26/Lv31 planned.
+- Multiplayer Lv6+ skill authority is not complete.
 
-## Frozen role / combat direction
+## Frozen combat / balance governance
 - Knight = stable generalist / penetration / strong heavy.
-- Rogue = fast multihit / crit / durable-normal execution; same-target dagger hits uncapped.
+- Rogue = multihit / crit / durable-normal execution; same-target dagger hits uncapped.
 - Tank = knockback / wall protection / team specialist.
-- Archer = strict straight-line penetration; no bending/seeking.
+- Archer = strict straight-line penetration; no seeking/bending.
 - Mage = density/AoE specialist.
 - Boss dagger scalar `0.70`.
 - Boss knockback scalar `0.40`.
@@ -37,155 +37,137 @@ Updated: 2026-10-20 KST
 - Combo display/size/position/animation is approved and must not change without explicit user request.
 
 Experimental, not production-frozen:
-- passive `40 raw / 2.0 s`, ordinary non-boss HP +10%,
+- passive `40 raw / 2.0 s`,
+- ordinary non-boss HP +10%,
 - combo persistent candidate `5/8/12/15%`,
 - combo milestone raw-equivalent `60/90/150/210` cap.
 
 ## Approved class radar
 Axes: `공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역`
-
-Profiles:
 - Knight `4/2/3/3/4/2`
 - Rogue `2/5/5/1/1/1`
 - Tank `2/1/1/5/1/3`
 - Archer `3/2/4/1/5/2`
 - Mage `4/2/2/1/1/5`
-
-Five visual levels. Equal levels are allowed. Radar is class-identity presentation, not a literal raw-stat dump.
+Five visual levels; equal levels allowed; presentation data only.
 
 ---
 
-# Presentation / UX foundation
+# Stable UI/runtime foundation
 - Animated class radar.
 - Character select = left profile / center hero / right `3 × 2` skill roadmap.
 - Skill name + `습득 LV N` one-line headers.
-- Rich class role/detail copy.
 - Rogue HUD charcoal/black + silver.
-- Projectile visibility pass without projectile travel-time change.
 - BASE HP formal top-center gauge.
 - Top-right HUD: STAGE → LV → KILLS.
-- Fortified home-base visual.
-- Combat six-skill strip reuses lobby skill art.
 - Combat title removed; combo untouched.
 - Landscape-only orientation gate.
-
-## Runtime recovery
-Read `V030_ROOT_CAUSE_RECOVERY_REPORT.md`.
-- v0.27 introduced a self-retriggering skill-level MutationObserver.
-- v0.30 blocks only that defective observer while preserving intended v0.27 UX.
-- v0.28/v0.29 viewport-forcing experiments are superseded and are not loaded.
-- Samsung Browser device validation confirmed portrait gate, full-width landscape lobby, and full-width combat were restored.
+- v0.30 blocks the v0.27 self-retriggering MutationObserver regression.
+- v0.28/v0.29 viewport forcing is superseded and not loaded.
+- v0.32 fixed FRIEND/LINK lower-content clipping.
 
 ---
 
-# v0.31 / v0.32 — real waiting-room foundation
-Read:
-- `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
-- `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
+# Multiplayer milestones
 
-Implemented and device-validated:
-- FRIEND/LINK real room creation and join,
+## v0.31 / v0.32 waiting room — device validated
+Implemented and user-tested with two independent clients:
+- real FRIEND/LINK room create/join,
 - invite URL `?room=<CODE>`,
-- participant slots / nickname / class,
+- participant slot / nickname / class sharing,
 - host authority,
-- READY synchronization,
-- TEAM AI FILL state,
-- RANDOM matchmaking queue foundation,
-- server-authoritative future `startAt`,
-- FRIEND/LINK waiting-room clipping fix.
+- READY sync both directions,
+- AI FILL state,
+- server-authoritative START gate / shared future `startAt`,
+- waiting-room clipping fix.
 
-Two independent-device validation confirmed:
-- remote participant appears in the same room,
-- READY state propagates,
-- START is host-gated and requires all humans READY,
-- both clients receive the shared RUN STARTING state.
-
----
-
-# v0.33 — authoritative multiplayer Stage 1 combat slice
+## v0.33 authoritative Stage 1 combat slice — device validated
 Read `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`.
 
-## Server authority
-`timing-defense-server/server.js` now owns a run object created at START.
-
-For the v0.33 bounded slice the server owns:
+Server owns:
 - run id / seed / `startAt`,
 - Stage 1 intro/combat state,
-- Stage 1 GRUNT spawning,
-- enemy ids / normalized positions / HP,
+- Stage 1 GRUNT spawn/id/normalized position/HP,
 - BASE HP,
-- run kills,
-- human EXP / level / charge / combo / kills / coin / damage,
+- human EXP/LV/charge/combo/kills/coin/damage,
 - passive attacks,
-- AI FILL attack timing/results,
+- AI FILL attacks,
 - ordered combat events,
-- Stage 1 clear / game-over.
+- Stage 1 clear/game-over.
 
-Server simulation cadence:
-- 50 ms tick,
-- authoritative room/run snapshots about every 100 ms while starting/running.
+Authority split:
+- Client owns Timing Square movement/input and captured X/Y judgment.
+- Server owns heavy state, final tier, target, damage, knockback, kill, coin, EXP/LV, charge and world state.
 
-## Player action authority split
-- Client owns local Timing Square input and captured `NORMAL / GOOD / PERFECT` judgments.
-- Client sends a monotonic action sequence plus X/Y judgments.
-- Server determines normal vs heavy state, final tier, combo bonus candidate, target, damage, knockback, kill, coin, EXP/level and charge.
+User validation confirmed:
+- two independent clients enter the same real Stage 1,
+- a PC player's attack reduces the same monster HP on the Android client,
+- shared world-state synchronization is actually working.
 
-This avoids treating each client as an independent combat simulation.
+## v0.34 render smoothing + remote VFX
+Read `V034_MULTIPLAYER_RENDER_SMOOTHING_REPORT.md`.
 
-## Client integration
-New file:
-- `timing-defense-v011/v033-combat-sync.js`
+Trigger:
+- Android showed slight stepped/stuttered monster movement while PC looked smoother,
+- remote attacks changed HP but had no projectile on the receiving client.
 
-On server START the client:
-- schedules actual run entry from server `startAt`,
-- exits the waiting room,
-- starts Stage 1 intro,
-- disables local enemy spawn / local AI authority / local passive authority,
-- consumes server world snapshots,
-- sends completed local timing attacks to the server,
-- reconciles enemy/base/progression state from server snapshots,
-- renders remote humans/AI in the party area.
+Changes:
+- authoritative monster objects are reconciled in place by id instead of recreated each snapshot,
+- 100 ms snapshots are visually interpolated/extrapolated at render-frame cadence,
+- remote human / AI FILL / server passive attacks synthesize visual-only class projectiles,
+- remote impact particles/damage floats occur when the visual projectile reaches the target,
+- remote party visual allocation is rebuilt only when participant/AI configuration changes.
 
-## Multiplayer truth boundary
-v0.33 can claim a real server-authoritative **Stage 1 synchronization slice**.
+No server-authority or numerical balance changes in v0.34.
 
-It must NOT yet claim full multiplayer gameplay across Stage 1–10.
+---
+
+# Multiplayer truth boundary
+Safe claim:
+- real authoritative shared room/READY/START,
+- real server-authoritative synchronized Stage 1 combat slice,
+- shared monster HP and BASE HP,
+- server-resolved human timing actions,
+- shared passive/AI consequences,
+- visual smoothing and remote projectile presentation in v0.34.
+
+Do NOT yet claim full Stage 1–10 multiplayer.
 Still missing:
-- Stage 2–10 network state,
-- multiplayer shop/economy authority,
-- full Lv6+ skill resolution on server,
 - reconnect/rejoin recovery,
+- explicit desync/revision diagnostics,
+- Stage 1 -> shop authority,
+- Stage 2–10 network authority,
+- multiplayer shop/economy,
+- full Lv6+ server skill consequences,
 - durable room/run persistence,
-- full remote projectile/VFX fidelity,
-- final desync reconciliation policy.
+- final duplicate-class policy.
 
 ---
 
 # Immediate next boundary
-1. Two independent clients validate v0.33 START -> actual Stage 1 transition.
-2. Confirm both see the same enemy count and HP movement.
-3. Confirm A timing attack changes enemy HP on B and vice versa.
-4. Confirm BASE HP remains equal.
-5. Confirm local EXP / LV / charge come back from server correctly.
-6. Confirm AI FILL and passive damage occur once, identically on both clients.
-7. Confirm Stage 1 clear/game-over occurs on both.
-8. Fix only reproducible Stage 1 sync defects.
-9. Add reconnect snapshot recovery.
-10. Extend authority through Stage 2 + shop before expanding to Stage 10.
-11. Then integrate Lv6/Lv11/Lv16/Lv21 multiplayer skill resolution.
-12. After networking stabilizes, implement Lv26/Lv31 and rerun full Solo/2P/3P/4P simulations before numerical balance freeze.
+1. Two independent clients validate v0.34 smoothing and remote projectiles.
+2. Confirm remote human, AI FILL and passive projectiles are visible without duplicate damage.
+3. Confirm Android movement is smoother than v0.33.
+4. Confirm enemy HP/kills/BASE HP/Stage 1 clear remain identical.
+5. Fix only reproducible v0.34 presentation/runtime defects.
+6. Add reconnect/rejoin snapshot recovery and revision diagnostics.
+7. Implement authoritative Stage 1 -> shop transition.
+8. Implement Stage 2 + synchronized shop/NEXT.
+9. Extend the same contract through Stage 10.
+10. Integrate Lv6/Lv11/Lv16/Lv21 multiplayer skill authority.
+11. After networking stabilizes, implement Lv26/Lv31 and rerun Solo/2P/3P/4P balance simulations before numerical freeze.
 
 ## Still unresolved / not production-frozen
-- Stage 2–10 multiplayer state,
 - reconnect grace/session recovery contract,
-- durable/persistent room and run storage,
+- durable/persistent multiplayer storage,
 - horizontal scaling strategy,
-- invite-link security/token contract,
-- multiplayer shop/economy ownership,
-- duplicate-class policy,
+- invite-link security/token policy,
+- Stage 2–10 authority,
+- multiplayer shop/economy authority,
+- complete Lv6+ multiplayer skill authority,
+- duplicate-class rule,
 - DUO/TRIPLE/FULL reconciliation details,
-- multiplayer Lv6+ skill authority,
 - Lv26/Lv31 coefficients,
 - final passive/HP/combo coefficients,
-- final E/X pressure values and tier structure,
+- final E/X pressure values/tier structure,
 - final result-board metric policy.
