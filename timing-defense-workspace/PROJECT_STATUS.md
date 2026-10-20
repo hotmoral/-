@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.25**
-- Public URL: `https://timing-defense-v011.onrender.com/v025.html`
-- Live source HEAD: `fce42eb1261ff43277c27d844617b96a546d6d1a`
-- Render deploy: `dep-dbbga8c9v7es73f567b0` / LIVE
+- Current public LIVE prototype: **v0.26**
+- Public URL: `https://timing-defense-v011.onrender.com/v026.html`
+- Live source HEAD: `8aee137de2f775cda3537b6cc0b9404f6692a55b`
+- Render deploy: `dep-dbbgvjjbc2fs73b657s0` / LIVE
 
 ## Core playable scope
 - Landscape timing-action side defense.
@@ -66,6 +66,8 @@ PERFECT combo:
 - persistent candidate 5/8/12/15%
 - milestone raw-equivalent budgets 60 / 90 / 150 / 210 cap
 
+**v0.26 regression guard:** combo display/size/position/animation was deliberately not changed. The user identified the combat title as the overlap defect.
+
 ---
 
 # Presentation history
@@ -107,39 +109,59 @@ See `V024_RADAR_READABILITY_REPORT.md` and `CHARACTER_PROFILE_RADAR_V1.md`.
 - Rogue HUD changed to charcoal/black + silver.
 - Projectile visibility increased with darker silhouettes/brighter edges/trails; travel timing unchanged.
 
+## v0.25
+See `V025_LAYOUT_POLISH_REPORT.md`.
+- Reclaimed more vertical lobby space.
+- Enlarged radar labels.
+- Restored richer class identity/role/detail copy.
+- Increased center hero presence.
+
 ---
 
-# v0.25 — current character-select vertical/layout polish
-See `V025_LAYOUT_POLISH_REPORT.md`.
+# v0.26 — current HUD / layout patch
+See `V026_HUD_LAYOUT_REPORT.md`.
 
-Android screen recording showed that the v0.24 top brand/nickname area still consumed too much real-device vertical space. v0.25 fixes the layout rather than merely scaling the hero.
+## Character select
+- `3 × 2` skill cards retained.
+- Skill card header = icon + skill name, with `습득 LV N` directly below the name.
+- Description now spans the full card width below, including the area under the icon.
+- Radar moved upward and given a bounded height so role + full description remain visible.
+- Hero class name moved from below the character to above the head.
+- Carousel arrow hit targets enlarged and fixed; active-state jump removed; pointer/touch propagation no longer conflicts with swipe.
 
-## Vertical reclaim
-- Lobby top header reduced again.
-- Nickname row compressed and moved upward.
-- Footer reduced.
-- Recovered height is assigned directly to the character-selection panel.
-- Center hero maximum height increased again.
+## Combat HUD
+- Legacy combat `TIMING DEFENSE` prototype title removed.
+- New top-center BASE HP HUD:
+  - base icon,
+  - `BASE HP`,
+  - current/max HP,
+  - long horizontal gauge.
+- New top-right status HUD in fixed order:
+  1. STAGE,
+  2. LV,
+  3. KILLS,
+  each preceded by an icon.
+- Legacy bottom canvas status strings are suppressed to avoid duplication.
 
-## Left combat profile restored
-The radar remains, but the sparse v0.24 left panel now again contains richer class identity:
-- COMBAT PROFILE label,
-- Korean class name,
-- large English class name,
-- class tag,
-- animated radar,
-- role summary,
-- fuller one-sentence play-style description.
+## Home base
+Left-side home base now has a fortified visual pass:
+- armored cap,
+- crenellations,
+- reinforced side columns,
+- four character bays,
+- character ledges,
+- small central crest.
 
-Radar axis labels are significantly larger. The animation still uses center-out scan, staggered vertex growth, class-color fill/glow, landing nodes and a final ripple.
+## Combat skill strip
+The six slots below the Timing Square now reuse the same class-specific skill canvases as the character-select roadmap.
+- learned = full artwork,
+- locked = same artwork dimmed/grayscaled,
+- ordering stays Lv6 / 11 / 16 / 21 / 26 / 31.
 
-## Right skill area
-- Keeps six cards as `3 × 2`.
-- Uses the newly available height for slightly larger icons/text/spacing rather than returning to a single-row strip.
-
-## Non-goals
-- No combat coefficient changed.
-- Projectile travel timing unchanged.
+## Explicit non-goals
+- No combo visual or logic change.
+- No combat coefficient change.
+- No projectile travel-time change.
 - Actual multiplayer networking still not implemented.
 
 ---
@@ -174,18 +196,20 @@ P95 four-second spawn-density reference:
 ---
 
 # Current next boundary
-1. Device/browser validation of public v0.25 on the same Android landscape setup.
-2. Verify top whitespace is materially reduced.
-3. Verify selection panel is visibly taller, not merely scaled internally.
-4. Verify radar labels are readable without squinting.
-5. Verify restored class description has enough presence without crowding the radar.
-6. Verify center hero and 3×2 skill panel do not overlap.
-7. Recheck TEAM lineup class buttons for clipping.
-8. Recheck Rogue black/silver HUD and projectile visibility during combat.
-9. Fix visual defects only from that validation.
-10. Then implement deferred FRIEND/LINK/RANDOM waiting-room UX.
-11. Actual room/network transport remains a separate later boundary.
-12. Continue full-run progression simulation before freezing passive/combo/HP coefficients.
+1. Device/browser validation of public v0.26 on the same Android landscape setup.
+2. Verify skill cards use the full lower width and `습득 LV` sits below every skill name.
+3. Verify radar is higher and the class role/detail text is no longer clipped.
+4. Verify class name is above the hero head.
+5. Rapidly tap arrows and confirm no positional jump or missed taps; recheck swipe outside arrows.
+6. Confirm combo presentation is unchanged.
+7. Confirm combat title is gone.
+8. Confirm top-center BASE HP is immediately readable.
+9. Confirm top-right icon + STAGE → LV → KILLS HUD is readable.
+10. Confirm improved base structure and lobby-derived combat skill icons look coherent in motion.
+11. Fix visual/implementation defects only from this validation.
+12. Then implement deferred FRIEND/LINK/RANDOM waiting-room UX.
+13. Actual room/network transport remains a separate later boundary.
+14. Continue full-run progression simulation before freezing passive/combo/HP coefficients.
 
 ## Still unresolved / not production-frozen
 - passive final damage/interval,
