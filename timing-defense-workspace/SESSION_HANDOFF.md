@@ -6,13 +6,13 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.31**
-- Public URL: `https://timing-defense-v011.onrender.com/v031.html`
-- Live source HEAD: `714e1e3060cbbd2c20a65114d2152b37f861ef22`
-- Static Render deploy: `dep-dbbioegae00c73dd8cn0` / LIVE
+- Current public LIVE prototype: **v0.32**
+- Public URL: `https://timing-defense-v011.onrender.com/v032.html`
+- Live source HEAD: `16b602221caf1d19c062e17363ac786d2bd20d18`
+- Static Render deploy: `dep-dbbivgjrjlhs73ee5bm0` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service ID: `srv-dbbimre1egvs73861d80`
-- Backend initial deploy: `dep-dbbims61egvs73861f10` / LIVE
+- Backend deploy: `dep-dbbims61egvs73861f10` / LIVE
 
 Workspace remains canonical for design decisions, simulation interpretation, and new-session recovery.
 
@@ -80,15 +80,18 @@ Read:
 
 ---
 
-# Current implementation — v0.31 multiplayer foundation
-Read `V031_MULTIPLAYER_FOUNDATION_REPORT.md` first.
+# Current implementation — v0.32 multiplayer waiting-room foundation + layout hotfix
+Read in order:
+1. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
+2. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
 
 ## Client
 Files:
 - `timing-defense-v011/v031-network.js`
-- `timing-defense-v011/v031.html`
+- `timing-defense-v011/v032-waiting-layout.js`
+- `timing-defense-v011/v032.html`
 
-The v0.31 client upgrades the TEAM waiting room from local-only presentation to a real server-backed room state.
+v0.31 upgraded the TEAM waiting room from local-only presentation to a real server-backed room state. v0.32 fixes FRIEND/LINK left-panel clipping on short Android landscape viewports without changing networking semantics.
 
 ## Server
 Files:
@@ -126,6 +129,13 @@ START policy:
 - only server-recognized host may START,
 - server publishes one future `startAt` to all clients.
 
+## v0.32 presentation fix
+- invite URL is one-line with ellipsis,
+- READY / INVITE / COPY LINK remain visible,
+- local card/status spacing is compacted,
+- extra compact rules apply on short landscape height,
+- RANDOM flow is unchanged.
+
 ## Truth boundary
 **Actual shared combat is not yet implemented.**
 
@@ -139,18 +149,19 @@ Do not claim full multiplayer gameplay until actual run/combat state is synchron
 ---
 
 # Exact next work boundary
-1. Two independent clients/device sessions test v0.31 room create/join.
-2. Verify participant/class/READY changes propagate without reload.
-3. Verify host-only START and common `startAt`.
-4. Verify leave and host reassignment.
-5. Verify RANDOM matching with two searches.
-6. Fix only reproducible room/session/UI defects.
-7. Then implement authoritative run snapshot and synchronized run start.
-8. Synchronize Attack Round/timing-result events.
-9. Synchronize enemies, wall, coin, EXP/level and stage transitions.
-10. Add disconnect/reconnect snapshot recovery and desync reconciliation.
-11. Add multiplayer shop/economy authority.
-12. After networking stabilizes, implement Lv26/Lv31 and rerun Solo/2P/3P/4P balance simulations.
+1. On the same Samsung Browser device, verify FRIEND/LINK v0.32 no longer clip lower content.
+2. Two independent clients/device sessions test room create/join.
+3. Verify participant/class/READY changes propagate without reload.
+4. Verify host-only START and common `startAt`.
+5. Verify leave and host reassignment.
+6. Verify RANDOM matching with two searches.
+7. Fix only reproducible room/session/UI defects.
+8. Then implement authoritative run snapshot and synchronized run start.
+9. Synchronize Attack Round/timing-result events.
+10. Synchronize enemies, wall, coin, EXP/level and stage transitions.
+11. Add disconnect/reconnect snapshot recovery and desync reconciliation.
+12. Add multiplayer shop/economy authority.
+13. After networking stabilizes, implement Lv26/Lv31 and rerun Solo/2P/3P/4P balance simulations.
 
 ## Still unresolved
 - durable/persistent multiplayer room store,
@@ -171,16 +182,17 @@ Do not claim full multiplayer gameplay until actual run/combat state is synchron
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
-4. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
-5. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
-6. `V026_HUD_LAYOUT_REPORT.md`
-7. `CHARACTER_PROFILE_RADAR_V1.md`
-8. `DESIGN_DECISIONS.md`
-9. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-10. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-11. `SKILL_PLAN_LV6_31.md`
-12. `TIER_PRESSURE_GRAMMAR_V1.md`
-13. `PRESSURE_RECIPES_V1.md`
-14. `SIMULATION_METHOD.md`
-15. `NEXT_WORK.md`
+3. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
+4. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+5. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
+6. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
+7. `V026_HUD_LAYOUT_REPORT.md`
+8. `CHARACTER_PROFILE_RADAR_V1.md`
+9. `DESIGN_DECISIONS.md`
+10. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+12. `SKILL_PLAN_LV6_31.md`
+13. `TIER_PRESSURE_GRAMMAR_V1.md`
+14. `PRESSURE_RECIPES_V1.md`
+15. `SIMULATION_METHOD.md`
+16. `NEXT_WORK.md`
