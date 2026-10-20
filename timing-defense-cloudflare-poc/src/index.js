@@ -154,8 +154,9 @@ export class TimingDefenseRoom extends DurableObject {
         nickname,
         classId,
         ready: false,
-        connected: true,
+        connected: false,
         lastSeq: 0,
+        activeConnectionId: null,
         joinedAt: Date.now()
       };
       this.room.participants.push(player);
@@ -163,8 +164,11 @@ export class TimingDefenseRoom extends DurableObject {
     } else {
       player.nickname = nickname;
       player.classId = classId;
-      player.connected = true;
     }
+
+    const connectionId = crypto.randomUUID();
+    player.connected = true;
+    player.activeConnectionId = connectionId;
 
     for (const existing of this.ctx.getWebSockets()) {
       const attachment = existing.deserializeAttachment?.();
@@ -173,10 +177,8 @@ export class TimingDefenseRoom extends DurableObject {
       }
     }
 
-    const pair = new WebSocketPair();
-    const client = pair[0];
-    const server = pair[1];
-    server.serializeAttachment({ session: player.session, slot: player.slot });
+    const [client, server] = Object.values(new WebSocketPair());
+    server.serializeAttachment({ session: player.session, slot: player.slot, connectionId });
     this.ctx.acceptWebSocket(server);
 
     await this.persist();
@@ -184,6 +186,7 @@ export class TimingDefenseRoom extends DurableObject {
       type: "welcome",
       session: player.session,
       slot: player.slot,
+      lastSeq: player.lastSeq,
       state: this.publicState()
     }));
     this.broadcastState();
@@ -194,7 +197,7 @@ export class TimingDefenseRoom extends DurableObject {
   async webSocketMessage(ws, message) {
     const attachment = ws.deserializeAttachment?.() || {};
     const player = this.room?.participants.find((p) => p.session === attachment.session);
-    if (!this.room || !player) {
+    if (!this.room || !player || player.activeConnectionId !== attachment.connectionId) {
       this.send(ws, { type: "error", error: "invalid-session" });
       return;
     }
@@ -266,8 +269,9 @@ export class TimingDefenseRoom extends DurableObject {
   async webSocketClose(ws, code, reason) {
     const attachment = ws.deserializeAttachment?.() || {};
     const player = this.room?.participants.find((p) => p.session === attachment.session);
-    if (player) {
+    if (player && player.activeConnectionId === attachment.connectionId) {
       player.connected = false;
+      player.activeConnectionId = null;
       if (this.room.status === "waiting" && this.room.hostSession === player.session) {
         const nextHost = this.room.participants.find((p) => p.connected && p.session !== player.session);
         if (nextHost) this.room.hostSession = nextHost.session;
@@ -281,8 +285,9 @@ export class TimingDefenseRoom extends DurableObject {
   async webSocketError(ws) {
     const attachment = ws.deserializeAttachment?.() || {};
     const player = this.room?.participants.find((p) => p.session === attachment.session);
-    if (player) {
+    if (player && player.activeConnectionId === attachment.connectionId) {
       player.connected = false;
+      player.activeConnectionId = null;
       await this.persist();
       this.broadcastState();
     }
