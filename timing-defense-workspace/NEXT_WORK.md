@@ -1,16 +1,22 @@
 # Timing Defense — Next Work Boundary
 
-## Current public state
-- Public LIVE version: **v0.35**
-- URL: `https://timing-defense-v011.onrender.com/v035.html`
-- Live source HEAD: `cdfdb60b4d20047d372316224d5815dc6edd3bef`
-- Static Render deploy: `dep-dbblp8s9v7es73flhq40` / LIVE
-- Multiplayer backend: `https://timing-defense-mp.onrender.com`
-- Backend service ID: `srv-dbbimre1egvs73861d80`
-- Backend deploy: `dep-dbblpauq1p3s73d1v2mg` / LIVE
+Updated: 2026-10-20 KST
+
+## Current state
+- Latest implemented prototype: **v0.35**
+- Previous device-validated prototype: **v0.34**
+- Old Render game URL: `https://timing-defense-v011.onrender.com/v035.html` — **SUSPENDED**
+- Old Render backend: `https://timing-defense-mp.onrender.com` — **SUSPENDED**
+- Suspension reason on both services: **Monthly Quota Exceeded**
+- Last successful v0.35 static deploy: `dep-dbblp8s9v7es73flhq40`
+- Last successful v0.35 backend deploy: `dep-dbblpauq1p3s73d1v2mg`
+- Live portable-host preparation HEAD: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
+
+The old public URL being unreachable is a hosting outage, not evidence that v0.35 code failed.
+Read `V035_RENDER_QUOTA_OUTAGE_REPORT.md` before execution.
 
 ## Balance governance
-Do not production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
+Do not production-freeze or numerically patch passive/combo/enemy HP/projectile speed from UX feedback alone.
 Required order:
 `implement/test → measure → classify → report → discuss → explicit decision → numerical patch/freeze`.
 
@@ -18,90 +24,94 @@ Required order:
 
 ---
 
-# Immediate validation — v0.35 reconnect / team shop / Stage 2
-Use the Android + PC pair that passed v0.34.
+# Immediate execution group — replacement hosting recovery
 
-## A. Stage 1 -> Team Shop
-1. Both clients join the same v0.35 room, READY and START.
-2. Complete Stage 1 normally.
-3. Both clients must enter the same `TEAM SHOP` state.
-4. Each player receives server-owned Stage 1 clear reward (+67) in addition to any kill coin already earned.
-5. Each client must display its own authoritative coin and upgrade ranks.
+Do not begin Stage 3 or new gameplay work before this group closes.
 
-## B. Purchases
-Verify independently on both players:
-- ATK / CRIT / CRIT DMG / WALL HP / DEF / KNOCKBACK purchase succeeds only when affordable.
-- rank and coin changes propagate from server state.
-- READY locks further purchases on that player.
-- un-READY permits editing/purchases again.
-- the other player's independent purchases do not overwrite local personal ranks.
+## A. Verify canonical state
+1. Read `SESSION_HANDOFF.md`, `PROJECT_STATUS.md`, `V035_RENDER_QUOTA_OUTAGE_REPORT.md`.
+2. Verify live branch HEAD and the portable-host files:
+   - `timing-defense-v011/v035-host-adapter.js`
+   - `timing-defense-v011/v035-portable.html`
+   - `timing-defense-server/portable-host.js`
+3. Do not recreate these files unless repository verification proves them incomplete.
 
-Prototype shared-wall checks:
-- WALL HP purchase raises shared BASE HP maximum/current by 100.
-- DEF purchases contribute to shared incoming wall reduction.
-These are prototype rules, not final production balance/ownership decisions.
+## B. Replacement host deployment
+Deploy the current v0.35 portable stack to a full-stack Node host.
+Required runtime entry point:
+- `node timing-defense-server/portable-host.js`
 
-## C. Shop READY/NEXT
-1. One player READY -> the other sees that READY state.
-2. NEXT remains disabled until every human is READY.
-3. Only host gets active NEXT STAGE.
-4. Host NEXT publishes one shared future Stage 2 start.
+Expected public behavior:
+- `/` serves `v035-portable.html`,
+- frontend static assets resolve from the same origin,
+- `/health` proxies to the authoritative backend,
+- `/api/*` proxies to the authoritative backend,
+- SSE room stream works through the same public origin.
 
-## D. Stage 2
-Both clients must:
-- transition through Stage 2 intro,
-- enter the same Stage 2 combat,
-- see the same GRUNT/RUNNER population and HP/deaths,
-- share BASE HP and kills,
-- see remote human/AI/passive projectile VFX,
-- keep smooth monster rendering,
-- apply purchased human ATK/CRIT/CRITDMG/KNOCK on the server.
+Avoid introducing gameplay or balance changes while moving hosts.
 
-Stage 2 bounded endpoint is `STAGE 2 SYNC CLEAR`; Stage 3 is intentionally not enabled in v0.35.
+## C. Host smoke test
+Before device testing verify:
+- root returns 200,
+- required JS files return 200,
+- `/health` returns backend v0.35 health,
+- room create/join works,
+- READY state propagates,
+- SSE stream remains connected,
+- START returns one shared run state.
 
-## E. Reconnect/reload recovery
-Test three positions independently:
-1. during Stage 1 combat,
-2. while Team Shop is open,
-3. during Stage 2 combat.
+## D. Android + PC v0.35 device validation
+Use the pair that passed v0.34.
 
-Procedure:
-- refresh/reload one client's same `?room=CODE` URL,
-- client should show RUN RECOVERY briefly,
-- same session/slot/run should restore from server snapshot,
-- current enemy/base/progression or shop state should match the other client,
-- old historical remote projectile events must not replay as a burst.
+Validate in order:
+1. join same room / READY / START,
+2. shared Stage 1 combat,
+3. Stage 1 -> Team Shop on both clients,
+4. independent coin/rank purchases,
+5. READY propagation,
+6. host-only NEXT STAGE,
+7. synchronized Stage 2 GRUNT/RUNNER combat,
+8. same enemy HP/deaths/BASE HP,
+9. v0.34 smoothing remains smooth,
+10. remote projectiles remain visible without duplicate damage.
 
-Reconnect prototype limits:
-- server retains stale session for 180 seconds,
-- room/run is still in-memory,
-- a Render backend restart loses the run and is not recoverable in v0.35.
+## E. Reconnect validation
+Refresh one client in each state:
+- Stage 1 combat,
+- Team Shop,
+- Stage 2 combat.
 
-## F. Regression
-Also confirm:
-- v0.34 movement remains smooth,
-- remote projectiles remain visible,
-- no duplicate damage from VFX,
-- portrait gate / landscape width remain correct,
-- combo visual unchanged,
-- waiting room remains unclipped.
+Expected:
+- same room/session/slot/run restored within the current 180 s same-server grace,
+- current authoritative snapshot restored,
+- no historic projectile-event burst,
+- other client remains in the same shared state.
 
-Fix only reproducible v0.35 networking/runtime/UI defects before expanding scope.
+Current limit:
+- room/run data is in-memory,
+- backend process restart is not recoverable yet.
+
+## F. Closure rule
+This recovery group closes only when:
+- replacement public URL is reachable,
+- API/SSE smoke tests pass,
+- Android + PC v0.35 flow passes through Stage 2 and reconnect checks,
+- any reproducible defects are fixed,
+- canonical status/handoff docs are synchronized.
 
 ---
 
-# Following implementation boundary after v0.35 PASS
-1. Generalize authoritative stage grammar beyond Stage 2.
-2. Add Stage 2 -> shop -> Stage 3 and repeat through Stage 10 using a common stage state machine.
-3. Integrate existing monster grammar: GRUNT / RUNNER / BRUTE / SHIELD / FLYER and Stage 5/10 bosses.
-4. Validate whole-run shop/READY/NEXT behavior with DUO / TRIPLE / FULL.
-5. Move Lv6 / Lv11 / Lv16 / Lv21 skill consequences to server authority by class.
-6. Add revision/desync diagnostics and stronger recovery/reconciliation.
-7. Decide durable room/run persistence and horizontal-scaling strategy.
-8. After multiplayer system stabilization, implement Lv26 / Lv31.
-9. Rerun full Solo / 2P / 3P / 4P simulations before numerical balance freeze.
+# Following implementation group — only after v0.35 device PASS
+1. Generalize authoritative Stage 2 -> shop -> Stage 3 and common stage state machine through Stage 10.
+2. Add remaining monster grammar: GRUNT / RUNNER / BRUTE / SHIELD / FLYER plus Stage 5/10 bosses.
+3. Validate full-run shop/READY/NEXT with DUO / TRIPLE / FULL.
+4. Move Lv6/Lv11/Lv16/Lv21 skill consequences under server authority.
+5. Add stronger revision/desync diagnostics and reconciliation.
+6. Decide durable room/run persistence and horizontal-scaling architecture.
+7. After networking stabilizes, implement Lv26/Lv31.
+8. Rerun Solo/2P/3P/4P simulations before numerical balance freeze.
 
-Do not claim full end-to-end Stage 1–10 multiplayer until two independent clients complete a whole authoritative run.
+Do not claim full Stage 1–10 multiplayer until independent clients complete the whole authoritative run.
 
 ---
 
@@ -109,7 +119,7 @@ Do not claim full end-to-end Stage 1–10 multiplayer until two independent clie
 Client owns:
 - local Timing Square movement/input,
 - captured X/Y judgment,
-- visual interpolation and projectile rendering,
+- visual interpolation/projectile rendering,
 - shop UI intent only.
 
 Server owns:
@@ -119,41 +129,28 @@ Server owns:
 - BASE HP,
 - target/final tier/damage/knockback/kill,
 - coin / EXP / LV / charge / combo candidate,
-- passive and AI damage,
+- passive/AI damage,
 - shop coin/ranks/purchase validation,
 - shop READY/NEXT gate,
 - Stage 1 -> shop -> Stage 2 transition.
 
-Current bounded scope:
+Current bounded multiplayer scope:
 - Stage 1 + Team Shop + Stage 2,
 - Stage 3–10 not yet networked,
-- multiplayer Lv6+ skill authority not yet implemented,
-- reconnect is same-server in-memory session recovery only.
+- multiplayer Lv6+ skill authority incomplete,
+- reconnect is same-server in-memory recovery only.
 
----
-
-# Later gameplay/system work
-After networking stabilizes:
-- implement Lv26 / Lv31 skills,
-- finalize duplicate-class policy,
-- rerun full-run progression/pressure simulation,
-- validate Solo / 2P / 3P / 4P,
-- finalize passive/ordinary HP/combo coefficients only after report/discussion,
-- finalize E/X pressure values/tier progression,
-- finalize result-board metric policy.
-
-## Still unresolved
-- durable persistence / server restart recovery,
-- horizontal scaling strategy,
-- invite-link security/token contract,
+## Still unresolved / not production-frozen
+- replacement long-term host,
+- durable persistence / server-restart recovery,
+- horizontal scaling,
+- invite-link security/token policy,
 - Stage 3–10 authority,
-- final multiplayer shop/shared-wall ownership semantics,
+- final Team Shop/shared-wall ownership semantics,
 - complete Lv6+ skill authority,
 - duplicate-class rule,
 - DUO/TRIPLE/FULL reconciliation,
 - Lv26/Lv31 coefficients,
-- final passive damage/interval,
-- final HP compensation,
-- combo/milestone coefficients,
-- final E/X/tier values,
+- final passive/HP/combo coefficients,
+- final E/X pressure/tier values,
 - final result metrics.
