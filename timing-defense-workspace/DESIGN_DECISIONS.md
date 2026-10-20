@@ -138,10 +138,10 @@ This is an authoring/reference envelope, not a permanent engine cap. Exceptional
 
 Purpose: let the player briefly read the battlefield without combat going completely idle, while timing remains the overwhelmingly dominant source of power.
 
-Candidate first experiment from v8:
-- passive/basic attack every ~2.0 s,
-- raw damage around `40` (40% of no-skill NORMAL timing hit),
-- no crit/proc-crit,
+Semantic rules:
+- passive/basic attack fires independently while combat is active,
+- no timing judgment,
+- no CRIT/proc-crit,
 - no skill trigger,
 - no charge generation,
 - no PERFECT combo contribution,
@@ -150,12 +150,14 @@ Candidate first experiment from v8:
 
 Do not compensate enemy HP 1:1 for the full passive contribution. The passive system must create a small amount of real breathing room.
 
-Current leading test envelope:
-- auto = 40 / 2.0 s,
-- ordinary-monster HP compensation ≈ +8% candidate,
-- boss/elite compensation evaluated separately.
+After v8 combat and forced-observation testing, the leading **A/B candidate** is:
+- passive attack = `40 raw damage / 2.0 s`,
+- ordinary-monster HP compensation = about `+10%`,
+- bosses/elites should be calibrated separately rather than blindly using the same percentage.
 
-These are test values only, not frozen production balance.
+This candidate recovered most of the clear-rate penalty from a forced 2-second battlefield-reading pause every 12 seconds while only modestly increasing continuous-play clear rate. It is still a test value, not frozen production balance.
+
+See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
 ---
 
@@ -181,24 +183,35 @@ Do **not** secretly make timing harder at high combo:
 
 The intended tension is: the player sees a valuable 20/30/40 streak, becomes increasingly conscious of what can be lost, and is more likely to make a genuine input mistake.
 
-## Visual escalation
-Candidate ladder:
-- 1–4: small persistent number,
-- 5–9: combo value begins appearing at the struck monster,
-- 10–19: larger number/pulse,
-- 20–29: stronger class-color impact feedback,
-- 30+: maximum visual tier may plateau, but the numeric counter continues indefinitely.
+## Counter presentation — frozen direction
+- Combo is visible starting from **1 COMBO**; the player must never have to count manually.
+- Primary location is **near the Timing Square**, not at the monster impact point.
+- The number remains continuously readable while the streak exists.
+- Visual intensity scales by tier while staying in the same general location:
+  - 1–4: small/quiet,
+  - 5–9: mild class-color emphasis,
+  - 10–19: larger pulse/glow,
+  - 20–29: stronger class-color frame/impact feedback,
+  - 30+: maximum visual tier may plateau.
+- **Only the presentation intensity may plateau at 30+. The numeric count never caps.**
 
-## Mechanical reward
-Mechanical reward values are not frozen.
-Prefer milestone-triggered one-off class rewards over an indefinitely stacking permanent damage multiplier.
+## Mechanical reward candidate after v8
+The counter remains unlimited, but mechanical power is capped to avoid runaway scaling.
 
-Test milestones:
-- 5,
-- 10,
-- 20,
-- 30,
-- then every +10 while the counter continues.
+Leading candidate:
+- 5–9 combo: timing-attack damage +5%,
+- 10–19: +8%,
+- 20–29: +12%,
+- 30+: +15% cap.
+
+Milestone class follow-ups:
+- 5: small class echo,
+- 10: medium class follow-up,
+- 20: strong class follow-up,
+- 30: maximum follow-up,
+- 40 / 50 / 60 … repeat the 30-tier strength rather than increasing forever.
+
+Reward-only Monte Carlo indicates mean total damage uplift is tiny for Average/Skilled and remains bounded even for very high accuracy, so the main value of high combo remains tension/prestige rather than mandatory DPS snowballing.
 
 Class reward language should preserve identity:
 - Knight: extra blade/frontline break,
@@ -207,7 +220,7 @@ Class reward language should preserve identity:
 - Archer: extra straight-line shot,
 - Mage: secondary explosion.
 
-See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
+Exact visual/proc coefficients remain candidate values until the playable A/B is tested.
 
 ---
 
@@ -218,6 +231,7 @@ See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 - No permanent skill-name text beside EXP.
 - Timing Square renders above monsters.
 - Between timing attacks, the Timing Square should remain visible at reduced opacity instead of disappearing, so charge/location remain continuously readable.
+- PERFECT combo counter stays near the Timing Square from 1 combo onward.
 
 ## Team presentation
 - AI teammates do not receive visible Timing Squares.
