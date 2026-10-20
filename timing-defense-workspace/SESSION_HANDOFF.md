@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.24**
-- Public URL: `https://timing-defense-v011.onrender.com/v024.html`
-- Live source HEAD: `61ad74d833148d409dc65292f302bb9086c4e7c9`
-- Render deploy: `dep-dbbg528m7kps73esejbg` / LIVE
+- Current public LIVE prototype: **v0.25**
+- Public URL: `https://timing-defense-v011.onrender.com/v025.html`
+- Live source HEAD: `fce42eb1261ff43277c27d844617b96a546d6d1a`
+- Render deploy: `dep-dbbga8c9v7es73f567b0` / LIVE
 
 Workspace is canonical for design decisions, simulation interpretation and new-session recovery.
 
@@ -72,81 +72,68 @@ Passive auto-attack interval is currently common across all classes at `2.0 s`; 
 - result board row spacing + nickname cleanup,
 - attack debug label hidden.
 
+## v0.24
+See `V024_RADAR_READABILITY_REPORT.md` and `CHARACTER_PROFILE_RADAR_V1.md`.
+- approved five-level six-axis class radar added,
+- axes: 공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역,
+- profiles: Knight 4/2/3/3/4/2; Rogue 2/5/5/1/1/1; Tank 2/1/1/5/1/3; Archer 3/2/4/1/5/2; Mage 4/2/2/1/1/5,
+- right skill layout becomes 3×2,
+- TEAM SUMMARY removed; class buttons wrap to two rows,
+- Rogue HUD becomes charcoal/black + silver,
+- projectile contrast/trails strengthened without travel-time changes.
+
 ---
 
-# Current implementation — v0.24
+# Current implementation — v0.25
 Files:
-- `timing-defense-v011/v024-polish.js`
-- `timing-defense-v011/v024.html`
+- `timing-defense-v011/v025-layout.js`
+- `timing-defense-v011/v025.html`
 
-See:
-- `V024_RADAR_READABILITY_REPORT.md`
-- `CHARACTER_PROFILE_RADAR_V1.md`
+See `V025_LAYOUT_POLISH_REPORT.md`.
 
-## Character-selection hierarchy
-Three-zone landscape presentation is now:
-- **left** = animated combat-profile radar,
-- **center** = larger/taller hero only,
-- **right** = six skill cards arranged `3 × 2`.
+## Why v0.25 exists
+Android screen recording showed a real-device layout issue: v0.24 still left too much apparent vertical whitespace above the character-selection window because the top brand/nickname region remained too tall at device/browser scale. The left radar labels were also too small and the class-description flavor had been over-compressed.
 
-Hero navigation remains arrow + horizontal swipe. Arrows sit closer to the hero. Header/nickname/footer heights are reduced on short landscape displays to free more hero height.
+## Vertical reclaim
+v0.25 fixes the structural spacing:
+- top header reduced again,
+- nickname row moved upward/compressed,
+- footer reduced,
+- reclaimed height is assigned directly to the carousel/profile window,
+- center hero maximum height increased.
 
-## Approved profile radar
-Six axes:
-`공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역`.
+## Left combat profile restored
+The left panel now contains:
+- COMBAT PROFILE,
+- Korean class name,
+- larger English class name,
+- class tag,
+- animated radar,
+- role line,
+- fuller one-sentence class/play-style description.
 
-Five visual levels. The UI does not need to print 1–5 values.
-
-Approved class profiles:
-- Knight `4 / 2 / 3 / 3 / 4 / 2`
-- Rogue `2 / 5 / 5 / 1 / 1 / 1`
-- Tank `2 / 1 / 1 / 5 / 1 / 3`
-- Archer `3 / 2 / 4 / 1 / 5 / 2`
-- Mage `4 / 2 / 2 / 1 / 1 / 5`
-
-Equal values are allowed. The radar is a class-identity graphic, not a forced class ranking.
-
-Animation contract:
-- five-ring hex web,
-- center-out class-color scan,
-- staggered six-vertex outward growth (`띠리리릭` feel),
+Radar axis labels are significantly larger than v0.24.
+Animation remains premium/staggered:
+- center-out scan,
+- six delayed vertex expansions,
 - class-color polygon fill/glow,
-- vertex landing pulse,
-- short settling pulse,
-- roughly one-second total transition.
+- landing node pulses,
+- final breathing ripple,
+- stale animation cancellation on class change.
 
-## Skill roadmap
-The prior six-icon strip + one selected detail is replaced with six direct cards in `3 × 2`.
-Each card contains icon, skill name, unlock level and description. Mechanic-specific icon semantics remain frozen direction.
+## Skill panel
+Six skills stay in the approved `3 × 2` layout. The extra height is used to increase card/icon/text breathing room rather than reverting to a single strip.
 
-## TEAM lineup
-- redundant bottom SUMMARY removed,
-- right lineup panel receives more width,
-- five class buttons wrap into two rows for each AI unit,
-- AI row height increased,
-- TEAM AI FILL max remains +2; SOLO AI max remains +3.
+## Radar presentation contract
+Five visual levels, no need to print numeric 1–5 values in the UI.
+Equal levels between classes are allowed. Radar is a class-identity graphic, not a literal raw-stat dump.
 
-## Rogue HUD identity
-Rogue HUD changes from v0.23 red/silver to **charcoal/black + silver**:
-- Timing Square,
-- charge pips,
-- charge/heavy text,
-- EXP gauge,
-- LV/EXP labels,
-- `+EXP N` popup.
-
-This is presentation-only. Rogue damage/crit/skill coefficients are unchanged.
-
-## Projectile readability
-Natural scenery made attack projectiles too faint/blur-like.
-v0.24 does **not** slow travel numerically. It adds visual contrast/trails over the existing renderer:
-- Knight: deep amber + bright gold edge,
-- Rogue: charcoal blade + silver edge/trail,
-- Tank: dark navy + cyan edge,
-- Archer: forest green + pale edge/trail,
-- Mage: deep purple + pale violet ring/trail.
-
-If device validation still finds projectiles hard to read, discuss a small travel-time change before applying it.
+Approved values remain:
+- Knight `4/2/3/3/4/2`
+- Rogue `2/5/5/1/1/1`
+- Tank `2/1/1/5/1/3`
+- Archer `3/2/4/1/5/2`
+- Mage `4/2/2/1/1/5`
 
 ---
 
@@ -155,20 +142,24 @@ Actual multiplayer is **not yet implemented**.
 FRIEND/LINK/RANDOM remain selection states only.
 Do not claim a remote player joined until two independent clients share authoritative room/game state.
 
-The waiting-room slice has been deferred again because v0.24 was used for the approved radar/readability patch. It becomes the next version after v0.24 device validation.
+TEAM slot rule:
+- SOLO: AI 0–3
+- TEAM: AI FILL 0–2, preserving at least one human slot.
+
+The waiting-room slice remains next after v0.25 device validation.
 
 ---
 
 # Exact next work boundary
-1. Device-test public v0.24.
-2. Verify radar labels/rings do not clip on short Android landscape.
-3. Verify radar animation replays cleanly per class switch and stale animations cancel.
-4. Verify center hero gets visibly more vertical presence and no longer collides with right panel.
-5. Verify six skill cards in 3×2 remain readable.
-6. Verify TEAM lineup shows all five class choices without clipping.
-7. Verify Rogue Timing Square/charge/EXP read as black/charcoal + silver, not red.
-8. Verify projectiles are recognizable objects rather than only fast blur streaks.
-9. If still weak, report/discuss whether a small projectile travel-time adjustment is needed.
+1. Device-test public v0.25 on the same Android landscape setup.
+2. Verify top whitespace is materially reduced.
+3. Verify character-selection panel is visibly taller.
+4. Verify radar labels are clearly readable.
+5. Verify restored role/description copy feels rich enough without crowding the radar.
+6. Verify center hero and right 3×2 skill panel remain separated.
+7. Recheck TEAM lineup class buttons for clipping.
+8. Recheck Rogue black/silver HUD and projectile visibility.
+9. Fix visual/implementation defects only.
 10. Then implement FRIEND/LINK/RANDOM waiting-room UX without faking connectivity.
 11. After waiting UX, design/wire actual room/invite/random network architecture.
 12. Continue full-run progression simulation before freezing passive/HP/combo values.
@@ -188,17 +179,18 @@ The waiting-room slice has been deferred again because v0.24 was used for the ap
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V024_RADAR_READABILITY_REPORT.md`
-4. `CHARACTER_PROFILE_RADAR_V1.md`
-5. `V023_LOBBY_POLISH_REPORT.md`
-6. `V022_LOBBY_IMPLEMENTATION_REPORT.md`
-7. `V021_IMPLEMENTATION_REPORT.md`
-8. `V020_IMPLEMENTATION_REPORT.md`
-9. `DESIGN_DECISIONS.md`
-10. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-12. `SKILL_PLAN_LV6_31.md`
-13. `TIER_PRESSURE_GRAMMAR_V1.md`
-14. `PRESSURE_RECIPES_V1.md`
-15. `SIMULATION_METHOD.md`
-16. `NEXT_WORK.md`
+3. `V025_LAYOUT_POLISH_REPORT.md`
+4. `V024_RADAR_READABILITY_REPORT.md`
+5. `CHARACTER_PROFILE_RADAR_V1.md`
+6. `V023_LOBBY_POLISH_REPORT.md`
+7. `V022_LOBBY_IMPLEMENTATION_REPORT.md`
+8. `V021_IMPLEMENTATION_REPORT.md`
+9. `V020_IMPLEMENTATION_REPORT.md`
+10. `DESIGN_DECISIONS.md`
+11. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+12. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+13. `SKILL_PLAN_LV6_31.md`
+14. `TIER_PRESSURE_GRAMMAR_V1.md`
+15. `PRESSURE_RECIPES_V1.md`
+16. `SIMULATION_METHOD.md`
+17. `NEXT_WORK.md`
