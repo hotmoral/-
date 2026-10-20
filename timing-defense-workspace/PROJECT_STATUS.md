@@ -6,10 +6,11 @@ Updated: 2026-10-20 KST
 - Public repo: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning/balance/handoff branch: `timing-defense-workspace`
-- Current playable prototype: **v0.17**
-- Public play URL: `https://timing-defense-v011.onrender.com/v017.html`
-- Current live source HEAD: `8f46b2460f0d16b6103e0f10bec0b5206aa93ae6`
+- Current public LIVE prototype: **v0.17**
+- Public LIVE URL: `https://timing-defense-v011.onrender.com/v017.html`
 - Current Render deploy: `dep-dbbc3emq1p3s73c29csg` / LIVE
+- New v0.18 source loader exists on live branch, but at the latest check Render had not created a new deploy for it yet.
+- v0.18 source HEAD: `8c4314831dd1b1ff6c8fd56d3bbc234ec2c87ed6`
 
 ## Current playable scope
 - Landscape mobile/browser timing-defense prototype.
@@ -40,6 +41,7 @@ Lv21 is intentionally the first major fourth-attack transformation milestone. Lv
 - Boss knockback scalar = `0.40`.
 - EXP remains tied to timing attack events/results.
 - Faster clear does not receive compensating EXP merely because it generates fewer attacks.
+- Passive basic attacks, if enabled, do not grant EXP.
 - Simulation never self-authorizes a live numerical balance patch.
 
 ## Player mastery reference
@@ -49,12 +51,12 @@ Lv21 is intentionally the first major fourth-attack transformation milestone. Lv
 
 ---
 
-# Current playable changes — v0.17
+# Current public changes — v0.17
 
-v0.17 intentionally avoids auto-attack/combo numerical balance changes and applies only the already-approved system/UX changes.
+v0.17 intentionally avoids auto-attack/combo numerical balance changes and applies only approved system/UX changes.
 
 ### AI teammate growth parity
-AI teammates now internally carry:
+AI teammates internally carry:
 - independent EXP,
 - independent level,
 - automatic Lv6/11/16/21 unlocks,
@@ -76,7 +78,26 @@ Source files:
 - `timing-defense-v011/v017-ux-ai.js`
 - `timing-defense-v011/v017.html`
 
-v0.16 remains available as rollback/reference.
+---
+
+# v0.18 source state — combo counter only
+
+Source files:
+- `timing-defense-v011/v018-combo-ui.js`
+- `timing-defense-v011/v018.html`
+
+Implemented source behavior:
+- PERFECT combo counter appears from **1 COMBO**,
+- only accepted PERFECT timing judgments increment it,
+- heavy X and heavy Y each count independently,
+- GOOD / NORMAL / MISS reset to zero,
+- counter is positioned near the Timing Square,
+- visual emphasis steps at 5 / 10 / 20 / 30,
+- visual intensity caps at 30+, numeric counter does not cap.
+
+No passive basic attack, enemy-HP compensation, or numerical combo reward is included in v0.18 source yet.
+
+At latest check, Render still showed v0.17 as the public LIVE deploy. Do not claim v0.18 public-live until a Render deploy contains `8c431483...` or later.
 
 ---
 
@@ -124,35 +145,79 @@ Files:
 - `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
 - `combat_exact_v016.py`
 
-## v8 — latest: auto-attack + unbounded PERFECT combo diagnostic
-Approved concept:
-- passive basic attack creates limited battlefield-reading breathing room,
-- timing remains the dominant damage/progression source,
-- consecutive PERFECT combo is unbounded and resets only on non-PERFECT judgment,
-- rising visible streak itself creates psychological pressure,
-- no hidden timing-window/sweep-speed difficulty increase at high combo.
+## v8 — latest: passive basic attack + unbounded PERFECT combo
+Approved semantic direction:
+- passive basic attack exists to buy attention bandwidth, not replace timing play,
+- consecutive PERFECT combo is unbounded,
+- combo is visible from 1 near the Timing Square,
+- visual strength may cap at 30+ while the number keeps increasing,
+- no hidden timing-window/sweep-speed punishment at high combo.
 
-Leading first auto-attack test candidate:
-- 40 raw damage / 2.0 s,
+### Combo rarity
+Around 150 judgment opportunities:
+- Skilled P40: 5 combo ~61%, 10 ~0.87%, 20 essentially 0,
+- Expert P65: 10 ~50.6%, 20 ~0.83%, 30 ~0.014%,
+- Master-test P80: 20 ~27.8%, 30 ~3.23%, 40 ~0.30%.
+
+This supports 30/40 being rare, high-tension events rather than routine rotations.
+
+### Leading combo-power candidate
+Persistent timing damage while streak survives:
+- 5–9 +5%,
+- 10–19 +8%,
+- 20–29 +12%,
+- 30+ +15% cap.
+
+Class-specific milestone follow-ups at 5 / 10 / 20 / 30 and every +10 thereafter, with mechanical strength capped at the 30 tier.
+
+Reward-only Monte Carlo mean damage uplift over ~150 judgments:
+- Average ~0.01%,
+- Skilled ~0.26%,
+- Expert ~1.99%,
+- Master-test P80 ~4.74%.
+
+### Leading passive-attack A/B candidate after combat simulation
+- `40 raw damage / 2.0 s`,
 - no EXP / crit / charge / skill / combo,
-- ordinary-monster HP compensation around +8% as a **test candidate**, not frozen value.
+- ordinary-monster HP compensation around `+10%` as a **test candidate**, not frozen production value.
 
-Baseline math:
-- passive contribution ≈ 13.9% of Average timing DPS,
-- 10.8% of Skilled,
-- 8.8% of Expert.
+No-skill passive share:
+- ~13.9% of Average timing DPS,
+- ~10.8% of Skilled,
+- ~8.8% of Expert.
 
-At +8% ordinary HP, net pace remains slightly easier:
-- Average about +5.5%,
-- Skilled +2.6%,
-- Expert +0.7%.
+### Continuous-play Lv6 pressure check
+3P Average/Skilled:
+- baseline 67.9 / 79.2%,
+- passive40/2s + HP10% + balanced combo 72.4 / 80.9%.
 
-Combo rarity supports unlimited counting. In roughly 150 judgment opportunities:
-- Skilled P40 reaches 5 combo ~60.9%, 10 combo ~0.8%, 20 essentially never,
-- Expert P65 reaches 10 ~50.9%, 20 ~0.8%, 30 ~0.016%,
-- Master-like P80 reaches 20 ~27.5%, 30 ~2.9%, 40 ~0.3%.
+4P:
+- baseline 54.2 / 58.8%,
+- candidate 56.4 / 62.2%.
 
-Mechanical milestone coefficients remain unfrozen. Visual escalation candidate: 5 / 10 / 20 / 30+, with the number continuing indefinitely.
+### Battlefield-reading pause check
+Forced local pause: 2 seconds every 12 seconds.
+
+3P Average:
+- no pause/current 63.7%,
+- pause/current 61.3%,
+- pause + candidate 65.7%.
+
+3P Skilled:
+- 76.7 → 72.7 → 75.9%.
+
+4P Average:
+- 56.8 → 54.4 → 57.2%.
+
+4P Skilled:
+- 63.0 → 60.8 → 64.2%.
+
+Interpretation: the passive attack recovers most of the penalty from deliberately looking at the battlefield without collapsing overall pressure. This is the strongest reason to continue with the 40/2s + HP10% A/B candidate.
+
+Passive-only sanity check under current pressure samples:
+- 3P = 0% individual-stage clear,
+- 4P = 0%,
+- 2P ~12.2%, mostly because the wall barely survives; cleared 2P samples averaged only ~357/2000 wall HP.
 
 See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
@@ -160,20 +225,20 @@ See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
 # Current next boundary
 
-1. Human/device playtest v0.17 for:
-   - faded Timing Square readability,
-   - slightly wider four-character spacing,
-   - AI growth/skill behavior.
-2. Fix implementation defects only.
-3. Build the **auto-attack + combo experimental block** using v8 candidate values, but keep it as an explicitly testable balance slice.
-4. Simulate conservative/medium/aggressive combo reward variants before freezing mechanical milestone rewards.
-5. Compare no-timing / Average / Skilled / Expert survival and clear behavior.
+1. Confirm whether Render publishes v0.18 source.
+2. Device/browser check v0.18 combo-counter placement and visual escalation.
+3. Keep combo reward and passive auto-attack numbers out of live balance until the A/B block is explicitly implemented.
+4. Next playable A/B candidate:
+   - passive 40 / 2.0 s,
+   - ordinary HP +10%,
+   - combo 5/8/12/15% persistent cap + class milestone follow-ups.
+5. Run full-run progression simulation with wall HP carried between stages before freezing passive value; the current passive-only check is stage-local.
 6. Report/discuss before final monster-HP or reward coefficients are frozen.
 
 ## Still not frozen
-- final auto-attack interval/damage,
-- final HP compensation,
-- exact combo milestone mechanical rewards,
+- final passive attack interval/damage,
+- final HP compensation and elite/boss handling,
+- exact combo milestone visual/proc coefficients,
 - final E HP/armor package,
 - final X hardened values,
 - final stage duration,
