@@ -1,18 +1,27 @@
-// Timing Defense v0.18 — visible PERFECT streak counter only.
-// No combo damage/reward tuning in this patch.
+// Timing Defense v0.18 — visible PERFECT streak counter + milestone queue.
+// Counter is unbounded. Mechanical rewards live in v018-auto-combo.js.
 (function(){
   function initCombo(clear=false){
     if(clear||typeof S.v018Combo!=='number')S.v018Combo=0;
     if(clear||typeof S.v018ComboPulseUntil!=='number')S.v018ComboPulseUntil=0;
     if(clear||typeof S.v018ComboPeak!=='number')S.v018ComboPeak=0;
+    if(clear||!Array.isArray(S.v018PendingMilestones))S.v018PendingMilestones=[];
   }
   initCombo(false);
+
+  function milestoneFor(c){
+    if(c===5||c===10||c===20||c===30)return c;
+    if(c>30&&c%10===0)return c;
+    return 0;
+  }
 
   function recordJudge(judge,now){
     if(judge==='PERFECT'){
       S.v018Combo++;
       S.v018ComboPeak=Math.max(S.v018ComboPeak,S.v018Combo);
       S.v018ComboPulseUntil=now+230;
+      const m=milestoneFor(S.v018Combo);
+      if(m)S.v018PendingMilestones.push(m);
     }else{
       S.v018Combo=0;
       S.v018ComboPulseUntil=0;
