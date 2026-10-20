@@ -102,7 +102,8 @@ launchProjectile=function(owner,slot,cls,tier,damage,heavy=false,now=performance
     piercePreserve:owner==='local'&&cls==='archer'&&v016Has(16)&&hasPerfect,
     greaterBlade:owner==='local'&&cls==='knight'&&v016Has(21)&&heavy,
     groundImpact:owner==='local'&&cls==='tank'&&v016Has(21)&&heavy,
-    greaterOrb:owner==='local'&&cls==='mage'&&v016Has(21)&&heavy
+    greaterOrb:owner==='local'&&cls==='mage'&&v016Has(21)&&heavy,
+    lockLine:owner==='local'&&cls==='archer'
   });
 
   if(owner==='local'&&cls==='rogue'&&v016Has(6)){
@@ -119,7 +120,7 @@ launchProjectile=function(owner,slot,cls,tier,damage,heavy=false,now=performance
     for(const off of [-11,11]){
       v016PushProjectile({owner:'skill',skillResolve:'archer',slot,cls,tier:'SKILL',damage:Math.round(damage*.65),heavy:true,procCrit:false,hasPerfect,
         skillPower:true,v016SkillRank:rank,targetId:target?.id??null,sx:start.x,sy:start.y+off,tx:end.x,ty:end.y+off,lineOffsetY:off,life:life+.018,
-        armorIgnore:v016Has(16)&&hasPerfect,pierceMax:v016Has(6)?2:0,piercePreserve:v016Has(16)&&hasPerfect,tripleArrow:true});
+        armorIgnore:v016Has(16)&&hasPerfect,pierceMax:v016Has(6)?2:0,piercePreserve:v016Has(16)&&hasPerfect,tripleArrow:true,lockLine:true});
     }
   }
 
@@ -142,6 +143,20 @@ visualImpact=function(p,m,now,local){
     d.armor=oldArmor;d.knockResist=oldKnock;p.damage=oldDamage
   }
 };
+
+function v016ArcherPrimary(p){
+  const ax=p.sx,ay=p.sy,bx=p.tx,by=p.ty,dx=bx-ax,dy=by-ay,len2=dx*dx+dy*dy||1;
+  const out=[];
+  for(const m of S.monsters){
+    if(m.dead)continue;
+    const q=monsterAimPoint(m),t=((q.x-ax)*dx+(q.y-ay)*dy)/len2;
+    if(t<.02||t>1.15)continue;
+    const px=ax+t*dx,py=ay+t*dy,dist=Math.hypot(q.x-px,q.y-py);
+    const md=MONSTER_TYPES[m.type],hitR=H*.042*md.size*(m.scaleMul||1);
+    if(dist<=hitR)out.push({m,t})
+  }
+  out.sort((a,b)=>a.t-b.t);return out.length?out[0].m:null
+}
 
 function v016LineTargets(p,primary,maxCount){
   if(!primary||maxCount<=0)return[];
@@ -211,7 +226,8 @@ function v016ResolveDelayed(now){
 }
 
 resolveLocalHit=function(p,now){
-  let m=getMonster(p.targetId)||nearestMonster();if(m)visualImpact(p,m,now,true);
+  let m=p.cls==='archer'&&p.lockLine?v016ArcherPrimary(p):(getMonster(p.targetId)||nearestMonster());
+  if(m)visualImpact(p,m,now,true);
   if(m&&p.cls==='knight')v016KnightPierce(p,m,now);
   if(m&&p.cls==='tank')v016TankGroundImpact(p,m,now);
   if(m&&p.cls==='archer')v016ArcherPierce(p,m,now,true);
@@ -229,7 +245,11 @@ resolveLocalHit=function(p,now){
   S.phase='recover';S.phaseStart=now
 };
 
-function v016ResolveSkillHit(p,now){const m=getMonster(p.targetId)||nearestMonster();if(!m)return;visualImpact(p,m,now,true);if(p.skillResolve==='archer')v016ArcherPierce(p,m,now,true)}
+function v016ResolveSkillHit(p,now){
+  const m=p.skillResolve==='archer'&&p.lockLine?v016ArcherPrimary(p):(getMonster(p.targetId)||nearestMonster());if(!m)return;
+  visualImpact(p,m,now,true);
+  if(p.skillResolve==='archer')v016ArcherPierce(p,m,now,true)
+}
 
 update=function(now,dt){
   if(S.gameOver||S.runComplete){for(const p of S.particles){p.age+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=420*dt}S.particles=S.particles.filter(p=>p.age<p.life);for(const f of S.floats)f.age+=dt;S.floats=S.floats.filter(f=>f.age<f.life);return}
@@ -252,8 +272,11 @@ update=function(now,dt){
   }
   S.monsters=S.monsters.filter(m=>!m.dead||m.hitFlash>.02);
   for(const p of S.projectiles){
-    if(p.age<0){p.age+=dt;continue}p.age+=dt;let target=getMonster(p.targetId);if(!target){target=nearestMonster();p.targetId=target?.id??null}
-    if(target){const a=monsterAimPoint(target);p.tx=a.x;p.ty=a.y+(p.lineOffsetY||0)}
+    if(p.age<0){p.age+=dt;continue}p.age+=dt;let target=getMonster(p.targetId);
+    if(!(p.cls==='archer'&&p.lockLine)){
+      if(!target){target=nearestMonster();p.targetId=target?.id??null}
+      if(target){const a=monsterAimPoint(target);p.tx=a.x;p.ty=a.y+(p.lineOffsetY||0)}
+    }
     if(p.age>=p.life){p.dead=true;if(p.owner==='local')resolveLocalHit(p,now);else if(p.owner==='skill')v016ResolveSkillHit(p,now);else resolveAIHit(p,now)}
   }
   S.projectiles=S.projectiles.filter(p=>!p.dead);
