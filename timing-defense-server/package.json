@@ -1,0 +1,9 @@
+{
+  "name":"timing-defense-mp",
+  "version":"0.1.0",
+  "private":true,
+  "description":"Authoritative room/lobby service for Timing Defense",
+  "main":"server.js",
+  "scripts":{"start":"node server.js"},
+  "engines":{"node":">=20"}
+}
