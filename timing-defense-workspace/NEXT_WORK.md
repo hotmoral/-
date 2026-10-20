@@ -1,10 +1,10 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.33**
-- URL: `https://timing-defense-v011.onrender.com/v033.html`
-- Live source HEAD: `dfb369ed6aaeb8c2768f50e5a2995a7223ac921d`
-- Static Render deploy: `dep-dbbkbpks728c738o5feg` / LIVE
+- Public LIVE version: **v0.34**
+- URL: `https://timing-defense-v011.onrender.com/v034.html`
+- Live source HEAD: `6bfd51d7d496a0151d4448e71533b4e39de8eaa0`
+- Static Render deploy: `dep-dbbklbrbc2fs73bgtq70` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service ID: `srv-dbbimre1egvs73861d80`
 - Backend deploy: `dep-dbbkbno473hc73cldb30` / LIVE
@@ -18,79 +18,73 @@ Required order:
 
 ---
 
-# v0.33 validation — authoritative synchronized Stage 1
-Use two independent clients/devices.
+# Immediate validation — v0.34 multiplayer presentation
+Use the same Android + PC pair that passed v0.33 shared-HP validation.
 
-## Start transition
-1. Both clients join the same FRIEND/LINK room.
-2. Both READY.
-3. Host START.
-4. Both clients must leave the waiting room from the same server-owned `startAt` and enter Stage 1.
-5. Both must see the normal Stage 1 intro before combat.
+## Render smoothing
+1. Both clients join one v0.34 room and START.
+2. Android monster movement should no longer visibly step every server snapshot.
+3. PC and Android must still converge to the same authoritative enemy positions/HP.
+4. Knockback should animate smoothly but must reconcile to server position.
 
-## Shared world
-Verify continuously:
-- enemy count matches,
-- enemy HP trend matches,
-- enemy deaths match,
-- BASE HP matches,
-- Stage remains 1 on both,
-- server Stage 1 clear/game-over occurs on both.
+## Remote projectile VFX
+- PC human attack must show that PC player's class projectile on Android.
+- Android human attack must show that Android player's class projectile on PC.
+- AI FILL attack must show the AI class projectile.
+- Server passive attack must show a projectile from the relevant human slot.
+- Remote visual projectile must not apply damage locally; server snapshot remains the only authority.
+- No duplicated local projectile for the player performing the attack.
 
-## Human timing actions
-- A performs timing attacks; B must observe the same target HP reduction.
-- B performs timing attacks; A must observe the same target HP reduction.
-- server charge state must agree with the local 1–3 charge presentation.
-- local EXP/LV must update from server state.
-- repeated/stale action sequence must not double-apply damage.
-
-## AI / passive
-When AI FILL is configured:
-- AI damage must occur once on server, not separately per client.
-- passive `40 / 2.0s` must occur once per human on server, not separately per client.
-- no duplicated kills/coin/base damage from local simulation.
+## Shared-state regression
+Continue verifying:
+- enemy HP/death,
+- KILLS,
+- BASE HP,
+- local EXP/LV/charge,
+- Stage 1 clear/game-over,
+- AI/passive damage occurs once only.
 
 ## Runtime regression
 Also recheck:
 - portrait orientation gate,
 - full-width landscape rendering,
-- swipe/arrows,
+- character swipe/arrows,
 - combo visual unchanged,
 - BASE HP top-center HUD,
 - STAGE → LV → KILLS HUD,
 - FRIEND/LINK waiting-room layout remains unclipped.
 
-Fix only reproducible v0.33 synchronization/runtime defects before expanding scope.
+Fix only reproducible v0.34 rendering/runtime defects before expanding network scope.
 
 ---
 
-# Following network slice
-After v0.33 Stage 1 validation passes:
-1. Add reconnect/rejoin session recovery using authoritative run snapshot.
-2. Add explicit desync/revision diagnostics.
-3. Extend the server run state to Stage 2.
-4. Implement authoritative Stage 1 → shop transition.
-5. Implement multiplayer shop/economy ownership and synchronized NEXT.
-6. Validate Stage 2 after shop.
-7. Extend same contract through Stage 10.
-8. Move Lv6/Lv11/Lv16/Lv21 skill consequences under server authority.
-9. Improve remote teammate projectile/VFX fidelity without making VFX authoritative.
+# Following network slice after v0.34 PASS
+1. Add reconnect/rejoin session recovery using the current authoritative run snapshot.
+2. Add explicit run revision / desync diagnostics.
+3. Implement authoritative Stage 1 -> shop transition.
+4. Decide and implement multiplayer shop ownership/purchase semantics.
+5. Add synchronized NEXT gate.
+6. Extend server run state to Stage 2.
+7. Validate Stage 2 after a shared shop.
+8. Extend the same authority contract through Stage 10.
+9. Move Lv6/Lv11/Lv16/Lv21 skill consequences under server authority.
 10. Validate DUO / TRIPLE / FULL independently.
 
-Do not claim full end-to-end multiplayer Stage 1–10 until two independent clients complete a whole run from the same authoritative state.
+Do not claim full end-to-end Stage 1–10 multiplayer until two independent clients complete a whole run from the same authoritative state.
 
 ---
 
-# Current v0.33 authority contract
+# Current authority contract
 Client owns:
 - local Timing Square movement/input,
-- captured X/Y judgment.
+- captured X/Y judgment,
+- purely visual interpolation/projectile rendering.
 
 Server owns:
 - run id/seed/start time,
-- enemy spawn/id/position/HP,
+- enemy spawn/id/authoritative position/HP,
 - BASE HP,
-- target selection for shared damage,
+- target selection,
 - normal/heavy state from server charge,
 - final attack tier,
 - damage/knockback/kill,
@@ -129,7 +123,6 @@ After network foundation stabilizes:
 - complete Lv6+ skill authority,
 - duplicate-class rule,
 - DUO/TRIPLE/FULL reconciliation details,
-- remote projectile/VFX fidelity,
 - Lv26/Lv31 coefficients,
 - final passive damage/interval,
 - final HP compensation,
