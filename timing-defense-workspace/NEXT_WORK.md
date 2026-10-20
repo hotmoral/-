@@ -1,79 +1,80 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.28**
-- URL: `https://timing-defense-v011.onrender.com/v028.html`
-- Live source HEAD: `df6a18a2722e42e4e4046ff4e6c0b4fb44af894d`
-- Render deploy: `dep-dbbhkonavr4c73dtoe0g` / LIVE
+- Public LIVE version: **v0.30**
+- URL: `https://timing-defense-v011.onrender.com/v030.html`
+- Live source HEAD: `a235bf2dc0bd5bb5138b4bd89d81512345ec6713`
+- Render deploy: `dep-dbbhud8n74is73cp0rug` / LIVE
 
 ## Balance governance
 Do not production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
 Required order:
 `implement/test → measure → classify → report → discuss → explicit decision → numerical patch/freeze`.
 
-**Combo guard:** current combo visual/size/position/animation is approved. Do not change it unless the user explicitly asks.
+**Combo guard:** current combo visual/size/position/animation is approved. Do not change it unless explicitly requested.
 
 ---
 
-# Immediate device validation — v0.28
+# Immediate validation — v0.30 clean recovery
 
-## Orientation / viewport contract
-Timing Defense is landscape-only.
+## Why this build exists
+v0.27 introduced a self-retriggering MutationObserver in skill-level normalization. That concrete regression is now treated as the primary cause of the severe partial-render/freeze state.
 
-Verify on the same Samsung Browser / Android device:
-- direct landscape load fills the entire browser content width,
-- portrait mode never exposes the lobby/combat/result UI,
-- portrait shows only the dedicated `가로 화면 전용` gate,
-- rotating back to landscape restores the full-width lobby,
-- no left-half-only lobby / black-right-half state is visible,
-- if Samsung Browser retains a stale portrait-width viewport while physically landscape, the malformed lobby is hidden,
-- stale viewport repair is attempted automatically,
-- if repair does not settle, the recovery screen shows `가로 상태에서 새로고침`.
+v0.28/v0.29 viewport repair scripts are superseded and **not loaded** by v0.30.
 
-## v0.27 regression checks
-Character select:
-- six cards remain `3 × 2`,
-- skill names one line,
-- `습득 LV N` one line,
-- descriptions use full lower width,
-- radar preserves correct hex proportions,
-- arrow taps work,
+v0.30 keeps:
+- known v0.26 layout/combat HUD foundation,
+- desired v0.27 one-line skills/radar/swipe/result/waiting UX,
+- a targeted guard that prevents only the defective v0.27 observer from running,
+- a simple portrait-only orientation gate with no viewport width manipulation.
+
+## Samsung Browser validation
+Test on the same Android landscape setup:
+- direct v0.30 load fills the full browser content width,
+- page remains responsive rather than progressively freezing/partially painting,
+- no black-right-half state,
+- skill names remain one line,
+- `습득 LV N` remains one line,
+- radar keeps correct proportions,
+- arrow navigation works,
 - horizontal swipe works,
-- rapid swipe + arrow use does not double-step.
+- swipe + arrow use does not double-step,
+- portrait shows only the `가로 화면 전용` gate,
+- returning to landscape restores the full-width lobby.
 
-Combat/result:
+## Combat/result regression
+Verify:
 - combo unchanged,
 - combat title absent,
 - BASE HP top-center stable,
-- top-right STAGE → LV → KILLS stable,
+- STAGE → LV → KILLS top-right stable,
 - result names/class badges do not overlap,
 - RETRY / LOBBY remain separated.
 
-TEAM waiting UX:
-- FRIEND/LINK/RANDOM local waiting screens open correctly,
-- nickname/class/AI FILL slots preserved,
+## TEAM waiting UX
+Verify FRIEND / LINK / RANDOM:
+- local waiting screen opens,
+- nickname/class/AI FILL preserved,
 - READY/back controls work,
-- no fake link, match success, or remote participant,
-- START remains disabled before real networking.
+- no fake remote user/link/match success,
+- START remains disabled before actual networking.
 
-Fix implementation/visual defects directly. Do not change numerical combat balance or combo presentation from this validation.
+Fix only defects reproducible from the clean v0.30 chain. Do **not** reintroduce v0.28/v0.29 width heuristics unless separate evidence proves a viewport defect after the observer-loop removal.
 
 ---
 
-# Following implementation boundary — real multiplayer architecture
-Once v0.28 orientation + v0.27 UX validation is clean, move from local waiting UX to actual networking.
-
-Required architecture:
-1. room authority / backend state owner,
+# Following implementation boundary — actual multiplayer architecture
+Once v0.30 runtime/UI stability is confirmed:
+1. room authority / backend owner,
 2. FRIEND room create/invite/join lifecycle,
-3. LINK room URL/code contract and validation,
-4. RANDOM queue and match assignment,
+3. LINK room URL/code contract,
+4. RANDOM queue/match assignment,
 5. participant slot + class ownership,
-6. authoritative ready/start transition,
+6. authoritative ready/start,
 7. synchronized stage/run start,
-8. Attack Round / combat-event synchronization,
+8. Attack Round/combat-event synchronization,
 9. disconnect/reconnect grace handling,
-10. authoritative snapshot/reconciliation/desync policy,
+10. snapshot/reconciliation/desync policy,
 11. multiplayer shop/economy ownership.
 
 Do not claim real multiplayer until two independent clients share one authoritative room/game state.
@@ -81,10 +82,10 @@ Do not claim real multiplayer until two independent clients share one authoritat
 ---
 
 # Later gameplay/system work
-After network foundation is stable:
+After network foundation stabilizes:
 - implement Lv26 / Lv31 skills,
 - finalize duplicate-class policy,
-- rerun full-run progression and pressure simulation,
+- rerun full-run progression/pressure simulation,
 - validate solo / 2P / 3P / 4P,
 - finalize passive/ordinary HP/combo coefficients only after report/discussion,
 - finalize E/X pressure values and tier progression,
