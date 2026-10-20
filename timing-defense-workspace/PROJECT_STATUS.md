@@ -6,22 +6,23 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.32**
-- Public URL: `https://timing-defense-v011.onrender.com/v032.html`
-- Live source HEAD: `16b602221caf1d19c062e17363ac786d2bd20d18`
-- Static Render deploy: `dep-dbbivgjrjlhs73ee5bm0` / LIVE
+- Current public LIVE prototype: **v0.33**
+- Public URL: `https://timing-defense-v011.onrender.com/v033.html`
+- Live source HEAD: `dfb369ed6aaeb8c2768f50e5a2995a7223ac921d`
+- Static Render deploy: `dep-dbbkbpks728c738o5feg` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service: `srv-dbbimre1egvs73861d80`
-- Backend deploy: `dep-dbbims61egvs73861f10` / LIVE
+- Backend deploy: `dep-dbbkbno473hc73cldb30` / LIVE
 
 ## Core playable scope
 - Landscape timing-action side defense.
 - Rhythm: `X → X → X → X+Y`.
 - Classes: Knight / Rogue / Tank / Archer / Mage.
 - Monsters: GRUNT / RUNNER / BRUTE / SHIELD / FLYER.
-- Stage 1–10 run with EXP / level / coin / shop.
-- Class skills implemented through Lv21; Lv26/Lv31 planned.
-- AI teammates use internal timing/EXP/level/skills without visible AI Timing Squares.
+- Solo prototype: Stage 1–10 with EXP / level / coin / shop.
+- Multiplayer prototype: authoritative shared waiting room + **authoritative synchronized Stage 1 slice** in v0.33.
+- Class skills implemented locally through Lv21; multiplayer skill authority beyond base Stage 1 is not complete.
+- Lv26/Lv31 remain planned.
 
 ## Frozen role / combat direction
 - Knight = stable generalist / penetration / strong heavy.
@@ -68,9 +69,8 @@ Five visual levels. Equal levels are allowed. Radar is class-identity presentati
 - Combat title removed; combo untouched.
 - Landscape-only orientation gate.
 
-## v0.30 runtime recovery
+## Runtime recovery
 Read `V030_ROOT_CAUSE_RECOVERY_REPORT.md`.
-
 - v0.27 introduced a self-retriggering skill-level MutationObserver.
 - v0.30 blocks only that defective observer while preserving intended v0.27 UX.
 - v0.28/v0.29 viewport-forcing experiments are superseded and are not loaded.
@@ -78,100 +78,113 @@ Read `V030_ROOT_CAUSE_RECOVERY_REPORT.md`.
 
 ---
 
-# v0.31 — authoritative multiplayer-room foundation
-Read `V031_MULTIPLAYER_FOUNDATION_REPORT.md`.
+# v0.31 / v0.32 — real waiting-room foundation
+Read:
+- `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+- `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
 
-## Backend
-Source:
-- `timing-defense-server/server.js`
-- `timing-defense-server/package.json`
+Implemented and device-validated:
+- FRIEND/LINK real room creation and join,
+- invite URL `?room=<CODE>`,
+- participant slots / nickname / class,
+- host authority,
+- READY synchronization,
+- TEAM AI FILL state,
+- RANDOM matchmaking queue foundation,
+- server-authoritative future `startAt`,
+- FRIEND/LINK waiting-room clipping fix.
 
-Transport:
-- authoritative HTTP mutation endpoints,
-- Server-Sent Events for shared room state,
-- heartbeat/session expiry,
-- in-memory prototype room store.
-
-Server currently owns:
-- room code/method,
-- host session,
-- participant slots,
-- nickname/class,
-- READY state,
-- AI FILL positions/classes,
-- room status,
-- future synchronized `startAt`,
-- room revision.
-
-Implemented:
-- FRIEND/LINK room creation and join,
-- real invite URL `?room=<CODE>`,
-- shared participant/READY state,
-- server-authoritative host START gate,
-- RANDOM matchmaking queue,
-- leave/host reassignment,
-- room heartbeat/cleanup.
-
-TEAM rule remains:
-- SOLO AI 0–3,
-- TEAM AI FILL 0–2,
-- 4 total slots maximum,
-- at least one human slot preserved when configuring TEAM AI FILL.
-
-## Multiplayer truth boundary
-**Full multiplayer gameplay is not yet complete.**
-
-v0.31/v0.32 can legitimately claim a real shared authoritative waiting room and synchronized START gate.
-They must not yet claim synchronized combat.
-
-Required next network slice:
-- authoritative run snapshot,
-- synchronized local run start at `startAt`,
-- Attack Round/timing-result event synchronization,
-- enemy/wall/coin/EXP/level state ownership,
-- disconnect/reconnect snapshot recovery,
-- shop/economy authority,
-- desync detection/reconciliation.
+Two independent-device validation confirmed:
+- remote participant appears in the same room,
+- READY state propagates,
+- START is host-gated and requires all humans READY,
+- both clients receive the shared RUN STARTING state.
 
 ---
 
-# v0.32 — waiting-room layout hotfix
-Read `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`.
+# v0.33 — authoritative multiplayer Stage 1 combat slice
+Read `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`.
 
-Samsung Browser device feedback showed FRIEND/LINK left-panel clipping while networking itself remained functional.
+## Server authority
+`timing-defense-server/server.js` now owns a run object created at START.
 
-Fixed:
-- invite URL is one-line with ellipsis,
-- READY / INVITE / COPY LINK action row gets reserved space,
-- local-player card/status spacing is compacted,
-- short landscape height receives an extra compact layout,
-- footer space is explicitly reserved,
-- RANDOM networking flow is unchanged.
+For the v0.33 bounded slice the server owns:
+- run id / seed / `startAt`,
+- Stage 1 intro/combat state,
+- Stage 1 GRUNT spawning,
+- enemy ids / normalized positions / HP,
+- BASE HP,
+- run kills,
+- human EXP / level / charge / combo / kills / coin / damage,
+- passive attacks,
+- AI FILL attack timing/results,
+- ordered combat events,
+- Stage 1 clear / game-over.
 
-No networking semantics, combat, combo, or numerical balance changed.
+Server simulation cadence:
+- 50 ms tick,
+- authoritative room/run snapshots about every 100 ms while starting/running.
+
+## Player action authority split
+- Client owns local Timing Square input and captured `NORMAL / GOOD / PERFECT` judgments.
+- Client sends a monotonic action sequence plus X/Y judgments.
+- Server determines normal vs heavy state, final tier, combo bonus candidate, target, damage, knockback, kill, coin, EXP/level and charge.
+
+This avoids treating each client as an independent combat simulation.
+
+## Client integration
+New file:
+- `timing-defense-v011/v033-combat-sync.js`
+
+On server START the client:
+- schedules actual run entry from server `startAt`,
+- exits the waiting room,
+- starts Stage 1 intro,
+- disables local enemy spawn / local AI authority / local passive authority,
+- consumes server world snapshots,
+- sends completed local timing attacks to the server,
+- reconciles enemy/base/progression state from server snapshots,
+- renders remote humans/AI in the party area.
+
+## Multiplayer truth boundary
+v0.33 can claim a real server-authoritative **Stage 1 synchronization slice**.
+
+It must NOT yet claim full multiplayer gameplay across Stage 1–10.
+Still missing:
+- Stage 2–10 network state,
+- multiplayer shop/economy authority,
+- full Lv6+ skill resolution on server,
+- reconnect/rejoin recovery,
+- durable room/run persistence,
+- full remote projectile/VFX fidelity,
+- final desync reconciliation policy.
 
 ---
 
 # Immediate next boundary
-1. Device-test v0.32 FRIEND and LINK waiting rooms on the same Samsung Browser device.
-2. Confirm READY + INVITE/COPY LINK + lower status/link content are all visible without clipping.
-3. With two independent clients, verify participant/class/READY propagation both directions.
-4. Verify host-only START and common `startAt`.
-5. Verify leave/host reassignment.
-6. Verify RANDOM pairing with two independent searches.
-7. Fix only reproducible room/session/UI defects.
-8. Then implement synchronized combat/run state.
-9. After network foundation stabilizes, implement Lv26/Lv31 skills.
-10. Then rerun full-run Solo/2P/3P/4P simulations before numerical balance freeze.
+1. Two independent clients validate v0.33 START -> actual Stage 1 transition.
+2. Confirm both see the same enemy count and HP movement.
+3. Confirm A timing attack changes enemy HP on B and vice versa.
+4. Confirm BASE HP remains equal.
+5. Confirm local EXP / LV / charge come back from server correctly.
+6. Confirm AI FILL and passive damage occur once, identically on both clients.
+7. Confirm Stage 1 clear/game-over occurs on both.
+8. Fix only reproducible Stage 1 sync defects.
+9. Add reconnect snapshot recovery.
+10. Extend authority through Stage 2 + shop before expanding to Stage 10.
+11. Then integrate Lv6/Lv11/Lv16/Lv21 multiplayer skill resolution.
+12. After networking stabilizes, implement Lv26/Lv31 and rerun full Solo/2P/3P/4P simulations before numerical balance freeze.
 
 ## Still unresolved / not production-frozen
-- combat-state network authority,
-- reconnect grace and durable session recovery,
+- Stage 2–10 multiplayer state,
+- reconnect grace/session recovery contract,
+- durable/persistent room and run storage,
+- horizontal scaling strategy,
 - invite-link security/token contract,
-- persistent/horizontally-scaled room storage,
 - multiplayer shop/economy ownership,
 - duplicate-class policy,
-- DUO/TRIPLE/FULL combat synchronization details,
+- DUO/TRIPLE/FULL reconciliation details,
+- multiplayer Lv6+ skill authority,
 - Lv26/Lv31 coefficients,
 - final passive/HP/combo coefficients,
 - final E/X pressure values and tier structure,
