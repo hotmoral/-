@@ -1,109 +1,120 @@
 # Timing Defense — Next Work Boundary
 
-## Current boundary after live v0.16 + v7
+## Current boundary after live v0.17 + v8
 
-Do **not** change numerical balance merely because a class looks strong or weak in the new build.
+Do **not** freeze auto-attack, combo-reward or enemy-HP values from first impressions.
 
 Required governance:
-`implement/observe → classify implementation defect vs specialization vs real balance issue → report → discuss → explicit decision → numerical patch`
+`implement experiment → simulate/observe → classify intended breathing-room vs role effect vs balance defect → report → discuss → explicit decision → freeze numerical values`
 
 ## Current live state
-- Public version: **v0.16**
-- URL: `https://timing-defense-v011.onrender.com/v016.html`
-- Live source HEAD: `b8b823742bd5fb16026090045cd347feb0f9275e`
-- Render deploy: `dep-dbbb6pom7kps73ebd0eg` / LIVE
+- Public version: **v0.17**
+- URL: `https://timing-defense-v011.onrender.com/v017.html`
+- Live source HEAD: `8f46b2460f0d16b6103e0f10bec0b5206aa93ae6`
+- Render deploy: `dep-dbbc3emq1p3s73c29csg` / LIVE
 
-Implemented:
-- Lv6 / Lv11 / Lv16 / Lv21 for all five classes,
-- six-slot HUD reserving Lv6/11/16/21/26/31,
-- boss dagger scalar 0.70,
-- boss knockback scalar 0.40,
-- Mage Lv16 center-excluding Resonance,
-- Tank Lv11 -10% wall damage,
-- Tank Lv16 80/3s refresh-only shield,
-- class-specific Lv21 heavy transformations,
-- **Archer launch-line locking with no off-line retarget after launch**.
+v0.17 implemented only the already-approved low-risk/system changes:
+- Timing Square remains visible at reduced opacity between attacks,
+- four-player vertical spacing widened slightly,
+- AI teammates now gain internal EXP/levels and use Lv6/11/16/21 skills,
+- AI receives no visible Timing Square.
 
-## Closed implementation defect
-Initial v0.16 allowed generic `nearestMonster()` retarget after an Archer target died, which could bend Lv21 side arrows. This violated the frozen straight-line rule and was fixed before v7 interpretation.
-
-Fix commit:
-`b8b823742bd5fb16026090045cd347feb0f9275e`
-
-This was not a balance patch.
+Auto-attack and combo rewards are **not yet live-enabled**.
 
 ---
 
-# v7 exact-formula result now available
+# v8 design/simulation state
 
-See:
-- `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-- `combat_exact_v016.py`
+See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
 
-Final/formula-corrected campaign-bound volume: 12,300 runs.
+## Passive auto-attack leading candidate
+First experiment:
+- 40 raw damage,
+- every 2.0 s,
+- no EXP,
+- no charge,
+- no crit,
+- no skill proc,
+- no combo contribution,
+- minimal/zero knockback.
 
-Lv21 pressure bound:
-- 2P Average/Skilled = 100 / 100%,
-- 3P = 81.6 / 96.4%,
-- 4P = 52.8 / 73.6%.
+Current leading ordinary-monster HP compensation candidate: **+8%**, not frozen.
 
-T4 Crossfire remains hardest:
-- 3P 63.3 / 89.3%,
-- 4P 33.0 / 59.0%.
+Reason:
+- passive 40/2.0 contributes ~13.9% / 10.8% / 8.8% of Average / Skilled / Expert baseline timing DPS,
+- +8% HP still leaves a small real net relief instead of mathematically erasing the new system.
 
-Durable-normal targeted TTK still gives Rogue the intended win:
-- Rogue 20.54 / 15.92 s Average/Skilled,
-- Archer 25.44 / 19.76,
-- Knight 33.45 / 25.14,
-- Mage 39.98 / 31.31,
-- Tank 42.67 / 33.47.
+## PERFECT combo frozen semantics
+- only consecutive PERFECT judgments count,
+- GOOD/NORMAL/MISS break combo,
+- normal attacks = +1 opportunity,
+- heavy X and Y = +1 each,
+- fully PERFECT 1→4 sequence = +5,
+- counter is unbounded,
+- milestones never consume/reset the counter,
+- stage/shop downtime does not itself break it,
+- no hidden timing-window/sweep-speed penalty at high combo.
 
-No numerical rebalance is authorized.
+## Combo visual direction
+- 1–4 small counter,
+- 5+ hit-side combo number,
+- stronger presentation at 10 and 20,
+- 30+ may use a capped maximum visual tier,
+- numeric count continues 31/32/40/50+ indefinitely.
 
-Watch items only:
-- Archer broad Lv21 campaign throughput,
-- 2P saturation,
-- Mage-vs-Archer dense-pack separation,
-- future true-human teammate cadence.
+## Combo mechanical rewards
+Still unfrozen.
+Next simulation should compare at least three reward-strength families:
+- conservative,
+- medium,
+- aggressive.
+
+Prefer one-off class-specific milestone attacks/effects over an endlessly stacking permanent damage multiplier.
 
 ---
 
 # Immediate next execution slice
 
-## 1. Human/device/browser v0.16 playtest
-Check implementation/readability only:
-- page loads and plays normally,
-- six skill slots fit target landscape sizes,
-- Lv11/Lv16/Lv21 unlock and execute for all classes,
-- Archer arrow path stays visually straight when off-line enemies are nearby,
-- Tank shield absorbs, refreshes and expires after 3 s,
-- Rogue Lv21 5-dagger heavy preserves separate repeated impacts,
-- Mage Resonance visibly excludes the original center target,
-- Lv21 signature VFX remain readable under dense enemy overlap.
+## 1. v0.17 device/readability check
+Check:
+- faded Timing Square is readable but clearly inactive,
+- charge indicator remains useful during recovery,
+- four-character spacing exposes enough of each full-body silhouette/weapon,
+- AI level/skill behavior does not produce obvious formula or targeting errors.
 
-## 2. Fix defects only
-Examples of valid immediate fixes:
-- wrong target selection,
-- missing skill proc,
-- UI overlap,
-- incorrect timer/expiry,
-- VFX obscuring Timing Square,
-- formula mismatch against frozen implementation spec.
+Fix defects only.
 
-Examples that require discussion first:
-- class damage buffs/nerfs,
-- boss resistance changes,
-- EXP changes,
-- pressure recipe count/HP changes.
+## 2. Auto-attack + combo simulation block
+Build an exact experimental simulator on top of the v0.16/v0.17 combat formulas.
 
-## 3. After implementation/readability closure
-Resume pressure calibration using exact v7 formulas and targeted real-play evidence.
+Required comparison profiles:
+- no timing input / passive only,
+- Average,
+- Skilled,
+- Expert.
 
-Only then decide whether the next major feature block should be:
-- Lv26/Lv31 signature skills,
-- wider 50-stage tier authoring,
-- multiplayer synchronization/economy work,
-- or permanent/meta-stat progression.
+Required auto-attack grid around the leading candidate:
+- damage 35 / 40 / 45,
+- interval 1.8 / 2.0 / 2.2 s,
+- ordinary HP compensation 0 / 5 / 8 / 10 / 12%.
+
+Goals:
+- passive-only must not reliably clear intended content,
+- Average gets some real but limited breathing room,
+- Skilled should remain comfortably better than Average,
+- auto-attack must not erase class roles or timing mastery.
+
+## 3. Combo reward simulation
+Measure:
+- milestone reach frequency,
+- average added damage per run,
+- high-roll contribution at 10/20/30+,
+- whether one class benefits disproportionately from milestone mechanics.
+
+Do **not** artificially lower simulated PERFECT probability merely because combo is high. Psychological pressure is for human testing, not a hidden game modifier.
+
+## 4. Report before live numerical patch
+Only after the above should the first playable auto/combo balance build be chosen.
 
 ---
 
@@ -113,33 +124,28 @@ Pressure grammar:
 - E = Elite/Heavy,
 - X = Special/Mixed.
 
-Rules:
-- X is the main co-op scaling language,
-- S/E are timed spikes,
-- 1/2/3-pattern stages are all valid,
-- all three families are not required every stage,
-- higher tier does not automatically mean more active pattern types,
-- geometry/timing/internal ratios are gameplay data.
-
 Current candidate Swarm bursts:
 - line 2P/3P/4P = 8 / 11 / 14,
 - cluster = 7 / 10 / 13,
 - scatter = 9 / 12 / 16.
 
-Current candidate P95 4-second spawn density:
+Current P95 4-second spawn density reference:
 - 2P ≈ 11,
 - 3P ≈ 15,
 - 4P ≈ 18.
 
-Do not retune these solely from v7 simulation values.
+Do not retune pressure recipes until auto-attack/combo effects are measured.
 
 ## Still not frozen
-- literal final E HP/armor package,
+- final auto-attack damage/interval,
+- final HP compensation,
+- exact combo milestone rewards,
+- final E HP/armor package,
 - final X hardened multipliers,
 - exact stage duration,
 - final tier number/names/order,
 - multiplayer shop/economy ownership,
 - duplicate-class policy,
-- true human multiplayer cadence/network behavior,
+- human multiplayer cadence/network behavior,
 - sync DUO/TRIPLE/FULL rules,
 - Lv26/Lv31 coefficients.
