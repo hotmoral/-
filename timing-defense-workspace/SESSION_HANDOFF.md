@@ -2,6 +2,11 @@
 
 Updated: 2026-10-20 KST
 
+## Final handoff synchronization
+- Final freeze checkpoint: `HANDOFF_FREEZE_2026-10-20_2334KST.md`
+- Execution status: **PAUSED FOR NEW GPT SESSION HANDOFF**
+- The next GPT must verify GitHub live state before changing code or deploying.
+
 ## Canonical locations
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
@@ -59,7 +64,7 @@ Local checks already recorded as PASS:
 - portable root/static routing,
 - `/health` proxy to v0.35 backend.
 
-Do not duplicate this preparation unless live repository verification shows a mismatch.
+During the final handoff synchronization the three portable-host files were re-read directly from the live branch and confirmed present. Do not duplicate this preparation unless live repository verification shows a mismatch.
 
 ---
 
@@ -117,13 +122,13 @@ Android + PC device validation did not complete because Render suspended both se
 - Knight = stable generalist / penetration / strong heavy.
 - Rogue = multihit / crit / durable-normal execution; same-target dagger hits uncapped.
 - Tank = knockback / wall protection / team specialist.
-- Archer = strict straight-line penetration; no seeking/bending.
+- Archer = strict straight-line trajectory; no seeking/bending.
 - Mage = density/AoE specialist.
 - Boss dagger scalar `0.70`.
 - Boss knockback scalar `0.40`.
 - EXP remains tied to valid timing events; passive attacks grant no EXP.
 - Balance gaps must be reported/discussed before numerical patching.
-- Current combo display/size/position/animation is approved and must not change without explicit request.
+- Current combo display/size/position/animation is approved; do not change unless explicitly requested.
 
 Experimental, not production-frozen:
 - passive `40 raw / 2.0 s`,
@@ -162,7 +167,7 @@ Do not claim:
 
 The next session should **not** start new gameplay features first.
 
-1. Read canonical docs and verify live HEAD.
+1. Read `HANDOFF_FREEZE_2026-10-20_2334KST.md` and canonical docs; verify live/workspace HEADs.
 2. Confirm the Render outage evidence and do not retry old Render URLs as the primary recovery plan while quota remains exhausted.
 3. Deploy `portable-host.js` + v0.35 portable frontend to a replacement full-stack Node host.
 4. Validate on the new host:
@@ -188,20 +193,21 @@ The next session should **not** start new gameplay features first.
 ---
 
 # New-session read order
-1. `SESSION_HANDOFF.md`
-2. `PROJECT_STATUS.md`
-3. `V035_RENDER_QUOTA_OUTAGE_REPORT.md`
-4. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
-5. `V034_MULTIPLAYER_RENDER_SMOOTHING_REPORT.md`
-6. `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`
-7. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
-8. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
-9. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
-10. `DESIGN_DECISIONS.md`
-11. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-12. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-13. `SKILL_PLAN_LV6_31.md`
-14. `TIER_PRESSURE_GRAMMAR_V1.md`
-15. `PRESSURE_RECIPES_V1.md`
-16. `SIMULATION_METHOD.md`
-17. `NEXT_WORK.md`
+1. `HANDOFF_FREEZE_2026-10-20_2334KST.md`
+2. `SESSION_HANDOFF.md`
+3. `PROJECT_STATUS.md`
+4. `V035_RENDER_QUOTA_OUTAGE_REPORT.md`
+5. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
+6. `V034_MULTIPLAYER_RENDER_SMOOTHING_REPORT.md`
+7. `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`
+8. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
+9. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+10. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
+11. `DESIGN_DECISIONS.md`
+12. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+13. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+14. `SKILL_PLAN_LV6_31.md`
+15. `TIER_PRESSURE_GRAMMAR_V1.md`
+16. `PRESSURE_RECIPES_V1.md`
+17. `SIMULATION_METHOD.md`
+18. `NEXT_WORK.md`
