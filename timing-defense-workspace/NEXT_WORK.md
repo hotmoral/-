@@ -1,68 +1,79 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.23**
-- URL: `https://timing-defense-v011.onrender.com/v023.html`
-- Live source HEAD: `6a7a4acafda9fe7dc405455c73adc3d7065f1285`
-- Render deploy: `dep-dbbfierrjlhs73e3mfeg` / LIVE
+- Public LIVE version: **v0.24**
+- URL: `https://timing-defense-v011.onrender.com/v024.html`
+- Live source HEAD: `61ad74d833148d409dc65292f302bb9086c4e7c9`
+- Render deploy: `dep-dbbg528m7kps73esejbg` / LIVE
 
 ## Balance governance remains unchanged
-Do **not** production-freeze passive/combo/enemy-HP values from UX feedback.
+Do **not** production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
 Required order:
 `implement/test → measure → classify intent/artifact/defect → report → discuss → explicit decision → numerical freeze/patch`.
 
 ---
 
-# Immediate device validation — v0.23
+# Immediate device validation — v0.24
 
-## Character selection
-Verify:
-- only the centered hero visibly slides when class changes,
-- left class info and right skill info update cleanly,
-- arrows and swipe both work,
-- nickname input remains usable,
-- character silhouette/weapon remains readable.
+## Character profile radar
+Verify on Android landscape:
+- five concentric hex rings fit cleanly,
+- all six labels fit: 공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역,
+- class-color polygon is easy to read,
+- class-switch animation feels fast/premium,
+- center-out scan + staggered vertex fill does not look laggy,
+- old animation cancels when the user rapidly changes classes.
 
-## Skill roadmap
-Verify:
-- all six icons are visible together,
-- tapping any icon shows full skill name + full description,
-- descriptions do not truncate,
-- mechanic-specific icon shapes remain legible,
-- short Android landscape does not overflow.
+Approved five-level profiles are frozen as presentation data in `CHARACTER_PROFILE_RADAR_V1.md`.
 
-## Combat readability
+## Character / skill layout
 Verify:
-- Rogue Timing Square edge is now clearly visible on natural scenery,
-- Rogue 1–3 charge pips are visible in active/inactive states,
-- every valid local timing EXP event shows a fresh `+EXP N`, including gains between level-ups,
-- lower-left EXP float stays absent,
-- attack debug line stays hidden.
+- center hero has clearly more vertical room than v0.23,
+- hero never overlaps the right panel,
+- navigation arrows visually belong to the hero and remain easy to tap,
+- swipe still works,
+- all six skill cards fit as `3 × 2`,
+- every skill card shows icon/name/level/description without awkward clipping.
 
-## Play settings
+## TEAM lineup
 Verify:
+- bottom SUMMARY is gone,
+- each AI unit has enough vertical height,
+- five class choices wrap into two rows and none are clipped,
 - SOLO still allows 0–3 AI,
-- TEAM hides/disables +3 AI,
-- TEAM automatically leaves at least one human slot,
-- AI class buttons show readable glyph + KNI/ROG/TNK/ARC/MAG,
-- +3 SOLO AI no longer clips summary badly,
-- TEAM page no longer requires awkward internal scrolling for normal landscape height.
+- TEAM AI FILL still allows 0–2 AI and reserves at least one human slot.
 
-## End-run board
+## Rogue HUD
 Verify:
-- local nickname shown,
-- PLAYER/CLASS lines do not collide between rows,
-- rank medals align with values,
-- RETRY/LOBBY remain accessible.
+- Timing Square reads charcoal/black + silver, not red,
+- charge pips read black/silver in active and inactive states,
+- LV/EXP gauge and `+EXP N` read as black/silver,
+- contrast remains sufficient over both bright sky/ground and dark scenery.
 
-Fix implementation/visual defects only from this validation.
+## Projectile visibility
+Verify each class in live combat:
+- Knight blade wave recognizable,
+- Rogue dagger recognizable,
+- Tank shockwave recognizable,
+- Archer arrow recognizable,
+- Mage orb recognizable.
+
+v0.24 changes contrast/trails only; projectile travel life/timing remains unchanged.
+If the user still perceives only a blur after this pass, report the class(es) and discuss a small travel-time adjustment before applying it.
+
+## Existing regression checks
+- all valid timing EXP gains still show `+EXP N`,
+- lower-left EXP float absent,
+- attack debug line absent,
+- inside-square judgment still quick/readable,
+- result board rows/nickname remain correct,
+- READY → START flow intact.
 
 ---
 
-# Next implementation slice — v0.24 waiting-room UX
-The previously planned v0.23 waiting flow moved to v0.24 because v0.23 was used for device-feedback polish.
-
-Goal: implement user-visible TEAM waiting states without pretending real network connectivity exists.
+# Next implementation slice — waiting-room UX
+The originally planned waiting flow has been deferred because v0.23 and v0.24 were used for device-feedback polish.
+After v0.24 visual validation, implement the user-visible TEAM waiting states without pretending networking already works.
 
 ## FRIEND
 - waiting-room surface,
@@ -73,7 +84,7 @@ Goal: implement user-visible TEAM waiting states without pretending real network
 
 ## LINK
 - room/link presentation,
-- copy/share affordance only with truthful limitation,
+- truthful copy/share limitation before backend wiring,
 - joining/waiting/participant-slot state,
 - no fake join confirmation.
 
@@ -87,16 +98,16 @@ Goal: implement user-visible TEAM waiting states without pretending real network
 ## Shared rules
 - chosen nickname/class/tier preserved,
 - AI filler configuration preserved where valid,
-- TEAM AI max remains +2 so at least one human slot is reserved,
+- TEAM AI max remains +2,
 - leaving waiting returns safely to play settings,
 - combat never runs behind waiting UI.
 
 ---
 
 # Following boundary — real multiplayer architecture
-After v0.24 UX stabilizes:
+After waiting UX stabilizes:
 - room creation/authority,
-- invite/link contract,
+- shareable invite/link contract,
 - join/leave lifecycle,
 - random matchmaking queue,
 - slot/class ownership,
@@ -137,13 +148,17 @@ After lobby/network architecture reaches a stable combat model:
 7. report before numerical production freeze.
 
 ## Still unresolved
-- final passive/HP/combo coefficients,
+- final passive damage/interval,
+- final ordinary/elite/boss HP compensation,
+- combo/milestone coefficients,
 - final result-board metrics,
-- E/X values and tier structure,
+- final E/X pressure coefficients,
+- exact tier progression/count/names,
 - multiplayer economy/shop ownership,
 - duplicate-class policy,
-- DUO/TRIPLE/FULL sync,
+- sync DUO/TRIPLE/FULL rules,
 - Lv26/Lv31 coefficients,
 - room authority/network protocol,
 - invite/link security contract,
-- matchmaking/rejoin/reconciliation policy.
+- matchmaking policy,
+- disconnect/rejoin behavior.
