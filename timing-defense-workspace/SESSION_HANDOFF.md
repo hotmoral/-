@@ -5,224 +5,213 @@ Updated: 2026-10-20 KST
 ## Canonical locations
 - Public repository: `hotmoral/-`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Live playable branch: `timing-defense-live-v011`
-- Current live prototype: `v0.15`
-- Play URL: https://timing-defense-v011.onrender.com/v015.html
+- Live source branch: `timing-defense-live-v011`
+- Stable public prototype: `v0.15`
+- Stable URL: https://timing-defense-v011.onrender.com/v015.html
+- v0.16 source loader: `timing-defense-v011/v016.html`
+- v0.16 live-branch HEAD: `caa7e249f4b52aa3b6215ff2677b0c4973f3eb17`
 
-The workspace branch is the canonical source for design decisions, simulation interpretation and new-session recovery. The live branch is separate so analysis/documentation does not deploy automatically.
+The workspace branch is canonical for design decisions, simulation interpretation and new-session recovery. The live branch is separate.
+
+## Deployment status at handoff
+v0.16 source is committed, but the latest observed Render deployment still points to v0.15 commit `4ce695f...`.
+
+Render service:
+- service: `srv-dbb1c9mi0phs73b5bao0`
+- workspace: `tea-dba4s2ajnfac73ec91qg`
+- branch: `timing-defense-live-v011`
+- autoDeploy: `yes`
+
+Because auto-deploy is enabled, no duplicate manual deploy was triggered. Do not claim v0.16 public-live until Render reports a deployment containing `caa7e249...` or later.
 
 ---
 
-# Current playable state
-
-- Classes: Knight / Rogue / Tank / Archer / Mage.
-- Current live skill implementation: Lv6 only.
-- Planned automatic unlocks: `Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`.
-- Current playable stage prototype: 1–10.
-- Run EXP / coins / shop reset each run.
-- Team control currently supports solo through +3 AI.
-
-## Frozen combat / class-role decisions
+# Frozen combat / progression decisions
 - Knight: stable generalist / penetration / strong heavy.
-- Rogue: fast multihit / crit / high-HP normal execution.
-- Tank: team-specialist / knockback / wall protection / control. Fresh-run solo parity is not required.
-- Archer: true straight-line geometric penetration only. No homing/retarget/automatic next-target chaining.
-- Mage: density specialist / area burst / chained explosions.
-
-## Frozen boss / progression decisions
+- Rogue: multihit / crit / high-HP normal execution.
+- Tank: team-specialist / knockback / wall protection / control; fresh-run solo parity not required.
+- Archer: true straight-line geometric penetration only; no homing/automatic next-target chaining.
+- Mage: density specialist / AoE / chained explosions.
 - Rogue same-target dagger hits are uncapped.
-- Boss dagger damage scalar starting value = `0.70`.
-- Boss knockback scalar starting value = `0.40`.
-- EXP remains tied to timing attack results/events.
-- Faster-clearing classes are not compensated merely because they perform fewer attacks.
+- Boss dagger scalar = `0.70` starting value.
+- Boss knockback scalar = `0.40` starting value.
+- EXP remains tied to timing attack events/results.
+- Faster clear does not receive compensating EXP merely for fewer attacks.
 
-## Player mastery reference
+Player mastery reference:
 - Average = N25 / G55 / P20.
 - Skilled = N10 / G50 / P40 plus modestly faster commitment.
+- Skilled is considered attainable; strong mastery improvement is intended.
 
-Skilled is considered an attainable learned-player state. Strong Average→Skilled improvement is intended.
-
-## Balance governance
-Never patch solely because simulation shows a large performance gap.
-
-Required order:
-`model/simulate → identify cause/artifact/specialization → report → discuss → explicit decision → live patch`
+Balance governance:
+`model/simulate → identify cause/artifact/specialization → report → discuss → explicit decision → live balance patch`
 
 ---
 
-# Skill-design candidate through Lv21
+# v0.16 source implementation — completed
 
-See `SKILL_PLAN_LV6_31.md` for the full Lv6–31 tree.
+Files on live branch:
+- `timing-defense-v011/v016-core.js`
+- `timing-defense-v011/v016-ui.js`
+- `timing-defense-v011/v016-render.js`
+- `timing-defense-v011/v016.html`
 
-Through Lv21:
-- Knight: Lv6 +12% blade-wave damage; Lv11 penetration; Lv16 PERFECT enhancement; Lv21 large heavy blade wave.
-- Rogue: Lv6 second dagger; Lv11 +6%p crit; Lv16 PERFECT cycle reduction; Lv21 five-dagger heavy.
-- Tank: Lv6 width/knockback; Lv11 wall incoming damage -10%; Lv16 wall shield 80 / 3 s / refresh-only / non-stack; Lv21 broad heavy shockwave.
-- Archer: Lv6 straight-line penetration; Lv11 speed +25% / damage +10%; Lv16 PERFECT armor-ignore / preserved penetration; Lv21 triple shot.
-- Mage: Lv6 burst; Lv11 larger/stronger burst; Lv16 outer-ring resonance excluding the original center target; Lv21 greater arcane orb.
+v0.15 remains unchanged for rollback.
 
-These are implementation candidates, not automatic deployment authority.
+## Skill milestones implemented
+Actual mechanics implemented through:
+`Lv6 / Lv11 / Lv16 / Lv21`
+
+Six-slot HUD reserves:
+`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`
+
+### Knight
+- Lv6 +12% blade-wave damage.
+- Lv11 normal +1 penetration at 85%; heavy +2.
+- Lv16 attacks whose actual timing inputs contain PERFECT: +18% damage / +20% knockback.
+- Lv21 heavy +20% damage, larger wave, up to +3 penetrations.
+
+### Rogue
+- Lv6 second dagger 55%.
+- Lv11 +6%p native crit.
+- Lv16 PERFECT-containing attack: next recovery 390→312 ms.
+- Lv21 heavy = 5 daggers total: 100% + 45%×4.
+- no same-target cap.
+- boss dagger damage 70%.
+
+### Tank
+- Lv6 knockback ×1.30.
+- Lv11 wall incoming damage -10%.
+- Lv16 PERFECT-containing attack refreshes wall shield 80 / 3 s / non-stack.
+- Lv21 Ground Impact: broad nearby multi-target coverage; Tank heavy knockback ×2.0.
+- boss knockback 40%.
+
+### Archer
+- Lv6 up to 2 additional penetration targets.
+- actual line-projection + monster hit-corridor collision.
+- no X-order chaining / no bending.
+- secondary penetration before Precision uses the known live 52% coefficient.
+- Lv11 projectile speed +25% equivalent / base damage +10%.
+- Lv16 PERFECT-containing attack ignores armor and preserves penetration damage.
+- Lv21 heavy = three parallel arrows 100% + 65% + 65%.
+
+### Mage
+- Lv6 splash 50%.
+- Lv11 radius +35%, splash 60%.
+- Lv16 PERFECT-containing attack schedules second 55% outer-ring Resonance after ~180 ms; original center excluded.
+- Lv21 heavy +20% damage, explosion radius ×1.6, larger/slower Greater Arcane Orb.
+
+### HUD/VFX
+- single learned-skill icon replaced by horizontal six-slot strip below Timing Square.
+- new unlock pulses temporarily.
+- no permanent skill-name text beside EXP.
+- Tank shield HUD/VFX added.
+- Lv21 Knight/Tank/Mage heavy signature overlays added.
+
+Validation completed:
+- Node syntax PASS: `v016-core.js`, `v016-ui.js`, `v016-render.js`.
+- loader dependency check PASS.
+- live branch HEAD confirmed at `caa7e249...`.
+
+See `V016_IMPLEMENTATION_REPORT.md`.
 
 ---
 
-# Simulation history
+# Encounter / simulation history
 
-## v1 — role separation
-Established the intended class identity split.
-
-## v2 — Stage 1–10 + run shop
-Resolved:
-- Archer permissive auto-chain was a simulation artifact → straight-line only.
-- Tank solo weakness → accepted as team specialization.
-- EXP/attack-count coupling → retained.
-
-## v3 — mastery curve
-Confirmed a useful Average→Skilled progression and that cadence is an important skill dimension.
-
-## v4 — team composition / role isolation
-13,780 deliberate runs.
-
-Findings:
-- Tank has measurable team defensive value.
-- Rogue takes disproportionate durable-normal kills.
-- Archer wins line geometry; Mage wins dense geometry.
+## v4 — team role validation
+- Tank defensive team value confirmed.
+- Rogue durable-normal niche confirmed.
+- Archer line vs Mage cluster distinction confirmed.
 - Knight remains a stabilizing generalist.
-- current unscaled Stage 1–10 waves saturate at 3–4 players.
-
-Report: `BALANCE_SIM_REPORT_V4_TEAM.md`.
+- current unscaled Stage 1–10 saturates at 3–4 players.
 
 ## v5 — Tier Pressure Grammar
-Formalized long-run encounter variety for future 50-stage tiers.
-
 Pressure families:
-- `S` Swarm,
-- `E` Elite/Heavy,
-- `X` Special/Mixed.
+- S = Swarm,
+- E = Elite/Heavy,
+- X = Special/Mixed.
 
-Stages may use 1, 2 or 3 families; all three are not forced into every stage.
-
-Five representative 50-stage tier prototypes produced across 250 stages:
+Across five representative 50-stage tiers:
 - 1-pattern 40.8%,
 - 2-pattern 43.6%,
 - 3-pattern 15.6%.
 
-Tier identity is defined by pattern frequency, internal ratios, geometry, timing, intensity and overlap.
+Higher tiers do not simply add more simultaneous pattern types; identity also comes from ratio, timing, geometry, intensity and overlap.
+
+## v6 — concrete current-roster pressure recipes
+Swarm candidate burst sizes:
+- S-line 2P/3P/4P = 8 / 11 / 14,
+- S-cluster = 7 / 10 / 13,
+- S-scatter = 9 / 12 / 16.
+
+P95 4-second spawn-density candidate:
+- 2P ≈ 11,
+- 3P ≈ 15,
+- 4P ≈ 18.
+
+X is the main co-op scaling language through role-bearing composition. E is an effective durability budget rather than one giant HP multiplier.
+
+A conservative 7,000-run bound produced aggregate clear:
+- 2P Average/Skilled = 100/100%,
+- 3P = 88.4/94.9%,
+- 4P = 68.3/83.0%.
+
+An all-capable-human candidate-Lv21 upper bound still saturated near 100%, so final co-op difficulty was intentionally deferred until exact playable Lv11–21 existed. v0.16 now provides that exact source basis once runtime smoke validation closes.
 
 Files:
 - `TIER_PRESSURE_GRAMMAR_V1.md`
-- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
-- `pressure_grammar_sim_v1.py`
-
-## v6 — latest completed: concrete current-roster pressure recipes
-v6 converted S/E/X into GRUNT/RUNNER/BRUTE/SHIELD/FLYER recipes and checked readability + role preservation + combat bounds.
-
-### Candidate Swarm bursts
-- S-line 2P/3P/4P = `8 / 11 / 14`.
-- S-cluster = `7 / 10 / 13`.
-- S-scatter = `9 / 12 / 16`.
-
-### Candidate X direction
-X is the primary co-op scaling language:
-- add role-bearing SHIELD/BRUTE anchors,
-- add RUNNER/FLYER disruption,
-- vary line/cluster/split geometry,
-- avoid one flat global all-monster HP multiplier.
-
-### Candidate E direction
-E is an **effective durability budget**, not permission to create one absurd single HP bar. Final production should distribute the budget across moderate HP, armor, extra durable target(s), type and timing.
-
-### Readability result
-Across 250 generated stages per team-size model, approximate P95 4-second spawn density:
-- 2P = 11,
-- 3P = 15,
-- 4P = 18.
-
-The earlier overpacked candidate with 20+ ordinary enemies in one event was rejected.
-
-### Role-opportunity result
-Concrete recipes preserve broad class opportunity:
-- 2P: Knight 20.5 / Rogue 19.0 / Tank 20.2 / Archer 21.1 / Mage 19.2%.
-- 3P: 20.4 / 19.0 / 20.7 / 21.2 / 18.8%.
-- 4P: 20.4 / 19.1 / 20.5 / 21.2 / 18.8%.
-
-Tier-local specialist peaks remain, so the concrete roster did not collapse the abstract grammar.
-
-### Combat-envelope diagnostic
-Absolute final clear rate is not frozen because exact human multiplayer cadence and exact Lv11–21 implementation do not yet exist.
-
-Conservative-ish bound:
-- one human local player,
-- teammates approximate current live AI cadence/result quality,
-- 7,000 runs across all unique 2/3/4-player compositions, every possible local member, T1–T5, Average/Skilled.
-
-Aggregate clear:
-- 2P Average/Skilled = 100 / 100%.
-- 3P = 88.4 / 94.9%.
-- 4P = 68.3 / 83.0%.
-
-T4 Crossfire was hardest:
-- 3P = 77.7 / 90.3%.
-- 4P = 48.0 / 77.5%.
-
-Upper-ish bound:
-- all teammates modeled as fully capable humans,
-- candidate Lv21 kits,
-- idealized targeting.
-
-Representative slices saturate near 100%, so final co-op difficulty must wait for exact implementation.
-
-Files:
 - `PRESSURE_RECIPES_V1.md`
+- `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
 - `BALANCE_SIM_REPORT_V6_CONCRETE_RECIPES.md`
-- `pressure_recipe_sim_v1.py`
-
-No live gameplay value changed from v6.
 
 ---
 
 # Exact next work boundary
 
-Further co-op numeric tuning pauses here.
+1. Confirm Render auto-deploy of v0.16.
+2. Public smoke test v0.16 for runtime/UI/mechanics defects.
+3. Fix implementation defects only; do **not** tune class/stage numbers from first impressions.
+4. Extract exact v0.16 formulas into the simulator.
+5. Re-run the concrete S/E/X recipes under 2/3/4-player models.
+6. Compare mastery response, role contribution, wall pressure, clear rate and suspicious windows.
+7. Report/discuss before any numerical rebalance.
 
-Next implementation slice:
-1. implement Lv6 / Lv11 / Lv16 / Lv21 for all five classes,
-2. add multi-skill HUD strip below Timing Square,
-3. implement exact straight-line Archer collision,
-4. keep boss dagger scalar 0.70 and boss knockback scalar 0.40,
-5. implement agreed Mage/Tank candidate behavior,
-6. do not simultaneously redesign stage difficulty.
-
-After implementation:
-1. extract exact formulas back into the simulator,
-2. rerun `PRESSURE_RECIPES_V1` under 2/3/4-player models,
-3. identify suspicious windows/stages,
-4. human-play only those targeted slices,
-5. report/discuss before any live numerical rebalance.
+## Smoke-test checklist
+- v0.16 loads without runtime errors.
+- six skill slots fit target landscape sizes.
+- Lv11/Lv16/Lv21 unlock and execute for all five classes.
+- Archer penetration remains physically straight.
+- Tank shield absorbs/refreshes/expires correctly.
+- Rogue barrage preserves repeated hits.
+- Mage Resonance excludes original center.
+- Lv21 heavy VFX remains readable under overlap.
 
 ## Still unresolved
 - final E HP/armor package,
 - final X hardened values,
 - final stage duration,
-- true human multiplayer cadence/network behavior,
+- real human multiplayer cadence/network behavior,
 - multiplayer shop/economy ownership,
 - duplicate-class policy,
-- sync round / DUO-TRIPLE-FULL SYNC implementation,
-- final number/names/order of tiers,
-- Lv26/Lv31 exact coefficients.
+- sync DUO/TRIPLE/FULL rules,
+- final tier count/names/order,
+- Lv26/Lv31 coefficients.
 
 ---
 
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `DESIGN_DECISIONS.md`
-4. `TIER_PRESSURE_GRAMMAR_V1.md`
-5. `PRESSURE_RECIPES_V1.md`
-6. `SKILL_PLAN_LV6_31.md`
-7. `BALANCE_SIM_REPORT_V4_TEAM.md`
-8. `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
-9. `BALANCE_SIM_REPORT_V6_CONCRETE_RECIPES.md`
-10. `SIMULATION_METHOD.md`
-11. `NEXT_WORK.md`
+3. `V016_IMPLEMENTATION_REPORT.md`
+4. `DESIGN_DECISIONS.md`
+5. `SKILL_PLAN_LV6_31.md`
+6. `TIER_PRESSURE_GRAMMAR_V1.md`
+7. `PRESSURE_RECIPES_V1.md`
+8. `BALANCE_SIM_REPORT_V4_TEAM.md`
+9. `BALANCE_SIM_REPORT_V5_PRESSURE_GRAMMAR.md`
+10. `BALANCE_SIM_REPORT_V6_CONCRETE_RECIPES.md`
+11. `SIMULATION_METHOD.md`
+12. `NEXT_WORK.md`
 
 Older v1/v2/v3 reports remain available for numerical provenance and decision history.
