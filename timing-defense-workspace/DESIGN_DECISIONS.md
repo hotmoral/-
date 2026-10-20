@@ -7,12 +7,37 @@
 - P×P on heavy = CRITICAL.
 - Tap-anywhere remains the intended control model.
 
-## Target visibility integrity
-- A monster may be damaged only after its aim point has entered the visible viewport.
-- Spawning beyond the right edge must not make an enemy targetable yet.
-- Local, AI, passive, pierce and AoE damage all obey the same visibility rule.
-- Unseen/off-screen kills must not award kill coin.
-- If no enemy is visible, a timing input may still complete its attack animation/empty forward shot; the rhythm must not silently stall.
+## Target visibility / turn-boundary integrity
+- A monster may be targeted/damaged only after its aim point enters the visible viewport.
+- Spawning beyond the right edge does not make an enemy targetable.
+- Local, AI, passive, pierce and AoE damage obey the same visibility rule.
+- Unseen/off-screen kills must not award rewards.
+- Attack input must not force-spawn an invisible target.
+
+### Timing-turn gating
+- A **new** Timing Square turn starts only while a valid visible enemy exists.
+- If no visible target exists at the next-turn boundary, the square pauses in a waiting state and does not sweep.
+- Passive and AI attacks also wait rather than attacking empty space or generating progression.
+- Empty timing turns must not generate EXP.
+
+### In-progress turn continuity
+Once a timing turn begins with a visible target, that whole turn is locked as valid.
+
+If the final visible target disappears because of AI/passive/team damage while the needle is moving:
+- do **not** cancel or snap-stop the current turn,
+- normal X may still be tapped,
+- fourth-attack X must still be allowed to continue into Y,
+- the full X→Y sequence may finish,
+- that already-valid turn may still resolve its normal timing judgment/EXP,
+- only the following turn waits if no target is visible.
+
+Reason: cancelling mid-turn due to teammate kills can look like latency, dropped input, or an unresponsive Timing Square.
+
+Target-wait itself does **not** break PERFECT combo. Only an actual non-PERFECT timing judgment breaks it.
+
+Stage-clear/shop/final-clear transition should wait for an already-valid local timing turn to finish or naturally time out.
+
+---
 
 ## Class roles
 The classes solve different combat problems rather than converging to identical DPS.
@@ -61,18 +86,17 @@ Simulation reference:
 Skilled is treated as an attainable learned-player state, not an extreme expert state. Strong Average→Skilled improvement is desirable and must not automatically trigger nerfs.
 
 ## EXP philosophy
-- EXP remains tied to timing attack results/events.
-- Faster-killing classes are not compensated simply because they perform fewer attacks and therefore may level more slowly.
-- Different growth pace is accepted as part of overall run balance unless a concrete progression failure appears later.
+- EXP remains tied to valid timing attack results/events.
+- Faster-killing classes are not compensated merely because they perform fewer attacks.
 - Passive auto-attacks do **not** grant EXP.
+- A turn that was valid when started may still grant its normal timing EXP if the target disappears during that same turn.
+- A turn must not start solely to farm EXP while no visible target exists.
 
 ## Balance-change governance
-Simulation is diagnostic first.
-
 Required order:
-`model/simulate → identify cause or model artifact or intentional specialization → report → discuss → explicit decision → live patch`
+`model/simulate → identify cause/artifact/intentional specialization → report → discuss → explicit decision → live patch`
 
-A large measured gap never self-authorizes a balance change.
+A large measured gap never self-authorizes a numerical change.
 
 ---
 
@@ -88,203 +112,168 @@ A large measured gap never self-authorizes a balance change.
 ## Stage grammar
 A stage may use one, two or all three pressure families. Do **not** force S+E+X into every stage.
 
-A 50-stage tier receives identity through:
-- 1/2/3-pattern stage proportions,
+A 50-stage tier gets identity through:
+- 1/2/3-pattern proportions,
 - S/E/X frequency,
-- internal pair/triple ratios,
+- pair/triple ratios,
 - early/mid/late/final timing,
-- formation geometry,
+- geometry,
 - duration/intensity,
 - overlap frequency.
 
-Higher tier does not automatically mean more active pattern types. A high tier may return to focused 1-pattern stages with much stronger intensity.
+Higher tier does not automatically mean more pattern types; focused one-pattern stages may return with much stronger intensity.
 
-Three-pattern stages remain a minority globally so they retain a chaos/event identity.
+## Concrete pressure candidates
+- S-line 2P/3P/4P = `8 / 11 / 14`.
+- S-cluster = `7 / 10 / 13`.
+- S-scatter = `9 / 12 / 16`.
 
-## Geometry is gameplay data
-- line pressure creates Archer opportunities,
-- dense cluster creates Mage opportunities,
-- durable anchors create Rogue opportunities,
-- split/special leakage creates Tank opportunities,
-- awkward transitions preserve Knight generalist value.
-
-## Concrete recipe candidate after v6
-See `PRESSURE_RECIPES_V1.md`.
-
-### Swarm burst counts
-- S-line: 2P/3P/4P = `8 / 11 / 14`.
-- S-cluster: `7 / 10 / 13`.
-- S-scatter: `9 / 12 / 16`.
-
-Do not solve 4-player difficulty by dumping 20–30 ordinary enemies into every spike.
-
-### Special/mixed scaling
-Additional players primarily add role-bearing anchors and disruptive composition:
-- extra SHIELD / BRUTE anchors,
-- more RUNNER / FLYER pressure,
-- split geometry,
-- event-budget density.
-
-Avoid one flat global all-monster HP multiplier.
-
-### Elite durability
-Treat E as an **effective durability budget**, not permission to create one absurd health bar.
-Distribute the budget through moderate HP, armor, an extra durable target and type/timing composition.
-
-### Readability envelope
-Current candidate structural calibration across 250 prototype stages per team-size model keeps approximately:
-- 2P P95 4-second spawn burst ≈ 11,
+Current reference P95 four-second spawn density:
+- 2P ≈ 11,
 - 3P ≈ 15,
 - 4P ≈ 18.
 
-This is an authoring/reference envelope, not a permanent engine cap. Exceptional chaos stages may deliberately exceed it after human visual testing.
+X carries most multiplayer scaling through role-bearing composition. E is an effective durability budget rather than one giant HP sponge.
 
 ---
 
 # Auto-attack direction — approved concept, numbers not frozen
 
-Purpose: let the player briefly read the battlefield without combat going completely idle, while timing remains the overwhelmingly dominant source of power.
+Purpose: let the player briefly read the battlefield without combat going completely idle while timing remains dominant.
 
 Semantic rules:
-- passive/basic attack fires independently while combat is active,
+- fires independently only while a valid visible combat target exists,
 - no timing judgment,
-- no CRIT/proc-crit,
+- no crit/proc-crit,
 - no skill trigger,
-- no charge generation,
+- no charge,
 - no PERFECT combo contribution,
 - no EXP,
 - minimal/zero knockback.
 
-Do not compensate enemy HP 1:1 for the full passive contribution. The passive system must create a small amount of real breathing room.
+Leading A/B candidate:
+- passive = `40 raw / 2.0 s`,
+- ordinary non-boss HP compensation = about `+10%`,
+- bosses/elites calibrated separately.
 
-After v8 combat and forced-observation testing, the leading **A/B candidate** is:
-- passive attack = `40 raw damage / 2.0 s`,
-- ordinary-monster HP compensation = about `+10%`,
-- bosses/elites should be calibrated separately rather than blindly using the same percentage.
-
-This candidate recovered most of the clear-rate penalty from a forced 2-second battlefield-reading pause every 12 seconds while only modestly increasing continuous-play clear rate. It is still a test value, not frozen production balance.
-
-See `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`.
+Do not compensate passive damage 1:1; some real breathing room is intentional.
 
 ---
 
-# Consecutive PERFECT combo — approved direction
+# Consecutive PERFECT combo
 
 ## Counter rule
-- Only PERFECT increments combo.
-- GOOD / NORMAL / MISS reset combo to zero.
+- Only PERFECT increments.
+- GOOD / NORMAL / MISS reset to zero.
 - Attacks 1–3 can each add +1.
 - Heavy X and heavy Y can each add +1.
-- Therefore a fully PERFECT 1→4 sequence adds **5 combo**.
-- Combo is **unbounded**: 20, 30, 40, 50+ remain valid.
-- Reaching a milestone never consumes/resets the counter.
-- Stage/shop downtime does not itself break combo; only a non-PERFECT timing judgment does, unless later explicitly changed.
+- Fully PERFECT 1→4 sequence adds 5 combo.
+- Counter is unbounded: 20 / 30 / 40 / 50+.
+- Milestones never consume/reset the streak.
+- Stage/shop/target-wait downtime does not itself break combo.
 
 ## Psychological-pressure rule
-The rising visible streak is itself part of the difficulty.
+High visible streaks should make the player nervous naturally.
+Do **not** secretly shrink the timing window, accelerate sweep speed, or apply hidden accuracy penalties at high combo.
 
-Do **not** secretly make timing harder at high combo:
-- no shrinking PERFECT window,
-- no sweep acceleration,
-- no hidden accuracy penalty.
+## Presentation
+- Show from `1 COMBO` so the player never has to count manually.
+- Primary location is near Timing Square.
+- Do not keep a permanent boxed HUD.
+- Every PERFECT produces a short tilted punch/scale popup, then fade-out.
+- Visual strength tiers: 1–4 / 5–9 / 10–19 / 20–29 / 30+.
+- Visual intensity may cap at 30+, numeric count never caps.
 
-The intended tension is: the player sees a valuable 20/30/40 streak, becomes increasingly conscious of what can be lost, and is more likely to make a genuine input mistake.
+## Mechanical reward candidate
+Persistent timing bonus:
+- 5–9 +5%
+- 10–19 +8%
+- 20–29 +12%
+- 30+ +15% cap
 
-## Counter presentation — current approved direction after device playtest
-- Combo must be shown from **1 COMBO**; the player must never have to count manually.
-- Primary location is **near the Timing Square**, not the monster impact point.
-- Do **not** keep the number permanently boxed on screen between hits.
-- On each PERFECT, show the current number as a brief impact-style pop:
-  - slightly tilted,
-  - quick punch/scale-in,
-  - then fade out.
-- Visual intensity scales by tier:
-  - 1–4: small/quiet,
-  - 5–9: mild class-color emphasis,
-  - 10–19: larger pulse/glow,
-  - 20–29: stronger streak feedback,
-  - 30+: maximum visual tier may plateau.
-- **Only presentation intensity may plateau at 30+. The numeric count never caps.**
+Milestone follow-up:
+- 5 small,
+- 10 medium,
+- 20 strong,
+- 30 maximum,
+- 40/50/60… repeat 30-tier power rather than scaling forever.
 
-The player remembers the streak through repeated feedback; the screen should not carry a permanent HUD box solely to show it.
+Current raw-equivalent A/B budgets:
+`60 / 90 / 150 / 210 cap`.
 
-## Mechanical reward candidate after v8
-The counter remains unlimited, but mechanical power is capped to avoid runaway scaling.
-
-Leading candidate:
-- 5–9 combo: timing-attack damage +5%,
-- 10–19: +8%,
-- 20–29: +12%,
-- 30+: +15% cap.
-
-Milestone class follow-ups:
-- 5: small class echo,
-- 10: medium class follow-up,
-- 20: strong class follow-up,
-- 30: maximum follow-up,
-- 40 / 50 / 60 … repeat the 30-tier strength rather than increasing forever.
-
-Reward-only Monte Carlo indicates mean total damage uplift is tiny for Average/Skilled and remains bounded even for very high accuracy, so the main value of high combo remains tension/prestige rather than mandatory DPS snowballing.
-
-Class reward language should preserve identity:
-- Knight: extra blade/frontline break,
-- Rogue: dagger burst,
-- Tank: shockwave/protection,
-- Archer: extra straight-line shot,
+Class reward language:
+- Knight: extra blade/frontline break.
+- Rogue: dagger burst.
+- Tank: shockwave/protection.
+- Archer: extra straight-line shot.
 - Mage: secondary explosion.
 
-Exact visual/proc coefficients remain candidate values until the playable A/B is tested.
+---
+
+# Stage-start presentation
+Every stage should establish a clear boundary before play resumes.
+
+Current approved flow:
+`STAGE N / READY → fade out → combat begins`.
+
+While stage-intro text is present:
+- no enemy spawn/movement progression,
+- no AI/passive attack,
+- no Timing Square sweep/input.
+
+Combo is preserved through the intro.
 
 ---
 
 # End-run team contribution presentation
 
-On run clear/game over, show a compact team summary in the same top-to-bottom character slot order:
+On clear/game over, show rows in actual top-to-bottom character-slot order:
 1. local player,
 2. teammate slot 2,
 3. teammate slot 3,
 4. teammate slot 4.
 
-Current first-pass metric set:
+Current metric set:
 - KILLS,
 - DMG,
 - COIN contribution,
 - LV,
 - MAX COMBO.
 
-Every metric must make ranking obvious at a glance rather than only showing raw values.
-Current rank language:
-- 1st = gold / strongest emphasis,
-- 2nd = silver,
-- 3rd = bronze,
-- 4th = muted.
+Every metric must make ranking obvious at a glance:
+- 1st gold,
+- 2nd silver,
+- 3rd bronze,
+- 4th muted.
 
-The purpose is not to force one global MVP. Different classes should be able to lead different categories so their contribution is socially legible.
+Do not force one global MVP; different classes should visibly lead different categories.
 
 ---
 
-## UI hierarchy
+# UI hierarchy
 - Charge stack above Timing Square.
 - Learned skill icons below Timing Square.
 - EXP gauge immediately right of Timing Square.
-- No permanent skill-name text beside EXP.
+- Combat judgment text sits beside EXP/right of Timing Square at smaller size; it must not overlap the square or combo pop.
 - Timing Square renders above monsters.
-- Between timing attacks, the Timing Square should remain visible at reduced opacity instead of disappearing, so charge/location remain continuously readable.
-- Combo pop appears near the Timing Square only at PERFECT moments, not as a persistent box.
+- Between active attacks the square remains visible at reduced opacity.
+- While waiting for a visible target, the square remains visibly paused rather than disappearing.
+- Combo popup appears only at PERFECT moments near the Timing Square.
+- Stage-start message is large and centered.
+- Prototype test descriptors should not consume battlefield visibility.
 
 ## Team presentation
 - AI teammates do not receive visible Timing Squares.
-- AI internally receives timing results, EXP, levels and automatic class skill unlocks.
-- AI progression is independent state, intended to be a closer stand-in for future human teammates.
-- Four-character vertical spacing should be wide enough that full-body silhouettes and weapons remain readable.
-- Current v0.19 spacing candidate: `.255 / .405 / .555 / .705` with scale `.41`.
-- Temporary prototype mode controls should not constrain the future production character layout.
+- AI internally receives timing results, EXP, levels and automatic skill unlocks.
+- Four-character spacing should preserve full-body silhouettes and weapons.
+- Current v0.20 candidate slot Y = `.265 / .425 / .585 / .745`, scale `.41`.
+- Temporary prototype controls do not define the final production character area.
 
 ## Class color language
 - Knight: gold / bright steel.
-- Rogue: charcoal / silver / minimal red accent.
+- Rogue: charcoal / silver / minimal red.
 - Tank: blue / dark steel.
 - Archer: green.
 - Mage: purple.
 
-The palette propagates through character clothing, weapons, projectiles, Timing Square, EXP gauge, skill icon and impact VFX.
+Class color propagates through clothing, weapons, projectiles, Timing Square, EXP, skill icons and impact VFX.
