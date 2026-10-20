@@ -1,302 +1,40 @@
 'use strict';
-
-const http = require('http');
-const crypto = require('crypto');
-const { URL } = require('url');
-
-const PORT = Number(process.env.PORT || 10000);
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://timing-defense-v011.onrender.com';
-const ROOM_TTL_MS = 2 * 60 * 60 * 1000;
-const PARTICIPANT_STALE_MS = 45 * 1000;
-const RANDOM_TTL_MS = 90 * 1000;
-const CLASSES = new Set(['knight','rogue','tank','archer','mage']);
-const METHODS = new Set(['friend','link','random']);
-
-const rooms = new Map();
-const streams = new Map();
-const randomTickets = new Map();
-const randomQueue = [];
-
-function now(){ return Date.now(); }
-function id(bytes=16){ return crypto.randomBytes(bytes).toString('hex'); }
-function roomCode(){
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  for(let tries=0; tries<100; tries++){
-    let code='';
-    for(let i=0;i<6;i++) code += alphabet[crypto.randomInt(alphabet.length)];
-    if(!rooms.has(code)) return code;
-  }
-  throw new Error('room-code-exhausted');
-}
-function cleanNick(v){
-  const s = String(v || '').trim().slice(0,12);
-  return s || 'PLAYER';
-}
-function cleanClass(v){ return CLASSES.has(v) ? v : 'knight'; }
-function cleanMethod(v){ return METHODS.has(v) ? v : 'friend'; }
-function cleanAiFill(value){
-  if(!Array.isArray(value)) return [];
-  const used = new Set();
-  const out=[];
-  for(const item of value){
-    const pos = Number(item?.pos);
-    const cls = cleanClass(item?.cls);
-    if(pos < 2 || pos > 4 || used.has(pos)) continue;
-    used.add(pos); out.push({pos, cls});
-    if(out.length >= 2) break;
-  }
-  return out.sort((a,b)=>a.pos-b.pos);
-}
-
-function cors(req,res){
-  const origin = req.headers.origin;
-  if(origin && (origin === ALLOWED_ORIGIN || process.env.ALLOW_ANY_ORIGIN === '1')){
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Vary','Origin');
-  } else if(!origin) {
-    res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
-  }
-  res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers','Content-Type');
-  res.setHeader('Cache-Control','no-store');
-}
-function json(res,status,data){
-  res.statusCode=status;
-  res.setHeader('Content-Type','application/json; charset=utf-8');
-  res.end(JSON.stringify(data));
-}
-function text(res,status,data){
-  res.statusCode=status;
-  res.setHeader('Content-Type','text/plain; charset=utf-8');
-  res.end(data);
-}
-function readJson(req){
-  return new Promise((resolve,reject)=>{
-    let body='';
-    req.on('data',c=>{ body += c; if(body.length > 64*1024){ reject(new Error('body-too-large')); req.destroy(); } });
-    req.on('end',()=>{
-      if(!body) return resolve({});
-      try{ resolve(JSON.parse(body)); }catch(e){ reject(new Error('invalid-json')); }
-    });
-    req.on('error',reject);
-  });
-}
-
-function humanParticipants(room){
-  return [...room.participants.values()].sort((a,b)=>a.slot-b.slot);
-}
-function publicState(room){
-  const humans = humanParticipants(room).map(p=>({
-    slot:p.slot,nickname:p.nickname,classId:p.classId,ready:!!p.ready,
-    host:p.session === room.hostSession,connected:now()-p.lastSeen <= PARTICIPANT_STALE_MS
-  }));
-  const openHumanSlots=[];
-  const occupied = new Set(humans.map(p=>p.slot));
-  for(const a of room.aiFill) occupied.add(a.pos);
-  for(let slot=1;slot<=4;slot++) if(!occupied.has(slot)) openHumanSlots.push(slot);
-  const allReady = humans.length >= 2 && humans.every(p=>p.ready);
-  return {
-    code:room.code,method:room.method,status:room.status,createdAt:room.createdAt,
-    hostSlot:humans.find(p=>p.host)?.slot || null,
-    participants:humans,aiFill:room.aiFill,openHumanSlots,
-    canStart:allReady && room.status==='waiting',startAt:room.startAt || null,
-    revision:room.revision
-  };
-}
-function broadcast(room){
-  room.revision++;
-  const set = streams.get(room.code);
-  if(!set || !set.size) return;
-  const payload = `event: state\ndata: ${JSON.stringify(publicState(room))}\n\n`;
-  for(const res of [...set]){
-    try{ res.write(payload); }catch(_){ set.delete(res); }
-  }
-}
-function ensureRoom(code){ return rooms.get(String(code||'').toUpperCase()); }
-function getParticipant(room,session){ return room?.participants.get(String(session||'')); }
-function nextHumanSlot(room){
-  const blocked = new Set(room.aiFill.map(a=>a.pos));
-  for(const p of room.participants.values()) blocked.add(p.slot);
-  for(let i=1;i<=4;i++) if(!blocked.has(i)) return i;
-  return null;
-}
-function createRoom({nickname,classId,aiFill,method}){
-  const code=roomCode(), session=id();
-  const room={
-    code,method:cleanMethod(method),createdAt:now(),updatedAt:now(),status:'waiting',startAt:null,
-    hostSession:session,aiFill:cleanAiFill(aiFill),participants:new Map(),revision:0
-  };
-  room.participants.set(session,{session,slot:1,nickname:cleanNick(nickname),classId:cleanClass(classId),ready:false,lastSeen:now()});
-  rooms.set(code,room);
-  return {room,session};
-}
-function joinRoom(room,{nickname,classId}){
-  if(room.status!=='waiting') throw new Error('room-not-joinable');
-  const slot=nextHumanSlot(room);
-  if(!slot) throw new Error('room-full');
-  const session=id();
-  room.participants.set(session,{session,slot,nickname:cleanNick(nickname),classId:cleanClass(classId),ready:false,lastSeen:now()});
-  room.updatedAt=now();
-  broadcast(room);
-  return {session,slot};
-}
-function leaveRoom(room,session){
-  const p=getParticipant(room,session); if(!p) return false;
-  room.participants.delete(session); room.updatedAt=now();
-  if(room.hostSession===session){
-    const next=humanParticipants(room)[0]; room.hostSession=next?.session || null;
-  }
-  if(room.participants.size===0){ rooms.delete(room.code); closeStreams(room.code); }
-  else broadcast(room);
-  return true;
-}
-function closeStreams(code){
-  const set=streams.get(code); if(!set) return;
-  for(const res of set){ try{res.end();}catch(_){} }
-  streams.delete(code);
-}
-
-function matchRandom(){
-  while(randomQueue.length>=2){
-    const a=randomQueue.shift(), b=randomQueue.shift();
-    const ta=randomTickets.get(a), tb=randomTickets.get(b);
-    if(!ta || !tb || ta.status!=='searching' || tb.status!=='searching') continue;
-    const {room,session:sa}=createRoom({nickname:ta.nickname,classId:ta.classId,aiFill:[],method:'random'});
-    const jb=joinRoom(room,{nickname:tb.nickname,classId:tb.classId});
-    ta.status='matched'; ta.code=room.code; ta.session=sa; ta.slot=1; ta.host=true;
-    tb.status='matched'; tb.code=room.code; tb.session=jb.session; tb.slot=jb.slot; tb.host=false;
-    ta.updatedAt=tb.updatedAt=now();
-    broadcast(room);
-  }
-}
-
-async function handler(req,res){
-  cors(req,res);
-  if(req.method==='OPTIONS'){ res.statusCode=204; return res.end(); }
-  const u=new URL(req.url,`http://${req.headers.host||'localhost'}`);
-  const path=u.pathname;
-
-  if(req.method==='GET' && path==='/health'){
-    return json(res,200,{ok:true,service:'timing-defense-mp',version:'0.1.0',rooms:rooms.size,randomSearching:randomQueue.length,time:now()});
-  }
-
-  if(req.method==='POST' && path==='/api/room/create'){
-    try{
-      const body=await readJson(req); const {room,session}=createRoom(body); broadcast(room);
-      return json(res,201,{ok:true,session,state:publicState(room)});
-    }catch(e){ return json(res,400,{ok:false,error:e.message}); }
-  }
-
-  if(req.method==='POST' && path==='/api/room/join'){
-    try{
-      const body=await readJson(req), room=ensureRoom(body.code);
-      if(!room) return json(res,404,{ok:false,error:'room-not-found'});
-      const joined=joinRoom(room,body);
-      return json(res,200,{ok:true,session:joined.session,state:publicState(room)});
-    }catch(e){ return json(res,409,{ok:false,error:e.message}); }
-  }
-
-  const roomMatch=path.match(/^\/api\/room\/([A-Z0-9]{6})(?:\/(state|update|leave|start|stream|heartbeat))?$/i);
-  if(roomMatch){
-    const code=roomMatch[1].toUpperCase(), action=roomMatch[2]||'state', room=ensureRoom(code);
-    if(!room) return json(res,404,{ok:false,error:'room-not-found'});
-
-    if(req.method==='GET' && action==='state') return json(res,200,{ok:true,state:publicState(room)});
-
-    if(req.method==='GET' && action==='stream'){
-      const session=u.searchParams.get('session'); const p=getParticipant(room,session);
-      if(!p) return json(res,401,{ok:false,error:'invalid-session'});
-      p.lastSeen=now();
-      res.statusCode=200;
-      res.setHeader('Content-Type','text/event-stream; charset=utf-8');
-      res.setHeader('Connection','keep-alive');
-      res.setHeader('X-Accel-Buffering','no');
-      res.write(`event: state\ndata: ${JSON.stringify(publicState(room))}\n\n`);
-      if(!streams.has(code)) streams.set(code,new Set());
-      streams.get(code).add(res);
-      req.on('close',()=>streams.get(code)?.delete(res));
-      return;
-    }
-
-    if(req.method==='POST' && action==='heartbeat'){
-      const body=await readJson(req), p=getParticipant(room,body.session);
-      if(!p) return json(res,401,{ok:false,error:'invalid-session'});
-      p.lastSeen=now(); room.updatedAt=now(); return json(res,200,{ok:true});
-    }
-
-    if(req.method==='POST' && action==='update'){
-      const body=await readJson(req), p=getParticipant(room,body.session);
-      if(!p) return json(res,401,{ok:false,error:'invalid-session'});
-      if(room.status!=='waiting') return json(res,409,{ok:false,error:'room-locked'});
-      if(typeof body.ready==='boolean') p.ready=body.ready;
-      if(body.nickname!==undefined) p.nickname=cleanNick(body.nickname);
-      if(body.classId!==undefined) p.classId=cleanClass(body.classId);
-      p.lastSeen=now(); room.updatedAt=now(); broadcast(room);
-      return json(res,200,{ok:true,state:publicState(room)});
-    }
-
-    if(req.method==='POST' && action==='leave'){
-      const body=await readJson(req); leaveRoom(room,body.session); return json(res,200,{ok:true});
-    }
-
-    if(req.method==='POST' && action==='start'){
-      const body=await readJson(req), p=getParticipant(room,body.session);
-      if(!p) return json(res,401,{ok:false,error:'invalid-session'});
-      if(room.hostSession!==body.session) return json(res,403,{ok:false,error:'host-only'});
-      const state=publicState(room);
-      if(!state.canStart) return json(res,409,{ok:false,error:'not-ready',state});
-      room.status='starting'; room.startAt=now()+2500; room.updatedAt=now(); broadcast(room);
-      return json(res,200,{ok:true,state:publicState(room)});
-    }
-  }
-
-  if(req.method==='POST' && path==='/api/random/search'){
-    try{
-      const body=await readJson(req), ticket=id(10);
-      randomTickets.set(ticket,{ticket,status:'searching',nickname:cleanNick(body.nickname),classId:cleanClass(body.classId),createdAt:now(),updatedAt:now()});
-      randomQueue.push(ticket); matchRandom();
-      return json(res,202,{ok:true,ticket,status:randomTickets.get(ticket)});
-    }catch(e){ return json(res,400,{ok:false,error:e.message}); }
-  }
-  if(req.method==='GET' && path==='/api/random/status'){
-    const ticket=u.searchParams.get('ticket'), t=randomTickets.get(ticket);
-    if(!t) return json(res,404,{ok:false,error:'ticket-not-found'});
-    return json(res,200,{ok:true,status:t});
-  }
-  if(req.method==='POST' && path==='/api/random/cancel'){
-    const body=await readJson(req), t=randomTickets.get(body.ticket);
-    if(t && t.status==='searching'){ t.status='cancelled'; t.updatedAt=now(); }
-    return json(res,200,{ok:true});
-  }
-
-  text(res,404,'not found');
-}
-
-const server=http.createServer((req,res)=>handler(req,res).catch(err=>{
-  console.error(err); if(!res.headersSent) cors(req,res); if(!res.writableEnded) json(res,500,{ok:false,error:'internal'});
-}));
-
-setInterval(()=>{
-  const t=now();
-  for(const room of [...rooms.values()]){
-    let changed=false;
-    for(const [session,p] of [...room.participants.entries()]){
-      if(t-p.lastSeen > PARTICIPANT_STALE_MS*2){ room.participants.delete(session); changed=true; }
-    }
-    if(changed){
-      if(!room.participants.has(room.hostSession)) room.hostSession=humanParticipants(room)[0]?.session||null;
-      if(room.participants.size===0){ rooms.delete(room.code); closeStreams(room.code); continue; }
-      broadcast(room);
-    }
-    if(t-room.updatedAt>ROOM_TTL_MS){ rooms.delete(room.code); closeStreams(room.code); }
-  }
-  for(const [ticket,r] of randomTickets){
-    if(t-r.updatedAt>RANDOM_TTL_MS){ randomTickets.delete(ticket); }
-  }
-  for(const [code,set] of streams){
-    for(const res of [...set]){ try{res.write(`: ping ${t}\n\n`);}catch(_){set.delete(res);} }
-    if(!set.size) streams.delete(code);
-  }
-},15000).unref();
-
+const http=require('http'),crypto=require('crypto');const{URL}=require('url');
+const PORT=Number(process.env.PORT||10000),ORIGIN=process.env.ALLOWED_ORIGIN||'https://timing-defense-v011.onrender.com';
+const ROOM_TTL=72e5,STALE=45e3,RANDOM_TTL=9e4,CLASSES=new Set(['knight','rogue','tank','archer','mage']),METHODS=new Set(['friend','link','random']),JUDGES=new Set(['NORMAL','GOOD','PERFECT']);
+const MT={grunt:{hp:320,speed:.070,baseDamage:90,armor:1,reward:6,knockResist:.85}};
+const rooms=new Map(),streams=new Map(),tickets=new Map(),queue=[];
+const now=()=>Date.now(),rid=(n=16)=>crypto.randomBytes(n).toString('hex');
+function code(){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';for(let n=0;n<100;n++){let c='';for(let i=0;i<6;i++)c+=a[crypto.randomInt(a.length)];if(!rooms.has(c))return c}throw Error('room-code-exhausted')}
+function nick(v){const s=String(v||'').trim().slice(0,12);return s||'PLAYER'}function cls(v){return CLASSES.has(v)?v:'knight'}function method(v){return METHODS.has(v)?v:'friend'}
+function aiFill(v){if(!Array.isArray(v))return[];const u=new Set(),o=[];for(const x of v){const p=Number(x?.pos),c=cls(x?.cls);if(p<2||p>4||u.has(p))continue;u.add(p);o.push({pos:p,cls:c});if(o.length>=2)break}return o.sort((a,b)=>a.pos-b.pos)}
+function cors(req,res){const o=req.headers.origin;if(o&&(o===ORIGIN||process.env.ALLOW_ANY_ORIGIN==='1')){res.setHeader('Access-Control-Allow-Origin',o);res.setHeader('Vary','Origin')}else if(!o)res.setHeader('Access-Control-Allow-Origin',ORIGIN);res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');res.setHeader('Access-Control-Allow-Headers','Content-Type');res.setHeader('Cache-Control','no-store')}
+function send(res,s,d){res.statusCode=s;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(d))}function text(res,s,d){res.statusCode=s;res.setHeader('Content-Type','text/plain; charset=utf-8');res.end(d)}
+function body(req){return new Promise((ok,bad)=>{let b='';req.on('data',c=>{b+=c;if(b.length>65536){bad(Error('body-too-large'));req.destroy()}});req.on('end',()=>{if(!b)return ok({});try{ok(JSON.parse(b))}catch(_){bad(Error('invalid-json'))}});req.on('error',bad)})}
+const hs=r=>[...r.participants.values()].sort((a,b)=>a.slot-b.slot),roomFor=c=>rooms.get(String(c||'').toUpperCase()),part=(r,s)=>r?.participants.get(String(s||''));
+function nextSlot(r){const b=new Set(r.aiFill.map(x=>x.pos));for(const p of r.participants.values())b.add(p.slot);for(let i=1;i<=4;i++)if(!b.has(i))return i;return null}
+const need=l=>60+12*(l-1),bonus=c=>c>=30?.15:c>=20?.12:c>=10?.08:c>=5?.05:0;
+function dmg(t){return t==='PERFECT'?200:t==='GOOD'?140:t==='CRITICAL'?600:t==='SUPER'?400:t==='GREAT'?300:t==='HEAVY+'?230:t==='HEAVY'?180:100}
+function strong(x,y){if(x==='PERFECT'&&y==='PERFECT')return'CRITICAL';const w=(x==='PERFECT'?2:x==='GOOD'?1:0)+(y==='PERFECT'?2:y==='GOOD'?1:0);return w>=3?'SUPER':w===2?'GREAT':w===1?'HEAVY+':'HEAVY'}
+function xp(t){const c=t==='CRITICAL',p=c||t==='PERFECT'||t==='SUPER',g=p||t==='GOOD'||t==='GREAT';return c?28:p?18:g?12:8}
+function rec(p,j){p.combo=j==='PERFECT'?p.combo+1:0;p.comboPeak=Math.max(p.comboPeak,p.combo)}function grant(p,n){p.xp+=n;while(p.xp>=p.xpNeed){p.xp-=p.xpNeed;p.level++;p.xpNeed=need(p.level)}}
+function nearest(run){return[...run.monsters.values()].filter(m=>!m.dead).sort((a,b)=>a.x-b.x)[0]||null}
+function runPublic(r){if(!r)return null;return{id:r.id,seed:r.seed,status:r.status,startAt:r.startAt,combatAt:r.combatAt,stage:r.stage,stageTarget:r.stageTarget,spawned:r.spawned,baseHp:r.baseHp,baseHpMax:r.baseHpMax,kills:r.kills,revision:r.revision,serverTime:now(),monsters:[...r.monsters.values()].filter(m=>!m.dead).map(m=>({id:m.id,type:m.type,x:m.x,y:m.y,hp:m.hp,maxHp:m.maxHp,boss:false})),players:[...r.players.values()].map(p=>({slot:p.slot,level:p.level,xp:p.xp,xpNeed:p.xpNeed,charge:p.charge,combo:p.combo,comboPeak:p.comboPeak,kills:p.kills,coin:p.coin,damage:p.damage})),events:r.events.slice(-18)}}
+function state(r){const h=hs(r).map(p=>({slot:p.slot,nickname:p.nickname,classId:p.classId,ready:!!p.ready,host:p.session===r.hostSession,connected:now()-p.lastSeen<=STALE})),occ=new Set(h.map(p=>p.slot));for(const a of r.aiFill)occ.add(a.pos);const open=[];for(let i=1;i<=4;i++)if(!occ.has(i))open.push(i);const ready=h.length>=2&&h.every(p=>p.ready);return{code:r.code,method:r.method,status:r.status,createdAt:r.createdAt,hostSlot:h.find(p=>p.host)?.slot||null,participants:h,aiFill:r.aiFill,openHumanSlots:open,canStart:ready&&r.status==='waiting',startAt:r.startAt||null,revision:r.revision,serverTime:now(),run:runPublic(r.run)}}
+function broadcast(r){r.revision++;const set=streams.get(r.code);if(!set?.size)return;const p=`event: state\ndata: ${JSON.stringify(state(r))}\n\n`;for(const x of [...set])try{x.write(p)}catch(_){set.delete(x)}}
+function closeStreams(c){const s=streams.get(c);if(!s)return;for(const r of s)try{r.end()}catch(_){}streams.delete(c)}
+function createRoom(x){const c=code(),s=rid(),r={code:c,method:method(x.method),createdAt:now(),updatedAt:now(),status:'waiting',startAt:null,hostSession:s,aiFill:aiFill(x.aiFill),participants:new Map(),revision:0,run:null};r.participants.set(s,{session:s,slot:1,nickname:nick(x.nickname),classId:cls(x.classId),ready:false,lastSeen:now()});rooms.set(c,r);return{room:r,session:s,slot:1}}
+function joinRoom(r,x){if(r.status!=='waiting')throw Error('room-not-joinable');const slot=nextSlot(r);if(!slot)throw Error('room-full');const s=rid();r.participants.set(s,{session:s,slot,nickname:nick(x.nickname),classId:cls(x.classId),ready:false,lastSeen:now()});r.updatedAt=now();broadcast(r);return{session:s,slot}}
+function leave(r,s){const p=part(r,s);if(!p)return false;r.participants.delete(s);r.updatedAt=now();if(r.hostSession===s)r.hostSession=hs(r)[0]?.session||null;if(!r.participants.size){rooms.delete(r.code);closeStreams(r.code)}else broadcast(r);return true}
+function makeRun(r,startAt){const run={id:rid(8),seed:crypto.randomInt(1,0x7fffffff),status:'starting',startAt,combatAt:startAt+1050,stage:1,stageTarget:8,spawned:0,nextSpawnAt:startAt+1050,baseHp:2000,baseHpMax:2000,kills:0,nextMonsterId:1,monsters:new Map(),players:new Map(),ai:new Map(),events:[],nextEventId:1,revision:0,lastTick:now(),lastBroadcast:0};for(const p of r.participants.values())run.players.set(p.slot,{slot:p.slot,level:1,xp:0,xpNeed:60,charge:0,combo:0,comboPeak:0,kills:0,coin:0,damage:0,lastSeq:0,nextPassiveAt:run.combatAt+2000});for(const a of r.aiFill)run.ai.set(a.pos,{slot:a.pos,cls:a.cls,charge:0,nextAt:run.combatAt+450+a.pos*220});return run}
+function ev(run,e){run.events.push({id:run.nextEventId++,...e,at:now()});if(run.events.length>40)run.events.splice(0,run.events.length-40)}
+function spawn(run){const d=MT.grunt,id=run.nextMonsterId++,hp=Math.round(d.hp*1.10);run.monsters.set(id,{id,type:'grunt',x:1.055+Math.random()*.04,y:.30+Math.random()*.32,hp,maxHp:hp,dead:false});run.spawned++;ev(run,{type:'spawn',targetId:id})}
+function apply(run,m,damage,slot,tier,knock=true,source='hit'){if(!m||m.dead)return{actual:0,killed:false};const d=MT[m.type],actual=Math.max(1,Math.round(damage*d.armor));m.hp-=actual;if(knock){const c=tier==='CRITICAL',p=c||tier==='PERFECT'||tier==='SUPER',g=p||tier==='GOOD'||tier==='GREAT',k=c?.047:p?.024:g?.013:.006;m.x=Math.min(.985,m.x+k*d.knockResist)}let killed=false;if(m.hp<=0){m.dead=true;killed=true;run.kills++;const ps=run.players.get(slot);if(ps){ps.kills++;ps.coin+=d.reward}}const ps=run.players.get(slot);if(ps)ps.damage+=actual;ev(run,{type:source,slot,targetId:m.id,tier,damage:actual,killed});return{actual,killed}}
+function playerAction(r,ps,b){const run=r.run;if(!run||run.status!=='combat')throw Error('run-not-combat');const seq=Number(b.seq);if(!Number.isFinite(seq)||seq<=ps.lastSeq)throw Error('stale-seq');ps.lastSeq=seq;const x=JUDGES.has(b.xJudge)?b.xJudge:'NORMAL',heavy=ps.charge>=3,y=heavy&&JUDGES.has(b.yJudge)?b.yJudge:null;let tier,pred;if(heavy){rec(ps,x);pred=y==='PERFECT'?ps.combo+1:0;tier=strong(x,y||'NORMAL');rec(ps,y||'NORMAL')}else{pred=x==='PERFECT'?ps.combo+1:0;tier=x;rec(ps,x)}let damage=Math.round(dmg(tier)*(1+bonus(pred)));const m=nearest(run),result=apply(run,m,damage,ps.slot,tier,true,'hit'),gain=xp(tier);grant(ps,gain);ps.charge=heavy?0:Math.min(3,ps.charge+1);const e=run.events[run.events.length-1];if(e){e.xpGain=gain;e.level=ps.level;e.charge=ps.charge;e.combo=ps.combo;e.xJudge=x;e.yJudge=y}run.revision++;r.updatedAt=now();broadcast(r);return{tier,...result,xpGain:gain,player:{level:ps.level,xp:ps.xp,xpNeed:ps.xpNeed,charge:ps.charge,combo:ps.combo}}}
+function aiTier(a){const r=Math.random(),heavy=a.charge>=3;if(heavy){a.charge=0;return r<.15?'SUPER':r<.65?'GREAT':'HEAVY+'}a.charge++;return r<.18?'PERFECT':r<.72?'GOOD':'NORMAL'}function aiInt(c){return c==='rogue'?1150:c==='tank'?1650:1400}
+function tick(r,t){const run=r.run;if(!run)return false;let changed=false,dt=Math.min(.2,Math.max(0,(t-run.lastTick)/1000));run.lastTick=t;if(run.status==='starting'&&t>=run.startAt){run.status=t<run.combatAt?'intro':'combat';r.status='running';changed=true}if(run.status==='intro'&&t>=run.combatAt){run.status='combat';changed=true}if(run.status!=='combat')return changed;while(t>=run.nextSpawnAt&&run.spawned<run.stageTarget&&[...run.monsters.values()].filter(m=>!m.dead).length<10){spawn(run);run.nextSpawnAt+=1120;changed=true}for(const m of run.monsters.values()){if(m.dead)continue;m.x-=MT[m.type].speed*dt;if(m.x<=.155){m.dead=true;run.baseHp=Math.max(0,run.baseHp-MT[m.type].baseDamage);ev(run,{type:'wall',targetId:m.id,damage:MT[m.type].baseDamage,baseHp:run.baseHp});changed=true}}for(const ps of run.players.values()){if(t>=ps.nextPassiveAt){const m=nearest(run);if(m){apply(run,m,40,ps.slot,'AUTO',false,'passive');changed=true;ps.nextPassiveAt=t+2000}else ps.nextPassiveAt=t+250}}for(const a of run.ai.values()){if(t>=a.nextAt){const m=nearest(run);if(m){const tier=aiTier(a);apply(run,m,dmg(tier),a.slot,tier,true,'ai');changed=true;a.nextAt=t+aiInt(a.cls)+Math.round(-140+Math.random()*310)}else a.nextAt=t+120}}for(const[k,m]of[...run.monsters])if(m.dead)run.monsters.delete(k);if(run.baseHp<=0){run.status='gameover';r.status='run-ended';ev(run,{type:'gameover'});changed=true}else if(run.spawned>=run.stageTarget&&!nearest(run)){run.status='stage1-clear';r.status='stage1-clear';ev(run,{type:'stage-clear',stage:1});changed=true}if(changed)run.revision++;return changed}
+function matchRandom(){while(queue.length>=2){const a=queue.shift(),b=queue.shift(),ta=tickets.get(a),tb=tickets.get(b);if(!ta||!tb||ta.status!=='searching'||tb.status!=='searching')continue;const ca=createRoom({nickname:ta.nickname,classId:ta.classId,aiFill:[],method:'random'}),jb=joinRoom(ca.room,{nickname:tb.nickname,classId:tb.classId});Object.assign(ta,{status:'matched',code:ca.room.code,session:ca.session,slot:1,host:true,updatedAt:now()});Object.assign(tb,{status:'matched',code:ca.room.code,session:jb.session,slot:jb.slot,host:false,updatedAt:now()});broadcast(ca.room)}}
+async function handler(req,res){cors(req,res);if(req.method==='OPTIONS'){res.statusCode=204;return res.end()}const u=new URL(req.url,`http://${req.headers.host||'localhost'}`),p=u.pathname;if(req.method==='GET'&&p==='/health')return send(res,200,{ok:true,service:'timing-defense-mp',version:'0.2.0',rooms:rooms.size,randomSearching:queue.length,time:now()});if(req.method==='POST'&&p==='/api/room/create'){try{const b=await body(req),x=createRoom(b);broadcast(x.room);return send(res,201,{ok:true,session:x.session,slot:x.slot,state:state(x.room)})}catch(e){return send(res,400,{ok:false,error:e.message})}}if(req.method==='POST'&&p==='/api/room/join'){try{const b=await body(req),r=roomFor(b.code);if(!r)return send(res,404,{ok:false,error:'room-not-found'});const j=joinRoom(r,b);return send(res,200,{ok:true,session:j.session,slot:j.slot,state:state(r)})}catch(e){return send(res,409,{ok:false,error:e.message})}}const m=p.match(/^\/api\/room\/([A-Z0-9]{6})(?:\/(state|update|leave|start|stream|heartbeat|action))?$/i);if(m){const c=m[1].toUpperCase(),a=m[2]||'state',r=roomFor(c);if(!r)return send(res,404,{ok:false,error:'room-not-found'});if(req.method==='GET'&&a==='state')return send(res,200,{ok:true,state:state(r)});if(req.method==='GET'&&a==='stream'){const s=u.searchParams.get('session'),pp=part(r,s);if(!pp)return send(res,401,{ok:false,error:'invalid-session'});pp.lastSeen=now();res.statusCode=200;res.setHeader('Content-Type','text/event-stream; charset=utf-8');res.setHeader('Connection','keep-alive');res.setHeader('X-Accel-Buffering','no');res.write(`event: state\ndata: ${JSON.stringify(state(r))}\n\n`);if(!streams.has(c))streams.set(c,new Set());streams.get(c).add(res);req.on('close',()=>streams.get(c)?.delete(res));return}if(req.method==='POST'&&a==='heartbeat'){const b=await body(req),pp=part(r,b.session);if(!pp)return send(res,401,{ok:false,error:'invalid-session'});pp.lastSeen=now();r.updatedAt=now();return send(res,200,{ok:true})}if(req.method==='POST'&&a==='update'){const b=await body(req),pp=part(r,b.session);if(!pp)return send(res,401,{ok:false,error:'invalid-session'});if(r.status!=='waiting')return send(res,409,{ok:false,error:'room-locked'});if(typeof b.ready==='boolean')pp.ready=b.ready;if(b.nickname!==undefined)pp.nickname=nick(b.nickname);if(b.classId!==undefined)pp.classId=cls(b.classId);pp.lastSeen=now();r.updatedAt=now();broadcast(r);return send(res,200,{ok:true,state:state(r)})}if(req.method==='POST'&&a==='leave'){const b=await body(req);leave(r,b.session);return send(res,200,{ok:true})}if(req.method==='POST'&&a==='start'){const b=await body(req),pp=part(r,b.session);if(!pp)return send(res,401,{ok:false,error:'invalid-session'});if(r.hostSession!==b.session)return send(res,403,{ok:false,error:'host-only'});const st=state(r);if(!st.canStart)return send(res,409,{ok:false,error:'not-ready',state:st});r.status='starting';r.startAt=now()+2500;r.run=makeRun(r,r.startAt);r.updatedAt=now();broadcast(r);return send(res,200,{ok:true,state:state(r)})}if(req.method==='POST'&&a==='action'){try{const b=await body(req),pp=part(r,b.session);if(!pp)return send(res,401,{ok:false,error:'invalid-session'});pp.lastSeen=now();const ps=r.run?.players.get(pp.slot);if(!ps)return send(res,409,{ok:false,error:'run-player-missing'});return send(res,200,{ok:true,result:playerAction(r,ps,b),state:state(r)})}catch(e){return send(res,409,{ok:false,error:e.message,state:state(r)})}}}if(req.method==='POST'&&p==='/api/random/search'){try{const b=await body(req),t=rid(10);tickets.set(t,{ticket:t,status:'searching',nickname:nick(b.nickname),classId:cls(b.classId),createdAt:now(),updatedAt:now()});queue.push(t);matchRandom();return send(res,202,{ok:true,ticket:t,status:tickets.get(t)})}catch(e){return send(res,400,{ok:false,error:e.message})}}if(req.method==='GET'&&p==='/api/random/status'){const t=u.searchParams.get('ticket'),x=tickets.get(t);if(!x)return send(res,404,{ok:false,error:'ticket-not-found'});return send(res,200,{ok:true,status:x})}if(req.method==='POST'&&p==='/api/random/cancel'){const b=await body(req),x=tickets.get(b.ticket);if(x&&x.status==='searching'){x.status='cancelled';x.updatedAt=now()}return send(res,200,{ok:true})}text(res,404,'not found')}
+const server=http.createServer((req,res)=>handler(req,res).catch(e=>{console.error(e);if(!res.headersSent)cors(req,res);if(!res.writableEnded)send(res,500,{ok:false,error:'internal'})}));
+setInterval(()=>{const t=now();for(const r of [...rooms.values()]){let changed=tick(r,t);for(const[s,p]of[...r.participants])if(t-p.lastSeen>STALE*2){r.participants.delete(s);changed=true}if(changed){if(!r.participants.has(r.hostSession))r.hostSession=hs(r)[0]?.session||null;if(!r.participants.size){rooms.delete(r.code);closeStreams(r.code);continue}}if(r.run&&(r.status==='running'||r.status==='starting')&&t-r.run.lastBroadcast>=100){r.run.lastBroadcast=t;broadcast(r)}else if(changed)broadcast(r);if(t-r.updatedAt>ROOM_TTL){rooms.delete(r.code);closeStreams(r.code)}}for(const[t,x]of tickets)if(now()-x.updatedAt>RANDOM_TTL)tickets.delete(t);for(const[c,s]of streams){for(const r of [...s])try{r.write(`: ping ${t}\n\n`)}catch(_){s.delete(r)}if(!s.size)streams.delete(c)}},50).unref();
 server.listen(PORT,'0.0.0.0',()=>console.log(`timing-defense-mp listening on ${PORT}`));
