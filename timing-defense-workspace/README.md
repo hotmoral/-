@@ -1,38 +1,41 @@
 # Timing Defense — Public Workspace
 
-Persistent planning / balance / simulation / handoff workspace for the Timing Defense prototype.
+Persistent planning / balance / simulation / handoff workspace for Timing Defense.
 
 ## Repository layout
 - Live playable branch: `timing-defense-live-v011`
 - Workspace branch: `timing-defense-workspace`
-- Public service: https://timing-defense-v011.onrender.com
-- Current playable prototype: **v0.20**
-- Current play page: `https://timing-defense-v011.onrender.com/v020.html`
+- Public service: `https://timing-defense-v011.onrender.com`
+- Current playable prototype: **v0.22**
+- Current play page: `https://timing-defense-v011.onrender.com/v022.html`
+- Live HEAD: `7a321d021cafbfc32749b4e8b9421b2bf908826a`
+- Render deploy: `dep-dbbef5s9v7es73eupvlg` / LIVE
 
-The workspace branch is separate from the Render deployment branch so documentation/simulation work does not deploy the game.
+The workspace branch is separate from the deployment branch so documentation/simulation work does not publish the game.
 
 ## New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V020_IMPLEMENTATION_REPORT.md`
-4. `V019_IMPLEMENTATION_REPORT.md`
-5. `V018_IMPLEMENTATION_REPORT.md`
+3. `V022_LOBBY_IMPLEMENTATION_REPORT.md`
+4. `V021_IMPLEMENTATION_REPORT.md`
+5. `V020_IMPLEMENTATION_REPORT.md`
 6. `DESIGN_DECISIONS.md`
-7. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-8. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-9. `V016_IMPLEMENTATION_REPORT.md`
-10. `SKILL_PLAN_LV6_31.md`
-11. `TIER_PRESSURE_GRAMMAR_V1.md`
-12. `PRESSURE_RECIPES_V1.md`
-13. `SIMULATION_METHOD.md`
-14. `NEXT_WORK.md`
+7. `V019_IMPLEMENTATION_REPORT.md`
+8. `V018_IMPLEMENTATION_REPORT.md`
+9. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+10. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+11. `SKILL_PLAN_LV6_31.md`
+12. `TIER_PRESSURE_GRAMMAR_V1.md`
+13. `PRESSURE_RECIPES_V1.md`
+14. `SIMULATION_METHOD.md`
+15. `NEXT_WORK.md`
 
-Older v1–v6 reports remain for historical numerical provenance.
+Older reports remain for numerical provenance.
 
 ---
 
-# Core project
-Timing-action side-defense prototype with five classes:
+# Core game
+Landscape timing-action side defense with five classes:
 - Knight
 - Rogue
 - Tank
@@ -40,141 +43,138 @@ Timing-action side-defense prototype with five classes:
 - Mage
 
 Core rhythm: `X → X → X → X+Y`.
-Fourth attack is charged/heavy. Timing judgment drives combat outcome, EXP and class growth.
+Implemented class growth: Lv6 / 11 / 16 / 21.
+Future reserved: Lv26 / Lv31.
 
-Implemented automatic skill milestones:
-`Lv6 / Lv11 / Lv16 / Lv21`.
-
-Reserved future milestones:
-`Lv26 / Lv31`.
+Key role rules:
+- Knight generalist,
+- Rogue durable-normal multihit execution,
+- Tank team-specialist/control,
+- Archer strict straight-line penetration,
+- Mage density/AoE.
 
 ---
 
-# Current implementation — v0.20
+# Current combat foundation
 
-## Target/turn integrity
-- enemies outside the visible viewport cannot be targeted/damaged,
-- new Timing Square turns start only while a visible target exists,
-- if no target exists at the next-turn boundary the square pauses,
-- passive/AI attacks also wait,
-- empty turns cannot farm EXP,
-- attack input no longer force-spawns an off-screen enemy.
+## Target integrity
+- off-screen enemies cannot be targeted/damaged,
+- new timing turns start only with a visible target,
+- if no target exists at the next-turn boundary the square waits,
+- AI/passive attacks wait too,
+- no empty EXP turns.
 
-If a valid turn has already started, target disappearance does **not** cancel it:
+An already-started valid turn survives target disappearance:
 - current X remains tappable,
-- fourth-attack X→Y may finish completely,
-- normal judgment/EXP for that already-valid turn remains allowed,
-- only the next turn waits.
+- heavy X→Y may finish fully,
+- normal EXP remains valid for that turn,
+- next turn waits.
 
-Target-wait does not reset PERFECT combo.
+## Stage boundary
+`STAGE N / READY → fade → START! + combat`
 
-## Stage intro
-Each stage uses:
-`STAGE N / READY → fade → combat`.
+## Passive/Combo A/B
+Passive:
+- 40 raw / 2.0 s
+- no EXP/charge/crit/skill/combo
+- non-boss HP +10%
 
-No movement/spawn/AI/passive/sweep/input runs until the intro has finished.
+Combo:
+- PERFECT-only unbounded streak,
+- transient popup from 1 combo,
+- 5/8/12/15% persistent A/B tiers,
+- class-specific milestone follow-ups.
 
-## HUD/layout polish
-- top test descriptor removed; title simplified,
-- class selector moved upward,
-- combat judgment words moved beside EXP and reduced in size,
-- party spacing widened to `.265 / .425 / .585 / .745`, scale `.41`,
-- transient tilted combo pop remains near Timing Square.
-
-## Team result board
-Rows follow character order and show:
-- KILLS
-- DMG
-- COIN
-- LV
-- MAX COMBO
-
-Per-column ranks are explicit; v0.20 uses cleaner alignment and compact rank medallions rather than heavy boxes around every value.
-
-See `V020_IMPLEMENTATION_REPORT.md`.
+Numbers remain experimental.
 
 ---
 
-# Current experimental combat systems
+# v0.21 presentation layer
+See `V021_IMPLEMENTATION_REPORT.md`.
 
-Passive A/B:
-- `40 raw / 2.0 s`,
-- no EXP / charge / crit / skill / combo,
-- non-boss HP +10%.
+- natural geometric landscape replaces black grid,
+- lower-left EXP float removed,
+- `+EXP N` beside gauge,
+- judgment results pop quickly inside Timing Square with tier-specific color/size,
+- START cue added,
+- results centered,
+- debug stats/hint hidden.
 
-PERFECT combo:
-- PERFECT only,
-- GOOD/NORMAL/MISS reset,
-- heavy X/Y count independently,
-- numeric streak is unbounded,
-- no hidden high-combo timing penalty.
+---
 
-Persistent timing bonus:
-- 5–9 +5%
-- 10–19 +8%
-- 20–29 +12%
-- 30+ +15% cap
+# v0.22 pre-game lobby
+See `V022_LOBBY_IMPLEMENTATION_REPORT.md`.
 
-Milestone budgets:
-- 5 = 60
-- 10 = 90
-- 20 = 150
-- 30+ = 210 cap
-- every +10 after 30 repeats 30-tier power.
+Entry flow:
+`nickname + class carousel → play settings → run / future team waiting → combat`
 
-These are playable A/B values, not production-frozen coefficients.
+## Character carousel
+- five classes,
+- arrow + swipe horizontal navigation,
+- large geometric class visual,
+- clothing/weapon identity,
+- role summary,
+- Lv6/11/16/21/26/31 roadmap.
+
+## Skill icons
+Icons use mechanic-specific shape + color rather than generic/recolored symbols.
+Examples include:
+- dual blade waves / double slash,
+- multiple daggers / dagger rain,
+- shields / shockwaves / ground cracks,
+- line penetration / triple arrows,
+- burst / resonance / chain explosion rings.
+
+## Play settings
+Button/segmented controls are preferred over dropdowns for small fixed option sets.
+Current controls:
+- SOLO / TEAM
+- AI 0–3
+- AI class + P2/P3/P4 position
+- FRIEND / LINK / RANDOM team method
+- Tier1
+
+Defaults:
+- SOLO
+- no AI
+- highest available tier (currently Tier1)
+
+Solo + selected AI starts the real current combat immediately.
+TEAM networking is **not yet connected**; v0.22 does not pretend remote players joined.
+
+Old in-combat class selection and bottom prototype settings controls are hidden.
 
 ---
 
 # Encounter framework
-
 Pressure families:
-- `S` = Swarm
-- `E` = Elite/Heavy
-- `X` = Special/Mixed
+- S = Swarm
+- E = Elite/Heavy
+- X = Special/Mixed
 
-Tiers use different 1/2/3-pattern distributions rather than forcing all patterns into every stage.
+Tier identity comes from different 1/2/3-pattern distributions and timing/geometry, not forcing all three into every stage.
 
-Current Swarm candidate burst envelope:
-- S-line 2P/3P/4P = 8 / 11 / 14
-- S-cluster = 7 / 10 / 13
-- S-scatter = 9 / 12 / 16
-
-Current P95 four-second spawn-density reference:
-- 2P ≈ 11
-- 3P ≈ 15
-- 4P ≈ 18
+Current Swarm candidates:
+- line 2P/3P/4P = 8 / 11 / 14
+- cluster = 7 / 10 / 13
+- scatter = 9 / 12 / 16
 
 ---
 
 # Working principle
-Automated simulation is used for:
-- numerical balance,
-- growth speed,
-- encounter difficulty,
-- team-role validation,
-- pressure grammar/recipes,
-- passive attention-bandwidth calibration,
-- combo-reward risk estimation.
+Simulation is diagnostic, not self-authorizing.
+Large balance gaps must be explained and discussed before numerical live changes.
 
-Human playtesting is used for:
+Human/device testing is authoritative for:
 - feel,
+- visual hierarchy,
 - readability,
-- impact,
-- UX integrity,
-- VFX density,
-- subjective fun.
-
-Simulation is diagnostic, not self-authorizing. Large performance gaps must be explained and discussed before numerical live changes.
+- carousel/settings usability,
+- icon legibility,
+- impact/VFX density.
 
 ## Current next boundary
-Device/browser validation of v0.20:
-- target-wait occurs only at new-turn boundaries,
-- in-progress turns survive target disappearance,
-- heavy X→Y never cancels midway,
-- no empty-turn EXP farming,
-- combo survives target-wait,
-- stage intro fully gates combat,
-- judgment text / party spacing / result table are readable.
-
-After implementation/visual defects are closed, continue the full-run progression simulation before freezing passive/combo/HP coefficients.
+- validate v0.22 on Android landscape,
+- then implement v0.23 FRIEND/LINK/RANDOM waiting-room UX,
+- then design/wire real multiplayer room/match networking,
+- continue full-run progression simulation before freezing passive/combo/HP coefficients.
