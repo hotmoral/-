@@ -1,81 +1,113 @@
 # Timing Defense — Next Work Boundary
 
-## Current boundary after v0.16 source implementation
+## Current boundary after live v0.16 + v7
 
-Do **not** change numerical balance merely because the new skills feel strong or weak on first inspection.
+Do **not** change numerical balance merely because a class looks strong or weak in the new build.
 
 Required governance:
-`implement → smoke-test → extract exact formulas → simulate → identify specialization/artifact/defect → report → discuss → explicit decision → numerical patch`
+`implement/observe → classify implementation defect vs specialization vs real balance issue → report → discuss → explicit decision → numerical patch`
 
-## v0.16 source state
-Implemented on `timing-defense-live-v011` at:
-`caa7e249f4b52aa3b6215ff2677b0c4973f3eb17`
+## Current live state
+- Public version: **v0.16**
+- URL: `https://timing-defense-v011.onrender.com/v016.html`
+- Live source HEAD: `b8b823742bd5fb16026090045cd347feb0f9275e`
+- Render deploy: `dep-dbbb6pom7kps73ebd0eg` / LIVE
 
-Files:
-- `timing-defense-v011/v016-core.js`
-- `timing-defense-v011/v016-ui.js`
-- `timing-defense-v011/v016-render.js`
-- `timing-defense-v011/v016.html`
-
-Implemented mechanics:
+Implemented:
 - Lv6 / Lv11 / Lv16 / Lv21 for all five classes,
 - six-slot HUD reserving Lv6/11/16/21/26/31,
-- exact straight-line Archer penetration geometry,
 - boss dagger scalar 0.70,
 - boss knockback scalar 0.40,
 - Mage Lv16 center-excluding Resonance,
-- Tank Lv11 wall reduction 10%,
+- Tank Lv11 -10% wall damage,
 - Tank Lv16 80/3s refresh-only shield,
-- class-specific Lv21 heavy transformations.
+- class-specific Lv21 heavy transformations,
+- **Archer launch-line locking with no off-line retarget after launch**.
 
-Node syntax checks and loader dependency checks passed.
+## Closed implementation defect
+Initial v0.16 allowed generic `nearestMonster()` retarget after an Archer target died, which could bend Lv21 side arrows. This violated the frozen straight-line rule and was fixed before v7 interpretation.
 
-## Deployment boundary
-Render service is configured with `autoDeploy=yes` on the live branch.
+Fix commit:
+`b8b823742bd5fb16026090045cd347feb0f9275e`
 
-At the latest check, Render had **not yet exposed a new deploy after v0.16 source commits**; v0.15 remained the newest observed public deployment.
+This was not a balance patch.
 
-Therefore:
-- do not claim v0.16 public-live yet,
-- do not trigger duplicate deployment while auto-deploy remains enabled,
-- first re-check Render deployment state.
+---
 
-## Immediate next execution slice
+# v7 exact-formula result now available
 
-### 1. Public deployment confirmation
-Confirm a Render deployment containing `caa7e249...` or a later v0.16 commit.
+See:
+- `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+- `combat_exact_v016.py`
 
-### 2. Smoke test only
-Check:
-- page/runtime load,
-- six-slot HUD fit,
-- each class's Lv11/Lv16/Lv21 execution,
-- Archer line collision,
-- Tank shield lifecycle,
-- Rogue five-dagger heavy,
-- Mage Resonance center exclusion,
-- Lv21 heavy visual readability.
+Final/formula-corrected campaign-bound volume: 12,300 runs.
 
-Fix implementation defects if found. Do not tune class coefficients at this stage.
+Lv21 pressure bound:
+- 2P Average/Skilled = 100 / 100%,
+- 3P = 81.6 / 96.4%,
+- 4P = 52.8 / 73.6%.
 
-### 3. Exact-formula simulation refresh
-After smoke closure:
-- mirror exact v0.16 formulas into the headless simulator,
-- rerun `PRESSURE_RECIPES_V1`,
-- 2P/3P/4P,
-- Average and Skilled,
-- same seeds / same stage grammar,
-- measure clear rate, wall HP, target-type contribution, mastery response, role rotation and short-window pressure.
+T4 Crossfire remains hardest:
+- 3P 63.3 / 89.3%,
+- 4P 33.0 / 59.0%.
 
-### 4. Report before rebalance
-Any large discrepancy must be classified as:
-- intended role specialization,
-- implementation/model artifact,
-- or actual balance defect.
+Durable-normal targeted TTK still gives Rogue the intended win:
+- Rogue 20.54 / 15.92 s Average/Skilled,
+- Archer 25.44 / 19.76,
+- Knight 33.45 / 25.14,
+- Mage 39.98 / 31.31,
+- Tank 42.67 / 33.47.
 
-Only then discuss a numerical change.
+No numerical rebalance is authorized.
 
-## Accepted encounter state remains unchanged
+Watch items only:
+- Archer broad Lv21 campaign throughput,
+- 2P saturation,
+- Mage-vs-Archer dense-pack separation,
+- future true-human teammate cadence.
+
+---
+
+# Immediate next execution slice
+
+## 1. Human/device/browser v0.16 playtest
+Check implementation/readability only:
+- page loads and plays normally,
+- six skill slots fit target landscape sizes,
+- Lv11/Lv16/Lv21 unlock and execute for all classes,
+- Archer arrow path stays visually straight when off-line enemies are nearby,
+- Tank shield absorbs, refreshes and expires after 3 s,
+- Rogue Lv21 5-dagger heavy preserves separate repeated impacts,
+- Mage Resonance visibly excludes the original center target,
+- Lv21 signature VFX remain readable under dense enemy overlap.
+
+## 2. Fix defects only
+Examples of valid immediate fixes:
+- wrong target selection,
+- missing skill proc,
+- UI overlap,
+- incorrect timer/expiry,
+- VFX obscuring Timing Square,
+- formula mismatch against frozen implementation spec.
+
+Examples that require discussion first:
+- class damage buffs/nerfs,
+- boss resistance changes,
+- EXP changes,
+- pressure recipe count/HP changes.
+
+## 3. After implementation/readability closure
+Resume pressure calibration using exact v7 formulas and targeted real-play evidence.
+
+Only then decide whether the next major feature block should be:
+- Lv26/Lv31 signature skills,
+- wider 50-stage tier authoring,
+- multiplayer synchronization/economy work,
+- or permanent/meta-stat progression.
+
+---
+
+# Accepted encounter state remains unchanged
 Pressure grammar:
 - S = Swarm,
 - E = Elite/Heavy,
@@ -86,7 +118,7 @@ Rules:
 - S/E are timed spikes,
 - 1/2/3-pattern stages are all valid,
 - all three families are not required every stage,
-- higher tier does not automatically mean more pattern types,
+- higher tier does not automatically mean more active pattern types,
 - geometry/timing/internal ratios are gameplay data.
 
 Current candidate Swarm bursts:
@@ -99,7 +131,7 @@ Current candidate P95 4-second spawn density:
 - 3P ≈ 15,
 - 4P ≈ 18.
 
-Do not tune these again until the exact v0.16 simulation rerun exists.
+Do not retune these solely from v7 simulation values.
 
 ## Still not frozen
 - literal final E HP/armor package,
@@ -111,10 +143,3 @@ Do not tune these again until the exact v0.16 simulation rerun exists.
 - true human multiplayer cadence/network behavior,
 - sync DUO/TRIPLE/FULL rules,
 - Lv26/Lv31 coefficients.
-
-## Later boundary
-Only after v0.16 smoke + exact-formula re-simulation close:
-- decide whether co-op pressure needs numeric adjustment,
-- then proceed to Lv26/Lv31 signature skills,
-- larger stage/tier production authoring,
-- permanent/meta-stat layer.
