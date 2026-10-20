@@ -1,10 +1,10 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.24**
-- URL: `https://timing-defense-v011.onrender.com/v024.html`
-- Live source HEAD: `61ad74d833148d409dc65292f302bb9086c4e7c9`
-- Render deploy: `dep-dbbg528m7kps73esejbg` / LIVE
+- Public LIVE version: **v0.25**
+- URL: `https://timing-defense-v011.onrender.com/v025.html`
+- Live source HEAD: `fce42eb1261ff43277c27d844617b96a546d6d1a`
+- Render deploy: `dep-dbbga8c9v7es73f567b0` / LIVE
 
 ## Balance governance remains unchanged
 Do **not** production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
@@ -13,67 +13,55 @@ Required order:
 
 ---
 
-# Immediate device validation — v0.24
+# Immediate device validation — v0.25
 
-## Character profile radar
-Verify on Android landscape:
-- five concentric hex rings fit cleanly,
+## Character-select vertical hierarchy
+Test on the same Android landscape/browser used for the v0.24 recording:
+- top brand/nickname whitespace is materially reduced,
+- nickname remains easy to use,
+- character-selection window is visibly taller,
+- hero has more vertical presence,
+- footer/PLAY SETTING remains reachable,
+- no clipping against browser safe areas.
+
+## Left combat profile
+Verify:
+- COMBAT PROFILE / Korean class name / large English class name / tag are readable,
+- radar labels are materially larger than v0.24,
 - all six labels fit: 공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광역,
-- class-color polygon is easy to read,
-- class-switch animation feels fast/premium,
-- center-out scan + staggered vertex fill does not look laggy,
-- old animation cancels when the user rapidly changes classes.
+- five rings remain visible,
+- role summary + one-sentence class description restore the richer character flavor,
+- class-switch animation still cancels stale frames and restarts cleanly.
 
-Approved five-level profiles are frozen as presentation data in `CHARACTER_PROFILE_RADAR_V1.md`.
+Approved profiles remain frozen presentation data:
+- Knight `4/2/3/3/4/2`
+- Rogue `2/5/5/1/1/1`
+- Tank `2/1/1/5/1/3`
+- Archer `3/2/4/1/5/2`
+- Mage `4/2/2/1/1/5`
 
-## Character / skill layout
+## Right skill panel
 Verify:
-- center hero has clearly more vertical room than v0.23,
-- hero never overlaps the right panel,
-- navigation arrows visually belong to the hero and remain easy to tap,
-- swipe still works,
-- all six skill cards fit as `3 × 2`,
-- every skill card shows icon/name/level/description without awkward clipping.
+- six skill cards remain `3 × 2`,
+- icons/names/levels/descriptions use the extra vertical room cleanly,
+- no card overlaps the hero,
+- no description clipping on the target device.
 
-## TEAM lineup
-Verify:
-- bottom SUMMARY is gone,
-- each AI unit has enough vertical height,
-- five class choices wrap into two rows and none are clipped,
-- SOLO still allows 0–3 AI,
-- TEAM AI FILL still allows 0–2 AI and reserves at least one human slot.
+## Existing v0.24 regression checks
+- TEAM lineup class buttons remain fully visible in two rows,
+- bottom SUMMARY remains removed,
+- Rogue Timing Square/charge/EXP remains charcoal/black + silver,
+- all valid timing EXP gains show `+EXP N`,
+- projectile contrast/trails remain visible over natural scenery,
+- projectile travel timing remains unchanged,
+- READY → START, inside-square judgment and result board remain intact.
 
-## Rogue HUD
-Verify:
-- Timing Square reads charcoal/black + silver, not red,
-- charge pips read black/silver in active and inactive states,
-- LV/EXP gauge and `+EXP N` read as black/silver,
-- contrast remains sufficient over both bright sky/ground and dark scenery.
-
-## Projectile visibility
-Verify each class in live combat:
-- Knight blade wave recognizable,
-- Rogue dagger recognizable,
-- Tank shockwave recognizable,
-- Archer arrow recognizable,
-- Mage orb recognizable.
-
-v0.24 changes contrast/trails only; projectile travel life/timing remains unchanged.
-If the user still perceives only a blur after this pass, report the class(es) and discuss a small travel-time adjustment before applying it.
-
-## Existing regression checks
-- all valid timing EXP gains still show `+EXP N`,
-- lower-left EXP float absent,
-- attack debug line absent,
-- inside-square judgment still quick/readable,
-- result board rows/nickname remain correct,
-- READY → START flow intact.
+Fix visual/implementation defects directly. Do not change numerical combat balance from this validation.
 
 ---
 
 # Next implementation slice — waiting-room UX
-The originally planned waiting flow has been deferred because v0.23 and v0.24 were used for device-feedback polish.
-After v0.24 visual validation, implement the user-visible TEAM waiting states without pretending networking already works.
+After v0.25 visual validation, implement the deferred TEAM waiting states without pretending networking already works.
 
 ## FRIEND
 - waiting-room surface,
@@ -134,18 +122,6 @@ Combo:
 - milestone budgets 60 / 90 / 150 / 210 cap.
 
 No retuning from lobby/readability observations.
-
----
-
-# Later balance execution
-After lobby/network architecture reaches a stable combat model:
-1. full-run wall HP carry,
-2. local + AI/human-equivalent EXP/level progression,
-3. shop progression,
-4. passive-only / Average / Skilled / Expert,
-5. solo / 2P / 3P / 4P,
-6. pressure recipe rerun,
-7. report before numerical production freeze.
 
 ## Still unresolved
 - final passive damage/interval,
