@@ -7,6 +7,13 @@
 - P×P on heavy = CRITICAL.
 - Tap-anywhere remains the intended control model.
 
+## Target visibility integrity
+- A monster may be damaged only after its aim point has entered the visible viewport.
+- Spawning beyond the right edge must not make an enemy targetable yet.
+- Local, AI, passive, pierce and AoE damage all obey the same visibility rule.
+- Unseen/off-screen kills must not award kill coin.
+- If no enemy is visible, a timing input may still complete its attack animation/empty forward shot; the rhythm must not silently stall.
+
 ## Class roles
 The classes solve different combat problems rather than converging to identical DPS.
 
@@ -57,7 +64,7 @@ Skilled is treated as an attainable learned-player state, not an extreme expert 
 - EXP remains tied to timing attack results/events.
 - Faster-killing classes are not compensated simply because they perform fewer attacks and therefore may level more slowly.
 - Different growth pace is accepted as part of overall run balance unless a concrete progression failure appears later.
-- Passive auto-attacks, if enabled, do **not** grant EXP.
+- Passive auto-attacks do **not** grant EXP.
 
 ## Balance-change governance
 Simulation is diagnostic first.
@@ -183,17 +190,23 @@ Do **not** secretly make timing harder at high combo:
 
 The intended tension is: the player sees a valuable 20/30/40 streak, becomes increasingly conscious of what can be lost, and is more likely to make a genuine input mistake.
 
-## Counter presentation — frozen direction
-- Combo is visible starting from **1 COMBO**; the player must never have to count manually.
-- Primary location is **near the Timing Square**, not at the monster impact point.
-- The number remains continuously readable while the streak exists.
-- Visual intensity scales by tier while staying in the same general location:
+## Counter presentation — current approved direction after device playtest
+- Combo must be shown from **1 COMBO**; the player must never have to count manually.
+- Primary location is **near the Timing Square**, not the monster impact point.
+- Do **not** keep the number permanently boxed on screen between hits.
+- On each PERFECT, show the current number as a brief impact-style pop:
+  - slightly tilted,
+  - quick punch/scale-in,
+  - then fade out.
+- Visual intensity scales by tier:
   - 1–4: small/quiet,
   - 5–9: mild class-color emphasis,
   - 10–19: larger pulse/glow,
-  - 20–29: stronger class-color frame/impact feedback,
+  - 20–29: stronger streak feedback,
   - 30+: maximum visual tier may plateau.
-- **Only the presentation intensity may plateau at 30+. The numeric count never caps.**
+- **Only presentation intensity may plateau at 30+. The numeric count never caps.**
+
+The player remembers the streak through repeated feedback; the screen should not carry a permanent HUD box solely to show it.
 
 ## Mechanical reward candidate after v8
 The counter remains unlimited, but mechanical power is capped to avoid runaway scaling.
@@ -224,6 +237,32 @@ Exact visual/proc coefficients remain candidate values until the playable A/B is
 
 ---
 
+# End-run team contribution presentation
+
+On run clear/game over, show a compact team summary in the same top-to-bottom character slot order:
+1. local player,
+2. teammate slot 2,
+3. teammate slot 3,
+4. teammate slot 4.
+
+Current first-pass metric set:
+- KILLS,
+- DMG,
+- COIN contribution,
+- LV,
+- MAX COMBO.
+
+Every metric must make ranking obvious at a glance rather than only showing raw values.
+Current rank language:
+- 1st = gold / strongest emphasis,
+- 2nd = silver,
+- 3rd = bronze,
+- 4th = muted.
+
+The purpose is not to force one global MVP. Different classes should be able to lead different categories so their contribution is socially legible.
+
+---
+
 ## UI hierarchy
 - Charge stack above Timing Square.
 - Learned skill icons below Timing Square.
@@ -231,13 +270,15 @@ Exact visual/proc coefficients remain candidate values until the playable A/B is
 - No permanent skill-name text beside EXP.
 - Timing Square renders above monsters.
 - Between timing attacks, the Timing Square should remain visible at reduced opacity instead of disappearing, so charge/location remain continuously readable.
-- PERFECT combo counter stays near the Timing Square from 1 combo onward.
+- Combo pop appears near the Timing Square only at PERFECT moments, not as a persistent box.
 
 ## Team presentation
 - AI teammates do not receive visible Timing Squares.
 - AI internally receives timing results, EXP, levels and automatic class skill unlocks.
 - AI progression is independent state, intended to be a closer stand-in for future human teammates.
-- Four-character vertical spacing should be slightly wider than v0.16 so full silhouettes/weapons remain readable.
+- Four-character vertical spacing should be wide enough that full-body silhouettes and weapons remain readable.
+- Current v0.19 spacing candidate: `.255 / .405 / .555 / .705` with scale `.41`.
+- Temporary prototype mode controls should not constrain the future production character layout.
 
 ## Class color language
 - Knight: gold / bright steel.
