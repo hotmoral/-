@@ -6,13 +6,13 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.31**
-- Public URL: `https://timing-defense-v011.onrender.com/v031.html`
-- Live source HEAD: `714e1e3060cbbd2c20a65114d2152b37f861ef22`
-- Static Render deploy: `dep-dbbioegae00c73dd8cn0` / LIVE
+- Current public LIVE prototype: **v0.32**
+- Public URL: `https://timing-defense-v011.onrender.com/v032.html`
+- Live source HEAD: `16b602221caf1d19c062e17363ac786d2bd20d18`
+- Static Render deploy: `dep-dbbivgjrjlhs73ee5bm0` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service: `srv-dbbimre1egvs73861d80`
-- Backend initial deploy: `dep-dbbims61egvs73861f10` / LIVE
+- Backend deploy: `dep-dbbims61egvs73861f10` / LIVE
 
 ## Core playable scope
 - Landscape timing-action side defense.
@@ -121,8 +121,8 @@ TEAM rule remains:
 ## Multiplayer truth boundary
 **Full multiplayer gameplay is not yet complete.**
 
-v0.31 can legitimately claim a real shared authoritative waiting room and synchronized START gate.
-It must not yet claim synchronized combat.
+v0.31/v0.32 can legitimately claim a real shared authoritative waiting room and synchronized START gate.
+They must not yet claim synchronized combat.
 
 Required next network slice:
 - authoritative run snapshot,
@@ -135,14 +135,31 @@ Required next network slice:
 
 ---
 
+# v0.32 — waiting-room layout hotfix
+Read `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`.
+
+Samsung Browser device feedback showed FRIEND/LINK left-panel clipping while networking itself remained functional.
+
+Fixed:
+- invite URL is one-line with ellipsis,
+- READY / INVITE / COPY LINK action row gets reserved space,
+- local-player card/status spacing is compacted,
+- short landscape height receives an extra compact layout,
+- footer space is explicitly reserved,
+- RANDOM networking flow is unchanged.
+
+No networking semantics, combat, combo, or numerical balance changed.
+
+---
+
 # Immediate next boundary
-1. Two independent clients validate v0.31 room create/join.
-2. Verify nickname/class/slots/READY sync both directions.
-3. Verify host START remains disabled until every human is READY.
-4. Verify both clients receive the same `starting` state and `startAt`.
-5. Verify leave removes participant and host authority transfers if required.
-6. Verify RANDOM with two independent searches.
-7. Fix network/UI defects only.
+1. Device-test v0.32 FRIEND and LINK waiting rooms on the same Samsung Browser device.
+2. Confirm READY + INVITE/COPY LINK + lower status/link content are all visible without clipping.
+3. With two independent clients, verify participant/class/READY propagation both directions.
+4. Verify host-only START and common `startAt`.
+5. Verify leave/host reassignment.
+6. Verify RANDOM pairing with two independent searches.
+7. Fix only reproducible room/session/UI defects.
 8. Then implement synchronized combat/run state.
 9. After network foundation stabilizes, implement Lv26/Lv31 skills.
 10. Then rerun full-run Solo/2P/3P/4P simulations before numerical balance freeze.
