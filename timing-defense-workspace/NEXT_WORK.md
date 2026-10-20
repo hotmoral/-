@@ -1,13 +1,13 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.31**
-- URL: `https://timing-defense-v011.onrender.com/v031.html`
-- Live source HEAD: `714e1e3060cbbd2c20a65114d2152b37f861ef22`
-- Static Render deploy: `dep-dbbioegae00c73dd8cn0` / LIVE
+- Public LIVE version: **v0.32**
+- URL: `https://timing-defense-v011.onrender.com/v032.html`
+- Live source HEAD: `16b602221caf1d19c062e17363ac786d2bd20d18`
+- Static Render deploy: `dep-dbbivgjrjlhs73ee5bm0` / LIVE
 - Multiplayer backend: `https://timing-defense-mp.onrender.com`
 - Backend service ID: `srv-dbbimre1egvs73861d80`
-- Backend initial deploy: `dep-dbbims61egvs73861f10` / LIVE
+- Backend deploy: `dep-dbbims61egvs73861f10` / LIVE
 
 ## Balance governance
 Do not production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
@@ -18,22 +18,27 @@ Required order:
 
 ---
 
-# Immediate validation — v0.31 real shared waiting room
-Use two independent browser sessions/devices.
+# Immediate validation — v0.32 real shared waiting room
+Use the same Samsung Browser landscape device plus a second independent browser/device when checking actual shared state.
 
-## FRIEND / LINK
-1. Client A opens v0.31 and enters TEAM + FRIEND or LINK.
-2. A enters the waiting room and receives a real six-character room code.
-3. A uses INVITE / COPY LINK.
-4. Client B opens the link containing `?room=<CODE>`.
-5. B enters the TEAM waiting room.
-6. Both clients must show the same human participants, classes and AI FILL slots.
-7. READY changes on A/B must propagate to the other client without reload.
-8. Host START must remain disabled until at least two humans are present and every human is READY.
-9. Only the host may START.
-10. START must put both clients in one server-owned `starting` state with the same future `startAt` timestamp.
-11. Leaving must remove that participant from the room.
-12. If host leaves, server must reassign host to the earliest remaining human slot.
+## FRIEND / LINK layout hotfix
+1. Open TEAM + FRIEND and enter the waiting room.
+2. Confirm the left panel shows READY + INVITE and lower status/link content without clipping.
+3. Open TEAM + LINK and confirm READY + COPY LINK and lower status/link content without clipping.
+4. The long invite URL must remain one line with ellipsis and must not push actions off-screen.
+5. No internal vertical scrolling should be required for normal waiting-room use.
+
+## FRIEND / LINK shared-state validation
+1. Client A enters TEAM + FRIEND or LINK and receives a six-character room code.
+2. A uses INVITE / COPY LINK.
+3. Client B opens the room link and enters the TEAM waiting room.
+4. Both clients must show the same human participants, classes and AI FILL slots.
+5. READY changes on A/B must propagate to the other client without reload.
+6. Host START must remain disabled until at least two humans are present and every human is READY.
+7. Only the host may START.
+8. START must put both clients in one server-owned `starting` state with the same future `startAt` timestamp.
+9. Leaving must remove that participant from the room.
+10. If host leaves, server must reassign host to the earliest remaining human slot.
 
 ## RANDOM
 With two independent sessions:
@@ -52,7 +57,7 @@ Recheck:
 - combo untouched,
 - BASE HP and STAGE → LV → KILLS HUD.
 
-Fix only reproducible networking/UI/runtime defects from the clean v0.31 chain.
+Fix only reproducible networking/UI/runtime defects from the clean v0.32 chain.
 
 ---
 
