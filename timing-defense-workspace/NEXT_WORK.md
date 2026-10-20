@@ -1,10 +1,10 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.27**
-- URL: `https://timing-defense-v011.onrender.com/v027.html`
-- Live source HEAD: `6208e5d4665ca6acb6ebbd1105c50c0551c03630`
-- Render deploy: `dep-dbbhfp3rjlhs73e9nvp0` / LIVE
+- Public LIVE version: **v0.28**
+- URL: `https://timing-defense-v011.onrender.com/v028.html`
+- Live source HEAD: `df6a18a2722e42e4e4046ff4e6c0b4fb44af894d`
+- Render deploy: `dep-dbbhkonavr4c73dtoe0g` / LIVE
 
 ## Balance governance
 Do not production-freeze passive/combo/enemy-HP/projectile-speed values from UX feedback alone.
@@ -15,64 +15,53 @@ Required order:
 
 ---
 
-# Immediate device validation — v0.27
+# Immediate device validation — v0.28
 
-## Character select
-Verify on the same Android landscape setup:
-- all six skill cards remain `3 × 2`,
-- skill names remain one line,
-- `습득 LV N` remains one line,
-- descriptions still use the full lower width,
-- radar hex is no longer vertically squashed,
-- six labels/five rings remain readable,
-- arrow taps remain reliable,
-- horizontal swipe now works across non-interactive carousel areas,
-- rapid swipe + arrow use does not double-step unexpectedly.
+## Orientation / viewport contract
+Timing Defense is landscape-only.
 
-## Combat / result regression
-Verify:
+Verify on the same Samsung Browser / Android device:
+- direct landscape load fills the entire browser content width,
+- portrait mode never exposes the lobby/combat/result UI,
+- portrait shows only the dedicated `가로 화면 전용` gate,
+- rotating back to landscape restores the full-width lobby,
+- no left-half-only lobby / black-right-half state is visible,
+- if Samsung Browser retains a stale portrait-width viewport while physically landscape, the malformed lobby is hidden,
+- stale viewport repair is attempted automatically,
+- if repair does not settle, the recovery screen shows `가로 상태에서 새로고침`.
+
+## v0.27 regression checks
+Character select:
+- six cards remain `3 × 2`,
+- skill names one line,
+- `습득 LV N` one line,
+- descriptions use full lower width,
+- radar preserves correct hex proportions,
+- arrow taps work,
+- horizontal swipe works,
+- rapid swipe + arrow use does not double-step.
+
+Combat/result:
 - combo unchanged,
 - combat title absent,
 - BASE HP top-center stable,
 - top-right STAGE → LV → KILLS stable,
-- home-base art and combat skill icons unchanged from v0.26,
-- result PLAYER / CLASS rows no longer overlap,
-- class appears as a same-row badge,
-- RETRY / LOBBY do not visually collide with the board.
+- result names/class badges do not overlap,
+- RETRY / LOBBY remain separated.
 
-## TEAM waiting-room UX
-Test all three modes:
-
-### FRIEND
-- TEAM start opens waiting room,
-- local nickname/class preserved,
-- AI FILL slots preserved,
-- open human slots visible,
-- READY toggles locally,
-- INVITE clearly says network transport is not connected,
-- back returns to PLAY SETTING.
-
-### LINK
-- ROOM LINK affordance visible,
-- no fake link generated,
-- copy states clearly explain backend room creation is still absent.
-
-### RANDOM
-- SEARCH / CANCEL SEARCH local UI works,
-- status explicitly says NETWORK NOT CONNECTED,
-- no fake match-found state,
-- no fake remote participant.
-
-### Shared
-- START remains disabled until real authority/participant synchronization exists,
-- combat never runs behind the waiting overlay.
+TEAM waiting UX:
+- FRIEND/LINK/RANDOM local waiting screens open correctly,
+- nickname/class/AI FILL slots preserved,
+- READY/back controls work,
+- no fake link, match success, or remote participant,
+- START remains disabled before real networking.
 
 Fix implementation/visual defects directly. Do not change numerical combat balance or combo presentation from this validation.
 
 ---
 
 # Following implementation boundary — real multiplayer architecture
-Once v0.27 UI validation is clean, move from local waiting UX to actual networking.
+Once v0.28 orientation + v0.27 UX validation is clean, move from local waiting UX to actual networking.
 
 Required architecture:
 1. room authority / backend state owner,
