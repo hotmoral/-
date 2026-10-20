@@ -6,10 +6,10 @@ Updated: 2026-10-20 KST
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Current public LIVE prototype: **v0.27**
-- Public URL: `https://timing-defense-v011.onrender.com/v027.html`
-- Live source HEAD: `6208e5d4665ca6acb6ebbd1105c50c0551c03630`
-- Render deploy: `dep-dbbhfp3rjlhs73e9nvp0` / LIVE
+- Current public LIVE prototype: **v0.28**
+- Public URL: `https://timing-defense-v011.onrender.com/v028.html`
+- Live source HEAD: `df6a18a2722e42e4e4046ff4e6c0b4fb44af894d`
+- Render deploy: `dep-dbbhkonavr4c73dtoe0g` / LIVE
 
 Workspace is canonical for design decisions, simulation interpretation, and new-session recovery.
 
@@ -63,59 +63,67 @@ Five visual levels. Equal levels are allowed. This is class-identity presentatio
 
 ---
 
-# Current implementation — v0.27
+# v0.27 retained foundation
+Read `V027_DEVICE_FIX_WAITING_UX_REPORT.md`.
+
+Character select:
+- skill names one line,
+- `습득 LV N` one line,
+- radar intrinsic aspect ratio `330:280`,
+- Android swipe = pointer capture + horizontal-intent detection,
+- fixed independent arrows.
+
+Combat HUD retained from v0.26:
+- combat title removed,
+- combo unchanged,
+- BASE HP top-center,
+- top-right STAGE → LV → KILLS,
+- fortified home-base art,
+- combat skill strip reuses lobby skill artwork.
+
+Result board:
+- PLAYER / CLASS collision fixed via same-row class badge.
+
+TEAM waiting UX:
+- local waiting state for FRIEND/LINK/RANDOM,
+- nickname/class/AI FILL preserved,
+- READY/back controls,
+- no fake link/match/remote participant,
+- START disabled until real authority exists.
+
+---
+
+# Current implementation — v0.28
 Files:
-- `timing-defense-v011/v027-polish.js`
-- `timing-defense-v011/v027.html`
+- `timing-defense-v011/v028-orientation.js`
+- `timing-defense-v011/v028.html`
 
 Read:
+- `V028_ORIENTATION_HOTFIX_REPORT.md`
 - `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
 - `V026_HUD_LAYOUT_REPORT.md`
 - `CHARACTER_PROFILE_RADAR_V1.md`
 
-## Character-select fixes
-- Skill names forced to one line.
-- Acquisition level forced to one line as `습득 LV N`.
-- Header fonts reduced slightly so Korean names do not wrap.
-- Skill descriptions still use the full lower card width.
-- Radar canvas now preserves intrinsic `330:280` aspect ratio and no longer squashes vertically.
-- Radar values/animation unchanged.
-- Swipe is reimplemented using pointer capture + horizontal-intent detection and a ~38 px threshold.
-- Arrows remain fixed and continue working independently.
+## Why v0.28 exists
+Samsung Browser device feedback showed a severe orientation/viewport regression: while the phone was physically landscape, the page could retain a portrait-width visual viewport. The game then occupied only the left portion of the physical screen and the right side remained black.
 
-## Combat HUD retained from v0.26
-- No combat title.
-- Combo unchanged.
-- BASE HP formal top-center gauge.
-- Top-right icon + STAGE → icon + LV → icon + KILLS.
-- Fortified home-base visual.
-- Combat six-skill strip reuses character-select artwork.
+Timing Defense is landscape-only. The broken half-width state must never be treated as a supported layout.
 
-## Result board
-PLAYER / CLASS collision is fixed by placing class in a same-row colored badge instead of a second line. Row spacing is recalculated for four players and the board is shortened to separate RETRY/LOBBY more cleanly.
+## Orientation / viewport behavior
+- Portrait mode is fully blocked by a full-screen orientation gate.
+- Underlying lobby/combat/result surfaces are hidden/non-interactive while blocked.
+- State is rechecked on orientation change, window resize, VisualViewport resize, and Screen Orientation API change.
+- If the device is physically landscape but the visual viewport still behaves portrait-width, v0.28 attempts a viewport-meta reset to the current landscape screen width and forces reflow.
+- If the mismatch persists after the repair attempt, the broken game surface remains hidden and a recovery screen is shown.
+- Recovery screen offers `가로 상태에서 새로고침` rather than exposing a malformed lobby.
+- When landscape becomes valid again, main surfaces are returned to full `100vw` width.
 
-## TEAM waiting-room UX
-TEAM start now opens an actual local waiting screen.
-
-Shared behavior:
-- selected nickname/class retained,
-- AI FILL positions/classes retained,
-- P1 local,
-- P2/P3/P4 show AI FILL or HUMAN SLOT,
-- local READY toggle,
-- return to PLAY SETTING,
-- START disabled until real network authority/participant sync exists.
-
-FRIEND:
-- INVITE UI exists but truthfully reports transport is not connected.
-
-LINK:
-- ROOM LINK UI exists but no fake link is generated.
-
-RANDOM:
-- SEARCH / CANCEL SEARCH UI state exists,
-- explicitly says NETWORK NOT CONNECTED,
-- no fake match success or remote player creation.
+## Non-goals
+- no combat change,
+- no combo change,
+- no radar/skill/waiting-room logic change,
+- no balance change,
+- no actual networking.
 
 ---
 
@@ -130,12 +138,12 @@ TEAM slot rule:
 ---
 
 # Exact next work boundary
-1. Device-test public v0.27 on the same Android landscape setup.
-2. Verify skill name / acquisition level stay on one line.
-3. Verify radar is proportionally correct.
-4. Verify both swipe and arrow navigation.
-5. Verify result-board labels no longer overlap.
-6. Verify TEAM waiting screen for FRIEND/LINK/RANDOM and safe return to settings.
+1. Device-test public v0.28 on the same Samsung Browser/Android device.
+2. Confirm direct landscape load occupies full width.
+3. Rotate to portrait and confirm only the orientation gate is visible.
+4. Rotate back to landscape and confirm the lobby returns full-width.
+5. If a stale portrait-width viewport occurs in physical landscape, confirm the half-width lobby is hidden and the safe recovery screen appears.
+6. Recheck v0.27 items: skill title/level one-line, radar proportions, swipe + arrows, result rows, FRIEND/LINK/RANDOM waiting screens.
 7. Fix implementation/visual defects only.
 8. Then design real multiplayer architecture:
    - room authority/backend,
@@ -166,16 +174,17 @@ TEAM slot rule:
 # New-session read order
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
-3. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
-4. `V026_HUD_LAYOUT_REPORT.md`
-5. `V025_LAYOUT_POLISH_REPORT.md`
-6. `V024_RADAR_READABILITY_REPORT.md`
-7. `CHARACTER_PROFILE_RADAR_V1.md`
-8. `DESIGN_DECISIONS.md`
-9. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-10. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-11. `SKILL_PLAN_LV6_31.md`
-12. `TIER_PRESSURE_GRAMMAR_V1.md`
-13. `PRESSURE_RECIPES_V1.md`
-14. `SIMULATION_METHOD.md`
-15. `NEXT_WORK.md`
+3. `V028_ORIENTATION_HOTFIX_REPORT.md`
+4. `V027_DEVICE_FIX_WAITING_UX_REPORT.md`
+5. `V026_HUD_LAYOUT_REPORT.md`
+6. `V025_LAYOUT_POLISH_REPORT.md`
+7. `V024_RADAR_READABILITY_REPORT.md`
+8. `CHARACTER_PROFILE_RADAR_V1.md`
+9. `DESIGN_DECISIONS.md`
+10. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+12. `SKILL_PLAN_LV6_31.md`
+13. `TIER_PRESSURE_GRAMMAR_V1.md`
+14. `PRESSURE_RECIPES_V1.md`
+15. `SIMULATION_METHOD.md`
+16. `NEXT_WORK.md`
