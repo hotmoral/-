@@ -1,120 +1,111 @@
 # Timing Defense — Next Work Boundary
 
 ## Current public state
-- Public LIVE version: **v0.22**
-- URL: `https://timing-defense-v011.onrender.com/v022.html`
-- Live source HEAD: `7a321d021cafbfc32749b4e8b9421b2bf908826a`
-- Render deploy: `dep-dbbef5s9v7es73eupvlg` / LIVE
+- Public LIVE version: **v0.23**
+- URL: `https://timing-defense-v011.onrender.com/v023.html`
+- Live source HEAD: `6a7a4acafda9fe7dc405455c73adc3d7065f1285`
+- Render deploy: `dep-dbbfierrjlhs73e3mfeg` / LIVE
 
 ## Balance governance remains unchanged
-Do **not** production-freeze passive, combo-reward or enemy-HP values from first impressions.
-
+Do **not** production-freeze passive/combo/enemy-HP values from UX feedback.
 Required order:
-`implement/test → measure → identify intent/artifact/defect → report → discuss → explicit decision → numerical freeze/patch`
+`implement/test → measure → classify intent/artifact/defect → report → discuss → explicit decision → numerical freeze/patch`.
 
 ---
 
-# Immediate device validation — v0.22
+# Immediate device validation — v0.23
 
-## 1. v0.21 combat presentation inheritance
-Verify under the v0.22 loader:
-- natural battlefield renders cleanly,
-- lower-left EXP float is gone,
-- gauge feedback reads `+EXP N`,
-- NORMAL/GOOD/PERFECT/heavy/CRITICAL pop **inside Timing Square** and disappear quickly,
-- judgment popup does not hide the active sweep,
-- `STAGE N / READY → START!` timing feels clean,
-- result panel is visually centered,
-- debug N/G/P/C/AVG remains hidden.
-
-## 2. Nickname / carousel
-Check on Android landscape:
-- nickname input is easy to focus/type,
-- nickname persists after revisiting the page,
-- arrow navigation transitions cleanly,
-- swipe threshold is comfortable and does not accidentally navigate on minor taps,
-- all five class hero silhouettes/weapon identities are distinct,
-- carousel does not vertically overflow on short landscape screens.
-
-## 3. Skill roadmap
-Inspect all 30 roadmap icons.
-Acceptance intent:
-- icon shape communicates skill mechanic without relying only on text,
-- different skills inside one class are visually distinct,
-- class palette remains recognizable,
-- examples such as Double Dagger / Triple Shot / shield / ground impact / chain explosion are immediately inferable.
-
-## 4. Play settings
-Current interaction is button/segmented rather than dropdown-first.
+## Character selection
 Verify:
-- SOLO/TEAM choice obvious,
-- AI count easy to change,
-- AI position P2/P3/P4 understandable,
-- AI class initials/buttons readable,
-- duplicate AI positions swap correctly,
-- Tier1 presentation does not look like an empty dropdown,
-- default is SOLO / AI NONE / highest available tier.
+- only the centered hero visibly slides when class changes,
+- left class info and right skill info update cleanly,
+- arrows and swipe both work,
+- nickname input remains usable,
+- character silhouette/weapon remains readable.
 
-## 5. Actual combat configuration
-Test:
-- no AI → solo starts immediately,
-- +1/+2/+3 AI starts immediately in SOLO mode,
-- selected AI classes appear in selected positions,
-- local chosen class appears correctly,
-- old in-combat class bar and bottom TEAM/SPEED setup panel do not appear.
+## Skill roadmap
+Verify:
+- all six icons are visible together,
+- tapping any icon shows full skill name + full description,
+- descriptions do not truncate,
+- mechanic-specific icon shapes remain legible,
+- short Android landscape does not overflow.
+
+## Combat readability
+Verify:
+- Rogue Timing Square edge is now clearly visible on natural scenery,
+- Rogue 1–3 charge pips are visible in active/inactive states,
+- every valid local timing EXP event shows a fresh `+EXP N`, including gains between level-ups,
+- lower-left EXP float stays absent,
+- attack debug line stays hidden.
+
+## Play settings
+Verify:
+- SOLO still allows 0–3 AI,
+- TEAM hides/disables +3 AI,
+- TEAM automatically leaves at least one human slot,
+- AI class buttons show readable glyph + KNI/ROG/TNK/ARC/MAG,
+- +3 SOLO AI no longer clips summary badly,
+- TEAM page no longer requires awkward internal scrolling for normal landscape height.
+
+## End-run board
+Verify:
+- local nickname shown,
+- PLAYER/CLASS lines do not collide between rows,
+- rank medals align with values,
+- RETRY/LOBBY remain accessible.
+
+Fix implementation/visual defects only from this validation.
 
 ---
 
-# Next implementation slice — v0.23 team waiting-flow UX
+# Next implementation slice — v0.24 waiting-room UX
+The previously planned v0.23 waiting flow moved to v0.24 because v0.23 was used for device-feedback polish.
 
-Goal: implement the user-visible state machine for TEAM without pretending networking already works.
+Goal: implement user-visible TEAM waiting states without pretending real network connectivity exists.
 
-## FRIEND flow
-- TEAM → FRIEND
-- waiting-room screen
-- local nickname/class/slot shown
-- invited-player slots shown as waiting
-- invite action placeholder/control prepared for real network wiring
-- ready/start state clearly separated from connection state
+## FRIEND
+- waiting-room surface,
+- local nickname/class/slot,
+- reserved human slots,
+- invite control placeholder,
+- ready/start separate from connection state.
 
-## LINK flow
-- TEAM → LINK
-- room/link presentation surface
-- copy/share affordance may exist only if its current limitation is explicit
-- joining state / waiting state / participant-slot state designed
-- do not claim another client has joined without backend confirmation.
+## LINK
+- room/link presentation,
+- copy/share affordance only with truthful limitation,
+- joining/waiting/participant-slot state,
+- no fake join confirmation.
 
-## RANDOM flow
-- TEAM → RANDOM
-- searching state
-- cancel matching
-- player-slot placeholders
-- match-found transition designed
-- no fake successful match.
+## RANDOM
+- searching state,
+- cancel action,
+- participant placeholders,
+- match-found transition design,
+- no fake match success.
 
-## Common waiting-room rules
-- chosen local class/nickname/tier preserved,
-- AI filler configuration remains visible/adjustable where allowed,
-- leaving returns safely to play settings,
-- combat must not run behind waiting UI,
-- actual server/room state will replace mock/local state later without changing the overall UX hierarchy.
+## Shared rules
+- chosen nickname/class/tier preserved,
+- AI filler configuration preserved where valid,
+- TEAM AI max remains +2 so at least one human slot is reserved,
+- leaving waiting returns safely to play settings,
+- combat never runs behind waiting UI.
 
 ---
 
 # Following boundary — real multiplayer architecture
-After v0.23 UX is stable, design/implement actual network behavior:
+After v0.24 UX stabilizes:
 - room creation/authority,
-- shareable invite/link contract,
+- invite/link contract,
 - join/leave lifecycle,
 - random matchmaking queue,
 - slot/class ownership,
-- start synchronization,
-- Attack Round / combat event synchronization,
+- synchronized start,
+- Attack Round/combat events,
 - disconnect/reconnect,
-- state reconciliation,
-- server/client anti-desync rules.
+- state reconciliation/desync policy.
 
-Do not claim real multiplayer until two independent clients can actually share authoritative game state.
+Do not claim real multiplayer until two independent clients share authoritative game state.
 
 ---
 
@@ -122,45 +113,37 @@ Do not claim real multiplayer until two independent clients can actually share a
 Passive:
 - 40 raw / 2.0 s
 - no EXP / charge / crit / skill / combo
-- non-boss HP +10%
+- ordinary non-boss HP +10%
 
-Combo persistent bonus:
+Combo:
 - 5–9 +5%
 - 10–19 +8%
 - 20–29 +12%
 - 30+ +15% cap
+- milestone budgets 60 / 90 / 150 / 210 cap.
 
-Milestones:
-- 5 / 10 / 20 / 30 / every +10 thereafter
-- budgets 60 / 90 / 150 / 210 cap
-
-Do not retune these from lobby/UX feedback.
+No retuning from lobby/readability observations.
 
 ---
 
 # Later balance execution
 After lobby/network architecture reaches a stable combat model:
-1. run full-run progression simulation with wall HP carried stage-to-stage,
+1. full-run wall HP carry,
 2. local + AI/human-equivalent EXP/level progression,
-3. shop progression where valid,
+3. shop progression,
 4. passive-only / Average / Skilled / Expert,
 5. solo / 2P / 3P / 4P,
-6. then rerun pressure recipes.
+6. pressure recipe rerun,
+7. report before numerical production freeze.
 
-Report before any numerical production freeze.
-
-## Still unresolved / not production-frozen
-- final passive damage/interval,
-- final ordinary/elite/boss HP compensation,
-- combo/milestone coefficients,
+## Still unresolved
+- final passive/HP/combo coefficients,
 - final result-board metrics,
-- final E/X pressure coefficients,
-- exact tier progression/count/names,
+- E/X values and tier structure,
 - multiplayer economy/shop ownership,
 - duplicate-class policy,
-- sync DUO/TRIPLE/FULL rules,
+- DUO/TRIPLE/FULL sync,
 - Lv26/Lv31 coefficients,
 - room authority/network protocol,
 - invite/link security contract,
-- matchmaking policy,
-- disconnect/rejoin behavior.
+- matchmaking/rejoin/reconciliation policy.
