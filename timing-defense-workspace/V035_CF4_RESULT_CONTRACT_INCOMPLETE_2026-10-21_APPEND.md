@@ -1,0 +1,1 @@
+Preserve watched cf.4 deployment HEAD `ce0151894d2a972863bd511ed95a04b808fef941` as the exact incomplete result-contract checkpoint before cf.5.
