@@ -11,7 +11,7 @@ Public URL:
 
 Watched deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- current N3 device-smoke candidate HEAD `f9e824eac87cc2fe39d80a75b345ce5aa8f574ce`
+- current N3 device-smoke candidate HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
 
 Last fully closed checkpoint:
 - **v0.38 Slice C / larger-party event kernel FULL PASS**
@@ -24,7 +24,8 @@ Active candidate:
 - health `0.39-cf.1`
 - automated-live validation PASS
 - automation checkpoint `timing-defense-cloudflare-v039-automation-pass-20261022`
-- automation-validated watched HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
+- automation-validated checkpoint HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
+- current smoke-helper HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a` also revalidated by GitHub Actions to FINAL PASS
 - final Samsung Browser presentation/input smoke remains
 
 ## Preserved checkpoints
@@ -125,14 +126,7 @@ Automated live validation is no longer user-driven.
 Workflow:
 `.github/workflows/timing-defense-v039-live-validation.yml`
 
-Corrected GitHub Actions run:
-- run `39686204069`
-- job `119520775498`
-- Cloudflare health 0.39-cf.1 PASS
-- Chromium validation PASS
-- artifact evidence uploaded
-
-Live result:
+Validated result:
 - V038 FULL REGRESSION PASS
 - N3 SERVER 57/57 PASS
 - N3 CLIENT PASS
@@ -147,13 +141,14 @@ Four-human worst-case stress:
 - contiguous post-floor IDs
 - all combos -> 30
 
-The first Actions run timeout was caused by an incorrect Playwright `waitForFunction` argument position and did not represent a gameplay/N3 failure. The runner was fixed and the corrected run passed.
+The first Actions run timeout was caused by an incorrect Playwright `waitForFunction` argument position and did not represent a gameplay/N3 failure. The runner was fixed and subsequent runs passed.
 
 ## Immediate next boundary — one Samsung Browser N3 presentation/input smoke
 Candidate helper:
 - `?n3smoke=1`
 - when host combat has a monster, automatically arms humans to Lv6/combo29
 - badge: `N3 ARMED · PERFECT 1회`
+- if the user misses and server combo falls below 29 before N3 fires, helper automatically re-arms
 - normal access unaffected
 
 Use `peerbot=1` so no PC is required.
