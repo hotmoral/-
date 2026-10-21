@@ -69,3 +69,5 @@ jobs:
           echo "verified_main_sha=${main_sha}"
           echo "verified_tag=${TAG_NAME}"
           echo "verified_tag_sha=${verify_sha}"
+
+# registration nudge
