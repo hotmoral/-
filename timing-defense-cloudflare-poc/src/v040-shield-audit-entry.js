@@ -9,7 +9,7 @@ const auditedWorker={
   async fetch(request,env,ctx){
     const url=new URL(request.url);
     if(request.method==="GET"&&url.pathname==="/api/health")return json({
-      ok:true,service:"timing-defense-v040-shield-capability",version:"0.40-cf.1",
+      ok:true,service:"timing-defense-v040-shield-capability",version:"0.40-cf.2",
       transport:"websocket-hibernation-per-socket-event-cursor",
       authority:"v039-plus-stage-independent-shield-armor",
       shield:{status:"capability-enabled",armor:.72,knockResist:.62,size:1.08,speed:.057,balance:"provisional"},
@@ -22,8 +22,8 @@ const auditedWorker={
         const v039=runV039SelfTest(TimingDefenseRoom);
         const shield=runV040ShieldSelfTest(TimingDefenseRoom);
         const ok=foundation.ok&&v039.ok&&shield.ok;
-        return json({ok,version:"0.40-cf.1-diagnostics",foundation,v039,shield},ok?200:500);
-      }catch(error){return json({ok:false,version:"0.40-cf.1-diagnostics",error:String(error?.stack||error)},500)}
+        return json({ok,version:"0.40-cf.2-diagnostics",foundation,v039,shield},ok?200:500);
+      }catch(error){return json({ok:false,version:"0.40-cf.2-diagnostics",error:String(error?.stack||error)},500)}
     }
     return worker.fetch(request,env,ctx);
   }
