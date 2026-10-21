@@ -2,146 +2,135 @@
 
 Updated: 2026-10-22 KST
 
-## Closed migration gates
+## Closed implementation gates
 1. Cloudflare Durable Objects viability PoC — **PASS**
 2. v0.31/v0.32 waiting-room parity — **PASS**
-3. v0.33 authoritative Stage 1 parity — **PASS**
-4. v0.34 render smoothing / remote projectile parity — **PASS**
-5. v0.35 reconnect / Team Shop / Stage 2 parity — **PASS**
-6. v0.36 Slice A N1/N2 + Lv6 authority — **PASS**
-7. v0.37 Slice B Stage 3 + BRUTE — **PASS**
-8. v0.38 Slice C larger-party/event kernel — **FULL PASS**
+3. v0.33 Stage 1 authority — **PASS**
+4. v0.34 render/remote projectile parity — **PASS**
+5. v0.35 reconnect / Team Shop / Stage 2 — **PASS**
+6. v0.36 N1/N2 + Lv6 authority — **FULL PASS**
+7. v0.37 Stage 3 + BRUTE regression fixture — **FULL PASS**
+8. v0.38 larger-party/event kernel — **FULL PASS**
 9. v0.39 N3 authority — **FULL PASS**
+10. Monster Capability Foundation V1 — **PASS**
+11. v0.40 SHIELD/common armor capability — **FULL PASS**
 
-Exact v0.39 full-PASS checkpoint:
-- branch `timing-defense-cloudflare-v039-pass-20261022`
-- HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
-- health `0.39-cf.1`
+## Exact latest checkpoint
+- branch `timing-defense-cloudflare-v040-shield-pass-20261022`
+- HEAD `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad`
+- public health `0.40-cf.2`
+- live validation run `39696308376`
 
-Closure evidence:
-- GitHub Actions live Chromium/WebSocket suite FINAL PASS
-- N3 server 57/57 PASS
+Closure report:
+`CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+
+v0.40 evidence:
+- Monster Capability Foundation **22/22 PASS**
+- v0.39 N3 server regression **57/57 PASS**
+- SHIELD authority **11/11 PASS**
+- V038 full browser/WebSocket regression PASS
 - N3 client PASS
-- synchronized 4H N3 stress PASS
-- Samsung Browser presentation/input smoke PASS from `Screen_Recording_20261022_074414_Samsung Browser.mp4`
+- N3 4H stress PASS
+- FINAL PASS
 
-Full report:
-`CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
-
-## N3 product contract — CLOSED / FROZEN
-- combo 5 / 10 / 20 / 30 / every +10 after 30
-- exact max raw-equivalent budgets 60 / 90 / 150 / 210
-- class geometry retained
-- deterministic remainder-safe allocation
-- no N3-generated EXP / charge / combo increment / ordinary crit / recursive skill / recursive N3
-- normal armor / kill / kill coin / contribution
-- frozen boss scalars
-- generic N3 knockback NORMAL-equivalent
-- Tank retains class/Lv6 knockback identity
+No Samsung Browser smoke was required because SHIELD was not inserted into a public encounter and the slice introduced no new player-visible presentation.
 
 ---
 
-# Campaign-direction correction
+# Campaign-direction rule
 
-Do **not** continue reconstructing legacy Stage 4 -> Stage 10 as if those encounter recipes were the final campaign.
+Do **not** reconstruct legacy Stage 4 -> Stage 10 as the production campaign.
 
-The final direction is a broader approximately 50-stage campaign with:
+The final direction remains an approximately 50-stage campaign with:
 - tier identities,
 - S / E / X pressure grammar,
 - 2/3/4-player composition scaling,
-- authored monster combinations,
-- later production calibration by deterministic simulation.
+- re-authored monster combinations,
+- later deterministic simulation/calibration.
 
-The existing Stage 1–3 implementation remains useful as a **regression fixture for the validated combat/network kernel**, not as a requirement that the final campaign preserve those stage recipes.
-
-The previously created `timing-defense-cloudflare-v040-stage4-shield` branch is preflight-only. Do not treat it as an approved Stage 4 production direction.
+Existing Stage 1–3 content is retained as regression fixture material for the validated combat/network kernel.
 
 ---
 
-# Monster roster — STRUCTURE FROZEN V1
+# Monster Capability Contract V1 — STRUCTURE FROZEN
 
-Canonical capability contract:
+Canonical structure:
 `MONSTER_CAPABILITY_CONTRACT_V1.md`
 
-Provisional executable sandbox envelope:
+Provisional executable values:
 `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
 
-The envelope is explicitly:
+Those values are explicitly:
 **PROVISIONAL — NOT BALANCE FROZEN**.
 
-Nine ordinary archetypes:
+Ordinary roster:
 1. GRUNT — baseline/reference
-2. RUNNER — sustained high-speed pressure
+2. RUNNER — sustained tempo
 3. BRUTE — raw durability + knock resistance
 4. SHIELD — armor mitigation
 5. FLYER — Y/spatial geometry
-6. CHARGER — telegraphed, interruptible burst dash
-7. SPLITTER — death -> exactly two non-splitting children
-8. SUPPORTER — non-stacking nearby movement-speed aura only
-9. SIEGER — standoff + telegraphed repeated wall attacks
+6. CHARGER — telegraphed interruptible burst dash
+7. SPLITTER — death -> two non-recursive children
+8. SUPPORTER — non-stacking movement-speed aura only
+9. SIEGER — standoff + repeated telegraphed wall attacks
 
-Bosses remain a separate capability-composition layer and are not counted as an ordinary tenth archetype.
-
-Production monster numbers are **NOT FROZEN** here.
-
-Legacy coefficients may be used only as provisional/reference anchors for capability testing unless explicitly re-approved during final 50-stage calibration.
+Bosses remain a separate capability-composition layer.
 
 ---
 
-# Active next slice — Monster Capability Layer
+# Closed capability slice — SHIELD/common armor
 
-## Phase A — capability sandbox / provisional test envelope
-Create a stage-number-independent test harness so monster mechanics can be verified without authoring the final 50-stage campaign first.
+Validated stage-independent behavior:
+- SHIELD movement and wall timing do not fall back to GRUNT,
+- authoritative armor applies once per target,
+- `rawDamage` is explicit before armor and event `damage` is post-armor,
+- AI stage multiplier occurs before armor,
+- passive / human / AI / Lv6 / N3 share the armor policy,
+- SHIELD size/knock metadata is available to Lv6/N3 geometry,
+- kill / coin / killCoinEarned / contribution stay authoritative,
+- prior armor=1 Stage 1–3 behavior remains regression-stable.
 
-Required properties:
-- all gameplay-relevant monster state server-authoritative,
-- small deterministic encounters,
-- forced monster/state setup for tests,
-- compatible with current human/AI/passive/Lv6/N3 authority,
-- event/reconnect regression retained,
-- no production balance claim.
-
-## Recommended implementation order
-1. SHIELD / common armor layer
-2. FLYER / authoritative Y geometry
-3. CHARGER state machine
-4. SPLITTER child-spawn kernel
-5. SUPPORTER dynamic movement-speed aura
-6. SIEGER repeated wall-attack kernel
-
-This order is intentional: low architectural novelty first, highest novelty last.
-
-## Capability-specific acceptance examples
-- SHIELD: all damage sources use explicit armor semantics; no GRUNT fallback.
-- FLYER: server/client agree on authoritative Y geometry used by line/AoE skills.
-- CHARGER: advance -> telegraph -> charge; authoritative knockback can cancel windup.
-- SPLITTER: parent death creates exactly two deterministic non-recursive children.
-- SUPPORTER: speed aura changes movement without timestamp drift; aura never stacks with itself.
-- SIEGER: standoff -> windup -> repeated wall attack; knockback can force reposition.
-
-Do not introduce manual target selection as a monster feature.
+The `.72` armor and other current SHIELD coefficients are capability-test anchors, not final production balance freeze.
 
 ---
 
-# After capability completion
+# Active next bounded slice — FLYER / authoritative Y geometry
 
-1. Implement remaining player-skill authority needed for calibration.
-2. Build the real 50-stage tier / S-E-X authoring model.
-3. Generate candidate encounter recipes for 2/3/4-player teams.
-4. Run large deterministic simulation for density, pressure, clear envelope and role opportunity.
-5. Classify suspicious stages/parameters.
-6. Discuss before numerical balance changes.
-7. Explicitly freeze production monster/stage values.
-8. Perform targeted Samsung Browser readability/input tests only where automation cannot judge presentation.
+This is **not Stage 5/6 implementation**. It is a stage-number-independent monster capability slice.
+
+Required boundary:
+- authoritative FLYER Y position as a deterministic function/state,
+- same Y truth used by targeting, Archer strict-line geometry, Mage AoE geometry and client interpolation,
+- reconnect/state reconstruction does not phase-jump or disagree on Y,
+- normal / passive / AI / Lv6 / N3 damage attribution remains unchanged,
+- no ground-immunity mechanic; every class can attack FLYER,
+- no legacy stage recipe is enabled,
+- provisional FLYER coefficients remain non-production-frozen.
+
+Validation order:
+1. code audit of current X-only movement assumptions,
+2. deterministic FLYER Y/geometry selftests,
+3. v0.40 SHIELD + v0.39 full regression,
+4. live GitHub Actions Chromium/WebSocket validation,
+5. only if a visible sandbox encounter is introduced, minimum Samsung Browser visual/readability smoke.
+
+## Following capability slices
+1. CHARGER state machine
+2. SPLITTER child-spawn kernel
+3. SUPPORTER dynamic movement-speed aura
+4. SIEGER repeated wall-attack kernel
+
+After capabilities:
+- implement remaining player-skill authority needed for calibration,
+- build approximately 50-stage tier/S-E-X authoring,
+- simulate 2/3/4-player candidate recipes at scale,
+- classify and discuss before numerical changes,
+- explicitly freeze production monster/stage values.
 
 ## Validation policy
-Default:
-`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
+`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`
 
-Do not ask the user to manually open validation suites when CI can execute them.
-
-## Deferred UX
-Responsive safety across heterogeneous phone sizes/aspect ratios remains deferred as one shared responsive layer.
+Do not delegate automatable validation to the user.
 
 ## Governance
 No unapproved numerical change. Continue:
