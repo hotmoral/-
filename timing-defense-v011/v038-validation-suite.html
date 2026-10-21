@@ -1,0 +1,18 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.38 Slice C validation</title>
+<style>body{font:15px system-ui;background:#101714;color:#e8efea;padding:20px}h1{font-size:26px}.row{padding:14px 16px;margin:10px 0;border-radius:12px;background:#17231d}.pass{color:#9ee6ad}.fail{color:#ff9e9e}pre{white-space:pre-wrap;background:#152019;padding:14px;border-radius:12px;max-width:1100px}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}</style>
+<h1>v0.38 Slice C · larger-party/event-kernel validation</h1>
+<div id="server" class="row">SERVER · RUNNING…</div><div id="v36" class="row">V036 CLIENT REGRESSION · WAITING…</div><div id="v37" class="row">V037 CLIENT REGRESSION · WAITING…</div><div id="v38" class="row">EVENT CLIENT · WAITING…</div><div id="party" class="row">LARGER PARTY · WAITING…</div><div id="final" class="row">FINAL · RUNNING…</div><pre id="out"></pre>
+<script>
+(async()=>{
+ const result={version:'0.38-cf.1-validation-suite'},checks=[];const el=id=>document.getElementById(id);const mark=(id,label,ok,detail)=>{const x=el(id);x.textContent=`${label} · ${ok?'PASS':'FAIL'}${detail?` · ${detail}`:''}`;x.className='row '+(ok?'pass':'fail');result.checks.push({name:label,pass:ok,detail})};
+ async function frame(id,label,src,timeout=10000){const f=document.createElement('iframe');document.body.appendChild(f);f.src=src;const t=performance.now();while(performance.now()-t<timeout){await new Promise(r=>setTimeout(r,150));try{const title=f.contentDocument?.title||'';if(title.startsWith('PASS')){mark(id,label,true,title);f.remove();return true}if(title.startsWith('FAIL')){mark(id,label,false,title);f.remove();return false}}catch{}}mark(id,label,false,'timeout');f.remove();return false}
+ let ok=true;
+ try{const r=await fetch('/api/diagnostics/v038-slice-c',{cache:'no-store'}),d=await r.json();result.server=d;const p=r.ok&&d.ok;mark('server','SERVER',p,`${(d.v036Regression?.passed||0)+(d.v037Regression?.passed||0)+(d.wall?.passed||0)+(d.eventKernel?.passed||0)}/${(d.v036Regression?.total||0)+(d.v037Regression?.total||0)+(d.wall?.total||0)+(d.eventKernel?.total||0)}`);ok=ok&&p}catch(e){mark('server','SERVER',false,String(e));ok=false}
+ ok=(await frame('v36','V036 CLIENT REGRESSION','v036-client-selftest.html?v=cf0381'))&&ok;
+ ok=(await frame('v37','V037 CLIENT REGRESSION','v037-client-selftest.html?v=cf0381'))&&ok;
+ ok=(await frame('v38','EVENT CLIENT','v038-client-selftest.html?v=cf0381'))&&ok;
+ ok=(await frame('party','LARGER PARTY','v038-party-sim.html?v=cf0381',120000))&&ok;
+ result.ok=ok;const f=el('final');f.textContent=`FINAL · ${ok?'PASS':'FAIL'}`;f.className='row '+(ok?'pass':'fail');el('out').textContent=JSON.stringify(result,null,2);document.title=`${ok?'PASS':'FAIL'} · v0.38 Slice C validation`;
+})();
+</script>
