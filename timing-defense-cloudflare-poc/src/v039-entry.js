@@ -15,7 +15,8 @@ const SLOT_Y=[.30,.41,.52,.63];
 const TYPE_META={
   grunt:{knockResist:.85,size:1.00},
   runner:{knockResist:1.00,size:.70},
-  brute:{knockResist:.38,size:1.34}
+  brute:{knockResist:.38,size:1.34},
+  shield:{knockResist:.62,size:1.08}
 };
 
 function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store"}})}
