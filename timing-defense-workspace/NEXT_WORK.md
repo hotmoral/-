@@ -7,59 +7,73 @@ Updated: 2026-10-21 KST
 2. v0.31/v0.32 real-game waiting-room parity — **PASS**
 3. v0.33 authoritative Stage 1 parity — **PASS**
 4. v0.34 render smoothing / remote projectile parity — **PASS**
+5. v0.35 reconnect / Team Shop / Stage 2 parity — **PASS**
 
-## Current v0.35 status
-Cloudflare v0.35 is **DEVICE VALIDATION PARTIAL PASS**. Core flow is confirmed; only cf.7 visual parity remains.
+## v0.35 closure
+Exact validated deployment:
+- watched branch: `timing-defense-cloudflare-do-poc`
+- HEAD: `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
+- health: `0.35-cf.7`
+- preserved checkpoint: `timing-defense-cloudflare-v035-pass-20261021`
+- report: `CLOUDFLARE_V035_PASS_2026-10-21.md`
 
-Confirmed on device:
-- Stage 1 -> shared Team Shop,
-- authoritative shop purchase / coin / rank flow,
-- immediate `처리중…` purchase feedback and duplicate-tap blocking,
-- both-human shop READY,
-- host NEXT STAGE,
-- synchronized Stage 2 transition,
-- `STAGE 2 / READY / START`,
-- Timing Square and local tap input,
-- remote projectile visibility,
-- Stage 2 bounded clear,
-- authoritative result board with actual human/AI participants and populated KILLS / DMG / KILL COIN / LV / MAX COMBO,
-- reconnect validation — PASS.
+Device-confirmed closure includes:
+- Stage 1 authoritative multiplayer,
+- Stage 1 -> Team Shop,
+- authoritative purchase/coin/rank state,
+- immediate shop `처리중…` feedback + duplicate-tap guard,
+- shop READY gate,
+- host-only NEXT STAGE,
+- synchronized Stage 2 intro/start,
+- Stage 2 Timing Square/input,
+- Stage 2 authoritative GRUNT/RUNNER combat,
+- remote human projectile visibility,
+- bounded Stage 2 clear,
+- authoritative result board,
+- reconnect gate,
+- Rogue CHARGE palette/flicker fix,
+- remote human timing-projectile visual parity.
 
-## cf.7 deployed candidate
-Cloudflare watched branch:
-- `timing-defense-cloudflare-do-poc`
-- HEAD `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
-- expected health version `0.35-cf.7`
+## Immediate next work — PRE-FLIGHT ONLY
+Do **not** immediately implement Stage 3–10 or rebalance anything.
 
-Bounded cf.7 fixes only:
-1. Remove Rogue Timing Square Knight/yellow palette leakage caused by inherited v0.24 drawing wrapper.
-2. Render remote **human timing attacks** with the same class/tier projectile family as local human timing attacks. Passive/automatic shots remain visually distinct.
+First recover and classify the contracts needed for the next migration slice:
 
-No combat balance, economy values, Stage plan, damage authority, EXP, shop cost, knockback or reconnect semantics changed.
+### A. Stage 3–10 generalization audit
+- enumerate existing `stagePlan` / monster composition / gap / scaling rules,
+- separate already-frozen values from experimental values,
+- identify any Stage-specific legacy assumptions that cannot simply be looped over,
+- define server-authoritative state/events needed to generalize beyond Stage 2.
 
-## Immediate device gate
-A short two-human Stage 1 network test is sufficient.
+### B. Larger-party audit
+- confirm 3–4 participant slot semantics,
+- human + AI combinations,
+- READY/host/reconnect behavior at larger party sizes,
+- authoritative contribution/result behavior,
+- projectile/event volume and presentation limits.
 
-Confirm only:
-1. Rogue CHARGE dots/text/square no longer flash Knight/yellow or exhibit the reported color flicker.
-2. A remote human timing attack has the same projectile visual family as the corresponding local human timing attack; it must no longer look like the passive/automatic shot.
+### C. Lv6+ multiplayer authority audit
+For every class unlock consequence, classify as:
+1. presentation-only,
+2. client prediction + server confirmation,
+3. server-authoritative combat consequence.
 
-Already closed — do not repeat unless regression is observed:
-- shop pending UX,
-- reconnect,
-- Stage 2 transition/input,
-- Stage 2 clear/result board.
+Do not port a skill effect until its ownership is explicit. Preserve the frozen class identities and exact legacy contracts where already defined.
 
-## Closure rule
-If both cf.7 checks pass:
-1. mark Cloudflare v0.35 full device PASS,
-2. preserve exact validated deployment HEAD as a v0.35 PASS checkpoint branch,
-3. write the v0.35 PASS report,
-4. sync `PROJECT_STATUS.md`, `NEXT_WORK.md`, `SESSION_HANDOFF.md`,
-5. only then open the next migration slice (Stage 3–10 / larger-party / Lv6+ multiplayer authority as separately scoped work).
+### D. Preflight deliverable
+Before coding, produce a bounded implementation slice with:
+- scope,
+- non-goals,
+- exact reuse vs adapter vs replace classification,
+- acceptance checks,
+- rollback/checkpoint plan,
+- device-validation matrix.
+
+Only after this preflight is reviewed should implementation start.
 
 ## Deferred item
-Responsive safety across heterogeneous phone screen sizes/aspect ratios is intentionally deferred until the current v0.35 closure is complete. It should be reviewed later as a shared responsive-safety layer rather than per-device patches.
+Responsive safety across heterogeneous phone screen sizes/aspect ratios is intentionally deferred. Review it later as a shared responsive-safety layer rather than per-device patches.
 
 ## Frozen governance
-No numerical change to attack damage, monster HP, passive interval, combo coefficients, EXP, shop cost, knockback, stage count/gap or class balance without the established measure/report/discuss/explicit-decision workflow.
+No numerical change to attack damage, monster HP, passive interval, combo coefficients, EXP, shop cost, knockback, stage count/gap or class balance without:
+`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> numerical patch/freeze`.
