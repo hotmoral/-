@@ -7,7 +7,12 @@ import baseWorker, { TimingDefenseRoom } from "./v036-cf2-entry.js";
 
 const STAGE3={count:12,gap:980};
 const WALL_X=.155;
-const BRUTE={hp:900,speed:.040,size:1.34,baseDamage:180,knockResist:.38,armor:1.00,reward:14};
+const STAGE3_TYPES={
+  grunt:{hp:320,speed:.070,size:1.00,baseDamage:90,knockResist:.85,armor:1.00,reward:6},
+  runner:{hp:165,speed:.135,size:.70,baseDamage:60,knockResist:1.00,armor:1.00,reward:5},
+  brute:{hp:900,speed:.040,size:1.34,baseDamage:180,knockResist:.38,armor:1.00,reward:14}
+};
+const BRUTE=STAGE3_TYPES.brute;
 
 function json(data,status=200){
   return new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store"}});
@@ -18,7 +23,7 @@ function tierKnockBase(tier){
   return critical?.047:perfect?.024:good?.013:.006;
 }
 function stage3Hp(type){
-  const base=type==="brute"?900:type==="runner"?165:320;
+  const base=(STAGE3_TYPES[type]||STAGE3_TYPES.grunt).hp;
   return Math.round(base*(1+(3-1)*.13)*1.10);
 }
 function stage3Type(r){return r<.44?"grunt":r<.78?"runner":"brute"}
@@ -36,8 +41,8 @@ TimingDefenseRoom.prototype.wallAt=function(monster){
   return monster.refAt+((monster.x-WALL_X)/BRUTE.speed)*1000;
 };
 
-// BRUTE combat path uses its exact reward / wall / knock contract while
-// retaining the already-approved v0.36 N2 + Lv6 semantics.
+// BRUTE combat path uses its exact reward / knock contract while retaining
+// the already-approved v0.36 N2 + Lv6 semantics.
 const baseApplyDamage=TimingDefenseRoom.prototype.applyDamage;
 TimingDefenseRoom.prototype.applyDamage=function(monster,damage,slot,tier,at,knock=true,source="hit",proc=false){
   if(monster?.type!=="brute")return baseApplyDamage.call(this,monster,damage,slot,tier,at,knock,source,proc);
@@ -120,9 +125,36 @@ TimingDefenseRoom.prototype.beginStage=function(stage,at){
   run.revision++;
 };
 
-// The v0.35 kernel has no Stage 3 plan. Pre-spawn every Stage 3 monster due at
-// the requested authoritative time, then let the validated v0.36 kernel process
-// wall hits, passive attacks, AI attacks and scheduled Lv6 effects.
+function processStage3WallHits(room,at){
+  const run=room.room?.run;
+  if(!run||run.stage!==3||run.status!=="combat")return false;
+  const due=[...run.monsters]
+    .map(monster=>({monster,hitAt:room.wallAt(monster)}))
+    .filter(x=>x.hitAt<=at+.5)
+    .sort((a,b)=>a.hitAt-b.hitAt||a.monster.id-b.monster.id);
+  if(!due.length)return false;
+  let changed=false;
+  for(const {monster,hitAt} of due){
+    if(run.status!=="combat")break;
+    if(!run.monsters.some(m=>m.id===monster.id))continue;
+    const exactAt=Math.min(at,hitAt);
+    room.materialize(monster,exactAt);
+    run.monsters=run.monsters.filter(m=>m.id!==monster.id);
+    const d=STAGE3_TYPES[monster.type]||STAGE3_TYPES.grunt;
+    const defRank=(run.players||[]).reduce((n,p)=>n+(p.upgrades?.def||0),0);
+    const defense=Math.max(0,Math.min(.60,defRank*.025));
+    const incoming=Math.max(1,Math.round(d.baseDamage*(1-defense)));
+    run.baseHp=Math.max(0,run.baseHp-incoming);
+    room.event({type:"wall",targetId:monster.id,damage:incoming,baseHp:run.baseHp,stage:3,monsterType:monster.type},exactAt);
+    changed=true;
+    if(room.checkEnd(exactAt))break;
+  }
+  return changed;
+}
+
+// The v0.35 kernel has no Stage 3 plan. Spawn every Stage 3 monster due at the
+// requested authoritative time, process Stage 3 wall contacts with the exact
+// three-type table, then delegate passive/AI/Lv6 scheduling to the validated kernel.
 const baseProcessAt=TimingDefenseRoom.prototype.processAt;
 TimingDefenseRoom.prototype.processAt=function(at){
   const run=this.room?.run;
@@ -134,9 +166,10 @@ TimingDefenseRoom.prototype.processAt=function(at){
       stage3Spawned=true;
     }
   }
+  const stage3WallChanged=processStage3WallHits(this,at);
   const changed=baseProcessAt.call(this,at);
-  if(stage3Spawned&&this.room?.run&&!changed)this.room.run.revision++;
-  return stage3Spawned||changed;
+  if((stage3Spawned||stage3WallChanged)&&this.room?.run&&!changed)this.room.run.revision++;
+  return stage3Spawned||stage3WallChanged||changed;
 };
 
 const baseNextDueAt=TimingDefenseRoom.prototype.nextDueAt;
