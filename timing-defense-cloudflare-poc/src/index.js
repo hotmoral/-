@@ -2,9 +2,9 @@ import { DurableObject } from "cloudflare:workers";
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const CLASSES = new Set(["knight", "rogue", "tank", "archer", "mage"]);
-const MAX_PLAYERS = 4;
-const POC_MONSTER_HP = 300;
-const POC_ATTACK_DAMAGE = 100;
+const METHODS = new Set(["friend", "link"]);
+const MAX_SLOTS = 4;
+const START_DELAY_MS = 2500;
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -24,13 +24,47 @@ function randomCode() {
   const bytes = new Uint8Array(6);
   crypto.getRandomValues(bytes);
   let out = "";
-  for (const b of bytes) out += CODE_ALPHABET[b % CODE_ALPHABET.length];
+  for (const byte of bytes) out += CODE_ALPHABET[byte % CODE_ALPHABET.length];
   return out;
+}
+
+function cleanNickname(value) {
+  const out = String(value || "").trim().slice(0, 12);
+  return out || "PLAYER";
+}
+
+function cleanClass(value) {
+  const out = String(value || "knight");
+  return CLASSES.has(out) ? out : "knight";
+}
+
+function cleanMethod(value) {
+  const out = String(value || "friend");
+  return METHODS.has(out) ? out : "friend";
+}
+
+function cleanAiFill(value) {
+  if (!Array.isArray(value)) return [];
+  const used = new Set();
+  const out = [];
+  for (const raw of value) {
+    const pos = Number(raw?.pos);
+    const cls = cleanClass(raw?.cls);
+    if (pos < 2 || pos > 4 || used.has(pos)) continue;
+    used.add(pos);
+    out.push({ pos, cls });
+    if (out.length >= 2) break;
+  }
+  return out.sort((a, b) => a.pos - b.pos);
 }
 
 function roomStub(env, code) {
   const id = env.ROOMS.idFromName(code);
   return env.ROOMS.get(id, { locationHint: "apac-ne" });
+}
+
+async function parseJson(request) {
+  return request.json().catch(() => ({}));
 }
 
 export default {
@@ -40,24 +74,50 @@ export default {
     if (request.method === "GET" && url.pathname === "/api/health") {
       return json({
         ok: true,
-        service: "timing-defense-do-poc",
-        version: "0.1.0",
+        service: "timing-defense-cloudflare-v031-parity",
+        version: "0.31-cf.1",
         transport: "websocket-hibernation",
         authority: "durable-object-event-driven",
-        locationHint: "apac-ne"
+        locationHint: "apac-ne",
+        scope: "room-ready-start-only"
       });
     }
 
+    if (request.method === "GET" && url.pathname === "/") {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = "/v032-cloudflare.html";
+      return env.ASSETS.fetch(new Request(assetUrl, request));
+    }
+
     if (request.method === "POST" && url.pathname === "/api/room/create") {
+      const body = await parseJson(request);
       for (let i = 0; i < 12; i++) {
         const code = randomCode();
-        const stub = roomStub(env, code);
-        const response = await stub.fetch(new Request("https://room.internal/init", {
+        const session = crypto.randomUUID();
+        const response = await roomStub(env, code).fetch(new Request("https://room.internal/init", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ code })
+          body: JSON.stringify({
+            code,
+            method: cleanMethod(body.method),
+            aiFill: cleanAiFill(body.aiFill),
+            host: {
+              session,
+              nickname: cleanNickname(body.nickname),
+              classId: cleanClass(body.classId)
+            }
+          })
         }));
-        if (response.status === 201) return json({ ok: true, code }, 201);
+        if (response.status === 201) {
+          const data = await response.json();
+          return json({
+            ok: true,
+            code,
+            session,
+            slot: 1,
+            state: data.state
+          }, 201);
+        }
         if (response.status !== 409) return response;
       }
       return json({ ok: false, error: "room-code-exhausted" }, 503);
@@ -67,6 +127,17 @@ export default {
     if (request.method === "GET" && stateMatch) {
       const code = cleanCode(stateMatch[1]);
       return roomStub(env, code).fetch(new Request("https://room.internal/state"));
+    }
+
+    const leaveMatch = url.pathname.match(/^\/api\/room\/([A-Z0-9]{6})\/leave$/i);
+    if (request.method === "POST" && leaveMatch) {
+      const code = cleanCode(leaveMatch[1]);
+      const body = await parseJson(request);
+      return roomStub(env, code).fetch(new Request("https://room.internal/leave", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ session: String(body.session || "") })
+      }));
     }
 
     const wsMatch = url.pathname.match(/^\/ws\/([A-Z0-9]{6})$/i);
@@ -96,19 +167,33 @@ export class TimingDefenseRoom extends DurableObject {
 
     if (request.method === "POST" && url.pathname === "/init") {
       if (this.room) return json({ ok: false, error: "room-already-exists" }, 409);
-      const body = await request.json().catch(() => ({}));
+      const body = await parseJson(request);
       const code = cleanCode(body.code);
-      if (code.length !== 6) return json({ ok: false, error: "invalid-room-code" }, 400);
+      const host = body.host || {};
+      const session = String(host.session || "");
+      if (code.length !== 6 || !session) return json({ ok: false, error: "invalid-room-init" }, 400);
+
       this.room = {
+        version: "0.31-cf.1",
         code,
+        method: cleanMethod(body.method),
         createdAt: Date.now(),
         updatedAt: Date.now(),
         revision: 0,
         status: "waiting",
-        hostSession: null,
-        participants: [],
-        monster: null,
-        eventSeq: 0
+        startAt: null,
+        hostSession: session,
+        aiFill: cleanAiFill(body.aiFill),
+        participants: [{
+          session,
+          slot: 1,
+          nickname: cleanNickname(host.nickname),
+          classId: cleanClass(host.classId),
+          ready: false,
+          connected: false,
+          activeConnectionId: null,
+          joinedAt: Date.now()
+        }]
       };
       await this.persist();
       return json({ ok: true, state: this.publicState() }, 201);
@@ -120,6 +205,13 @@ export class TimingDefenseRoom extends DurableObject {
       return json({ ok: true, state: this.publicState() });
     }
 
+    if (request.method === "POST" && url.pathname === "/leave") {
+      const body = await parseJson(request);
+      const session = String(body.session || "");
+      const removed = await this.explicitLeave(session);
+      return json({ ok: true, removed, state: this.publicState() });
+    }
+
     if (request.headers.get("Upgrade")?.toLowerCase() === "websocket") {
       return this.acceptSocket(url);
     }
@@ -128,26 +220,18 @@ export class TimingDefenseRoom extends DurableObject {
   }
 
   async acceptSocket(url) {
-    const nickname = String(url.searchParams.get("nickname") || "PLAYER").trim().slice(0, 12) || "PLAYER";
-    const requestedClass = String(url.searchParams.get("classId") || "knight");
-    const classId = CLASSES.has(requestedClass) ? requestedClass : "knight";
     const requestedSession = String(url.searchParams.get("session") || "").trim();
+    const nickname = cleanNickname(url.searchParams.get("nickname"));
+    const classId = cleanClass(url.searchParams.get("classId"));
 
     let player = requestedSession
       ? this.room.participants.find((p) => p.session === requestedSession)
       : null;
 
-    if (!player && this.room.status !== "waiting") {
-      return json({ ok: false, error: "run-already-started" }, 409);
-    }
-
     if (!player) {
-      if (this.room.participants.length >= MAX_PLAYERS) {
-        return json({ ok: false, error: "room-full" }, 409);
-      }
-      const used = new Set(this.room.participants.map((p) => p.slot));
-      let slot = 1;
-      while (used.has(slot) && slot <= MAX_PLAYERS) slot++;
+      if (this.room.status !== "waiting") return json({ ok: false, error: "room-not-joinable" }, 409);
+      const slot = this.nextHumanSlot();
+      if (!slot) return json({ ok: false, error: "room-full" }, 409);
       player = {
         session: crypto.randomUUID(),
         slot,
@@ -155,15 +239,10 @@ export class TimingDefenseRoom extends DurableObject {
         classId,
         ready: false,
         connected: false,
-        lastSeq: 0,
         activeConnectionId: null,
         joinedAt: Date.now()
       };
       this.room.participants.push(player);
-      if (!this.room.hostSession) this.room.hostSession = player.session;
-    } else {
-      player.nickname = nickname;
-      player.classId = classId;
     }
 
     const connectionId = crypto.randomUUID();
@@ -182,13 +261,12 @@ export class TimingDefenseRoom extends DurableObject {
     this.ctx.acceptWebSocket(server);
 
     await this.persist();
-    server.send(JSON.stringify({
+    this.send(server, {
       type: "welcome",
       session: player.session,
       slot: player.slot,
-      lastSeq: player.lastSeq,
       state: this.publicState()
-    }));
+    });
     this.broadcastState();
 
     return new Response(null, { status: 101, webSocket: client });
@@ -224,42 +302,17 @@ export class TimingDefenseRoom extends DurableObject {
       if (this.room.hostSession !== player.session) return this.send(ws, { type: "error", error: "host-only" });
       if (!this.canStart()) return this.send(ws, { type: "error", error: "not-ready" });
 
-      this.room.status = "combat";
-      this.room.monster = { id: 1, hp: POC_MONSTER_HP, maxHp: POC_MONSTER_HP };
-      this.room.eventSeq++;
+      this.room.status = "starting";
+      this.room.startAt = Date.now() + START_DELAY_MS;
       await this.persist();
-      this.broadcast({ type: "event", event: { id: this.room.eventSeq, kind: "start", at: Date.now() } });
+      await this.ctx.storage.setAlarm(this.room.startAt);
       this.broadcastState();
       return;
     }
 
-    if (data.type === "attack") {
-      if (this.room.status !== "combat" || !this.room.monster) {
-        return this.send(ws, { type: "error", error: "run-not-combat" });
-      }
-      const seq = Number(data.seq);
-      if (!Number.isFinite(seq) || seq <= player.lastSeq) {
-        return this.send(ws, { type: "error", error: "stale-seq" });
-      }
-      player.lastSeq = seq;
-
-      const before = this.room.monster.hp;
-      const damage = Math.min(POC_ATTACK_DAMAGE, before);
-      this.room.monster.hp = Math.max(0, before - damage);
-      this.room.eventSeq++;
-      const event = {
-        id: this.room.eventSeq,
-        kind: "attack",
-        slot: player.slot,
-        damage,
-        hp: this.room.monster.hp,
-        at: Date.now()
-      };
-      if (this.room.monster.hp === 0) this.room.status = "clear";
-
-      await this.persist();
-      this.broadcast({ type: "event", event });
-      this.broadcastState();
+    if (data.type === "leave") {
+      await this.explicitLeave(player.session);
+      try { ws.close(1000, "left-room"); } catch (_) {}
       return;
     }
 
@@ -272,10 +325,6 @@ export class TimingDefenseRoom extends DurableObject {
     if (player && player.activeConnectionId === attachment.connectionId) {
       player.connected = false;
       player.activeConnectionId = null;
-      if (this.room.status === "waiting" && this.room.hostSession === player.session) {
-        const nextHost = this.room.participants.find((p) => p.connected && p.session !== player.session);
-        if (nextHost) this.room.hostSession = nextHost.session;
-      }
       await this.persist();
       this.broadcastState();
     }
@@ -293,33 +342,97 @@ export class TimingDefenseRoom extends DurableObject {
     }
   }
 
+  async alarm() {
+    if (!this.room || this.room.status !== "starting" || !this.room.startAt) return;
+    const now = Date.now();
+    if (now < this.room.startAt) {
+      await this.ctx.storage.setAlarm(this.room.startAt);
+      return;
+    }
+    this.room.status = "running";
+    await this.persist();
+    this.broadcastState();
+  }
+
+  nextHumanSlot() {
+    const occupied = new Set(this.room.aiFill.map((x) => x.pos));
+    for (const participant of this.room.participants) occupied.add(participant.slot);
+    for (let slot = 1; slot <= MAX_SLOTS; slot++) if (!occupied.has(slot)) return slot;
+    return null;
+  }
+
   canStart() {
     const humans = this.room?.participants || [];
-    return humans.length >= 2 && humans.every((p) => p.connected && p.ready);
+    return this.room?.status === "waiting" && humans.length >= 2 && humans.every((p) => p.ready);
+  }
+
+  async explicitLeave(session) {
+    if (!this.room) return false;
+    const index = this.room.participants.findIndex((p) => p.session === session);
+    if (index < 0) return false;
+    const [removed] = this.room.participants.splice(index, 1);
+
+    if (this.room.hostSession === removed.session) {
+      const next = [...this.room.participants].sort((a, b) => a.slot - b.slot)[0] || null;
+      this.room.hostSession = next?.session || null;
+    }
+
+    if (!this.room.participants.length) {
+      for (const socket of this.ctx.getWebSockets()) {
+        try { socket.close(1000, "room-empty"); } catch (_) {}
+      }
+      await this.ctx.storage.deleteAll();
+      this.room = null;
+      return true;
+    }
+
+    await this.persist();
+    this.broadcastState();
+    for (const socket of this.ctx.getWebSockets()) {
+      const attachment = socket.deserializeAttachment?.();
+      if (attachment?.session === session) {
+        try { socket.close(1000, "left-room"); } catch (_) {}
+      }
+    }
+    return true;
   }
 
   publicState() {
     if (!this.room) return null;
-    return {
-      code: this.room.code,
-      status: this.room.status,
-      revision: this.room.revision,
-      serverTime: Date.now(),
-      hostSlot: this.room.participants.find((p) => p.session === this.room.hostSession)?.slot || null,
-      canStart: this.canStart(),
-      participants: this.room.participants.map((p) => ({
+    const participants = [...this.room.participants]
+      .sort((a, b) => a.slot - b.slot)
+      .map((p) => ({
         slot: p.slot,
         nickname: p.nickname,
         classId: p.classId,
-        ready: p.ready,
-        connected: p.connected,
+        ready: !!p.ready,
+        connected: !!p.connected,
         host: p.session === this.room.hostSession
-      })),
-      monster: this.room.monster ? { ...this.room.monster } : null
+      }));
+    const occupied = new Set(participants.map((p) => p.slot));
+    for (const ai of this.room.aiFill) occupied.add(ai.pos);
+    const openHumanSlots = [];
+    for (let slot = 1; slot <= MAX_SLOTS; slot++) if (!occupied.has(slot)) openHumanSlots.push(slot);
+
+    return {
+      version: this.room.version,
+      code: this.room.code,
+      method: this.room.method,
+      status: this.room.status,
+      createdAt: this.room.createdAt,
+      revision: this.room.revision,
+      serverTime: Date.now(),
+      hostSlot: participants.find((p) => p.host)?.slot || null,
+      participants,
+      aiFill: this.room.aiFill.map((x) => ({ ...x })),
+      openHumanSlots,
+      canStart: this.canStart(),
+      startAt: this.room.startAt || null
     };
   }
 
   async persist() {
+    if (!this.room) return;
     this.room.updatedAt = Date.now();
     this.room.revision = (this.room.revision || 0) + 1;
     await this.ctx.storage.put("room", this.room);
@@ -337,6 +450,7 @@ export class TimingDefenseRoom extends DurableObject {
   }
 
   broadcastState() {
+    if (!this.room) return;
     this.broadcast({ type: "state", state: this.publicState() });
   }
 }
