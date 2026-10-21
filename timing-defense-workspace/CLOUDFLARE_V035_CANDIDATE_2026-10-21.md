@@ -1,7 +1,7 @@
 # Cloudflare v0.35 Parity Candidate — 2026-10-21
 
 ## Status
-**IMPLEMENTED / DEPLOYMENT TRIGGERED / DEVICE VALIDATION PENDING**
+**IMPLEMENTED / DEPLOYED / DEVICE VALIDATION PARTIAL PASS**
 
 Public URL:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
@@ -55,29 +55,29 @@ Only v0.35 extension files are added plus the Wrangler entry switch:
 
 The validated v0.34 combat/render files are not modified.
 
-## Expected health response after deployment
-- service: `timing-defense-cloudflare-v035-parity`
-- version: `0.35-cf.1`
-- authority: `durable-object-event-driven-stage2-shop`
-- presentation: `v034-render-parity-retained`
-- scope: `room-stage1-shop-stage2-reconnect`
+## Device validation evidence — partial PASS
+Android + independent second client device run confirmed:
+- Stage 1 remains playable,
+- both clients enter the same Team Shop after Stage 1 clear,
+- shop purchase succeeds,
+- coin/rank UI updates are visible,
+- both human players can READY in shop,
+- host proceeds through NEXT STAGE,
+- both clients transition into Stage 2,
+- uploaded Samsung Browser recording visually confirms the Stage 1 -> Team Shop -> both READY -> NEXT STAGE -> Stage 2 path.
 
-## Device validation required
-Android + PC:
-1. v0.31-v0.34 room/READY/START/Stage 1 behavior remains intact,
-2. Stage 1 clear moves both clients to the same Team Shop,
-3. reward/coin/ranks/purchases are authoritative and synchronized,
-4. READY locks purchases; un-READY unlocks them,
-5. all-human READY gates NEXT,
-6. non-host cannot NEXT and host can NEXT only after all humans READY,
-7. Stage 2 starts from one shared future start time,
-8. Stage 2 GRUNT/RUNNER HP/deaths/BASE HP match on both clients,
-9. v0.34 smoothing/projectiles remain correct,
-10. Stage 2 clear is shared,
-11. refresh/reconnect in Stage 1, Team Shop and Stage 2 preserves room/session/slot/run,
-12. other client remains in the same shared state during one-client refresh,
-13. no historical projectile burst occurs after reconnect.
+This closes the shop/transition path only. It does **not** yet close full v0.35 parity.
+
+## Remaining device validation required
+1. Stage 2 GRUNT/RUNNER HP/deaths/BASE HP match on both clients,
+2. v0.34 smoothing/projectiles remain correct during Stage 2,
+3. Stage 2 bounded clear is shared,
+4. refresh/reconnect in Stage 1 preserves room/session/slot/run,
+5. refresh/reconnect in Team Shop preserves room/session/slot/run/shop state,
+6. refresh/reconnect in Stage 2 preserves room/session/slot/run,
+7. other client remains in the same shared state during one-client refresh,
+8. no historical projectile burst occurs after reconnect.
 
 ## Truth boundary
-Do not mark Cloudflare v0.35 PASS until the above device gate is complete.
+Do not mark Cloudflare v0.35 PASS until the remaining Stage 2 authority and reconnect gates are complete.
 No numerical balance values were intentionally changed in this migration slice.
