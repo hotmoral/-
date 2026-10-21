@@ -114,7 +114,7 @@ const auditedWorker = {
         presentation: "v034-render-parity-retained-authoritative-results-cf6-stability",
         locationHint: "apac-ne",
         scope: "room-stage1-shop-stage2-reconnect",
-        fix: "shop-pending-class-stability-ai-none"
+        fix: "shop-pending-class-stability"
       }), {
         status: 200,
         headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
