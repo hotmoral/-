@@ -1,6 +1,6 @@
 # Timing Defense — Session Handoff
 
-Updated: 2026-10-21 KST
+Updated: 2026-10-22 KST
 
 ## Current architecture
 Primary lane:
@@ -11,7 +11,7 @@ Public URL:
 
 Watched deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- current candidate HEAD `0c96f038f6fcf7ec5e27e7d7fe0db38343a807c7`
+- current smoke-candidate HEAD `cbcddf35443ff901b4a30dd6621da5a984335fb5`
 
 Last fully closed checkpoint:
 - v0.37 Slice B / Stage 3 + BRUTE — **FULL PASS**
@@ -20,9 +20,9 @@ Last fully closed checkpoint:
 
 Active candidate:
 - v0.38 Slice C / larger-party event kernel
-- branch `timing-defense-cloudflare-v038-slice-c-event-kernel`
-- expected health `0.38-cf.1`
-- live automated validation pending
+- automation validated on HEAD `1afb125c86fc5c085c6b1246dec77b36a1d30159`
+- automation PASS checkpoint `timing-defense-cloudflare-v038-automation-pass-20261022`
+- final Samsung Browser 4H presentation smoke pending
 
 ## Preserved checkpoints
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
@@ -33,15 +33,16 @@ Active candidate:
 - v0.36 automated PASS: `timing-defense-cloudflare-v036-automation-pass-20261021`
 - v0.36 Slice A full PASS: `timing-defense-cloudflare-v036-slice-a-pass-20261021`
 - v0.37 Slice B full PASS: `timing-defense-cloudflare-v037-slice-b-pass-20261021`
+- v0.38 Slice C automation PASS: `timing-defense-cloudflare-v038-automation-pass-20261022`
 
 ## Read first
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
-4. `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
-5. `CLOUDFLARE_V038_SLICE_C_CANDIDATE_2026-10-21.md`
-6. `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
-7. `CLOUDFLARE_V036_SLICE_A_PASS_2026-10-21.md`
+4. `CLOUDFLARE_V038_SLICE_C_AUTOMATION_PASS_2026-10-22.md`
+5. `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
+6. `CLOUDFLARE_V038_SLICE_C_CANDIDATE_2026-10-21.md`
+7. `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
 
 ## Closed v0.36 decisions
 N1 exact EXP:
@@ -81,8 +82,6 @@ Flow:
 Automated and Samsung Browser smoke evidence both PASS.
 
 ## N3 — OPTION B APPROVED / FROZEN / NOT YET ENABLED
-N3 is no longer deferred.
-
 Frozen contract:
 - milestone triggers at 5 / 10 / 20 / 30 / every +10 after 30,
 - exact max budgets 60 / 90 / 150 / 210,
@@ -101,64 +100,91 @@ Frozen contract:
 Canonical:
 `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 
-Implementation is intentionally blocked until Slice C event delivery is PASS.
+Implementation remains blocked until Slice C full PASS.
 
-## Active v0.38 Slice C candidate
-Purpose:
-- validate 3–4 participant multiplayer baseline,
-- remove the old 24-event snapshot-tail dependency before N3.
-
+## v0.38 Slice C automation PASS
 Event kernel:
 - 512 retained authoritative events,
-- per-WebSocket `eventRunId` + `eventCursor` stored in hibernation attachment,
+- per-WebSocket `eventRunId` + `eventCursor` hibernation attachment,
 - monotonic `event-batch` delivery,
-- socket `state` broadcasts carry no event tail,
+- state broadcasts carry no legacy event tail,
 - explicit `event-gap` on impossible continuity,
-- existing v0.35 resume/eventFloor historical replay suppression retained,
-- reconnect socket in active run floors at latest,
-- pre-run socket begins a new run at event 0.
+- existing resume/eventFloor historical replay suppression retained.
 
-Live simulation scenarios:
-- 3 humans,
-- 4 humans,
-- 2 humans + 2 AI,
-- 3 humans + 1 AI.
+Validated suite version:
+`0.38-cf.3-validation-suite`
 
-Checks:
+Exact automation evidence:
+- SERVER 28/28 PASS,
+- V036 CLIENT REGRESSION PASS,
+- V037 CLIENT REGRESSION PASS,
+- EVENT CLIENT PASS,
+- LARGER PARTY PASS,
+- FINAL PASS.
+
+Exact validated deployment HEAD:
+`1afb125c86fc5c085c6b1246dec77b36a1d30159`
+
+Coverage:
+- 3H,
+- 4H,
+- 2H+2AI,
+- 3H+1AI,
 - fixed slot occupancy,
-- host identity,
-- READY/START,
-- synchronized run roster,
-- Stage 1 -> Team Shop -> Stage 2,
-- host reconnect in 4H,
+- host identity / reconnect,
+- READY / START,
+- synchronized Stage 1,
+- Team Shop,
+- Stage 2 entry,
 - contiguous event IDs,
-- no event-gap,
-- >24 delivered events in 4H.
+- no unexpected event-gap,
+- >24 event delivery without silent loss.
 
-One-click gate:
-`/v038-validation-suite.html`
+Earlier two visible `push` failures were validation-harness failures, not validated gameplay failures. Final root cause was a validation-page JS typo where `checks` was not initialized on `result` before `result.checks.push(...)`. cf.3 fixed that and hardened diagnostics.
 
-v0.38 is **not PASS yet**.
-Do not enable N3 or Stage 4 until this gate and one final device smoke pass.
+## Immediate next boundary — final Slice C device smoke
+Current watched smoke-candidate HEAD:
+`cbcddf35443ff901b4a30dd6621da5a984335fb5`
 
-## AI FILL semantic
-Current filler positions are fixed occupied positions.
-Humans do not dynamically displace configured AI filler.
-Do not silently change this semantic inside Slice C.
+Candidate-only single-device 4H harness:
+- query `partybot=3`,
+- local phone is the real host/player,
+- `SIM-A` ARCHER,
+- `SIM-M` MAGE,
+- `SIM-T` TANK,
+- all are distinct HUMAN WebSocket sessions,
+- simulated peers auto READY in lobby and Team Shop,
+- simulated peers send ordinary timing action packets during combat,
+- smoke overlay appears only during combat.
 
-## Next after Slice C PASS
+Manual acceptance is presentation/input only:
+- 4 humans render correctly in waiting room,
+- local READY/START accessible,
+- remote human attacks display without obvious flicker/burst/canvas corruption,
+- local timing input works,
+- Team Shop shows four humans without controls being obscured,
+- simulated peers READY,
+- host NEXT reaches Stage 2.
+
+Do not re-check exact combat numbers manually; automation already covers correctness.
+
+## After Slice C full PASS
 Dedicated N3 authority slice:
 - forced combo 5/10/20/30/40 on all five classes,
 - exact budget and geometry tests,
-- proc-isolation assertions,
-- kill/coin/contribution and boss-scalar assertions,
+- proc isolation,
+- kill/coin/contribution and boss scalar assertions,
 - synchronized four-player milestone stress,
-- one final Samsung Browser presentation smoke.
+- one Samsung Browser presentation smoke.
 
 Then Stage 4 SHIELD / armor.
 
+## AI FILL semantic
+Current filler positions remain fixed occupied positions.
+Humans do not dynamically displace configured AI filler.
+
 ## Deferred UX
-Responsive safety across heterogeneous phone sizes/aspect ratios remains deferred as one shared responsive layer.
+Heterogeneous phone-size/aspect-ratio responsive safety remains deferred as one shared responsive layer.
 
 ## Governance
 No numerical change without:
