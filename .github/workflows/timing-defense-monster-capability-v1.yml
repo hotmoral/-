@@ -1,0 +1,30 @@
+name: timing-defense-monster-capability-v1
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v040-monster-capability-foundation
+  workflow_dispatch:
+
+jobs:
+  capability-selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run monster capability V1 selftest
+        shell: bash
+        run: |
+          node --input-type=module <<'EOF'
+          import { runMonsterCapabilityV1SelfTest } from './timing-defense-cloudflare-poc/src/monster-capability-v1-selftest.js';
+          const result = runMonsterCapabilityV1SelfTest();
+          console.log(JSON.stringify(result, null, 2));
+          if (!result.ok) process.exit(1);
+          EOF
