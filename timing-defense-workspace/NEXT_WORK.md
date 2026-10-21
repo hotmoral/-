@@ -63,6 +63,12 @@ The previously created `timing-defense-cloudflare-v040-stage4-shield` branch is 
 Canonical capability contract:
 `MONSTER_CAPABILITY_CONTRACT_V1.md`
 
+Provisional executable sandbox envelope:
+`MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
+
+The envelope is explicitly:
+**PROVISIONAL — NOT BALANCE FROZEN**.
+
 Nine ordinary archetypes:
 1. GRUNT — baseline/reference
 2. RUNNER — sustained high-speed pressure
@@ -94,9 +100,6 @@ Required properties:
 - compatible with current human/AI/passive/Lv6/N3 authority,
 - event/reconnect regression retained,
 - no production balance claim.
-
-Provisional values must be labelled:
-**PROVISIONAL — NOT BALANCE FROZEN**.
 
 ## Recommended implementation order
 1. SHIELD / common armor layer
