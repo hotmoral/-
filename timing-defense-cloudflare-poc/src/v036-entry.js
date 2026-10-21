@@ -19,7 +19,8 @@ const XP_EXACT = {
 const TYPE_META = {
   grunt: { knockResist: .85, size: 1.00 },
   runner:{ knockResist: 1.00, size: .70 },
-  brute: { knockResist: .38, size: 1.34 }
+  brute: { knockResist: .38, size: 1.34 },
+  shield:{ knockResist: .62, size: 1.08 }
 };
 const SLOT_Y = [.30, .41, .52, .63];
 
@@ -220,7 +221,7 @@ TimingDefenseRoom.prototype.playerAction=function(participant,body,at){
 
   let immediateSkillChanged=false;
   if(lv6&&primaryEvent&&primaryPoint){
-    const primaryRaw=Math.max(1,Math.round(primaryEvent.damage||0));
+    const primaryRaw=Math.max(1,Math.round(primaryEvent.rawDamage??primaryEvent.damage??0));
     if(classId==="rogue"){
       queueRogueSecond(this,{slot:player.slot,targetId:primaryPoint.id,damage:Math.max(1,Math.round(primaryRaw*.55)),actionId,parentTier:result.tier,at});
     }else if(classId==="archer"){
