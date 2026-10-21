@@ -1,5 +1,5 @@
-// Timing Defense Cloudflare v0.35 cf.4 — authoritative synchronized result board.
-// Presentation only. Reads final contribution values from the Durable Object snapshot.
+// Timing Defense Cloudflare v0.35 cf.5 — authoritative synchronized result board.
+// Presentation only. Reads final participant/contribution values from the Durable Object snapshot.
 (function(){
   const mp=window.__TDMP34CF;
   if(!mp)return;
@@ -16,7 +16,7 @@
   const metrics=[
     {key:'kills',label:'KILLS',fmt:v=>String(Math.round(v||0)),tie:r=>r.damage||0},
     {key:'damage',label:'DMG',fmt:v=>(v||0)>=10000?`${((v||0)/1000).toFixed(1)}K`:String(Math.round(v||0)),tie:r=>r.kills||0},
-    {key:'coin',label:'COIN',fmt:v=>String(Math.round(v||0)),tie:r=>r.kills||0},
+    {key:'killCoin',label:'KILL COIN',fmt:v=>String(Math.round(v||0)),tie:r=>r.kills||0},
     {key:'level',label:'LV',fmt:v=>String(Math.round(v||1)),tie:r=>r.xp||0},
     {key:'maxCombo',label:'MAX COMBO',fmt:v=>String(Math.round(v||0)),tie:r=>r.damage||0}
   ];
@@ -25,17 +25,45 @@
   function rows(st){
     const run=st?.run;if(!run)return[];
     const out=[];
+
+    // Human rows come exclusively from the authoritative participant list.
+    // No local S.ai/S.v019Stats inference is allowed here.
     for(const p of [...(st.participants||[])].sort((a,b)=>a.slot-b.slot)){
       const rp=run.players?.find(x=>x.slot===p.slot)||{};
-      out.push({slot:p.slot,label:p.nickname||`P${p.slot}`,cls:p.classId||'knight',kills:rp.kills||0,damage:rp.damage||0,coin:rp.coin||0,level:rp.level||1,xp:rp.xp||0,maxCombo:rp.comboPeak||0,human:true});
+      out.push({
+        slot:p.slot,
+        label:p.nickname||`P${p.slot}`,
+        cls:p.classId||'knight',
+        kills:rp.kills||0,
+        damage:rp.damage||0,
+        killCoin:rp.killCoin||0,
+        level:rp.level||1,
+        xp:rp.xp||0,
+        maxCombo:rp.comboPeak||0,
+        human:true
+      });
     }
+
+    // AI rows exist only when the authoritative room actually contains AI FILL.
     const aiBySlot=new Map((run.ai||[]).map(a=>[a.slot,a]));
     for(const a of [...(st.aiFill||[])].sort((x,y)=>x.pos-y.pos)){
       const ra=aiBySlot.get(a.pos)||{};
-      out.push({slot:a.pos,label:`CPU ${a.pos}`,cls:a.cls||ra.cls||'knight',kills:ra.kills||0,damage:ra.damage||0,coin:ra.coin||0,level:ra.level||1,xp:0,maxCombo:ra.comboPeak||0,human:false});
+      out.push({
+        slot:a.pos,
+        label:`CPU ${a.pos}`,
+        cls:a.cls||ra.cls||'knight',
+        kills:ra.kills||0,
+        damage:ra.damage||0,
+        killCoin:ra.killCoin||0,
+        level:ra.level||1,
+        xp:0,
+        maxCombo:ra.comboPeak||0,
+        human:false
+      });
     }
     return out.sort((a,b)=>a.slot-b.slot);
   }
+
   function ranks(rs,m){
     const sorted=[...rs].sort((a,b)=>((b[m.key]||0)-(a[m.key]||0))||((m.tie?m.tie(b):0)-(m.tie?m.tie(a):0))||(a.slot-b.slot));
     const map={};sorted.forEach((r,i)=>map[r.slot]=i+1);return map;
