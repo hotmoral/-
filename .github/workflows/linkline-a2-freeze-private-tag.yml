@@ -1,0 +1,92 @@
+name: Linkline A2 Freeze Private Tag
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  freeze-tag:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_REPO: hotmoral/Linkline
+      TARGET_BRANCH: a2-cognitive-analysis-v1
+      EXPECTED_A2_SHA: 213165f58f7f8291e2deb0ee2c36c3927d97ba08
+      EXPECTED_MAIN_SHA: 7cc03fded2d0326aa7f5327c1d0c09959cc81a2a
+      TAG_NAME: a2-v1.0.0
+      LINKLINE_TAG_TOKEN: ${{ secrets.LINKLINE_TAG_TOKEN }}
+    steps:
+      - name: Require private-repo token
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${LINKLINE_TAG_TOKEN:-}" ]; then
+            echo "LINKLINE_TAG_TOKEN is not configured."
+            exit 2
+          fi
+
+      - name: Verify private branch and main
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${TARGET_REPO}"
+          headers=(
+            -H "Authorization: Bearer ${LINKLINE_TAG_TOKEN}"
+            -H "Accept: application/vnd.github+json"
+            -H "X-GitHub-Api-Version: 2022-11-28"
+          )
+
+          branch_json="$(curl -fsS "${headers[@]}" "${api}/branches/${TARGET_BRANCH}")"
+          branch_sha="$(printf '%s' "${branch_json}" | python -c 'import json,sys; print(json.load(sys.stdin)["commit"]["sha"])')"
+          test "${branch_sha}" = "${EXPECTED_A2_SHA}"
+
+          main_json="$(curl -fsS "${headers[@]}" "${api}/branches/main")"
+          main_sha="$(printf '%s' "${main_json}" | python -c 'import json,sys; print(json.load(sys.stdin)["commit"]["sha"])')"
+          test "${main_sha}" = "${EXPECTED_MAIN_SHA}"
+
+          echo "verified_a2_sha=${branch_sha}"
+          echo "verified_main_sha=${main_sha}"
+
+      - name: Create or verify exact lightweight tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${TARGET_REPO}"
+          headers=(
+            -H "Authorization: Bearer ${LINKLINE_TAG_TOKEN}"
+            -H "Accept: application/vnd.github+json"
+            -H "X-GitHub-Api-Version: 2022-11-28"
+          )
+          tag_url="${api}/git/ref/tags/${TAG_NAME}"
+
+          status="$(curl -sS -o /tmp/tag.json -w '%{http_code}' "${headers[@]}" "${tag_url}")"
+          if [ "${status}" = "200" ]; then
+            current_sha="$(python -c 'import json; print(json.load(open("/tmp/tag.json"))["object"]["sha"])')"
+            if [ "${current_sha}" != "${EXPECTED_A2_SHA}" ]; then
+              echo "Existing tag points to unexpected SHA: ${current_sha}"
+              exit 3
+            fi
+            echo "tag_status=already_correct"
+          elif [ "${status}" = "404" ]; then
+            payload="$(python - <<'PY'
+import json, os
+print(json.dumps({"ref": f"refs/tags/{os.environ['TAG_NAME']}", "sha": os.environ['EXPECTED_A2_SHA']}))
+PY
+)"
+            create_status="$(curl -sS -o /tmp/create.json -w '%{http_code}' -X POST "${headers[@]}" -H "Content-Type: application/json" "${api}/git/refs" -d "${payload}")"
+            if [ "${create_status}" != "201" ]; then
+              cat /tmp/create.json
+              exit 4
+            fi
+            echo "tag_status=created"
+          else
+            cat /tmp/tag.json
+            exit 5
+          fi
+
+          verify_json="$(curl -fsS "${headers[@]}" "${tag_url}")"
+          verify_sha="$(printf '%s' "${verify_json}" | python -c 'import json,sys; print(json.load(sys.stdin)["object"]["sha"])')"
+          test "${verify_sha}" = "${EXPECTED_A2_SHA}"
+          echo "verified_tag=${TAG_NAME}"
+          echo "verified_tag_sha=${verify_sha}"
