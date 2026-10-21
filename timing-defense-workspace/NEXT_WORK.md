@@ -2,24 +2,39 @@
 
 Updated: 2026-10-21 KST
 
-## Superseding architecture decision
-The replacement always-on Node-host deployment lane is no longer the primary next action.
+## Architecture gate status
+The isolated Cloudflare Workers + Durable Objects viability PoC is now **PASS**.
 
-User-approved direction:
-**Cloudflare Workers + Durable Objects PoC first.**
+Read before execution:
+1. `CLOUDFLARE_DO_MIGRATION_DECISION_2026-10-21.md`
+2. `CLOUDFLARE_DO_POC_PASS_2026-10-21.md`
+3. `PROJECT_STATUS.md`
 
-Read `CLOUDFLARE_DO_MIGRATION_DECISION_2026-10-21.md` before execution.
+Public PoC:
+- `https://timing-defense-do-poc.sktjsek.workers.dev`
 
-The existing portable Node host remains a fallback artifact only. Do not deploy it as the primary recovery path unless the Durable Objects PoC is rejected by evidence.
+Validated PoC properties:
+- public Worker/static route,
+- SQLite-backed Durable Object room,
+- WebSocket Hibernation,
+- `apac-ne` location hint,
+- two independent clients,
+- READY synchronization,
+- host START,
+- shared authoritative monster HP,
+- `CLEAR`,
+- refresh/reconnect preserving shared state,
+- event-driven execution without the legacy 50 ms always-on loop.
 
-## Current state
+The portable Node host remains a fallback artifact only.
+
+## Current production baseline
 - Latest implemented game prototype: **v0.35**.
-- Last Android + PC device-PASS multiplayer baseline: **v0.34**.
+- Last Android + PC device-PASS production multiplayer baseline: **v0.34**.
 - Render static/backend services remain suspended for **Monthly Quota Exceeded**.
-- Live branch remains `timing-defense-live-v011` at `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a` unless later verified otherwise.
-- Experimental architecture branch: `timing-defense-cloudflare-do-poc`.
-- Current PoC code is isolated under `timing-defense-cloudflare-poc/`.
-- The PoC does not modify v0.35 gameplay or balance values.
+- Live source branch remains `timing-defense-live-v011` at the last verified HEAD `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a` unless later verification proves otherwise.
+- The PoC branch is `timing-defense-cloudflare-do-poc`.
+- The PoC is isolated and has not modified production balance/gameplay values.
 
 ## Balance / UI guard
 Do not numerically patch or production-freeze attack damage, monster HP, passive interval, combo coefficients, EXP, shop costs, knockback, stage count/gaps or class balance during this architecture migration.
@@ -31,72 +46,110 @@ Current combo display/size/position/animation remains approved and frozen unless
 
 ---
 
-# Immediate execution group — Durable Objects viability PoC
+# Immediate execution group — v0.31 room/READY/START parity migration
 
-Do not migrate the full v0.35 game yet.
+Do not add Stage 1 combat yet.
 
-## A. Isolated PoC contract
-The first public build must prove only:
-1. create one six-character authoritative room,
-2. connect two independent browser clients,
-3. synchronize participant/host state,
-4. synchronize READY,
-5. enforce host-only START,
-6. create one authoritative test monster,
-7. accept an attack from either client,
-8. broadcast identical monster HP to both clients,
-9. reconnect the same stored session without corrupting active connection ownership.
+## A. Source-of-truth recovery before implementation
+Read the existing v0.31/v0.32 production implementation and reports directly from `timing-defense-live-v011` / workspace before writing the migration.
 
-Diagnostic PoC constants are intentionally isolated and are not game-balance changes.
+Recover exact existing semantics for:
+- FRIEND/LINK room creation and joining,
+- nickname/class selection,
+- slot allocation,
+- host identity,
+- READY propagation,
+- all-human READY gate,
+- host-only START,
+- shared future start time / RUN STARTING state,
+- invite/link behavior,
+- waiting-room UI behavior,
+- v0.32 Samsung Browser short-landscape fixes.
 
-## B. Target platform contract
-- Frontend/static assets: Cloudflare Workers Static Assets.
-- Room authority: one SQLite-backed Durable Object per room code.
-- Transport: WebSocket Hibernation API.
-- Current Korea-centered placement hint: `apac-ne`.
-- Execution model: event-driven.
-- Do **not** reproduce the legacy 50 ms always-on Node simulation loop in the new architecture.
+Do not infer these from memory if repository code differs.
 
-## C. Public PoC smoke test
-After Cloudflare deployment verify:
-- `/api/health` returns PoC architecture metadata,
-- root diagnostic page loads,
-- room create works,
-- second client joins the same room,
-- READY propagates both ways,
-- non-host cannot START,
-- host START works only after both humans READY,
-- both clients see the same 300 HP diagnostic monster,
-- an accepted attack changes 300 -> 200 on both clients,
-- the other client can change 200 -> 100 on both clients,
-- the next accepted attack changes 100 -> 0 and both clients enter `clear`.
+## B. Migration implementation boundary
+Port only the waiting-room/session contract onto Cloudflare Durable Object + WebSocket transport.
 
-## D. Device gate
-Use Android + PC as two independent clients.
+Server/DO owns:
+- room identity,
+- session identity,
+- slot,
+- host,
+- participant nickname/class,
+- READY state,
+- start eligibility,
+- shared authoritative future start time.
 
-PASS requires the full public sequence:
-`same room -> READY -> host START -> same monster -> A attack visible on B -> B attack visible on A -> clear`.
+Client owns:
+- waiting-room presentation,
+- local form input before authoritative acceptance,
+- rendering of participant/READY/START state.
 
-Also refresh/reconnect one client and confirm the same session/slot can recover without the replaced old WebSocket marking the new connection offline.
+Preserve:
+- existing v0.31 behavior,
+- v0.32 layout fix,
+- no balance changes,
+- no combat migration in this slice.
 
-## E. Failure rule
-If the PoC fails because of a Cloudflare platform constraint, stop and classify the constraint before porting production gameplay.
+## C. Public device validation gate
+Android + PC must validate:
+1. FRIEND/LINK create/join equivalent behavior,
+2. both clients see identical participant/slot/class/nickname state,
+3. READY propagates both ways,
+4. READY cancel propagates,
+5. non-host cannot START,
+6. host cannot START before all humans READY,
+7. host START after all READY creates one shared future start time,
+8. both clients enter the same starting/running boundary,
+9. refresh/reconnect in waiting state preserves the same session/slot/room,
+10. disconnect/reconnect does not corrupt host/online ownership,
+11. v0.32 short-landscape waiting-room behavior remains usable on Samsung Browser.
 
-Do not work around a platform limitation by changing gameplay/balance behavior.
+## D. Closure rule
+This slice closes only when:
+- public Cloudflare deployment succeeds,
+- Android + PC waiting-room parity is device-PASS,
+- reproducible migration defects are fixed,
+- canonical docs are synchronized.
+
+A PASS authorizes the next slice only: v0.33 authoritative Stage 1 migration.
 
 ---
 
-# Migration group — only after PoC PASS
+# Following migration slice — only after v0.31/v0.32 parity PASS
 
-1. Port the v0.31 authoritative room/session/READY/START contract to the Durable Object.
-2. Preserve the client-side waiting-room UX and v0.32 short-landscape fixes.
-3. Port v0.33 Stage 1 authoritative consequences: spawn identity, HP, BASE HP, actions, passive/AI consequences, EXP/LV/coin.
-4. Replace continuous 50 ms server position integration with event/time-derived authoritative movement where safe.
-5. Preserve v0.34 interpolation/extrapolation and remote projectile VFX as presentation-only behavior.
-6. Port v0.35 session recovery, Team Shop, purchase validation, READY/NEXT and Stage 2.
-7. Android + PC device-test through Stage 2 and reconnect.
-8. Fix only reproducible parity defects.
-9. Synchronize canonical docs when v0.35-equivalent Cloudflare parity is device-PASS.
+Port v0.33 Stage 1 authoritative consequences:
+- shared run id/seed/start state,
+- enemy spawn identity,
+- authoritative HP/death,
+- BASE HP,
+- human timing actions,
+- passive/AI consequences,
+- EXP/LV/coin/charge/combo candidate state.
+
+Architecture requirement:
+- avoid reproducing the legacy 50 ms always-on position integration where event/time-derived authoritative state is sufficient,
+- preserve server authority,
+- preserve v0.34 interpolation/extrapolation and remote projectile VFX as presentation-only behavior.
+
+Then validate Android + PC Stage 1 parity before porting v0.35.
+
+---
+
+# v0.35 parity migration — only after Stage 1 parity PASS
+
+Port:
+- production reconnect/session recovery semantics,
+- Stage 1 -> Team Shop,
+- authoritative coin/ranks/purchase validation,
+- shop READY,
+- all-human READY gate,
+- host-only NEXT,
+- synchronized Stage 2 GRUNT/RUNNER combat,
+- bounded Stage 2 clear.
+
+Then device-test through Stage 2 and reconnect.
 
 ---
 
@@ -117,10 +170,10 @@ Safe claims:
 - v0.34 smoothing and remote projectile VFX are device-PASS.
 - v0.35 reconnect/shop/Stage-2 code exists and passed local API/integration checks.
 - Render outage is a hosting quota suspension, not proven gameplay regression.
-- a separate Durable Objects PoC implementation now exists for architecture validation.
+- Cloudflare Workers + Durable Objects isolated PoC is public two-client device-PASS, including refresh/reconnect.
 
 Do not claim:
-- public Cloudflare PoC PASS before deployment/device evidence,
+- v0.31 production parity on Cloudflare yet,
 - v0.35 Cloudflare parity,
 - Stage 3–10 multiplayer,
 - complete Lv6+ multiplayer skill authority,
