@@ -1,0 +1,55 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.38 larger-party simulation</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px;max-width:1050px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}</style>
+<h1>v0.38 larger-party live simulation</h1><div id="status">RUNNING…</div><pre id="log"></pre><pre id="out"></pre>
+<script>
+(async()=>{
+ const status=document.getElementById('status'),logEl=document.getElementById('log'),out=document.getElementById('out');
+ const checks=[],log=[];const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ const say=s=>{log.push(s);logEl.textContent=log.join('\n')};const add=(n,p,a,e)=>{checks.push({name:n,pass:!!p,actual:a,expected:e});say(`${p?'PASS':'FAIL'} · ${n}`)};
+ async function post(path,body){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'});const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(`${path}: ${d?.error||r.status}`);return d}
+ class C{
+   constructor(name,cls,session=''){this.name=name;this.cls=cls;this.session=session;this.slot=0;this.ws=null;this.state=null;this.seq=0;this.eventIds=[];this.gaps=[];this.batches=[];this.waiters=[];this.errors=[]}
+   connect(code){return new Promise((resolve,reject)=>{const proto=location.protocol==='https:'?'wss:':'ws:',u=new URL(`${proto}//${location.host}/ws/${code}`);if(this.session)u.searchParams.set('session',this.session);u.searchParams.set('nickname',this.name);u.searchParams.set('classId',this.cls);const ws=new WebSocket(u);this.ws=ws;const timer=setTimeout(()=>reject(new Error(`${this.name} connect timeout`)),6000);ws.addEventListener('message',e=>{let m;try{m=JSON.parse(e.data)}catch{return}if(m.type==='welcome'){this.session=m.session;this.slot=m.slot;this.state=m.state;this.seq=Math.max(this.seq,Number(m.lastSeq)||0);clearTimeout(timer);resolve(m)}else if(m.type==='state')this.state=m.state;else if(m.type==='event-batch'){this.batches.push(m);for(const ev of m.events||[])this.eventIds.push(Number(ev.id)||0)}else if(m.type==='event-gap')this.gaps.push(m);else if(m.type==='error')this.errors.push(m.error);for(const w of [...this.waiters])if(w.pred(m,this)){this.waiters.splice(this.waiters.indexOf(w),1);w.resolve(m)}});ws.addEventListener('error',()=>{clearTimeout(timer);reject(new Error(`${this.name} websocket error`))})})}
+   send(x){if(this.ws?.readyState!==WebSocket.OPEN)throw new Error(`${this.name} socket closed`);this.ws.send(JSON.stringify(x))}
+   ready(){this.send({type:'ready',ready:true})}
+   attack(){this.send({type:'action',seq:++this.seq,xJudge:'NORMAL',yJudge:'NORMAL'})}
+   wait(pred,timeout=6000){return new Promise((resolve,reject)=>{const w={pred,resolve};this.waiters.push(w);setTimeout(()=>{const i=this.waiters.indexOf(w);if(i>=0)this.waiters.splice(i,1);reject(new Error(`${this.name} wait timeout`))},timeout)})}
+   async waitState(pred,timeout=7000){const t=performance.now();while(performance.now()-t<timeout){if(this.state&&pred(this.state))return this.state;await sleep(40)}throw new Error(`${this.name} state timeout`)}
+   close(){try{this.ws?.close(1000,'sim')}catch{}}
+ }
+ function monotonic(c){return c.gaps.length===0&&c.eventIds.every((id,i,a)=>id>0&&(i===0||id===a[i-1]+1))}
+ async function clearToShop(clients,maxMs=22000){const t0=performance.now();while(performance.now()-t0<maxMs){const st=clients[0].state,run=st?.run;if(run?.status==='shop')return true;if(run?.status==='combat'&&(run.monsters?.length||0)>0){for(const c of clients){try{c.attack()}catch{}}await sleep(90)}else await sleep(70)}return false}
+ async function scenario(label,{humans,aiFill,reconnectHost=false,requireOver24=false}){
+   say(`--- ${label} ---`);let code='',hostSession='',clients=[];
+   try{
+     const cr=await post('/api/room/create',{method:'friend',nickname:`${label}_P1`,classId:'rogue',aiFill});code=cr.code;hostSession=cr.session;
+     const classes=['rogue','knight','mage','archer'];
+     for(let i=0;i<humans;i++){const c=new C(`${label}_P${i+1}`,classes[i],i===0?hostSession:'');clients.push(c);await c.connect(code)}
+     const expectedHumanSlots=[];for(let s=1;s<=4;s++)if(!(aiFill||[]).some(a=>a.pos===s))expectedHumanSlots.push(s);expectedHumanSlots.length=humans;
+     add(`${label}_SLOTS`,clients.map(c=>c.slot).join(',')===expectedHumanSlots.join(','),clients.map(c=>c.slot),expectedHumanSlots);
+     const state=clients[0].state;add(`${label}_AI_SLOTS`,(state.aiFill||[]).map(a=>a.pos).join(',')===(aiFill||[]).map(a=>a.pos).join(','),(state.aiFill||[]).map(a=>a.pos),(aiFill||[]).map(a=>a.pos));
+     for(const c of clients)c.ready();await clients[0].waitState(s=>s.canStart===true,5000);add(`${label}_READY_START`,clients[0].state.canStart===true,clients[0].state.canStart,true);
+     clients[0].send({type:'start'});for(const c of clients)await c.waitState(s=>s.run?.status==='combat',8000);
+     const runId=clients[0].state.run.id;const playerSlots=clients[0].state.run.players.map(p=>p.slot),aiSlots=(clients[0].state.run.ai||[]).map(a=>a.slot);
+     add(`${label}_RUN_ROSTER`,playerSlots.join(',')===expectedHumanSlots.join(',')&&aiSlots.join(',')===(aiFill||[]).map(a=>a.pos).join(','),{playerSlots,aiSlots},{playerSlots:expectedHumanSlots,aiSlots:(aiFill||[]).map(a=>a.pos)});
+     if(reconnectHost){
+       const old=clients[0],session=old.session,seq=old.seq;old.close();await sleep(250);const r=new C(old.name,old.cls,session);r.seq=seq;await r.connect(code);clients[0]=r;const hp=r.state.participants.find(p=>p.slot===1);add(`${label}_HOST_RECONNECT`,r.slot===1&&hp?.host===true&&r.state.run?.id===runId,{slot:r.slot,host:hp?.host,run:r.state.run?.id},{slot:1,host:true,run:runId});
+     }
+     const cleared=await clearToShop(clients);for(const c of clients)await c.waitState(s=>s.run?.status==='shop',4000);add(`${label}_STAGE1_SHOP`,cleared&&clients.every(c=>c.state?.run?.status==='shop'),clients.map(c=>c.state?.run?.status),'all shop');
+     for(const c of clients)await post(`/api/room/${code}/shop-ready`,{session:c.session,ready:true});await clients[0].waitState(s=>s.run?.shop?.canNext===true,4000);
+     await post(`/api/room/${code}/shop-next`,{session:clients[0].session});for(const c of clients)await c.waitState(s=>s.run?.stage===2,5000);add(`${label}_SHOP_TO_STAGE2`,clients.every(c=>c.state?.run?.stage===2),clients.map(c=>c.state?.run?.stage),'all stage2');
+     const mono=clients.every(monotonic);add(`${label}_EVENT_MONOTONIC`,mono,clients.map(c=>({slot:c.slot,count:c.eventIds.length,gaps:c.gaps.length,first:c.eventIds[0],last:c.eventIds.at(-1)})),'no gaps, contiguous ids');
+     if(requireOver24){const n=Math.max(...clients.map(c=>c.eventIds.length));add(`${label}_EVENTS_OVER_LEGACY_24`,n>24,n,'>24')}
+   }catch(e){checks.push({name:`${label}_EXCEPTION`,pass:false,actual:String(e?.stack||e),expected:'no exception'});say(`FAIL · ${label}_EXCEPTION · ${e}`)}
+   finally{for(const c of clients){try{c.close()}catch{}}await sleep(80);for(const c of [...clients].reverse()){try{if(code&&c.session)await post(`/api/room/${code}/leave`,{session:c.session})}catch{}}}
+ }
+ try{
+   await scenario('3H',{humans:3,aiFill:[]});
+   await scenario('4H',{humans:4,aiFill:[],reconnectHost:true,requireOver24:true});
+   await scenario('2H2AI',{humans:2,aiFill:[{pos:3,cls:'knight'},{pos:4,cls:'rogue'}]});
+   await scenario('3H1AI',{humans:3,aiFill:[{pos:4,cls:'mage'}]});
+ }catch(e){checks.push({name:'SUITE_EXCEPTION',pass:false,actual:String(e?.stack||e),expected:'no exception'})}
+ const passed=checks.filter(x=>x.pass).length,result={ok:passed===checks.length,version:'0.38-cf.1-party-live',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};status.textContent=result.ok?'PASS':'FAIL';status.className=result.ok?'pass':'fail';out.textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.38 party simulation`;
+})();
+</script>
