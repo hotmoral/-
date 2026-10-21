@@ -6,76 +6,74 @@ Updated: 2026-10-21 KST
 Primary architecture:
 **Cloudflare Workers + Durable Objects event-driven multiplayer.**
 
-Closed public/device-validation gates:
-- isolated Durable Objects viability PoC — **PASS**
+Closed public/device gates:
+- Durable Objects viability PoC — **PASS**
 - v0.31/v0.32 waiting-room parity — **PASS**
-- v0.33 authoritative Stage 1 parity — **PASS**
-- v0.34 render smoothing / remote projectile parity — **PASS**
-- v0.35 reconnect / Team Shop / Stage 2 parity — **PASS**
+- v0.33 authoritative Stage 1 — **PASS**
+- v0.34 render/remote projectile parity — **PASS**
+- v0.35 reconnect / Team Shop / Stage 2 — **PASS**
+
+Active slice:
+- **v0.36 Slice A — automated validation PASS / final short device smoke pending**
 
 Public URL:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 
-Cloudflare watched deployment branch:
-- `timing-defense-cloudflare-do-poc`
-- exact v0.35 validated HEAD: `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
-- validated health version: `0.35-cf.7`
-
-Preserved checkpoints:
+## Preserved checkpoints
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
 - v0.31/v0.32 PASS: `timing-defense-cloudflare-v031-v032-pass-20261021`
-- v0.33 Stage 1 PASS: `timing-defense-cloudflare-v033-pass-20261021`
-- v0.34 render PASS: `timing-defense-cloudflare-v034-pass-20261021`
+- v0.33 PASS: `timing-defense-cloudflare-v033-pass-20261021`
+- v0.34 PASS: `timing-defense-cloudflare-v034-pass-20261021`
 - v0.35 full PASS: `timing-defense-cloudflare-v035-pass-20261021`
+- v0.36 automated PASS: `timing-defense-cloudflare-v036-automation-pass-20261021`
 
-Canonical closure report:
-- `CLOUDFLARE_V035_PASS_2026-10-21.md`
+Exact v0.35 validated HEAD:
+`b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
 
-Canonical next-slice preflight:
-- `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
+Exact v0.36 automated-tested deployment HEAD:
+`abb2d428df546c257181278ba6bd0814e0471c93`
 
-## What v0.35 PASS established
-Android + PC multiplayer validation confirmed the scoped Stage 1 -> Team Shop -> Stage 2 run:
-- authoritative shared combat state,
-- authoritative monster HP/death and BASE HP,
-- EXP/charge/run progression synchronization,
+Watched deployment branch:
+`timing-defense-cloudflare-do-poc`
+
+## Read first
+1. `SESSION_HANDOFF.md`
+2. `PROJECT_STATUS.md`
+3. `NEXT_WORK.md`
+4. `CLOUDFLARE_V036_AUTOMATION_PASS_2026-10-21.md`
+5. `CLOUDFLARE_V036_AUTOMATED_VALIDATION_2026-10-21.md`
+6. `CLOUDFLARE_V036_SLICE_A_DECISION_2026-10-21.md`
+7. `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
+8. `CLOUDFLARE_V035_PASS_2026-10-21.md`
+9. `DESIGN_DECISIONS.md`
+10. `SKILL_PLAN_LV6_31.md`
+11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+
+## v0.35 PASS baseline
+Android + PC established:
+- shared authoritative Stage 1 and Stage 2,
 - Team Shop purchase/coin/rank authority,
-- immediate purchase pending feedback with duplicate-tap protection,
-- all-human READY gate,
-- host-only NEXT STAGE,
-- synchronized Stage 2 `STAGE / READY / START`,
-- Stage 2 Timing Square and direct input,
-- Stage 2 GRUNT/RUNNER authoritative combat and bounded clear,
-- remote projectile visibility and local immediate-hit presentation,
-- authoritative result board with actual run participants and contribution values,
-- reconnect gate,
-- Rogue CHARGE palette/flicker correction,
-- remote human timing-projectile visual parity.
+- shop pending feedback and duplicate-tap protection,
+- all-human READY + host NEXT,
+- authoritative Stage 2 clear/results,
+- reconnect,
+- Rogue CHARGE visual fix,
+- remote human timing projectile parity.
 
-No numerical balance values were intentionally changed while closing cf.3-cf.7 defects.
+Do not reopen v0.35 without regression evidence.
 
-## Post-v0.35 preflight — COMPLETE
-The preflight audited the next three axes before implementation:
-1. Stage 3–10 multiplayer generalization,
-2. larger 3–4 slot / human+AI parties,
-3. Lv6+ multiplayer skill consequence authority.
+## Post-v0.35 preflight conclusions
+- Stage 3–10 exact legacy encounter contracts were recovered.
+- Do not replace them with future S/E/X pressure recipes during migration.
+- Stage-2-specific server/client assumptions must be generalized before later stages.
+- BRUTE/SHIELD/FLYER, Stage 5/10 bosses and authoritative Y geometry are not yet migrated.
+- room/READY/shop/session foundations are reusable for 3–4 slots, but larger-party event volume must be tested automatically.
+- playable legacy skill authority baseline is Lv6/11/16/21.
+- Lv26/Lv31 remain design-roadmap only.
 
-Key conclusions:
-- exact legacy Stage 3–10 plans/compositions/gaps/scaling were recovered,
-- future S/E/X pressure grammar remains candidate analysis data and must not replace current 10-stage prototype values during migration,
-- Cloudflare has several Stage-2-only server/client/result assumptions that require one generic Stage-N path,
-- server lacks BRUTE/SHIELD/FLYER, Stage 5/10 boss rules and authoritative Y geometry needed by FLYER/geometry skills,
-- four-slot transport/session/READY/shop/result foundations are reusable,
-- 3–4 participant + multi-hit skills require stronger event-delivery semantics than the current short fixed tail,
-- actual playable legacy skill authority is Lv6/11/16/21,
-- Lv26/Lv31 remain roadmap/design effects and must not be invented during migration.
-
-## Numerical parity decision gate — implementation is paused here
-Two pre-existing Cloudflare-vs-legacy numerical mismatches were discovered.
-They are documented but **not patched**, because numerical changes require explicit approval.
-
-### N1 Heavy-tier EXP
-Legacy exact:
+## Explicit numerical decisions
+### N1 — APPROVED / IMPLEMENTED / AUTOMATED PASS
+Timing EXP exact table:
 - NORMAL 8
 - GOOD 12
 - PERFECT 18
@@ -85,77 +83,91 @@ Legacy exact:
 - SUPER 23
 - CRITICAL 28
 
-Current Cloudflare effectively gives:
-- NORMAL 8
-- GOOD 12
-- PERFECT 18
-- HEAVY 8
-- HEAVY+ 8
-- GREAT 12
-- SUPER 18
-- CRITICAL 28
+### N2 — APPROVED / IMPLEMENTED / AUTOMATED PASS
+AI stage multiplier:
+`1 + (stage - 1) * 0.035`
 
-Recommendation: classify as parity defect and restore legacy exact values before Lv6+ migration.
+### N3 — DEFERRED / MANDATORY FUTURE DISCUSSION
+N3 is the experimental combo-milestone extra-attack system.
+It is **not discarded** and not part of Slice A.
+Do not silently port, remove, freeze or rebalance it; explicit discussion is required later.
 
-### N2 AI stage damage scaling
-Legacy AI multiplier:
-`1 + (stage-1)*0.035`
+## v0.36 Slice A implementation
+No Stage 3 is enabled.
 
-Current Cloudflare omits it.
+Server-authoritative Lv6 consequences:
+- Knight: +12% damage.
+- Rogue: +55 ms authoritative second dagger at 55%, same target allowed with nearest fallback.
+- Tank: +30% knockback.
+- Archer: up to two strict-line 52% secondary hits, no seeking.
+- Mage: up to three nearby 50% splash hits.
 
-Recommendation: classify as parity defect and restore legacy exact scaling before Stage 3–10 migration.
+Infrastructure:
+- action/cast identity,
+- secondary hit indices and skill metadata,
+- scheduled Rogue secondary queue,
+- authoritative Archer/Mage target selection,
+- secondary presentation from server events.
 
-### N3 Combo milestone attacks
-Legacy experimental v0.18 has extra milestone attack rewards. Cloudflare currently implements persistent combo percentage bonus but not those milestone attacks.
+### cf.2 hardening
+Code audit caught two integration risks before final device closure:
+1. legacy Rogue local secondary could still execute client gameplay mutation in network mode; this was blocked,
+2. new Lv6 secondary VFX initially used an independent event floor; it now inherits the v0.35 resume floor to prevent historical replay after reconnect.
 
-Recommendation: defer to a separate explicit decision after event delivery is generalized; do not silently combine it with Stage 3 work.
+## v0.36 cf.3 automated validation — PASS
+User ran the public one-click suite in Samsung Browser and supplied screenshot evidence:
+- `SERVER · PASS · 10/10`
+- `CLIENT · PASS · 4/4`
+- `MULTICLIENT · PASS · 9/9`
+- `FINAL · PASS`
 
-## Exact next implementation after N1/N2 approval — Slice A
-Do not add Stage 3 yet.
+Automated suite covers:
+- N1/N2 exact values,
+- all five Lv6 authority boundaries,
+- action identity / hit indices,
+- stale/duplicate `seq` rejection,
+- Rogue local mutation block,
+- reconnect event-floor / duplicate VFX prevention,
+- two real WebSocket clients against deployed Durable Object,
+- READY/START/shared Stage1/resume/reconnect/Shop/Stage2 synchronization.
 
-Start from exact v0.35 PASS HEAD on a new implementation branch.
+Manual class-by-class phone verification is no longer required for exact numerical behavior.
 
-Scope:
-- keep Stage 1–2 flow unchanged,
-- add generic server skill-authority primitives,
-- implement exact existing Lv6 consequences for all five human classes,
-- add action/cast identity and secondary-hit event metadata,
-- keep client projectile prediction presentation-only,
-- forced/API Lv5 vs Lv6 verification,
-- Stage 1–2 multiplayer regression gate.
+## Immediate next boundary
+Do **not** start Stage 3 yet.
 
-Lv6 targets:
-- Knight +12% server damage; size presentation only,
-- Rogue second dagger 55%, same-target allowed,
-- Tank +30% server knockback,
-- Archer up to 2 strict-line penetrations, no seeking,
-- Mage 50% authoritative splash.
+Only one Slice A gate remains: one short actual-game device smoke limited to browser/render/touch behavior the simulation cannot fully prove:
+- game assets load,
+- Timing Square touch responds,
+- no obvious duplicate projectile, stale VFX replay, flicker or visual corruption,
+- Stage 1 -> Team Shop -> Stage 2 is visibly usable.
 
-Non-goals:
-- no Stage 3,
-- no Lv11+,
-- no Lv26/Lv31,
-- no pressure-grammar replacement,
-- no new team-size balance,
-- no responsive-safety work.
+If that smoke PASS:
+1. declare v0.36 Slice A full PASS,
+2. preserve the exact full-PASS branch from the tested deployment HEAD,
+3. synchronize canonical status/handoff,
+4. disable/remove candidate-only debug controls as appropriate,
+5. open Slice B only.
 
-After Slice A PASS:
-- Slice B: Stage 3 only, 2 humans first, exact `12 / 980 ms / G44-R34-B22`, Stage 3 clear -> Team Shop.
-- Slice C: 3H / 4H / 2H+2AI / 3H+1AI baseline and event-volume validation.
-- Later bounded groups: Stage 4 SHIELD, Stage 5–6 boss+FLYER+Y geometry, Stage 7–9 mixed roster, Stage 10 final boss/result, Lv11/16/21 authority before progression depends on each milestone.
+## Slice B after Slice A PASS
+Stage 3 only, two humans first:
+- Stage 2 clear -> Team Shop,
+- host NEXT -> Stage 3,
+- exact legacy Stage 3: `12 enemies / 980 ms / GRUNT 44% / RUNNER 34% / BRUTE 22%`,
+- authoritative BRUTE,
+- Stage 3 clear -> Team Shop,
+- Stage 4 remains blocked.
 
-## Deferred UX item
-Heterogeneous phone-size/aspect-ratio responsive safety remains deferred until after the current migration authority work. Handle it later as a shared responsive-safety layer rather than device-specific patches.
+## Following slices
+- larger-party baseline: 3H / 4H / 2H+2AI / 3H+1AI,
+- Stage 4 SHIELD,
+- Stage 5–6 boss + FLYER + Y geometry,
+- Stage 7–9 mixed-roster stress,
+- Stage 10 final boss/result,
+- Lv11/16/21 authority with automated forced-level tests before progression relies on them.
 
-## Legacy baseline
-- repository: `hotmoral/-`
-- legacy live source: `timing-defense-live-v011`
-- workspace: `timing-defense-workspace`
-- latest implemented legacy prototype: **v0.35**
-- last legacy Android + PC device-PASS before Cloudflare migration: **v0.34**
-- last verified legacy live HEAD before migration: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
-
-Render remains suspended for **Monthly Quota Exceeded**. This is classified as a hosting outage, not gameplay-regression evidence.
+## Deferred UX
+Heterogeneous phone-size/aspect-ratio responsive safety remains deferred until after the current migration authority work. Implement later as a shared responsive-safety layer, not per-device patches.
 
 ## Frozen governance
 - Rhythm: `X -> X -> X -> X+Y`.
@@ -172,38 +184,23 @@ Render remains suspended for **Monthly Quota Exceeded**. This is classified as a
 Experimental, not production-frozen:
 - passive `40 raw / 2.0 s`,
 - ordinary non-boss HP +10%,
-- combo persistent `5/8/12/15%` candidate,
-- combo milestone raw-equivalent `60/90/150/210` cap.
+- combo persistent candidate `5/8/12/15%`,
+- combo milestone raw-equivalent `60/90/150/210` — N3 mandatory future review.
 
-No numerical balance change without:
+No numerical change without:
 `implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
 
 ## Truth boundary
-Safe claims:
-- Cloudflare isolated PoC through v0.35 are device-PASS for their scoped gates,
-- exact v0.35 validated deployment/checkpoint is preserved,
-- post-v0.35 Stage/party/skill preflight is complete,
-- legacy v0.35 reconnect/shop/Stage-2 code existed and Cloudflare parity is device-confirmed,
-- Render quota incident confirmed.
+Safe:
+- Cloudflare PoC through v0.35 device-PASS,
+- exact v0.35 PASS preserved,
+- N1/N2 approved, implemented and automatically validated,
+- v0.36 cf.3 server/client/multiclient automated suite PASS,
+- exact v0.36 automated-pass deployment preserved.
 
-Do not claim yet:
+Not yet safe:
+- v0.36 Slice A full device PASS,
 - Stage 3–10 multiplayer parity,
-- full Lv6+ multiplayer authority,
-- Lv26/Lv31 playable implementation,
+- Lv6+ authority beyond Slice A,
 - final persistence/security/anti-cheat architecture,
-- final shop/shared-wall semantics beyond the validated v0.35 slice,
 - final numerical balance.
-
-## New-session read order
-1. `SESSION_HANDOFF.md`
-2. `PROJECT_STATUS.md`
-3. `NEXT_WORK.md`
-4. `CLOUDFLARE_V035_PASS_2026-10-21.md`
-5. `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
-6. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
-7. `DESIGN_DECISIONS.md`
-8. `SKILL_PLAN_LV6_31.md`
-9. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-10. `TIER_PRESSURE_GRAMMAR_V1.md`
-11. `PRESSURE_RECIPES_V1.md`
-12. `SIMULATION_METHOD.md`
