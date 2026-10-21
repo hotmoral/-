@@ -15,133 +15,130 @@ Exact v0.37 Slice B full-PASS checkpoint:
 - branch `timing-defense-cloudflare-v037-slice-b-pass-20261021`
 - HEAD `08af6e1e9f399ad13369990dcc452f012ddda1fa`
 
-Read:
-- `N3_COMBO_MILESTONE_REVIEW_2026-10-21.md`
+Read first:
+- `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
+- `CLOUDFLARE_V038_SLICE_C_CANDIDATE_2026-10-21.md`
 - `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
 - `PROJECT_STATUS.md`
 - `SESSION_HANDOFF.md`
-- `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
 
-## Numerical decisions already closed
+## Numerical/product decisions
 - N1 exact legacy EXP — **PASS / frozen for migration parity**.
 - N2 exact AI stage multiplier `1 + (stage - 1) * 0.035` — **PASS / frozen for migration parity**.
+- N3 combo milestone attacks — **OPTION B APPROVED / PRODUCT CONTRACT FROZEN / NOT YET ENABLED**.
 
-## Active decision gate — N3 combo milestone attacks
-Status: **EXACT LEGACY RULE RECOVERED / USER PRODUCT DECISION REQUIRED**
+N3 frozen contract:
+- milestones 5 / 10 / 20 / 30 / every +10 after 30,
+- exact maximum budgets 60 / 90 / 150 / 210,
+- Rogue 2/3/4/5 daggers,
+- Knight 67/33 primary-secondary intent,
+- Tank 60/20/20 intent,
+- Archer 70/30 strict-line intent,
+- Mage 55/15/15/15 intent,
+- deterministic remainder-safe allocation so no class exceeds the milestone budget,
+- no EXP / charge / combo / proc crit / recursive skill / recursive N3,
+- normal armor, kill, kill coin and contribution attribution,
+- frozen boss scalars apply,
+- N3 generic knockback uses NORMAL-equivalent base; milestone number does not escalate generic knockback,
+- class identity multipliers still apply, including Tank's class advantage.
 
-Do not implement Slice C event delivery or Stage 4 until the N3 product direction is explicitly chosen, because N3 changes the required worst-case event-delivery capacity.
+N3 implementation remains gated until Slice C event delivery is PASS.
 
-Exact recovered milestone grammar:
-- combo 5 -> raw-equivalent budget 60,
-- combo 10 -> 90,
-- combo 20 -> 150,
-- combo 30 -> 210,
-- combo 40/50/60/... -> repeat 210,
-- combo count itself remains unbounded,
-- persistent 5/8/12/15% combo multiplier is a separate already-existing mechanic.
+## Active slice — v0.38 Slice C / larger-party event kernel
+Status: **IMPLEMENTED / WATCHED BRANCH TRIGGERED / LIVE AUTOMATION PENDING**
 
-Legacy class burst shapes:
-- Rogue: 2 / 3 / 4 / 5 daggers,
-- Knight: 67% primary + 33% one secondary,
-- Tank: 60% primary + up to two 20% nearby hits,
-- Archer: 70% primary + 30% one strict-line secondary,
-- Mage: 55% primary + up to three 15% nearby hits.
+Candidate:
+- implementation branch `timing-defense-cloudflare-v038-slice-c-event-kernel`
+- watched branch `timing-defense-cloudflare-do-poc`
+- candidate HEAD `0c96f038f6fcf7ec5e27e7d7fe0db38343a807c7`
+- expected health `0.38-cf.1`
+- loader cache `cf0381`
 
-N3 never grants EXP/charge/combo/crit and does not recursively activate the normal skill chain. Player damage/kills/kill coin remain normal consequences of the milestone attack.
+### Event-delivery kernel
+The old fixed snapshot-tail assumption is replaced for WebSocket delivery:
+- server retains 512 authoritative events per run,
+- each accepted WebSocket stores `eventRunId` + `eventCursor` in its hibernation attachment,
+- newly created events are delivered as per-socket monotonic `event-batch` messages,
+- normal socket state snapshots carry zero event payload and no longer depend on `events.slice(-24)`,
+- retention discontinuity produces explicit `event-gap`, not silent continuity,
+- sockets that existed before a new run start receive the new run from event 0,
+- reconnect sockets in an already-running run floor at latest and preserve the existing v0.35 resume/eventFloor no-historical-replay contract.
 
-Important ambiguity:
-- legacy implementation independently rounds each sub-hit, producing small max-budget overshoot for some classes,
-- milestone display tier also indirectly escalates knockback,
-- these are implementation consequences and were not clearly balance-frozen by V8.
+N3 remains disabled in v0.38.
+Stage 4 remains blocked.
 
-Current recommendation:
-- **Option B / cleaned N3 contract**,
-- keep the mastery system, trigger grammar, budgets and class geometry,
-- normalize theoretical max damage to exact 60/90/150/210,
-- explicitly define N3 knockback instead of inheriting accidental tier-based escalation,
-- preserve no-EXP/no-charge/no-combo/no-crit/no-recursive-proc semantics,
-- retain armor, kill contribution, coin, and frozen boss scalars.
+### Deterministic validation
+v0.38 server self-test includes:
+- 512-event retention and monotonic IDs,
+- complete 32-event burst delivery (> legacy 24),
+- per-socket cursor advancement,
+- explicit gap detection,
+- pre-run -> new-run cursor behavior,
+- reconnect floor behavior,
+- independent socket cursors.
 
-See `N3_COMBO_MILESTONE_REVIEW_2026-10-21.md` for Option A/B/C details.
-
-## Event-delivery consequence already established
-Current server retains 48 recent events internally but public snapshots expose only the last 24.
-
-N3 can exceed 24 events in a legitimate synchronized 4-human burst with the already validated Lv6 skills:
-- 4 Lv6 Rogues at a 30+ milestone: up to 28 combat-hit events before passive fire,
-- 4 dense-target Lv6 Mages at a milestone: up to 32 combat-hit events before passive fire.
-
-Therefore if N3 is retained, Slice C must replace the fixed 24-event-tail assumption with loss-resistant event delivery before N3 is enabled.
-
-## Next implementation slice after N3 decision — Slice C / larger-party baseline
-Do **not** start Stage 4 yet.
-
-Target party combinations:
-- 3 humans,
-- 4 humans,
-- 2 humans + 2 AI,
-- 3 humans + 1 AI.
-
-Required audit/implementation:
-1. Verify fixed P1–P4 slot ownership under all supported mixes.
-2. Verify host identity under reconnect and simulated peers.
-3. Verify READY/START semantics with 3–4 humans.
-4. Verify Team Shop READY/NEXT with larger parties and human+AI mixes.
-5. Preserve current fixed AI FILL semantics unless separately decided.
-6. Verify result-board participant ordering/count.
-7. Generalize event delivery so each client can obtain all events after its event floor without depending on only `events.slice(-24)`.
-8. Preserve reconnect historical-event suppression and server damage authority.
-9. Expand 3/4-client live automation before manual play.
-10. If N3 Option A/B is approved, size and stress-test the delivery kernel against its worst-case event burst even before N3 itself is enabled.
-
-### Automation requirement
-Cover at minimum:
+### Live party automation
+`v038-party-sim.html` runs actual WebSocket scenarios:
 - 3H,
 - 4H,
 - 2H+2AI,
-- 3H+1AI,
-- READY -> START,
-- synchronized Stage 1 combat,
-- reconnect,
-- Team Shop READY/NEXT,
-- Stage 2 entry,
-- participant/result consistency,
-- event-ID monotonicity and no silent event loss at the designed maximum burst.
+- 3H+1AI.
 
-### Manual validation policy
-After automation passes:
-- use simulated peers so one phone remains sufficient where practical,
-- run one short Samsung Browser render/input smoke,
-- do not ask for repetitive manual party-size or exact-number verification already covered by automation.
+Each checks:
+- expected fixed human/AI slots,
+- all-human READY + host START,
+- synchronized run roster,
+- Stage 1 -> Team Shop -> Stage 2,
+- contiguous per-client event IDs,
+- zero `event-gap`.
 
-## Following slices
-### N3 authority slice, if retained
-After Slice C event kernel is hardened:
-- server-authoritative milestone trigger,
-- forced combo 5/10/20/30/40 tests for all five classes,
-- synchronized four-player milestone stress,
-- final device presentation smoke.
+4H additionally checks:
+- host reconnect returns to slot 1 with host identity and same run,
+- total delivered events exceed the legacy 24-event window.
 
-### Stage 4 — SHIELD / armor
-Only after Slice C closes and the N3 placement decision is respected.
+## Immediate validation gate
+Do not implement N3 or Stage 4 yet.
 
-### Stage 5–6
-- checkpoint boss,
-- FLYER,
-- authoritative Y geometry required before FLYER/geometric skill interactions.
+First run:
+- `/v038-validation-suite.html`
 
-### Stage 7–9
-- mixed-roster stress.
+It must pass:
+1. v0.36/v0.37 deterministic server regression,
+2. v0.38 event-kernel deterministic tests,
+3. v0.36 client regression,
+4. v0.37 client regression,
+5. v0.38 event-client self-test,
+6. 3H / 4H / 2H+2AI / 3H+1AI live simulation.
 
-### Stage 10
-- final boss and final result semantics.
+If automation passes:
+- perform one short Samsung Browser render/input smoke only,
+- then freeze Slice C PASS checkpoint.
 
-### Lv11/16/21 authority
-Use forced-level deterministic tests before natural progression depends on each milestone.
+## Next bounded slice after Slice C PASS — N3 authority
+Implement the now-frozen Option B contract server-authoritatively.
+
+Required tests:
+- forced combo 5/10/20/30/40 for all five classes,
+- exact budget allocation,
+- target geometry,
+- no EXP/charge/combo/crit/recursive proc,
+- kill/coin/contribution attribution,
+- boss scalar behavior,
+- four-player synchronized milestone burst stress,
+- final Samsung Browser presentation smoke.
+
+Only after the N3 authority slice closes should Stage 4 SHIELD begin.
+
+## Later
+- Stage 4 SHIELD / armor,
+- Stage 5–6 checkpoint boss + FLYER + authoritative Y geometry,
+- Stage 7–9 mixed-roster stress,
+- Stage 10 final boss/result,
+- Lv11/16/21 authority with forced-level deterministic tests before natural progression depends on them.
 
 ## Deferred UX
 Responsive safety across heterogeneous phone sizes/aspect ratios remains intentionally deferred. Handle later as a shared responsive-safety layer, not per-device patches.
 
 ## Frozen governance
-No unapproved numerical change. Numerical work must continue to follow:
+No unapproved numerical change. Numerical work continues to follow:
 `implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
