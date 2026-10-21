@@ -1,0 +1,1 @@
+Execution note: implementation begins from the device-PASS v0.31/v0.32 Cloudflare parity state. The deployment pointer branch is preserved before Stage 1 changes. Stage 1 migration must remain isolated from shop/Stage 2/balance changes.
