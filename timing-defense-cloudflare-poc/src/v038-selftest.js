@@ -77,5 +77,5 @@ export function runV038SelfTest(RoomClass){
   }catch(e){checks.push(pack('CURSOR_EXCEPTION',false,String(e?.stack||e),'no exception'))}
 
   const passed=checks.filter(x=>x.pass).length;
-  return{ok:passed===checks.length,version:'0.38-cf.1-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
+  return{ok:passed===checks.length,version:'0.38-cf.2-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
 }
