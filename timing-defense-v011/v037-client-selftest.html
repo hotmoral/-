@@ -1,0 +1,41 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.37 client self-test</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}</style>
+<h1>v0.37 Stage flow client self-test</h1><div id="status">RUNNING…</div><pre id="out"></pre>
+<div id="v035cfShop"><div class="v035cfReadyTitle"></div><div class="v035cfFootStatus"></div><button id="v035cfNext" class="primary">NEXT STAGE →</button></div>
+<script>
+const S={stage:1,stageMode:'combat',phase:'x',pendingTap:false,projectiles:[],gameOver:false,runComplete:false,hitStopUntil:0,lockedCrossUntil:0};
+window.__TDMP34CF={state:null};
+let startCalls=[],tapCalls=0;
+function startStage(stage,now){startCalls.push(stage);S.stage=stage;S.stageMode='intro';S.phase='stageIntro';S.v020IntroStart=now;S.v020IntroUntil=now+1050}
+function handleTap(){tapCalls++;return true}
+</script>
+<script src="v037-stage-flow.js?v=cf0371"></script>
+<script src="v037-stage3-shop-lock.js?v=cf0371"></script>
+<script>
+(async()=>{
+  const checks=[],add=(name,pass,actual,expected)=>checks.push({name,pass:!!pass,actual,expected});
+  const emit=st=>{window.__TDMP34CF.state=st;window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:st,source:'selftest'}}))};
+  try{
+    const base={run:{id:'R37',stage:3,status:'stage-starting'},participants:[]};emit(base);
+    add('STAGE3_WAIT_ARMED',S.stage===3&&S.stageMode==='netStageWait'&&S.phase==='idle',{stage:S.stage,mode:S.stageMode,phase:S.phase},{stage:3,mode:'netStageWait',phase:'idle'});
+    emit({run:{...base.run,status:'intro'},participants:[]});
+    add('STAGE3_INTRO_GENERIC_START',startCalls.length===1&&startCalls[0]===3&&S.stage===3,{startCalls:[...startCalls],stage:S.stage},[3]);
+    emit({run:{...base.run,status:'combat'},participants:[]});
+    add('STAGE3_COMBAT_INTERACTIVE',S.stage===3&&S.stageMode==='combat'&&['targetWait','x','y','projectile','recover'].includes(S.phase),{stage:S.stage,mode:S.stageMode,phase:S.phase},'stage 3 combat');
+    handleTap(performance.now());add('STAGE3_TAP_PATH',tapCalls===1,tapCalls,1);
+  }catch(e){add('STAGE3_FLOW_EXCEPTION',false,String(e?.stack||e),'no exception')}
+  try{
+    const callsBefore=startCalls.length;emit({run:{id:'R37',stage:1,status:'combat'},participants:[]});
+    add('STAGE1_NOT_REARMED_BY_GENERIC_GUARD',startCalls.length===callsBefore,startCalls.length,callsBefore);
+  }catch(e){add('STAGE1_GUARD_EXCEPTION',false,String(e?.stack||e),'no exception')}
+  try{
+    emit({run:{id:'R37',stage:3,status:'shop',shop:{stage:3}},participants:[]});await new Promise(r=>setTimeout(r,0));
+    const next=document.getElementById('v035cfNext'),title=document.querySelector('.v035cfReadyTitle'),foot=document.querySelector('.v035cfFootStatus');
+    add('STAGE4_UI_LOCK',next.disabled&&next.textContent==='STAGE 4 LOCKED'&&title.textContent==='STAGE 3 COMPLETE'&&/Stage 4/.test(foot.textContent),{disabled:next.disabled,next:next.textContent,title:title.textContent,foot:foot.textContent},{disabled:true,next:'STAGE 4 LOCKED'});
+  }catch(e){add('STAGE4_UI_LOCK_EXCEPTION',false,String(e?.stack||e),'no exception')}
+  const passed=checks.filter(x=>x.pass).length,result={ok:passed===checks.length,version:'0.37-cf.1-client-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
+  const st=document.getElementById('status');st.textContent=result.ok?'PASS':'FAIL';st.className=result.ok?'pass':'fail';document.getElementById('out').textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.37 client self-test`;
+})();
+</script>
