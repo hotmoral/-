@@ -14,6 +14,7 @@
   document.body.appendChild(badge);
 
   function localParticipant(st){return st?.participants?.find(p=>p.slot===bridge.slot)||null}
+  function localRunPlayer(st){return st?.run?.players?.find(p=>p.slot===bridge.slot)||null}
   function setBadge(st){
     const run=st?.run,id=run?.id||'';
     if(run?.status!=='combat'){badge.style.display='none';return}
@@ -53,6 +54,8 @@
     if(events.some(e=>e?.type==='n3'&&e?.slot===bridge.slot)){
       doneRunId=id;armedRunId='';
     }
+    const rp=localRunPlayer(st);
+    if(doneRunId!==id&&armedRunId===id&&rp&&Number(rp.combo)<29)armedRunId='';
     setBadge(st);arm(st);
   }
 
