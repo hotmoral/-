@@ -1,0 +1,1 @@
+v0.35 cf.5 deployment trigger: authoritative two-human result rows and cumulative KILL COIN semantics.
