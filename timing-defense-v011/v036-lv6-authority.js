@@ -1,5 +1,5 @@
 // Timing Defense Cloudflare v0.36 Slice A — Lv6 authoritative skill-event presentation.
-// Damage/state remain server authoritative. This layer renders remote secondary skill events only.
+// Damage/state remain server authoritative. This layer renders authoritative secondary skill events.
 (function(){
   const mp=window.__TDMP34CF;
   if(!mp)return;
@@ -29,7 +29,10 @@
     addFloat(String(damage||0),x,y-H*.035,18,'damage');
   }
   function queueSkill(e){
-    const a=actor(e.slot);if(!a||a.local)return;
+    const a=actor(e.slot);if(!a)return;
+    // Rogue already predicts its delayed second dagger locally via the legacy v0.16
+    // projectile path. Do not duplicate that local visual; remote clients still need it.
+    if(a.local&&e.skillKind==='rogue-double-dagger')return;
     const to=targetPoint(e),now=performance.now();
     if(e.skillKind==='rogue-double-dagger'){
       const from=weaponWorldPos(a.slot,'rogue');
