@@ -15,14 +15,15 @@ const auditedWorker={
       return json({
         ok:true,
         service:"timing-defense-cloudflare-v038-party-event-kernel",
-        version:"0.38-cf.1",
+        version:"0.38-cf.2",
         transport:"websocket-hibernation-per-socket-event-cursor",
         authority:"durable-object-stage1-stage3-lv6",
         validation:"v036-v037-regression-plus-event-kernel-and-larger-party-live-sim",
         eventDelivery:{history:512,mode:"per-socket-monotonic-batch",gap:"explicit"},
         n3:"option-b-frozen-not-yet-enabled",
         stage4:"blocked",
-        scope:"slice-c-event-kernel-larger-party-validation"
+        scope:"slice-c-event-kernel-larger-party-validation",
+        fix:"event-initialization-normalization"
       });
     }
     if(request.method==="GET"&&url.pathname==="/api/diagnostics/v038-slice-c"){
@@ -31,7 +32,7 @@ const auditedWorker={
       const wall=runV037WallSelfTest(TimingDefenseRoom);
       const stream=runV038SelfTest(TimingDefenseRoom);
       const result={
-        ok:!!(v036.ok&&v037.ok&&wall.ok&&stream.ok),version:"0.38-cf.1-diagnostics",
+        ok:!!(v036.ok&&v037.ok&&wall.ok&&stream.ok),version:"0.38-cf.2-diagnostics",
         v036Regression:{ok:v036.ok,passed:v036.passed,total:v036.total,failed:v036.failed},
         v037Regression:{ok:v037.ok,passed:v037.passed,total:v037.total,failed:v037.failed},
         wall:{ok:wall.ok,passed:wall.passed,total:wall.total,failed:wall.failed},
