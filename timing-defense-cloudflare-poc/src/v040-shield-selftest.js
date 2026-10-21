@@ -1,0 +1,93 @@
+// Timing Defense v0.40 — deterministic SHIELD/common armor capability tests.
+
+function player(slot=1,level=5,combo=0){
+  return{slot,level,xp:0,xpNeed:60+12*(level-1),charge:0,combo,comboPeak:combo,kills:0,coin:0,damage:0,lastSeq:0,nextPassiveAt:999999999,
+    upgrades:{atk:0,crit:0,critdmg:0,hp:0,def:0,knock:0},killCoinEarned:0};
+}
+function shield(id=1,x=.50,y=.30,hp=100000){return{id,type:'shield',x,y,refAt:1000,hp,maxHp:hp,boss:false}}
+function grunt(id=1,x=.50,y=.30,hp=100000){return{id,type:'grunt',x,y,refAt:1000,hp,maxHp:hp,boss:false}}
+function actor(RoomClass,{cls='knight',level=5,combo=0,monsters=null,stage=1,ai=false}={}){
+  const a=Object.create(RoomClass.prototype),p=player(1,level,combo);
+  a.room={version:'v040-shield-selftest',code:'SHD001',method:'friend',status:'running',startAt:null,hostSession:'s1',aiFill:[],
+    participants:[{session:'s1',slot:1,nickname:'A',classId:cls,ready:true,connected:true,activeConnectionId:'c1',joinedAt:0,host:true}],
+    run:{id:`shield-${cls}-${level}-${combo}`,seed:1,rngState:123456789,status:'combat',startAt:0,combatAt:0,stage,stageTarget:999,spawned:0,nextSpawnAt:999999999,
+      baseHp:2000,baseHpMax:2000,kills:0,nextMonsterId:100,monsters:monsters||[shield()],players:[p],
+      ai:ai?[{slot:2,cls:'knight',charge:0,nextAt:999999999,kills:0,damage:0,killCoinEarned:0}]:[],events:[],nextEventId:1,revision:0,shop:null,skillQueue:[],n3Queue:[]}}
+  a.rng=()=>.99;
+  return a;
+}
+function pack(name,pass,actual,expected){return{name,pass:!!pass,actual,expected}}
+
+export function runV040ShieldSelfTest(RoomClass){
+  const checks=[],at=1000;
+
+  try{
+    const a=actor(RoomClass),m=a.room.run.monsters[0],r=a.applyDamage(m,100,1,'NORMAL',at,true,'hit',false),e=a.room.run.events.at(-1);
+    checks.push(pack('SHIELD_COMMON_ARMOR_100_TO_72',r.actual===72&&e.damage===72&&e.rawDamage===100&&e.armor===.72,{r,e},{actual:72,rawDamage:100,armor:.72}));
+  }catch(e){checks.push(pack('SHIELD_COMMON_ARMOR_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass),r=a.applyDamage(a.room.run.monsters[0],.1,1,'NORMAL',at,false,'passive',false);
+    checks.push(pack('SHIELD_ARMOR_MINIMUM_ONE',r.actual===1,r.actual,1));
+  }catch(e){checks.push(pack('SHIELD_MINIMUM_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass,{stage:3,ai:true}),m=a.room.run.monsters[0],r=a.applyDamage(m,100,2,'GOOD',at,true,'ai',false),e=a.room.run.events.at(-1),ai=a.room.run.ai[0];
+    checks.push(pack('SHIELD_AI_STAGE_MULTIPLIER_BEFORE_ARMOR',r.rawDamage===107&&r.actual===77&&e.rawDamage===107&&ai.damage===77,{raw:r.rawDamage,actual:r.actual,event:e,aiDamage:ai.damage},{raw:107,actual:77,aiDamage:77}));
+  }catch(e){checks.push(pack('SHIELD_AI_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass),r=a.applyDamage(a.room.run.monsters[0],40,1,'AUTO',at,false,'passive',false),e=a.room.run.events.at(-1);
+    checks.push(pack('SHIELD_PASSIVE_SINGLE_ARMOR_APPLICATION',r.actual===29&&e.rawDamage===40,{actual:r.actual,raw:e.rawDamage},{actual:29,raw:40}));
+  }catch(e){checks.push(pack('SHIELD_PASSIVE_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass,{monsters:[shield(1,.50,.30,72)]}),p=a.room.run.players[0];
+    const r=a.applyDamage(a.room.run.monsters[0],100,1,'NORMAL',at,true,'hit',false);
+    checks.push(pack('SHIELD_KILL_REWARD_CONTRIBUTION',r.killed&&p.kills===1&&p.coin===10&&p.killCoinEarned===10&&p.damage===72&&a.room.run.kills===1,
+      {killed:r.killed,kills:p.kills,coin:p.coin,killCoin:p.killCoinEarned,damage:p.damage,runKills:a.room.run.kills},{killed:true,kills:1,coin:10,killCoin:10,damage:72,runKills:1}));
+  }catch(e){checks.push(pack('SHIELD_KILL_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass,{cls:'tank',level:6}),m=a.room.run.monsters[0],x=m.x,p=a.room.run.players[0];p.__v036TankLv6=true;
+    a.applyDamage(m,100,1,'NORMAL',at,true,'hit',false);
+    const dx=m.x-x,expected=.006*.62*1.30;
+    checks.push(pack('SHIELD_TANK_LV6_KNOCK_RESIST',Math.abs(dx-expected)<1e-10,{dx,expected},{knockResist:.62,lv6Mul:1.30}));
+  }catch(e){checks.push(pack('SHIELD_TANK_KNOCK_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass,{cls:'rogue',level:5,combo:4}),r=a.playerAction(a.room.participants[0],{seq:1,xJudge:'PERFECT'},at);a.processN3Queue(at+500);
+    const hit=a.room.run.events.find(e=>e.type==='hit'&&e.actionId===r.actionId),n3=a.room.run.events.filter(e=>e.type==='n3');
+    checks.push(pack('SHIELD_N3_RAW_BUDGET_PRE_ARMOR',hit?.rawDamage===200&&hit?.damage===144&&n3.length===2&&n3.reduce((n,e)=>n+e.n3Raw,0)===60&&n3.reduce((n,e)=>n+e.damage,0)===44&&n3.every(e=>e.rawDamage===30),
+      {hit,n3:n3.map(e=>({damage:e.damage,rawDamage:e.rawDamage,n3Raw:e.n3Raw}))},{hit:{raw:200,actual:144},n3:{count:2,rawBudget:60,actualSum:44}}));
+  }catch(e){checks.push(pack('SHIELD_N3_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const y=.322946835443038;
+    const a=actor(RoomClass,{cls:'archer',level:6,monsters:[shield(1,.50,.30),shield(2,.72,y)]}),r=a.playerAction(a.room.participants[0],{seq:1,xJudge:'PERFECT'},at);
+    const hit=a.room.run.events.find(e=>e.type==='hit'&&e.actionId===r.actionId),skill=a.room.run.events.find(e=>e.type==='skill'&&e.actionId===r.actionId);
+    checks.push(pack('SHIELD_LV6_ARCHER_RAW_BEFORE_TARGET_ARMOR',hit?.rawDamage===200&&hit?.damage===144&&skill?.rawDamage===104&&skill?.damage===75,
+      {hit:hit&&{raw:hit.rawDamage,damage:hit.damage},skill:skill&&{raw:skill.rawDamage,damage:skill.damage,targetId:skill.targetId}},{hit:{raw:200,damage:144},skill:{raw:104,damage:75,targetId:2}}));
+  }catch(e){checks.push(pack('SHIELD_LV6_ARCHER_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const y=.322946835443038;
+    const a=actor(RoomClass,{cls:'archer',level:5,combo:4,monsters:[shield(1,.50,.30),shield(2,.72,y)]});
+    a.playerAction(a.room.participants[0],{seq:1,xJudge:'PERFECT'},at);
+    const n3=a.room.run.events.filter(e=>e.type==='n3');
+    checks.push(pack('SHIELD_N3_ARCHER_SIZE_108_GEOMETRY',n3.length===2&&n3.some(e=>e.targetId===2),n3.map(e=>({targetId:e.targetId,damage:e.damage,n3Raw:e.n3Raw})),{count:2,secondaryTargetId:2}));
+  }catch(e){checks.push(pack('SHIELD_N3_ARCHER_GEOMETRY_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass,{monsters:[shield(1,.80,.30)]}),m=a.room.run.monsters[0],x=a.xAt(m,2000),wall=a.wallAt(m);
+    checks.push(pack('SHIELD_AUTHORITATIVE_SPEED',Math.abs(x-.743)<1e-12&&Math.abs(wall-(1000+(.80-.155)/.057*1000))<1e-8,{x,wall},{xAt2000:.743,speed:.057}));
+  }catch(e){checks.push(pack('SHIELD_SPEED_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  try{
+    const a=actor(RoomClass,{monsters:[grunt()]}),r=a.applyDamage(a.room.run.monsters[0],100,1,'NORMAL',at,false,'hit',false);
+    checks.push(pack('NON_SHIELD_REGRESSION_DELEGATES',r.actual===100,r.actual,100));
+  }catch(e){checks.push(pack('NON_SHIELD_EXCEPTION',false,String(e?.stack||e),'no exception'))}
+
+  const passed=checks.filter(x=>x.pass).length;
+  return{ok:passed===checks.length,version:'0.40-cf.1-shield-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
+}
