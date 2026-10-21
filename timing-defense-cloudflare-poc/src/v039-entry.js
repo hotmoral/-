@@ -15,6 +15,7 @@ const SLOT_Y=[.30,.41,.52,.63];
 const TYPE_META={
   grunt:{knockResist:.85,size:1.00},
   runner:{knockResist:1.00,size:.70},
+  shield:{knockResist:.62,size:1.08},
   brute:{knockResist:.38,size:1.34}
 };
 
