@@ -29,6 +29,7 @@ Preserved migration checkpoints:
 
 Read:
 - `CLOUDFLARE_V035_PASS_2026-10-21.md`
+- `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
 - `CLOUDFLARE_V034_RENDER_PASS_2026-10-21.md`
 - `CLOUDFLARE_V033_STAGE1_PASS_2026-10-21.md`
 - `CLOUDFLARE_V031_V032_PARITY_PASS_2026-10-21.md`
@@ -99,6 +100,30 @@ No numerical balance values were intentionally changed during the v0.35 closure 
 
 ---
 
+# Post-v0.35 preflight — COMPLETE
+
+The next-slice audit is complete and canonicalized in:
+`CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`.
+
+Main findings:
+- Stage 3–10 exact legacy prototype contracts were recovered; do not replace them with candidate S/E/X pressure recipes during migration.
+- Cloudflare Stage flow/client guards/results contain Stage-2-only assumptions and must be generalized once, not copied per stage.
+- BRUTE, SHIELD, FLYER, Stage 5/10 boss logic and authoritative Y geometry are still missing server-side.
+- four-slot room authority is structurally reusable, but 3–4 participant skill/event volume needs a stronger event-delivery contract.
+- actual playable legacy skill authority is Lv6/Lv11/Lv16/Lv21; Lv26/Lv31 remain design-only for this migration.
+- first implementation slice should establish generic server skill authority and Lv6 behavior on the already validated Stage 1–2 baseline before Stage 3 is enabled.
+
+### Numerical parity decision gate
+Two pre-existing Cloudflare/legacy mismatches were found and are intentionally **not patched yet**:
+1. heavy-tier EXP table differs from legacy exact values,
+2. Cloudflare AI lacks the legacy `1 + (stage-1)*0.035` stage damage scaling.
+
+Recommended classification for both: **parity defect / restore legacy exact behavior**, but explicit approval is required under numerical governance.
+
+A third difference, legacy experimental combo milestone attack rewards, is intentionally deferred to a separate decision after the event-delivery kernel is generalized.
+
+---
+
 # Frozen combat / balance governance
 - Rhythm: `X -> X -> X -> X+Y`.
 - Knight = stable generalist / penetration / strong heavy.
@@ -123,14 +148,20 @@ Numerical change workflow remains:
 ---
 
 # Immediate next boundary
-**Cloudflare v0.35 is closed. Do not reopen it without a regression.**
+**Cloudflare v0.35 remains closed. Do not reopen it without a regression.**
 
-Next work must begin as a separately scoped preflight for:
-1. Stage 3–10 multiplayer generalization,
-2. larger-party validation,
-3. Lv6+ multiplayer skill consequence authority.
+Before new implementation, resolve the explicit N1/N2 numerical parity decision in `NEXT_WORK.md`.
 
-Before implementation, inspect existing stage-plan and skill contracts and define which consequences remain presentation-only vs require Durable Object authority. Do not make numerical balance changes as part of migration/generalization.
+After approval, implement Slice A only:
+- start from exact v0.35 PASS HEAD,
+- no Stage 3 yet,
+- generic server skill-authority primitives,
+- exact Lv6 human consequences for all five classes,
+- action/cast event identity and secondary-hit metadata,
+- API/forced-level validation,
+- Stage 1–2 multiplayer regression test.
+
+Only after Slice A PASS should Stage 3 be opened as a separate bounded slice.
 
 Deferred UX item:
 - heterogeneous phone-size/aspect-ratio responsive safety should later be reviewed as a shared responsive-safety layer rather than per-device one-off patches.
@@ -139,6 +170,7 @@ Deferred UX item:
 Safe claims:
 - Cloudflare PoC through v0.35 are public/device-PASS for their scoped gates,
 - v0.35 exact validated deployment is preserved,
+- post-v0.35 Stage/party/skill preflight is complete,
 - Render quota incident is confirmed.
 
 Do not claim yet:
