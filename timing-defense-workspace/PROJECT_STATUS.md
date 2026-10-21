@@ -22,18 +22,14 @@ Read:
 - `CLOUDFLARE_V031_V032_PARITY_PASS_2026-10-21.md`
 - `CLOUDFLARE_V033_STAGE1_PASS_2026-10-21.md`
 - `CLOUDFLARE_V034_RENDER_PASS_2026-10-21.md`
-
-Validated v0.34 deployment:
-- implementation branch: `timing-defense-cloudflare-v034-render`
-- implementation commit: `c78765b2c29b1ab0812e64c6de7a8ca3b379c2cc`
-- deployment trigger HEAD: `adc6709d51e9b076498c7c26e172478d24d9f797`
-- preserved checkpoint: `timing-defense-cloudflare-v034-pass-20261021`
+- `V035_CF3_STAGE2_FLOW_PASS_CF4_RESULT_CANDIDATE_2026-10-21.md`
 
 Preserved migration checkpoints:
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
 - v0.31/v0.32 PASS: `timing-defense-cloudflare-v031-v032-pass-20261021`
 - v0.33 Stage 1 PASS: `timing-defense-cloudflare-v033-pass-20261021`
 - v0.34 render PASS: `timing-defense-cloudflare-v034-pass-20261021`
+- v0.35 cf.3 Stage 2 flow PASS checkpoint: `timing-defense-cloudflare-v035-cf3-stage2-flow-pass-20261021`
 
 ## Legacy baseline
 - Repository: `hotmoral/-`
@@ -80,6 +76,31 @@ Validated Android + PC:
 - server authority for HP / EXP / coin / kills remains unchanged,
 - monster presentation is acceptably smooth.
 
+## v0.35 — PARTIAL PASS, cf.4 result candidate under validation
+Confirmed on Android + PC through cf.3:
+- Stage 1 -> shared Team Shop,
+- purchase / coin / rank flow,
+- both-human shop READY,
+- host NEXT STAGE,
+- synchronized Stage 2 start,
+- `STAGE 2 / READY / START` presentation,
+- Timing Square active on both clients,
+- direct tap attacks active,
+- remote projectile VFX retained,
+- Stage 2 bounded clear reached on both clients.
+
+cf.3 remaining defect:
+- inherited local result board displayed `STAGE 10 CLEAR`,
+- result metrics could differ across clients because they came from per-device local presentation state.
+
+cf.4 candidate:
+- health version `0.35-cf.4`,
+- deployment trigger HEAD `ce0151894d2a972863bd511ed95a04b808fef941`,
+- human contribution values come from authoritative `run.players`,
+- AI damage/kills are accumulated server-side and exposed in the public run snapshot,
+- result title uses the authoritative current stage,
+- no combat-balance values changed.
+
 ---
 
 # Frozen combat / balance governance
@@ -106,23 +127,16 @@ Numerical change workflow remains:
 ---
 
 # Immediate next boundary
-**Cloudflare v0.35 reconnect / Team Shop / Stage 2 parity migration.**
+**Finish Cloudflare v0.35 device validation.**
 
-Required scope:
-1. preserve v0.31-v0.34 validated behavior,
-2. port same-session/reload recovery,
-3. port Stage 1 -> Team Shop transition,
-4. port authoritative coin / ranks / purchases,
-5. port purchase READY lock/unlock,
-6. port all-human shop READY gate,
-7. port host-only NEXT STAGE,
-8. port synchronized future Stage 2 start,
-9. port Stage 2 authoritative GRUNT/RUNNER combat,
-10. port bounded Stage 2 clear,
-11. validate reconnect in Stage 1 / Team Shop / Stage 2,
-12. make no numerical balance changes.
+Remaining gates:
+1. cf.4 result board: both clients show `STAGE 2 CLEAR` and identical authoritative contribution values,
+2. reconnect in Stage 1,
+3. reconnect in Team Shop,
+4. reconnect in Stage 2,
+5. no historical projectile burst after resume.
 
-Only after v0.35 device PASS may migration proceed to Stage 3–10, larger party validation and Lv6+ multiplayer authority.
+Only after those gates pass may v0.35 be closed and migration proceed to Stage 3–10, larger-party validation and Lv6+ multiplayer authority.
 
 ## Current truth boundary
 Safe claims:
@@ -130,11 +144,12 @@ Safe claims:
 - Cloudflare v0.31/v0.32 waiting-room parity is device-PASS,
 - Cloudflare v0.33 authoritative Stage 1 parity is device-PASS,
 - Cloudflare v0.34 render smoothing / remote projectile parity is device-PASS,
-- legacy v0.35 reconnect/shop/Stage-2 code exists and passed local/API integration checks,
+- Cloudflare v0.35 cf.3 Stage 2 transition/combat/clear flow is device-confirmed,
+- cf.4 authoritative result-board candidate is deployed for validation,
 - Render quota incident is confirmed.
 
 Do not claim:
-- Cloudflare v0.35 parity yet,
+- full Cloudflare v0.35 parity PASS yet,
 - Stage 3–10 multiplayer,
 - complete Lv6+ multiplayer skill authority,
 - final persistence/security/shop/shared-wall semantics,
