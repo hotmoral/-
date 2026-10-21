@@ -1,0 +1,1 @@
+Cloudflare v0.35 cf.3 root-fix deployment prepared after confirming the Stage 2 public-stage serialization defect and bypassed startStage/v0.20-v0.21 flow. Deployment pointer will be moved to the corrected parity branch and retriggered. No numerical balance values changed.
