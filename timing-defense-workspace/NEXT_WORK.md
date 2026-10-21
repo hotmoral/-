@@ -34,21 +34,25 @@ N3 is the experimental combo-milestone extra-attack system. It is **not discarde
 It must not be silently ported, removed, frozen or rebalanced. A separate explicit discussion/decision is required later.
 
 ## Active slice — v0.36 Slice A
-Status: **IMPLEMENTED + DEPLOY CANDIDATE TRIGGERED / REAL DEPLOYMENT & DEVICE VALIDATION PENDING**
+Status: **IMPLEMENTED / WATCHED BRANCH TRIGGERED / LIVE & DEVICE VALIDATION PENDING**
 
 Implementation branch:
 - `timing-defense-cloudflare-v036-lv6-authority`
-- source candidate HEAD before deploy trigger: `26fbf850f059d820c943cb4269897ce988f7c251`
+- HEAD `ce3ea7f168fce26f6e76556cd73fea9fb08dce99`
 
 Cloudflare watched branch:
 - `timing-defense-cloudflare-do-poc`
-- deploy-trigger HEAD: `fde54174838f408e208ded8c740c54afa634c68d`
+- HEAD `8b1e2890ea582bd1ddaeae89157a82500adf40a0`
+- loader/cache generation `cf0362`
 
 Expected health:
 - version `0.36-cf.1`
 - `n1: legacy-heavy-xp-restored`
 - `n2: legacy-ai-stage-damage-scaling-restored`
 - `n3: deferred-explicit-discussion-required`
+
+Candidate test URL:
+`https://timing-defense-do-poc.sktjsek.workers.dev/?v036debug=1&fix=cf0362`
 
 ### Implemented Slice A scope
 - Stage 1–2 only; no Stage 3.
@@ -59,7 +63,7 @@ Expected health:
 - scheduled Rogue second dagger (+55 ms).
 - authoritative Archer line penetration and Mage splash target selection.
 - remote/authoritative secondary skill presentation without client damage authority.
-- host-only candidate debug level endpoint for Lv5/Lv6 differential tests.
+- host-only candidate debug level endpoint and `?v036debug=1` LV5/LV6 controls for differential tests.
 
 Lv6 effects:
 - Knight: +12% server damage; projectile size remains presentation.
@@ -72,7 +76,8 @@ Lv6 effects:
 - new server entry syntax PASS,
 - new client authority/presentation syntax PASS,
 - loader syntax PASS,
-- isolated contract harness PASS for N1/N2 and all five Lv6 boundaries.
+- isolated contract harness PASS for N1/N2 and all five Lv6 boundaries,
+- watched execution files synchronized with implementation candidate; watched-only deployment marker retained.
 
 These do not replace real Durable Object/device validation.
 
@@ -82,10 +87,12 @@ Do **not** start Stage 3 yet.
 First:
 1. confirm public `/api/health` reports `0.36-cf.1`,
 2. validate N1 and N2 on real Durable Object state,
-3. force Lv5 vs Lv6 and verify all five class boundaries,
+3. use host LV5/LV6 controls and verify all five class boundaries,
 4. run two-human Stage 1–2 regression,
 5. verify server is the only damage authority and local prediction does not double damage,
 6. verify reconnect / Team Shop / Stage 2 result remain clean.
+
+The model-side fetch environment cannot access the public `workers.dev` host, so public health confirmation must be made from the user browser/device.
 
 Only after Slice A PASS may Slice B start.
 
