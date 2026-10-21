@@ -18,7 +18,8 @@ const XP_EXACT = {
 };
 const TYPE_META = {
   grunt: { knockResist: .85, size: 1.00 },
-  runner:{ knockResist: 1.00, size: .70 }
+  runner:{ knockResist: 1.00, size: .70 },
+  brute: { knockResist: .38, size: 1.34 }
 };
 const SLOT_Y = [.30, .41, .52, .63];
 
