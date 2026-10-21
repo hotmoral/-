@@ -77,7 +77,7 @@ const worker={
   async fetch(request,env,ctx){
     const url=new URL(request.url);
     if(request.method==="GET"&&url.pathname==="/api/health")return json({
-      ok:true,service:"timing-defense-v040-shield-capability",version:"0.40-cf.1",
+      ok:true,service:"timing-defense-v040-shield-capability",version:"0.40-cf.2",
       transport:"websocket-hibernation-per-socket-event-cursor",
       authority:"v039-plus-stage-independent-shield-armor",
       shield:{status:"capability-enabled",armor:SHIELD.armor,knockResist:SHIELD.knockResist,size:1.08,speed:SHIELD.speed,reward:SHIELD.reward,balance:"provisional"},
