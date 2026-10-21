@@ -1,25 +1,22 @@
 # Cloudflare v0.35 Parity Candidate — 2026-10-21
 
 ## Status
-**IMPLEMENTED / DEPLOYED / DEVICE VALIDATION PARTIAL PASS**
+**SUPERSEDED BY DEVICE PASS / CLOSED**
 
-Public URL:
-- `https://timing-defense-do-poc.sktjsek.workers.dev`
+This document records the initial v0.35 migration candidate and its early partial validation. The candidate subsequently advanced through cf.3-cf.7 defect closure and received full Android + PC device validation.
 
-Implementation branch:
-- `timing-defense-cloudflare-v035-parity`
-- implementation HEAD before deployment trigger: `d63ddf982c7a8a9bae35dbe82c4944a888280768`
+Canonical closure record:
+- `CLOUDFLARE_V035_PASS_2026-10-21.md`
 
-Cloudflare watched deployment branch:
-- `timing-defense-cloudflare-do-poc`
-- deployment trigger HEAD: `3b5e8ec65ad8f62343b86159fe48f71aebbb79be`
+Exact validated deployment:
+- public URL: `https://timing-defense-do-poc.sktjsek.workers.dev`
+- watched branch: `timing-defense-cloudflare-do-poc`
+- HEAD: `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
+- health version: `0.35-cf.7`
+- preserved PASS branch: `timing-defense-cloudflare-v035-pass-20261021`
 
-Validated base:
-- v0.34 render parity PASS checkpoint: `timing-defense-cloudflare-v034-pass-20261021`
-- validated v0.34 trigger HEAD: `adc6709d51e9b076498c7c26e172478d24d9f797`
-
-## Implemented scope
-This candidate ports only the bounded legacy v0.35 slice:
+## Original bounded migration scope
+The v0.35 lane ported:
 - same-session/reload recovery from Durable Object state,
 - event-floor recovery to suppress historical projectile replay,
 - Stage 1 -> Team Shop,
@@ -36,48 +33,25 @@ This candidate ports only the bounded legacy v0.35 slice:
 - bounded Stage 2 clear,
 - v0.34 render smoothing/projectile behavior retained.
 
-## Audit findings fixed before deployment
-- restored exact legacy AI interval contract: Rogue 1150 ms, Tank 1650 ms, all other classes 1400 ms,
-- restored Stage 2 `starting` room status / shared `startAt` publication,
-- restored Stage 2 clear room/event grammar,
-- prevented duplicate reconnect WebSocket competition by preferring the existing v0.31 reconnect path and using a delayed fallback only when necessary,
-- added per-room event-floor guard so v0.34 fresh-run `lastEvent=0` initialization cannot replay historical projectiles after recovery,
-- removed superseded v0.35 client draft before deployment.
+## Important audit fixes made before/through device closure
+- exact AI interval contract restored: Rogue 1150 ms, Tank 1650 ms, all other classes 1400 ms,
+- Stage 2 `starting` room status / shared `startAt` restored,
+- Stage 2 clear event/status grammar restored,
+- duplicate reconnect WebSocket competition prevented,
+- event-floor guard added for reconnect replay safety,
+- public run stage hardcoding removed,
+- Stage 2 intro/input path restored through existing stage-start flow,
+- authoritative result-board data added,
+- cumulative KILL COIN separated from current wallet balance,
+- Team Shop pending feedback / duplicate-tap guard added,
+- Rogue Timing Square Knight/yellow palette leakage removed,
+- remote human timing-projectile rendering aligned with local human timing attacks.
 
-## Effective diff from v0.34 PASS
-Only v0.35 extension files are added plus the Wrangler entry switch:
-- `timing-defense-cloudflare-poc/src/v035-entry.js`
-- `timing-defense-cloudflare-poc/src/v035-audit-entry.js`
-- `timing-defense-cloudflare-poc/wrangler.jsonc`
-- `timing-defense-v011/v035-cloudflare-v2.js`
-- `timing-defense-v011/v035-event-floor-guard.js`
-- `timing-defense-v011/v035-cloudflare.html`
+## Final validation outcome
+The remaining Stage 2 authority, result-board, reconnect, shop UX and visual-parity gates were subsequently device-confirmed PASS. No numerical balance values were intentionally changed during the closure work.
 
-The validated v0.34 combat/render files are not modified.
-
-## Device validation evidence — partial PASS
-Android + independent second client device run confirmed:
-- Stage 1 remains playable,
-- both clients enter the same Team Shop after Stage 1 clear,
-- shop purchase succeeds,
-- coin/rank UI updates are visible,
-- both human players can READY in shop,
-- host proceeds through NEXT STAGE,
-- both clients transition into Stage 2,
-- uploaded Samsung Browser recording visually confirms the Stage 1 -> Team Shop -> both READY -> NEXT STAGE -> Stage 2 path.
-
-This closes the shop/transition path only. It does **not** yet close full v0.35 parity.
-
-## Remaining device validation required
-1. Stage 2 GRUNT/RUNNER HP/deaths/BASE HP match on both clients,
-2. v0.34 smoothing/projectiles remain correct during Stage 2,
-3. Stage 2 bounded clear is shared,
-4. refresh/reconnect in Stage 1 preserves room/session/slot/run,
-5. refresh/reconnect in Team Shop preserves room/session/slot/run/shop state,
-6. refresh/reconnect in Stage 2 preserves room/session/slot/run,
-7. other client remains in the same shared state during one-client refresh,
-8. no historical projectile burst occurs after reconnect.
-
-## Truth boundary
-Do not mark Cloudflare v0.35 PASS until the remaining Stage 2 authority and reconnect gates are complete.
-No numerical balance values were intentionally changed in this migration slice.
+For current truth and next boundary, read:
+- `CLOUDFLARE_V035_PASS_2026-10-21.md`
+- `PROJECT_STATUS.md`
+- `NEXT_WORK.md`
+- `SESSION_HANDOFF.md`
