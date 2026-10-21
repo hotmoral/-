@@ -11,5 +11,3 @@ Bounded fixes only:
 Non-goals / unchanged: attack coefficients, monster HP, passive damage/interval, combo coefficients, EXP, shop costs, knockback, stage counts/gaps, class balance, approved combo animation.
 
 Validation required: Android + PC new AI NONE room; shop pending response; Rogue charge color stability; Stage 2 flow; final board exactly two humans with synchronized authoritative metrics.
-
-Current candidate HEAD: `8759bd375e3ef0c2e14d39f50bd914422ba789c1`.
