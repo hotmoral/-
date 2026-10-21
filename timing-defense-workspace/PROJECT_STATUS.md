@@ -9,7 +9,7 @@ Primary architecture:
 Public deployment:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 - watched branch: `timing-defense-cloudflare-do-poc`
-- current N3 device-smoke candidate HEAD: `f9e824eac87cc2fe39d80a75b345ce5aa8f574ce`
+- current N3 device-smoke candidate HEAD: `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
 
 Last fully closed checkpoint:
 - **v0.38 Slice C / larger-party event kernel FULL PASS**
@@ -20,8 +20,10 @@ Active candidate:
 - **v0.39 N3 Option B authority**
 - implementation branch `timing-defense-cloudflare-v039-n3-authority`
 - health `0.39-cf.1`
-- automated-live validation **PASS** on watched HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
+- automated-live validation **PASS**
 - automation checkpoint `timing-defense-cloudflare-v039-automation-pass-20261022`
+- original automation-validated watched HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
+- current smoke-helper HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a` was revalidated by GitHub Actions and also reached FINAL PASS
 - remaining gate: one Samsung Browser N3 presentation/input smoke only
 
 Preserved checkpoints:
@@ -137,7 +139,7 @@ Four-human stress validates one synchronized Lv6 Rogue combo-30 wave:
 
 The first Actions attempt timed out because the Playwright runner passed timeout options in the wrong argument position. This was a runner defect, not an N3/game failure. The corrected runner completed full PASS.
 
-Current candidate adds only an opt-in `?n3smoke=1` helper for the final device presentation gate. It automatically arms the host to Lv6/combo29 once combat has a monster; normal access is unaffected.
+Current candidate adds only opt-in `?n3smoke=1` presentation support. It automatically arms the host to Lv6/combo29 once combat has a monster. If the first attempt is not PERFECT and authoritative combo falls below 29, it automatically re-arms so the user does not need to restart the room. Normal access is unaffected.
 
 Stage 4 remains blocked until the v0.39 Samsung Browser presentation smoke passes.
 
@@ -149,7 +151,7 @@ Automated validation should not be delegated to the user when GitHub Actions can
 Default sequence:
 `code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
 
-Actions evidence should retain health response, page body, browser log and screenshot on failure/success as configured.
+Actions evidence retains health response, page body, browser log and screenshot.
 
 ---
 
