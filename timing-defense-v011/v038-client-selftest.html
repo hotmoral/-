@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.38 event client self-test</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}</style>
+<h1>v0.38 client event-stream self-test</h1><div id="status">RUNNING…</div><pre id="out"></pre>
+<script>
+class FakeSocket extends EventTarget{sendMessage(obj){this.dispatchEvent(new MessageEvent('message',{data:JSON.stringify(obj)}))}}
+const fake=new FakeSocket();
+window.__TDCFBridge={socket:null,state:{code:'T38001',run:{id:'RUN038',events:[],stage:1,status:'combat'}}};
+const seen=[];window.addEventListener('tdcf:state',e=>{if(e.detail?.source==='v038-event-batch')seen.push(...(e.detail.state?.run?.events||[]).map(x=>x.id))});
+</script>
+<script src="v038-event-stream.js?v=cf0381"></script>
+<script>
+(async()=>{
+ const checks=[];const add=(name,pass,actual,expected)=>checks.push({name,pass:!!pass,actual,expected});
+ try{
+   window.dispatchEvent(new CustomEvent('tdcf:socket',{detail:{socket:fake}}));
+   fake.sendMessage({type:'event-batch',runId:'RUN038',from:1,to:3,events:[{id:1},{id:2},{id:3}]});
+   add('BATCH_SYNTHETIC_STATE',seen.join(',')==='1,2,3',seen,[1,2,3]);
+   add('BATCH_CURSOR',window.__TD038EventStream.lastBatchTo===3,window.__TD038EventStream.lastBatchTo,3);
+   fake.sendMessage({type:'event-batch',runId:'RUN038',from:4,to:5,events:[{id:4},{id:5}]});
+   add('CONTIGUOUS_SECOND_BATCH',seen.join(',')==='1,2,3,4,5'&&window.__TD038EventStream.gap===null,{seen,gap:window.__TD038EventStream.gap},{seen:[1,2,3,4,5],gap:null});
+   fake.sendMessage({type:'event-gap',runId:'RUN038',expected:6,oldestId:9,latestId:12});
+   add('EXPLICIT_GAP_SURFACED',window.__TD038EventStream.gap?.expected===6&&window.__TD038EventStream.gap?.latestId===12,window.__TD038EventStream.gap,{expected:6,latestId:12});
+ }catch(e){add('CLIENT_EXCEPTION',false,String(e?.stack||e),'no exception')}
+ const passed=checks.filter(x=>x.pass).length,result={ok:passed===checks.length,version:'0.38-cf.1-client-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
+ const st=document.getElementById('status');st.textContent=result.ok?'PASS':'FAIL';st.className=result.ok?'pass':'fail';document.getElementById('out').textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.38 client self-test`;
+})();
+</script>
