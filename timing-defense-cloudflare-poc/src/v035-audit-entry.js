@@ -5,6 +5,7 @@ import worker, { TimingDefenseRoom } from "./v035-entry.js";
 // 2) shop-next publishes room.status=starting + room.startAt.
 // 3) Stage 2 closes with room.status=stage2-clear and the existing stage-clear event grammar.
 // 4) Public run state must expose the authoritative run.stage (v0.33 hardcoded stage: 1).
+// 5) Result-board contribution data must come from the authoritative room/run state.
 
 const baseProcessAt = TimingDefenseRoom.prototype.processAt;
 TimingDefenseRoom.prototype.processAt = function(at) {
@@ -34,6 +35,18 @@ TimingDefenseRoom.prototype.beginStage = function(stage, at) {
   return out;
 };
 
+const baseApplyDamage = TimingDefenseRoom.prototype.applyDamage;
+TimingDefenseRoom.prototype.applyDamage = function(monster, damage, slot, tier, at, knock = true, source = "hit", proc = false) {
+  const run = this.room?.run;
+  const ai = source === "ai" ? run?.ai?.find(a => a.slot === slot) : null;
+  const result = baseApplyDamage.call(this, monster, damage, slot, tier, at, knock, source, proc);
+  if (ai && result) {
+    ai.damage = (ai.damage || 0) + (result.actual || 0);
+    if (result.killed) ai.kills = (ai.kills || 0) + 1;
+  }
+  return result;
+};
+
 const baseRunPublic = TimingDefenseRoom.prototype.runPublic;
 TimingDefenseRoom.prototype.runPublic = function(at) {
   const out = baseRunPublic.call(this, at);
@@ -43,6 +56,15 @@ TimingDefenseRoom.prototype.runPublic = function(at) {
     out.status = run.status;
     out.startAt = run.startAt;
     out.combatAt = run.combatAt;
+    out.ai = (run.ai || []).map(a => ({
+      slot: a.slot,
+      cls: a.cls,
+      kills: a.kills || 0,
+      damage: a.damage || 0,
+      coin: 0,
+      level: 1,
+      comboPeak: 0
+    }));
   }
   return out;
 };
@@ -66,13 +88,13 @@ const auditedWorker = {
       return new Response(JSON.stringify({
         ok: true,
         service: "timing-defense-cloudflare-v035-parity",
-        version: "0.35-cf.3",
+        version: "0.35-cf.4",
         transport: "websocket-hibernation",
         authority: "durable-object-event-driven-stage2-shop",
-        presentation: "v034-render-parity-retained-stage2-flow-fix",
+        presentation: "v034-render-parity-retained-stage2-flow-authoritative-results",
         locationHint: "apac-ne",
         scope: "room-stage1-shop-stage2-reconnect",
-        fix: "authoritative-public-stage"
+        fix: "authoritative-stage-and-results"
       }), {
         status: 200,
         headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
