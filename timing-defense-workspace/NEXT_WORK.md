@@ -4,116 +4,99 @@ Updated: 2026-10-21 KST
 
 ## Closed migration gates
 1. Cloudflare Durable Objects viability PoC — **PASS**
-2. v0.31/v0.32 real-game waiting-room parity — **PASS**
+2. v0.31/v0.32 waiting-room parity — **PASS**
 3. v0.33 authoritative Stage 1 parity — **PASS**
 4. v0.34 render smoothing / remote projectile parity — **PASS**
 5. v0.35 reconnect / Team Shop / Stage 2 parity — **PASS**
 
-Exact v0.35 validated checkpoint:
+Exact v0.35 preserved baseline:
 - HEAD `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
 - branch `timing-defense-cloudflare-v035-pass-20261021`
 - health `0.35-cf.7`
 
 ## Post-v0.35 preflight — COMPLETE
-
-Canonical audit:
+Read:
 - `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
+- `CLOUDFLARE_V036_SLICE_A_DECISION_2026-10-21.md`
+- `CLOUDFLARE_V036_SLICE_A_CANDIDATE_2026-10-21.md`
 
-The preflight audited:
-- exact legacy Stage 3–10 plans/compositions/gaps/scaling,
-- BRUTE / SHIELD / FLYER and Stage 5/10 boss contracts,
-- four-slot / human+AI room semantics,
-- event-volume risk at 3–4 participants,
-- Lv6–31 ownership classification,
-- actual playable legacy skill boundary (Lv6/11/16/21),
-- Stage-2-specific Cloudflare hardcoding that must be generalized,
-- rollback/device matrix.
+## Explicit user decisions
+### N1 — APPROVED
+Restore exact legacy timing EXP:
+NORMAL 8 / GOOD 12 / PERFECT 18 / HEAVY 10 / HEAVY+ 14 / GREAT 18 / SUPER 23 / CRITICAL 28.
 
-Important boundary:
-- `TIER_PRESSURE_GRAMMAR_V1.md` and `PRESSURE_RECIPES_V1.md` remain candidate future encounter data and are **not** authorized as live Stage 3–10 replacement values.
-- Lv26/Lv31 are design roadmap effects, not part of the current playable legacy skill authority baseline. Do not invent them during migration.
+### N2 — APPROVED
+Restore exact legacy AI stage damage multiplier:
+`1 + (stage - 1) * 0.035`.
 
-## Explicit numerical parity decision required before implementation
+### N3 — DEFERRED, MANDATORY FUTURE DISCUSSION
+N3 is the experimental combo-milestone extra-attack system. It is **not discarded**.
+It must not be silently ported, removed, frozen or rebalanced. A separate explicit discussion/decision is required later.
 
-### N1 — Heavy-tier EXP mismatch
-Legacy exact:
-- NORMAL 8
-- GOOD 12
-- PERFECT 18
-- HEAVY 10
-- HEAVY+ 14
-- GREAT 18
-- SUPER 23
-- CRITICAL 28
+## Active slice — v0.36 Slice A
+Status: **IMPLEMENTED + DEPLOY CANDIDATE TRIGGERED / REAL DEPLOYMENT & DEVICE VALIDATION PENDING**
 
-Current Cloudflare effectively uses:
-- NORMAL 8
-- GOOD 12
-- PERFECT 18
-- HEAVY 8
-- HEAVY+ 8
-- GREAT 12
-- SUPER 18
-- CRITICAL 28
+Implementation branch:
+- `timing-defense-cloudflare-v036-lv6-authority`
+- source candidate HEAD before deploy trigger: `26fbf850f059d820c943cb4269897ce988f7c251`
 
-Recommended classification: **parity defect; restore legacy exact table**.
-Do not patch until explicitly approved because it changes deployed numerical behavior.
+Cloudflare watched branch:
+- `timing-defense-cloudflare-do-poc`
+- deploy-trigger HEAD: `fde54174838f408e208ded8c740c54afa634c68d`
 
-### N2 — AI stage damage scaling missing
-Legacy AI damage multiplier:
-`1 + (stage-1)*0.035`
+Expected health:
+- version `0.36-cf.1`
+- `n1: legacy-heavy-xp-restored`
+- `n2: legacy-ai-stage-damage-scaling-restored`
+- `n3: deferred-explicit-discussion-required`
 
-Current Cloudflare AI uses unscaled `baseDamage(tier)`.
+### Implemented Slice A scope
+- Stage 1–2 only; no Stage 3.
+- N1 exact EXP parity.
+- N2 exact AI stage-damage parity.
+- authoritative Lv6 consequences for all five human classes.
+- action/cast identity and secondary-hit metadata.
+- scheduled Rogue second dagger (+55 ms).
+- authoritative Archer line penetration and Mage splash target selection.
+- remote/authoritative secondary skill presentation without client damage authority.
+- host-only candidate debug level endpoint for Lv5/Lv6 differential tests.
 
-Recommended classification: **parity defect; restore exact legacy stage scaling**.
-Do not patch until explicitly approved because it changes deployed numerical behavior.
-
-### N3 — Combo milestone attacks
-Legacy experimental v0.18 has extra milestone attack budgets; Cloudflare currently has only persistent combo percentage bonus.
-
-Recommendation: **defer as a separate explicit decision** after event delivery is generalized. Do not silently add it to Stage 3 work.
-
-## Next implementation after N1/N2 decision — Slice A only
-
-Do **not** add Stage 3 yet.
-
-Scope:
-1. start from exact v0.35 PASS HEAD,
-2. create a new implementation branch,
-3. keep Stage 1–2 flow unchanged,
-4. add generic server skill-authority primitives,
-5. implement exact existing **Lv6** consequences for all five human classes,
-6. add action/cast identity and secondary-hit event metadata,
-7. keep local projectile prediction presentation-only,
-8. API/forced-level tests for Lv5 vs Lv6,
-9. Stage 1–2 multiplayer regression validation.
-
-Lv6 authority targets:
-- Knight: +12% server damage; size remains presentation.
-- Rogue: second dagger 55%, same target allowed.
+Lv6 effects:
+- Knight: +12% server damage; projectile size remains presentation.
+- Rogue: 55% second dagger, same target allowed with nearest fallback.
 - Tank: +30% server knockback.
-- Archer: strict-line penetration up to 2 additional targets, no seeking.
-- Mage: 50% authoritative splash.
+- Archer: up to 2 strict-line additional hits at 52% damage.
+- Mage: up to 3 nearby splash hits at 50% damage.
 
-Non-goals:
-- no Stage 3,
-- no Lv11+,
-- no Lv26/Lv31,
-- no new pressure grammar,
-- no party-size balance tuning,
-- no responsive-safety work,
-- no production anti-cheat/security redesign.
+## Internal checks completed
+- new server entry syntax PASS,
+- new client authority/presentation syntax PASS,
+- loader syntax PASS,
+- isolated contract harness PASS for N1/N2 and all five Lv6 boundaries.
+
+These do not replace real Durable Object/device validation.
+
+## Immediate validation gate
+Do **not** start Stage 3 yet.
+
+First:
+1. confirm public `/api/health` reports `0.36-cf.1`,
+2. validate N1 and N2 on real Durable Object state,
+3. force Lv5 vs Lv6 and verify all five class boundaries,
+4. run two-human Stage 1–2 regression,
+5. verify server is the only damage authority and local prediction does not double damage,
+6. verify reconnect / Team Shop / Stage 2 result remain clean.
+
+Only after Slice A PASS may Slice B start.
 
 ## Following bounded slices
-Only after Slice A PASS:
-
 ### Slice B — Stage 3, two humans first
 - Stage 2 clear -> Team Shop,
 - NEXT -> Stage 3,
 - exact legacy Stage 3: 12 enemies / 980 ms / G44-R34-B22,
 - BRUTE authority,
 - Stage 3 clear -> Team Shop,
-- Stage 4 still blocked in this slice.
+- Stage 4 remains blocked.
 
 ### Slice C — larger-party baseline
 - 3 humans,
@@ -125,13 +108,13 @@ Only after Slice A PASS:
 ### Later bounded groups
 - Stage 4: SHIELD / armor,
 - Stage 5–6: boss + FLYER + authoritative Y geometry,
-- Stage 7–9: mixed-roster stress,
+- Stage 7–9: mixed roster stress,
 - Stage 10: final boss/final result,
-- Lv11/16/21 authority introduced with forced-level tests before natural progression relies on them.
+- Lv11/16/21 authority with forced-level tests before natural progression depends on them.
 
-## Deferred item
+## Deferred UX item
 Responsive safety across heterogeneous phone sizes/aspect ratios remains intentionally deferred. Handle later as a shared responsive-safety layer, not per-device patches.
 
 ## Frozen governance
-No numerical change to attack damage, monster HP, passive interval, combo coefficients, EXP, shop cost, knockback, stage count/gap or class balance without:
-`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> numerical patch/freeze`.
+No unapproved numerical change. Numerical work must continue to follow:
+`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
