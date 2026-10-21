@@ -6,6 +6,9 @@ import worker, { TimingDefenseRoom } from "./v035-entry.js";
 // 3) Stage 2 closes with room.status=stage2-clear and the existing stage-clear event grammar.
 // 4) Public run state must expose the authoritative run.stage (v0.33 hardcoded stage: 1).
 // 5) Result-board contribution data must come from the authoritative room/run state.
+// 6) KILL COIN is cumulative monster-kill reward, independent of wallet spending / stage-clear rewards.
+
+const KILL_REWARD = { grunt: 6, runner: 5 };
 
 const baseProcessAt = TimingDefenseRoom.prototype.processAt;
 TimingDefenseRoom.prototype.processAt = function(at) {
@@ -38,13 +41,30 @@ TimingDefenseRoom.prototype.beginStage = function(stage, at) {
 const baseApplyDamage = TimingDefenseRoom.prototype.applyDamage;
 TimingDefenseRoom.prototype.applyDamage = function(monster, damage, slot, tier, at, knock = true, source = "hit", proc = false) {
   const run = this.room?.run;
+  const monsterType = monster?.type || "grunt";
+  const reward = KILL_REWARD[monsterType] || 0;
   const ai = source === "ai" ? run?.ai?.find(a => a.slot === slot) : null;
+  const human = run?.players?.find(p => p.slot === slot) || null;
   const result = baseApplyDamage.call(this, monster, damage, slot, tier, at, knock, source, proc);
+
+  if (human && result?.killed) {
+    human.killCoinEarned = (human.killCoinEarned || 0) + reward;
+  }
   if (ai && result) {
     ai.damage = (ai.damage || 0) + (result.actual || 0);
-    if (result.killed) ai.kills = (ai.kills || 0) + 1;
+    if (result.killed) {
+      ai.kills = (ai.kills || 0) + 1;
+      ai.killCoinEarned = (ai.killCoinEarned || 0) + reward;
+    }
   }
   return result;
+};
+
+const basePlayerPublic = TimingDefenseRoom.prototype.playerPublic;
+TimingDefenseRoom.prototype.playerPublic = function(player) {
+  const out = basePlayerPublic.call(this, player);
+  out.killCoin = player.killCoinEarned || 0;
+  return out;
 };
 
 const baseRunPublic = TimingDefenseRoom.prototype.runPublic;
@@ -61,7 +81,7 @@ TimingDefenseRoom.prototype.runPublic = function(at) {
       cls: a.cls,
       kills: a.kills || 0,
       damage: a.damage || 0,
-      coin: 0,
+      killCoin: a.killCoinEarned || 0,
       level: 1,
       comboPeak: 0
     }));
@@ -88,13 +108,13 @@ const auditedWorker = {
       return new Response(JSON.stringify({
         ok: true,
         service: "timing-defense-cloudflare-v035-parity",
-        version: "0.35-cf.4",
+        version: "0.35-cf.5",
         transport: "websocket-hibernation",
         authority: "durable-object-event-driven-stage2-shop",
-        presentation: "v034-render-parity-retained-stage2-flow-authoritative-results",
+        presentation: "v034-render-parity-retained-authoritative-human-results",
         locationHint: "apac-ne",
         scope: "room-stage1-shop-stage2-reconnect",
-        fix: "authoritative-stage-and-results"
+        fix: "authoritative-participants-contribution-killcoin"
       }), {
         status: 200,
         headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
