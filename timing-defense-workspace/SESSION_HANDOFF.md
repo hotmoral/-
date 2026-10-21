@@ -31,6 +31,9 @@ Preserved checkpoints:
 Canonical closure report:
 - `CLOUDFLARE_V035_PASS_2026-10-21.md`
 
+Canonical next-slice preflight:
+- `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
+
 ## What v0.35 PASS established
 Android + PC multiplayer validation confirmed the scoped Stage 1 -> Team Shop -> Stage 2 run:
 - authoritative shared combat state,
@@ -51,41 +54,103 @@ Android + PC multiplayer validation confirmed the scoped Stage 1 -> Team Shop ->
 
 No numerical balance values were intentionally changed while closing cf.3-cf.7 defects.
 
-## Important v0.35 defects that were fixed
-- inherited public snapshot hardcoded `stage: 1`, preventing Stage 2 client transition,
-- Stage 2 bypassed the legacy `startStage(2)` intro/input initialization path,
-- legacy result board used local/single-player state and hardcoded `STAGE 10 CLEAR`,
-- result KILL COIN initially used wallet balance rather than cumulative monster-kill contribution,
-- Team Shop lacked in-flight purchase feedback,
-- inherited v0.24 Rogue Timing Square temporarily rendered base square as Knight,
-- remote human timing hits shared the simplified passive/automatic projectile visual.
-
-## Exact next boundary
-**Do not start broad implementation immediately. Perform a bounded preflight first.**
-
-Next migration slice must audit and scope:
+## Post-v0.35 preflight — COMPLETE
+The preflight audited the next three axes before implementation:
 1. Stage 3–10 multiplayer generalization,
-2. larger-party (3–4 slot / human+AI) validation,
+2. larger 3–4 slot / human+AI parties,
 3. Lv6+ multiplayer skill consequence authority.
 
-For Lv6+ effects, explicitly classify each effect as:
-- presentation-only,
-- client prediction + server confirmation,
-- server-authoritative combat consequence.
+Key conclusions:
+- exact legacy Stage 3–10 plans/compositions/gaps/scaling were recovered,
+- future S/E/X pressure grammar remains candidate analysis data and must not replace current 10-stage prototype values during migration,
+- Cloudflare has several Stage-2-only server/client/result assumptions that require one generic Stage-N path,
+- server lacks BRUTE/SHIELD/FLYER, Stage 5/10 boss rules and authoritative Y geometry needed by FLYER/geometry skills,
+- four-slot transport/session/READY/shop/result foundations are reusable,
+- 3–4 participant + multi-hit skills require stronger event-delivery semantics than the current short fixed tail,
+- actual playable legacy skill authority is Lv6/11/16/21,
+- Lv26/Lv31 remain roadmap/design effects and must not be invented during migration.
 
-For Stage 3–10, inspect the existing stage plan, composition, gap and scaling rules before generalizing the Stage 2 implementation. Do not silently change any numerical values.
+## Numerical parity decision gate — implementation is paused here
+Two pre-existing Cloudflare-vs-legacy numerical mismatches were discovered.
+They are documented but **not patched**, because numerical changes require explicit approval.
 
-For larger parties, validate slot/host/READY/reconnect/result/event-volume behavior separately.
+### N1 Heavy-tier EXP
+Legacy exact:
+- NORMAL 8
+- GOOD 12
+- PERFECT 18
+- HEAVY 10
+- HEAVY+ 14
+- GREAT 18
+- SUPER 23
+- CRITICAL 28
 
-Read `NEXT_WORK.md` for the preflight deliverable and acceptance boundary.
+Current Cloudflare effectively gives:
+- NORMAL 8
+- GOOD 12
+- PERFECT 18
+- HEAVY 8
+- HEAVY+ 8
+- GREAT 12
+- SUPER 18
+- CRITICAL 28
+
+Recommendation: classify as parity defect and restore legacy exact values before Lv6+ migration.
+
+### N2 AI stage damage scaling
+Legacy AI multiplier:
+`1 + (stage-1)*0.035`
+
+Current Cloudflare omits it.
+
+Recommendation: classify as parity defect and restore legacy exact scaling before Stage 3–10 migration.
+
+### N3 Combo milestone attacks
+Legacy experimental v0.18 has extra milestone attack rewards. Cloudflare currently implements persistent combo percentage bonus but not those milestone attacks.
+
+Recommendation: defer to a separate explicit decision after event delivery is generalized; do not silently combine it with Stage 3 work.
+
+## Exact next implementation after N1/N2 approval — Slice A
+Do not add Stage 3 yet.
+
+Start from exact v0.35 PASS HEAD on a new implementation branch.
+
+Scope:
+- keep Stage 1–2 flow unchanged,
+- add generic server skill-authority primitives,
+- implement exact existing Lv6 consequences for all five human classes,
+- add action/cast identity and secondary-hit event metadata,
+- keep client projectile prediction presentation-only,
+- forced/API Lv5 vs Lv6 verification,
+- Stage 1–2 multiplayer regression gate.
+
+Lv6 targets:
+- Knight +12% server damage; size presentation only,
+- Rogue second dagger 55%, same-target allowed,
+- Tank +30% server knockback,
+- Archer up to 2 strict-line penetrations, no seeking,
+- Mage 50% authoritative splash.
+
+Non-goals:
+- no Stage 3,
+- no Lv11+,
+- no Lv26/Lv31,
+- no pressure-grammar replacement,
+- no new team-size balance,
+- no responsive-safety work.
+
+After Slice A PASS:
+- Slice B: Stage 3 only, 2 humans first, exact `12 / 980 ms / G44-R34-B22`, Stage 3 clear -> Team Shop.
+- Slice C: 3H / 4H / 2H+2AI / 3H+1AI baseline and event-volume validation.
+- Later bounded groups: Stage 4 SHIELD, Stage 5–6 boss+FLYER+Y geometry, Stage 7–9 mixed roster, Stage 10 final boss/result, Lv11/16/21 authority before progression depends on each milestone.
 
 ## Deferred UX item
-Heterogeneous phone-size/aspect-ratio responsive safety is intentionally deferred until after the current migration closure. Handle later as a shared responsive-safety layer rather than device-specific patches.
+Heterogeneous phone-size/aspect-ratio responsive safety remains deferred until after the current migration authority work. Handle it later as a shared responsive-safety layer rather than device-specific patches.
 
 ## Legacy baseline
 - repository: `hotmoral/-`
 - legacy live source: `timing-defense-live-v011`
-- planning/status branch: `timing-defense-workspace`
+- workspace: `timing-defense-workspace`
 - latest implemented legacy prototype: **v0.35**
 - last legacy Android + PC device-PASS before Cloudflare migration: **v0.34**
 - last verified legacy live HEAD before migration: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
@@ -115,14 +180,16 @@ No numerical balance change without:
 
 ## Truth boundary
 Safe claims:
-- Cloudflare PoC through v0.35 are device-PASS for their scoped validation gates,
+- Cloudflare isolated PoC through v0.35 are device-PASS for their scoped gates,
 - exact v0.35 validated deployment/checkpoint is preserved,
-- legacy v0.35 reconnect/shop/Stage-2 code existed and Cloudflare parity is now device-confirmed,
+- post-v0.35 Stage/party/skill preflight is complete,
+- legacy v0.35 reconnect/shop/Stage-2 code existed and Cloudflare parity is device-confirmed,
 - Render quota incident confirmed.
 
 Do not claim yet:
 - Stage 3–10 multiplayer parity,
 - full Lv6+ multiplayer authority,
+- Lv26/Lv31 playable implementation,
 - final persistence/security/anti-cheat architecture,
 - final shop/shared-wall semantics beyond the validated v0.35 slice,
 - final numerical balance.
@@ -132,13 +199,11 @@ Do not claim yet:
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
 4. `CLOUDFLARE_V035_PASS_2026-10-21.md`
-5. `CLOUDFLARE_V034_RENDER_PASS_2026-10-21.md`
-6. `CLOUDFLARE_V033_STAGE1_PASS_2026-10-21.md`
-7. `CLOUDFLARE_V031_V032_PARITY_PASS_2026-10-21.md`
-8. `CLOUDFLARE_DO_POC_PASS_2026-10-21.md`
-9. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
-10. `DESIGN_DECISIONS.md`
-11. `SKILL_PLAN_LV6_31.md`
-12. `TIER_PRESSURE_GRAMMAR_V1.md`
-13. `PRESSURE_RECIPES_V1.md`
-14. `SIMULATION_METHOD.md`
+5. `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
+6. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
+7. `DESIGN_DECISIONS.md`
+8. `SKILL_PLAN_LV6_31.md`
+9. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+10. `TIER_PRESSURE_GRAMMAR_V1.md`
+11. `PRESSURE_RECIPES_V1.md`
+12. `SIMULATION_METHOD.md`
