@@ -1,0 +1,72 @@
+name: Timing Defense v0.40 SHIELD Live Validation
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-do-poc
+    paths:
+      - '.github/workflows/timing-defense-v040-live-validation.yml'
+      - 'timing-defense-cloudflare-poc/src/monster-capability-v1*'
+      - 'timing-defense-cloudflare-poc/src/v036-entry.js'
+      - 'timing-defense-cloudflare-poc/src/v039-entry.js'
+      - 'timing-defense-cloudflare-poc/src/v040-shield-*.js'
+      - 'timing-defense-cloudflare-poc/wrangler.jsonc'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: timing-defense-v040-live-validation
+  cancel-in-progress: true
+
+jobs:
+  live-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      BASE_URL: https://timing-defense-do-poc.sktjsek.workers.dev
+      EXPECTED_VERSION: 0.40-cf.1
+    steps:
+      - name: Prepare artifacts
+        run: mkdir -p artifacts
+
+      - name: Wait for Cloudflare v0.40
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs'),base=process.env.BASE_URL,expected=process.env.EXPECTED_VERSION;
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          (async()=>{const deadline=Date.now()+180000;let last='';while(Date.now()<deadline){try{const r=await fetch(`${base}/api/health?ci=${Date.now()}`,{cache:'no-store'});last=await r.text();fs.writeFileSync('artifacts/health.txt',last);let d;try{d=JSON.parse(last)}catch{};console.log(`health ${r.status} ${d?.version||'unknown'}`);if(r.ok&&d?.version===expected)return}catch(e){last=String(e?.stack||e);console.log(last)}await sleep(3000)}fs.writeFileSync('artifacts/health.txt',last||'no response');process.exit(1)})().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+
+      - name: Run SHIELD authority diagnostics
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs');
+          (async()=>{const r=await fetch(`${process.env.BASE_URL}/api/diagnostics/v040-shield?ci=${Date.now()}`,{cache:'no-store'});const text=await r.text();fs.writeFileSync('artifacts/shield-diagnostics.json',text);console.log(text);let d;try{d=JSON.parse(text)}catch{};if(!r.ok||!d?.ok||!d?.foundation?.ok||!d?.v039?.ok||!d?.shield?.ok)process.exit(1)})().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+
+      - name: Install Playwright Chromium
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Run complete v0.39 browser/WebSocket regression
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs');const {chromium}=require('playwright');const base=process.env.BASE_URL;
+          (async()=>{let browser,page;const logs=[];try{browser=await chromium.launch({headless:true});page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('console',m=>logs.push(`[console:${m.type()}] ${m.text()}`));page.on('pageerror',e=>logs.push(`[pageerror] ${String(e?.stack||e)}`));page.on('requestfailed',r=>logs.push(`[requestfailed] ${r.method()} ${r.url()} :: ${r.failure()?.errorText||''}`));const url=`${base}/v039-validation-suite.html?fix=cf0401&ci=${encodeURIComponent(process.env.GITHUB_SHA||Date.now())}`;console.log(`Opening ${url}`);await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});await page.waitForFunction(()=>{const t=document.body?.innerText||'';return t.includes('FINAL · PASS')||t.includes('FINAL · FAIL')},null,{timeout:240000});const body=await page.locator('body').innerText();fs.writeFileSync('artifacts/v039-regression-body.txt',body);fs.writeFileSync('artifacts/browser.log',logs.join('\n'));await page.screenshot({path:'artifacts/v039-regression.png',fullPage:true});console.log(body);if(!body.includes('FINAL · PASS'))process.exitCode=1}catch(e){logs.push(`[runner-error] ${String(e?.stack||e)}`);fs.writeFileSync('artifacts/browser.log',logs.join('\n'));if(page){try{fs.writeFileSync('artifacts/v039-regression-body.txt',await page.locator('body').innerText())}catch{};try{await page.screenshot({path:'artifacts/v039-regression.png',fullPage:true})}catch{}}console.error(e);process.exitCode=1}finally{if(browser)await browser.close()}})();
+          NODE
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-v040-shield-live-${{ github.sha }}
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
