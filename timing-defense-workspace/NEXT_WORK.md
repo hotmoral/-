@@ -11,36 +11,48 @@ Updated: 2026-10-21 KST
 ## Current v0.35 status
 Cloudflare v0.35 reconnect / Team Shop / Stage 2 parity is **DEVICE VALIDATION PARTIAL PASS**.
 
-Confirmed on device:
+Confirmed on device through cf.3:
 - Stage 1 -> shared Team Shop,
 - shop purchase,
-- coin/rank update presentation,
 - both-human shop READY,
 - host NEXT STAGE,
-- both clients enter Stage 2.
+- synchronized Stage 2 transition,
+- `STAGE 2 / READY / START` presentation,
+- Timing Square active on both clients,
+- local tap attacks active,
+- remote projectile VFX visible,
+- bounded Stage 2 clear reached on both clients.
+
+Known cf.3 defect:
+- final board still used inherited local/single-player result data,
+- title displayed `STAGE 10 CLEAR`,
+- Android/PC contribution values could differ.
+
+cf.4 candidate deployed to fix result/reporting only:
+- authoritative human result values from `run.players`,
+- authoritative AI kill/damage accumulation,
+- authoritative stage title (`STAGE 2 CLEAR`),
+- same final snapshot rendered on both clients.
 
 Read:
 - `CLOUDFLARE_V035_CANDIDATE_2026-10-21.md`
+- `V035_CF3_STAGE2_FLOW_PASS_CF4_RESULT_CANDIDATE_2026-10-21.md`
 - `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
 
-Public Cloudflare URL:
+Public URL:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 
-Current deployment candidate:
-- implementation branch: `timing-defense-cloudflare-v035-parity`
-- watched deployment trigger HEAD: `3b5e8ec65ad8f62343b86159fe48f71aebbb79be`
+Current cf.4 deployment trigger HEAD:
+- `ce0151894d2a972863bd511ed95a04b808fef941`
 
 ## Immediate remaining device gate
 Do not add Stage 3–10 or new multiplayer skill authority yet.
 
-### A. Stage 2 authority parity
-Using Android + PC in the same run, confirm:
-1. same GRUNT/RUNNER identities,
-2. same monster HP/deaths,
-3. same BASE HP,
-4. remote attacks affect the same authoritative monsters,
-5. v0.34 smoothing/projectiles remain correct,
-6. Stage 2 bounded clear occurs on both clients.
+### A. cf.4 authoritative result board
+1. Confirm `/api/health` reports `0.35-cf.4`.
+2. Complete Stage 2 on Android + PC.
+3. Both clients must show `STAGE 2 CLEAR`.
+4. Human/AI KILLS, DMG, COIN, LV, MAX COMBO must match across clients.
 
 ### B. Reconnect parity
 Refresh one client separately in each phase:
@@ -53,27 +65,11 @@ For each refresh confirm:
 - same session/slot,
 - same run/stage,
 - current authoritative HP/base/shop state restored,
-- the other client remains in the same shared state,
+- other client remains in the same shared state,
 - no burst of historical projectile VFX is replayed.
 
 ## Closure rule
-Close v0.35 only when both A and B pass. Then:
-- create a preserved v0.35 PASS checkpoint branch,
-- synchronize `PROJECT_STATUS.md`, `SESSION_HANDOFF.md`, and PASS report,
-- only then proceed to Stage 3–10 / larger-party validation / Lv6+ multiplayer authority.
+Close v0.35 only when A and B pass. Then create a preserved v0.35 PASS checkpoint and synchronize project status/handoff. Only then proceed to Stage 3–10 / larger-party validation / Lv6+ multiplayer authority.
 
 ## Frozen governance
 No numerical change to attack damage, monster HP, passive interval, combo coefficients, EXP, shop cost, knockback, stage count/gap or class balance without the established measure/report/discuss/explicit-decision workflow.
-
-## Current truth boundary
-Safe:
-- Cloudflare v0.31/v0.32 device-PASS,
-- Cloudflare v0.33 authoritative Stage 1 device-PASS,
-- Cloudflare v0.34 render parity device-PASS,
-- Cloudflare v0.35 Stage 1 -> Team Shop -> shop READY/NEXT -> Stage 2 transition is device-confirmed.
-
-Not yet safe:
-- full Cloudflare v0.35 parity PASS,
-- Stage 3–10 multiplayer,
-- full Lv6+ multiplayer authority,
-- final numerical freeze.
