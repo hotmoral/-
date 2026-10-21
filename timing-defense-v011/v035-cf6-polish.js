@@ -1,9 +1,14 @@
 // Timing Defense Cloudflare v0.35 cf.6 — network UX/state stability polish.
-// No combat-balance coefficients are changed.
+// No combat-balance coefficients are changed. Server state remains authoritative.
 (function(){
   const bridge=window.__TDCFBridge,mp=window.__TDMP34CF;
   if(!bridge||!mp)return;
 
+  // ---------------------------------------------------------------------------
+  // 1) Keep the local combat class pinned to the authoritative room participant.
+  //    This prevents legacy/default Knight palette fallbacks from leaking into a
+  //    Rogue/Tank/Archer/Mage network run between state/render layers.
+  // ---------------------------------------------------------------------------
   function authoritativeClass(){
     const slot=bridge.slot||mp.slot;
     return mp.state?.participants?.find(p=>p.slot===slot)?.classId||null;
@@ -14,7 +19,110 @@
     if(cls&&S.playerClass!==cls)S.playerClass=cls;
   }
 
-  window.addEventListener('tdcf:state',()=>pinClass());
+  // ---------------------------------------------------------------------------
+  // 2) Team Shop: keep economy server-confirmed, but expose the in-flight state
+  //    immediately and reject duplicate taps for the same upgrade.
+  // ---------------------------------------------------------------------------
+  const pendingBuys=new Map();
+  function localRunPlayer(st=mp.state){
+    const slot=bridge.slot||mp.slot;
+    return st?.run?.players?.find(p=>p.slot===slot)||null;
+  }
+  function localRank(key,st=mp.state){return localRunPlayer(st)?.upgrades?.[key]??0}
+  function syncPendingButtons(){
+    document.querySelectorAll('#v035cfShop [data-buy]').forEach(btn=>{
+      const key=btn.dataset.buy,pending=pendingBuys.has(key);
+      if(pending){
+        if(!btn.dataset.cf6Label)btn.dataset.cf6Label=btn.textContent||'';
+        btn.textContent='처리중…';btn.disabled=true;btn.setAttribute('aria-busy','true');
+      }else if(btn.dataset.cf6Label){
+        // A server-confirmed shop rerender normally replaces the button. This is
+        // only the error/timeout fallback for the same DOM node.
+        btn.textContent=btn.dataset.cf6Label;delete btn.dataset.cf6Label;btn.removeAttribute('aria-busy');
+      }
+    });
+  }
+  function clearPending(key){
+    const entry=pendingBuys.get(key);if(!entry)return;
+    clearTimeout(entry.timer);pendingBuys.delete(key);syncPendingButtons();
+  }
+  function markPending(key){
+    if(!key||pendingBuys.has(key))return false;
+    const entry={baseline:localRank(key),started:performance.now(),timer:null};
+    entry.timer=setTimeout(()=>clearPending(key),5000);
+    pendingBuys.set(key,entry);syncPendingButtons();return true;
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3) Room creation: the selected AI-count button is the source of truth.
+  //    When AI NONE is selected, stale rendered AI rows must never leak into the
+  //    create-room payload and become real server-authoritative CPU players.
+  // ---------------------------------------------------------------------------
+  function selectedAiCount(){
+    const btn=document.querySelector('#v022Lobby [data-ai].on');
+    if(!btn)return null;
+    const n=Number(btn.dataset.ai);
+    return Number.isFinite(n)?Math.max(0,Math.min(2,Math.trunc(n))):null;
+  }
+  function requestUrl(input){
+    try{return new URL(typeof input==='string'?input:input?.url,location.href)}catch(_){return null}
+  }
+  function parseBody(body){
+    if(typeof body!=='string')return null;
+    try{return JSON.parse(body)}catch(_){return null}
+  }
+
+  const nativeFetch=window.fetch.bind(window);
+  window.fetch=async function(input,init={}){
+    const url=requestUrl(input),method=String(init?.method||input?.method||'GET').toUpperCase();
+    let nextInit=init;
+
+    if(url&&method==='POST'&&url.pathname==='/api/room/create'){
+      const body=parseBody(init?.body);
+      const count=selectedAiCount();
+      if(body&&count!==null){
+        const configured=Array.isArray(body.aiFill)?body.aiFill:[];
+        body.aiFill=count===0?[]:configured.slice(0,count);
+        nextInit={...init,body:JSON.stringify(body)};
+      }
+    }
+
+    const shopMatch=url?.pathname.match(/^\/api\/room\/[A-Z0-9]{6}\/shop-buy$/i);
+    if(shopMatch&&method==='POST'){
+      const body=parseBody(nextInit?.body),key=body?.key;
+      if(key&&pendingBuys.has(key))throw new Error('shop-buy-pending');
+      if(key)markPending(key);
+      try{
+        const response=await nativeFetch(input,nextInit);
+        if(!response.ok&&key)clearPending(key);
+        return response;
+      }catch(error){
+        if(key)clearPending(key);
+        throw error;
+      }
+    }
+
+    return nativeFetch(input,nextInit);
+  };
+
+  // Capture duplicate clicks before the v0.35 shop handler can issue another
+  // request. The first click is allowed through; fetch() marks it pending.
+  document.addEventListener('click',event=>{
+    const btn=event.target?.closest?.('#v035cfShop [data-buy]');
+    if(!btn)return;
+    if(pendingBuys.has(btn.dataset.buy)){
+      event.preventDefault();event.stopImmediatePropagation();
+    }
+  },true);
+
+  window.addEventListener('tdcf:state',event=>{
+    pinClass();
+    const st=event.detail?.state||mp.state;
+    for(const [key,pending] of [...pendingBuys]){
+      if(localRank(key,st)>pending.baseline)clearPending(key);
+    }
+    syncPendingButtons();
+  });
 
   const baseUpdate=update;
   update=function(now,dt){pinClass();return baseUpdate(now,dt)};
