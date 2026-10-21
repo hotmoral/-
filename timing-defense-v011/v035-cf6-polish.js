@@ -52,18 +52,6 @@
     entry.timer=setTimeout(()=>clearPending(key),5000);
     pendingBuys.set(key,entry);syncPendingButtons();return true;
   }
-
-  // ---------------------------------------------------------------------------
-  // 3) Room creation: the selected AI-count button is the source of truth.
-  //    When AI NONE is selected, stale rendered AI rows must never leak into the
-  //    create-room payload and become real server-authoritative CPU players.
-  // ---------------------------------------------------------------------------
-  function selectedAiCount(){
-    const btn=document.querySelector('#v022Lobby [data-ai].on');
-    if(!btn)return null;
-    const n=Number(btn.dataset.ai);
-    return Number.isFinite(n)?Math.max(0,Math.min(2,Math.trunc(n))):null;
-  }
   function requestUrl(input){
     try{return new URL(typeof input==='string'?input:input?.url,location.href)}catch(_){return null}
   }
@@ -75,25 +63,13 @@
   const nativeFetch=window.fetch.bind(window);
   window.fetch=async function(input,init={}){
     const url=requestUrl(input),method=String(init?.method||input?.method||'GET').toUpperCase();
-    let nextInit=init;
-
-    if(url&&method==='POST'&&url.pathname==='/api/room/create'){
-      const body=parseBody(init?.body);
-      const count=selectedAiCount();
-      if(body&&count!==null){
-        const configured=Array.isArray(body.aiFill)?body.aiFill:[];
-        body.aiFill=count===0?[]:configured.slice(0,count);
-        nextInit={...init,body:JSON.stringify(body)};
-      }
-    }
-
     const shopMatch=url?.pathname.match(/^\/api\/room\/[A-Z0-9]{6}\/shop-buy$/i);
     if(shopMatch&&method==='POST'){
-      const body=parseBody(nextInit?.body),key=body?.key;
+      const body=parseBody(init?.body),key=body?.key;
       if(key&&pendingBuys.has(key))throw new Error('shop-buy-pending');
       if(key)markPending(key);
       try{
-        const response=await nativeFetch(input,nextInit);
+        const response=await nativeFetch(input,init);
         if(!response.ok&&key)clearPending(key);
         return response;
       }catch(error){
@@ -101,8 +77,7 @@
         throw error;
       }
     }
-
-    return nativeFetch(input,nextInit);
+    return nativeFetch(input,init);
   };
 
   // Capture duplicate clicks before the v0.35 shop handler can issue another
