@@ -2,27 +2,29 @@
 
 Updated: 2026-10-21 KST
 
-## Current execution status
-Primary architecture:
+## Current architecture
+Primary lane:
 **Cloudflare Workers + Durable Objects event-driven multiplayer.**
-
-Closed public/device gates:
-- Durable Objects viability PoC — **PASS**
-- v0.31/v0.32 waiting-room parity — **PASS**
-- v0.33 authoritative Stage 1 — **PASS**
-- v0.34 render/remote projectile parity — **PASS**
-- v0.35 reconnect / Team Shop / Stage 2 — **PASS**
-- v0.36 Slice A N1/N2 + Lv6 authority — **FULL PASS**
-- v0.37 Slice B Stage 3 + BRUTE — **FULL PASS**
 
 Public URL:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 
 Watched deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- currently validated HEAD `08af6e1e9f399ad13369990dcc452f012ddda1fa`
+- current candidate HEAD `0c96f038f6fcf7ec5e27e7d7fe0db38343a807c7`
 
-Preserved checkpoints:
+Last fully closed checkpoint:
+- v0.37 Slice B / Stage 3 + BRUTE — **FULL PASS**
+- branch `timing-defense-cloudflare-v037-slice-b-pass-20261021`
+- HEAD `08af6e1e9f399ad13369990dcc452f012ddda1fa`
+
+Active candidate:
+- v0.38 Slice C / larger-party event kernel
+- branch `timing-defense-cloudflare-v038-slice-c-event-kernel`
+- expected health `0.38-cf.1`
+- live automated validation pending
+
+## Preserved checkpoints
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
 - v0.31/v0.32 PASS: `timing-defense-cloudflare-v031-v032-pass-20261021`
 - v0.33 PASS: `timing-defense-cloudflare-v033-pass-20261021`
@@ -36,156 +38,128 @@ Preserved checkpoints:
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
-4. `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
-5. `CLOUDFLARE_V036_SLICE_A_PASS_2026-10-21.md`
-6. `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
-7. `CLOUDFLARE_V035_PASS_2026-10-21.md`
-8. `DESIGN_DECISIONS.md`
-9. `SKILL_PLAN_LV6_31.md`
-10. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+4. `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
+5. `CLOUDFLARE_V038_SLICE_C_CANDIDATE_2026-10-21.md`
+6. `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
+7. `CLOUDFLARE_V036_SLICE_A_PASS_2026-10-21.md`
 
-## v0.36 Slice A closure
-N1 exact timing EXP and N2 AI stage scaling are implemented and PASS.
+## Closed v0.36 decisions
+N1 exact EXP:
+- NORMAL 8 / GOOD 12 / PERFECT 18 / HEAVY 10 / HEAVY+ 14 / GREAT 18 / SUPER 23 / CRITICAL 28.
 
-N1 table:
-- NORMAL 8
-- GOOD 12
-- PERFECT 18
-- HEAVY 10
-- HEAVY+ 14
-- GREAT 18
-- SUPER 23
-- CRITICAL 28
+N2 exact AI stage multiplier:
+`1 + (stage - 1) * 0.035`.
 
-N2:
-`AI damage × (1 + (stage - 1) * 0.035)`
-
-Lv6 authority validated:
-- Knight +12% authoritative damage,
-- Rogue one +55 ms second dagger at 55%,
-- Tank +30% authoritative knockback,
+Lv6 authority:
+- Knight +12% damage,
+- Rogue 55% second dagger after +55 ms,
+- Tank +30% knockback,
 - Archer up to two strict-line 52% secondary hits,
 - Mage up to three nearby 50% splash hits.
 
-Exact v0.36 full-PASS branch:
-`timing-defense-cloudflare-v036-slice-a-pass-20261021`
-
-Exact v0.36 full-PASS HEAD:
-`c540119f469cff6795a74a3867c26f4c67de9071`
-
-## v0.37 Slice B closure
-Scope was Stage 3 only. Stage 4 remained blocked.
-
+## Closed v0.37 Stage 3
 Exact encounter:
-- 12 enemies,
-- 980 ms gap,
+- 12 enemies / 980 ms,
 - GRUNT 44% / RUNNER 34% / BRUTE 22%.
 
-BRUTE authority:
+BRUTE:
 - HP 900 base,
 - speed .040,
 - wall damage 180,
 - knock resist .38,
 - armor 1.00,
 - reward 14,
-- existing stage factor + ordinary non-boss ×1.10 retained,
-- Stage 3 ordinary BRUTE HP 1247.
+- Stage 3 ordinary HP 1247 under existing HP rules.
 
-Flow now validated:
-- Stage 1 -> Team Shop,
-- Stage 2 -> Team Shop,
+Flow:
+- Stage 1 -> Shop,
+- Stage 2 -> Shop,
 - host NEXT -> Stage 3,
-- Stage 3 -> Team Shop,
+- Stage 3 -> Shop,
 - Stage 4 locked.
 
-Important pre-deployment defect caught:
-- old Stage1–2 wall logic would have treated an unknown BRUTE as GRUNT for wall damage,
-- Stage 3 now has authoritative BRUTE wall handling,
-- automated test covers 180 base wall damage and DEF-rank-4 -> 162.
+Automated and Samsung Browser smoke evidence both PASS.
 
-Automated validation PASS:
-- `SERVER 21/21 PASS`
-- `V036 CLIENT REGRESSION 4/4 PASS`
-- `STAGE3 CLIENT 6/6 PASS`
-- `MULTICLIENT 10/10 PASS`
-- `FINAL PASS`
+## N3 — OPTION B APPROVED / FROZEN / NOT YET ENABLED
+N3 is no longer deferred.
 
-Final Samsung Browser smoke PASS:
-- single-device peer harness used, no physical PC required,
-- local host and SIM-PC remained separate humans,
-- Stage 3 intro/combat became interactive,
-- BRUTE appeared with the existing large BRUTE body/silhouette,
-- multiple Stage 3 enemies rendered/moved without obvious disappearance, teleport/flicker storm or canvas corruption,
-- timing attacks remained usable,
-- Stage 3 clear entered Team Shop,
-- shop showed `STAGE 3 CLEAR` / `STAGE 3 COMPLETE`,
-- both humans were separately present/READY,
-- `STAGE 4 LOCKED` visibly enforced.
+Frozen contract:
+- milestone triggers at 5 / 10 / 20 / 30 / every +10 after 30,
+- exact max budgets 60 / 90 / 150 / 210,
+- Rogue 2/3/4/5 daggers,
+- Knight 67/33 primary-secondary intent,
+- Tank 60/20/20 intent,
+- Archer 70/30 strict-line intent,
+- Mage 55/15/15/15 intent,
+- deterministic remainder-safe allocation prevents over-budget rounding,
+- no EXP / charge / combo / ordinary proc crit / recursive class skill / recursive N3,
+- normal armor / kill / kill coin / contribution attribution,
+- frozen boss scalars remain,
+- generic N3 knockback uses NORMAL-equivalent base; milestone tier itself does not escalate generic knockback,
+- class multipliers still apply; Tank retains class knockback identity.
 
-Exact v0.37 full-PASS branch:
-`timing-defense-cloudflare-v037-slice-b-pass-20261021`
+Canonical:
+`N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 
-Exact v0.37 full-PASS HEAD:
-`08af6e1e9f399ad13369990dcc452f012ddda1fa`
+Implementation is intentionally blocked until Slice C event delivery is PASS.
 
-## N3 — DEFERRED / MANDATORY FUTURE DISCUSSION
-N3 is the experimental combo-milestone extra-attack system.
-It is not discarded and has not been included in the migration slices.
-Do not silently port, remove, freeze or rebalance it.
+## Active v0.38 Slice C candidate
+Purpose:
+- validate 3–4 participant multiplayer baseline,
+- remove the old 24-event snapshot-tail dependency before N3.
 
-## Immediate next boundary — Slice C / larger-party baseline
-Do not start Stage 4 before Slice C closes.
+Event kernel:
+- 512 retained authoritative events,
+- per-WebSocket `eventRunId` + `eventCursor` stored in hibernation attachment,
+- monotonic `event-batch` delivery,
+- socket `state` broadcasts carry no event tail,
+- explicit `event-gap` on impossible continuity,
+- existing v0.35 resume/eventFloor historical replay suppression retained,
+- reconnect socket in active run floors at latest,
+- pre-run socket begins a new run at event 0.
 
-Target combinations:
+Live simulation scenarios:
 - 3 humans,
 - 4 humans,
 - 2 humans + 2 AI,
 - 3 humans + 1 AI.
 
-Required first work:
-- audit fixed-slot and host semantics,
-- audit READY/START and Team Shop READY/NEXT for larger parties,
-- audit reconnect identity,
-- audit result participant ordering/count,
-- audit event-volume behavior under human timing + passive + AI + Lv6 secondary hits,
-- determine whether the current fixed event tail is still loss-safe,
-- expand deterministic/multi-WebSocket automation before asking for manual play.
+Checks:
+- fixed slot occupancy,
+- host identity,
+- READY/START,
+- synchronized run roster,
+- Stage 1 -> Team Shop -> Stage 2,
+- host reconnect in 4H,
+- contiguous event IDs,
+- no event-gap,
+- >24 delivered events in 4H.
 
-AI FILL note:
-- current filler positions are fixed occupied positions,
-- humans do not dynamically displace AI filler,
-- do not silently change this semantic inside Slice C without an explicit product decision.
+One-click gate:
+`/v038-validation-suite.html`
 
-Validation method:
-`code audit -> deterministic tests -> 3/4-client live WebSocket simulations -> single-device final smoke`.
+v0.38 is **not PASS yet**.
+Do not enable N3 or Stage 4 until this gate and one final device smoke pass.
 
-## Following slices
-- Stage 4 SHIELD / armor,
-- Stage 5–6 checkpoint boss + FLYER + authoritative Y geometry,
-- Stage 7–9 mixed stress,
-- Stage 10 final boss/result,
-- Lv11/16/21 authority with forced-level automated tests before natural progression relies on them.
+## AI FILL semantic
+Current filler positions are fixed occupied positions.
+Humans do not dynamically displace configured AI filler.
+Do not silently change this semantic inside Slice C.
+
+## Next after Slice C PASS
+Dedicated N3 authority slice:
+- forced combo 5/10/20/30/40 on all five classes,
+- exact budget and geometry tests,
+- proc-isolation assertions,
+- kill/coin/contribution and boss-scalar assertions,
+- synchronized four-player milestone stress,
+- one final Samsung Browser presentation smoke.
+
+Then Stage 4 SHIELD / armor.
 
 ## Deferred UX
-Heterogeneous phone-size/aspect-ratio responsive safety remains deferred. Implement later as a shared responsive-safety layer rather than device-specific patches.
+Responsive safety across heterogeneous phone sizes/aspect ratios remains deferred as one shared responsive layer.
 
-## Frozen governance
-- Rhythm: `X -> X -> X -> X+Y`.
-- Knight stable generalist / penetration / strong heavy.
-- Rogue multihit / crit; same-target dagger hits uncapped.
-- Tank knockback / wall protection / team specialist.
-- Archer strict straight-line trajectory; no seeking/bending.
-- Mage density/AoE specialist.
-- Boss dagger scalar `0.70`.
-- Boss knockback scalar `0.40`.
-- EXP only from valid timing events; passive gives no EXP.
-- Current combo display/size/position/animation remains frozen unless explicitly changed.
-
-Experimental, not production-frozen:
-- passive `40 raw / 2.0 s`,
-- ordinary non-boss HP +10%,
-- combo persistent candidate `5/8/12/15%`,
-- combo milestone raw-equivalent `60/90/150/210` — N3 mandatory future review.
-
+## Governance
 No numerical change without:
 `implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
