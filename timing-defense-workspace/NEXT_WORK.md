@@ -11,102 +11,78 @@ Updated: 2026-10-22 KST
 6. v0.36 Slice A N1/N2 + Lv6 authority — **PASS**
 7. v0.37 Slice B Stage 3 + BRUTE — **PASS**
 8. v0.38 Slice C larger-party/event kernel — **FULL PASS**
+9. v0.39 N3 automated live validation — **PASS**
 
 Exact v0.38 full-PASS checkpoint:
 - branch `timing-defense-cloudflare-v038-slice-c-pass-20261022`
 - HEAD `cbcddf35443ff901b4a30dd6621da5a984335fb5`
 
-## N3 product decision — APPROVED / FROZEN
-Option B remains frozen:
+Exact v0.39 automated-live PASS checkpoint:
+- branch `timing-defense-cloudflare-v039-automation-pass-20261022`
+- HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
+
+## N3 product contract — APPROVED / FROZEN
 - combo 5 / 10 / 20 / 30 / every +10 after 30
-- exact raw-equivalent maximum budgets 60 / 90 / 150 / 210
-- class geometry retained
+- exact max raw-equivalent budgets 60 / 90 / 150 / 210
+- class-specific geometry retained
 - deterministic remainder-safe allocation
 - no EXP / charge / combo increment / ordinary crit / recursive skill / recursive N3
 - normal armor / kill / kill coin / contribution
 - frozen boss scalars
-- NORMAL-equivalent generic N3 knockback
+- generic N3 knockback uses NORMAL-equivalent semantics
 - Tank retains class knockback identity
 
-## Active slice — v0.39 N3 authority
-Implementation branch:
-`timing-defense-cloudflare-v039-n3-authority`
+## v0.39 automated-live result — PASS
+Public GitHub Actions runs real Playwright Chromium against the deployed Cloudflare Worker.
 
-Current watched candidate HEAD:
-`cee455520fbee04002d2fb12f33dc24ffe129264`
+Validated:
+- complete v0.38 regression
+- N3 server 57/57
+- N3 client authority/presentation event contract
+- synchronized 4-human N3 stress
+- FINAL PASS
 
-Expected health:
-`0.39-cf.1`
+4H stress:
+- four Lv6 Rogue humans at combo29
+- simultaneous PERFECT
+- 4 ordinary hit + 4 Lv6 skill + 20 N3 = 28 combat events
+- no event-gap
+- contiguous post-floor event IDs
+- all authoritative combos become 30
 
-### Implemented candidate behavior
-- server detects N3 milestones from authoritative combo-before/action judges
-- N3 uses `type: n3` server events
-- exact-budget allocator prevents legacy overshoot
-- Rogue delayed milestone daggers use dedicated `n3Queue`
-- N3 queue is separate from Lv6 Rogue skill queue
-- combat-end hardening clears delayed N3 queue
-- legacy local combo-reward damage path is suppressed in multiplayer
-- N3 client layer renders server-confirmed N3 events only
-- Stage 4 remains blocked
+The Actions workflow now owns automated validation. Do not ask the user to manually open validation suites unless CI cannot execute a required gate.
 
-### Deterministic validation requirements
-All five classes at combo milestones:
-- 5
-- 10
-- 20
-- 30
-- 40
+## Immediate next step — one Samsung Browser N3 presentation/input smoke
+Current watched smoke-candidate HEAD:
+`f9e824eac87cc2fe39d80a75b345ce5aa8f574ce`
 
-Must assert:
-- exact maximum budget
-- exact intended hit count / geometry
-- N3 event tier is NORMAL-equivalent for generic knockback
-- no extra EXP
-- no extra charge
-- no extra combo
-- no ordinary proc crit
-- no recursive class skill
-- no recursive N3
-- unused secondary budget is not redirected
-- kill / coin / kill-coin / contribution attribution
-- Rogue boss 0.70 scalar
-- Tank Lv6 N3 knockback identity
-- Lv6 Rogue normal second dagger + N3 daggers coexist without duplicate authority
-- heavy X/Y combo counting and reset semantics
+Candidate-only helper:
+- query `n3smoke=1`
+- once host combat has a monster, automatically arms humans to Lv6/combo29
+- small non-blocking combat badge says `N3 ARMED · PERFECT 1회`
+- normal game access is unaffected
 
-### Live four-human stress
-Create 4 human Rogues, arm all at:
-- Lv6
-- combo 29
+Use one simulated second human (`peerbot=1`) so no PC is required.
 
-Then send synchronized PERFECT.
+Manual smoke acceptance is presentation/input only:
+1. local player remains intended HOST/ROGUE
+2. peer remains separate human
+3. timing input works
+4. after `N3 ARMED`, one PERFECT causes a visibly coherent N3 Rogue multi-dagger burst
+5. no obvious duplicate-projectile storm, flicker, Canvas corruption or blocked controls
+6. gameplay continues after the burst
 
-Expected combat events visible to every connected client:
-- 4 ordinary `hit`
-- 4 Lv6 Rogue `skill`
-- 20 N3 Rogue `n3`
-- total **28 combat events**
+Do not manually recheck damage budgets, event counts, EXP, charge, kill attribution or 4H delivery; Actions automation already owns those gates.
 
-Must also verify:
-- all N3 events milestone 30
-- all N3 budget metadata 210
-- no `event-gap`
-- post-floor event IDs contiguous
-- all four server combos become 30
+After this smoke passes:
+- preserve exact v0.39 full-PASS checkpoint at the smoke HEAD
+- write v0.39 full PASS report
+- synchronize canonical docs
+- move to Stage 4 SHIELD / armor
 
-### One-click validation gate
-`/v039-validation-suite.html`
-
-It runs:
-1. complete v0.38 regression suite
-2. N3 deterministic server tests
-3. N3 client-authority tests
-4. synchronized 4H N3 stress
-
-After automated PASS:
-- run one short Samsung Browser presentation smoke only
-- preserve exact v0.39 PASS checkpoint
-- then move to Stage 4 SHIELD / armor
+## Validation policy
+Default:
+`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
 
 ## Following slices
 - Stage 4 SHIELD / armor
@@ -116,7 +92,7 @@ After automated PASS:
 - Lv11/16/21 authority
 
 ## Deferred UX
-Responsive safety across heterogeneous phone sizes/aspect ratios remains deferred. Implement later as one shared responsive layer, not per-device patches.
+Responsive safety across heterogeneous phone sizes/aspect ratios remains deferred as one shared responsive layer.
 
 ## Governance
 No unapproved numerical change. Continue:
