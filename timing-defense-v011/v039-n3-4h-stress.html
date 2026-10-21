@@ -1,0 +1,53 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.39 N3 4H stress</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px;max-width:1050px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}</style>
+<h1>v0.39 N3 synchronized four-human stress</h1><div id="status">RUNNING…</div><pre id="log"></pre><pre id="out"></pre>
+<script>
+(async()=>{
+ const status=document.getElementById('status'),logEl=document.getElementById('log'),out=document.getElementById('out');
+ const checks=[],log=[],sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ const say=s=>{log.push(s);logEl.textContent=log.join('\n')};const add=(n,p,a,e)=>{checks.push({name:n,pass:!!p,actual:a,expected:e});say(`${p?'PASS':'FAIL'} · ${n}`)};
+ async function post(path,body){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'});const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(`${path}: ${d?.error||r.status}`);return d}
+ class C{
+   constructor(name,session=''){this.name=name;this.session=session;this.slot=0;this.ws=null;this.state=null;this.seq=0;this.events=[];this.gaps=[];this.errors=[]}
+   connect(code){return new Promise((resolve,reject)=>{const proto=location.protocol==='https:'?'wss:':'ws:',u=new URL(`${proto}//${location.host}/ws/${code}`);if(this.session)u.searchParams.set('session',this.session);u.searchParams.set('nickname',this.name);u.searchParams.set('classId','rogue');const ws=new WebSocket(u);this.ws=ws;const timer=setTimeout(()=>reject(new Error(`${this.name} connect timeout`)),7000);ws.addEventListener('message',e=>{let m;try{m=JSON.parse(e.data)}catch{return}if(m.type==='welcome'){this.session=m.session;this.slot=m.slot;this.state=m.state;this.seq=Math.max(this.seq,Number(m.lastSeq)||0);clearTimeout(timer);resolve(m)}else if(m.type==='state')this.state=m.state;else if(m.type==='event-batch')for(const ev of m.events||[])this.events.push(ev);else if(m.type==='event-gap')this.gaps.push(m);else if(m.type==='error')this.errors.push(m.error)});ws.addEventListener('error',()=>{clearTimeout(timer);reject(new Error(`${this.name} websocket error`))})})}
+   send(x){if(this.ws?.readyState!==WebSocket.OPEN)throw new Error(`${this.name} socket closed`);this.ws.send(JSON.stringify(x))}
+   ready(){this.send({type:'ready',ready:true})}
+   perfect(){this.send({type:'action',seq:++this.seq,xJudge:'PERFECT',yJudge:null})}
+   async waitState(pred,timeout=8000){const t=performance.now();while(performance.now()-t<timeout){if(this.state&&pred(this.state))return this.state;await sleep(35)}throw new Error(`${this.name} state timeout`)}
+   close(){try{this.ws?.close(1000,'n3stress')}catch{}}
+ }
+ let code='',clients=[];
+ try{
+   const cr=await post('/api/room/create',{method:'friend',nickname:'N3_P1',classId:'rogue',aiFill:[]});code=cr.code;
+   for(let i=0;i<4;i++){const c=new C(`N3_P${i+1}`,i===0?cr.session:'');clients.push(c);await c.connect(code)}
+   add('FOUR_HUMAN_ROGUE_SLOTS',clients.map(c=>c.slot).join(',')==='1,2,3,4',clients.map(c=>c.slot),[1,2,3,4]);
+   for(const c of clients)c.ready();await clients[0].waitState(s=>s.canStart===true);clients[0].send({type:'start'});
+   for(const c of clients)await c.waitState(s=>s.run?.status==='combat'&&(s.run.monsters?.length||0)>0,10000);
+   const armed=await post(`/api/room/${code}/debug-n3-arm`,{session:clients[0].session,combo:29,level:6});
+   const floor=Number(armed.state?.run?.eventStream?.latestId)||0;
+   for(const c of clients)c.events=c.events.filter(e=>(Number(e.id)||0)>floor);
+   await sleep(80);
+   clients.forEach(c=>c.perfect());
+   const t0=performance.now();
+   while(performance.now()-t0<6000){
+     const complete=clients.every(c=>c.events.filter(e=>(Number(e.id)||0)>floor&&['hit','skill','n3'].includes(e.type)).length>=28);
+     if(complete)break;await sleep(60);
+   }
+   const summaries=clients.map(c=>{
+     const ev=c.events.filter(e=>(Number(e.id)||0)>floor),combat=ev.filter(e=>['hit','skill','n3'].includes(e.type));
+     return{slot:c.slot,totalAfterFloor:ev.length,combat:combat.length,hit:combat.filter(e=>e.type==='hit').length,skill:combat.filter(e=>e.type==='skill').length,n3:combat.filter(e=>e.type==='n3').length,
+       n3Budgets:[...new Set(combat.filter(e=>e.type==='n3').map(e=>e.n3Budget))],n3Milestones:[...new Set(combat.filter(e=>e.type==='n3').map(e=>e.n3Milestone))],gaps:c.gaps.length,
+       ids:ev.map(e=>Number(e.id)||0)};
+   });
+   add('FOUR_HUMAN_EVENT_COUNTS',summaries.every(s=>s.hit===4&&s.skill===4&&s.n3===20&&s.combat===28),summaries.map(s=>({slot:s.slot,hit:s.hit,skill:s.skill,n3:s.n3,combat:s.combat})),{each:{hit:4,skill:4,n3:20,combat:28}});
+   add('N3_30_BUDGET_METADATA',summaries.every(s=>s.n3Budgets.length===1&&s.n3Budgets[0]===210&&s.n3Milestones.length===1&&s.n3Milestones[0]===30),summaries.map(s=>({slot:s.slot,budgets:s.n3Budgets,milestones:s.n3Milestones})),{budget:210,milestone:30});
+   add('NO_EVENT_GAP',summaries.every(s=>s.gaps===0),summaries.map(s=>({slot:s.slot,gaps:s.gaps})),0);
+   add('POST_FLOOR_IDS_MONOTONIC',summaries.every(s=>s.ids.every((id,i,a)=>id>floor&&(i===0||id===a[i-1]+1))),summaries.map(s=>({slot:s.slot,first:s.ids[0],last:s.ids.at(-1),count:s.ids.length})),`contiguous after ${floor}`);
+   for(const c of clients)await c.waitState(s=>s.run?.players?.find(p=>p.slot===c.slot)?.combo===30,4000);
+   add('ALL_PLAYERS_COMBO_30',clients.every(c=>c.state.run.players.find(p=>p.slot===c.slot)?.combo===30),clients.map(c=>c.state.run.players.find(p=>p.slot===c.slot)?.combo),[30,30,30,30]);
+ }catch(e){checks.push({name:'N3_4H_STRESS_EXCEPTION',pass:false,actual:String(e?.stack||e),expected:'no exception'});say(`FAIL · ${e}`)}
+ finally{for(const c of clients)c.close();await sleep(100);for(const c of [...clients].reverse()){try{if(code&&c.session)await post(`/api/room/${code}/leave`,{session:c.session})}catch{}}}
+ const passed=checks.filter(x=>x.pass).length,result={ok:passed===checks.length,version:'0.39-cf.1-n3-4h-stress',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};status.textContent=result.ok?'PASS':'FAIL';status.className=result.ok?'pass':'fail';out.textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.39 N3 4H stress`;
+})();
+</script>
