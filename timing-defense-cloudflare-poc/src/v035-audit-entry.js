@@ -45,5 +45,27 @@ TimingDefenseRoom.prototype.checkEnd = function(at) {
   return out;
 };
 
-export default worker;
+const auditedWorker = {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    if (request.method === "GET" && url.pathname === "/api/health") {
+      return new Response(JSON.stringify({
+        ok: true,
+        service: "timing-defense-cloudflare-v035-parity",
+        version: "0.35-cf.2",
+        transport: "websocket-hibernation",
+        authority: "durable-object-event-driven-stage2-shop",
+        presentation: "v034-render-parity-retained-stage2-input-fix",
+        locationHint: "apac-ne",
+        scope: "room-stage1-shop-stage2-reconnect"
+      }), {
+        status: 200,
+        headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
+      });
+    }
+    return worker.fetch(request, env, ctx);
+  }
+};
+
+export default auditedWorker;
 export { TimingDefenseRoom };
