@@ -1,0 +1,42 @@
+name: Timing Defense v0.40 SHIELD Candidate CI
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v040-shield-armor
+    paths:
+      - '.github/workflows/timing-defense-v040-shield-ci.yml'
+      - 'timing-defense-cloudflare-poc/src/**'
+      - 'timing-defense-cloudflare-poc/wrangler.jsonc'
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Pure capability regression
+        run: node timing-defense-cloudflare-poc/src/monster-capability-v1-selftest.js >/dev/null || true
+      - name: Syntax checks
+        run: |
+          node --check timing-defense-cloudflare-poc/src/v036-entry.js
+          node --check timing-defense-cloudflare-poc/src/v039-entry.js
+          node --check timing-defense-cloudflare-poc/src/v040-shield-entry.js
+          node --check timing-defense-cloudflare-poc/src/v040-shield-selftest.js
+          node --check timing-defense-cloudflare-poc/src/v040-shield-audit-entry.js
+      - name: Run pure capability assertions
+        run: |
+          node --input-type=module <<'NODE'
+          import { runMonsterCapabilityV1SelfTest } from './timing-defense-cloudflare-poc/src/monster-capability-v1-selftest.js';
+          const r=runMonsterCapabilityV1SelfTest();
+          console.log(JSON.stringify(r,null,2));
+          if(!r.ok) process.exit(1);
+          NODE
+      - name: Worker bundle dry-run
+        run: npx --yes wrangler@4.45.0 deploy --dry-run --config timing-defense-cloudflare-poc/wrangler.jsonc
