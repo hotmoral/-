@@ -54,12 +54,15 @@ The Actions workflow now owns automated validation. Do not ask the user to manua
 
 ## Immediate next step — one Samsung Browser N3 presentation/input smoke
 Current watched smoke-candidate HEAD:
-`f9e824eac87cc2fe39d80a75b345ce5aa8f574ce`
+`911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
+
+This exact helper candidate was revalidated by GitHub Actions after deployment and reached FINAL PASS.
 
 Candidate-only helper:
 - query `n3smoke=1`
 - once host combat has a monster, automatically arms humans to Lv6/combo29
 - small non-blocking combat badge says `N3 ARMED · PERFECT 1회`
+- if the armed attempt misses and authoritative combo drops below 29, it automatically re-arms
 - normal game access is unaffected
 
 Use one simulated second human (`peerbot=1`) so no PC is required.
