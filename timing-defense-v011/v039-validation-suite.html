@@ -1,0 +1,17 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.39 N3 validation</title>
+<style>body{font:15px system-ui;background:#101714;color:#e8efea;padding:20px}h1{font-size:26px}.row{padding:14px 16px;margin:10px 0;border-radius:12px;background:#17231d}.pass{color:#9ee6ad}.fail{color:#ff9e9e}pre{white-space:pre-wrap;background:#152019;padding:14px;border-radius:12px;max-width:1100px}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}</style>
+<h1>v0.39 N3 Option B · authoritative validation</h1>
+<div id="v38" class="row">V038 FULL REGRESSION · RUNNING…</div><div id="server" class="row">N3 SERVER · WAITING…</div><div id="client" class="row">N3 CLIENT · WAITING…</div><div id="stress" class="row">N3 4H STRESS · WAITING…</div><div id="final" class="row">FINAL · RUNNING…</div><pre id="out"></pre>
+<script>
+(async()=>{
+ const result={version:'0.39-cf.1-validation-suite',checks:[]};const el=id=>document.getElementById(id);const mark=(id,label,ok,detail)=>{const x=el(id);x.textContent=`${label} · ${ok?'PASS':'FAIL'}${detail?` · ${detail}`:''}`;x.className='row '+(ok?'pass':'fail');result.checks.push({name:label,pass:ok,detail})};
+ async function frame(id,label,src,timeout=140000){const f=document.createElement('iframe');document.body.appendChild(f);f.src=src;const t=performance.now();while(performance.now()-t<timeout){await new Promise(r=>setTimeout(r,180));try{const title=f.contentDocument?.title||'';if(title.startsWith('PASS')){mark(id,label,true,title);f.remove();return true}if(title.startsWith('FAIL')){mark(id,label,false,title);f.remove();return false}}catch{}}mark(id,label,false,'timeout');f.remove();return false}
+ let ok=true;
+ ok=(await frame('v38','V038 FULL REGRESSION','v038-validation-suite.html?fix=cf0391',140000))&&ok;
+ try{const r=await fetch('/api/diagnostics/v039-n3',{cache:'no-store'}),d=await r.json();result.server=d;const p=r.ok&&d.ok;mark('server','N3 SERVER',p,`${d.n3?.passed||0}/${d.n3?.total||0}`);ok=ok&&p}catch(e){mark('server','N3 SERVER',false,String(e));ok=false}
+ ok=(await frame('client','N3 CLIENT','v039-client-selftest.html?v=cf0391',12000))&&ok;
+ ok=(await frame('stress','N3 4H STRESS','v039-n3-4h-stress.html?v=cf0391',45000))&&ok;
+ result.ok=ok;const f=el('final');f.textContent=`FINAL · ${ok?'PASS':'FAIL'}`;f.className='row '+(ok?'pass':'fail');el('out').textContent=JSON.stringify(result,null,2);document.title=`${ok?'PASS':'FAIL'} · v0.39 N3 validation`;
+})();
+</script>
