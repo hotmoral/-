@@ -9,22 +9,13 @@ Primary architecture:
 Public deployment:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 - watched branch: `timing-defense-cloudflare-do-poc`
-- current N3 device-smoke candidate HEAD: `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
+- watched HEAD at v0.39 closure: `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
 
 Last fully closed checkpoint:
-- **v0.38 Slice C / larger-party event kernel FULL PASS**
-- branch `timing-defense-cloudflare-v038-slice-c-pass-20261022`
-- HEAD `cbcddf35443ff901b4a30dd6621da5a984335fb5`
-
-Active candidate:
-- **v0.39 N3 Option B authority**
-- implementation branch `timing-defense-cloudflare-v039-n3-authority`
+- **v0.39 N3 authority FULL PASS**
+- branch `timing-defense-cloudflare-v039-pass-20261022`
+- HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
 - health `0.39-cf.1`
-- automated-live validation **PASS**
-- automation checkpoint `timing-defense-cloudflare-v039-automation-pass-20261022`
-- original automation-validated watched HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
-- current smoke-helper HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a` was revalidated by GitHub Actions and also reached FINAL PASS
-- remaining gate: one Samsung Browser N3 presentation/input smoke only
 
 Preserved checkpoints:
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
@@ -38,10 +29,11 @@ Preserved checkpoints:
 - v0.38 automation PASS: `timing-defense-cloudflare-v038-automation-pass-20261022`
 - v0.38 Slice C full PASS: `timing-defense-cloudflare-v038-slice-c-pass-20261022`
 - v0.39 N3 automation PASS: `timing-defense-cloudflare-v039-automation-pass-20261022`
+- v0.39 N3 full PASS: `timing-defense-cloudflare-v039-pass-20261022`
 
 Read first:
 - `NEXT_WORK.md`
-- `CLOUDFLARE_V039_N3_AUTOMATION_PASS_2026-10-22.md`
+- `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 - `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 - `CLOUDFLARE_V038_SLICE_C_PASS_2026-10-22.md`
 
@@ -55,13 +47,14 @@ Read first:
 - v0.36 N1/N2 + Lv6 authority — FULL PASS
 - v0.37 Stage 3 + BRUTE — FULL PASS
 - v0.38 larger-party/event-delivery kernel — FULL PASS
+- v0.39 N3 combo-milestone authority — FULL PASS
 
 ## v0.36 frozen parity
 N1 exact EXP:
-- NORMAL 8 / GOOD 12 / PERFECT 18 / HEAVY 10 / HEAVY+ 14 / GREAT 18 / SUPER 23 / CRITICAL 28.
+- NORMAL 8 / GOOD 12 / PERFECT 18 / HEAVY 10 / HEAVY+ 14 / GREAT 18 / SUPER 23 / CRITICAL 28
 
 N2:
-`AI damage × (1 + (stage - 1) * 0.035)`.
+`AI damage × (1 + (stage - 1) * 0.035)`
 
 Lv6 authority:
 - Knight +12% damage
@@ -74,9 +67,9 @@ Lv6 authority:
 - 12 enemies / 980 ms
 - GRUNT 44% / RUNNER 34% / BRUTE 22%
 - BRUTE base HP 900 / speed .040 / wall 180 / knock resist .38 / armor 1 / reward 14
-- ordinary Stage 3 BRUTE HP 1247 under existing HP rules
+- ordinary Stage 3 BRUTE HP 1247
 - Stage 3 clear -> Team Shop
-- Stage 4 blocked
+- Stage 4 blocked until the next bounded slice is implemented
 
 ## v0.38 Slice C closure
 Event kernel:
@@ -105,7 +98,7 @@ Party/device coverage:
 
 ---
 
-# N3 — OPTION B APPROVED / FROZEN / v0.39 AUTOMATION PASS
+# v0.39 N3 — FULL PASS
 Frozen contract:
 - combo 5 / 10 / 20 / 30 / every +10 after 30
 - exact raw-equivalent max budgets 60 / 90 / 150 / 210
@@ -116,52 +109,54 @@ Frozen contract:
 - Mage 55/15/15/15
 - deterministic remainder-safe allocation
 - no EXP / charge / combo / ordinary crit / recursive class skill / recursive N3
-- normal armor, kill, kill coin and contribution attribution
-- frozen boss scalars apply
-- generic N3 knockback uses NORMAL-equivalent base
-- Tank retains independently-authoritative knockback identity
+- normal armor / kill / kill coin / contribution attribution
+- frozen boss scalars retained
+- generic N3 knockback uses NORMAL-equivalent semantics
+- Tank retains class/Lv6 knockback identity
 
-Automated-live validation on public Cloudflare via GitHub Actions + Playwright Chromium:
+Automated live validation on deployed Cloudflare through GitHub Actions + Playwright Chromium:
 - V038 FULL REGRESSION PASS
-- N3 SERVER **57/57 PASS**
+- N3 SERVER 57/57 PASS
 - N3 CLIENT PASS
 - N3 4H STRESS PASS
 - FINAL PASS
 
-Four-human stress validates one synchronized Lv6 Rogue combo-30 wave:
-- 4 ordinary hits
-- 4 Lv6 second daggers
-- 20 N3 daggers
+4H stress:
+- four Lv6 Rogues at combo29
+- simultaneous PERFECT
+- 4 ordinary hits + 4 Lv6 second daggers + 20 N3 daggers
 - 28 combat events per observer
 - no event-gap
-- contiguous event IDs
+- contiguous post-floor event IDs
 - all combos -> 30
 
-The first Actions attempt timed out because the Playwright runner passed timeout options in the wrong argument position. This was a runner defect, not an N3/game failure. The corrected runner completed full PASS.
+Samsung Browser presentation/input smoke:
+- user video `Screen_Recording_20261022_074414_Samsung Browser.mp4`
+- frame review confirms coherent Rogue N3 multi-dagger burst
+- no obvious projectile storm, duplicate cascade, flicker, Canvas corruption or blocked controls
+- gameplay continued through later stages/shops without an obvious regression
 
-Current candidate adds only opt-in `?n3smoke=1` presentation support. It automatically arms the host to Lv6/combo29 once combat has a monster. If the first attempt is not PERFECT and authoritative combo falls below 29, it automatically re-arms so the user does not need to restart the room. Normal access is unaffected.
-
-Stage 4 remains blocked until the v0.39 Samsung Browser presentation smoke passes.
+Exact closure report:
+`CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
 ---
 
-# Validation policy going forward
+# Validation policy
 Automated validation should not be delegated to the user when GitHub Actions can execute it.
 
 Default sequence:
-`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
+`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`
 
-Actions evidence retains health response, page body, browser log and screenshot.
+Actions evidence should retain health response, page body, browser log and screenshot.
 
 ---
 
-# Following bounded work
-1. Close v0.39 with one N3 Samsung Browser presentation/input smoke.
-2. Stage 4 SHIELD / armor.
-3. Stage 5–6 boss + FLYER + authoritative Y geometry.
-4. Stage 7–9 mixed-roster stress.
-5. Stage 10 final boss/result.
-6. Lv11/16/21 authority with forced-level deterministic tests.
+# Next bounded work
+1. Stage 4 SHIELD / armor.
+2. Stage 5–6 boss + FLYER + authoritative Y geometry.
+3. Stage 7–9 mixed-roster stress.
+4. Stage 10 final boss/result.
+5. Lv11/16/21 authority with forced-level deterministic tests.
 
 ## Deferred UX
 Heterogeneous phone-size/aspect-ratio responsive safety remains deferred as one shared responsive-safety layer.
