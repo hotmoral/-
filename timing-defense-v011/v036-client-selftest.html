@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.36 client self-test</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}</style>
+<h1>v0.36 client self-test</h1><div id="status">RUNNING…</div><pre id="out"></pre><canvas id="c" width="800" height="450" hidden></canvas>
+<script>
+const W=800,H=450,ctx=document.getElementById('c').getContext('2d');
+const S={playerClass:'rogue',level:6,projectiles:[],pulses:[]};
+window.__TDMP34CF={active:true,slot:1,lastEvent:10,state:null,visualParty:[{roomSlot:2,slot:1,cls:'rogue'}]};
+let drawProjectileCalls=0;
+function classColor(){return'200,200,200'}
+function weaponWorldPos(){return{x:80,y:160}}
+function getMonster(){return null}
+function monsterAimPoint(){return{x:500,y:180}}
+function addParticles(){}
+function addFloat(){}
+function drawProjectiles(){drawProjectileCalls++}
+function draw(){}
+function launchProjectile(owner,slot,cls,tier,damage,heavy=false,now=performance.now()){
+  const primary={owner,slot,cls,tier,damage,heavy,targetId:1};S.projectiles.push(primary);
+  if(owner==='local'&&cls==='rogue'&&S.level>=6)S.projectiles.push({owner:'skill',skillResolve:'rogue',slot,cls,tier:'SKILL',damage:55,targetId:1});
+  return primary;
+}
+</script>
+<script src="v036-lv6-authority.js?v=cf0363"></script>
+<script>
+(async()=>{
+  const checks=[];const add=(name,pass,actual,expected)=>checks.push({name,pass,actual,expected});
+  try{
+    S.projectiles=[];launchProjectile('local',0,'rogue','NORMAL',100,false,performance.now());
+    add('ROGUE_LOCAL_SECONDARY_MUTATOR_REMOVED',S.projectiles.length===1&&S.projectiles[0].owner==='local',S.projectiles.map(p=>p.owner+':'+(p.skillResolve||'primary')),['local:primary']);
+  }catch(e){add('ROGUE_LOCAL_SECONDARY_MUTATOR_REMOVED',false,String(e),'no exception')}
+  try{
+    const mp=window.__TDMP34CF;
+    const resume={run:{id:'R1',events:[]},participants:[]};mp.state=resume;
+    window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:resume,source:'v035-resume'}}));
+    const historical={run:{id:'R1',events:[{id:9,type:'skill',slot:2,skillKind:'rogue-double-dagger',damage:55,targetId:1,targetX:.6,targetY:.4}]},participants:[]};mp.state=historical;
+    let before=drawProjectileCalls;window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:historical,source:'socket'}}));draw(performance.now());
+    add('RESUME_HISTORICAL_SKILL_SUPPRESSED',drawProjectileCalls-before===0,drawProjectileCalls-before,0);
+    const fresh={run:{id:'R1',events:[{id:9,type:'skill',slot:2,skillKind:'rogue-double-dagger',damage:55,targetId:1,targetX:.6,targetY:.4},{id:11,type:'skill',slot:2,skillKind:'rogue-double-dagger',damage:55,targetId:1,targetX:.6,targetY:.4}]},participants:[]};mp.state=fresh;
+    before=drawProjectileCalls;window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:fresh,source:'socket'}}));draw(performance.now());
+    add('FRESH_SKILL_AFTER_FLOOR_RENDERED_ONCE',drawProjectileCalls-before===1,drawProjectileCalls-before,1);
+    before=drawProjectileCalls;window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:fresh,source:'socket'}}));draw(performance.now());
+    add('DUPLICATE_SNAPSHOT_DOES_NOT_DUPLICATE_VFX',drawProjectileCalls-before===1,drawProjectileCalls-before,1);
+  }catch(e){add('EVENT_FLOOR_EXCEPTION',false,String(e?.stack||e),'no exception')}
+  const passed=checks.filter(x=>x.pass).length,result={ok:passed===checks.length,version:'0.36-cf.3-client-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
+  const st=document.getElementById('status');st.textContent=result.ok?'PASS':'FAIL';st.className=result.ok?'pass':'fail';document.getElementById('out').textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.36 client self-test`;
+})();
+</script>
