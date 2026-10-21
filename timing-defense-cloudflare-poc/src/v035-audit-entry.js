@@ -108,13 +108,13 @@ const auditedWorker = {
       return new Response(JSON.stringify({
         ok: true,
         service: "timing-defense-cloudflare-v035-parity",
-        version: "0.35-cf.5",
+        version: "0.35-cf.6",
         transport: "websocket-hibernation",
         authority: "durable-object-event-driven-stage2-shop",
-        presentation: "v034-render-parity-retained-authoritative-human-results",
+        presentation: "v034-render-parity-retained-authoritative-results-cf6-stability",
         locationHint: "apac-ne",
         scope: "room-stage1-shop-stage2-reconnect",
-        fix: "authoritative-participants-contribution-killcoin"
+        fix: "shop-pending-class-stability"
       }), {
         status: 200,
         headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
