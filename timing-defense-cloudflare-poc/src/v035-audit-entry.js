@@ -4,6 +4,7 @@ import worker, { TimingDefenseRoom } from "./v035-entry.js";
 // 1) Legacy AI interval: rogue=1150, tank=1650, all other classes=1400.
 // 2) shop-next publishes room.status=starting + room.startAt.
 // 3) Stage 2 closes with room.status=stage2-clear and the existing stage-clear event grammar.
+// 4) Public run state must expose the authoritative run.stage (v0.33 hardcoded stage: 1).
 
 const baseProcessAt = TimingDefenseRoom.prototype.processAt;
 TimingDefenseRoom.prototype.processAt = function(at) {
@@ -33,6 +34,19 @@ TimingDefenseRoom.prototype.beginStage = function(stage, at) {
   return out;
 };
 
+const baseRunPublic = TimingDefenseRoom.prototype.runPublic;
+TimingDefenseRoom.prototype.runPublic = function(at) {
+  const out = baseRunPublic.call(this, at);
+  const run = this.room?.run;
+  if (out && run) {
+    out.stage = run.stage || 1;
+    out.status = run.status;
+    out.startAt = run.startAt;
+    out.combatAt = run.combatAt;
+  }
+  return out;
+};
+
 const baseCheckEnd = TimingDefenseRoom.prototype.checkEnd;
 TimingDefenseRoom.prototype.checkEnd = function(at) {
   const out = baseCheckEnd.call(this, at);
@@ -52,12 +66,13 @@ const auditedWorker = {
       return new Response(JSON.stringify({
         ok: true,
         service: "timing-defense-cloudflare-v035-parity",
-        version: "0.35-cf.2",
+        version: "0.35-cf.3",
         transport: "websocket-hibernation",
         authority: "durable-object-event-driven-stage2-shop",
-        presentation: "v034-render-parity-retained-stage2-input-fix",
+        presentation: "v034-render-parity-retained-stage2-flow-fix",
         locationHint: "apac-ne",
-        scope: "room-stage1-shop-stage2-reconnect"
+        scope: "room-stage1-shop-stage2-reconnect",
+        fix: "authoritative-public-stage"
       }), {
         status: 200,
         headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
