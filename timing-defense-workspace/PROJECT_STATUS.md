@@ -9,14 +9,15 @@ Primary architecture:
 Public deployment:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 - Cloudflare watched branch: `timing-defense-cloudflare-do-poc`
-- current watched HEAD: `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
-- candidate health version: `0.35-cf.7`
+- exact validated v0.35 HEAD: `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
+- validated health version: `0.35-cf.7`
 
 Closed Cloudflare validation gates:
 1. isolated Durable Objects viability PoC — **PASS**
 2. real-game v0.31/v0.32 waiting-room parity — **PASS**
 3. v0.33 authoritative Stage 1 parity — **PASS**
 4. v0.34 render smoothing / remote projectile parity — **PASS**
+5. v0.35 reconnect / Team Shop / Stage 2 parity — **PASS**
 
 Preserved migration checkpoints:
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
@@ -24,16 +25,24 @@ Preserved migration checkpoints:
 - v0.33 Stage 1 PASS: `timing-defense-cloudflare-v033-pass-20261021`
 - v0.34 render PASS: `timing-defense-cloudflare-v034-pass-20261021`
 - v0.35 cf.3 Stage 2 flow PASS: `timing-defense-cloudflare-v035-cf3-stage2-flow-pass-20261021`
+- v0.35 full PASS: `timing-defense-cloudflare-v035-pass-20261021`
+
+Read:
+- `CLOUDFLARE_V035_PASS_2026-10-21.md`
+- `CLOUDFLARE_V034_RENDER_PASS_2026-10-21.md`
+- `CLOUDFLARE_V033_STAGE1_PASS_2026-10-21.md`
+- `CLOUDFLARE_V031_V032_PARITY_PASS_2026-10-21.md`
+- `CLOUDFLARE_DO_POC_PASS_2026-10-21.md`
 
 ## Legacy baseline
 - Repository: `hotmoral/-`
 - live source branch: `timing-defense-live-v011`
 - planning/status branch: `timing-defense-workspace`
 - latest implemented legacy prototype: **v0.35**
-- last Android + PC device-PASS legacy prototype: **v0.34**
+- last Android + PC device-PASS legacy prototype before migration: **v0.34**
 - last verified legacy live HEAD before migration: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
 
-Legacy v0.35 passed local/API integration for reconnect, Team Shop and Stage 2, but was not device-PASS on Render because both services were suspended for Monthly Quota Exceeded. That outage remains hosting-related, not gameplay-regression evidence.
+Legacy v0.35 passed local/API integration for reconnect, Team Shop and Stage 2, but could not receive Render device validation because both Render services were suspended for Monthly Quota Exceeded. That outage remains hosting-related, not gameplay-regression evidence.
 
 ---
 
@@ -55,7 +64,7 @@ Validated Android + PC:
 Validated Android + PC:
 - same authoritative Stage 1 world,
 - same monster HP/deaths,
-- cross-device attacks affect same monster state,
+- cross-device attacks affect the same monster state,
 - same BASE HP,
 - same EXP / charge,
 - shared Stage 1 clear,
@@ -66,30 +75,27 @@ Validated Android + PC:
 - remote human projectile visible,
 - local projectile immediate visual impact,
 - server HP/EXP/coin/kills authority retained,
+- no duplicate presentation damage,
 - monster smoothing acceptable.
 
-## v0.35 — DEVICE VALIDATION PARTIAL PASS / cf.7 visual candidate
-Confirmed on Android + PC:
+## v0.35 — PASS
+Validated Android + PC through cf.7:
 - Stage 1 -> shared Team Shop,
-- shop purchase and authoritative rank/coin update,
-- purchase button immediate `처리중…` feedback and duplicate-tap blocking — **PASS**,
-- both-human shop READY,
+- authoritative purchase / coin / rank flow,
+- immediate `처리중…` feedback with duplicate-tap blocking while server authority remains intact,
+- both-human shop READY gate,
 - host NEXT STAGE,
 - synchronized Stage 2 transition,
 - `STAGE 2 / READY / START` presentation,
-- Timing Square and direct tap attacks active,
-- remote projectile visibility,
+- Timing Square and direct timing input active,
+- authoritative Stage 2 GRUNT/RUNNER combat,
 - bounded Stage 2 clear,
-- authoritative Stage 2 result board with real human/AI participants and populated KILLS / DMG / KILL COIN / LV / MAX COMBO — **PASS on supplied recording**,
-- reconnect validated by user — **PASS**.
+- authoritative result board with actual human/AI participants and populated KILLS / DMG / KILL COIN / LV / MAX COMBO,
+- required reconnect gate user-confirmed PASS,
+- Rogue CHARGE no longer leaks Knight/yellow palette or the reported flicker,
+- remote human timing attacks now use the normal class timing-projectile visual family rather than the passive/automatic-shot visual family.
 
-Remaining visual defects identified from cf.6 recording:
-1. Rogue Timing Square CHARGE intermittently leaked Knight/yellow palette and flickered.
-   - root cause: inherited v0.24 Rogue Timing Square wrapper temporarily set `S.playerClass='knight'` while drawing the base square.
-2. Remote human timing attacks used the same simplified remote projectile renderer as passive/automatic attacks.
-   - required contract: human timing attack projectile should use the same class/tier visual language whether local or remote; passive/automatic attack may remain visually distinct.
-
-cf.7 candidate fixes exactly these two presentation defects. No combat-balance coefficients or server authority were changed.
+No numerical balance values were intentionally changed during the v0.35 closure work.
 
 ---
 
@@ -117,29 +123,27 @@ Numerical change workflow remains:
 ---
 
 # Immediate next boundary
-**Validate cf.7 visual parity only.**
+**Cloudflare v0.35 is closed. Do not reopen it without a regression.**
 
-Required short multiplayer test:
-1. Rogue local player: CHARGE dots/text/square must not leak yellow Knight palette or flicker incorrectly.
-2. Remote human timing attacks must visually match the normal class timing projectile family rather than passive/automatic shot visuals.
+Next work must begin as a separately scoped preflight for:
+1. Stage 3–10 multiplayer generalization,
+2. larger-party validation,
+3. Lv6+ multiplayer skill consequence authority.
 
-Already closed; do not retest unless regression appears:
-- Team Shop pending UX,
-- reconnect,
-- Stage 2 transition/input,
-- Stage 2 result board.
+Before implementation, inspect existing stage-plan and skill contracts and define which consequences remain presentation-only vs require Durable Object authority. Do not make numerical balance changes as part of migration/generalization.
 
-If cf.7 passes, close Cloudflare v0.35, create preserved v0.35 PASS checkpoint, sync status/handoff, then proceed to the next migration boundary. Do not start Stage 3–10 or numerical changes before closure.
+Deferred UX item:
+- heterogeneous phone-size/aspect-ratio responsive safety should later be reviewed as a shared responsive-safety layer rather than per-device one-off patches.
 
 ## Current truth boundary
 Safe claims:
-- Cloudflare PoC, v0.31/v0.32, v0.33 and v0.34 are device-PASS,
-- v0.35 Stage 1/shop/Stage 2/clear/result/reconnect core flow is device-confirmed,
-- cf.7 visual parity patch is deployed for device validation.
+- Cloudflare PoC through v0.35 are public/device-PASS for their scoped gates,
+- v0.35 exact validated deployment is preserved,
+- Render quota incident is confirmed.
 
-Do not claim:
-- full Cloudflare v0.35 PASS until cf.7 visual checks pass,
-- Stage 3–10 multiplayer,
+Do not claim yet:
+- Stage 3–10 multiplayer parity,
 - complete Lv6+ multiplayer skill authority,
-- final persistence/security/shop/shared-wall semantics,
+- final production persistence/security/anti-cheat architecture,
+- final shop/shared-wall semantics beyond the validated v0.35 slice,
 - final numerical balance.
