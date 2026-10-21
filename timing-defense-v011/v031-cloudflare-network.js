@@ -166,7 +166,7 @@
         render();setMsg(`P${slot} 세션 연결`,true);return;
       }
       if(d.type==='state'){state=d.state;render();return}
-      if(d.type==='error'){setMsg(`SERVER ERROR: ${d.error}`,false)}
+      if(d.type==='error')setMsg(`SERVER ERROR: ${d.error}`,false);
     };
     current.onerror=()=>{if(epoch===socketEpoch)setMsg('WebSocket 오류',false)};
     current.onclose=e=>{
@@ -243,5 +243,8 @@
   if(inviteCode){
     const team=root.querySelector('[data-mode="team"]');if(team&&!team.classList.contains('on'))team.click();
     const link=root.querySelector('[data-method="link"]');if(link&&!link.classList.contains('on'))link.click();
+    if(localStorage.getItem(sessionKey(inviteCode))){
+      setTimeout(()=>document.getElementById('v022Start')?.click(),0);
+    }
   }
 })();
