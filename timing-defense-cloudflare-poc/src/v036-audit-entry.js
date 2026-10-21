@@ -1,4 +1,4 @@
-import worker, { TimingDefenseRoom } from "./v036-entry.js";
+import worker, { TimingDefenseRoom } from "./v036-cf2-entry.js";
 import { runV036SelfTest } from "./v036-selftest.js";
 
 function json(data,status=200){
@@ -15,13 +15,14 @@ const auditedWorker={
         version:"0.36-cf.3",
         transport:"websocket-hibernation",
         authority:"durable-object-stage1-stage2-lv6",
-        presentation:"v035-pass-plus-lv6-authoritative-secondary-events",
+        presentation:"authoritative-secondary-vfx-reconnect-floor-hardened",
         validation:"deterministic-server-client-multiclient-harness",
         locationHint:"apac-ne",
         scope:"stage1-stage2-n1-n2-lv6-authority",
         n1:"legacy-heavy-xp-restored",
         n2:"legacy-ai-stage-damage-scaling-restored",
-        n3:"deferred-explicit-discussion-required"
+        n3:"deferred-explicit-discussion-required",
+        fix:"rogue-local-secondary-mutation-blocked-secondary-vfx-event-floor"
       });
     }
     if(request.method==="GET"&&url.pathname==="/api/diagnostics/v036-slice-a"){
