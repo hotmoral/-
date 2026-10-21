@@ -2,11 +2,6 @@ name: Linkline A2 Freeze Private Tag
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/linkline-a2-freeze-private-tag.yml"
 
 permissions:
   contents: read
@@ -69,5 +64,3 @@ jobs:
           echo "verified_main_sha=${main_sha}"
           echo "verified_tag=${TAG_NAME}"
           echo "verified_tag_sha=${verify_sha}"
-
-# registration nudge
