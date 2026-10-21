@@ -16,41 +16,64 @@ Exact v0.37 Slice B full-PASS checkpoint:
 - HEAD `08af6e1e9f399ad13369990dcc452f012ddda1fa`
 
 Read:
+- `N3_COMBO_MILESTONE_REVIEW_2026-10-21.md`
 - `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
 - `PROJECT_STATUS.md`
 - `SESSION_HANDOFF.md`
 - `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
 
-## Numerical decisions
+## Numerical decisions already closed
 - N1 exact legacy EXP — **PASS / frozen for migration parity**.
 - N2 exact AI stage multiplier `1 + (stage - 1) * 0.035` — **PASS / frozen for migration parity**.
-- N3 combo-milestone extra attacks — **DEFERRED / MANDATORY FUTURE DISCUSSION**. Do not silently port, remove, freeze or rebalance.
 
-## Closed Slice B — v0.37 / Stage 3
-Automated validation:
-- SERVER 21/21 PASS
-- v0.36 CLIENT REGRESSION 4/4 PASS
-- STAGE3 CLIENT 6/6 PASS
-- MULTICLIENT 10/10 PASS
-- FINAL PASS
+## Active decision gate — N3 combo milestone attacks
+Status: **EXACT LEGACY RULE RECOVERED / USER PRODUCT DECISION REQUIRED**
 
-Device smoke:
-- Samsung Browser single-device peer harness PASS,
-- Stage 1 -> Shop -> Stage 2 -> Shop -> Stage 3,
-- BRUTE rendered/moved correctly with existing large BRUTE visual,
-- timing input usable,
-- Stage 3 clear -> Team Shop,
-- Stage 4 locked.
+Do not implement Slice C event delivery or Stage 4 until the N3 product direction is explicitly chosen, because N3 changes the required worst-case event-delivery capacity.
 
-Exact Stage 3 contract now closed:
-- 12 enemies / 980 ms,
-- GRUNT 44% / RUNNER 34% / BRUTE 22%,
-- BRUTE base HP 900 / speed .040 / wall 180 / knock resist .38 / armor 1 / reward 14,
-- Stage 3 ordinary BRUTE HP 1247 under existing approved HP rules.
+Exact recovered milestone grammar:
+- combo 5 -> raw-equivalent budget 60,
+- combo 10 -> 90,
+- combo 20 -> 150,
+- combo 30 -> 210,
+- combo 40/50/60/... -> repeat 210,
+- combo count itself remains unbounded,
+- persistent 5/8/12/15% combo multiplier is a separate already-existing mechanic.
 
-## Active next slice — Slice C / larger-party baseline
-Status: **READY FOR PREFLIGHT + AUTOMATION EXPANSION**
+Legacy class burst shapes:
+- Rogue: 2 / 3 / 4 / 5 daggers,
+- Knight: 67% primary + 33% one secondary,
+- Tank: 60% primary + up to two 20% nearby hits,
+- Archer: 70% primary + 30% one strict-line secondary,
+- Mage: 55% primary + up to three 15% nearby hits.
 
+N3 never grants EXP/charge/combo/crit and does not recursively activate the normal skill chain. Player damage/kills/kill coin remain normal consequences of the milestone attack.
+
+Important ambiguity:
+- legacy implementation independently rounds each sub-hit, producing small max-budget overshoot for some classes,
+- milestone display tier also indirectly escalates knockback,
+- these are implementation consequences and were not clearly balance-frozen by V8.
+
+Current recommendation:
+- **Option B / cleaned N3 contract**,
+- keep the mastery system, trigger grammar, budgets and class geometry,
+- normalize theoretical max damage to exact 60/90/150/210,
+- explicitly define N3 knockback instead of inheriting accidental tier-based escalation,
+- preserve no-EXP/no-charge/no-combo/no-crit/no-recursive-proc semantics,
+- retain armor, kill contribution, coin, and frozen boss scalars.
+
+See `N3_COMBO_MILESTONE_REVIEW_2026-10-21.md` for Option A/B/C details.
+
+## Event-delivery consequence already established
+Current server retains 48 recent events internally but public snapshots expose only the last 24.
+
+N3 can exceed 24 events in a legitimate synchronized 4-human burst with the already validated Lv6 skills:
+- 4 Lv6 Rogues at a 30+ milestone: up to 28 combat-hit events before passive fire,
+- 4 dense-target Lv6 Mages at a milestone: up to 32 combat-hit events before passive fire.
+
+Therefore if N3 is retained, Slice C must replace the fixed 24-event-tail assumption with loss-resistant event delivery before N3 is enabled.
+
+## Next implementation slice after N3 decision — Slice C / larger-party baseline
 Do **not** start Stage 4 yet.
 
 Target party combinations:
@@ -59,38 +82,31 @@ Target party combinations:
 - 2 humans + 2 AI,
 - 3 humans + 1 AI.
 
-### Required audit before implementation
+Required audit/implementation:
 1. Verify fixed P1–P4 slot ownership under all supported mixes.
-2. Verify host identity does not drift after reconnect or simulated peers.
+2. Verify host identity under reconnect and simulated peers.
 3. Verify READY/START semantics with 3–4 humans.
-4. Verify Team Shop READY/NEXT with 3–4 humans and human+AI mixes.
-5. Audit AI FILL occupancy semantics; do not silently introduce dynamic AI displacement.
-6. Audit result-board participant ordering/count for 3–4 total participants.
-7. Audit event delivery volume:
-   - human timing events,
-   - passive events,
-   - AI events,
-   - Lv6 secondary events,
-   - reconnect event-floor suppression.
-8. Determine whether the current fixed event tail remains loss-safe at four-participant concurrency.
+4. Verify Team Shop READY/NEXT with larger parties and human+AI mixes.
+5. Preserve current fixed AI FILL semantics unless separately decided.
+6. Verify result-board participant ordering/count.
+7. Generalize event delivery so each client can obtain all events after its event floor without depending on only `events.slice(-24)`.
+8. Preserve reconnect historical-event suppression and server damage authority.
+9. Expand 3/4-client live automation before manual play.
+10. If N3 Option A/B is approved, size and stress-test the delivery kernel against its worst-case event burst even before N3 itself is enabled.
 
 ### Automation requirement
-Expand the multi-client harness before any manual repeated play.
-
-The harness should cover at minimum:
+Cover at minimum:
 - 3H,
 - 4H,
 - 2H+2AI,
 - 3H+1AI,
 - READY -> START,
 - synchronized Stage 1 combat,
-- at least one reconnect,
+- reconnect,
 - Team Shop READY/NEXT,
 - Stage 2 entry,
-- result/participant consistency,
-- event-ID monotonicity and no silent event loss across the tested rate.
-
-If event delivery is not demonstrably loss-safe, fix the delivery kernel before Stage 4 rather than compensating in client damage authority.
+- participant/result consistency,
+- event-ID monotonicity and no silent event loss at the designed maximum burst.
 
 ### Manual validation policy
 After automation passes:
@@ -99,8 +115,15 @@ After automation passes:
 - do not ask for repetitive manual party-size or exact-number verification already covered by automation.
 
 ## Following slices
+### N3 authority slice, if retained
+After Slice C event kernel is hardened:
+- server-authoritative milestone trigger,
+- forced combo 5/10/20/30/40 tests for all five classes,
+- synchronized four-player milestone stress,
+- final device presentation smoke.
+
 ### Stage 4 — SHIELD / armor
-Only after Slice C closes.
+Only after Slice C closes and the N3 placement decision is respected.
 
 ### Stage 5–6
 - checkpoint boss,
