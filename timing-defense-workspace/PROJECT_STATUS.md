@@ -33,6 +33,7 @@ Preserved checkpoints:
 
 Read first:
 - `NEXT_WORK.md`
+- `MONSTER_CAPABILITY_CONTRACT_V1.md`
 - `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 - `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 - `CLOUDFLARE_V038_SLICE_C_PASS_2026-10-22.md`
@@ -63,13 +64,14 @@ Lv6 authority:
 - Archer up to two strict-line 52% secondary hits
 - Mage up to three nearby 50% splash hits
 
-## v0.37 Stage 3 frozen contract
+## v0.37 Stage 3 regression fixture
 - 12 enemies / 980 ms
 - GRUNT 44% / RUNNER 34% / BRUTE 22%
 - BRUTE base HP 900 / speed .040 / wall 180 / knock resist .38 / armor 1 / reward 14
 - ordinary Stage 3 BRUTE HP 1247
 - Stage 3 clear -> Team Shop
-- Stage 4 blocked until the next bounded slice is implemented
+
+These Stage 1–3 recipes remain useful as regression fixtures for the current kernel. They are **not** a commitment that the final approximately 50-stage campaign will preserve these encounter recipes.
 
 ## v0.38 Slice C closure
 Event kernel:
@@ -121,15 +123,6 @@ Automated live validation on deployed Cloudflare through GitHub Actions + Playwr
 - N3 4H STRESS PASS
 - FINAL PASS
 
-4H stress:
-- four Lv6 Rogues at combo29
-- simultaneous PERFECT
-- 4 ordinary hits + 4 Lv6 second daggers + 20 N3 daggers
-- 28 combat events per observer
-- no event-gap
-- contiguous post-floor event IDs
-- all combos -> 30
-
 Samsung Browser presentation/input smoke:
 - user video `Screen_Recording_20261022_074414_Samsung Browser.mp4`
 - frame review confirms coherent Rogue N3 multi-dagger burst
@@ -141,22 +134,67 @@ Exact closure report:
 
 ---
 
+# Campaign / monster direction — revised after v0.39
+
+Legacy Stage 4 -> Stage 10 reconstruction is **stopped** as a production path.
+
+Reason:
+- the intended production campaign is a broader approximately 50-stage structure,
+- tier identities and S/E/X pressure composition will be re-authored,
+- 2/3/4-player encounter composition will be calibrated later,
+- therefore porting every legacy Stage 4–10 recipe before that redesign would create avoidable rework.
+
+The previously created branch `timing-defense-cloudflare-v040-stage4-shield` is **preflight-only / not an approved production direction**.
+
+## Monster Capability Contract V1 — STRUCTURE FROZEN
+Canonical document:
+`MONSTER_CAPABILITY_CONTRACT_V1.md`
+
+Ordinary roster:
+1. GRUNT — baseline/reference
+2. RUNNER — sustained speed
+3. BRUTE — raw durability + knock resistance
+4. SHIELD — armor mitigation
+5. FLYER — Y/spatial geometry
+6. CHARGER — telegraphed interruptible burst dash
+7. SPLITTER — death -> two non-recursive children
+8. SUPPORTER — non-stacking movement-speed aura only
+9. SIEGER — standoff + repeated telegraphed wall attack
+
+Bosses are separate capability compositions, not a tenth ordinary archetype.
+
+Production numerical values for this nine-archetype roster are **not frozen**. Legacy values are reference/provisional anchors only until final campaign calibration explicitly approves production values.
+
+---
+
+# Active next bounded work
+
+Build the **Monster Capability Layer** independently of final stage numbering.
+
+First create a deterministic capability sandbox/harness, then validate mechanics in this order:
+1. SHIELD / common armor layer
+2. FLYER / authoritative Y geometry
+3. CHARGER state machine
+4. SPLITTER child-spawn kernel
+5. SUPPORTER dynamic movement-speed aura
+6. SIEGER repeated wall-attack kernel
+
+All provisional tuning used for the harness must be marked:
+**PROVISIONAL — NOT BALANCE FROZEN**.
+
+After capability completion:
+- finish player-skill authority required for calibration,
+- build the real approximately 50-stage tier / S-E-X authoring model,
+- run large deterministic simulation,
+- classify suspicious values/stages,
+- discuss before changes,
+- explicitly freeze production monster/stage numbers.
+
 # Validation policy
 Automated validation should not be delegated to the user when GitHub Actions can execute it.
 
 Default sequence:
 `code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`
-
-Actions evidence should retain health response, page body, browser log and screenshot.
-
----
-
-# Next bounded work
-1. Stage 4 SHIELD / armor.
-2. Stage 5–6 boss + FLYER + authoritative Y geometry.
-3. Stage 7–9 mixed-roster stress.
-4. Stage 10 final boss/result.
-5. Lv11/16/21 authority with forced-level deterministic tests.
 
 ## Deferred UX
 Heterogeneous phone-size/aspect-ratio responsive safety remains deferred as one shared responsive-safety layer.
