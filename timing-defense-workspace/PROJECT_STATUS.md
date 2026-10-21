@@ -14,25 +14,26 @@ Closed Cloudflare validation gates:
 1. isolated Durable Objects viability PoC — **PASS**
 2. real-game v0.31/v0.32 waiting-room parity — **PASS**
 3. v0.33 authoritative Stage 1 parity — **PASS**
+4. v0.34 render smoothing / remote projectile parity — **PASS**
 
 Read:
 - `CLOUDFLARE_DO_MIGRATION_DECISION_2026-10-21.md`
 - `CLOUDFLARE_DO_POC_PASS_2026-10-21.md`
 - `CLOUDFLARE_V031_V032_PARITY_PASS_2026-10-21.md`
 - `CLOUDFLARE_V033_STAGE1_PASS_2026-10-21.md`
+- `CLOUDFLARE_V034_RENDER_PASS_2026-10-21.md`
 
-Current migration candidate:
-- **v0.34 render smoothing / remote projectile parity**
-- branch: `timing-defense-cloudflare-v034-render`
+Validated v0.34 deployment:
+- implementation branch: `timing-defense-cloudflare-v034-render`
 - implementation commit: `c78765b2c29b1ab0812e64c6de7a8ca3b379c2cc`
-- watched deployment trigger HEAD: `adc6709d51e9b076498c7c26e172478d24d9f797`
-- device validation: **PENDING**
-- candidate report: `CLOUDFLARE_V034_RENDER_CANDIDATE_2026-10-21.md`
+- deployment trigger HEAD: `adc6709d51e9b076498c7c26e172478d24d9f797`
+- preserved checkpoint: `timing-defense-cloudflare-v034-pass-20261021`
 
 Preserved migration checkpoints:
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
 - v0.31/v0.32 PASS: `timing-defense-cloudflare-v031-v032-pass-20261021`
 - v0.33 Stage 1 PASS: `timing-defense-cloudflare-v033-pass-20261021`
+- v0.34 render PASS: `timing-defense-cloudflare-v034-pass-20261021`
 
 ## Legacy baseline
 - Repository: `hotmoral/-`
@@ -70,21 +71,14 @@ Validated Android + PC:
 - shared Stage 1 clear,
 - no duplicate local spawn/wall-damage authority observed.
 
-Presentation observations separated from v0.33 authority PASS:
-- remote human projectile was not yet visible,
-- local projectile impact presentation lagged slightly behind projectile arrival because confirmation presentation waited for the server round trip.
-
-Those observations define the current v0.34 slice.
-
-## v0.34 candidate — device validation pending
-Server combat authority is unchanged. Candidate changes only presentation:
-- monster object reconciliation by server id,
-- smooth time-derived target following,
-- snap on large discontinuity,
-- remote human / AI / passive projectile VFX synthesized from authoritative events,
-- local projectile-arrival visual hit reaction immediately,
-- predicted local presentation never mutates HP/EXP/coin/kills,
-- confirmed local event suppresses duplicate flash/particle.
+## v0.34 render parity — PASS
+Validated Android + PC:
+- v0.33 authoritative state remained synchronized,
+- remote human projectile VFX is visible,
+- local projectile arrival produces immediate hit response,
+- no duplicate local gameplay damage observed,
+- server authority for HP / EXP / coin / kills remains unchanged,
+- monster presentation is acceptably smooth.
 
 ---
 
@@ -112,31 +106,35 @@ Numerical change workflow remains:
 ---
 
 # Immediate next boundary
-**Validate Cloudflare v0.34 render parity on Android + PC.**
+**Cloudflare v0.35 reconnect / Team Shop / Stage 2 parity migration.**
 
-Required checks:
-1. v0.33 authoritative HP / BASE HP / EXP / charge / clear stay identical,
-2. monster movement is smooth with no major jitter/regression,
-3. remote human projectile is visible,
-4. AI/passive projectile presentation does not duplicate damage,
-5. local projectile produces immediate visual impact at arrival,
-6. no duplicate local hit flash / damage number,
-7. room/READY/START remains intact.
+Required scope:
+1. preserve v0.31-v0.34 validated behavior,
+2. port same-session/reload recovery,
+3. port Stage 1 -> Team Shop transition,
+4. port authoritative coin / ranks / purchases,
+5. port purchase READY lock/unlock,
+6. port all-human shop READY gate,
+7. port host-only NEXT STAGE,
+8. port synchronized future Stage 2 start,
+9. port Stage 2 authoritative GRUNT/RUNNER combat,
+10. port bounded Stage 2 clear,
+11. validate reconnect in Stage 1 / Team Shop / Stage 2,
+12. make no numerical balance changes.
 
-Only after v0.34 device PASS may migration proceed to v0.35 reconnect / Team Shop / Stage 2 parity.
+Only after v0.35 device PASS may migration proceed to Stage 3–10, larger party validation and Lv6+ multiplayer authority.
 
 ## Current truth boundary
 Safe claims:
 - Cloudflare PoC is public two-client device-PASS,
 - Cloudflare v0.31/v0.32 waiting-room parity is device-PASS,
 - Cloudflare v0.33 authoritative Stage 1 parity is device-PASS,
-- legacy v0.34 smoothing/projectile behavior was device-PASS,
+- Cloudflare v0.34 render smoothing / remote projectile parity is device-PASS,
 - legacy v0.35 reconnect/shop/Stage-2 code exists and passed local/API integration checks,
 - Render quota incident is confirmed.
 
 Do not claim:
-- Cloudflare v0.34 render parity PASS yet,
-- Cloudflare v0.35 parity,
+- Cloudflare v0.35 parity yet,
 - Stage 3–10 multiplayer,
 - complete Lv6+ multiplayer skill authority,
 - final persistence/security/shop/shared-wall semantics,
