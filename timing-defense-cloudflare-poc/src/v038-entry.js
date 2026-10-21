@@ -9,20 +9,28 @@ function json(data,status=200){
 }
 function streamMeta(run){
   if(!run)return{oldestId:0,latestId:0,retained:0,historyLimit:EVENT_HISTORY_LIMIT};
-  const events=run.events||[];
+  const events=Array.isArray(run.events)?run.events:[];
+  const next=Number.isFinite(Number(run.nextEventId))?Number(run.nextEventId):((events.at(-1)?.id||0)+1);
   return{
-    oldestId:events.length?(Number(events[0].id)||0):Math.max(0,(Number(run.nextEventId)||1)-1),
-    latestId:Math.max(0,(Number(run.nextEventId)||1)-1),
+    oldestId:events.length?(Number(events[0].id)||0):Math.max(0,next-1),
+    latestId:Math.max(0,next-1),
     retained:events.length,
     historyLimit:EVENT_HISTORY_LIMIT
   };
 }
 
 // Replace the legacy 48-event ring with a larger authoritative history.
-// IDs remain strictly monotonic within a run.
+// IDs remain strictly monotonic within a run. The normalization is intentional:
+// production runs already initialize events/nextEventId, while deterministic
+// regression harnesses may construct a minimal run without those fields.
 TimingDefenseRoom.prototype.event=function(data,at){
   const run=this.room?.run;
   if(!run)return null;
+  if(!Array.isArray(run.events))run.events=[];
+  if(!Number.isFinite(Number(run.nextEventId))){
+    const lastId=Number(run.events.at(-1)?.id)||0;
+    run.nextEventId=lastId+1;
+  }
   const event={id:run.nextEventId++,...data,at};
   run.events.push(event);
   if(run.events.length>EVENT_HISTORY_LIMIT)run.events.splice(0,run.events.length-EVENT_HISTORY_LIMIT);
@@ -96,13 +104,14 @@ const worker={
       return json({
         ok:true,
         service:"timing-defense-cloudflare-v038-party-event-kernel",
-        version:"0.38-cf.1",
+        version:"0.38-cf.2",
         transport:"websocket-hibernation-per-socket-event-cursor",
         authority:"durable-object-stage1-stage3-lv6",
         eventDelivery:{history:EVENT_HISTORY_LIMIT,mode:"per-socket-monotonic-batch",gap:"explicit"},
         n3:"option-b-frozen-not-yet-enabled",
         stage4:"blocked",
-        scope:"slice-c-event-kernel-larger-party-validation"
+        scope:"slice-c-event-kernel-larger-party-validation",
+        fix:"event-initialization-normalization"
       });
     }
     if(request.method==="GET"&&url.pathname==="/"){
