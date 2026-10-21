@@ -36,7 +36,7 @@ export async function runV037SelfTest(RoomClass){
     const due=a.nextDueAt();
     for(let i=0;i<4;i++)a.spawnStage3(a.room.run.combatAt+i*980);
     const types=a.room.run.monsters.map(m=>m.type),hps=a.room.run.monsters.map(m=>m.hp);
-    checks.push(pack('STAGE3_PLAN_AND_THRESHOLDS',a.room.run.stageTarget===12&&due===a.room.run.combatAt&&types.join(',')==='grunt,runner,runner,brute'&&hps.join(',')==='444,229,229,1247',{target:a.room.run.stageTarget,gap:980,nextDue:due,combatAt:a.room.run.combatAt,types,hps},{target:12,gap:980,types:['grunt','runner','runner','brute'],hps:[444,229,229,1247]}));
+    checks.push(pack('STAGE3_PLAN_AND_THRESHOLDS',a.room.run.stageTarget===12&&due===a.room.run.startAt&&types.join(',')==='grunt,runner,runner,brute'&&hps.join(',')==='444,229,229,1247',{target:a.room.run.stageTarget,gap:980,nextDue:due,startAt:a.room.run.startAt,combatAt:a.room.run.combatAt,types,hps},{target:12,gap:980,firstDue:'startAt',types:['grunt','runner','runner','brute'],hps:[444,229,229,1247]}));
   }catch(e){checks.push(pack('STAGE3_PLAN_EXCEPTION',false,String(e?.stack||e),'no exception'))}
 
   try{
