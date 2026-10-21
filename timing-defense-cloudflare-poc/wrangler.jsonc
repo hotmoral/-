@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "timing-defense-do-poc",
-  "main": "src/v036-cf2-entry.js",
+  "main": "src/v036-audit-entry.js",
   "compatibility_date": "2026-10-20",
   "durable_objects": {
     "bindings": [
