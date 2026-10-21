@@ -4,9 +4,23 @@
   const mp=window.__TDMP34CF;
   if(!mp)return;
 
-  let floor=Number(mp.lastEvent)||0;
+  let floor=Number(mp.lastEvent)||0,runId='';
   const shots=[];
   const bursts=[];
+
+  // Network authority rule: legacy v0.16 creates Rogue's second dagger locally.
+  // Remove only that newly-created network-mode secondary projectile so it cannot
+  // execute local visualImpact() and transiently mutate HP/kills/coin. The server
+  // authoritative skill event below drives the secondary projectile presentation.
+  const priorLaunchProjectile=launchProjectile;
+  launchProjectile=function(owner,slot,cls,tier,damage,heavy=false,now=performance.now()){
+    const before=Array.isArray(S.projectiles)?S.projectiles.length:0;
+    const out=priorLaunchProjectile(owner,slot,cls,tier,damage,heavy,now);
+    if(mp.active&&owner==='local'&&cls==='rogue'&&S.level>=6&&Array.isArray(S.projectiles)){
+      S.projectiles=S.projectiles.filter((p,i)=>i<before||!(p?.owner==='skill'&&p?.skillResolve==='rogue'));
+    }
+    return out;
+  };
 
   function actor(roomSlot){
     if(roomSlot===mp.slot)return{local:true,slot:0,cls:S.playerClass};
@@ -30,9 +44,6 @@
   }
   function queueSkill(e){
     const a=actor(e.slot);if(!a)return;
-    // Rogue already predicts its delayed second dagger locally via the legacy v0.16
-    // projectile path. Do not duplicate that local visual; remote clients still need it.
-    if(a.local&&e.skillKind==='rogue-double-dagger')return;
     const to=targetPoint(e),now=performance.now();
     if(e.skillKind==='rogue-double-dagger'){
       const from=weaponWorldPos(a.slot,'rogue');
@@ -44,8 +55,20 @@
       bursts.push({id:e.id,cls:'mage',x:to.x,y:to.y,started:now,life:260,damage:e.damage||0,impacted:false});
     }
   }
-  function process(st){
-    const events=st?.run?.events||[];
+  function process(st,source=''){
+    const run=st?.run,id=run?.id||'';
+    if(id&&id!==runId){
+      runId=id;shots.length=0;bursts.length=0;
+      floor=source==='v035-resume'?Math.max(Number(mp.lastEvent)||0,0):0;
+    }
+    // v0.35 resume supplies an eventFloor and an intentionally empty event list.
+    // Adopt that floor here as well so the next normal snapshot cannot replay
+    // historical Lv6 secondary VFX.
+    if(source==='v035-resume'){
+      floor=Math.max(floor,Number(mp.lastEvent)||0);
+      return;
+    }
+    const events=run?.events||[];
     let max=floor;
     for(const e of events){
       max=Math.max(max,Number(e.id)||0);
@@ -54,7 +77,7 @@
     }
     floor=max;
   }
-  window.addEventListener('tdcf:state',e=>process(e.detail?.state));
+  window.addEventListener('tdcf:state',e=>process(e.detail?.state,e.detail?.source||''));
 
   function drawSkillShots(){
     const now=performance.now();
