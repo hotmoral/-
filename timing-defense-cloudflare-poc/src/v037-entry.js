@@ -127,7 +127,7 @@ TimingDefenseRoom.prototype.beginStage=function(stage,at){
 
 function processStage3WallHits(room,at){
   const run=room.room?.run;
-  if(!run||run.stage!==3||run.status!=="combat")return false;
+  if(!run||run.stage!==3||at<run.combatAt||!["stage-starting","intro","combat"].includes(run.status))return false;
   const due=[...run.monsters]
     .map(monster=>({monster,hitAt:room.wallAt(monster)}))
     .filter(x=>x.hitAt<=at+.5)
@@ -135,7 +135,7 @@ function processStage3WallHits(room,at){
   if(!due.length)return false;
   let changed=false;
   for(const {monster,hitAt} of due){
-    if(run.status!=="combat")break;
+    if(run.status==="gameover")break;
     if(!run.monsters.some(m=>m.id===monster.id))continue;
     const exactAt=Math.min(at,hitAt);
     room.materialize(monster,exactAt);
