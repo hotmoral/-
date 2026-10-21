@@ -9,23 +9,17 @@ Updated: 2026-10-21 KST
 4. v0.34 render smoothing / remote projectile parity — **PASS**
 5. v0.35 reconnect / Team Shop / Stage 2 parity — **PASS**
 
-Exact v0.35 preserved baseline:
+Exact preserved v0.35 baseline:
 - HEAD `b8cb477b47bb8a38f6ab06452c5a9cf0bf26d69d`
 - branch `timing-defense-cloudflare-v035-pass-20261021`
 - health `0.35-cf.7`
 
-## Post-v0.35 preflight — COMPLETE
-Read:
-- `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
-- `CLOUDFLARE_V036_SLICE_A_DECISION_2026-10-21.md`
-- `CLOUDFLARE_V036_SLICE_A_CANDIDATE_2026-10-21.md`
-
 ## Explicit user decisions
-### N1 — APPROVED
+### N1 — APPROVED / IMPLEMENTED
 Restore exact legacy timing EXP:
 NORMAL 8 / GOOD 12 / PERFECT 18 / HEAVY 10 / HEAVY+ 14 / GREAT 18 / SUPER 23 / CRITICAL 28.
 
-### N2 — APPROVED
+### N2 — APPROVED / IMPLEMENTED
 Restore exact legacy AI stage damage multiplier:
 `1 + (stage - 1) * 0.035`.
 
@@ -34,67 +28,72 @@ N3 is the experimental combo-milestone extra-attack system. It is **not discarde
 It must not be silently ported, removed, frozen or rebalanced. A separate explicit discussion/decision is required later.
 
 ## Active slice — v0.36 Slice A
-Status: **IMPLEMENTED / WATCHED BRANCH TRIGGERED / LIVE & DEVICE VALIDATION PENDING**
+Status: **CF.3 AUTOMATED VALIDATION CANDIDATE DEPLOYED TO WATCHED BRANCH / PUBLIC SUITE RUN PENDING**
 
 Implementation branch:
 - `timing-defense-cloudflare-v036-lv6-authority`
-- HEAD `ce3ea7f168fce26f6e76556cd73fea9fb08dce99`
+- HEAD `458d468f68c95c569ff57f1e2fd5a4bd20d21e4a`
 
 Cloudflare watched branch:
 - `timing-defense-cloudflare-do-poc`
-- HEAD `8b1e2890ea582bd1ddaeae89157a82500adf40a0`
-- loader/cache generation `cf0362`
+- HEAD `abb2d428df546c257181278ba6bd0814e0471c93`
+- loader/cache generation `cf0363`
 
 Expected health:
-- version `0.36-cf.1`
+- version `0.36-cf.3`
 - `n1: legacy-heavy-xp-restored`
 - `n2: legacy-ai-stage-damage-scaling-restored`
 - `n3: deferred-explicit-discussion-required`
 
-Candidate test URL:
-`https://timing-defense-do-poc.sktjsek.workers.dev/?v036debug=1&fix=cf0362`
-
-### Implemented Slice A scope
+### Slice A implementation scope
 - Stage 1–2 only; no Stage 3.
 - N1 exact EXP parity.
 - N2 exact AI stage-damage parity.
 - authoritative Lv6 consequences for all five human classes.
 - action/cast identity and secondary-hit metadata.
-- scheduled Rogue second dagger (+55 ms).
-- authoritative Archer line penetration and Mage splash target selection.
-- remote/authoritative secondary skill presentation without client damage authority.
-- host-only candidate debug level endpoint and `?v036debug=1` LV5/LV6 controls for differential tests.
+- Rogue +55 ms / 55% authoritative second dagger.
+- Tank +30% authoritative knockback.
+- Archer strict-line two-target 52% penetration.
+- Mage three-target 50% nearby splash.
+- cf.2 hardening: remove Rogue's legacy local network secondary mutator; make new secondary VFX obey reconnect event floor.
 
-Lv6 effects:
-- Knight: +12% server damage; projectile size remains presentation.
-- Rogue: 55% second dagger, same target allowed with nearest fallback.
-- Tank: +30% server knockback.
-- Archer: up to 2 strict-line additional hits at 52% damage.
-- Mage: up to 3 nearby splash hits at 50% damage.
+## Validation policy — CHANGED
+Do not require manual phone verification for exact numerical/class consequences.
 
-## Internal checks completed
-- new server entry syntax PASS,
-- new client authority/presentation syntax PASS,
-- loader syntax PASS,
-- isolated contract harness PASS for N1/N2 and all five Lv6 boundaries,
-- watched execution files synchronized with implementation candidate; watched-only deployment marker retained.
+Read:
+- `CLOUDFLARE_V036_AUTOMATED_VALIDATION_2026-10-21.md`
 
-These do not replace real Durable Object/device validation.
+Automated layers:
+1. `GET /api/diagnostics/v036-slice-a`
+   - actual patched `TimingDefenseRoom.prototype` deterministic self-test,
+   - N1/N2, all five Lv6 boundaries, duplicate seq, Stage1->Shop->Stage2.
+2. `/v036-client-selftest.html`
+   - executes actual `v036-lv6-authority.js` in a controlled browser fixture,
+   - Rogue local secondary mutation block,
+   - reconnect event-floor / duplicate-VFX checks.
+3. `/v036-multiclient-sim.html`
+   - one browser tab creates two real WebSocket clients against deployed Durable Object,
+   - READY/START, shared Stage1, authoritative Rogue secondary, stale seq, resume floor, reconnect same slot/run, shared Shop, Stage2 synchronization.
+4. `/v036-validation-suite.html`
+   - one-click aggregate of all three layers.
 
-## Immediate validation gate
+The model-side network environment cannot access the public `workers.dev` host, so the public suite itself must be launched from a normal browser. This is one automated run, not manual class-by-class gameplay.
+
+## Remaining Slice A gate
 Do **not** start Stage 3 yet.
 
 First:
-1. confirm public `/api/health` reports `0.36-cf.1`,
-2. validate N1 and N2 on real Durable Object state,
-3. use host LV5/LV6 controls and verify all five class boundaries,
-4. run two-human Stage 1–2 regression,
-5. verify server is the only damage authority and local prediction does not double damage,
-6. verify reconnect / Team Shop / Stage 2 result remain clean.
+1. public `/api/health` -> `0.36-cf.3`,
+2. `/v036-validation-suite.html` -> aggregate **PASS**,
+3. only then one short real-device smoke test for actual Samsung/Chrome rendering/touch behavior:
+   - current asset loads,
+   - timing touch responds,
+   - no obvious duplicate projectile/flicker/visual corruption,
+   - Stage1 -> Shop -> Stage2 visibly usable.
 
-The model-side fetch environment cannot access the public `workers.dev` host, so public health confirmation must be made from the user browser/device.
+Exact EXP/damage/knockback/target selection are owned by the automated suite, not by visual inspection.
 
-Only after Slice A PASS may Slice B start.
+Only after these gates PASS may Slice B start.
 
 ## Following bounded slices
 ### Slice B — Stage 3, two humans first
@@ -110,14 +109,15 @@ Only after Slice A PASS may Slice B start.
 - 4 humans,
 - 2 humans + 2 AI,
 - 3 humans + 1 AI,
-- READY/host/reconnect/shop/result/event-volume verification.
+- READY/host/reconnect/shop/result/event-volume verification,
+- automated multi-client harness should be extended before asking for manual repeated play.
 
 ### Later bounded groups
 - Stage 4: SHIELD / armor,
 - Stage 5–6: boss + FLYER + authoritative Y geometry,
-- Stage 7–9: mixed roster stress,
+- Stage 7–9: mixed-roster stress,
 - Stage 10: final boss/final result,
-- Lv11/16/21 authority with forced-level tests before natural progression depends on them.
+- Lv11/16/21 authority with forced-level automated tests before natural progression depends on them.
 
 ## Deferred UX item
 Responsive safety across heterogeneous phone sizes/aspect ratios remains intentionally deferred. Handle later as a shared responsive-safety layer, not per-device patches.
