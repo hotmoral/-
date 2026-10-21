@@ -1,16 +1,14 @@
 # Timing Defense — N3 Combo Milestone Review
 
 Date: 2026-10-21 KST  
-Status: **EXACT LEGACY RULE RECOVERED / PRODUCT DECISION REQUIRED BEFORE SLICE C IMPLEMENTATION**
+Status: **REVIEW COMPLETE / OPTION B APPROVED / FROZEN CONTRACT CREATED**
 
-## 0. Why this review is now
+The exact legacy rule was recovered and reviewed before Slice C. The user approved **Option B — cleaned N3 contract**.
 
-N3 is the experimental PERFECT-combo milestone extra-attack system.
-It was intentionally deferred during v0.36/v0.37 because it can multiply combat-event volume in 3–4 player multiplayer.
+Canonical frozen contract:
+- `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 
-Slice C is specifically the larger-party/event-delivery slice, so the product contract must be decided now before the delivery kernel is finalized.
-
-No N3 numerical or gameplay change is implemented by this document.
+N3 is **not enabled in multiplayer yet**. Slice C must harden event delivery first; N3 will then be implemented as its own bounded authority slice.
 
 ---
 
@@ -66,17 +64,17 @@ Already-existing persistent timing-attack multiplier candidate:
 
 N3 is an **additional milestone burst on top of that persistent multiplier**.
 
-Milestone raw-equivalent candidate budget:
+Milestone raw-equivalent candidate budget recovered from legacy/V8:
 - 5 combo: 60
 - 10 combo: 90
 - 20 combo: 150
 - 30+ combo: 210
 
-The counter continues upward, but 40/50/60/etc continue to use 210.
+The approved Option B contract keeps these exact budgets but removes accidental over-budget rounding.
 
 ---
 
-## 4. Exact playable legacy class behavior
+## 4. Legacy class behavior recovered
 
 ### Rogue
 Milestone projectile count:
@@ -85,107 +83,57 @@ Milestone projectile count:
 - 20: 4 daggers
 - 30+: 5 daggers
 
-Each dagger receives approximately `budget / count`, rounded individually.
-Actual maximum raw totals from the legacy rounding:
-- 5: 30×2 = 60
-- 10: 30×3 = 90
-- 20: 38×4 = 152
-- 30+: 42×5 = 210
-
-All daggers initially target the same selected monster. If that target disappears before a later dagger resolves, legacy skill resolution can fall back to the nearest living monster.
-
 ### Knight
-- primary target: 67% of budget
-- one forward/near secondary target: 33% of budget, if available
+- primary 67% intent
+- one forward/near secondary 33% intent
 - max 2 hit events
 
-Legacy rounded max totals:
-- 5: 40 + 20 = 60
-- 10: 60 + 30 = 90
-- 20: 101 + 50 = 151
-- 30+: 141 + 69 = 210
-
-If no valid secondary target exists, only the 67% primary portion is realized.
-
 ### Tank
-- primary target: 60% of budget
-- up to two nearby secondary targets: 20% each
+- primary 60% intent
+- up to two nearby secondary targets at 20% intent each
 - max 3 hit events
 
-Max total with two nearby targets:
-- 5: 36 + 12 + 12 = 60
-- 10: 54 + 18 + 18 = 90
-- 20: 90 + 30 + 30 = 150
-- 30+: 126 + 42 + 42 = 210
-
-With fewer nearby targets, some of the theoretical budget is intentionally unrealized.
-
 ### Archer
-- primary target: 70% of budget
-- one strict straight-line target behind it: 30%, if available
+- primary 70% intent
+- one strict straight-line secondary 30% intent
 - no seeking/bending
 - max 2 hit events
 
-Max total when a line target exists:
-- 5: 42 + 18 = 60
-- 10: 63 + 27 = 90
-- 20: 105 + 45 = 150
-- 30+: 147 + 63 = 210
-
-If no valid line target exists, only 70% is realized.
-
 ### Mage
-- primary target: 55% of budget
-- up to three nearby targets: 15% each
+- primary 55% intent
+- up to three nearby targets at 15% intent each
 - max 4 hit events
 
-Legacy independent rounding produces small overshoot at higher tiers:
-- 5: 33 + 9×3 = 60
-- 10: 50 + 14×3 = 92
-- 20: 83 + 23×3 = 152
-- 30+: 116 + 32×3 = 212
-
-If fewer nearby targets exist, the unused splash portions are not redirected to the primary target.
+Approved Option B preserves this class geometry but uses deterministic remainder-safe allocation so a milestone never exceeds its exact 60/90/150/210 maximum budget.
 
 ---
 
-## 5. What N3 does NOT do in the experimental implementation
+## 5. Approved proc isolation
 
-Combo reward projectiles are explicitly created with:
-- no proc crit,
-- no PERFECT flag for skill chaining,
-- no normal skill-power rank,
-- no EXP grant,
-- no charge gain,
-- no new combo increment.
+N3 attacks:
+- no EXP,
+- no charge,
+- no combo increment,
+- no ordinary proc crit,
+- no recursive class-skill proc,
+- no recursive N3 proc.
 
-Therefore N3 is a terminal bonus attack, not a recursive proc engine.
-
-However, legacy `visualImpact` still treats it as local player damage for ordinary combat consequences:
-- monster HP damage,
-- kill attribution,
-- kill coin reward,
-- normal armor interaction,
-- normal local hit visual feedback.
-
-Frozen boss Rogue scalar 0.70 also applies through the normal Rogue impact path.
+They remain authoritative player-owned damage for monster HP, kill attribution, kill coin and contribution damage.
+Normal armor rules and frozen boss scalars continue to apply.
 
 ---
 
-## 6. Ambiguous legacy coupling that requires an explicit product decision
+## 6. Knockback decision — APPROVED
 
-The implementation assigns milestone tiers for the projectile:
-- 5 -> GOOD
-- 10 -> PERFECT
-- 20 -> SUPER
-- 30+ -> CRITICAL
+The legacy implementation accidentally coupled milestone display tier to generic GOOD/PERFECT/SUPER/CRITICAL knockback escalation.
 
-`visualImpact` uses tier to determine knockback, and class-level knock multipliers can also participate.
+Option B explicitly rejects that coupling.
 
-Therefore the old playable code can make higher N3 milestones cause stronger knockback even though the V8 balance report describes the milestone primarily as a raw-damage-equivalent budget.
-
-This knockback behavior is an **implementation consequence, not clearly frozen by the V8 design report**.
-Do not silently preserve or remove it; decide explicitly.
+Frozen rule:
+- N3 uses NORMAL-equivalent generic knockback base,
+- independently authoritative class multipliers may still apply,
+- Tank retains its class knockback advantage,
+- milestone number itself does not increase generic knockback.
 
 ---
 
@@ -204,110 +152,36 @@ Estimated mean damage uplift from the combined combo-power candidate remained mo
 - Expert ~1.99%
 - Master-test ~4.74%
 
-Interpretation from V8:
-- N3 is not intended as ordinary DPS inflation,
-- its main purpose is mastery reward / pressure / spectacle,
-- 20+ and repeated 30+ procs are rare prestige bursts.
+The approved product intent remains mastery reward / pressure / spectacle rather than ordinary DPS inflation.
 
 ---
 
 ## 8. Slice C event-volume consequence
 
-Current Durable Object event storage keeps at most 48 recent events, while public snapshots expose only the last 24 events.
+Legacy server storage kept at most 48 recent events and public snapshots exposed only the last 24 events.
 
-N3 can exceed that 24-event snapshot tail during synchronized 4-player bursts, even with the currently validated Lv6-only skill set.
+Illustrative N3 synchronized burst sizes:
+- four Lv6 Rogues at 30+: up to ~28 combat-hit events before passive events,
+- four Lv6 Mages in dense geometry: up to ~32 combat-hit events before passive events.
 
-Illustrative worst-case simultaneous milestone bursts:
-
-### Four Lv6 Rogues at 30+
-Per player:
-- normal authoritative primary = 1 event
-- Lv6 second dagger = 1 event
-- N3 = 5 dagger events
-- total = 7 combat-hit events per player
-
-Four players = **28 hit events**, before passive events.
-
-### Four Lv6 Mages with dense valid targets
-Per player:
-- normal primary + up to 3 Lv6 splash = 4 events
-- N3 primary + up to 3 N3 splash = 4 events
-- total = 8 events per player
-
-Four players = **32 hit events**, before passive events.
-
-Therefore fixed `events.slice(-24)` is not sufficient as the long-term N3 delivery contract.
-Rare probability does not make silent visual-event loss acceptable.
-
-Slice C should generalize event delivery before N3 is enabled in multiplayer.
+Therefore Slice C must remove dependence on fixed `events.slice(-24)` delivery before N3 is enabled.
 
 ---
 
-## 9. Product decision options
+## 9. Approved execution order
 
-### Option A — literal legacy port
-Preserve the old playable behavior exactly:
-- trigger grammar 5/10/20/30/every +10,
-- budgets 60/90/150/210,
-- existing class geometry,
-- existing independent rounding (including Rogue/Mage small overshoot),
-- existing milestone-tier knockback behavior.
-
-Pros:
-- closest migration parity.
-
-Cons:
-- preserves incidental rounding and knockback coupling that were never clearly balance-frozen.
-
-### Option B — cleaned N3 contract (recommended)
-Preserve the intended design while removing implementation accidents:
-- same trigger grammar,
-- same 60/90/150/210 capped budgets,
-- same class identities/target geometry,
-- no EXP / charge / combo / crit / recursive skill proc,
-- player gets normal damage/kills/kill-coin attribution,
-- armor and frozen boss scalars apply normally,
-- normalize each milestone so its class's theoretical maximum damage budget is exactly 60/90/150/210 rather than 151/152/212 rounding artifacts,
-- explicitly define knockback rather than inheriting it accidentally from milestone display tier.
-
-Recommended knockback sub-rule for Option B:
-- preserve class identity but prevent milestone damage tier from automatically escalating generic knockback,
-- use a fixed N3 knockback semantic per class or NORMAL-equivalent base, with Tank retaining its class knockback advantage.
-
-Pros:
-- keeps the mastery reward and class flavor,
-- easier to reason about and server-test,
-- avoids freezing accidental code artifacts.
-
-Cons:
-- not byte-for-byte legacy parity, so requires explicit approval.
-
-### Option C — no N3
-Keep persistent 5/8/12/15% combo bonus only and discard milestone attacks.
-
-This is a real product decision, not the current default. N3 must not disappear merely because implementation is inconvenient.
-
----
-
-## 10. Recommended execution order after decision
-
-If A or B is approved:
-1. Slice C first upgrades event delivery to a loss-resistant monotonic event stream/history contract.
-2. Validate 3H / 4H / 2H+2AI / 3H+1AI without N3 enabled.
-3. Add N3 as its own bounded server-authority slice on top of the hardened event kernel.
-4. Deterministic forced-combo tests for 5/10/20/30/40 on all five classes.
-5. 4-player synchronized milestone stress simulation.
+1. Slice C upgrades event delivery to a per-socket monotonic, loss-detectable contract.
+2. Validate 3H / 4H / 2H+2AI / 3H+1AI with N3 still disabled.
+3. Add N3 as its own bounded server-authority slice.
+4. Forced combo tests for 5/10/20/30/40 on all five classes.
+5. Four-player synchronized milestone stress simulation.
 6. One final Samsung Browser presentation smoke.
-7. Only then continue to Stage 4 SHIELD.
-
-If C is approved, record N3 as explicitly rejected rather than merely deferred.
+7. Then continue to Stage 4 SHIELD.
 
 ---
 
-## 11. Current recommendation
+## 10. Decision summary
 
-**Recommend Option B: retain N3 as a mastery system, but formalize it before server implementation rather than copying v0.18's incidental rounding/knockback behavior.**
+**Option B is approved and no longer deferred.**
 
-The V8 evidence supports the underlying concept: ordinary players are barely affected, while high PERFECT streaks gain memorable class-specific burst moments.
-
-The event-delivery kernel must be fixed in Slice C before N3 is enabled.
+The system is retained, cleaned, and product-frozen by `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`. Implementation remains gated on Slice C event-delivery PASS.
