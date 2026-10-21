@@ -1,6 +1,6 @@
 # Timing Defense — Project Status
 
-Updated: 2026-10-21 KST
+Updated: 2026-10-22 KST
 
 ## Active architecture lane
 Primary architecture:
@@ -9,7 +9,7 @@ Primary architecture:
 Public deployment:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 - watched branch: `timing-defense-cloudflare-do-poc`
-- current candidate watched HEAD: `0c96f038f6fcf7ec5e27e7d7fe0db38343a807c7`
+- current smoke-candidate HEAD: `cbcddf35443ff901b4a30dd6621da5a984335fb5`
 
 Last fully closed checkpoint:
 - **v0.37 Slice B / Stage 3 FULL PASS**
@@ -18,10 +18,10 @@ Last fully closed checkpoint:
 
 Active candidate:
 - **v0.38 Slice C / larger-party event kernel**
-- branch `timing-defense-cloudflare-v038-slice-c-event-kernel`
-- candidate HEAD `0c96f038f6fcf7ec5e27e7d7fe0db38343a807c7`
-- expected health `0.38-cf.1`
-- live validation pending
+- implementation branch `timing-defense-cloudflare-v038-slice-c-event-kernel`
+- automation-validated deployment HEAD `1afb125c86fc5c085c6b1246dec77b36a1d30159`
+- automation PASS checkpoint `timing-defense-cloudflare-v038-automation-pass-20261022`
+- final Samsung Browser 4H presentation smoke pending
 
 Preserved checkpoints:
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
@@ -32,9 +32,11 @@ Preserved checkpoints:
 - v0.36 automated PASS: `timing-defense-cloudflare-v036-automation-pass-20261021`
 - v0.36 Slice A full PASS: `timing-defense-cloudflare-v036-slice-a-pass-20261021`
 - v0.37 Slice B full PASS: `timing-defense-cloudflare-v037-slice-b-pass-20261021`
+- v0.38 Slice C automation PASS: `timing-defense-cloudflare-v038-automation-pass-20261022`
 
 Read first:
 - `NEXT_WORK.md`
+- `CLOUDFLARE_V038_SLICE_C_AUTOMATION_PASS_2026-10-22.md`
 - `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 - `CLOUDFLARE_V038_SLICE_C_CANDIDATE_2026-10-21.md`
 - `CLOUDFLARE_V037_SLICE_B_PASS_2026-10-21.md`
@@ -74,12 +76,10 @@ Lv6 authority:
 ---
 
 # N3 — OPTION B APPROVED / FROZEN / NOT YET ENABLED
-N3 is no longer an unresolved discussion item.
-
 Frozen product contract:
 - milestone triggers 5 / 10 / 20 / 30 / every +10 after 30,
 - exact maximum budgets 60 / 90 / 150 / 210,
-- same recovered class-specific burst geometry,
+- recovered class-specific burst geometry retained,
 - deterministic remainder-safe allocation prevents over-budget rounding,
 - no EXP / charge / combo / ordinary proc crit / recursive skill / recursive N3,
 - normal armor, kill, kill coin and contribution attribution,
@@ -90,41 +90,60 @@ Frozen product contract:
 Canonical contract:
 `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 
-N3 implementation is intentionally gated on Slice C event-delivery PASS.
+N3 implementation remains intentionally gated on Slice C full PASS.
 
 ---
 
-# Active Slice C candidate — v0.38
+# Active Slice C — automation PASS / final device smoke pending
 Purpose:
 - larger-party baseline,
 - remove dependency on the legacy 24-event snapshot tail before N3 is enabled.
 
-Event kernel candidate:
+Event kernel:
 - 512-event authoritative history,
 - per-WebSocket `eventRunId` + `eventCursor` hibernation attachment,
 - monotonic `event-batch` delivery,
-- socket state snapshots contain zero event payload,
+- socket state snapshots carry no legacy event tail,
 - explicit `event-gap` if retention continuity is impossible,
 - reconnect floors at latest while preserving existing resume/eventFloor historical-replay suppression.
 
-Live automation scenarios:
+Automation PASS evidence on `1afb125c86fc5c085c6b1246dec77b36a1d30159`:
+- SERVER 28/28 PASS,
+- v0.36 client regression PASS,
+- v0.37 client regression PASS,
+- event client PASS,
+- larger-party simulation PASS,
+- FINAL PASS.
+
+Larger-party automated coverage:
 - 3 humans,
 - 4 humans,
 - 2 humans + 2 AI,
-- 3 humans + 1 AI.
+- 3 humans + 1 AI,
+- fixed slots,
+- host identity/reconnect,
+- READY/START,
+- Stage 1 -> Team Shop -> Stage 2,
+- contiguous event IDs,
+- no unexpected event-gap,
+- >24 event delivery without silent loss.
 
-Checks include slots, host identity, READY/START, Stage1->Shop->Stage2, reconnect, contiguous event IDs, no gap, and >24 delivered events in 4H.
+Post-automation smoke candidate:
+- watched HEAD `cbcddf35443ff901b4a30dd6621da5a984335fb5`,
+- adds candidate-only `?partybot=3` single-device smoke harness,
+- local phone remains the real host/player,
+- three simulated HUMAN WebSocket sessions join as ARCHER/MAGE/TANK,
+- test overlays are hidden outside combat and do not alter server authority/balance.
 
-Validation gate:
-- `/v038-validation-suite.html`
-- v0.38 is **not PASS yet**.
+Final Slice C gate:
+- one Samsung Browser 4H render/input smoke only.
 
-Do not enable N3 or Stage 4 until Slice C closes.
+Do not enable N3 or Stage 4 until that smoke closes Slice C.
 
 ---
 
 # Following bounded work
-1. Close Slice C automation + one final Samsung Browser smoke.
+1. Close Slice C with one final Samsung Browser 4H smoke.
 2. Implement N3 Option B as a dedicated authority slice with forced 5/10/20/30/40 tests for all five classes and four-player milestone stress.
 3. Stage 4 SHIELD / armor.
 4. Stage 5–6 boss + FLYER + authoritative Y geometry.
