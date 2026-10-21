@@ -1,124 +1,108 @@
 # Timing Defense — Session Handoff
 
-Updated: 2026-10-20 KST
+Updated: 2026-10-21 KST
 
-## Final handoff synchronization
-- Final freeze checkpoint: `HANDOFF_FREEZE_2026-10-20_2334KST.md`
-- Execution status: **PAUSED FOR NEW GPT SESSION HANDOFF**
-- The next GPT must verify GitHub live state before changing code or deploying.
+## Current execution status
+Cloudflare Workers + Durable Objects architecture viability PoC is **PASS**.
+
+Do not resume the old Render-replacement Node-host lane as the primary path unless Cloudflare migration later fails by evidence.
+
+The next implementation boundary is **v0.31/v0.32 waiting-room parity migration onto Durable Object + WebSocket**.
 
 ## Canonical locations
 - Repository: `hotmoral/-`
 - Live source branch: `timing-defense-live-v011`
 - Planning / balance / handoff branch: `timing-defense-workspace`
-- Latest implemented prototype: **v0.35**
-- Previous device-validated prototype: **v0.34**
-- Old Render game URL: `https://timing-defense-v011.onrender.com/v035.html` — **SUSPENDED / Monthly Quota Exceeded**
-- Old Render backend: `https://timing-defense-mp.onrender.com` — **SUSPENDED / Monthly Quota Exceeded**
-- Last successful v0.35 static deploy: `dep-dbblp8s9v7es73flhq40`
-- Last successful v0.35 backend deploy: `dep-dbblpauq1p3s73d1v2mg`
-- Current live source HEAD: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
+- Cloudflare experimental branch: `timing-defense-cloudflare-do-poc`
+- Latest implemented production prototype: **v0.35**
+- Last Android + PC device-PASS production prototype: **v0.34**
+- Last verified production live HEAD before Cloudflare migration: `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
+- Public Cloudflare PoC: `https://timing-defense-do-poc.sktjsek.workers.dev`
 
-Workspace is canonical for design decisions, simulation interpretation, execution boundary and new-session recovery.
+Workspace remains canonical for design decisions, migration boundaries, balance governance and new-session recovery.
 
 ---
 
-# CRITICAL CURRENT INCIDENT
-
-v0.35 itself was not proven broken.
-
-Render events show both services were suspended after successful deployment:
-- backend `srv-dbbimre1egvs73861d80`: `service_suspended` at `2026-10-20T12:39:35Z`
-- static site `srv-dbb1c9mi0phs73b5bao0`: `service_suspended` at `2026-10-20T12:39:36Z`
-- actor/reason on both: **`Monthly Quota Exceeded`**
+# Hosting incident classification
+Old Render services were suspended after successful v0.35 deployments because of **Monthly Quota Exceeded**.
 
 Therefore:
-- do **not** treat the unreachable v0.35 URL as a gameplay/runtime regression,
-- do **not** spend time patching v0.35 client/server code solely because the old link is down,
-- replacement hosting is the immediate execution boundary.
+- the old Render outage is not evidence that v0.35 gameplay/runtime failed,
+- do not patch production gameplay solely because the Render URLs are down,
+- the portable Node wrapper remains a fallback only.
 
-Read `V035_RENDER_QUOTA_OUTAGE_REPORT.md` before doing anything else.
-
----
-
-# Portable hosting preparation already completed
-
-The live branch has already been prepared to move away from the old Render static+backend split.
-
-Files:
-- `timing-defense-v011/v035-host-adapter.js`
-- `timing-defense-v011/v035-portable.html`
-- `timing-defense-server/portable-host.js`
-
-Purpose:
-- serve the game frontend and authoritative Node backend from one full-stack Node host,
-- proxy `/health` and `/api/*` to the authoritative server,
-- rewrite the old hard-coded Render backend endpoint to same-origin when running on the replacement host.
-
-Portable-host commit:
-- `7ab0da2434d727ca5bcad35dd9ce75a436c3c78a`
-- message: `Add portable full-stack host wrapper for Timing Defense`
-
-Local checks already recorded as PASS:
-- Node syntax checks,
-- portable root/static routing,
-- `/health` proxy to v0.35 backend.
-
-During the final handoff synchronization the three portable-host files were re-read directly from the live branch and confirmed present. Do not duplicate this preparation unless live repository verification shows a mismatch.
+Read:
+- `V035_RENDER_QUOTA_OUTAGE_REPORT.md`
+- `CLOUDFLARE_DO_MIGRATION_DECISION_2026-10-21.md`
 
 ---
 
-# Validated gameplay/network foundation
+# Cloudflare Durable Objects PoC — PASS
+Read `CLOUDFLARE_DO_POC_PASS_2026-10-21.md`.
 
-## v0.31 / v0.32
-Two independent clients device-validated:
+Validated publicly with two independent clients:
+- Worker/static page loads,
+- `/api/health` reports the intended architecture,
+- SQLite-backed Durable Object room creation,
+- WebSocket Hibernation transport,
+- `apac-ne` location hint,
+- room join,
+- participant/host state sharing,
+- READY propagation,
+- host START,
+- one authoritative diagnostic monster,
+- shared HP `300 -> 200 -> 100 -> 0`,
+- synchronized `CLEAR`,
+- refresh/reconnect preserving the same shared room/session/slot/state,
+- post-refresh continued interaction,
+- event-driven operation without the legacy 50 ms always-on loop.
+
+This is an architecture PASS only. It is **not** v0.35 parity.
+
+The experimental PoC did not modify the production/live branch.
+
+---
+
+# Validated production gameplay/network foundation
+
+## v0.31 / v0.32 — Android + PC device validated
 - real FRIEND/LINK room create/join,
 - nickname/class/slot sharing,
 - READY propagation,
 - host-only START after all humans READY,
-- shared RUN STARTING state,
-- Samsung Browser waiting-room clipping fixed.
+- shared future start gate,
+- Samsung Browser short-landscape waiting-room clipping fix.
 
-## v0.33
-Android + PC device-validated:
+## v0.33 — Android + PC device validated
 - shared authoritative Stage 1,
+- server-owned enemy/base state,
+- server-resolved human timing attacks,
 - remote PC attack reduces the same monster HP on Android.
 
-## v0.34
-Android + PC device-validated:
-- monster motion smoother on Android,
-- remote human projectile visible,
-- server-authoritative HP state preserved.
+## v0.34 — Android + PC device validated
+- smoother Android monster motion,
+- remote human projectile VFX,
+- authoritative HP state preserved.
 
-This is the last device-validated public behavior baseline.
+This remains the last device-validated production behavior baseline.
 
----
-
-# v0.35 implemented scope — not yet device-PASS
-
-Read `V035_RECONNECT_SHOP_STAGE2_REPORT.md`.
-
-Implemented:
-- 180 s same-server reconnect/session grace,
-- same room URL reload via `/resume`,
-- authoritative snapshot recovery,
-- suppression of historic combat-event replay after resume,
-- authoritative Stage 1 -> Team Shop,
-- per-human coin/ranks/purchase validation,
-- READY lock/unlock,
+## v0.35 — implemented, not production device-PASS
+Implemented and locally API/integration checked:
+- same-server reconnect/session recovery,
+- Stage 1 -> Team Shop,
+- per-human coin/rank/purchase authority,
+- shop READY synchronization,
 - all-human READY gate,
 - host-only NEXT STAGE,
-- synchronized future Stage 2 start,
-- Stage 2 authoritative GRUNT/RUNNER combat,
-- Stage 2 bounded endpoint at `stage2-clear`.
+- synchronized Stage 2 GRUNT/RUNNER combat,
+- Stage 2 bounded clear.
 
-Local API/integration checks passed before the hosting outage.
-Android + PC device validation did not complete because Render suspended both services.
+Device validation was interrupted by the Render quota suspension.
 
 ---
 
 # Frozen combat / balance governance
-- Rhythm: `X → X → X → X+Y`.
+- Rhythm: `X -> X -> X -> X+Y`.
 - Knight = stable generalist / penetration / strong heavy.
 - Rogue = multihit / crit / durable-normal execution; same-target dagger hits uncapped.
 - Tank = knockback / wall protection / team specialist.
@@ -145,69 +129,60 @@ Approved radar axes: 공격력 / 치명타 / 민첩성 / 넉백 / 관통 / 광�
 
 ---
 
+# Exact next work boundary
+Do not add Stage 1 combat to Cloudflare before closing waiting-room parity.
+
+1. Re-read v0.31/v0.32 implementation and reports from GitHub; do not reconstruct semantics from memory if code differs.
+2. Port the production room/session/slot/host/READY/START contract onto Durable Object + WebSocket.
+3. Preserve FRIEND/LINK behavior, nickname/class/slot sharing, all-human READY gate and host-only START.
+4. Preserve one shared authoritative future start time / starting state.
+5. Preserve v0.32 Samsung Browser waiting-room layout fixes.
+6. Public Android + PC device-test the waiting-room flow including reconnect and READY cancel.
+7. Fix only reproducible parity defects.
+8. Synchronize canonical docs when this slice is PASS.
+9. Only then port v0.33 authoritative Stage 1 consequences.
+10. Use event/time-derived movement where safe instead of recreating the legacy 50 ms always-on loop.
+11. Preserve v0.34 smoothing/projectile behavior as presentation-only behavior.
+12. Then port v0.35 reconnect/Team Shop/Stage 2.
+13. Only after Cloudflare v0.35 parity device-PASS, proceed to Stage 3–10 and Lv6+ multiplayer authority.
+
+---
+
 # Truth boundary
 Safe claims:
 - v0.34 real two-client authoritative Stage 1 is device-PASS,
 - v0.34 Android smoothing and remote projectile VFX are device-PASS,
 - v0.35 reconnect/shop/Stage-2 code exists and passed local API/integration checks,
-- portable replacement-host wrapper exists and passed local routing/health checks.
+- Render quota incident is confirmed,
+- Cloudflare Workers + Durable Objects isolated public two-client PoC is device-PASS including refresh/reconnect.
 
 Do not claim:
-- v0.35 device-PASS,
-- current Render availability,
-- durable recovery after backend process restart,
+- production v0.31 parity on Cloudflare yet,
+- v0.35 Cloudflare device-PASS,
 - Stage 3–10 multiplayer,
 - full Lv6+ multiplayer skill authority,
-- persistent/horizontally-scaled room storage,
-- final production shop/shared-wall semantics.
-
----
-
-# Exact next work boundary
-
-The next session should **not** start new gameplay features first.
-
-1. Read `HANDOFF_FREEZE_2026-10-20_2334KST.md` and canonical docs; verify live/workspace HEADs.
-2. Confirm the Render outage evidence and do not retry old Render URLs as the primary recovery plan while quota remains exhausted.
-3. Deploy `portable-host.js` + v0.35 portable frontend to a replacement full-stack Node host.
-4. Validate on the new host:
-   - root page,
-   - static JS/assets,
-   - `/health`,
-   - room create/join,
-   - SSE room stream,
-   - CORS/same-origin behavior.
-5. Then Android + PC device-test v0.35:
-   - Stage 1,
-   - Team Shop,
-   - purchases,
-   - READY propagation,
-   - host-only NEXT,
-   - synchronized Stage 2,
-   - refresh/reconnect during Stage 1/shop/Stage 2.
-6. Fix only reproducible v0.35 defects.
-7. Only after v0.35 device-PASS, generalize the authoritative stage/shop state machine through Stage 3–10.
-8. Then move Lv6/Lv11/Lv16/Lv21 multiplayer effects server-side.
-9. Later implement Lv26/Lv31 and rerun Solo/2P/3P/4P simulations before numerical freeze.
+- final persistence/security/shop/shared-wall semantics,
+- final numerical balance.
 
 ---
 
 # New-session read order
-1. `HANDOFF_FREEZE_2026-10-20_2334KST.md`
-2. `SESSION_HANDOFF.md`
-3. `PROJECT_STATUS.md`
-4. `V035_RENDER_QUOTA_OUTAGE_REPORT.md`
-5. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
-6. `V034_MULTIPLAYER_RENDER_SMOOTHING_REPORT.md`
-7. `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`
-8. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
-9. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
-10. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
-11. `DESIGN_DECISIONS.md`
-12. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
-13. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-14. `SKILL_PLAN_LV6_31.md`
-15. `TIER_PRESSURE_GRAMMAR_V1.md`
-16. `PRESSURE_RECIPES_V1.md`
-17. `SIMULATION_METHOD.md`
-18. `NEXT_WORK.md`
+1. `SESSION_HANDOFF.md`
+2. `PROJECT_STATUS.md`
+3. `NEXT_WORK.md`
+4. `CLOUDFLARE_DO_MIGRATION_DECISION_2026-10-21.md`
+5. `CLOUDFLARE_DO_POC_PASS_2026-10-21.md`
+6. `V035_RENDER_QUOTA_OUTAGE_REPORT.md`
+7. `V035_RECONNECT_SHOP_STAGE2_REPORT.md`
+8. `V034_MULTIPLAYER_RENDER_SMOOTHING_REPORT.md`
+9. `V033_MULTIPLAYER_COMBAT_SLICE_REPORT.md`
+10. `V032_WAITING_LAYOUT_HOTFIX_REPORT.md`
+11. `V031_MULTIPLAYER_FOUNDATION_REPORT.md`
+12. `V030_ROOT_CAUSE_RECOVERY_REPORT.md`
+13. `DESIGN_DECISIONS.md`
+14. `BALANCE_SIM_REPORT_V8_AUTO_COMBO.md`
+15. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
+16. `SKILL_PLAN_LV6_31.md`
+17. `TIER_PRESSURE_GRAMMAR_V1.md`
+18. `PRESSURE_RECIPES_V1.md`
+19. `SIMULATION_METHOD.md`
