@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.39 N3 client self-test</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}</style>
+<h1>v0.39 N3 client self-test</h1><div id="status">RUNNING…</div><pre id="out"></pre><canvas id="c" width="800" height="450" hidden></canvas>
+<script>
+const W=800,H=450,ctx=document.getElementById('c').getContext('2d');
+const S={playerClass:'rogue',level:6,projectiles:[],pulses:[],v018PendingMilestones:[]};
+window.__TDMP34CF={active:true,slot:1,lastEvent:10,state:null,visualParty:[{roomSlot:2,slot:1,cls:'rogue'}]};
+let legacyComboMutations=0,drawProjectileCalls=0,floatCalls=0;
+function classColor(){return'166,170,176'}
+function weaponWorldPos(){return{x:80,y:160}}
+function getMonster(){return null}
+function monsterAimPoint(){return{x:500,y:180}}
+function addParticles(){}
+function addFloat(){floatCalls++}
+function drawProjectiles(){drawProjectileCalls++}
+function draw(){}
+function resolveLocalHit(){if(S.v018PendingMilestones.length){legacyComboMutations+=S.v018PendingMilestones.length;S.v018PendingMilestones.length=0}}
+</script>
+<script src="v039-n3-authority.js?v=cf0391"></script>
+<script>
+(async()=>{
+ const checks=[],add=(name,pass,actual,expected)=>checks.push({name,pass:!!pass,actual,expected});
+ try{
+   S.v018PendingMilestones=[30];resolveLocalHit({},performance.now());
+   add('LEGACY_LOCAL_N3_MUTATOR_SUPPRESSED',legacyComboMutations===0&&S.v018PendingMilestones.length===0,{legacyComboMutations,pending:S.v018PendingMilestones.length},{legacyComboMutations:0,pending:0});
+ }catch(e){add('LEGACY_LOCAL_N3_MUTATOR_SUPPRESSED',false,String(e?.stack||e),'no exception')}
+ try{
+   const mp=window.__TDMP34CF;
+   const resume={run:{id:'R39',events:[]},participants:[]};mp.state=resume;
+   window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:resume,source:'v035-resume'}}));
+   const old={run:{id:'R39',events:[{id:9,type:'n3',n3:true,slot:2,n3Kind:'rogue-daggers',n3Milestone:30,hitIndex:0,damage:42,targetId:1,targetX:.6,targetY:.4}]},participants:[]};mp.state=old;
+   window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:old,source:'socket'}}));
+   add('RESUME_HISTORICAL_N3_SUPPRESSED',window.__TD039N3.pending===0,window.__TD039N3.pending,0);
+   const fresh={run:{id:'R39',events:[{id:11,type:'n3',n3:true,slot:2,n3Kind:'rogue-daggers',n3Milestone:30,hitIndex:0,damage:42,targetId:1,targetX:.6,targetY:.4}]},participants:[]};mp.state=fresh;
+   window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:fresh,source:'v038-event-batch'}}));
+   add('FRESH_AUTHORITATIVE_N3_QUEUED',window.__TD039N3.pending===1,{pending:window.__TD039N3.pending,floor:window.__TD039N3.floor},{pending:1,floor:11});
+   window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:fresh,source:'v038-event-batch'}}));
+   add('DUPLICATE_N3_EVENT_NOT_REQUEUED',window.__TD039N3.pending===1,window.__TD039N3.pending,1);
+   const mage={run:{id:'R39',events:[{id:12,type:'n3',n3:true,slot:2,n3Kind:'mage-arcane-burst',sourceClass:'mage',n3Milestone:20,hitIndex:0,damage:83,targetId:2,targetX:.65,targetY:.42}]},participants:[{slot:2,classId:'mage'}]};mp.state=mage;
+   window.dispatchEvent(new CustomEvent('tdcf:state',{detail:{state:mage,source:'v038-event-batch'}}));
+   add('MULTI_CLASS_N3_PRESENTATION_ACCEPTED',window.__TD039N3.pending===2&&window.__TD039N3.floor===12,{pending:window.__TD039N3.pending,floor:window.__TD039N3.floor},{pending:2,floor:12});
+ }catch(e){add('N3_EVENT_PRESENTATION_EXCEPTION',false,String(e?.stack||e),'no exception')}
+ const passed=checks.filter(x=>x.pass).length,result={ok:passed===checks.length,version:'0.39-cf.1-client-selftest',passed,total:checks.length,failed:checks.filter(x=>!x.pass).map(x=>x.name),checks};
+ const st=document.getElementById('status');st.textContent=result.ok?'PASS':'FAIL';st.className=result.ok?'pass':'fail';document.getElementById('out').textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.39 client self-test`;
+})();
+</script>
