@@ -11,22 +11,13 @@ Public URL:
 
 Watched deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- current N3 device-smoke candidate HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
+- HEAD at v0.39 closure `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
 
 Last fully closed checkpoint:
-- **v0.38 Slice C / larger-party event kernel FULL PASS**
-- branch `timing-defense-cloudflare-v038-slice-c-pass-20261022`
-- HEAD `cbcddf35443ff901b4a30dd6621da5a984335fb5`
-
-Active candidate:
-- **v0.39 N3 Option B authority**
-- implementation branch `timing-defense-cloudflare-v039-n3-authority`
+- **v0.39 N3 authority FULL PASS**
+- branch `timing-defense-cloudflare-v039-pass-20261022`
+- HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a`
 - health `0.39-cf.1`
-- automated-live validation PASS
-- automation checkpoint `timing-defense-cloudflare-v039-automation-pass-20261022`
-- automation-validated checkpoint HEAD `201ac36ac8ec97a3e033976cdea13c3fd2fe03c6`
-- current smoke-helper HEAD `911dd67cf4bb4d704e050f8e3a92cb34c48deb3a` also revalidated by GitHub Actions to FINAL PASS
-- final Samsung Browser presentation/input smoke remains
 
 ## Preserved checkpoints
 - PoC PASS: `timing-defense-cloudflare-do-poc-pass-20261021`
@@ -40,12 +31,13 @@ Active candidate:
 - v0.38 automation PASS: `timing-defense-cloudflare-v038-automation-pass-20261022`
 - v0.38 Slice C full PASS: `timing-defense-cloudflare-v038-slice-c-pass-20261022`
 - v0.39 N3 automation PASS: `timing-defense-cloudflare-v039-automation-pass-20261022`
+- v0.39 N3 full PASS: `timing-defense-cloudflare-v039-pass-20261022`
 
 ## Read first
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
-4. `CLOUDFLARE_V039_N3_AUTOMATION_PASS_2026-10-22.md`
+4. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 5. `N3_COMBO_MILESTONE_FROZEN_CONTRACT_2026-10-21.md`
 6. `CLOUDFLARE_V038_SLICE_C_PASS_2026-10-22.md`
 
@@ -69,19 +61,19 @@ Lv6 authority:
 - BRUTE base HP 900 / speed .040 / wall 180 / knock resist .38 / armor 1 / reward 14
 - ordinary Stage 3 BRUTE HP 1247
 - Stage 3 clear -> Team Shop
-- Stage 4 locked
+- Stage 4 remains blocked in the v0.39 checkpoint
 
 ## Closed v0.38 Slice C
 Event kernel:
 - 512 retained authoritative events
 - per-WebSocket `eventRunId` + `eventCursor`
 - monotonic `event-batch`
-- state snapshots no longer carry a fixed event tail
+- state snapshots no longer carry the old fixed event tail
 - explicit `event-gap`
 - resume/eventFloor replay suppression preserved
 
-Automation:
-- SERVER 28/28 PASS
+Automation PASS:
+- SERVER 28/28
 - v0.36 client regression PASS
 - v0.37 client regression PASS
 - event client PASS
@@ -97,8 +89,8 @@ Party coverage:
 
 Final Samsung Browser 4H smoke was user-confirmed PASS.
 
-## N3 — OPTION B FROZEN / v0.39 AUTOMATION PASS
-Contract:
+## Closed v0.39 N3 authority
+Frozen contract:
 - combo milestones 5 / 10 / 20 / 30 / every +10 after 30
 - max budgets 60 / 90 / 150 / 210
 - Rogue 2/3/4/5 daggers
@@ -107,7 +99,7 @@ Contract:
 - Archer 70/30 strict line
 - Mage 55/15/15/15
 - remainder-safe exact allocation
-- no EXP / charge / combo / ordinary crit / recursive skill / recursive N3
+- no N3-generated EXP / charge / combo / ordinary crit / recursive skill / recursive N3
 - normal armor / kill / kill coin / contribution
 - frozen boss scalars
 - generic knockback NORMAL-equivalent
@@ -119,21 +111,17 @@ Implementation:
 - delayed queue cleared when combat ends
 - legacy local v0.18 N3 mutator suppressed in multiplayer
 - client renders only server-confirmed N3 events
-- candidate host debug-arm endpoint supports forced-combo tests
-- Stage 4 remains blocked
+- candidate host debug-arm endpoint supports deterministic forced-combo tests
 
-Automated live validation is no longer user-driven.
-Workflow:
-`.github/workflows/timing-defense-v039-live-validation.yml`
-
-Validated result:
+Automated live validation:
+- GitHub Actions + Playwright Chromium against deployed Cloudflare
 - V038 FULL REGRESSION PASS
 - N3 SERVER 57/57 PASS
 - N3 CLIENT PASS
 - N3 4H STRESS PASS
 - FINAL PASS
 
-Four-human worst-case stress:
+4H worst-case stress:
 - four Lv6 Rogues, combo29 -> simultaneous PERFECT
 - 4 ordinary hits + 4 Lv6 second daggers + 20 N3 daggers
 - 28 combat events per observer
@@ -141,37 +129,40 @@ Four-human worst-case stress:
 - contiguous post-floor IDs
 - all combos -> 30
 
-The first Actions run timeout was caused by an incorrect Playwright `waitForFunction` argument position and did not represent a gameplay/N3 failure. The runner was fixed and subsequent runs passed.
+Samsung Browser closure smoke:
+- user-provided `Screen_Recording_20261022_074414_Samsung Browser.mp4`
+- frame-by-frame review around first N3 burst
+- coherent Rogue multi-dagger presentation
+- no obvious duplicate-projectile storm/cascade
+- no obvious flicker
+- no Canvas corruption
+- no blocked controls
+- gameplay continued normally after N3 and through later shop/stage transitions visible in the recording
 
-## Immediate next boundary — one Samsung Browser N3 presentation/input smoke
-Candidate helper:
-- `?n3smoke=1`
-- when host combat has a monster, automatically arms humans to Lv6/combo29
-- badge: `N3 ARMED · PERFECT 1회`
-- if the user misses and server combo falls below 29 before N3 fires, helper automatically re-arms
-- normal access unaffected
+Exact report:
+`CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
-Use `peerbot=1` so no PC is required.
-Select Rogue, start the run, wait for N3 ARMED, then land one PERFECT.
+## Active next boundary — Stage 4 SHIELD / armor
+Do not begin by inventing balance values. First recover/freeze the exact Stage 4 contract from canonical planning material.
 
-Accept only presentation/input:
-- local host remains Rogue
-- simulated peer remains separate human
-- timing input works
-- N3 Rogue multi-dagger burst is visually coherent
-- no obvious duplicate-projectile storm, flicker, Canvas corruption or blocked controls
-- gameplay continues afterward
+The bounded Stage 4 slice should cover:
+- SHIELD authoritative stats/identity
+- armor semantics and rounding order
+- Stage 4 roster/count/spawn cadence
+- interactions with ordinary hits, Lv6 skills and N3
+- kill/reward/contribution
+- multiplayer event/rendering path
+- deterministic tests and prior-regression suite
+- GitHub Actions live validation
+- minimum necessary Samsung Browser smoke only
 
-Do not manually recheck numerical/N3 delivery contracts; GitHub Actions owns those gates.
-
-After smoke PASS:
-- preserve v0.39 full-PASS branch at exact watched smoke HEAD
-- write full PASS report
-- move to Stage 4 SHIELD / armor
+If exact Stage 4 numerical values are not already frozen, stop at analysis/options and obtain explicit user approval before patching numbers.
 
 ## Validation policy
 Default:
-`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
+`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`
+
+Automatable validation must not be delegated to the user unless CI cannot execute the gate.
 
 ## AI FILL semantic
 Configured AI filler positions remain fixed occupied positions. Humans do not dynamically displace them.
