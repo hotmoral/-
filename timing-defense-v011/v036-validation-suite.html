@@ -1,0 +1,30 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Defense v0.36 validation suite</title>
+<style>body{font:14px system-ui;background:#101714;color:#e7eee9;padding:18px}h1{font-size:20px}.row{padding:8px 10px;margin:6px 0;background:#17211c;border-radius:8px}.pass{color:#9ee6ad}.fail{color:#ff9e9e}.run{color:#e7d79b}pre{white-space:pre-wrap;background:#17211c;padding:14px;border-radius:10px;max-width:980px}iframe{display:none}</style>
+<h1>v0.36 Slice A automated validation</h1>
+<div id="server" class="row run">SERVER · RUNNING…</div>
+<div id="client" class="row run">CLIENT · WAITING…</div>
+<div id="multi" class="row run">MULTICLIENT · WAITING…</div>
+<div id="final" class="row run">FINAL · RUNNING…</div>
+<pre id="out"></pre>
+<iframe id="clientFrame"></iframe><iframe id="multiFrame"></iframe>
+<script>
+(async()=>{
+  const result={version:'0.36-cf.3-validation-suite',server:null,client:null,multiclient:null,ok:false};
+  const set=(id,state,text)=>{const el=document.getElementById(id);el.className=`row ${state}`;el.textContent=text};
+  async function getJson(url){const r=await fetch(url,{cache:'no-store'});const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.failed?.join(', ')||d?.error||`HTTP ${r.status}`);return d}
+  function runFrame(id,url,timeout){return new Promise((resolve,reject)=>{const f=document.getElementById(id),t=setTimeout(()=>reject(new Error(`${id} timeout`)),timeout);f.onload=()=>{const poll=setInterval(()=>{try{const title=f.contentDocument?.title||'';if(!/^(PASS|FAIL) ·/.test(title))return;clearInterval(poll);clearTimeout(t);const text=f.contentDocument?.getElementById('out')?.textContent||'{}';const data=JSON.parse(text);resolve(data)}catch(e){clearInterval(poll);clearTimeout(t);reject(e)}},120)};f.src=`${url}${url.includes('?')?'&':'?'}suite=${Date.now()}`})}
+  try{
+    result.server=await getJson('/api/diagnostics/v036-slice-a');set('server',result.server.ok?'pass':'fail',`SERVER · ${result.server.ok?'PASS':'FAIL'} · ${result.server.passed}/${result.server.total}`);
+  }catch(e){result.server={ok:false,error:String(e)};set('server','fail',`SERVER · FAIL · ${e.message||e}`)}
+  try{
+    set('client','run','CLIENT · RUNNING…');result.client=await runFrame('clientFrame','/v036-client-selftest.html',8000);set('client',result.client.ok?'pass':'fail',`CLIENT · ${result.client.ok?'PASS':'FAIL'} · ${result.client.passed}/${result.client.total}`);
+  }catch(e){result.client={ok:false,error:String(e)};set('client','fail',`CLIENT · FAIL · ${e.message||e}`)}
+  try{
+    set('multi','run','MULTICLIENT · RUNNING…');result.multiclient=await runFrame('multiFrame','/v036-multiclient-sim.html',35000);set('multi',result.multiclient.ok?'pass':'fail',`MULTICLIENT · ${result.multiclient.ok?'PASS':'FAIL'} · ${result.multiclient.passed}/${result.multiclient.total}`);
+  }catch(e){result.multiclient={ok:false,error:String(e)};set('multi','fail',`MULTICLIENT · FAIL · ${e.message||e}`)}
+  result.ok=!!(result.server?.ok&&result.client?.ok&&result.multiclient?.ok);
+  set('final',result.ok?'pass':'fail',`FINAL · ${result.ok?'PASS':'FAIL'}`);document.getElementById('out').textContent=JSON.stringify(result,null,2);document.title=`${result.ok?'PASS':'FAIL'} · v0.36 validation suite`;
+})();
+</script>
