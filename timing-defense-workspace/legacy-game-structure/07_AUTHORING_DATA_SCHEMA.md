@@ -1,7 +1,7 @@
 # Timing Defense — Authoring Data Schema
 
 Date: 2026-10-22 KST  
-Status: **STRUCTURAL SCHEMA DRAFT V0.4 / NO PRODUCTION NUMBERS**
+Status: **STRUCTURAL SCHEMA DRAFT V0.5 / NO PRODUCTION NUMBERS**
 
 ## 1. 목적
 
@@ -9,7 +9,9 @@ Campaign/Tier/Stage/Encounter/Meta progression을 코드에 하드코딩하지 �
 
 상위 기준:
 - `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
+- `31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 - `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
+- `38_FORMATION_DEPTH_SCHEMA_AMENDMENT_V0_1.md`
 
 ---
 
@@ -39,7 +41,6 @@ campaignSpine:
   tierNamespaceOpenEnded: true
   monsterRegistryVersion: string
   masteryProfileVersion: string
-
   tierOrder: [tierId]
 
   globalRules:
@@ -51,7 +52,7 @@ campaignSpine:
 `initialTierCountCandidate`는 launch/initial campaign 후보 수다.
 Lifetime final Tier count를 의미하지 않는다.
 
-`tierNamespaceOpenEnded: true`를 기본 구조로 두어 T6/T7/... 확장을 허용한다.
+`tierNamespaceOpenEnded: true`를 기본 구조로 두어 T5/T6/T7/... 확장을 허용한다.
 
 ---
 
@@ -75,7 +76,7 @@ Validation:
 - 신규 monster는 registry version-up으로 추가 가능
 - 기존 pressure taxonomy로 설명 불가하면 taxonomy version-up 허용
 
-현재 9종은 registry V1의 initial mechanically-authoritative set일 뿐 lifetime final roster가 아니다.
+현재 9종은 registry V1의 mechanically-authoritative foundation일 뿐 lifetime final roster가 아니다.
 
 ---
 
@@ -86,7 +87,6 @@ accountProgress:
   version: string
   permanentRewardTrackVersion: string
   achievementCatalogVersion: string
-
   accountPermanentStats: {}
   achievementCompletions: [achievementId]
   unlockedTitles: [titleId]
@@ -103,7 +103,7 @@ accountProgress:
           attempts: integer
 ```
 
-`globalStarTotal = sum(bestStars)`에서 파생.
+`globalStarTotal = sum(bestStars)`에서 파생한다.
 
 ---
 
@@ -230,7 +230,7 @@ tier:
     allowedProfiles: [P0_FRESH|P1_BALANCED|P2_STAR_GROWN|P3_ACHIEVEMENT_ASSISTED|OVERGROWN]
 
   difficultyTarget:
-    masteryProfile: SKILLED_V2
+    masteryProfile: SKILLED_V2_CENTRAL
     fullTierClearUpperBound: number|null
     tier1Exception: boolean
 
@@ -329,11 +329,19 @@ formation:
   slots:
     - lane: ground|air
       depth: front|mid|back
+      spawnXOffset: number|null
       offsetY: number|null
       spacing: number|null
       arrivalOffsetMs: number|null
   targetOrderIntent: string
 ```
+
+`spawnXOffset` semantics:
+- positive = farther from wall / deeper initial backline
+- zero/null = common encounter spawn anchor
+- it shapes authoritative geometry only; it does not override target selection
+
+Kinematic preflight showed that `BACK` label + delayed spawn alone is insufficient when unit speeds differ. Therefore an explicit X-depth capability is now required by the design schema. Exact units/bounds/production values remain OPEN.
 
 ```yaml
 cadence:
@@ -345,6 +353,7 @@ cadence:
 ```
 
 FRONT/MID/BACK은 target override가 아니라 authoring intent다.
+Runtime targeting continues to use actual frontmost/valid position.
 
 ---
 
@@ -352,19 +361,22 @@ FRONT/MID/BACK은 target override가 아니라 authoring intent다.
 
 ```yaml
 masteryProfile:
-  id: LEARNING|AVERAGE|SKILLED_V2|HIGH_MASTERY_STRESS
+  id: LEARNING|AVERAGE|SKILLED_V2_CONSERVATIVE|SKILLED_V2_CENTRAL|SKILLED_V2_STRONG|HIGH_MASTERY_STRESS
   version: string
   timingDistribution: {}
   comboModel: {}
   heavyCompletionModel: {}
   inputErrorModel: {}
+  pressureDegradationModel: {}
+  targetTurnoverRecoveryModel: {}
 ```
 
-`SKILLED_V2` requirement:
+`SKILLED_V2` family requirements:
 - combo 40을 high-mastery-only로 모델링하지 않음
 - old skilled보다 높은 combo maintenance/timing competence
+- one iid timing vector만으로 전체 profile을 표현하지 않음
 
-Exact probabilities are OPEN until measured.
+Exact probabilities are OPEN until measured/calibrated.
 
 ---
 
@@ -390,6 +402,8 @@ simulationResult:
   campaignSpineVersion: string
   monsterRegistryVersion: string
   tierDataVersion: string
+  encounterEnvelopeVersion: string|null
+  recipeVersion: string|null
   dataHash: string
   seed: integer
   modelMode: CURRENT_AUTHORITY|LEGACY_PARITY_CANDIDATE|FUTURE_SKILL_PLACEHOLDER
@@ -405,7 +419,26 @@ simulationResult:
     failedStage: integer|null
     stars: 0..3
 
-  metrics: {}
+  metrics:
+    killOrder: []
+    frontlineBlockTime: number|null
+    targetReorderCount: integer|null
+    wallDamage: number|null
+    peakActive: integer|null
+    chargerWindups: integer|null
+    chargerCompleted: integer|null
+    chargerInterrupted: integer|null
+    chargerErasedBeforeWindup: integer|null
+    splitterParents: integer|null
+    splitterChildren: integer|null
+    splitterChildFrontlineTime: number|null
+    supporterAuraUptime: number|null
+    supporterScreenedAuraUptime: number|null
+    siegerFirstShotAt: number|null
+    siegerShotCount: integer|null
+    siegerScreenedFiringUptime: number|null
+    flyerGeometryOpportunityTime: number|null
+    classOpportunityCoverage: number|null
 ```
 
 Tier aggregate report must include:
@@ -448,7 +481,7 @@ accountSimulation:
 - future Tier IDs permitted beyond initial campaign candidate
 
 ## Difficulty
-- non-T1 standard Tier with intended-entry SKILLED_V2 full-clear >=0.60 -> warning/classification `TOO_EASY_FOR_SKILLED` unless explicitly justified
+- non-T1 standard Tier with intended-entry SKILLED_V2_CENTRAL full-clear >=0.60 -> warning/classification `TOO_EASY_FOR_SKILLED` unless explicitly justified
 - OVERGROWN replay result does not satisfy/fail this gate
 
 ## Star
@@ -464,8 +497,11 @@ accountSimulation:
 - SUPPORTER stacking contract respected
 - no manual-target assumption
 
-## Target order
-- authoring intent vs simulated actual order measurable
+## Formation / target order
+- `depth`/`spawnXOffset` are geometry intent, never aggro override
+- authoring intent vs simulated actual front sequence measurable
+- BACK unit becoming frontmost before intended exposure window can emit warning
+- excessive depth that prevents intended aura/interaction can emit warning
 
 ---
 
@@ -478,7 +514,8 @@ monster-registry-vN
 pressure-taxonomy-vN
 mastery-profile-vN
 tier-data-v0.x
-encounter-library-v0.x
+encounter-envelope-v0.x
+representative-recipes-v0.x
 permanent-reward-v0.x
 achievement-catalog-v0.x
 cross-class-reward-graph-v0.x
