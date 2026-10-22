@@ -1,4 +1,4 @@
-version: model-a-critical-role-expression-candidates-v0.1
+version: model-a-critical-role-expression-candidates-v0.2
 status: BOUNDED_DIAGNOSTIC_CANDIDATES_NOT_PRODUCTION_AUTHORING
 
 source:
@@ -7,6 +7,7 @@ source:
     - 48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md
     - 49_E11_SIEGE_TIMING_ADJUSTMENT_REPORT_V0_1.md
     - 50_CROSS_BRACKET_ROLE_EXPRESSION_ROBUSTNESS_V0_1.md
+    - 52_ROLE_METRICS_V0_2_INSTRUMENTATION.md
   playerModel: model-a-class-action-trace-bracket-v0.1
   playerModelStatus: CALIBRATION_BRACKET_NOT_FITTED
   powerMode: CURRENT_AUTHORITY_LV6
@@ -14,9 +15,10 @@ source:
 rules:
   - this file is an overlay on representative recipes, not a replacement production schedule
   - entryShiftTowardWall is relative to the current common spawn anchor
-  - relativeSpecialOffset is total desired special-unit depth relative to the shifted formation base
+  - relativeSpecialOffsets are total desired type depths relative to the shifted formation base
+  - spawnTimeOverridesMs use 1-based occurrenceIndex within each monster type
   - designatedRoleMonsters are the roles required for contract admission in that representative recipe
-  - exact production coordinates and timing remain open
+  - exact production coordinates/timing and minimum-readable milliseconds remain open
 
 criticalRecipes:
   T1_E03_M:
@@ -27,16 +29,22 @@ criticalRecipes:
 
   T3_E07_M:
     designatedRoleMonsters: [CHARGER]
-    entryShiftTowardWall: 0.54
+    entryShiftTowardWall: 0.44
     relativeSpecialOffsets:
-      CHARGER: 0.10
+      CHARGER: 0.00
+    spawnTimeOverridesMs:
+      - {occurrenceType: CHARGER, occurrenceIndex: 1, tMs: 1550}
+    evidenceNote: localized timing/depth refinement raises the three-bracket five-class minimum visible windup to ~435ms in the semantic-mirror rerun while retaining zero sampled wall damage
 
   T3_E13_H:
     designatedRoleMonsters: [RUNNER, CHARGER]
-    entryShiftTowardWall: 0.40
+    entryShiftTowardWall: 0.425
     relativeSpecialOffsets:
       CHARGER: 0.00
-    evidenceNote: independent three-bracket five-class probe found all-15 visible-windup expression with zero sampled contact wall damage around 0.40..0.41
+    spawnTimeOverridesMs:
+      - {occurrenceType: CHARGER, occurrenceIndex: 1, tMs: 760}
+      - {occurrenceType: CHARGER, occurrenceIndex: 2, tMs: 1960}
+    evidenceNote: delaying both CHARGERs +400ms while using the bounded entry candidate raises minimum visible windup to ~430ms across all three brackets/five classes with zero sampled wall damage
 
   T3_E15_M:
     designatedRoleMonsters: [RUNNER, SPLITTER]
@@ -46,6 +54,7 @@ criticalRecipes:
     entryShiftTowardWall: 0.49
     relativeSpecialOffsets:
       CHARGER: 0.10
+    evidenceNote: three-bracket five-class minimum visible windup ~445ms in current candidate probe with zero sampled wall damage
 
   T4_E11_M:
     designatedRoleMonsters: [SHIELD, BRUTE, SIEGER]
@@ -55,19 +64,31 @@ criticalRecipes:
     spawnTimeOverridesMs:
       - {occurrenceType: GRUNT, occurrenceIndex: 1, tMs: 750}
       - {occurrenceType: GRUNT, occurrenceIndex: 2, tMs: 1000}
-    evidenceNote: preserves five-class SIEGER role opportunity while removing the prior CENTRAL ordinary contact leak; weaker-trace temporal wall pressure remains WATCH
+      - {occurrenceType: SIEGER, occurrenceIndex: 1, tMs: 1250}
+    evidenceNote: two GRUNTs delayed +250ms and SIEGER advanced -300ms; current semantic-mirror rerun preserves all-five opportunity and raises minimum SIEGER windup opportunity to ~470ms; CONSERVATIVE ordinary contact wall hits occur only after first SIEGER response window begins
 
   T4_E12_M:
     designatedRoleMonsters: [SHIELD, BRUTE, SUPPORTER]
+    relativeSpecialOffsets:
+      SUPPORTER: 0.02
+    spawnTimeOverridesMs:
+      - {occurrenceType: SUPPORTER, occurrenceIndex: 1, tMs: 1050}
+    evidenceNote: localized support timing/depth refinement raises minimum aura expression to ~755ms and minimum screened-aura ratio to ~0.83 across the current three-bracket five-class probe, with zero sampled wall damage
 
   T4_E16_M:
     designatedRoleMonsters: [SPLITTER, SUPPORTER]
+    relativeSpecialOffsets:
+      SUPPORTER: 0.00
+    spawnTimeOverridesMs:
+      - {occurrenceType: SUPPORTER, occurrenceIndex: 1, tMs: 2800}
+    evidenceNote: small -200ms timing and -0.02 depth change raises minimum aura expression to ~955ms and minimum screened-aura ratio to ~0.39 with zero sampled wall damage
 
   T4_E19_M:
     designatedRoleMonsters: [SHIELD, BRUTE, SUPPORTER, SIEGER]
     entryShiftTowardWall: 0.70
     relativeSpecialOffsets:
       SIEGER: 0.10
+    evidenceNote: all five retain SIEGER response-state opportunity; current minimum observed windup opportunity ~535ms and strong SUPPORTER expression remains present
 
 admission:
   requireAllFiveClassesPerProfile: true
