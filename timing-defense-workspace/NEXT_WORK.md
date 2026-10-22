@@ -9,7 +9,7 @@ Updated: 2026-10-22 KST
 
 ---
 
-# ACTIVE PHASE — Class-aware Layer-A Capability Window Calibration
+# ACTIVE PHASE — Monster Role-Expression / Activation-Window Calibration
 
 Completed chain:
 
@@ -23,108 +23,152 @@ Master Campaign Spine
  -> Layer-A admission PASS
  -> class-aware CURRENT_AUTHORITY micro-sim V0.1 COMPLETE
  -> absolute entry-depth activation diagnostic COMPLETE
+ -> Monster Role Expression Contract V0.1 ESTABLISHED
+ -> critical-set role-expression audit COMPLETE / ADMISSION BLOCKED
 ```
 
-Current key docs:
-1. `legacy-game-structure/42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
-2. `legacy-game-structure/44_ENTRY_DEPTH_ACTIVATION_WINDOW_REPORT_V0_1.md`
-3. `legacy-game-structure/43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
-4. `legacy-game-structure/41_CLASS_AWARE_ACTION_TRACE_MODEL_V0_1.md`
-5. `legacy-game-structure/40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
-6. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
+Read first:
+1. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+2. `legacy-game-structure/46_ROLE_EXPRESSION_ADMISSION_AUDIT_V0_1.md`
+3. `legacy-game-structure/47_ROLE_EXPRESSION_SCHEMA_AMENDMENT_V0_1.md`
+4. `legacy-game-structure/44_ENTRY_DEPTH_ACTIVATION_WINDOW_REPORT_V0_1.md`
+5. `legacy-game-structure/42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
+6. `legacy-game-structure/43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
+7. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
+8. `legacy-game-structure/24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
 
-Data/tools:
+Machine-readable:
+- `legacy-game-structure/data/monster_role_expression_contract_v0_1.yaml`
+- `legacy-game-structure/data/role_expression_activation_search_v0_1.yaml`
 - `legacy-game-structure/data/model_a_class_action_trace_bracket_v0_1.yaml`
 - `legacy-game-structure/data/model_a_representative_recipes_v0_1.yaml`
 - `legacy-game-structure/data/model_a_kinematic_anchor_v0_1.yaml`
 - `legacy-game-structure/data/model_a_combat_sensitivity_anchor_v0_1.yaml`
+
+Tools:
+- `tools/validate_monster_role_expression_contract.py`
+- `tools/evaluate_stateful_role_expression.py`
+- `tools/scan_activation_window_candidates.py`
 - `tools/simulate_class_aware_layer_a.py`
 - `tools/sweep_special_activation_entry_depth.py`
 
 ---
 
-# Current authoritative design truth
+# User-confirmed structural truth
 
-- same Tier/Stage content across all five classes
-- class progression independent
-- 50 Stage per Tier
-- 0/1/2/3★ boundaries remain 1–19 / 20–39 / 40–49 / Stage50 clear
-- stars broad account growth; achievements targeted cross-class growth
+Existing truth remains:
+- 5 classes, independent Tier progression
+- same Tier/Stage combat content across classes
+- Tier = 50 Stage
+- fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / Stage50 clear=3★
+- stars = broad account growth; achievements = targeted cross-class growth
 - recoverable soft walls allowed; hard class lockout forbidden
-- Model A remains default bounded simulation spine:
-  - T1 G/R/B
-  - T2 +SH/F
-  - T3 +C/SP
-  - T4 +SUP/SI
-- future T5+ expansion open
-- non-T1 intended-entry fitted `SKILLED_V2_CENTRAL` full-clear target remains <60%
-- combo40 must remain skilled-achievable
-- Lv31 target window remains Stage41–45
+- current 9 monsters are V1 foundation, not lifetime final roster
+- T1 does not expose all 9; higher Tiers introduce new monsters
+- T5+ monster/Tier expansion remains open
+- fitted non-T1 `SKILLED_V2_CENTRAL` full-clear should normally remain <60%
+- combo40 is skilled-achievable
+- Lv31 target unlock window = Stage41–45
+- Stage46–49 = post-Lv31 mastery; Stage50 = final application
+
+Newly explicit user-confirmed monster rule:
+
+> intended encounters must not let a monster spawn and disappear before its role is meaningfully perceivable.
+
+This means:
+- minimum role-expression opportunity is required
+- successful full activation is not always required
+- skilled counterplay after readable expression is valid
+- `PRE_EXPRESSION_DEATH_WITHOUT_READABLE_COUNTERPLAY` is invalid authoring
 
 ---
 
-# New class-aware findings
+# Role-expression contract — current nine
 
-Critical subset:
-- 10 representative recipes
-- 3 unfitted deterministic trace brackets
-- 5 classes
-- CURRENT_AUTHORITY_LV6
+- GRUNT: baseline exempt
+- RUNNER: speed must change arrival/front-order behavior
+- BRUTE: must meaningfully hold/absorb frontline attention
+- SHIELD: mitigation must change effective damage/hit investment
+- FLYER: vertical geometry must create actual opportunity difference
+- CHARGER: visible windup + response window required
+- SPLITTER: split must create meaningful post-death population/target-state change
+- SUPPORTER: aura must reach at least one non-self target for a meaningful interval
+- SIEGER: standoff + readable first-shot opportunity required
 
-Headline diagnostics:
-- Mage/Rogue/Archer clear much faster than Knight/Tank in the current optimistic trace bracket.
-- Tank clear time alone is a bad utility metric because knockback can lengthen combat while protecting the wall.
-- default T3 CHARGER representative recipes produced **0 windups** across the critical trace/class sweep.
-- default T4 E11/E19 SIEGER produced **0 shots** across the critical trace/class sweep.
-- SUPPORTER remains active but screened-aura duration varies strongly by class/throughput.
-- SPLITTER population transformation occurs, but current optimistic brackets produced no child wall leak in the sampled recipes.
-
-These results are structural diagnostics, not production balance verdicts.
+Future monsters must declare the same contract fields before admission.
 
 ---
 
-# Absolute entry-depth finding
+# Current admission status
 
-Relative FRONT/MID/BACK depth is not sufficient.
-The whole encounter's absolute entry position is a separate authoring axis.
+```text
+ROLE_EXPRESSION_ADMISSION = BLOCKED
+```
 
-Current diagnostic only:
-- T3_E17 CHARGER all-five windup visibility emerged around ~0.45 X shift toward wall.
-- T4_E11 SIEGER broad 5-class shot visibility appeared around ~0.70–0.80 X shift.
-- T4_E19 broad 5-class shot visibility appeared around ~0.75–0.80 X shift.
-- too much forward shift can remove capability again because the special becomes exposed/frontmost and dies during windup.
+Current status:
+- GRUNT = BASELINE_EXEMPT
+- RUNNER = MEASUREMENT_REQUIRED
+- BRUTE = PRELIMINARY_ROLE_PRESENT / METRIC_REQUIRED
+- SHIELD = MEASUREMENT_REQUIRED
+- FLYER = MEASUREMENT_REQUIRED
+- CHARGER = FAIL_DEFAULT_GEOMETRY
+- SPLITTER = PARTIAL_PASS / WATCH
+- SUPPORTER = PASS_WITH_WATCH
+- SIEGER = FAIL_DEFAULT_GEOMETRY
 
-Therefore activation is **non-monotonic**.
-These coordinates are NOT production values.
+This is localized encounter/simulation work. No broad campaign redesign is required.
+
+---
+
+# Known activation search anchors — diagnostic only
+
+CHARGER:
+- E07: first useful windup evidence begins around ~0.25; interrupt evidence around ~0.30
+- E17: all-five windup visibility around ~0.45
+
+SIEGER:
+- E11: all-five actual-shot visibility around ~0.70–0.80; collapse near ~0.85
+- E19: all-five actual-shot visibility around ~0.75–0.80; collapse near ~0.85
+
+These are **search anchors, not production coordinates**.
+
+Fine-search data now bounds:
+- E07 0.20–0.40
+- E17 0.35–0.55
+- E11 0.65–0.84
+- E19 0.68–0.84
+- step 0.01
 
 ---
 
 # EXACT NEXT BOUNDARY
 
-Next bounded tranche = **stateful capability activation-window authoring**.
+Next bounded tranche = **critical-set role-expression calibration**.
 
 Order:
-1. formalize absolute entry-depth candidate ranges for T3 CHARGER recipes,
-2. preserve first-teach reaction/readability time,
-3. preserve relative screen/backline order,
-4. find CHARGER windows where windup is visible and interruptable rather than erased,
-5. formalize SIEGER entry/spawn-time windows without unavoidable wall damage,
-6. require SIEGER first-shot visibility across multiple classes while retaining class asymmetry,
-7. rerun CURRENT_AUTHORITY five-class micro-sim,
-8. add normalized role metrics for Tank control and Archer/Mage/Rogue geometry/throughput,
-9. only after capability-expression PASS expand from critical subset to all 20 representative recipes,
-10. then fit/collect actual SKILLED_V2 harness data,
-11. synthetic Tier slice only after fitted or sufficiently bounded player model exists.
+1. fine-scan E07/E17 CHARGER activation windows
+2. find a window with visible windup + real interrupt opportunity across all five classes
+3. reject windows that make wall pressure unavoidable before response
+4. fine-scan E11/E19 SIEGER windows
+5. prefer contiguous all-five activation regions with lower wall pressure, not a single coordinate
+6. add SIEGER standoff/windup/first-shot-opportunity instrumentation so zero-shot can be separated from skilled counterplay
+7. add SPLITTER child lifetime/frontline/population-delta metrics
+8. add SUPPORTER normalized aura ratio metrics
+9. add RUNNER/BRUTE/SHIELD/FLYER passive-role metrics
+10. rerun the 10-recipe critical subset under CURRENT_AUTHORITY
+11. require critical-set role-expression PASS/WATCH acceptable state
+12. then expand to all 20 representative recipes
+13. only after all-20 role audit return to fitted SKILLED_V2 harness and synthetic Tier slices
 
 Do NOT yet:
-- author exact 200 Stage campaign,
-- freeze production HP/speed/armor/trigger/standoff values,
-- promote the current 600/750/900 ms trace brackets to SKILLED_V2,
-- freeze final Tier count,
-- freeze EXP/star/achievement values,
-- change live gameplay code,
-- freeze boss/shop cadence,
-- start detailed 3P/4P production balance.
+- author exact 200 launch stages
+- freeze production HP/speed/armor/entry coordinates/trigger/standoff values
+- promote current deterministic trace brackets to SKILLED_V2
+- freeze final Tier count
+- freeze EXP/star/achievement values
+- change live gameplay code
+- freeze boss/shop cadence
+- start detailed 3P/4P production balance
 
 Governance:
-`structure -> encounter envelope -> class-aware capability expression -> fitted player model -> synthetic slice -> full Tier -> meta recovery -> explicit freeze -> implementation`.
+`structure -> encounter envelope -> role-expression contract -> activation window -> class-aware role audit -> fitted player model -> synthetic slice -> full Tier -> meta recovery -> explicit freeze -> implementation`.
