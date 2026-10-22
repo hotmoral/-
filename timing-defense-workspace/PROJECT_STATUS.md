@@ -36,6 +36,7 @@ Primary docs:
 - recoverable soft walls are intentional.
 - hard class lockout forbidden.
 - Lv31 must have a meaningful multi-Stage play window before Stage50.
+- **Lv31 target unlock window is Stage41–45.**
 
 ---
 
@@ -93,30 +94,32 @@ Use if Model A T4 overload fails testing.
 
 ---
 
-# Run skill-power spine — NEW Lv31 guardrail
+# Run skill-power spine — Lv31 structural window
 
 Exact EXP curve remains open.
-Relative skill progression remains a structural design task.
 
 User-confirmed requirement:
 - Lv31 should not unlock only at the very end.
-- players should have multiple late-run Stages to use and enjoy the final skill before Stage50.
+- **Lv31 target unlock window = Stage41–45.**
+- Stage46–49 should provide repeated post-unlock use/mastery opportunities.
 - Stage50 should test an already-familiar Lv31 skill, not introduce it.
 
-First calibration hypothesis:
-- `SKILLED_V2` expected Lv31 reach around Stage38–42
-- Stage41–49 includes repeated Lv31 mastery-use opportunities
-- roughly 8–12 Stages of post-unlock use opportunity is the first candidate target
+Structural interpretation:
+- Stage41–45 = Lv31 acquisition-transition band
+- Stage46–49 = explicit Lv31 mastery-use band
+- Stage50 = final application
 
-This is not an EXP freeze.
 Simulation must detect:
-- insufficient post-Lv31 window
+- unlock distribution drifting materially beyond Stage45
+- insufficient post-Lv31 play window
 - Lv31 power cliff that trivializes late stages
 - class clear-rate divergence caused by unequal Lv31 power
 - Lv26 window being compressed away
 
 Canonical detail:
 `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`.
+
+Exact EXP formula and percentile acceptance cutoffs are not frozen.
 
 ---
 
@@ -135,14 +138,15 @@ Retain as evidence only.
 
 1. define novelty budget for T1–T4
 2. place boss novelty placeholders
-3. refine relative class-skill reach bands
-4. preserve meaningful Lv26 and Lv31 post-unlock play windows
-5. audit skill novelty vs monster novelty collisions
-6. define SKILLED_V2 measurement/parameter plan
-7. estimate stars/soft-wall progression play volume
-8. static audit Model A
-9. if PASS, use Model A as bounded simulation spine
-10. if T4 overload FAIL, switch to Model B
-11. then resume encounter authoring
+3. refine Lv6/11/16/21/26 reach bands around the fixed Lv31 Stage41–45 target
+4. preserve a meaningful Lv26 use window
+5. reserve Stage46–49 for post-Lv31 mastery opportunities
+6. audit skill novelty vs monster novelty collisions
+7. define SKILLED_V2 measurement/parameter plan
+8. estimate stars/soft-wall progression play volume
+9. static audit Model A
+10. if PASS, use Model A as bounded simulation spine
+11. if T4 overload FAIL, switch to Model B
+12. then resume encounter authoring
 
 No production numbers are frozen.
