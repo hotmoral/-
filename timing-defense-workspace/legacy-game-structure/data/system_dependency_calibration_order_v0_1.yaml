@@ -45,8 +45,18 @@ workPackages:
 
   P2:
     name: MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
-    status: NEXT
+    status: PROPOSED_AWAITING_USER_DECISION
     dependsOn: [P0]
+    proposal:
+      - 73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md
+    decisionTopics:
+      - typed_hybrid_same_stat_additive_stacking
+      - scalar_stat_vs_effect_rule_separation
+      - outgoing_attack_pipeline_order
+      - defense_then_unique_effect_then_shield_order
+      - derived_stat_recomputation_ownership
+      - deterministic_power_attribution_ledger
+      - delayed_rounding_per_realized_hit
     output:
       - modifier_scope_schema
       - operation_order
@@ -55,7 +65,7 @@ workPackages:
 
   P3:
     name: TEN_STAGE_PERSISTENT_RUN_KERNEL
-    status: BLOCKED_BY_P2
+    status: BLOCKED_BY_P2_USER_DECISION
     dependsOn: [P1, P2]
     output:
       - deterministic_multistage_state_continuity
@@ -249,5 +259,6 @@ freezePolicy:
 
 currentBoundary:
   completedThrough: P1
-  next: P2
+  activeProposal: P2
+  awaitingUserDecision: true
   nextIntegration: P3
