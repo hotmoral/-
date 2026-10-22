@@ -27,6 +27,7 @@ Exact Stage recipe가 아니라 authoring window다.
 - Lv31: 41–45
 
 firstHighPressure는 major milestone median ±2와 겹치지 않는 방향을 우선한다.
+GRUNT처럼 capability novelty가 없는 baseline pressure는 이 경고에서 별도 취급한다.
 
 ---
 
@@ -39,9 +40,9 @@ Available after Tier start:
 
 | Monster | First teach candidate | First mixed candidate | First high-pressure candidate | Note |
 |---|---|---|---|---|
-| GRUNT | 1–2 | 4–6 | 21–29 | neutral baseline, high-pressure 의미는 count/formation |
+| GRUNT | 1–2 | 4–6 | 21–29 | neutral baseline; skill-collision warning exempt |
 | RUNNER | 5–7 | 8–12 | 21–24 | Lv6 overlap; first teach conservative |
-| BRUTE | 15–17 | 18–22 | 24–29 | Lv11과 분리, Lv16 transition 관찰 |
+| BRUTE | 15–17 | 18–20 | 21–23 | high-pressure before Lv21 window; later 24–29 can mix without first-pressure attribution |
 
 Guardrail:
 - Stage1–3 no unnecessary special grammar
@@ -98,11 +99,12 @@ Returning previous 7 available.
 
 | Monster | First teach | First mixed | First high-pressure | Note |
 |---|---|---|---|---|
-| SUPPORTER | 11–13 | 14–19 | 31–33 | screen/aura understanding |
-| SIEGER | 22–24 | 25–29 | 37–39 | objective pressure after Lv21 window |
+| SUPPORTER | 11–13 | 14–19 | 29–31 | first high-pressure before Lv26 median; combined synergy can continue later |
+| SIEGER | 22–24 | 25–29 | 37–39 | objective pressure after Lv26 transition |
 
 Required:
 - SUPPORTER and SIEGER first-teach separated
+- SUPPORTER-focused high pressure can occur before combined support/siege peak
 - combined high-pressure only after both mixed windows
 - Stage41–45 no new core mechanic
 
@@ -132,13 +134,27 @@ Warnings:
 - firstTeach Stage40+
 - firstHighPressure before readable mixed use
 - two major new firstTeach events within same 3-Stage window
-- firstHighPressure within major skill median ±2 without justification
+- non-baseline firstHighPressure within major skill median ±2 without justification
 
 ---
 
-# 8. Status
+# 8. Layer-0 precheck revision note
 
-These ranges are now the **default authoring candidate for bounded simulation**.
+Initial automatic precheck found:
+- T1 BRUTE first-high-pressure too close to Lv21
+- T4 SUPPORTER first-high-pressure too close to Lv26
+
+V0.1 windows were adjusted:
+- BRUTE 24–29 -> **21–23**
+- SUPPORTER 31–33 -> **29–31**
+
+This does not freeze exact Stage recipes. It reduces attribution ambiguity before simulation.
+
+---
+
+# 9. Status
+
+These ranges are the **default authoring candidate for bounded simulation**.
 They are not production Stage locks.
 
 If simulation/playtest shows overload, ranges can move while preserving:
