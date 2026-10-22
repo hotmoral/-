@@ -1,0 +1,49 @@
+name: Timing Defense v0.43 One-shot SPLITTER Source Patch
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v043-splitter-kernel
+    paths:
+      - '.github/workflows/timing-defense-v043-source-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-cloudflare-v043-splitter-kernel
+      - name: Patch Lv6/N3 geometry metadata for SPLITTER family
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          edits={
+            'timing-defense-cloudflare-poc/src/v036-entry.js':[
+              ("  flyer: { knockResist: .90, size: .78 }\n};", "  flyer: { knockResist: .90, size: .78 },\n  splitter:{ knockResist: .82, size: 1.00 },\n  'splitter-child':{ knockResist: .82, size: .62 }\n};"),
+              ("  return {id:monster.id,type:monster.type,x:room.xAt(monster,at),y,size:d.size||1};", "  const size=Number.isFinite(Number(monster.size))?Number(monster.size):(d.size||1);\n  return {id:monster.id,type:monster.type,x:room.xAt(monster,at),y,size};")
+            ],
+            'timing-defense-cloudflare-poc/src/v039-entry.js':[
+              ("  flyer:{knockResist:.90,size:.78}\n};", "  flyer:{knockResist:.90,size:.78},\n  splitter:{knockResist:.82,size:1.00},\n  'splitter-child':{knockResist:.82,size:.62}\n};"),
+              ("  return{id:monster.id,type:monster.type,x:room.xAt(monster,at),y,size:d.size||1,boss:!!monster.boss};", "  const size=Number.isFinite(Number(monster.size))?Number(monster.size):(d.size||1);\n  return{id:monster.id,type:monster.type,x:room.xAt(monster,at),y,size,boss:!!monster.boss};")
+            ]
+          }
+          for name,repls in edits.items():
+            p=Path(name); s=p.read_text()
+            for old,new in repls:
+              n=s.count(old)
+              if n!=1: raise SystemExit(f'{name}: expected one match, got {n}: {old!r}')
+              s=s.replace(old,new)
+            p.write_text(s)
+          PY
+      - name: Commit source patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add timing-defense-cloudflare-poc/src/v036-entry.js timing-defense-cloudflare-poc/src/v039-entry.js
+          git diff --cached --check
+          git commit -m "Use explicit SPLITTER geometry metadata"
+          git push origin HEAD:timing-defense-cloudflare-v043-splitter-kernel
