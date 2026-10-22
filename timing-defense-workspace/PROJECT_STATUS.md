@@ -12,9 +12,9 @@ Updated: 2026-10-23 KST
 
 # Current phase
 
-**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-B DIVERGENCE FOUND / USER DECISION GATE**
+**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-B MULTIPLAYER-TIMEBASE REASSESSMENT COMPLETE / REVISED USER DECISION GATE**
 
-Completed chain:
+Completed evidence chain:
 
 ```text
 P0 Foundation / role expression PASS_WITH_WATCHES
@@ -24,12 +24,18 @@ P0 Foundation / role expression PASS_WITH_WATCHES
  -> P3 Ten-Stage Persistent Run Kernel STRUCTURAL PASS
  -> P4 methodology USER APPROVED
  -> P4-A Marker-Only Inverse Design PASS
- -> P4-B Lv6→Lv21 Combat Feedback diagnostic COMPLETE
- -> EXP stabilization direction USER DECISION REQUIRED
+ -> P4-B Solo Lv6→Lv21 Combat Feedback diagnostic COMPLETE
+ -> P4-B Multiplayer / Timebase bounded precheck COMPLETE
+ -> revised EXP-routing decision REQUIRED
 ```
 
-Active dependency plan:
+Current active dependency-plan file remains:
 - `legacy-game-structure/data/system_dependency_calibration_order_v0_5.yaml`
+
+Important:
+- v0.5 was written before the multiplayer/timebase precheck and still contains the older immediate Option-D recommendation.
+- that recommendation is now **superseded for decision purposes** by documents 83/84;
+- no new routing or EXP semantic is active until the revised user decision closes.
 
 ---
 
@@ -52,10 +58,9 @@ T4 +SUP/SI
 T5+ future
 ```
 
-- provisional non-T1 intended-entry `SKILLED_V2_CENTRAL` full-Tier clear normally remains below 60% as an upper difficulty gate.
 - combo40 belongs inside ordinary skilled play.
 - Lv31 target unlock window = Stage41–45.
-- Stage46–49 = post-Lv31 mastery; Stage50 = final application, not tutorial.
+- Stage46–49 = post-Lv31 mastery; Stage50 = final application.
 - EXP must not force every Tier into the same encounter-flow shape.
 
 ---
@@ -65,21 +70,17 @@ T5+ future
 ## P1
 Authority: `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
 
-Persistent Base HP/combo/charge/level/EXP/run-state semantics, failure/retry and reconnect identity are structurally closed.
-
 ## P2
 Authority:
 - `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/data/modifier_pipeline_contract_v0_1.yaml`
-
-Typed additive scalar progression, effect/stat separation, deterministic attribution, N3 isolation and delayed rounding are structurally closed.
 
 ## P3
 Authority/evidence:
 - `legacy-game-structure/76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/77_P3_TEN_STAGE_PERSISTENT_RUN_EXECUTION_REPORT_V0_1.md`
 
-Result:
+P3 result:
 
 ```text
 30 / 30 primary 10-Stage runs PASS
@@ -88,44 +89,33 @@ Result:
 
 ---
 
-# P4 methodology — USER APPROVED
+# P4 methodology — USER APPROVED baseline
 
 Authority:
 - `legacy-game-structure/79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
 
-Approved baseline before P4-B evidence:
-1. valid completed local timing turn is the baseline EXP source;
-2. Heavy X+Y creates one combined-tier award;
-3. calibrate in `XP_CREDIT`;
-4. six cumulative milestone anchors + monotonic interpolation;
-5. T1–T4 × LOW/CENTRAL/HIGH synthetic calibration;
-6. Lv6 current authority + Lv11/16/21 v0.16 parity may feed P4-B; Lv26/Lv31 remain separate gates;
-7. first fit P50 while recording P25/P50/P75/P90;
-8. one universal EXP curve, no hidden class/Tier correction.
+Last approved EXP semantic baseline:
+- valid completed local timing turn is the EXP source;
+- Heavy X+Y gives one combined-tier award;
+- use dimensionless `XP_CREDIT` for calibration;
+- six cumulative milestone anchors + monotonic interpolation;
+- one universal EXP curve is the target;
+- no hidden class/Tier multiplier;
+- encounter identity must not be homogenized to fit EXP.
 
-User-confirmed additional principle:
-- gameplay-natural encounter levers should address bad Stage pacing where appropriate;
-- progression calibration must not homogenize Tier identity.
+This baseline is now treated as **provisional for diagnostics, not numerically/finally frozen** while the multiplayer dependency is unresolved.
 
 ---
 
-# P4-A — PASS / COMPLETE
+# P4-A — marker-only PASS
 
 Authority/evidence:
 - `legacy-game-structure/80_P4A_MARKER_ONLY_INVERSE_DESIGN_EXECUTION_REPORT_V0_1.md`
-- `legacy-game-structure/data/p4a_marker_opportunity_corpus_v0_1.json`
 - `legacy-game-structure/data/p4a_marker_inverse_design_summary_v0_1.json`
 
-Executed:
+12 synthetic 50-Stage fixtures × 100 deterministic streams = 1,200 marker-only runs.
 
-```text
-12 synthetic 50-Stage fixtures
-× 100 deterministic central streams
-= 1,200 marker-only Tier runs
-```
-
-Marker-only CENTRAL supported common universal threshold intervals for all six milestones.
-First midpoint anchors remain **candidate only / NOT FROZEN**:
+First midpoint anchors remain candidate only:
 
 ```text
 A6    130.59375
@@ -136,126 +126,127 @@ A26   747.87500
 A31   987.84375
 ```
 
-P4-A therefore proved universal progression is feasible only before real skill-power feedback is coupled in.
-
 ---
 
-# P4-B — DIVERGENCE FOUND
+# P4-B solo feedback — divergence remains real
 
-Authority/evidence:
+Authority:
 - `legacy-game-structure/81_P4B_LV6_LV21_COMBAT_FEEDBACK_EXECUTION_REPORT_V0_1.md`
 - `legacy-game-structure/data/p4b_combat_feedback_divergence_v0_1.json`
 
-Permitted power used:
-- Lv6 current authoritative mechanics;
-- Lv11/Lv16/Lv21 exact v0.16 mechanics as simulation-only parity candidates;
-- Lv26/Lv31 power OFF.
-
-Independent P3 Lv6 cross-check was reproduced closely for Knight/Rogue/Tank/Archer; Mage is retained as a conservative WATCH.
-
-Main finding:
+Finding:
 
 ```text
 P4B_UNIVERSAL_PURE_PER_TURN_WINDOW_CONFLICT
 ```
 
-Cause:
+Under solo-oriented combat feedback, offensive skills reduce later timing-turn opportunities while Tank's early defensive/control skills retain more.
+A universal threshold refit alone did not keep all current milestone windows, including confirmed Lv31 Stage41–45, jointly feasible.
 
-```text
-offensive class skill
- -> faster removal
- -> fewer valid timing turns
- -> less later XP
- -> later subsequent skills
+This remains:
 
-control/defensive early skill
- -> more timing turns remain
- -> more later XP
- -> earlier subsequent skills
-```
+`SOLO_PROGRESSION_DIVERGENCE_WATCH`
 
-Refitting the six universal thresholds alone did not solve the current milestone windows.
-Best bounded pure-per-turn search still produced approximately:
-
-```text
-Lv11 worst miss 1 Stage
-Lv16 worst miss 3
-Lv21 worst miss 4
-Lv26 worst miss 5
-Lv31 worst miss 5
-```
-
-Representative Lv31 conflict against the confirmed Stage41–45 target:
-- Tank: around Stage36–37 in several Tiers;
-- Mage: around Stage49–50 in some Tiers;
-- Knight T3: around Stage46.
-
-Therefore P4-B cannot proceed directly to Lv26 calibration while pretending the original pure-per-turn baseline remains structurally adequate.
-
-No class balance nerf, class/Tier XP multiplier, Stage-clear XP, encounter rewrite or new stabilization rule is authorized by this finding.
+It is not discarded.
 
 ---
 
-# Current decision gate
+# P4-B multiplayer / timebase precheck — new evidence
+
+Authority/evidence:
+- `legacy-game-structure/83_P4B_MULTIPLAYER_TIMEBASE_PRECHECK_V0_1.md`
+- `legacy-game-structure/data/p4b_multiplayer_timebase_precheck_v0_1.json`
+
+Boundary:
+- bounded historical 5-monster player-count-scaled pressure lane;
+- current SKILLED_V2_CENTRAL judgment model;
+- exact v0.16 Lv6–21 parity formulas;
+- all-human modeled teams;
+- not current 9-monster production multiplayer balance.
+
+New findings:
+1. shared team combat **does compress** the solo class divergence;
+2. mixed-team members still do not gain EXP at identical rates;
+3. the same class's XP/min changes with teammates;
+4. player-count encounter scaling materially changes per-player XP opportunity;
+5. wall-clock normalization does not automatically eliminate the difference because spawn/cadence can floor Stage duration;
+6. high EXP opportunity can coincide with worse clear/failure performance.
+
+4P TRAM Lv21 example, credit/min:
+
+```text
+Tank    91.83
+Rogue   93.53
+Archer  79.32
+Mage    75.06
+```
+
+max/min spread ≈ 24.6% in this bounded lane.
+
+Same-class teammate sensitivity at Lv21 ranged approximately:
+- Knight 14.25%
+- Rogue 6.96%
+- Tank 7.19%
+- Archer 6.86%
+- Mage 19.45%
+
+New classifications:
+
+```text
+TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+PLAYER_COUNT_SCALING_XP_DEPENDENCY
+MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+```
+
+---
+
+# Previous Option-D recommendation — REASSESSED
+
+Historical proposal:
+- `legacy-game-structure/82_P4B_EXP_STABILIZATION_DECISION_PROPOSAL_V0_1.md`
+
+Document 82's immediate recommendation of a `Stage Quality Budget + raw-turn hybrid` was made before the multiplayer/timebase evidence existed.
+
+Current status:
+
+**DO NOT APPROVE D AUTOMATICALLY FROM THE SOLO RESULT.**
+
+D remains a possible later stabilizer, but the evidence does not yet justify changing EXP semantics before current-roster multiplayer scaling is known.
+
+---
+
+# Revised decision gate
 
 Proposal:
-`legacy-game-structure/82_P4B_EXP_STABILIZATION_DECISION_PROPOSAL_V0_1.md`
+- `legacy-game-structure/84_P4B_EXP_DECISION_REASSESSMENT_PROPOSAL_V0_1.md`
 
 Options:
-- A — keep pure per-turn EXP and reopen common skill-reach expectations;
-- B — class-specific XP/threshold correction;
-- C — encounter-authoring-only correction;
-- D — **class-neutral Stage Quality Budget + raw-turn hybrid**.
+- **R1** — adopt Stage Quality Budget direction now;
+- **R2 (recommended)** — keep pure per-turn EXP as provisional diagnostic baseline, continue Lv26/Lv31 structural skill work, and require later multiplayer/timebase EXP reconvergence before permanent progression relies on the spine;
+- **R3** — freeze pure per-turn EXP as final now.
 
-Current recommendation: **D**, with C retained as the normal tool for local gameplay-shape defects.
+No route is active until user approval.
 
-Option D is not approved yet.
-Exact blend, Stage budget, quality vector, visible EXP scale and thresholds remain OPEN.
-
-Exploratory reduced-order sensitivity only:
+R2 is recommended because it distinguishes:
 
 ```text
-100% raw turn -> worst common-window miss ~5 Stages
-75% raw       -> ~3
-50% raw       -> ~2
-25% raw       -> a few ~1-Stage misses
-10% raw       -> all tested current windows feasible
-0% raw        -> all tested current windows feasible
+skill identity / player-power definition
+from
+final progression convergence under multiplayer scaling
 ```
 
-These percentages are not candidate final values; they only show that a tiny generic bonus is unlikely to solve the structural bias.
-
----
-
-# Exact current boundary
-
-```text
-P4B_DECISION — EXP_OPPORTUNITY_STABILIZATION_DIRECTION
-= AWAITING USER DECISION
-```
-
-Do not start P4-C Lv26 yet.
-Do not implement P4-B2 normalization methodology until the user chooses a direction.
-
-If Option D is approved, next bounded test is proposed as:
-
-```text
-raw-turn weight λ = 0.00 / 0.10 / 0.25 / 0.50
-```
-
-with full reach/class-spread/quality-sensitivity comparison before any exact value is selected.
+and avoids both premature normalization and premature pure-per-turn freeze.
 
 ---
 
 # Still not frozen
 
-- new EXP stabilization semantics
+- final EXP acquisition semantics after multiplayer reconvergence
 - exact XP_CREDIT vector
-- exact Stage progression budget
-- exact raw-turn blend
 - exact A6/A11/A16/A21/A26/A31
 - intermediate-level formula
 - player-visible EXP scale
+- player-count progression treatment
 - percentile tail acceptance gates
 - production monster coefficients / exact 200 Stages
 - shop/economy / Base HP
@@ -265,4 +256,4 @@ with full reach/class-spread/quality-sensitivity comparison before any exact val
 - multiplayer progression/scaling
 - production numerical implementation
 
-No production gameplay source was changed by P4-A/P4-B planning and diagnostics.
+No production gameplay source was changed by these diagnostics.
