@@ -1,0 +1,188 @@
+version: model-a-campaign-spine-v0.1
+status: DESIGNED_NOT_AUTHORITATIVE
+initialCampaignTierCount: 4
+lifetimeTierNamespace: open-ended
+
+skillReachWindows:
+  lv6: [5, 7]
+  lv11: [11, 14]
+  lv16: [18, 21]
+  lv21: [25, 28]
+  lv26: [32, 36]
+  lv31: [41, 45]
+
+lateBand:
+  pressureSoftWall: [31, 39]
+  starGateB: 40
+  lv31Ascension: [41, 45]
+  postLv31Mastery: [46, 49]
+  tierFinal: 50
+
+difficultyGate:
+  profile: SKILLED_V2_CENTRAL
+  nonT1FullTierClearUpperBoundExclusive: 0.60
+  t1ExceptionAllowed: true
+  evaluationState: intended-entry
+
+monsterRegistry:
+  currentV1:
+    - GRUNT
+    - RUNNER
+    - BRUTE
+    - SHIELD
+    - FLYER
+    - CHARGER
+    - SPLITTER
+    - SUPPORTER
+    - SIEGER
+  lifetimeFixedCount: false
+
+bossPlaceholders:
+  checkpointA:
+    stage: 10
+    bossRequired: false
+  previewSlot:
+    stage: 30
+    optional: true
+    purpose: preview any mandatory Stage50 boss-specific decision grammar
+  tierFinal:
+    stage: 50
+    bossCandidate: true
+    unpreviewedMandatoryMechanicAllowed: false
+
+tiers:
+  T1:
+    identity: Foundation / Timing & Frontline
+    introducedMonsters: [GRUNT, RUNNER, BRUTE]
+    availableMonsters: [GRUNT, RUNNER, BRUTE]
+    introductionWindows:
+      GRUNT:
+        firstTeach: [1, 2]
+        firstMixed: [4, 6]
+        firstHighPressure: [21, 29]
+      RUNNER:
+        firstTeach: [5, 7]
+        firstMixed: [8, 12]
+        firstHighPressure: [21, 24]
+      BRUTE:
+        firstTeach: [15, 17]
+        firstMixed: [18, 22]
+        firstHighPressure: [24, 29]
+    pressureEnvelope:
+      BASELINE: HIGH
+      FLOOD: LOW_MED
+      RUSH: MED
+      BULWARK: MED
+      BREACH: NONE
+      AERIAL: NONE
+      REPLICATE: NONE
+      SUPPORT: NONE
+      SIEGE: NONE
+    complexityEnvelope:
+      dominant: [C0, C1]
+      secondary: [C2]
+      rare: [C3]
+      avoid: [C4]
+
+  T2:
+    identity: Mitigation / Geometry
+    introducedMonsters: [SHIELD, FLYER]
+    availableMonsters: [GRUNT, RUNNER, BRUTE, SHIELD, FLYER]
+    introductionWindows:
+      SHIELD:
+        firstTeach: [5, 7]
+        firstMixed: [8, 12]
+        firstHighPressure: [21, 24]
+      FLYER:
+        firstTeach: [15, 17]
+        firstMixed: [18, 22]
+        firstHighPressure: [28, 31]
+    pressureEnvelope:
+      BASELINE: MED_HIGH
+      FLOOD: LOW_MED
+      RUSH: MED
+      BULWARK: HIGH
+      BREACH: NONE
+      AERIAL: MED_HIGH
+      REPLICATE: NONE
+      SUPPORT: NONE
+      SIEGE: NONE
+    complexityEnvelope:
+      dominant: [C1, C2]
+      secondary: [C3]
+      rare: []
+      avoid: [C4]
+
+  T3:
+    identity: Burst / Transformation
+    introducedMonsters: [CHARGER, SPLITTER]
+    availableMonsters: [GRUNT, RUNNER, BRUTE, SHIELD, FLYER, CHARGER, SPLITTER]
+    introductionWindows:
+      CHARGER:
+        firstTeach: [5, 7]
+        firstMixed: [8, 14]
+        firstHighPressure: [21, 24]
+      SPLITTER:
+        firstTeach: [15, 17]
+        firstMixed: [18, 22]
+        firstHighPressure: [28, 31]
+    pressureEnvelope:
+      BASELINE: MED
+      FLOOD: MED_HIGH
+      RUSH: MED_HIGH
+      BULWARK: MED
+      BREACH: HIGH
+      AERIAL: MED
+      REPLICATE: HIGH
+      SUPPORT: NONE
+      SIEGE: NONE
+    complexityEnvelope:
+      dominant: [C2]
+      secondary: [C1, C3]
+      rare: [C4]
+      avoid: []
+
+  T4:
+    identity: Formation / Siege
+    introducedMonsters: [SUPPORTER, SIEGER]
+    availableMonsters: [GRUNT, RUNNER, BRUTE, SHIELD, FLYER, CHARGER, SPLITTER, SUPPORTER, SIEGER]
+    introductionWindows:
+      SUPPORTER:
+        firstTeach: [11, 13]
+        firstMixed: [14, 19]
+        firstHighPressure: [31, 33]
+      SIEGER:
+        firstTeach: [22, 24]
+        firstMixed: [25, 29]
+        firstHighPressure: [37, 39]
+    pressureEnvelope:
+      BASELINE: LOW_MED
+      FLOOD: LOW_MED
+      RUSH: MED
+      BULWARK: MED_HIGH
+      BREACH: MED
+      AERIAL: MED
+      REPLICATE: MED
+      SUPPORT: HIGH
+      SIEGE: HIGH
+    complexityEnvelope:
+      dominant: [C2, C3]
+      secondary: [C1]
+      rare: [C4]
+      avoid: []
+
+metaProgression:
+  stars:
+    failStages1to19: 0
+    failStages20to39: 1
+    failStages40to49: 2
+    clearStage50: 3
+  tierUnlockFirstSimulationHypothesis: CLEAR_LOCK
+  permanentRewardValuesFrozen: false
+  achievementRewardEdgesFrozen: false
+
+futureExpansion:
+  preferredPath: NEW_TIER
+  nextTierIdsAllowed: [T5, T6, T7]
+  futureMonsterAdditionAllowed: true
+  pressureTaxonomyVersioningAllowed: true
