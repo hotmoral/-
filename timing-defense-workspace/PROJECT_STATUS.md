@@ -11,7 +11,7 @@ Updated: 2026-10-22 KST
 
 # Current planning phase
 
-**Monster Role-Expression / Activation-Window Calibration**
+**Critical-Set Role-Expression V0.2 Rerun**
 
 Upstream campaign structure remains sufficiently closed.
 Model A remains the default bounded simulation spine, not a production freeze.
@@ -19,16 +19,11 @@ Model A remains the default bounded simulation spine, not a production freeze.
 Primary campaign authority:
 - `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-Current role-expression authority:
-- `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
-- `legacy-game-structure/46_ROLE_EXPRESSION_ADMISSION_AUDIT_V0_1.md`
-- `legacy-game-structure/47_ROLE_EXPRESSION_SCHEMA_AMENDMENT_V0_1.md`
-
-Supporting Layer-A evidence:
-- `41_CLASS_AWARE_ACTION_TRACE_MODEL_V0_1.md`
-- `42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
-- `43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
-- `44_ENTRY_DEPTH_ACTIVATION_WINDOW_REPORT_V0_1.md`
+Current monster-role authority:
+- `45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+- `48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md`
+- `50_CROSS_BRACKET_ROLE_EXPRESSION_ROBUSTNESS_V0_1.md`
+- `52_ROLE_METRICS_V0_2_INSTRUMENTATION.md`
 
 ---
 
@@ -41,10 +36,10 @@ Supporting Layer-A evidence:
 - stars = broad account permanent growth.
 - achievements = targeted cross-class growth.
 - recoverable soft walls intentional; hard class lockout forbidden.
-- current 9 ordinary monsters are not lifetime final roster.
+- current 9 ordinary monsters are V1 foundation, not lifetime final roster.
 - T1 does not teach all 9; higher Tiers introduce new monsters.
 - future Tier/monster expansion open.
-- non-T1 intended-entry fitted `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
+- fitted non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
 - combo40 is skilled-achievable.
 - Lv31 target unlock window = Stage41–45.
 - Stage46–49 = post-Lv31 mastery.
@@ -52,10 +47,14 @@ Supporting Layer-A evidence:
 - intended encounters must not allow a monster to spawn and disappear before its role is meaningfully perceivable.
 
 Role-expression interpretation:
-- minimum expression opportunity required
-- full ability completion not always required
-- skilled counterplay after readable expression is valid
-- pre-expression deletion without readable counterplay is invalid authoring
+```text
+minimum role expression = required
+readable counterplay     = required
+full enemy activation    = not guaranteed
+```
+
+Skilled counterplay after readable expression is valid.
+`PRE_EXPRESSION_DEATH_WITHOUT_READABLE_COUNTERPLAY` is invalid authoring.
 
 ---
 
@@ -81,137 +80,190 @@ Fallback Model B remains available only if T4 lower-layer evidence fails.
 - Kinematic preflight: PASS WITH WATCHES
 - Generic DPS sensitivity: COMPLETE
 - Class-aware CURRENT_AUTHORITY micro-sim V0.1: COMPLETE for critical subset
-- Absolute entry-depth activation diagnostic: COMPLETE
 - Monster Role Expression Contract V0.1: ESTABLISHED
-- Role-expression critical admission: BLOCKED pending localized fixes/instrumentation
+- Fine activation-window scan: COMPLETE
+- Three-bracket role-expression robustness probe: COMPLETE
+- Passive-role structural anchor audit: COMPLETE
+- Role-metrics V0.2 instrumentation: READY
+- Critical-set V0.2 rerun: NEXT
 
 ---
 
-# Monster role-expression contract
+# Current activation candidates — diagnostic only
 
-Current nine:
-- GRUNT — baseline reference, exempt from special expression gate
-- RUNNER — speed must create observable arrival/front-order difference
-- BRUTE — must meaningfully hold/absorb frontline attention
-- SHIELD — mitigation must change effective damage/hit investment
-- FLYER — vertical geometry must create a real opportunity/targeting difference
-- CHARGER — visible windup + readable response window
-- SPLITTER — split must produce meaningful post-death population/target-state change
-- SUPPORTER — aura must affect at least one non-self target for a meaningful interval
-- SIEGER — standoff + readable first-shot opportunity
+These are normalized simulation offsets, not production coordinates.
 
-Every future monster must declare:
-`coreMechanic / minimumRoleExpression / readableCounterplay / failureClass / requiredMetrics`.
+## CHARGER E07
+Earlier `0.20..0.40` search was too narrow.
 
----
+Current evidence:
+- all-five CENTRAL windup begins around ~0.53
+- three-bracket all-five windup is robust around ~0.54
+- broad all-profile role-expression region observed through roughly ~0.64
 
-# Current role-expression admission
+Current diagnostic anchor:
+`~0.54`.
 
+## CHARGER E17
+Current strongest diagnostic anchor:
+`~0.49`.
+
+At this point under the current unfitted brackets:
+- CONSERVATIVE 5/5 visible windup
+- CENTRAL 5/5
+- STRONG 5/5
+- sampled wall damage = 0
+
+## SIEGER E11
+CENTRAL all-five actual-shot window approximately `0.70..0.82`.
+
+Low-change timing candidate near `~0.70`:
 ```text
-ROLE_EXPRESSION_ADMISSION = BLOCKED
+SHIELD 0ms
+BRUTE 250ms
+GRUNT 750ms
+GRUNT 1000ms
+SIEGER 1550ms
 ```
 
-Per monster:
-- GRUNT: BASELINE_EXEMPT
-- RUNNER: MEASUREMENT_REQUIRED
-- BRUTE: PRELIMINARY_ROLE_PRESENT / METRIC_REQUIRED
-- SHIELD: MEASUREMENT_REQUIRED
-- FLYER: MEASUREMENT_REQUIRED
-- CHARGER: FAIL_DEFAULT_GEOMETRY
-- SPLITTER: PARTIAL_PASS / WATCH
-- SUPPORTER: PASS_WITH_WATCH
-- SIEGER: FAIL_DEFAULT_GEOMETRY
+Only the two ordinary GRUNTs are delayed +250ms from the original representative recipe.
+This removes the prior CENTRAL ordinary contact leak while preserving all-five actual-shot expression.
 
-This is not a request for broad campaign redesign.
-It is localized encounter geometry + simulation observability work.
+Actual shot completion is lower for STRONG traces, but SIEGER readability-budget probing shows all five classes still reach a bounded standoff/windup response state. This is valid skilled counterplay, not automatic role erasure.
+
+E11 remains WATCH until V0.2 temporal wall-pressure evidence is inspected across brackets.
+
+## SIEGER E19
+Current lower diagnostic anchor:
+`~0.70`.
+
+CENTRAL:
+- 5/5 actual-shot expression
+- current decomposition shows no ordinary contact leak at anchor
+
+STRONG:
+- actual shot may be prevented by faster classes
+- readability-budget proxy still shows five-class response-state opportunity
 
 ---
 
-# Stateful capability evidence
+# Actual activation vs role opportunity
 
-CHARGER default critical T3 recipes:
-- 60 pre-windup erasures
-- 0 windups in prior 3-profile × 5-class critical sweep
+For CHARGER/SIEGER:
 
-SIEGER default E11/E19:
-- 0 shots in prior critical class/trace sweep
+```text
+role opportunity != full ability success
+```
 
-SUPPORTER:
-- role expression exists
-- screened aura duration varies strongly by class/throughput
+Therefore:
+- CHARGER minimum gate = visible windup + response window, not completed charge
+- SIEGER minimum gate = standoff/windup opportunity, not guaranteed shot
+
+Strong players preventing the full ability after reading it is desirable mastery reward.
+
+---
+
+# Passive-role structural anchors
+
+Current provisional mechanics are sufficiently separated to measure rather than redesign:
+
+- RUNNER: speed ~1.93× GRUNT; no-combat common-spawn wall arrival ~6.33s earlier
+- BRUTE: HP 2.8125× GRUNT; same-hit knock displacement response ~44.7% of GRUNT
+- SHIELD: damage multiplier 0.72, 28% mitigation, ~750 raw-equivalent durability in current simple model
+- FLYER: distinct Y oscillation model; actual combat geometry value still needs temporal role metrics
+
+These are structural anchors only, not production balance freezes.
+
+---
+
+# Role Metrics V0.2
+
+Existing V0.1 simulator is preserved unchanged for evidence reproducibility.
+
+New analysis lane:
+- `tools/simulate_class_aware_role_metrics_v0_2.py`
+- `tools/evaluate_role_expression_v0_2.py`
+
+V0.2 records:
+
+RUNNER:
+- distance advanced
+- alive/frontline time
+
+BRUTE:
+- frontline time
+- hits received
+- absorbed damage
+
+SHIELD:
+- mitigated hits
+- prevented damage
+- frontline time
+
+FLYER:
+- Archer line-opportunity ms
+- Mage splash-opportunity ms
+- actual secondary hits
+
+CHARGER:
+- windup entries
+- windup visible ms
+- interrupts/completions
+- pre-windup erasure
 
 SPLITTER:
-- parent -> two-child transformation works
-- meaningful child lifetime/frontline impact still under-instrumented
+- child alive/frontline ms
+- split-driven target reorder
+- peak-active delta
 
-No global HP buff is authorized from these findings.
+SUPPORTER:
+- supporter alive ms
+- unique aura targets
+- screened-aura ratio
 
----
+SIEGER:
+- standoff/windup opportunity entries
+- windup visible ms
+- pre-opportunity erasure
+- shot count remains separate outcome metric
 
-# Activation-window search
+Wall pressure:
+- `wallDamageByType`
+- `wallHitsByType`
+- SIEGER shot damage separated as `SIEGER_SHOT`
 
-Absolute entry depth and relative screen depth are separate variables.
-Capability activation is non-monotonic.
-
-Current diagnostic anchors only:
-- E07 CHARGER useful activation evidence begins around ~0.25; interruption around ~0.30
-- E17 CHARGER all-five windup visibility around ~0.45
-- E11 SIEGER all-five actual-shot visibility around ~0.70–0.80; collapse near ~0.85
-- E19 SIEGER all-five actual-shot visibility around ~0.75–0.80; collapse near ~0.85
-
-Fine scan configuration now exists at 0.01 steps in:
-`data/role_expression_activation_search_v0_1.yaml`.
-
-These are not production coordinates.
-
----
-
-# Current tools/data
-
-Data:
-- `data/monster_role_expression_contract_v0_1.yaml`
-- `data/role_expression_activation_search_v0_1.yaml`
-- `data/model_a_class_action_trace_bracket_v0_1.yaml`
-- `data/model_a_representative_recipes_v0_1.yaml`
-
-Tools:
-- `validate_monster_role_expression_contract.py`
-- `evaluate_stateful_role_expression.py`
-- `scan_activation_window_candidates.py`
-- `simulate_class_aware_layer_a.py`
-- `sweep_special_activation_entry_depth.py`
+Important:
+V0.2 is analysis tooling only and has not changed live gameplay semantics.
 
 ---
 
 # Player-trace authority boundary
 
-Current deterministic trace bracket remains:
-- 900 ms / PERFECT streak 40 then GOOD
-- 750 ms / PERFECT streak 55 then GOOD
-- 600 ms / PERFECT streak 75 then GOOD
+Current deterministic brackets remain unfitted:
+- CONSERVATIVE: 900ms, PERFECT streak40 then GOOD
+- CENTRAL: 750ms, streak55
+- STRONG: 600ms, streak75
 
-Status:
-**CALIBRATION BRACKET NOT FITTED**
-
-Do not use it to claim production SKILLED_V2 clear probability.
+These are NOT `SKILLED_V2` production profiles.
+They are mechanics probes.
 
 ---
 
 # Current exact work
 
 Now allowed:
-1. critical-set role-expression calibration
-2. fine CHARGER/SIEGER activation-window scanning
-3. SIEGER standoff/windup/first-shot-opportunity instrumentation
-4. SPLITTER child lifetime/frontline/population-delta instrumentation
-5. SUPPORTER normalized aura metrics
-6. RUNNER/BRUTE/SHIELD/FLYER passive-role instrumentation
-7. repeat CURRENT_AUTHORITY five-class critical micro-sim
-8. expand to all 20 recipes only after critical-set admission improves to PASS/acceptable WATCH
+1. apply diagnostic role-expression geometry overrides to a non-production candidate dataset
+2. run 10 critical recipes × 3 brackets × 5 classes through V0.2
+3. evaluate five-class minimum role expression automatically
+4. inspect temporal wall-pressure ordering
+5. make only localized geometry/cadence adjustments if failures remain
+6. require critical-set PASS / acceptable WATCH
+7. expand the same audit to all 20 representative recipes
+8. then return to fitted SKILLED_V2 harness work
 
 Not allowed yet:
 - exact 200-Stage schedule
-- production monster coefficient or coordinate freeze
+- production monster coefficient or entry-coordinate freeze
 - fitted SKILLED_V2 claims from current brackets
 - live campaign patch
 - final Tier count
@@ -219,4 +271,4 @@ Not allowed yet:
 - boss/shop freeze
 - detailed 3P/4P production balance
 
-No live gameplay source or production balance value was changed by this tranche.
+No live gameplay code or production balance value was changed by the current planning tranche.
