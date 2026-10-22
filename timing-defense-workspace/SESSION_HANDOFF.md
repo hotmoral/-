@@ -21,12 +21,13 @@ The project is in a **Master Campaign Progression Spine / Master Campaign Matrix
 Primary current docs:
 1. `legacy-game-structure/16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
 2. `legacy-game-structure/17_MASTER_CAMPAIGN_MATRIX_V0_1.md`
-3. `legacy-game-structure/19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`
-4. `legacy-game-structure/18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
-5. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
-6. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
-7. `legacy-game-structure/02_TIER_SYSTEM.md`
-8. `legacy-game-structure/01_META_PROGRESSION.md`
+3. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+4. `legacy-game-structure/19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`
+5. `legacy-game-structure/18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
+6. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
+7. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+8. `legacy-game-structure/02_TIER_SYSTEM.md`
+9. `legacy-game-structure/01_META_PROGRESSION.md`
 
 Do not resume detailed T1 monster-count/cadence work until this spine is closed.
 
@@ -43,6 +44,7 @@ Do not resume detailed T1 monster-count/cadence work until this spine is closed.
 - a class may hit a recoverable soft wall.
 - other-class stars/achievements should help that class later.
 - hard class lockout is forbidden.
+- Lv31 must be obtained early enough to be used and enjoyed over multiple late-run Stages before Stage50.
 
 ---
 
@@ -165,6 +167,52 @@ If this proves too dense in simulation/playtest, use Model B and split SIEGER in
 
 ---
 
+# Lv31 mastery play-window — USER CONFIRMED DIRECTION
+
+Canonical:
+`20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+
+Required experience:
+
+```text
+Lv26 late growth
+ -> Lv31 unlock
+ -> multiple Stages of real use/practice
+ -> late mastery encounters
+ -> Stage50 final using an already-familiar Lv31 skill
+```
+
+Forbidden outcome:
+
+```text
+Lv31 first meaningful use at Stage49/50
+ -> Tier immediately ends
+```
+
+First calibration hypothesis:
+- intended-entry `SKILLED_V2` Lv31 expected reach around Stage38–42
+- approximately 8–12 late Stages of meaningful use opportunity
+- Stage41–49 explicitly contains Lv31 mastery-use opportunities
+- Stage50 is not the tutorial for Lv31
+
+This is not an EXP numeric freeze.
+
+Simulation must record:
+- Lv31 unlock-stage distribution, not only average
+- post-Lv31 Stage/event count
+- Stage50-entry Lv31 possession rate
+- late clear-rate shift before/after Lv31
+- class divergence from Lv31 power spikes
+- whether Lv26's own play window was compressed
+
+Failure classifications include:
+- `INSUFFICIENT_LV31_PLAY_WINDOW`
+- `LV31_POWER_CLIFF_TOO_HIGH`
+- `LV31_CLASS_CLEAR_RATE_DIVERGENCE`
+- `LV26_WINDOW_COMPRESSED`
+
+---
+
 # Play-volume sensitivity
 
 Rough geometric comparison only, assuming eventual 3★ on all class×Tier records:
@@ -195,13 +243,15 @@ Preserve for reusable analysis only.
 # Run skill-power spine candidate
 
 Exact EXP curve remains open.
-Desired relative reach:
+Desired relative reach now includes play-window constraints:
 - Lv6 early
 - Lv11 early-mid
 - Lv16 mid
 - Lv21 mid-late
-- Lv26 late
-- Lv31 final/mastery band
+- Lv26 late, with its own meaningful use window
+- Lv31 late/mastery, but **before** the final few Stages
+
+First Lv31 calibration hypothesis: Stage38–42 for `SKILLED_V2`, subject to simulation.
 
 Legacy pacing that reaches Lv21 around old Stage10 cannot be assumed final for a 50-Stage run.
 
@@ -232,17 +282,19 @@ Next:
 1. define novelty budget for T1–T4 beyond monster count
 2. place boss novelty placeholders
 3. refine relative skill-reach bands
-4. audit monster-novelty vs skill-novelty collisions
-5. define SKILLED_V2 parameter measurement plan
-6. estimate stars/soft-wall progression play volume
-7. static audit Model A campaign matrix
-8. if PASS, choose Model A as bounded simulation spine
-9. if T4 overload FAIL, switch to Model B
-10. only then resume encounter frequency/count/composition/cadence
+4. explicitly preserve meaningful Lv26/Lv31 post-unlock windows
+5. audit monster-novelty vs skill-novelty collisions
+6. define SKILLED_V2 parameter measurement plan
+7. estimate stars/soft-wall progression play volume
+8. static audit Model A campaign matrix
+9. if PASS, choose Model A as bounded simulation spine
+10. if T4 overload FAIL, switch to Model B
+11. only then resume encounter frequency/count/composition/cadence
 
 Do not yet freeze:
 - initial Tier count
 - exact monster unlock points
+- exact EXP curve / Lv31 Stage
 - production monster coefficients
 - star reward coefficients
 - achievement reward graph/value
@@ -258,7 +310,7 @@ New session must:
 1. check live branch HEAD
 2. read this handoff
 3. read PROJECT_STATUS / NEXT_WORK
-4. read Master Spine + Matrix + Model audit + Governance
+4. read Master Spine + Matrix + Lv31 window + Model audit + Governance
 5. verify no newer remote changes
 
 Current tranche changed planning/corpus docs only.
