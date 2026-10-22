@@ -1,0 +1,68 @@
+version: model-a-kinematic-anchor-v0.1
+status: LEGACY_IMPLEMENTED_REFERENCE
+purpose: movement-only preflight; not production balance
+
+source:
+  branch: timing-defense-cloudflare-do-poc
+  capabilityFile: timing-defense-cloudflare-poc/src/monster-capability-v1.js
+  spawnReferenceFile: timing-defense-cloudflare-poc/src/v035-entry.js
+  notes:
+    - capability coefficients are explicitly provisional in live source
+    - spawnX uses deterministic midpoint of legacy/current inherited 1.055..1.095 spawn range for comparison
+
+world:
+  wallX: 0.155
+  spawnX: 1.075
+  timeStepMs: 10
+  horizonMs: 30000
+
+monsters:
+  GRUNT:
+    speed: 0.070
+  RUNNER:
+    speed: 0.135
+  BRUTE:
+    speed: 0.040
+  SHIELD:
+    speed: 0.057
+  FLYER:
+    speed: 0.100
+    oscillationAmplitude: 0.020
+    oscillationOmega: 5.0
+  CHARGER:
+    speed: 0.060
+    triggerX: 0.620
+    windupMs: 650
+    chargeSpeed: 0.210
+    rearmMs: 900
+  SPLITTER:
+    speed: 0.065
+    childSpeed: 0.115
+  SUPPORTER:
+    speed: 0.055
+    auraRadius: 0.180
+    auraSpeedMultiplier: 1.18
+  SIEGER:
+    speed: 0.045
+    standoffX: 0.380
+    windupMs: 800
+    repeatMs: 2200
+
+simulationScope:
+  includes:
+    - deterministic spawn timing
+    - X movement
+    - FLYER Y oscillation for aura distance
+    - SUPPORTER movement-speed aura membership
+    - CHARGER trigger/windup/charge without player interrupt
+    - SIEGER standoff/windup/repeat timing
+    - wall arrival/removal for non-SIEGER
+    - frontmost sequence
+  excludes:
+    - player damage
+    - monster HP/death
+    - knockback
+    - SPLITTER death/child creation during kinematic sim
+    - skill damage
+    - boss behavior
+    - production balance judgment
