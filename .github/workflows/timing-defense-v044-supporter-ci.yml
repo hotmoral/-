@@ -8,6 +8,7 @@ on:
       - '.github/workflows/timing-defense-v044-supporter-ci.yml'
       - 'timing-defense-cloudflare-poc/src/**'
       - 'timing-defense-cloudflare-poc/wrangler.jsonc'
+  workflow_dispatch:
 
 permissions:
   contents: read
