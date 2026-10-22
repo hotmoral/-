@@ -8,23 +8,25 @@ Primary architecture: **Cloudflare Workers + Durable Objects event-driven multip
 Public deployment:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 - watched branch `timing-defense-cloudflare-do-poc`
-- validated HEAD `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a`
-- health `0.42-cf.1`
+- validated HEAD `d1bac2effbd866aa221d55829678f959bc099b82`
+- health `0.43-cf.1`
 
 Last fully closed checkpoint:
-- **v0.42 CHARGER authoritative state-machine capability FULL PASS**
-- branch `timing-defense-cloudflare-v042-charger-pass-20261022`
-- HEAD `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a`
-- live validation run `39703741827`
+- **v0.43 SPLITTER authoritative child-spawn capability FULL PASS**
+- branch `timing-defense-cloudflare-v043-splitter-pass-20261022`
+- HEAD `d1bac2effbd866aa221d55829678f959bc099b82`
+- live validation run `39705143877`
+- live validation job `119583316125`
 
 Read first:
 1. `NEXT_WORK.md`
 2. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 3. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-4. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
-5. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
-6. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
-7. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
+4. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
+5. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
+6. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
+7. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+8. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
 ---
 
@@ -110,25 +112,36 @@ Current executable coefficients for capability testing remain **PROVISIONAL — 
 - foundation 22/22, N3 57/57, SHIELD 11/11, FLYER server 10/10, client 5/5, prior FINAL PASS.
 
 ## v0.42 CHARGER authoritative state machine — FULL PASS
-Exact checkpoint:
 - branch `timing-defense-cloudflare-v042-charger-pass-20261022`
 - HEAD `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a`
 - health `0.42-cf.1`
 - live run `39703741827`
+- authoritative `ADVANCE -> WINDUP -> CHARGE`, state-aware X/wall timing, WINDUP knock interruption/re-arm, reconnect reconstruction and late-`advanceTo()` chronology validated
+- foundation 22/22, N3 57/57, SHIELD 11/11, FLYER 10/10, CHARGER 17/17, prior FINAL PASS.
+
+Exact report: `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
+
+## v0.43 SPLITTER authoritative child-spawn kernel — FULL PASS
+Exact checkpoint:
+- branch `timing-defense-cloudflare-v043-splitter-pass-20261022`
+- HEAD `d1bac2effbd866aa221d55829678f959bc099b82`
+- health `0.43-cf.1`
+- live run `39705143877`
+- live job `119583316125`
 
 Closed semantics:
-- authoritative `ADVANCE -> WINDUP -> CHARGE`
-- non-constant-speed `xAt/materialize/wallAt`
-- WINDUP stationary
-- positive authoritative knockback during WINDUP interrupts and returns to ADVANCE
-- provisional 900 ms re-arm after interrupt
-- `nextDueAt()` includes state transitions/wall timing
-- persisted phase/refAt/rearm state reconstructs after reconnect
-- public phase/timing/speed metadata exposed
-- Tank Lv6 knock, AI stage multiplier, reward/contribution and team-DEF wall damage retained
-- late `advanceTo()` chronological replay explicitly validated.
+- parent death creates exactly two authoritative children at the death timestamp
+- child IDs/order use authoritative `nextMonsterId`
+- deterministic Y offsets and shared package attribution
+- children persist `canSplit=false`; no recursive splitting
+- explicit parent/child movement, wall, size and knock metadata; no GRUNT fallback
+- no extra immediate split event: existing damage event carries split metadata, preserving older hit/Lv6/N3 annotation ordering
+- simultaneous parent deaths produce deterministic IDs/order
+- children prevent premature stage clear
+- Rogue N3 retarget after parent death and Tank N3 child knock metadata validated
+- reconnect and monotonic event IDs validated.
 
-Provisional CHARGER test anchors: HP380 / speed .060 / wall110 / knock .80 / armor1 / reward8 / windup650ms / charge .210 / trigger x .62 / re-arm900ms. **Not production frozen.**
+Provisional sandbox values remain **not production frozen**. The executable reward split `parent4 + child2 + child2 = package8` is **test accounting only** and is not the production economy decision.
 
 Live evidence:
 - foundation **22/22 PASS**
@@ -136,34 +149,54 @@ Live evidence:
 - SHIELD **11/11 PASS**
 - FLYER **10/10 PASS**
 - CHARGER **17/17 PASS**
+- SPLITTER **14/14 PASS**
 - root-loader PASS
 - V038 FULL REGRESSION PASS
 - N3 CLIENT PASS
 - N3 4H STRESS PASS
 - **FINAL PASS**
 
-No Samsung Browser smoke required: CHARGER is not yet placed in a visible authored encounter and final telegraph presentation is not part of this slice.
+No Samsung Browser smoke required: SPLITTER is not yet placed in a visible authored encounter and final split VFX is not part of this slice.
 
-Exact report: `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
+Exact report: `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
 
 ---
 
 # Active next bounded work
-**SPLITTER authoritative child-spawn kernel**, stage-number-independent.
+**SUPPORTER authoritative dynamic movement-speed aura**, stage-number-independent.
 
-Required focus:
-- parent death creates exactly two children deterministically,
-- children never split again,
-- child IDs/order are deterministic,
-- child movement/wall/damage identity must not fall back to GRUNT,
-- simultaneous split deaths and Lv6/N3 multi-target mutation must remain deterministic,
-- event/reconnect integrity retained,
+Frozen structural behavior:
+- nearby ordinary monsters receive a movement-speed multiplier while within aura range
+- SUPPORTER does not buff itself
+- multiple SUPPORTER auras do not stack
+- V1 aura changes movement speed only; no heal, armor, damage, wall-damage or knock-resistance buff
+- no manual target selection requirement
 - no legacy stage recipe enabled.
 
-Important unresolved product semantic before production freeze:
-- how the provisional SPLITTER reward budget is allocated between parent and children. Do not silently freeze this as production economy.
+Provisional capability-test anchors:
+- HP 280
+- base speed `.055`
+- wall damage 70
+- knock resistance `.90`
+- armor `1.00`
+- reward 8
+- aura radius `.18`
+- aura movement multiplier `1.18`
 
-Following: SUPPORTER -> SIEGER.
+These are **NOT production balance frozen**.
+
+Primary architectural risk:
+- aura membership can change continuously as monsters move relative to one another, so simply evaluating `distance <= radius` at arbitrary snapshots can create timestamp drift and client/server disagreement.
+
+Required pre-implementation audit:
+1. define authoritative aura topology/crossing semantics,
+2. ensure movement integration remains deterministic between event timestamps,
+3. preserve CHARGER phase speed, FLYER Y geometry and SPLITTER child identity when aura applies,
+4. avoid aura self-buff and aura stacking,
+5. ensure supporter death/wall removal immediately changes affected movement from the exact authoritative timestamp,
+6. include reconnect and `wallAt/nextDueAt` consistency tests.
+
+Following: SIEGER.
 
 After capability completion:
 - remaining player-skill authority needed for calibration,
