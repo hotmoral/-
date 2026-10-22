@@ -9,50 +9,42 @@ Updated: 2026-10-22 KST
 
 ---
 
-# Current planning authority
+# Current planning phase
 
-Active phase:
-**Bounded Simulation Authoring after Master Campaign Layer-0 PASS**
+**Class-aware Layer-A Combat Micro-Simulation**
+
+Upstream structure is sufficiently closed.
+Current default campaign spine is Model A.
 
 Primary integrated authority:
 - `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-Supporting current docs:
-- `legacy-game-structure/30_LAYER0_MODEL_A_VALIDATION_REPORT_V0_1.md`
-- `legacy-game-structure/28_MODEL_A_TIER_AUTHORING_WINDOWS_V0_1.md`
-- `legacy-game-structure/29_MODEL_A_TIER_PRESSURE_COMPLEXITY_ENVELOPE_V0_1.md`
-- `legacy-game-structure/22_PLAYER_POWER_SPINE_LV6_31_V0_1.md`
-- `legacy-game-structure/24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
-- `legacy-game-structure/25_MODEL_A_META_PROGRESS_VOLUME_AND_SOFT_WALL_ENVELOPE_V0_1.md`
-- `legacy-game-structure/18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
-- `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
-
-Machine-readable candidate:
-- `legacy-game-structure/data/model_a_campaign_spine_v0_1.yaml`
-- validator `tools/validate_campaign_spine.py`
+Current admission boundary:
+- `legacy-game-structure/40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
 
 ---
 
-# Core structural truth
+# Core user-confirmed truth
 
-- 5 classes progress through Tiers independently.
-- Same Tier/Stage combat content is shared across classes.
+- 5 classes, independent Tier progression.
+- Shared Tier/Stage combat content across classes.
 - 1 Tier = 50 Stage.
 - fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / Stage50 clear=3★.
-- stars = broad account growth.
+- stars = broad account permanent growth.
 - achievements = targeted cross-class growth.
-- recoverable soft walls are intentional.
-- hard class lockout forbidden.
-- current 9-monster V1 roster is not lifetime final roster.
-- higher Tiers introduce new monsters; T1 does not force all 9.
-- future Tier/monster expansion remains open.
-- non-T1 intended-entry SKILLED_V2 full-clear must normally be <60%.
-- combo40 is skilled-achievable, not extreme-only.
+- recoverable soft walls intentional; hard class lockout forbidden.
+- current 9 ordinary monsters are not lifetime final roster.
+- T1 does not teach all 9; higher Tiers introduce new monsters.
+- future Tier/monster expansion open.
+- non-T1 intended-entry `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
+- combo40 is skilled-achievable.
 - **Lv31 target unlock window = Stage41–45.**
+- Stage46–49 = post-Lv31 mastery.
+- Stage50 = final, not Lv31 tutorial.
 
 ---
 
-# Current Model A bounded spine
+# Model A
 
 ```text
 T1 G/R/B              Foundation / Timing & Frontline
@@ -63,22 +55,16 @@ T5+ future            Expansion
 ```
 
 Status:
-**STATIC MASTER AUDIT PASS + LAYER-0 VALIDATOR PASS**
+**default bounded simulation spine / NOT production freeze**
 
-Validator result:
-```text
-RESULT=PASS errors=0 warnings=0
-```
-
-Meaning:
-- Model A is the default simulation spine.
-- 4 launch Tiers are not production-frozen.
-
-Fallback Model B remains available if T4 lower-layer testing fails.
+Fallback Model B:
+- T4 +SUPPORTER
+- T5 +SIEGER
+- only if T4 lower-layer evidence fails.
 
 ---
 
-# Current player-power candidate
+# Player power spine candidate
 
 - Lv6 5–7
 - Lv11 11–14
@@ -87,76 +73,122 @@ Fallback Model B remains available if T4 lower-layer testing fails.
 - Lv26 32–36
 - Lv31 **41–45**
 
+Only Lv31 window is user-confirmed.
+Other windows remain calibration candidates.
+
 Late grammar:
 ```text
-31–39 pressure / soft wall
-40     2★ boundary
+31–39 pressure / soft-wall build
+40     2★ gate
 41–45  Lv31 Ascension
 46–49  post-Lv31 mastery
 50     Tier Final
 ```
 
-Exact EXP formula remains open.
+---
+
+# Current validation chain
+
+## Master Campaign Layer-0
+PASS, `errors=0 warnings=0`.
+
+## Encounter Envelope Layer-A0
+PASS, `errors=0 warnings=0`.
+
+Tier legal archetypes:
+- T1: 3
+- T2: 7
+- T3: 13
+- T4: all current E01–E20
+
+## Representative recipe static preflight
+PASS.
+- 20 recipes
+- max authored 4s = 7
+- max conservative effective 4s = 10
+- no density WATCH/ERROR
+
+## Kinematic preflight
+PASS WITH WATCHES.
+
+Key confirmed geometry:
+- E10 focused siege first shot unscreened
+- E11 escorted siege first shot screened
+- E19 fortress can produce durable-screened siege
+- representative CHARGER max simultaneous windup = 1
+
+Important schema finding:
+- delayed spawn alone cannot reliably represent `BACK`
+- formation authoring needs actual initial X-depth (`spawnXOffset` design direction)
+- target authority still uses actual frontmost X; no target override
+
+## Generic DPS sensitivity
+Diagnostic complete; high throughput sensitivity confirmed.
+
+- SIEGER capability can disappear entirely when front screen is removed quickly
+- CHARGER can die before windup
+- SUPPORTER protected-aura duration changes sharply with throughput
+- SPLITTER wall leakage changes sharply with throughput
+
+No numeric patch authorized from this diagnostic.
 
 ---
 
-# Novelty / Boss policy
+# Difficulty / meta principle
 
-- pedagogic novelty and repeated run power-spike novelty are tracked separately.
-- T1 boss-only novelty LOW.
-- Stage10 boss optional checkpoint.
-- Stage30 optional boss-signature preview slot.
-- Stage50 final boss candidate.
-- mandatory Stage50 boss grammar cannot be completely unpreviewed.
-- T4 boss-only novelty LOW because SUP/SI + Lv31 already consume novelty budget.
+Full clear rate alone is insufficient.
+Fail location controls stars and therefore cross-class progression.
 
----
+Preferred ordinary soft wall:
+```text
+late fail -> 1★/2★
+ -> other-class progression
+ -> permanent growth
+ -> return
+ -> old wall becomes attainable
+```
 
-# Difficulty/meta finding
+Avoid normal difficulty dominated by Stage1–19 0★ failures.
 
-Full-clear probability alone is insufficient.
-Failure location must be tracked because it determines star progression.
-
-Preferred soft-wall structure:
-- late failure often yields 1★/2★,
-- other classes provide growth,
-- return to blocked class,
-- clear probability rises.
-
-Avoid making the normal difficulty model mostly Stage1–19 0★ failures.
-
-First Tier-unlock simulation hypothesis:
-- `CLEAR_LOCK` (Stage50 clear required to unlock same class next Tier).
-- not frozen.
+Tier unlock first simulation hypothesis:
+`CLEAR_LOCK` = same class Stage50 clear required to unlock next Tier.
+Not frozen.
 
 ---
 
-# Parked / superseded
+# Current exact boundary
 
-Historical only:
-- `09_TIER_LADDER_CANDIDATE_V0_1.md`
-- `13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
-- `14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
-- `17_MASTER_CAMPAIGN_MATRIX_V0_1.md`
+Now work on:
+**class-aware representative encounter micro-simulation**.
+
+Required next outputs:
+- deterministic action traces / SKILLED_V2 parameterization
+- class-specific kill order and target reorder
+- frontline block time
+- wall pressure
+- CHARGER telegraph/interrupt viability
+- SPLITTER population pressure
+- SUPPORTER aura/screened uptime
+- SIEGER first-shot/shot-count/screened-firing uptime
+- class opportunity/starvation
+
+After PASS:
+synthetic Tier slices, then full Tier simulation.
 
 ---
 
-# Current exact work
+# Still not frozen
 
-Now allowed:
-1. Tier-specific encounter archetype availability
-2. formation/cadence availability by Tier
-3. pressure/complexity frequency envelopes -> bounded candidate ranges
-4. representative deterministic encounter recipes
-5. static readability/entity checks
-6. Layer-A encounter micro-simulation
-
-Not allowed yet:
-- production coefficient freeze
+- final launch Tier count
+- exact Tier unlock policy
+- production monster coefficients
 - exact 200-Stage schedule
-- live campaign patch
-- final star/achievement values
-- boss/shop cadence freeze
-- detailed 3P/4P production balance
+- exact EXP formula
+- Lv11+ production coefficients
+- permanent star reward values
+- achievement reward graph/value
+- boss cadence/design
+- shop cadence/economy
+- detailed multiplayer balance
 
-No production numbers are frozen by the current planning tranche.
+No live gameplay code or production balance number was changed by the current tranche.
