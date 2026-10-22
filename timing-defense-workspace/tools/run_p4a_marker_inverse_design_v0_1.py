@@ -25,19 +25,37 @@ TEACH={'T1':{5:'E02',15:'E03'},'T2':{5:'E04',15:'E06'},'T3':{5:'E07',15:'E08'},'
 OPP={'E01':{'knight','archer','mage'},'E02':{'rogue','tank'},'E03':{'rogue','knight'},'E04':{'rogue','archer'},'E05':{'rogue','knight','archer'},'E06':{'archer','mage'},'E07':{'tank','rogue'},'E08':{'mage','tank'},'E09':{'mage','rogue'},'E10':{'tank','archer'},'E11':{'archer','knight','tank'},'E12':{'rogue','mage','knight'},'E13':{'tank','rogue'},'E14':{'archer','tank'},'E15':{'mage','rogue'},'E16':{'mage','knight'},'E17':{'tank','archer','knight'},'E18':{'archer','tank','mage'},'E19':set(CLASSES),'E20':{'tank','mage','rogue'}}
 FORM={'T1':set(['F01','F02','F03','F04','F08']),'T2':set(['F01','F02','F03','F04','F05','F08']),'T3':set(['F01','F02','F03','F04','F05','F08','F09']),'T4':set(f'F{i:02d}' for i in range(1,10))}
 CAD={'T1':set(['CD01','CD02','CD03','CD04','CD05']),'T2':set(['CD01','CD02','CD03','CD04','CD05','CD07']),'T3':set(['CD01','CD02','CD03','CD04','CD05','CD07','CD08']),'T4':set(f'CD{i:02d}' for i in range(1,9))}
+WORK={'E01':1920.0,'E02':1620.0,'E03':2760.0,'E04':2030.0,'E05':2610.0,'E06':1730.0,'E07':1660.0,'E08':2280.0,'E09':1570.0,'E10':1800.0,'E11':2810.0,'E12':3320.0,'E13':1420.0,'E14':1335.0,'E15':1815.0,'E16':2560.0,'E17':2670.0,'E18':2360.0,'E19':2770.0,'E20':1680.0}
+PREF_F={'E01':['F01','F03','F04'],'E02':['F04','F01','F08'],'E03':['F02','F01'],'E04':['F02'],'E05':['F02'],'E06':['F05','F08'],'E07':['F01','F02'],'E08':['F09','F03'],'E09':['F03','F02','F06'],'E10':['F01','F06'],'E11':['F07','F06'],'E12':['F07','F02'],'E13':['F08','F01'],'E14':['F05','F08'],'E15':['F09','F03'],'E16':['F09','F06'],'E17':['F02','F08'],'E18':['F08','F06'],'E19':['F07','F06'],'E20':['F09','F08']}
+PREF_C={'E01':['CD01','CD02'],'E02':['CD03','CD04'],'E03':['CD02','CD05'],'E04':['CD05','CD02'],'E05':['CD05'],'E06':['CD03','CD05'],'E07':['CD02','CD07'],'E08':['CD03','CD05'],'E09':['CD02','CD03'],'E10':['CD05','CD07'],'E11':['CD06','CD07'],'E12':['CD06','CD05'],'E13':['CD04','CD03'],'E14':['CD04','CD03'],'E15':['CD03','CD04'],'E16':['CD07','CD03'],'E17':['CD07','CD05'],'E18':['CD07','CD05'],'E19':['CD06','CD08'],'E20':['CD07','CD08']}
+
+def derived_vocab(t,e,stage,bundle,prev):
+    fs=[]; cs=[]
+    for r in bundle: fs+=PREF_F[r]; cs+=PREF_C[r]
+    fs=[v for v in dict.fromkeys(fs) if v in FORM[t]] or sorted(FORM[t]); cs=[v for v in dict.fromkeys(cs) if v in CAD[t]] or sorted(CAD[t])
+    if t=='T1' and stage<31: fs=[v for v in fs if v!='F08'] or ['F01']
+    if t=='T2' and stage<18: cs=[v for v in cs if v!='CD07'] or ['CD02']
+    if t=='T3' and stage<31: cs=[v for v in cs if v!='CD08'] or ['CD03']
+    if t=='T4' and stage<25: cs=[v for v in cs if v not in ('CD06','CD08')] or ['CD03']
+    if t=='T4' and stage<31: fs=[v for v in fs if v!='F07'] or fs
+    h=int(hashlib.sha256(f'{t}|{e}|{stage}|{tuple(bundle)}'.encode()).hexdigest()[:8],16); f=fs[h%len(fs)]; c=cs[(h//7)%len(cs)]
+    if prev and prev[0]==tuple(bundle) and prev[1]==f and prev[2]==c:
+        if len(cs)>1:c=cs[(cs.index(c)+1)%len(cs)]
+        elif len(fs)>1:f=fs[(fs.index(f)+1)%len(fs)]
+    return f,c
 
 def normalize_corpus(corpus):
-    schema=corpus.get('stageRowSchema')
-    if not schema:return corpus
-    for fx in corpus.get('fixtures',[]):
-        if fx.get('stages') and isinstance(fx['stages'][0],list):
-            rows=[]
-            for row in fx['stages']:
-                d=dict(zip(schema,row))
-                d['recipeBundle']=str(d['recipeBundle']).split('+') if d['recipeBundle'] else []
-                d['pressureFamilies']=str(d['pressureFamilies']).split(',') if d['pressureFamilies'] else []
-                rows.append(d)
+    compact=corpus.get('compactStageSchema'); pressure_order=corpus.get('pressureOrder',[])
+    if compact:
+        for fx in corpus.get('fixtures',[]):
+            if not fx.get('stages') or not isinstance(fx['stages'][0],list): continue
+            rows=[]; prev=None
+            for idx,row in enumerate(fx['stages'],1):
+                d=dict(zip(compact,row)); bundle=str(d['recipeBundle']).split('+') if d['recipeBundle'] else []; mask=int(d['pressureMask']); pressures=[p for i,p in enumerate(pressure_order) if mask&(1<<i)]
+                f,c=derived_vocab(fx['tier'],fx['envelope'],idx,bundle,prev); prev=(tuple(bundle),f,c)
+                rows.append({'stage':idx,'recipeBundle':bundle,'pressureFamilies':pressures,'dominantComplexity':int(d['dominantComplexity']),'formationId':f,'cadenceId':c,'workloadEhp':sum(WORK[r] for r in bundle)})
             fx['stages']=rows
+        return corpus
     return corpus
 
 class XS:
@@ -47,34 +65,27 @@ class XS:
 class Central:
     def __init__(self,s:int): self.r=XS(s); self.focus=self.r.unit()<.4
     def judge(self):
-        if self.focus:
-            self.focus=self.r.unit()<.98; return 'P'
+        if self.focus: self.focus=self.r.unit()<.98; return 'P'
         u=self.r.unit(); q='P' if u<.5 else 'G' if u<.5+1/3 else 'N'
         if self.r.unit()<1/75:self.focus=True
         return q
 
 def derived_seed(t,e,i): return int.from_bytes(hashlib.sha256(f'P4A|{t}|{e}|{i}'.encode()).digest()[:4],'little') or 1
 def quant(v,p):
-    a=sorted(v); pos=(len(a)-1)*p; lo=math.floor(pos); hi=math.ceil(pos); f=pos-lo
-    return a[lo]*(1-f)+a[hi]*f
+    a=sorted(v); pos=(len(a)-1)*p; lo=math.floor(pos); hi=math.ceil(pos); f=pos-lo; return a[lo]*(1-f)+a[hi]*f
 
 def heavy_tier(a,b):
     if a=='P' and b=='P': return 'CRITICAL'
-    z=(2 if a=='P' else 1 if a=='G' else 0)+(2 if b=='P' else 1 if b=='G' else 0)
-    return 'SUPER' if z>=3 else 'GREAT' if z==2 else 'HEAVY+' if z==1 else 'HEAVY'
+    z=(2 if a=='P' else 1 if a=='G' else 0)+(2 if b=='P' else 1 if b=='G' else 0); return 'SUPER' if z>=3 else 'GREAT' if z==2 else 'HEAVY+' if z==1 else 'HEAVY'
 
 def simulate(stages,t,e,seed_i,credit):
     p=Central(derived_seed(t,e,seed_i)); action_no=1; cum=0.; rows=[]
-    dmg_n={'N':100,'G':140,'P':200}; dmg_h={'HEAVY':180,'HEAVY+':230,'GREAT':300,'SUPER':400,'CRITICAL':600}
-    c_n={'N':credit['NORMAL'],'G':credit['GOOD'],'P':credit['PERFECT']}
-    c_h={k:credit[k] for k in ['HEAVY','HEAVY+','GREAT','SUPER','CRITICAL']}
+    dmg_n={'N':100,'G':140,'P':200}; dmg_h={'HEAVY':180,'HEAVY+':230,'GREAT':300,'SUPER':400,'CRITICAL':600}; c_n={'N':credit['NORMAL'],'G':credit['GOOD'],'P':credit['PERFECT']}; c_h={k:credit[k] for k in ['HEAVY','HEAVY+','GREAT','SUPER','CRITICAL']}
     for st in stages:
         workload=float(st['workloadEhp']); turns=0; stage_credit=0.
         while workload>0:
-            if action_no%4==0:
-                a=p.judge(); b=p.judge(); q=heavy_tier(a,b); damage=dmg_h[q]; gain=c_h[q]
-            else:
-                q=p.judge(); damage=dmg_n[q]; gain=c_n[q]
+            if action_no%4==0: a=p.judge(); b=p.judge(); q=heavy_tier(a,b); damage=dmg_h[q]; gain=c_h[q]
+            else: q=p.judge(); damage=dmg_n[q]; gain=c_n[q]
             workload-=damage; cum+=gain; stage_credit+=gain; turns+=1; action_no+=1
         rows.append({'stage':int(st['stage']),'turns':turns,'stageCredit':stage_credit,'cumCredit':cum})
     return rows
@@ -87,73 +98,37 @@ def unlock_stage(rows,thr):
 def validate_static(corpus):
     flags={'fixtureCount':len(corpus['fixtures'])==12,'pressureRange':True,'complexityRange':True,'classOpportunity10Stage':True,'c4Guards':True,'vocabulary':True,'exactSignatureTriple':True,'availabilityAndTeach':True}
     for fx in corpus['fixtures']:
-        t=fx['tier']; stages=fx['stages']; flags['fixtureCount'] &= len(stages)==50
-        pc=Counter(p for s in stages for p in s['pressureFamilies']); cc=Counter(int(s['dominantComplexity']) for s in stages)
+        t=fx['tier']; stages=fx['stages']; flags['fixtureCount'] &= len(stages)==50; pc=Counter(p for s in stages for p in s['pressureFamilies']); cc=Counter(int(s['dominantComplexity']) for s in stages)
         for p,(lo,hi) in PRANGES[t].items(): flags['pressureRange'] &= lo<=pc[p]<=hi
         for c,(lo,hi) in CRANGES[t].items(): flags['complexityRange'] &= lo<=cc[c]<=hi
         for s in stages:
-            sn=int(s['stage']); bundle=s['recipeBundle']
-            flags['availabilityAndTeach'] &= all(r in LEGAL[t] and sn>=EARLIEST[t].get(r,1) for r in bundle)
-            flags['vocabulary'] &= s['formationId'] in FORM[t] and s['cadenceId'] in CAD[t]
+            sn=int(s['stage']); bundle=s['recipeBundle']; flags['availabilityAndTeach'] &= all(r in LEGAL[t] and sn>=EARLIEST[t].get(r,1) for r in bundle); flags['vocabulary'] &= s['formationId'] in FORM[t] and s['cadenceId'] in CAD[t]
         for sn,r in TEACH[t].items(): flags['availabilityAndTeach'] &= stages[sn-1]['recipeBundle']==[r]
         for start in range(0,41):
             os=set()
             for s in stages[start:start+10]:
                 for r in s['recipeBundle']: os |= OPP[r]
             flags['classOpportunity10Stage'] &= set(CLASSES)<=os
-        cs=[int(s['dominantComplexity']) for s in stages]
-        flags['c4Guards'] &= all(not(cs[i]==4 and cs[i+1]==4) for i in range(49))
-        flags['c4Guards'] &= all(sum(c==4 for c in cs[i:i+5])<=2 for i in range(46))
-        flags['c4Guards'] &= sum(c==4 for c in cs[40:45])<=1
-        sig=[(tuple(s['recipeBundle']),tuple(s['pressureFamilies']),s['dominantComplexity'],s['formationId'],s['cadenceId']) for s in stages]
-        flags['exactSignatureTriple'] &= all(not(sig[i]==sig[i+1]==sig[i+2]) for i in range(48))
+        cs=[int(s['dominantComplexity']) for s in stages]; flags['c4Guards'] &= all(not(cs[i]==4 and cs[i+1]==4) for i in range(49)); flags['c4Guards'] &= all(sum(c==4 for c in cs[i:i+5])<=2 for i in range(46)); flags['c4Guards'] &= sum(c==4 for c in cs[40:45])<=1
+        sig=[(tuple(s['recipeBundle']),tuple(s['pressureFamilies']),s['dominantComplexity'],s['formationId'],s['cadenceId']) for s in stages]; flags['exactSignatureTriple'] &= all(not(sig[i]==sig[i+1]==sig[i+2]) for i in range(48))
     return flags
 
 def compute(corpus,seeds=100):
-    credit=corpus['qualityCredit']; by={(fx['tier'],fx['envelope']):fx for fx in corpus['fixtures']}
-    runs={(t,e):[simulate(by[(t,e)]['stages'],t,e,i,credit) for i in range(1,seeds+1)] for t in TIERS for e in ENVS}
+    credit=corpus['qualityCredit']; by={(fx['tier'],fx['envelope']):fx for fx in corpus['fixtures']}; runs={(t,e):[simulate(by[(t,e)]['stages'],t,e,i,credit) for i in range(1,seeds+1)] for t in TIERS for e in ENVS}
     intervals={}; anchors={}; central_reach={}; env_p50={}
     for lv,(lo,hi) in WINDOWS.items():
-        lower=max(quant([r[lo-2]['cumCredit'] if lo>1 else 0 for r in runs[(t,'CENTRAL')]],.5) for t in TIERS)
-        upper=min(quant([r[hi-1]['cumCredit'] for r in runs[(t,'CENTRAL')]],.5) for t in TIERS)
-        intervals[str(lv)]={'lowerExclusive':lower,'upperInclusive':upper,'nonEmpty':lower<upper}
-        thr=(lower+upper)/2; anchors[str(lv)]=thr
-        central_reach[str(lv)]={}; env_p50[str(lv)]={}
+        lower=max(quant([r[lo-2]['cumCredit'] if lo>1 else 0 for r in runs[(t,'CENTRAL')]],.5) for t in TIERS); upper=min(quant([r[hi-1]['cumCredit'] for r in runs[(t,'CENTRAL')]],.5) for t in TIERS); intervals[str(lv)]={'lowerExclusive':lower,'upperInclusive':upper,'nonEmpty':lower<upper}; thr=(lower+upper)/2; anchors[str(lv)]=thr; central_reach[str(lv)]={}; env_p50[str(lv)]={}
         for t in TIERS:
-            us=[unlock_stage(r,thr) for r in runs[(t,'CENTRAL')]]
-            central_reach[str(lv)][t]={k:quant(us,p) for k,p in [('P25',.25),('P50',.5),('P75',.75),('P90',.9)]}
-            for e in ENVS:
-                us2=[unlock_stage(r,thr) for r in runs[(t,e)]]
-                env_p50[str(lv)][f'{t}_{e}']=quant(us2,.5)
+            us=[unlock_stage(r,thr) for r in runs[(t,'CENTRAL')]]; central_reach[str(lv)][t]={k:quant(us,p) for k,p in [('P25',.25),('P50',.5),('P75',.75),('P90',.9)]}
+            for e in ENVS: env_p50[str(lv)][f'{t}_{e}']=quant([unlock_stage(r,thr) for r in runs[(t,e)]],.5)
     metrics={}
     for t in TIERS:
         for e in ENVS:
-            fx=by[(t,e)]; rs=runs[(t,e)]; key=f'{t}_{e}'
-            pc=Counter(p for s in fx['stages'] for p in s['pressureFamilies']); cc=Counter(str(s['dominantComplexity']) for s in fx['stages'])
-            metrics[key]={'workloadEhp':sum(float(s['workloadEhp']) for s in fx['stages']),'twoPackageStages':sum(len(s['recipeBundle'])==2 for s in fx['stages']),'turnsP50':quant([sum(x['turns'] for x in r) for r in rs],.5),'creditP50Stage50':quant([r[-1]['cumCredit'] for r in rs],.5),'pressureCounts':dict(sorted(pc.items())),'complexityCounts':dict(sorted(cc.items()))}
-    return {
-      'version':'p4a-marker-inverse-design-summary-v0.1',
-      'status':'P4A_MARKER_ONLY_DIAGNOSTIC_PASS_CANDIDATE_THRESHOLDS_NOT_FROZEN',
-      'simulationSeedsPerFixture':seeds,
-      'validation':validate_static(corpus),
-      'centralP50FeasibleThresholdIntervals':intervals,
-      'firstPassMidpointAnchorCandidates':anchors,
-      'centralReachAtMidpointCandidates':central_reach,
-      'allEnvelopeP50ReachAtMidpointCandidates':env_p50,
-      'fixtureMetrics':metrics,
-      'initialDiagnostic':{
-        'finding':'Before bounded T2/T4 central workload redistribution, universal central P50 threshold intervals were empty at Lv16 and Lv21 while Lv6/Lv11/Lv26/Lv31 were feasible.',
-        'action':'Small synthetic workload redistribution within existing Tier identity/ranges: T2 mid-band workload shifted later; T4 support/siege-compatible workload shifted earlier.',
-        'result':'All six CENTRAL T1-T4 P50 threshold intervals became non-empty without Tier-specific XP multipliers.'},
-      'watches':[
-        'LOW/HIGH opportunity envelopes are stress envelopes and are not required to hit every candidate milestone window.',
-        'P4-B skill power can materially change event opportunity and must rerun reach.',
-        'workloadEhp is a relative marker-only opportunity proxy, not production difficulty or Stage HP authority.',
-        'exact anchors, quality vector and percentile tail acceptance gates remain unfrozen.']}
+            fx=by[(t,e)]; rs=runs[(t,e)]; key=f'{t}_{e}'; pc=Counter(p for s in fx['stages'] for p in s['pressureFamilies']); cc=Counter(str(s['dominantComplexity']) for s in fx['stages']); metrics[key]={'workloadEhp':sum(float(s['workloadEhp']) for s in fx['stages']),'twoPackageStages':sum(len(s['recipeBundle'])==2 for s in fx['stages']),'turnsP50':quant([sum(x['turns'] for x in r) for r in rs],.5),'creditP50Stage50':quant([r[-1]['cumCredit'] for r in rs],.5),'pressureCounts':dict(sorted(pc.items())),'complexityCounts':dict(sorted(cc.items()))}
+    return {'version':'p4a-marker-inverse-design-summary-v0.1','status':'P4A_MARKER_ONLY_DIAGNOSTIC_PASS_CANDIDATE_THRESHOLDS_NOT_FROZEN','simulationSeedsPerFixture':seeds,'validation':validate_static(corpus),'centralP50FeasibleThresholdIntervals':intervals,'firstPassMidpointAnchorCandidates':anchors,'centralReachAtMidpointCandidates':central_reach,'allEnvelopeP50ReachAtMidpointCandidates':env_p50,'fixtureMetrics':metrics,'initialDiagnostic':{'finding':'Before bounded T2/T4 central workload redistribution, universal central P50 threshold intervals were empty at Lv16 and Lv21 while Lv6/Lv11/Lv26/Lv31 were feasible.','action':'Small synthetic workload redistribution within existing Tier identity/ranges: T2 mid-band workload shifted later; T4 support/siege-compatible workload shifted earlier.','result':'All six CENTRAL T1-T4 P50 threshold intervals became non-empty without Tier-specific XP multipliers.'},'watches':['LOW/HIGH opportunity envelopes are stress envelopes and are not required to hit every candidate milestone window.','P4-B skill power can materially change event opportunity and must rerun reach.','workloadEhp is a relative marker-only opportunity proxy, not production difficulty or Stage HP authority.','exact anchors, quality vector and percentile tail acceptance gates remain unfrozen.']}
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--corpus',type=Path,default=DEFAULT_CORPUS); ap.add_argument('--seeds',type=int,default=100); ap.add_argument('--output',type=Path)
-    a=ap.parse_args(); corpus=normalize_corpus(json.loads(a.corpus.read_text(encoding='utf-8'))); out=compute(corpus,a.seeds); text=json.dumps(out,ensure_ascii=False,indent=2,sort_keys=True)
+    ap=argparse.ArgumentParser(); ap.add_argument('--corpus',type=Path,default=DEFAULT_CORPUS); ap.add_argument('--seeds',type=int,default=100); ap.add_argument('--output',type=Path); a=ap.parse_args(); corpus=normalize_corpus(json.loads(a.corpus.read_text(encoding='utf-8'))); out=compute(corpus,a.seeds); text=json.dumps(out,ensure_ascii=False,indent=2,sort_keys=True)
     if a.output:a.output.write_text(text+'\n',encoding='utf-8')
     else:print(text)
 if __name__=='__main__':main()
