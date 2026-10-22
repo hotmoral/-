@@ -3,33 +3,16 @@
 Updated: 2026-10-22 KST
 
 ## Closed implementation gates
-1. Cloudflare DO PoC — **PASS**
-2. v0.31/v0.32 waiting room — **PASS**
-3. v0.33 Stage1 authority — **PASS**
-4. v0.34 render/remote projectile parity — **PASS**
-5. v0.35 reconnect/Team Shop/Stage2 — **PASS**
-6. v0.36 N1/N2 + Lv6 — **FULL PASS**
-7. v0.37 Stage3 + BRUTE regression fixture — **FULL PASS**
-8. v0.38 larger-party/event kernel — **FULL PASS**
-9. v0.39 N3 — **FULL PASS**
-10. Monster Capability Foundation V1 — **PASS**
-11. v0.40 SHIELD — **FULL PASS**
-12. v0.41 FLYER — **FULL PASS**
-13. v0.42 CHARGER — **FULL PASS**
-14. v0.43 SPLITTER — **FULL PASS**
-15. v0.44 SUPPORTER — **FULL PASS**
-16. v0.45 SIEGER — **FULL PASS**
-17. Player Skill Authority Review — **COMPLETE**
-18. Legacy Game Structure Corpus foundation — **COMPLETE**
-19. T1 structural skeleton V0.2 — **STRUCTURAL PASS / NUMERIC NOT FROZEN**
+- Cloudflare DO PoC through v0.45 SIEGER — **FULL PASS**.
+- Player Skill Authority Review — **COMPLETE**.
+- No gameplay/numerical implementation authorized after v0.45.
 
-## Exact latest executable checkpoint
+## Latest executable checkpoint
 - branch `timing-defense-cloudflare-v045-sieger-pass-20261022`
 - HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - health `0.45-cf.1`
-- live run/job `39725993894` / `119649887564`
+- run/job `39725993894` / `119649887564`
 
-No gameplay/numerical implementation has been authorized after v0.45.
 Stage1–3 remain regression fixtures only.
 Do not reconstruct legacy Stage4→10 as production content.
 
@@ -40,7 +23,7 @@ Do not reconstruct legacy Stage4→10 as production content.
 Primary corpus:
 `legacy-game-structure/`
 
-Read in order:
+Critical read order:
 1. `README.md`
 2. `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
 3. `01_META_PROGRESSION.md`
@@ -51,31 +34,35 @@ Read in order:
 8. `09_TIER_LADDER_CANDIDATE_V0_1.md`
 9. `12_T1_STATIC_DISTRIBUTION_AUDIT_V0_1.md`
 10. `13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
-11. `06_SIMULATION_CALIBRATION_PLAN.md`
-12. `07_AUTHORING_DATA_SCHEMA.md`
-13. `05_LEGACY_EVIDENCE_MAP.md`
+11. `14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
+12. `06_SIMULATION_CALIBRATION_PLAN.md`
+13. `07_AUTHORING_DATA_SCHEMA.md`
+14. `05_LEGACY_EVIDENCE_MAP.md`
 
 ---
 
-# Closed structural decisions
+# Structural truth
 
 ## Meta progression
-- 5 classes progress through Tiers independently.
-- 1 Tier = 50 stages.
-- fail 1–19 -> 0★.
-- fail 20–39 -> 1★.
-- fail 40–49 -> 2★.
-- clear 50 -> 3★.
-- repeated attempts preserve `bestStars[class][tier]`, max 3★.
-- `GlobalStarTotal = sum(bestStars)`.
-- stars are non-spendable account achievement progression.
-- cumulative stars automatically grant account-wide permanent stats.
+- five classes progress through Tiers independently,
+- 1 Tier = 50 stages,
+- fail 1–19 -> 0★,
+- fail 20–39 -> 1★,
+- fail 40–49 -> 2★,
+- clear 50 -> 3★,
+- `bestStars[class][tier] = max(previous, attemptStars)`,
+- `GlobalStarTotal = sum(bestStars)`,
+- stars are non-spendable account achievement progression,
+- cumulative stars grant account-wide permanent stats.
 
-Exact permanent-stat reward ladder remains OPEN.
-Tier unlock and multiplayer Tier eligibility remain OPEN.
+Open:
+- permanent reward ladder,
+- Tier unlock semantics,
+- multiplayer Tier eligibility/credit.
 
 ## Encounter taxonomy
-Old S/E/X is legacy analysis only.
+Old S/E/X = legacy analysis only.
+
 Current authoring vocabulary:
 - BASELINE neutral reference
 - FLOOD
@@ -87,28 +74,22 @@ Current authoring vocabulary:
 - SUPPORT
 - SIEGE
 
-Encounter authoring must model composition + formation + spawn order + cadence + geometry + concurrency + target order + capability uptime.
-
-## Complexity
+Complexity:
 - C0 baseline
 - C1 single mechanic
 - C2 dual readable
 - C3 synergy
 - C4 multi-state high complexity
 
-Complexity is not equal to difficulty.
-Higher Tier must not become constant C3/C4 chaos.
+Complexity != difficulty.
 
 ---
 
-# First Tier ladder candidate
+# Tier ladder candidate
+First full-campaign simulation spine uses **5 Tier as a bounded candidate**, not final freeze.
 
-First full-campaign simulation spine uses **5 Tier as a bounded candidate only**.
-This is NOT final Tier-count freeze.
-
-Reason:
-`5 classes × T tiers × 50 stages = 250T minimum successful stage completions`
-`MaxStars = 15T`
+`minimum successful class-stage volume = 250T`
+`maximum stars = 15T`
 
 Candidate identities:
 - T1 Vocabulary / Field Reading
@@ -117,77 +98,117 @@ Candidate identities:
 - T4 Formation / Objective Pressure
 - T5 Mastery / Contrast
 
-Final Tier count/name/order remains OPEN and must be checked against total progression length and star reward ladder.
+Final Tier count/name/order remains OPEN.
 
 ---
 
-# T1 structural candidate V0.2 — current active baseline
+# T1 structural candidate V0.2 — PASS
 
 Source:
-`legacy-game-structure/13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
+`13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
 
-Key properties:
-- all 9 ordinary monster capabilities first taught by Stage26,
-- Stage40+ introduces no new core ordinary capability,
-- 61 encounter occurrences across 50 stages,
-- complexity distribution: C0 4 / C1 19 / C2 27 / C3 9 / C4 2,
+- last first-teach = Stage26 SIEGER,
+- no new core ordinary capability Stage40+,
+- 61 encounter occurrences,
+- C0 4 / C1 19 / C2 27 / C3 9 / C4 2,
 - C0–C2 = 82.0%,
 - C4 only Stage49/50,
-- V0.1 SIEGE 5-stage consecutive run removed,
-- SIEGE Stage presence reduced 12 -> 9,
-- SPLITTER three-stage teaching repetition removed,
-- Stage40–49 final exam uses focused extremes as well as selected synergy.
+- V0.1 SIEGE overconcentration/repetition corrected,
+- SPLITTER three-stage teaching repetition corrected.
 
 Remaining WATCH:
-- BULWARK stage presence 19/50,
-- cognitive load from SPLITTER/SUPPORTER/SIEGER teaching during Stage20–26,
-- whether FORTRESS belongs in T1 Stage49/50,
-- first-class/no-permanent-stat late-stage survivability,
-- class-opportunity coverage once geometry/count data exists.
+- BULWARK 19/50 Stage presence,
+- Stage20–26 cognitive load,
+- T1 FORTRESS necessity,
+- first-class/no-permanent-stat late survivability,
+- geometry-driven class opportunity.
+
+---
+
+# T1 2-player authoring envelope V0.1 — CANDIDATE READY
+
+Source:
+`14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
+
+This is simulator input, not production balance.
+
+## Count rules
+- each E01–E19 used by T1 now has L/M/H/X candidate composition,
+- authored count and effective entity count are separate,
+- SPLITTER children count toward effective entity volume,
+- T1 SUPPORTER package defaults to one SUPPORTER,
+- T1 SIEGER package defaults to one SIEGER,
+- T1 E19 FORTRESS uses L/M first even at Stage49/50.
+
+## Candidate readability alerts
+Historical old 5-monster 2P reference: P95 4s ≈11 / 6s ≈13.5.
+
+New candidate starts conservatively:
+- authored 4s normal target <=8,
+- authored 9–10 WATCH,
+- authored >10 warning,
+- effective 4s normal target <=10,
+- effective 11–13 WATCH,
+- effective >13 warning,
+- peak active candidate target mostly 6–8 / WATCH 9–10 / stress 11+.
+
+These are analysis alerts, not runtime hard caps.
+
+## Cadence candidate IDs
+- CD01 DRIP_SLOW
+- CD02 DRIP
+- CD03 WAVE
+- CD04 BURST_LIGHT
+- CD05 STAGGER
+- CD06 ESCORT
+- CD07 LATE_INSERT
+- CD08 OVERLAP_BOUNDED
+
+## Formation candidate IDs
+- F01 LINE_LIGHT
+- F02 LINE_DURABLE_FRONT
+- F03 CLUSTER_LIGHT
+- F04 SCATTER_LIGHT
+- F05 AIR_OFFSET
+- F06 SCREEN_BACKLINE
+- F07 ESCORT_COLUMN
+- F08 SPLIT_AXIS
+- F09 REPLICATION_CLUSTER
+
+---
+
+# Player skill parity — PARKED
+- Lv6 current authority.
+- Lv11/Lv16/Lv21 exact legacy parity candidates.
+- Lv26 designed-not-authoritative.
+- Lv31 unresolved.
+
+No Lv11+ live implementation during this structure tranche.
 
 ---
 
 # EXACT NEXT BOUNDARY
 
-Do **not** continue directly to live implementation.
-Do **not** freeze production monster numbers.
-Do **not** author all five Tiers numerically at once.
+Next bounded tranche = **T1 representative encounter micro-simulation preflight**, not full 50-stage simulation.
 
-Next bounded tranche is **T1 candidate numeric authoring envelope**, in this order:
+Order:
+1. map each E01–E19 to allowed formation/cadence combinations,
+2. choose representative L/M/H recipes actually used by T1 V0.2,
+3. generate deterministic spawn schedules for those recipes,
+4. statically calculate authored 4s/6s burst density,
+5. stress SPLITTER child creation separately,
+6. model frontmost arrival/screening for E11/E12/E17/E18/E19,
+7. measure SIEGER first-shot/screened firing opportunity,
+8. measure SUPPORTER screened aura opportunity,
+9. verify CHARGER telegraph concurrency,
+10. classify defects and revise envelope,
+11. only after this passes build a 10-stage synthetic slice.
 
-1. define 2-player baseline authored count ranges for E01–E19 used by T1,
-2. separately compute effective entity counts including SPLITTER children,
-3. define candidate cadence buckets (not production freeze),
-4. define concrete formation IDs / intended arrival order,
-5. calculate static peak/burst-density envelopes before combat simulation,
-6. run encounter micro-simulation on representative pairs/synergies,
-7. correct structure/count/cadence defects,
-8. build a 10-stage synthetic slice,
-9. only then run full T1 50-stage simulation,
-10. only after T1 stabilizes expand to 3P/4P and later Tiers.
-
-## Required review every tranche
-Use `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md` and check:
-- product purpose
-- internal consistency
-- cross-category impact
-- player learning/readability
-- targeting/formation truth
-- class fairness
-- meta/economy snowball
-- multiplayer implications
-- authority boundary
-- simulation determinism
-- scope/cost control
-
-## Parked behind structure phase
-- Lv11/Lv16/Lv21 server parity implementation
-- Lv26/Lv31 production contract
-- permanent stat coefficients
-- Tier unlock semantics
-- multiplayer Tier eligibility
-- shop cadence
-- boss cadence
+Do not yet:
+- assign exact recipe to all 50 stages,
+- expand to 3P/4P,
+- freeze production values,
+- change live game code.
 
 ## Governance
-`recover -> structure -> static audit -> candidate data -> simulate -> classify -> report -> discuss -> explicit freeze -> implement`.
+`recover -> structure -> static audit -> candidate data -> micro-sim -> synthetic slice -> full Tier sim -> report -> explicit freeze -> implement`.
