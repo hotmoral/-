@@ -104,11 +104,11 @@ Configuration:
 - 10,000 judgments per seed
 - 1,000,000 judgment events total
 
-Observed approximation:
-- PERFECT: 69.9729%
-- GOOD: 20.0121%
-- NORMAL: 10.0150%
-- FOCUS occupancy: 39.9384%
+Observed approximation using the committed XORSHIFT32 draw order:
+- PERFECT: 70.1020%
+- GOOD: 19.9446%
+- NORMAL: 9.9534%
+- FOCUS occupancy: 40.2011%
 
 This is consistent with the exact stationary target 70/20/10.
 
@@ -119,10 +119,12 @@ Configuration:
 - 100 judgment events per seed
 
 Observed diagnostic:
-- combo40 reached in approximately 58.86% of 100-judgment windows
+- combo40 reached in approximately 58.48% of 100-judgment windows
+- median maximum PERFECT streak: 46
+- maximum observed streak: 100
 
-This percentage is **not** a production target and is not frozen.
-It is retained only as evidence that V0.1 does not accidentally turn combo40 into a high-mastery-only event.
+These percentages and tail values are **not** production targets and are not frozen.
+They are retained only as evidence that V0.1 does not accidentally turn combo40 into a high-mastery-only event.
 
 ---
 
