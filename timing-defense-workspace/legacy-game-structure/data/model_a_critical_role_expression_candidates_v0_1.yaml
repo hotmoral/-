@@ -1,0 +1,80 @@
+version: model-a-critical-role-expression-candidates-v0.1
+status: BOUNDED_DIAGNOSTIC_CANDIDATES_NOT_PRODUCTION_AUTHORING
+
+source:
+  baseRecipes: model-a-representative-recipes-v0.1
+  geometryEvidence:
+    - 48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md
+    - 49_E11_SIEGE_TIMING_ADJUSTMENT_REPORT_V0_1.md
+    - 50_CROSS_BRACKET_ROLE_EXPRESSION_ROBUSTNESS_V0_1.md
+  playerModel: model-a-class-action-trace-bracket-v0.1
+  playerModelStatus: CALIBRATION_BRACKET_NOT_FITTED
+  powerMode: CURRENT_AUTHORITY_LV6
+
+rules:
+  - this file is an overlay on representative recipes, not a replacement production schedule
+  - entryShiftTowardWall is relative to the current common spawn anchor
+  - relativeSpecialOffset is total desired special-unit depth relative to the shifted formation base
+  - designatedRoleMonsters are the roles required for contract admission in that representative recipe
+  - exact production coordinates and timing remain open
+
+criticalRecipes:
+  T1_E03_M:
+    designatedRoleMonsters: [BRUTE]
+
+  T2_E14_H:
+    designatedRoleMonsters: [RUNNER, FLYER]
+
+  T3_E07_M:
+    designatedRoleMonsters: [CHARGER]
+    entryShiftTowardWall: 0.54
+    relativeSpecialOffsets:
+      CHARGER: 0.10
+
+  T3_E13_H:
+    designatedRoleMonsters: [RUNNER, CHARGER]
+    entryShiftTowardWall: 0.40
+    relativeSpecialOffsets:
+      CHARGER: 0.00
+    evidenceNote: independent three-bracket five-class probe found all-15 visible-windup expression with zero sampled contact wall damage around 0.40..0.41
+
+  T3_E15_M:
+    designatedRoleMonsters: [RUNNER, SPLITTER]
+
+  T3_E17_M:
+    designatedRoleMonsters: [SHIELD, BRUTE, CHARGER]
+    entryShiftTowardWall: 0.49
+    relativeSpecialOffsets:
+      CHARGER: 0.10
+
+  T4_E11_M:
+    designatedRoleMonsters: [SHIELD, BRUTE, SIEGER]
+    entryShiftTowardWall: 0.70
+    relativeSpecialOffsets:
+      SIEGER: 0.10
+    spawnTimeOverridesMs:
+      - {occurrenceType: GRUNT, occurrenceIndex: 1, tMs: 750}
+      - {occurrenceType: GRUNT, occurrenceIndex: 2, tMs: 1000}
+    evidenceNote: preserves five-class SIEGER role opportunity while removing the prior CENTRAL ordinary contact leak; weaker-trace temporal wall pressure remains WATCH
+
+  T4_E12_M:
+    designatedRoleMonsters: [SHIELD, BRUTE, SUPPORTER]
+
+  T4_E16_M:
+    designatedRoleMonsters: [SPLITTER, SUPPORTER]
+
+  T4_E19_M:
+    designatedRoleMonsters: [SHIELD, BRUTE, SUPPORTER, SIEGER]
+    entryShiftTowardWall: 0.70
+    relativeSpecialOffsets:
+      SIEGER: 0.10
+
+admission:
+  requireAllFiveClassesPerProfile: true
+  profiles:
+    - TRACE_BRACKET_CONSERVATIVE
+    - TRACE_BRACKET_CENTRAL
+    - TRACE_BRACKET_STRONG
+  structuralOnly: true
+  exactMinimumVisibleMs: OPEN
+  productionFreeze: false
