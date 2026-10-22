@@ -26,13 +26,15 @@ Master Campaign Spine
  -> system dependency / calibration-order review
  -> user-approval decision gate governance
  -> P1 Run-State Lifecycle USER_APPROVED_STRUCTURAL_COMPLETE
+ -> P2 analysis / proposal complete
 ```
 
-Current execution authority:
+Current execution authority / proposal:
 - `legacy-game-structure/69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 - `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 - `legacy-game-structure/71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md`
 - `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md` — **PROPOSED / NOT APPROVED**
 - `legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`
 
 ---
@@ -84,41 +86,28 @@ Diagnostic work may proceed without micro-approval, but passing a test does not 
 
 ---
 
-# EXACT NEXT BOUNDARY
+# EXACT CURRENT BOUNDARY
 
-## P2 — MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
+## P2 — USER DECISION GATE
 
-Do not begin by choosing numerical bonuses.
-First determine the semantics needed so later stars, achievements, shop, skills, combo, crit and defenses cannot stack implicitly or inconsistently.
+Analysis/proposal is complete in:
+`legacy-game-structure/73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md`.
 
-Required analysis/decision topics:
-1. stat scope taxonomy — ACCOUNT / CLASS / RUN / TEMPORARY / TARGET-STATE.
-2. canonical stat IDs and base-vs-derived separation.
-3. additive vs multiplicative modifier semantics.
-4. ordering between:
-   - base class/weapon/objective stats
-   - star permanent modifiers
-   - achievement account/class modifiers
-   - run-local shop modifiers
-   - level/skill modifiers
-   - timing judgment / Heavy / P×P
-   - combo
-   - crit
-   - monster mitigation/armor/state
-   - wall defense/shields
-5. cap/clamp ownership.
-6. duplicate/stack policy by source family.
-7. damage/control/wall attribution so simulation can explain *why* an outcome changed.
-8. snapshot vs dynamic evaluation for permanent/run modifiers.
+Recommended structural package awaiting user approval:
+1. **typed hybrid stacking** — ordinary bonuses to the same scalar stat aggregate additively; multiplication is explicit/opt-in.
+2. **stat/effect separation** — penetration, splash, shields, armor-ignore, tracking, proc generation, etc. are effect rules rather than fake scalar stats.
+3. **outgoing attack pipeline** — resolve action/template -> persistent stats -> action transforms/combo -> crit policy -> hit geometry -> per-target mitigation -> realized effect.
+4. **defensive pipeline** — monster raw damage -> generic DR -> explicit unique class/team defense -> shield -> Base HP.
+5. **derived stats remain derived** — source modifiers/ranks/unlocks are authoritative; effective stats are recomputed/cache, not independent truth.
+6. **deterministic attribution ledger** for simulator/test paths.
+7. **delayed rounding** — avoid repeated intermediate rounding; round per realized hit/control application, preserving fixed-budget contracts such as N3.
 
-Required output after user approval:
-- modifier schema: `statId / scope / operation / value / stackPolicy / source / version`;
-- authoritative operation order;
-- explicit cap/clamp semantics;
-- attribution/debug event contract;
-- no accidental multiplicative stacking.
+Important:
+- this package is `PROPOSED`, not `USER_APPROVED_DIRECTION`;
+- no numeric star/shop/achievement values or caps are frozen;
+- unresolved per-skill crit inheritance and later Lv26/Lv31 details remain separate gates.
 
-P3 remains blocked until P2 material semantics are approved and coherent.
+P3 remains blocked until the material P2 semantics are explicitly approved.
 
 ---
 
@@ -148,4 +137,4 @@ Initial exclusions:
 - freeze exact boss mechanics
 - freeze multiplayer disconnect timeout/AI/reward details
 - freeze multiplayer progression-credit/scaling values
-- convert a candidate into an accepted decision without user approval
+- convert P2 proposal into an accepted decision without user approval
