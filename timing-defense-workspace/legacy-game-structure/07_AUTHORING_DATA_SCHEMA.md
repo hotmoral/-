@@ -1,7 +1,7 @@
 # Timing Defense — Authoring Data Schema
 
 Date: 2026-10-22 KST  
-Status: **STRUCTURAL SCHEMA DRAFT V0.2 / NO PRODUCTION NUMBERS**
+Status: **STRUCTURAL SCHEMA DRAFT V0.3 / NO PRODUCTION NUMBERS**
 
 ## 1. 목적
 
@@ -13,8 +13,6 @@ Tier/Stage/Encounter/Meta progression 데이터를 코드에 하드코딩하지 
 ---
 
 # 2. Common status enum
-
-문서/authoring metadata가 사용할 수 있는 구조 상태:
 
 ```text
 CURRENT_FROZEN_STRUCTURE
@@ -36,16 +34,23 @@ SUPERSEDED
 accountProgress:
   version: string
   permanentRewardTrackVersion: string
-  permanentStats:
+  achievementCatalogVersion: string
+
+  accountPermanentStats:
     attack: number
     critChance: number
     critDamage: number
     wallHp: number
     defense: number
     knockback: number
+
+  achievementCompletions: [achievementId]
+  unlockedTitles: [titleId]
+
   classes:
     knight:
       highestUnlockedTier: string|null
+      classPermanentModifiers: {}
       tierRecords:
         T1:
           bestStars: 0..3
@@ -58,7 +63,7 @@ accountProgress:
     mage: {}
 ```
 
-`globalStarTotal`은 authoritative stored input이 아니라 원칙적으로 `sum(bestStars)`에서 파생한다.
+`globalStarTotal`은 원칙적으로 `sum(bestStars)`에서 파생한다.
 캐시할 경우 source records와 검증 가능해야 한다.
 
 `bestStars = max(previous, attemptStars)`는 `DERIVED_INVARIANT`다.
@@ -69,12 +74,19 @@ accountProgress:
 
 ```yaml
 attemptOutcome:
+  runId: string
   tierId: string
   classId: string
   clearedTier: boolean
   failedStage: integer|null
   reachedStage: integer
   attemptStars: 0..3
+
+  modeTruth:
+    humanPlayerCount: integer
+    aiCount: integer
+    hadRemoteHumanAtAnyPoint: boolean
+    hadAiAtAnyPoint: boolean
 ```
 
 Validation:
@@ -86,9 +98,11 @@ failedStage 20..39   -> attemptStars=1
 failedStage 1..19    -> attemptStars=0
 ```
 
+`modeTruth`는 SOLO_NO_AI 등의 업적 검증에 사용한다.
+
 ---
 
-# 5. Permanent reward schema
+# 5. Permanent star reward schema
 
 ```yaml
 permanentRewardTrack:
@@ -101,12 +115,101 @@ permanentRewardTrack:
       value: number
 ```
 
-아직 실제 threshold/value는 미정.
+별 보상은 broad account progression을 담당한다.
+
 Reward track 변경은 meta/Tier/run-economy/class-sensitivity를 함께 검토하는 governance Gate G2 대상이다.
 
 ---
 
-# 6. Tier schema
+# 6. Achievement schema
+
+```yaml
+achievement:
+  id: string
+  status: enum
+  family: class_tier_reach|all_class_tier_reach|solo_no_ai_tier_clear|multi_class_mastery|other
+  displayName: string
+  description: string
+
+  sourceClass: classId|null
+  tierId: string|null
+
+  condition:
+    minStars: integer|null
+    requireTierClear: boolean
+    requiredClasses: [classId]
+    minHumanPlayerCount: integer|null
+    maxHumanPlayerCount: integer|null
+    aiCountMustEqual: integer|null
+    noRemoteHumanEver: boolean|null
+    noAiEver: boolean|null
+
+  rewards:
+    - target: ACCOUNT|classId
+      statId: string
+      operation: add|multiply|other
+      value: number|null
+      stackPolicy: unique|additive|highest|other
+
+  titleUnlockId: string|null
+```
+
+User-confirmed direction includes:
+- class-specific Tier achievements
+- all-class Tier achievements
+- `SOLO_NO_AI_TIER_CLEAR`
+- some achievements rewarding a **different target class** from the source class
+
+`value=null` is allowed while numerical design is open.
+
+---
+
+# 7. Title schema
+
+```yaml
+title:
+  id: string
+  sourceAchievementId: string
+  displayName: string
+  category: class|all_class|solo|mastery|other
+  cosmeticOnly: boolean
+```
+
+Default structural recommendation:
+`cosmeticOnly: true`.
+
+Gameplay reward belongs to achievement completion, not title equip state, unless a future explicit decision changes this.
+
+---
+
+# 8. Cross-class reward graph schema
+
+```yaml
+achievementRewardEdge:
+  sourceAchievementId: string
+  sourceClass: classId|null
+  target: ACCOUNT|classId
+  statId: string
+  operation: add|multiply|other
+  value: number|null
+  stackPolicy: unique|additive|highest|other
+```
+
+Required graph validation:
+- no unknown source achievement
+- no unknown target class
+- no duplicate unique edge
+- reachability analysis possible
+- cycle detection possible
+- hard-dependency deadlock warnings possible
+
+Important:
+A directed cycle is not automatically invalid.
+It becomes invalid when progression simulation shows both/all nodes in the cycle require the cycle reward to become realistically attainable.
+
+---
+
+# 9. Tier schema
 
 ```yaml
 tier:
@@ -157,11 +260,11 @@ tier:
   bossPolicy: {}
 ```
 
-`designBandPolicy`와 `rewardBandPolicy`를 절대로 하나의 band enum으로 합치지 않는다.
+`designBandPolicy`와 `rewardBandPolicy`를 하나의 band enum으로 합치지 않는다.
 
 ---
 
-# 7. Stage schema
+# 10. Stage schema
 
 ```yaml
 stage:
@@ -190,11 +293,9 @@ stage:
   teamScalingProfile: string
 ```
 
-`baseFlow`는 하나의 monster type만 허용하지 않고 list로 둔다.
-
 ---
 
-# 8. Encounter event schema
+# 11. Encounter event schema
 
 ```yaml
 encounterEvent:
@@ -221,7 +322,7 @@ Authoring intent이며 실제 target order는 runtime authoritative position/val
 
 ---
 
-# 9. Encounter archetype schema
+# 12. Encounter archetype schema
 
 ```yaml
 encounterArchetype:
@@ -246,7 +347,7 @@ Complexity 의미:
 
 ---
 
-# 10. Pressure family IDs
+# 13. Pressure family IDs
 
 ```text
 BASELINE
@@ -260,13 +361,9 @@ SUPPORT
 SIEGE
 ```
 
-`BASELINE`은 neutral reference로 별도 취급 가능.
-
 ---
 
-# 11. Monster role schema
-
-한 monster는 base archetype과 encounter role을 분리한다.
+# 14. Monster role schema
 
 ```yaml
 monsterRole:
@@ -284,7 +381,7 @@ monsterRole:
 
 ---
 
-# 12. Formation schema
+# 15. Formation schema
 
 ```yaml
 formation:
@@ -300,12 +397,12 @@ formation:
 
 중요:
 - 실제 authoritative target acquisition을 강제로 지정하는 필드가 아니다.
-- `targetOrderIntent`는 spawn/position 설계 의도를 기록하는 metadata다.
-- simulation은 실제 movement/position으로 intended order가 실제 성립하는지 검증해야 한다.
+- `targetOrderIntent`는 spawn/position 설계 의도를 기록한다.
+- simulation은 actual movement/position으로 intended order가 성립하는지 검증한다.
 
 ---
 
-# 13. Cadence schema
+# 16. Cadence schema
 
 ```yaml
 cadence:
@@ -316,11 +413,11 @@ cadence:
   durationMs: number|null
 ```
 
-숫자는 candidate simulation data로 먼저 작성하고 production freeze 전에는 live authority로 취급하지 않는다.
+숫자는 candidate simulation data로 먼저 작성한다.
 
 ---
 
-# 14. Simulation result schema
+# 17. Simulation result schema
 
 ```yaml
 simulationResult:
@@ -334,11 +431,19 @@ simulationResult:
   teamSize: integer
   masteryProfile: string
   permanentProfile: string
+  achievementProfile: string
 
   outcome:
     cleared: boolean
     failedStage: integer|null
     stars: 0..3
+
+  progression:
+    globalStarsBefore: integer
+    globalStarsAfter: integer
+    achievementsBefore: [achievementId]
+    achievementsAfter: [achievementId]
+    unlockedRewardEdges: [achievementId]
 
   metrics:
     clearTime
@@ -372,14 +477,44 @@ simulationResult:
 
 ---
 
-# 15. Validation rules
+# 18. Account progression simulation schema
 
-Authoring data validator는 최소 다음을 검사한다.
+```yaml
+accountSimulation:
+  dataVersion: string
+  seed: integer
+  routePolicy: first_class|balanced|stacked|favorite_first|weak_class_recovery|achievement_focus|optimizer
+  masteryProfile: string
+
+  stateTimeline:
+    - step: integer
+      selectedClass: classId
+      tierId: string
+      attemptResult: string
+      globalStars: integer
+      achievementCompletions: [achievementId]
+      accountPermanentStats: {}
+      classPermanentModifiers: {}
+
+  outputs:
+    firstClearStepByClassTier: {}
+    attemptsByClassTier: {}
+    softWallRecoveryEvents: []
+    unreachableNodes: []
+    dominantRouteScore: number|null
+    snowballMetric: number|null
+```
+
+이 layer가 별과 achievement를 동시에 켠 전체 progression 검증의 기준이다.
+
+---
+
+# 19. Validation rules
 
 ## Referential
 - Tier는 정확히 50 Stage를 가져야 함.
 - Stage number 중복/누락 금지.
-- 존재하지 않는 monster/archetype/formation/cadence reference 금지.
+- 존재하지 않는 monster/archetype/formation/cadence/achievement/title reference 금지.
 
 ## Star/reward
 - Stage 1-19 rewardBand=zeroStar
@@ -388,16 +523,23 @@ Authoring data validator는 최소 다음을 검사한다.
 - Stage 50 rewardBand=threeStarClear
 - designBand와 rewardBand를 혼동하지 않음.
 
+## Achievement
+- `SOLO_NO_AI_TIER_CLEAR`는 `humanPlayerCount=1`, `aiCount=0`, `noRemoteHumanEver=true`, `noAiEver=true` 조건을 검증 가능해야 함.
+- sourceClass/targetClass가 동일하지 않아야 한다는 전역 규칙은 두지 않지만, cross-class reward에서는 다른 target을 명시할 수 있어야 함.
+- reward graph cycle을 탐지하고 simulation reachability와 함께 판정.
+- achievement 하나가 유일한 hard progression key가 되는 경우 warning/error.
+- title unlock과 gameplay reward는 별도 필드로 유지.
+
 ## Monster capability
 - SPLITTER child를 authored normal spawn으로 잘못 넣지 않음.
 - SUPPORTER aura stacking을 authoring data로 임의 허용하지 않음.
 - ordinary monster가 manual-target requirement를 전제로 하지 않음.
-- SIEGER/SUPPORTER/CHARGER 등 stateful capability가 contract를 authoring data로 재정의하지 않음.
+- stateful capability가 contract를 authoring data로 재정의하지 않음.
 
 ## Introduction
 - `firstTeachStage <= firstMixedStage <= firstHighPressureStage`가 기본 기대값.
 - 예외는 justification 필요.
-- Stage 40-49에 core ordinary capability를 처음 teaching하는 경우 warning/error policy 적용.
+- Stage 40-49에 core ordinary capability를 처음 teaching하는 경우 warning/error.
 
 ## Repetition/readability
 - Stage signature exact duplicate 연속 사용 경고.
@@ -405,27 +547,32 @@ Authoring data validator는 최소 다음을 검사한다.
 - effective entity count 계산 가능해야 함.
 
 ## Target-order
-- formation intent와 실제 simulated target order 차이를 검출할 수 있어야 함.
+- formation intent와 actual simulated target order 차이를 검출할 수 있어야 함.
+
+## Cross-class progression
+- 신규 계정에서 적어도 하나의 합리적인 progression seed route 존재.
+- stars-only, achievement-only, combined progression을 구분 측정 가능.
+- combined progression에서 runaway/trivialization 탐지 가능.
+- 특정 class가 reward graph에서 지속적으로 고립되는지 탐지 가능.
 
 ---
 
-# 16. Versioning
-
-각 authoring set은 독립 version/hash를 가져야 한다.
-
-예:
+# 20. Versioning
 
 ```text
 tier-data-v0.1
 encounter-library-v0.1
 permanent-reward-v0.1
+achievement-catalog-v0.1
+title-catalog-v0.1
+cross-class-reward-graph-v0.1
 ```
 
 시뮬레이션 report에는 사용한 version/hash, modelMode, seed range, run count를 기록한다.
 
 ---
 
-# 17. Live implementation boundary
+# 21. Live implementation boundary
 
 이 schema는 live server가 즉시 읽도록 연결하지 않는다.
 먼저 별도 authoring/simulation lane에서 안정화한 뒤 production freeze 시 data import 경계를 설계한다.
