@@ -1,0 +1,64 @@
+name: Timing Defense v0.44 SUPPORTER Candidate CI
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v044-supporter-aura
+    paths:
+      - '.github/workflows/timing-defense-v044-supporter-ci.yml'
+      - 'timing-defense-cloudflare-poc/src/**'
+      - 'timing-defense-cloudflare-poc/wrangler.jsonc'
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax checks
+        run: |
+          node --check timing-defense-cloudflare-poc/src/v044-supporter-entry.js
+          node --check timing-defense-cloudflare-poc/src/v044-supporter-selftest.js
+          node --check timing-defense-cloudflare-poc/src/v044-supporter-audit-entry.js
+      - name: Pure capability regression
+        run: |
+          node --input-type=module <<'NODE'
+          import { runMonsterCapabilityV1SelfTest } from './timing-defense-cloudflare-poc/src/monster-capability-v1-selftest.js';
+          const r=runMonsterCapabilityV1SelfTest();console.log(JSON.stringify(r,null,2));if(!r.ok)process.exit(1);
+          NODE
+      - name: Worker bundle dry-run
+        run: npx --yes wrangler@4.45.0 deploy --dry-run --config timing-defense-cloudflare-poc/wrangler.jsonc
+      - name: SUPPORTER diagnostics under local Worker runtime
+        run: |
+          set -euo pipefail
+          LOG=/tmp/v044-wrangler.log
+          npx --yes wrangler@4.45.0 dev --config timing-defense-cloudflare-poc/wrangler.jsonc --ip 127.0.0.1 --port 8787 >"$LOG" 2>&1 &
+          PID=$!
+          cleanup(){ kill "$PID" 2>/dev/null || true; }
+          trap cleanup EXIT
+          ready=0
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:8787/api/health >/tmp/v044-health.json 2>/dev/null; then ready=1; break; fi
+            if ! kill -0 "$PID" 2>/dev/null; then cat "$LOG"; exit 1; fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then cat "$LOG"; exit 1; fi
+          CODE=$(curl -sS -o /tmp/v044-diagnostics.json -w '%{http_code}' http://127.0.0.1:8787/api/diagnostics/v044-supporter || true)
+          echo "diagnostics HTTP $CODE"
+          cat /tmp/v044-diagnostics.json || true
+          node - <<'NODE'
+          const fs=require('fs');const d=JSON.parse(fs.readFileSync('/tmp/v044-diagnostics.json','utf8'));
+          const ok=d?.ok&&d?.foundation?.ok&&d?.v039?.ok&&d?.shield?.ok&&d?.flyer?.ok&&d?.charger?.ok&&d?.splitter?.ok&&d?.supporter?.ok;
+          if(!ok){
+            const failed={foundation:d?.foundation?.failed,v039:d?.v039?.failed,shield:d?.shield?.failed,flyer:d?.flyer?.failed,charger:d?.charger?.failed,splitter:d?.splitter?.failed,supporter:d?.supporter?.failed};
+            const supporterChecks=(d?.supporter?.checks||[]).filter(x=>!x.pass);
+            console.error(JSON.stringify({failed,supporterChecks,error:d?.error},null,2));process.exit(1)
+          }
+          console.log(`SUPPORTER ${d.supporter.passed}/${d.supporter.total} PASS`);
+          NODE
