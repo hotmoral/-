@@ -1,11 +1,14 @@
-version: model-a-additional10-role-expression-candidates-v0.1
+version: model-a-additional10-role-expression-candidates-v0.2
 status: BOUNDED_DIAGNOSTIC_CANDIDATES_NOT_PRODUCTION_AUTHORING
 
 source:
   baseRecipes: model-a-representative-recipes-v0.1
   parentAudit: 53_CRITICAL_ROLE_EXPRESSION_V0_2_RERUN_REPORT_V0_1.md
-  playerModel: model-a-class-action-trace-bracket-v0.1
-  playerModelStatus: CALIBRATION_BRACKET_NOT_FITTED
+  centralAudit: 69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md
+  playerModel: skilled-v2-central-sequence-candidate-v0.1
+  playerModelStatus: PROVISIONAL_DESIGN_CANDIDATE_NOT_PRODUCTION_FROZEN
+  historicalPlayerModel: model-a-class-action-trace-bracket-v0.1
+  historicalPlayerModelStatus: CALIBRATION_BRACKET_NOT_FITTED
   powerMode: CURRENT_AUTHORITY_LV6
 
 rules:
@@ -13,6 +16,7 @@ rules:
   - baseline E01 has no special designated role gate
   - exact coordinates/timings and minimum-readable milliseconds remain open
   - localized cadence/geometry changes are preferred over global monster coefficient changes
+  - V0.2 refinements preserve the historical three-bracket role gates while admitting the provisional central skilled sequence probe
 
 roleRecipes:
   T1_E01_M:
@@ -33,15 +37,20 @@ roleRecipes:
 
   T3_E08_M:
     designatedRoleMonsters: [SPLITTER]
+    spawnTimeOverridesMs:
+      - {occurrenceType: SPLITTER, occurrenceIndex: 1, tMs: 500}
+      - {occurrenceType: SPLITTER, occurrenceIndex: 2, tMs: 2000}
+    evidenceNote: both SPLITTER insertions move +250ms from the base recipe so the provisional central Mage path no longer erases parent and newborn children in the same authoritative action; central 3-seed x 5-class minimum sampled child-alive time ~2200ms and historical 3-bracket x 5-class minimum ~1200ms; historical structural gates remain intact
 
   T3_E20_L:
     designatedRoleMonsters: [SPLITTER, CHARGER]
     relativeSpecialOffsets:
-      CHARGER: -0.46
+      SPLITTER: -0.02
+      CHARGER: -0.50
     spawnTimeOverridesMs:
-      - {occurrenceType: SPLITTER, occurrenceIndex: 1, tMs: 1400}
-      - {occurrenceType: CHARGER, occurrenceIndex: 1, tMs: 2350}
-    evidenceNote: preserves meaningful split consequence for STRONG Mage while using CD07/LATE_INSERT semantics to inject CHARGER near its trigger without moving the whole formation; minimum current visible CHARGER window ~250ms, so readability remains WATCH
+      - {occurrenceType: SPLITTER, occurrenceIndex: 1, tMs: 0}
+      - {occurrenceType: CHARGER, occurrenceIndex: 1, tMs: 2000}
+    evidenceNote: E20 requires a bounded re-author rather than a one-number tweak because central Mage Heavy/splash phase and historical brackets had no common pass region under isolated SPLITTER-time, SPLITTER-depth, CHARGER-time/depth, or GRUNT-order sweeps; this candidate preserves meaningful split consequence while retaining late CHARGER expression; central minimum sampled child-alive time ~2200ms and CHARGER visible windup ~400ms, historical minima ~1200ms and ~250ms respectively, with zero sampled wall damage in both candidate cross-checks; CHARGER readability remains WATCH
 
   T4_E09_M:
     designatedRoleMonsters: [SUPPORTER]
@@ -58,7 +67,7 @@ roleRecipes:
       SIEGER: 0.00
     spawnTimeOverridesMs:
       - {occurrenceType: SIEGER, occurrenceIndex: 1, tMs: 900}
-    evidenceNote: focused-siege candidate places SIEGER directly into a readable standoff problem; minimum current accumulated windup ~1275ms across three brackets/five classes; sampled ordinary GRUNT wall contact occurs only long after the initial SIEGER response state
+    evidenceNote: focused-siege candidate places SIEGER directly into a readable standoff problem; minimum current accumulated windup ~1275ms across historical brackets/five classes; sampled ordinary GRUNT wall contact occurs only long after the initial SIEGER response state
 
   T4_E18_M:
     designatedRoleMonsters: [FLYER, SHIELD, SIEGER]
@@ -67,11 +76,14 @@ roleRecipes:
       SIEGER: 0.00
     spawnTimeOverridesMs:
       - {occurrenceType: SIEGER, occurrenceIndex: 1, tMs: 2300}
-    evidenceNote: localized dual-axis candidate yields all-five SIEGER opportunity and all-five FLYER geometry across all brackets; minimum SIEGER windup ~1230ms, minimum FLYER geometry opportunity ~300ms; ordinary contact examples occur after SIEGER response state begins
+    evidenceNote: localized dual-axis candidate yields all-five SIEGER opportunity and all-five FLYER geometry across historical brackets; minimum historical SIEGER windup ~1230ms, minimum FLYER geometry opportunity ~300ms; ordinary contact examples occur after SIEGER response state begins
 
 admission:
   requireAllFiveClassesPerProfile: true
-  profiles:
+  centralProfiles:
+    baseSeeds: [101, 211, 307]
+    rowSeedDerivation: FNV1A32(baseSeed|recipeId|classId)
+  historicalProfiles:
     - TRACE_BRACKET_CONSERVATIVE
     - TRACE_BRACKET_CENTRAL
     - TRACE_BRACKET_STRONG
