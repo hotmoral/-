@@ -24,17 +24,28 @@ workPackages:
 
   P1:
     name: RUN_STATE_LIFECYCLE_CONTRACT
-    status: NEXT
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
     dependsOn: [P0]
+    authority:
+      - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
     output:
       - reset_persist_derive_owner_contract
       - base_hp_stage_transition_semantics
       - combo_charge_stage_shop_semantics
       - failure_end_reconnect_boundary
+      - transient_multiplayer_disconnect_semantics
+    deferredToLater:
+      - reconnect_grace_duration
+      - disconnected_player_ai_substitution
+      - long_disconnect_abandonment
+      - post_abandonment_enemy_rescaling
+      - long_disconnect_reward_credit
+      - host_migration_exact_policy
+      - all_players_disconnect_behavior
 
   P2:
     name: MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
-    status: NEXT_PARALLEL_WITH_P1
+    status: NEXT
     dependsOn: [P0]
     output:
       - modifier_scope_schema
@@ -44,7 +55,7 @@ workPackages:
 
   P3:
     name: TEN_STAGE_PERSISTENT_RUN_KERNEL
-    status: BLOCKED_BY_P1_P2
+    status: BLOCKED_BY_P2
     dependsOn: [P1, P2]
     output:
       - deterministic_multistage_state_continuity
@@ -116,6 +127,8 @@ workPackages:
       - two_three_four_player_pressure_scaling
       - team_role_survival
       - shop_ownership_candidates
+      - disconnect_substitution_combat_candidates
+      - post_abandonment_rescaling_candidates
 
   P11:
     name: STARS_ONLY_PERMANENT_PROGRESSION
@@ -171,6 +184,7 @@ workPackages:
       - tier_eligibility_contract
       - star_credit_contract
       - solo_team_ai_reward_rules
+      - disconnect_abandonment_reward_contract
       - carry_exploit_audit
 
   P17:
@@ -234,6 +248,6 @@ freezePolicy:
       - multiplayer_scaling_coefficients
 
 currentBoundary:
-  completedThrough: P0
-  nextParallel: [P1, P2]
+  completedThrough: P1
+  next: P2
   nextIntegration: P3
