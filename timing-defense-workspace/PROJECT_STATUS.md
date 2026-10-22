@@ -1,6 +1,6 @@
 # Timing Defense — Project Status
 
-Updated: 2026-10-22 KST
+Updated: 2026-10-23 KST
 
 ## Production executable checkpoint
 - v0.45 SIEGER FULL PASS
@@ -12,7 +12,7 @@ Updated: 2026-10-22 KST
 
 # Current phase
 
-**P2 — MODIFIER PIPELINE / POWER ATTRIBUTION PRE-SYNTHETIC-TIER**
+**P3 — TEN-STAGE PERSISTENT RUN KERNEL / STATE+PIPELINE INTEGRATION**
 
 The project has completed:
 - campaign spine validation;
@@ -20,13 +20,16 @@ The project has completed:
 - provisional streak-aware `SKILLED_V2_CENTRAL` integration;
 - system dependency / calibration-order review;
 - user-approval decision governance;
-- P1 run-state lifecycle structural closure.
+- P1 Run-State Lifecycle structural closure;
+- P2 Modifier Pipeline / Power Attribution structural closure.
 
 Current execution authority:
 - `legacy-game-structure/69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 - `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 - `legacy-game-structure/71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md`
 - `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/data/modifier_pipeline_contract_v0_1.yaml`
 - `legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`
 
 ---
@@ -134,29 +137,53 @@ Deferred to P10/P16 or later engineering policy:
 
 ---
 
+# P2 — STRUCTURALLY CLOSED
+
+Authority: `74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`.
+
+Approved:
+- ordinary same-stat progression bonuses aggregate additively by default;
+- multiplication is explicit/opt-in, not implied by subsystem boundaries;
+- scalar stats are separated from effect rules/procs/geometry;
+- authoritative outgoing order is action validation -> timing/Heavy/P×P -> attack template -> effective scalar stats -> action transforms/combo -> crit policy -> hit geometry -> per-target mitigation -> realized effect -> consequences -> isolated procs;
+- generic wall DR -> unique class/team defense -> shield -> Base HP;
+- source modifier state is authoritative and effective stats are derived/recomputable;
+- deterministic Power Attribution Ledger is required for simulator/test authority;
+- repeated intermediate rounding is avoided; rounding occurs at realized effect boundaries, preserving existing fixed-budget contracts.
+
+Still open:
+- exact star/achievement/shop values;
+- crit and generic defense caps;
+- exact Base HP;
+- unresolved multihit crit inheritance;
+- final Lv26/Lv31 contracts;
+- exact numeric representation;
+- production implementation.
+
+---
+
 # Exact current boundary
 
 Completed through:
-`P1 RUN_STATE_LIFECYCLE_CONTRACT`.
+`P2 MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION`.
 
-## NEXT — P2 MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
-Must analyze and obtain user approval for:
-- modifier scopes;
-- base vs derived stat taxonomy;
-- additive/multiplicative semantics;
-- operation ordering;
-- stack policy;
-- cap/clamp ownership;
-- snapshot vs dynamic evaluation;
-- source attribution for damage/control/wall effects.
+## NEXT — P3 TEN_STAGE_PERSISTENT_RUN_KERNEL
+Purpose:
+- integrate P1 state lifecycle and P2 power pipeline in one deterministic multi-stage run;
+- validate persistence/transition/failure/retry and attribution;
+- expose provisional multi-stage wall-pressure and early skill-reach evidence;
+- **not** final campaign balance.
 
-Do **not** freeze numerical reward values in P2.
+P3 must keep OFF / parameterized:
+- permanent star values;
+- achievement values;
+- final shop tuning;
+- exact final EXP formula;
+- final boss novelty;
+- multiplayer progression credit;
+- exact launch Stage authoring.
 
-Then:
-
-## P3 — 10-STAGE PERSISTENT RUN KERNEL
-Blocked only by P2 material semantic closure.
-P3 is a state/persistence integration slice, not final shop/meta/boss/multiplayer balance.
+Material P3 design choices still require analysis -> proposal -> user approval before closure.
 
 ---
 
@@ -185,13 +212,13 @@ A candidate passing simulation is not authorization to freeze it.
 - production monster coefficients/coordinates
 - exact 200-Stage schedule
 - exact EXP formula
-- Lv11+ production coefficients
+- Lv11+ production coefficients not already frozen
 - exact shop cadence/economy
-- modifier numeric coefficients
+- modifier numeric coefficients/caps
 - permanent star milestone/value ladder
 - achievement reward graph/value
 - exact boss cadence/design
 - multiplayer disconnect operational policy
 - multiplayer progression credit/scaling coefficients
 
-No production gameplay source or production balance value was changed by this P1 closure.
+No production gameplay source or production balance value was changed by P2 closure.
