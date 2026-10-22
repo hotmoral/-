@@ -1,14 +1,15 @@
 # Timing Defense — Authoring Data Schema
 
 Date: 2026-10-22 KST  
-Status: **STRUCTURAL SCHEMA DRAFT V0.3 / NO PRODUCTION NUMBERS**
+Status: **STRUCTURAL SCHEMA DRAFT V0.4 / NO PRODUCTION NUMBERS**
 
 ## 1. 목적
 
-Tier/Stage/Encounter/Meta progression 데이터를 코드에 하드코딩하지 않고 독립 authoring data로 관리하기 위한 공통 schema다.
+Campaign/Tier/Stage/Encounter/Meta progression을 코드에 하드코딩하지 않고 versioned authoring data로 관리한다.
 
-현재 단계에서는 필드와 관계를 정의하며 production 값은 넣지 않는다.
-이 schema는 `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`의 정합성 규칙을 따른다.
+상위 기준:
+- `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
+- `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
 
 ---
 
@@ -28,7 +29,57 @@ SUPERSEDED
 
 ---
 
-# 3. Account progression schema
+# 3. Campaign spine schema
+
+```yaml
+campaignSpine:
+  version: string
+  status: enum
+  initialTierCountCandidate: integer|null
+  tierNamespaceOpenEnded: true
+  monsterRegistryVersion: string
+  masteryProfileVersion: string
+
+  tierOrder: [tierId]
+
+  globalRules:
+    stagesPerTier: 50
+    skilledFullClearUpperBound: 0.60
+    tier1DifficultyExceptionAllowed: true
+```
+
+`initialTierCountCandidate`는 launch/initial campaign 후보 수다.
+Lifetime final Tier count를 의미하지 않는다.
+
+`tierNamespaceOpenEnded: true`를 기본 구조로 두어 T6/T7/... 확장을 허용한다.
+
+---
+
+# 4. Monster registry — future expansion contract
+
+```yaml
+monsterRegistry:
+  version: string
+  monsters:
+    - id: string
+      status: enum
+      capabilityContractVersion: string|null
+      pressureFamilies: [pressureId]
+      introducedInRegistryVersion: string
+      retired: boolean
+```
+
+Validation:
+- `monsterCount == 9` 같은 상수 의존 금지
+- Tier/Encounter는 항상 monsterId reference 사용
+- 신규 monster는 registry version-up으로 추가 가능
+- 기존 pressure taxonomy로 설명 불가하면 taxonomy version-up 허용
+
+현재 9종은 registry V1의 initial mechanically-authoritative set일 뿐 lifetime final roster가 아니다.
+
+---
+
+# 5. Account progression schema
 
 ```yaml
 accountProgress:
@@ -36,41 +87,27 @@ accountProgress:
   permanentRewardTrackVersion: string
   achievementCatalogVersion: string
 
-  accountPermanentStats:
-    attack: number
-    critChance: number
-    critDamage: number
-    wallHp: number
-    defense: number
-    knockback: number
-
+  accountPermanentStats: {}
   achievementCompletions: [achievementId]
   unlockedTitles: [titleId]
 
   classes:
-    knight:
+    classId:
       highestUnlockedTier: string|null
       classPermanentModifiers: {}
       tierRecords:
-        T1:
+        tierId:
           bestStars: 0..3
           highestReachedStage: 0..50
           clears: integer
           attempts: integer
-    rogue: {}
-    tank: {}
-    archer: {}
-    mage: {}
 ```
 
-`globalStarTotal`은 원칙적으로 `sum(bestStars)`에서 파생한다.
-캐시할 경우 source records와 검증 가능해야 한다.
-
-`bestStars = max(previous, attemptStars)`는 `DERIVED_INVARIANT`다.
+`globalStarTotal = sum(bestStars)`에서 파생.
 
 ---
 
-# 4. Attempt outcome / star schema
+# 6. Attempt outcome / star schema
 
 ```yaml
 attemptOutcome:
@@ -89,100 +126,58 @@ attemptOutcome:
     hadAiAtAnyPoint: boolean
 ```
 
-Validation:
-
+Rules:
 ```text
-clearedTier == true  -> reachedStage=50, failedStage=null, attemptStars=3
-failedStage 40..49   -> attemptStars=2
-failedStage 20..39   -> attemptStars=1
-failedStage 1..19    -> attemptStars=0
+Stage50 clear -> 3★
+fail 40..49 -> 2★
+fail 20..39 -> 1★
+fail 1..19 -> 0★
 ```
-
-`modeTruth`는 SOLO_NO_AI 등의 업적 검증에 사용한다.
 
 ---
 
-# 5. Permanent star reward schema
+# 7. Permanent star reward schema
 
 ```yaml
 permanentRewardTrack:
   version: string
-  status: enum
   rewards:
     - starThreshold: integer
-      stat: enum
+      stat: string
       operation: add|multiply|other
-      value: number
+      value: number|null
 ```
 
-별 보상은 broad account progression을 담당한다.
-
-Reward track 변경은 meta/Tier/run-economy/class-sensitivity를 함께 검토하는 governance Gate G2 대상이다.
+Stars = broad account foundation.
+Exact threshold/value는 OPEN.
 
 ---
 
-# 6. Achievement schema
+# 8. Achievement / title / cross-class reward
 
 ```yaml
 achievement:
   id: string
-  status: enum
   family: class_tier_reach|all_class_tier_reach|solo_no_ai_tier_clear|multi_class_mastery|other
-  displayName: string
-  description: string
-
   sourceClass: classId|null
   tierId: string|null
-
-  condition:
-    minStars: integer|null
-    requireTierClear: boolean
-    requiredClasses: [classId]
-    minHumanPlayerCount: integer|null
-    maxHumanPlayerCount: integer|null
-    aiCountMustEqual: integer|null
-    noRemoteHumanEver: boolean|null
-    noAiEver: boolean|null
-
+  condition: {}
   rewards:
     - target: ACCOUNT|classId
       statId: string
       operation: add|multiply|other
       value: number|null
       stackPolicy: unique|additive|highest|other
-
   titleUnlockId: string|null
 ```
-
-User-confirmed direction includes:
-- class-specific Tier achievements
-- all-class Tier achievements
-- `SOLO_NO_AI_TIER_CLEAR`
-- some achievements rewarding a **different target class** from the source class
-
-`value=null` is allowed while numerical design is open.
-
----
-
-# 7. Title schema
 
 ```yaml
 title:
   id: string
   sourceAchievementId: string
   displayName: string
-  category: class|all_class|solo|mastery|other
   cosmeticOnly: boolean
 ```
-
-Default structural recommendation:
-`cosmeticOnly: true`.
-
-Gameplay reward belongs to achievement completion, not title equip state, unless a future explicit decision changes this.
-
----
-
-# 8. Cross-class reward graph schema
 
 ```yaml
 achievementRewardEdge:
@@ -192,20 +187,13 @@ achievementRewardEdge:
   statId: string
   operation: add|multiply|other
   value: number|null
-  stackPolicy: unique|additive|highest|other
 ```
 
-Required graph validation:
-- no unknown source achievement
-- no unknown target class
-- no duplicate unique edge
-- reachability analysis possible
-- cycle detection possible
-- hard-dependency deadlock warnings possible
-
-Important:
-A directed cycle is not automatically invalid.
-It becomes invalid when progression simulation shows both/all nodes in the cycle require the cycle reward to become realistically attainable.
+Graph validation:
+- reachability
+- cycle detection
+- hard-dependency deadlock detection
+- dominant-route detection
 
 ---
 
@@ -218,49 +206,44 @@ tier:
   status: enum
   stageCount: 50
   identity: string
-  monsterAvailability: [monsterId]
-  primaryPressureFamilies: [pressureId]
-  secondaryPressureFamilies: [pressureId]
+  noveltyBudget: {}
+
+  roster:
+    registryVersion: string
+    availableMonsterIds: [monsterId]
+    introducedMonsterIds: [monsterId]
+    returningMonsterIds: [monsterId]
 
   monsterIntroduction:
     monsterId:
+      firstAvailableTier: string
       firstTeachStage: integer|null
       firstMixedStage: integer|null
       firstHighPressureStage: integer|null
-      targetFrequencyByDesignBand: {}
+      laterTierRoleTags: [string]
 
-  targetDistributions:
-    monsterSpawnShare: {}
-    monsterStagePresence: {}
-    meaningfulThreatPresence: {}
-    capabilityThreatTimeShare: {}
-    encounterArchetypeShare: {}
-    formationShare: {}
-    cadenceShare: {}
-    geometryShare: {}
-    complexityShare: {}
+  expectedRunPowerWindow:
+    expectedLevelByBand: {}
+    expectedSkillReach: {}
 
-  designBandPolicy:
-    teach: 1-9
-    checkpoint1: 10
-    expand: 11-19
-    synthesisA: 20-29
-    checkpoint2: 30
-    escalate: 31-39
-    finalExamination: 40-49
-    final: 50
+  expectedMetaPowerWindow:
+    allowedProfiles: [P0_FRESH|P1_BALANCED|P2_STAR_GROWN|P3_ACHIEVEMENT_ASSISTED|OVERGROWN]
 
-  rewardBandPolicy:
-    zeroStarFail: 1-19
-    oneStarFail: 20-39
-    twoStarFail: 40-49
-    threeStarClear: 50
+  difficultyTarget:
+    masteryProfile: SKILLED_V2
+    fullTierClearUpperBound: number|null
+    tier1Exception: boolean
 
+  targetDistributions: {}
+  designBandPolicy: {}
+  rewardBandPolicy: {}
   teamScalingPolicy: {}
   bossPolicy: {}
 ```
 
-`designBandPolicy`와 `rewardBandPolicy`를 하나의 band enum으로 합치지 않는다.
+Important:
+- T1에 모든 registry monster를 넣을 필요 없음
+- 신규 monster unlock은 Tier novelty budget과 함께 관리
 
 ---
 
@@ -270,24 +253,13 @@ tier:
 stage:
   tierId: string
   stageNumber: 1..50
-  designBand: teach|checkpoint1|expand|synthesisA|checkpoint2|escalate|finalExamination|final
+  designBand: string
   rewardBand: zeroStar|oneStar|twoStar|threeStarClear
   checkpointType: none|checkpoint|boss|final|other
   expectedDurationSec: number|null
-
-  baseFlow:
-    - monsterId: string
-      count: integer
-      cadenceId: string
-      formationId: string|null
-
-  encounters:
-    - encounterEventId
-
-  activeConcurrencyPolicy:
-    softTarget: integer|null
-    hardLimit: integer|null
-
+  baseFlow: []
+  encounters: [encounterEventId]
+  activeConcurrencyPolicy: {}
   rewardProfile: string|null
   shopPolicy: string|null
   teamScalingProfile: string
@@ -295,39 +267,28 @@ stage:
 
 ---
 
-# 11. Encounter event schema
+# 11. Encounter schema
 
 ```yaml
 encounterEvent:
   id: string
   archetypeId: string
-  timeWindow:
-    mode: normalized|absolute|triggered
-    value: number|string
+  timeWindow: {}
   composition:
     - monsterId: string
       count: integer
       role: front|mid|back|air|free
   formationId: string
-  spawnOrder: [monsterId|groupId]
+  spawnOrder: []
   cadenceId: string
   geometryId: string
   intensity: number
   overlapPolicy: string
-  notes: string
 ```
-
-`role=front|mid|back`은 aggro 강제값이 아니다.
-Authoring intent이며 실제 target order는 runtime authoritative position/validity에서 결정된다.
-
----
-
-# 12. Encounter archetype schema
 
 ```yaml
 encounterArchetype:
   id: string
-  displayName: string
   pressureFamilies: [pressureId]
   requiredMonsterRoles: []
   optionalMonsterRoles: []
@@ -338,17 +299,11 @@ encounterArchetype:
   complexityTier: C0|C1|C2|C3|C4
 ```
 
-Complexity 의미:
-- C0 baseline
-- C1 single mechanic
-- C2 dual readable
-- C3 synergy
-- C4 multi-state high complexity
-
 ---
 
-# 13. Pressure family IDs
+# 12. Pressure taxonomy
 
+Current IDs:
 ```text
 BASELINE
 FLOOD
@@ -361,27 +316,12 @@ SUPPORT
 SIEGE
 ```
 
----
-
-# 14. Monster role schema
-
-```yaml
-monsterRole:
-  monsterId: shield
-  encounterRole: front
-  tacticalRole: armor_screen
-```
-
-예:
-- BRUTE -> front/raw_anchor
-- SHIELD -> front/armor_screen
-- SUPPORTER -> mid|back/formation_support
-- SIEGER -> back/objective_pressure
-- CHARGER -> front|mid/burst_breach
+이 list는 lifetime final enum으로 하드코딩하지 않는다.
+Future monster capability가 요구하면 taxonomy version-up 가능.
 
 ---
 
-# 15. Formation schema
+# 13. Formation / cadence
 
 ```yaml
 formation:
@@ -395,15 +335,6 @@ formation:
   targetOrderIntent: string
 ```
 
-중요:
-- 실제 authoritative target acquisition을 강제로 지정하는 필드가 아니다.
-- `targetOrderIntent`는 spawn/position 설계 의도를 기록한다.
-- simulation은 actual movement/position으로 intended order가 성립하는지 검증한다.
-
----
-
-# 16. Cadence schema
-
 ```yaml
 cadence:
   id: string
@@ -413,89 +344,89 @@ cadence:
   durationMs: number|null
 ```
 
-숫자는 candidate simulation data로 먼저 작성한다.
+FRONT/MID/BACK은 target override가 아니라 authoring intent다.
 
 ---
 
-# 17. Simulation result schema
+# 14. Mastery profile schema
+
+```yaml
+masteryProfile:
+  id: LEARNING|AVERAGE|SKILLED_V2|HIGH_MASTERY_STRESS
+  version: string
+  timingDistribution: {}
+  comboModel: {}
+  heavyCompletionModel: {}
+  inputErrorModel: {}
+```
+
+`SKILLED_V2` requirement:
+- combo 40을 high-mastery-only로 모델링하지 않음
+- old skilled보다 높은 combo maintenance/timing competence
+
+Exact probabilities are OPEN until measured.
+
+---
+
+# 15. Meta-power profile schema
+
+```yaml
+metaPowerProfile:
+  id: P0_FRESH|P1_BALANCED|P2_STAR_GROWN|P3_ACHIEVEMENT_ASSISTED|OVERGROWN
+  starRange: {}
+  achievementSet: []
+  accountPermanentStats: {}
+  classPermanentModifiers: {}
+```
+
+`OVERGROWN` replay profile은 standard skilled difficulty target에서 제외한다.
+
+---
+
+# 16. Simulation result schema
 
 ```yaml
 simulationResult:
-  dataVersion: string
+  campaignSpineVersion: string
+  monsterRegistryVersion: string
+  tierDataVersion: string
   dataHash: string
   seed: integer
   modelMode: CURRENT_AUTHORITY|LEGACY_PARITY_CANDIDATE|FUTURE_SKILL_PLACEHOLDER
+  masteryProfile: string
+  metaPowerProfile: string
   tierId: string
   stageNumber: integer|null
   classId: string
   teamSize: integer
-  masteryProfile: string
-  permanentProfile: string
-  achievementProfile: string
 
   outcome:
     cleared: boolean
     failedStage: integer|null
     stars: 0..3
 
-  progression:
-    globalStarsBefore: integer
-    globalStarsAfter: integer
-    achievementsBefore: [achievementId]
-    achievementsAfter: [achievementId]
-    unlockedRewardEdges: [achievementId]
-
-  metrics:
-    clearTime
-    baseHpRemaining
-    xp
-    level
-    coin
-    authoredSpawnCount
-    effectiveEntityCount
-    peakActive
-    spawn4sMax
-    spawn6sMax
-    frontlineBlockTime
-    targetReorderCount
-    backlineExposureTime
-    meaningfulThreatPresence
-    capabilityThreatTime
-    supporterAuraUptime
-    supporterScreenedAuraUptime
-    siegerShotCount
-    siegerScreenedFiringUptime
-    chargerWindups
-    chargerCompleted
-    chargerInterrupted
-    splitterParents
-    splitterChildren
-    splitterChildFrontlineTime
-    flyerGeometryOpportunityTime
-    classOpportunityCoverage
+  metrics: {}
 ```
+
+Tier aggregate report must include:
+- fullTierClearProbability
+- failureHistogram
+- classVariance
+- skillReachDistribution
+- starOutcomeDistribution
+- softWallLocations
 
 ---
 
-# 18. Account progression simulation schema
+# 17. Account progression simulation
 
 ```yaml
 accountSimulation:
-  dataVersion: string
-  seed: integer
+  campaignSpineVersion: string
+  monsterRegistryVersion: string
   routePolicy: first_class|balanced|stacked|favorite_first|weak_class_recovery|achievement_focus|optimizer
   masteryProfile: string
-
-  stateTimeline:
-    - step: integer
-      selectedClass: classId
-      tierId: string
-      attemptResult: string
-      globalStars: integer
-      achievementCompletions: [achievementId]
-      accountPermanentStats: {}
-      classPermanentModifiers: {}
-
+  stateTimeline: []
   outputs:
     firstClearStepByClassTier: {}
     attemptsByClassTier: {}
@@ -505,74 +436,59 @@ accountSimulation:
     snowballMetric: number|null
 ```
 
-이 layer가 별과 achievement를 동시에 켠 전체 progression 검증의 기준이다.
-
 ---
 
-# 19. Validation rules
+# 18. Validation rules
 
-## Referential
-- Tier는 정확히 50 Stage를 가져야 함.
-- Stage number 중복/누락 금지.
-- 존재하지 않는 monster/archetype/formation/cadence/achievement/title reference 금지.
+## Campaign / roster
+- Tier exactly 50 stages
+- monster reference must exist in registry version
+- no assumption that registry size is 9
+- introducedMonsterIds must be subset of availableMonsterIds
+- future Tier IDs permitted beyond initial campaign candidate
 
-## Star/reward
-- Stage 1-19 rewardBand=zeroStar
-- Stage 20-39 rewardBand=oneStar
-- Stage 40-49 rewardBand=twoStar
-- Stage 50 rewardBand=threeStarClear
-- designBand와 rewardBand를 혼동하지 않음.
+## Difficulty
+- non-T1 standard Tier with intended-entry SKILLED_V2 full-clear >=0.60 -> warning/classification `TOO_EASY_FOR_SKILLED` unless explicitly justified
+- OVERGROWN replay result does not satisfy/fail this gate
+
+## Star
+- reward band boundaries exact
+- bestStars invariant
 
 ## Achievement
-- `SOLO_NO_AI_TIER_CLEAR`는 `humanPlayerCount=1`, `aiCount=0`, `noRemoteHumanEver=true`, `noAiEver=true` 조건을 검증 가능해야 함.
-- sourceClass/targetClass가 동일하지 않아야 한다는 전역 규칙은 두지 않지만, cross-class reward에서는 다른 target을 명시할 수 있어야 함.
-- reward graph cycle을 탐지하고 simulation reachability와 함께 판정.
-- achievement 하나가 유일한 hard progression key가 되는 경우 warning/error.
-- title unlock과 gameplay reward는 별도 필드로 유지.
+- SOLO_NO_AI truth verifiable
+- reward graph reachability/cycle/deadlock analysis possible
 
 ## Monster capability
-- SPLITTER child를 authored normal spawn으로 잘못 넣지 않음.
-- SUPPORTER aura stacking을 authoring data로 임의 허용하지 않음.
-- ordinary monster가 manual-target requirement를 전제로 하지 않음.
-- stateful capability가 contract를 authoring data로 재정의하지 않음.
+- SPLITTER child accounting
+- SUPPORTER stacking contract respected
+- no manual-target assumption
 
-## Introduction
-- `firstTeachStage <= firstMixedStage <= firstHighPressureStage`가 기본 기대값.
-- 예외는 justification 필요.
-- Stage 40-49에 core ordinary capability를 처음 teaching하는 경우 warning/error.
-
-## Repetition/readability
-- Stage signature exact duplicate 연속 사용 경고.
-- short-window density 계산 가능해야 함.
-- effective entity count 계산 가능해야 함.
-
-## Target-order
-- formation intent와 actual simulated target order 차이를 검출할 수 있어야 함.
-
-## Cross-class progression
-- 신규 계정에서 적어도 하나의 합리적인 progression seed route 존재.
-- stars-only, achievement-only, combined progression을 구분 측정 가능.
-- combined progression에서 runaway/trivialization 탐지 가능.
-- 특정 class가 reward graph에서 지속적으로 고립되는지 탐지 가능.
+## Target order
+- authoring intent vs simulated actual order measurable
 
 ---
 
-# 20. Versioning
+# 19. Versioning
 
+At minimum:
 ```text
-tier-data-v0.1
-encounter-library-v0.1
-permanent-reward-v0.1
-achievement-catalog-v0.1
-title-catalog-v0.1
-cross-class-reward-graph-v0.1
+campaign-spine-v0.x
+monster-registry-vN
+pressure-taxonomy-vN
+mastery-profile-vN
+tier-data-v0.x
+encounter-library-v0.x
+permanent-reward-v0.x
+achievement-catalog-v0.x
+cross-class-reward-graph-v0.x
 ```
 
-시뮬레이션 report에는 사용한 version/hash, modelMode, seed range, run count를 기록한다.
+All simulation reports record these versions/hashes.
 
 ---
 
-# 21. Live implementation boundary
+# 20. Live implementation boundary
 
-이 schema는 live server가 즉시 읽도록 연결하지 않는다.
-먼저 별도 authoring/simulation lane에서 안정화한 뒤 production freeze 시 data import 경계를 설계한다.
+이 schema는 live server에 즉시 연결하지 않는다.
+Authoring/simulation lane에서 안정화하고 explicit production freeze 이후 import boundary를 설계한다.
