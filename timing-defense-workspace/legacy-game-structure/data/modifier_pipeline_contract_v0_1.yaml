@@ -1,0 +1,203 @@
+version: modifier-pipeline-contract-v0.1
+status: USER_APPROVED_STRUCTURAL_COMPLETE_NO_NUMERICAL_FREEZE
+authorityDoc: 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+proposalDoc: 73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md
+
+principles:
+  - typed_hybrid_stacking
+  - same_stat_progression_pct_additive_by_default
+  - multiplication_requires_explicit_contract
+  - scalar_stats_separate_from_effect_rules
+  - target_mitigation_is_per_target
+  - derived_stats_are_recomputable
+  - deterministic_power_attribution_required
+  - round_at_realized_effect_boundary
+
+scopes:
+  - BASE
+  - ACCOUNT
+  - CLASS_PERMANENT
+  - RUN
+  - LEVEL
+  - TEMPORARY
+  - ACTION
+  - TARGET
+
+operations:
+  - FLAT_ADD
+  - PCT_ADD
+  - PCT_MULT_EXPLICIT
+  - PP_ADD
+  - UNIQUE
+  - MAX
+  - OVERRIDE
+  - PROC
+
+modifierSchema:
+  required:
+    - sourceId
+    - sourceVersion
+    - scope
+    - operation
+  fields:
+    sourceId: string
+    sourceVersion: string
+    statId: string_or_null
+    effectId: string_or_null
+    scope: scope_enum
+    operation: operation_enum
+    value: number_or_null
+    stackGroup: string_or_null
+    condition: object_or_null
+    ownerClass: classId_or_null
+    targetClass: classId_or_null
+  constraints:
+    - pct_mult_explicit_is_opt_in
+    - unique_max_override_require_explicit_stack_group_when_stackable_conflict_possible
+    - effect_rules_may_use_effectId_without_statId
+    - numerical_value_may_remain_parameterized_until_downstream_calibration
+
+sameStatAggregation:
+  percentBonus: sum_PCT_ADD
+  flatBonus: sum_FLAT_ADD
+  formula: "effectiveStat = (baseStat + flatBonus) * (1 + percentBonus)"
+  implicitCrossSubsystemMultiplication: false
+
+statFamilies:
+  attack:
+    candidateIds: [attackFlat, attackPct]
+  crit:
+    candidateIds: [critChancePp, critDamageBonus]
+    structuralFormula:
+      critChance: "baseCritChance + sum(critChancePp)"
+      critMultiplier: "baseCritMultiplier + sum(critDamageBonus)"
+    exactCap: OPEN
+  wallHp:
+    candidateIds: [wallHpFlat, wallHpPct]
+    structuralFormula: "(baseWallHp + sum(wallHpFlat)) * (1 + sum(wallHpPct))"
+  wallDefense:
+    candidateIds: [wallDamageReductionPp]
+    structuralFormula: "clamp(sum(wallDamageReductionPp), 0, capTBD)"
+    exactCap: OPEN
+  knockback:
+    candidateIds: [knockbackPct]
+    structuralFormula: "baseKnockback * (1 + sum(knockbackPct))"
+
+mustRemainEffectRules:
+  - penetration_count
+  - penetration_decay
+  - armor_ignore
+  - splash
+  - delayed_outer_ring
+  - chain_explosion
+  - tracking_secondary_target
+  - wall_shield
+  - slow_zone
+  - strict_line_targeting
+  - heavy_attack_replacement
+  - pxp_attack_replacement
+  - boss_specific_scalar
+  - n3_fixed_budget_proc
+
+outgoingAttackPipeline:
+  - validate_authoritative_action_target_timing_turn
+  - resolve_timing_judgment_heavy_pxp_state
+  - build_attack_template_from_class_and_unlocked_skills
+  - resolve_effective_persistent_and_run_scalar_stats
+  - compute_parent_outgoing_raw_power
+  - apply_explicit_action_condition_transforms
+  - resolve_crit_from_attack_template_policy
+  - materialize_hit_coefficients_and_geometry
+  - apply_per_target_boss_scalar_mitigation_armor_state
+  - round_and_apply_realized_damage_or_control
+  - resolve_death_spawn_secondary_trigger_consequences
+  - emit_isolated_post_action_procs
+
+critPolicyVocabulary:
+  - PARENT_ROLL_INHERITED
+  - PER_HIT_ROLL
+  - NO_PROC_CRIT
+  - FIXED_BY_CONTRACT
+
+n3Isolation:
+  separatePostActionProc: true
+  grantsExp: false
+  grantsCharge: false
+  incrementsCombo: false
+  ordinaryCritRoll: false
+  recursiveClassSkill: false
+  recursiveN3: false
+  ordinaryAttackPowerInheritance: false
+  preserveExistingArmorAndBossScalarContract: true
+  preserveRemainderSafeBudgetAllocator: true
+
+incomingWallPipeline:
+  - monster_raw_wall_damage
+  - monster_capability_or_state_outgoing_modifier
+  - generic_wall_damage_reduction_bucket
+  - explicit_unique_class_or_team_defense
+  - final_incoming_damage_before_shield
+  - wall_shield_absorption
+  - base_hp_damage
+
+derivedStateOwnership:
+  authoritative:
+    - base_values_and_versions
+    - account_star_modifiers
+    - achievement_modifiers
+    - run_shop_ranks_and_modifiers
+    - level_and_unlocked_skill_state
+    - temporary_effect_state
+    - deterministic_conditions
+  derivedCacheOnly:
+    - effectiveAttack
+    - effectiveCritChance
+    - effectiveCritMultiplier
+    - effectiveWallHp
+    - effectiveWallDamageReduction
+    - effectiveKnockback
+  cacheRequiresSourceVersionValidation: true
+
+attributionLedger:
+  requiredFor:
+    - simulator
+    - deterministic_tests
+  productionFullPayloadRequiredEveryFrame: false
+  fields:
+    - actionId
+    - parentActionId
+    - sourcePlayerId
+    - sourceClass
+    - effectId
+    - targetId
+    - baseAmount
+    - statContributions
+    - actionTransforms
+    - targetTransforms
+    - preMitigationAmount
+    - finalAmount
+    - shieldAbsorbed
+    - hpDamage
+
+rounding:
+  intermediateRepeatedRounding: forbidden_by_default
+  boundary: realized_damage_or_control_application
+  runtimeSimulatorSharedContractRequired: true
+  exactNumericRepresentation: OPEN
+
+openDecisions:
+  - exact_star_bonus_values
+  - exact_achievement_bonus_values
+  - exact_shop_values_prices_cadence
+  - crit_chance_cap
+  - generic_defense_cap
+  - exact_base_hp
+  - nonfrozen_lv11_plus_coefficients
+  - final_lv26_lv31_contracts
+  - unresolved_per_skill_crit_inheritance
+  - exact_boss_values
+  - multiplayer_scaling_values
+  - exact_modifier_numeric_representation
+  - production_implementation
+
+nextWorkPackage: P3_TEN_STAGE_PERSISTENT_RUN_KERNEL
