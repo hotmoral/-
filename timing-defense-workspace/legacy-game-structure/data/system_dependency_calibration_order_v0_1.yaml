@@ -74,28 +74,40 @@ workPackages:
 
   P3:
     name: TEN_STAGE_PERSISTENT_RUN_KERNEL
-    status: NEXT_ACTIVE_INTEGRATION
+    status: PROPOSED_AWAITING_USER_DECISION
     dependsOn: [P1, P2]
     purpose: STATE_AND_PIPELINE_INTEGRATION_NOT_FINAL_BALANCE
-    output:
+    proposal:
+      - 75_TEN_STAGE_PERSISTENT_RUN_KERNEL_PROPOSAL_V0_1.md
+    proposedSemantics:
+      - current_model_a_t1_shaped_first10_fixture
+      - dual_lv1_and_forced_lv6_transition_lanes
+      - neutral_stage_transition_no_real_shop_economy
+      - stage_local_temporary_effects_settle_then_clear
+      - explicit_stage_settled_barrier
+      - continuous_player_model_and_rng_state_across_attempt
+      - thirty_run_primary_structural_matrix_plus_targeted_fixtures
+      - lv6_transition_plumbing_evidence_not_reach_calibration
+    outputIfApproved:
       - deterministic_multistage_state_continuity
       - base_hp_and_failure_semantics
       - combo_charge_continuity
       - modifier_pipeline_execution_trace
       - attribution_ledger_trace
-      - provisional_lv6_reach_evidence
+      - lv6_transition_plumbing_evidence
     exclusions:
       - exact_permanent_star_values
       - achievement_reward_values
       - final_shop_tuning
       - final_exp_formula
+      - final_base_hp_balance
       - final_boss_novelty
       - multiplayer_progression_credit
       - exact_launch_stage_authoring
 
   P4:
     name: FULL_PLAYER_POWER_SPINE_CANDIDATE
-    status: BLOCKED
+    status: BLOCKED_BY_P3_USER_DECISION_AND_EXECUTION
     dependsOn: [P3]
     output:
       - fifty_stage_synthetic_skill_reach
@@ -280,6 +292,9 @@ freezePolicy:
 
 currentBoundary:
   completedThrough: P2
-  next: P3
-  nextIntegration: P3
-  awaitingUserDecision: false
+  activeProposal: P3
+  proposalDoc: 75_TEN_STAGE_PERSISTENT_RUN_KERNEL_PROPOSAL_V0_1.md
+  awaitingUserDecision: true
+  implementationAuthorized: false
+  nextAfterApproval: P3_IMPLEMENT_VALIDATE
+  nextIntegrationAfterP3: P4
