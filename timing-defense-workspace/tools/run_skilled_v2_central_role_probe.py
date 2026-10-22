@@ -29,10 +29,23 @@ DEFAULT_OVERLAYS = [
     DATA / "model_a_additional10_role_expression_candidates_v0_1.yaml",
 ]
 DEFAULT_SEEDS = [101, 211, 307]
+MASK32 = 0xFFFFFFFF
+FNV1A_OFFSET = 2166136261
+FNV1A_PRIME = 16777619
+ZERO_SEED_FALLBACK = 0x6D2B79F5
 
 
 def load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
+def row_seed(base_seed: int, recipe_id: str, class_id: str) -> int:
+    """Derive a stable per-row seed without reusing the same short PRNG prefix."""
+    h = FNV1A_OFFSET
+    for byte in f"{base_seed}|{recipe_id}|{class_id}".encode("utf-8"):
+        h ^= byte
+        h = (h * FNV1A_PRIME) & MASK32
+    return h or ZERO_SEED_FALLBACK
 
 
 def overlay_recipes(data: dict) -> dict[str, dict]:
@@ -253,6 +266,8 @@ def main() -> int:
         "sequenceVersion": central.get("version"),
         "sequenceStatus": central.get("status"),
         "seeds": seeds,
+        "baseSeedSemantics": "scenario seed; each recipe/class row derives its own deterministic stream seed",
+        "rowSeedDerivation": "FNV1A32(baseSeed|recipeId|classId)",
         "powerMode": args.power_mode,
         "actionIntervalMs": args.action_interval_ms,
         "actionIntervalStatus": "BOUNDED_CURRENT_MECHANIC_SIMULATION_CONTROL_NOT_SKILL_FIT",
@@ -276,8 +291,9 @@ def main() -> int:
             for recipe in recipes:
                 for cls in sim.CLASSES:
                     consumed: list[str] = []
+                    derived_seed = row_seed(seed, str(recipe["id"]), cls)
 
-                    def seeded_stream(_perfect_streak, _break_judge, *, _seed=seed, _consumed=consumed):
+                    def seeded_stream(_perfect_streak, _break_judge, *, _seed=derived_seed, _consumed=consumed):
                         return central_judge_stream(central, _seed, _consumed)
 
                     sim.judge_stream = seeded_stream
@@ -296,6 +312,8 @@ def main() -> int:
                         "archetype": recipe["archetype"],
                         "profile": profile_id,
                         "sequenceSeed": seed,
+                        "sequenceBaseSeed": seed,
+                        "sequenceRowSeed": derived_seed,
                         "sequenceVersion": central.get("version"),
                         "classId": cls,
                         "actionIntervalMs": args.action_interval_ms,
@@ -309,6 +327,8 @@ def main() -> int:
                             "recipeId": recipe["id"],
                             "profile": profile_id,
                             "sequenceSeed": seed,
+                            "sequenceBaseSeed": seed,
+                            "sequenceRowSeed": derived_seed,
                             "classId": cls,
                             "monster": str(monster),
                             "expressed": bool(ok),
