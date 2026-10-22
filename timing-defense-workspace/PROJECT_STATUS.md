@@ -7,22 +7,23 @@ Primary architecture: **Cloudflare Workers + Durable Objects event-driven multip
 
 - public: `https://timing-defense-do-poc.sktjsek.workers.dev`
 - watched branch: `timing-defense-cloudflare-do-poc`
-- validated HEAD: `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
-- health: `0.44-cf.1`
-- last closed checkpoint: **v0.44 SUPPORTER authoritative dynamic movement-speed aura FULL PASS**
-- checkpoint branch: `timing-defense-cloudflare-v044-supporter-pass-20261022`
-- live validation run/job: `39706896662` / `119588945997`
+- validated HEAD: `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- health: `0.45-cf.1`
+- last closed checkpoint: **v0.45 SIEGER authoritative standoff/repeated wall-attack FULL PASS**
+- checkpoint branch: `timing-defense-cloudflare-v045-sieger-pass-20261022`
+- live validation run/job: `39725993894` / `119649887564`
 
 Read first:
 1. `NEXT_WORK.md`
 2. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 3. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-4. `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
-5. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
-6. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
-7. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
-8. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
-9. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
+4. `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
+5. `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
+6. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
+7. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
+8. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
+9. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+10. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
 ---
 
@@ -111,31 +112,31 @@ Current executable capability coefficients are **PROVISIONAL — NOT PRODUCTION 
 - provisional reward accounting `4 + 2 + 2 = 8` is test accounting only, **not production economy freeze**.
 
 ## v0.44 SUPPORTER — FULL PASS
-Exact checkpoint:
-- branch `timing-defense-cloudflare-v044-supporter-pass-20261022`
+- checkpoint `timing-defense-cloudflare-v044-supporter-pass-20261022`
 - HEAD `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
-- health `0.44-cf.1`
-- live run/job `39706896662` / `119588945997`
+- authoritative movement-speed aura only; self excluded; non-stacking; exact event-driven topology crossings; FLYER/CHARGER/SPLITTER composition; reconnect/nextDueAt validated.
+- provisional HP280 / speed.055 / wall70 / knock.90 / reward8 / radius.18 / speed×1.18 and Euclidean sandbox geometry remain **not production frozen**.
+
+## v0.45 SIEGER — FULL PASS
+Exact checkpoint:
+- branch `timing-defense-cloudflare-v045-sieger-pass-20261022`
+- HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- health `0.45-cf.1`
+- live run/job `39725993894` / `119649887564`
 
 Closed semantics:
-- authoritative movement-speed aura only
-- no self-buff
-- multiple sources non-stacking
-- persisted source-ID membership
-- exact materialize-before-membership-change transition
-- no fixed gameplay tick
-- static-Y boundary solved deterministically; FLYER boundary found by deterministic root refinement
-- supporter death/wall removal/knock changes topology at exact authoritative timestamp
-- FLYER aura affects X only
-- CHARGER ADVANCE/CHARGE compose with aura; WINDUP remains zero
-- SPLITTER children reconcile immediately at spawn
-- reconnect and `nextDueAt()` crossing semantics validated.
+- authoritative standoff arrival
+- persistent phases `ADVANCE / WINDUP / COOLDOWN`; FIRE is instantaneous event
+- repeated ranged wall shots while SIEGER remains alive
+- team DEF applies to siege wall damage
+- WINDUP/COOLDOWN knockback can force reposition and fresh windup
+- SUPPORTER affects approach only, not siege cadence/damage
+- no ordinary direct-contact wall resolution while correctly sieging
+- surviving SIEGER blocks premature stage clear
+- reconnect / late-advance chronology / event monotonicity validated
+- public phase metadata supports reconstruction.
 
-Provisional test anchors: HP280 / speed.055 / wall70 / knock.90 / armor1 / reward8 / radius.18 / speed×1.18; sandbox distance geometry is authoritative normalized 2D Euclidean. **Not production frozen.**
-
-Compatibility regression caught pre-live:
-- first implementation weakened no-aura CHARGER full `wallAt()` prediction.
-- fixed by delegating inherited `wallAt()` whenever aura is inactive; no numerical change.
+Provisional test anchors: HP520 / speed.045 / knock.55 / armor1 / reward11 / standoffX.38 / windup800ms / shot75 / repeat2200ms. **Not production frozen.**
 
 Live evidence:
 - foundation **22/22 PASS**
@@ -145,50 +146,47 @@ Live evidence:
 - CHARGER **17/17 PASS**
 - SPLITTER **14/14 PASS**
 - SUPPORTER **17/17 PASS**
+- SIEGER **20/20 PASS**
+- exact deployment marker PASS
 - root-loader PASS
-- V038 FULL REGRESSION PASS
-- N3 CLIENT PASS
-- N3 4H STRESS PASS
-- **FINAL PASS**
+- prior browser/WebSocket full regression PASS
+- live validation job SUCCESS.
 
-No Samsung Browser smoke required because no visible authored SUPPORTER encounter/aura VFX was introduced.
+First live gate failure was only an outdated workflow expectation of 18 SIEGER checks while the final suite contained 20; gameplay diagnostics were already 20/20. Gate expectation was corrected with **no gameplay or numerical change**, then the full live gate passed.
 
-Exact report: `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
-Preflight: `SUPPORTER_AURA_AUTHORITY_PREFLIGHT_2026-10-22.md`
+No Samsung Browser smoke required because no visible authored SIEGER encounter/final telegraph presentation was introduced.
+
+Exact report: `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
 
 ---
 
-# Active next bounded work
-**SIEGER authoritative standoff + repeated ranged wall-attack kernel**, stage-number-independent.
+# Monster Capability V1 milestone — ALL NINE ORDINARY ARCHETYPES MECHANICALLY CLOSED
+The server-authoritative mechanical foundation now covers all nine ordinary archetypes. This closes the Monster Capability Layer implementation sequence started after v0.39.
 
-Frozen structural behavior:
-- approach normally,
-- stop at standoff distance,
-- telegraphed windup,
-- authoritative repeated wall attacks,
-- knockback can force reposition before resuming siege cycle,
-- no legacy stage recipe enabled.
+This does **not** freeze final HP/speed/damage/reward/timing values and does **not** define final 50-stage encounter recipes.
 
-Provisional capability-test anchors:
-- HP520 / approach speed `.045` / knock `.55` / armor1 / reward11
-- standoff X `.38`
-- windup 800ms
-- ranged wall shot 75
-- repeat interval 2200ms
+---
 
-These are **NOT production balance frozen**.
+# Active next bounded work — remaining player-skill authority review
+Before approximately-50-stage authoring/calibration, recover the remaining player-skill progression contracts from live repository/canonical/legacy source.
 
-Required preflight:
-1. exact arrival-at-standoff timestamp and phase transitions,
-2. explicit `ADVANCE -> WINDUP -> FIRE/COOLDOWN -> WINDUP` repeated cycle,
-3. team-DEF interaction for siege wall shots,
-4. knockback/reposition semantics during windup/cooldown,
-5. SUPPORTER aura affects approach speed only, not shot cadence/damage,
-6. `nextDueAt()` and reconnect chronology,
-7. repeated wall event representation without removing the SIEGER,
-8. prior capability regressions remain PASS.
+Do not invent new values.
 
-After SIEGER closes, all nine ordinary capability archetypes have a server-authoritative foundation; then review remaining player-skill authority needed for calibration before the real approximately-50-stage authoring/simulation phase.
+Required classification:
+1. already frozen + authoritative,
+2. designed/planned but not yet authoritative,
+3. legacy/provisional behavior that needs explicit re-approval,
+4. unresolved design choices requiring discussion before implementation.
+
+Search/recover especially any post-Lv6 progression such as Lv11 / Lv16 / Lv21 and class-specific growth/skill contracts, then report the exact calibration blockers before coding.
+
+After player-skill authority needed for calibration is resolved:
+1. build the approximately-50-stage tier / S-E-X authoring model,
+2. generate 2/3/4-player candidate recipes,
+3. run large deterministic simulation,
+4. classify pressure/density/role issues,
+5. report/discuss before numerical patches,
+6. explicitly freeze production monster/stage values.
 
 # Validation policy
 `code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`
