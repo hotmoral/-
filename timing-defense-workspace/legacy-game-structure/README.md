@@ -1,11 +1,11 @@
 # Timing Defense — Legacy Game Structure Corpus
 
 Date: 2026-10-22 KST  
-Status: **STRUCTURAL CORPUS / MODEL A ADMITTED TO CLASS-AWARE LAYER-A**
+Status: **STRUCTURAL CORPUS / ROLE-EXPRESSION CALIBRATION ACTIVE**
 
 ## 0. 목적
 
-이 자료군은 Timing Defense의 campaign/meta/combat 구조를 live 구현보다 먼저 정립하고 검증하기 위한 canonical planning corpus다.
+이 자료군은 Timing Defense의 campaign/meta/combat 구조를 live 구현보다 먼저 정립·검증하기 위한 canonical planning corpus다.
 
 핵심 원칙:
 - candidate와 production authority를 분리한다.
@@ -24,8 +24,10 @@ Top-level principle:
 Current integrated matrix:
 `31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-Current lower-layer admission:
-`40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
+Current monster-role authority:
+- `45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+- `46_ROLE_EXPRESSION_ADMISSION_AUDIT_V0_1.md`
+- `47_ROLE_EXPRESSION_SCHEMA_AMENDMENT_V0_1.md`
 
 Common coordinate:
 ```text
@@ -37,10 +39,12 @@ Current pipeline:
 Master Spine
  -> Layer0 structural PASS
  -> Encounter Envelope PASS
- -> Static Recipe PASS
- -> Kinematic PASS/WATCH
- -> Generic DPS Sensitivity
+ -> Static/Kinematic/Sensitivity preflight
  -> Class-aware Layer-A
+ -> Role-Expression Contract
+ -> Activation Window Calibration
+ -> All-20 Representative Audit
+ -> Fitted Player Model
  -> Synthetic Slice
  -> Full Tier
  -> Soft-wall/Meta
@@ -63,11 +67,19 @@ Master Spine
 - T1 does not force all 9
 - higher Tiers introduce new monsters
 - future T5/T6/T7+ expansion open
-- non-T1 intended-entry SKILLED_V2_CENTRAL full-clear normally <60%
+- fitted non-T1 SKILLED_V2_CENTRAL full-clear normally <60%
 - combo40 is skilled-achievable
-- **Lv31 target unlock = Stage41–45**
+- Lv31 target unlock = Stage41–45
 - Stage46–49 = post-Lv31 mastery
 - Stage50 = final, not Lv31 tutorial
+- intended encounter에서 monster가 role을 보여주기 전에 spawn-delete 되는 구조는 허용하지 않음
+
+Role-expression interpretation:
+```text
+minimum expression opportunity = required
+readable counterplay = required
+full enemy activation = not guaranteed
+```
 
 ---
 
@@ -87,7 +99,7 @@ Status:
 Fallback Model B:
 - T4 +SUPPORTER
 - T5 +SIEGER
-- only if T4 lower-layer evidence fails.
+- only if T4 lower-layer evidence fails
 
 ---
 
@@ -123,50 +135,99 @@ Late grammar:
 
 ## Representative Recipe Static Preflight
 PASS.
-- 20 representative deterministic recipes
+- 20 deterministic recipes
 - max authored 4s = 7
 - max conservative effective 4s = 10
-- no density WATCH/ERROR
 
 ## Kinematic Preflight
 PASS WITH WATCHES.
 
-Confirmed:
-- representative CHARGER windup concurrency <=1
-- E10 focused siege vs E11 escorted siege distinct under actual movement
-- E19 can produce durable-screened siege
-- E09/E16 produce bounded support interaction
-
-Discovered:
-- BACK cannot be represented reliably by delayed spawn alone when unit speeds differ
-- formation needs explicit geometric X-depth capability
+Important discovery:
+- BACK cannot rely on delayed spawn only
+- relative X-depth is required
 
 ## Generic DPS Sensitivity
-Diagnostic complete.
+COMPLETE.
 
-Finding:
-- special capability uptime is strongly dependent on frontline removal speed
-- SIEGER can be erased before firing
-- CHARGER can be erased before windup
-- SUPPORTER aura duration can collapse or persist based on screen removal
-- SPLITTER wall pressure changes with throughput
+Important discovery:
+- special capability uptime is strongly throughput-sensitive
+- CHARGER/SIEGER can disappear before expressing their mechanic
 
-No numeric patch is authorized from this diagnostic.
+## Class-aware Layer-A V0.1
+COMPLETE for 10-recipe critical subset.
 
-## Layer-A Admission
-**ADMIT TO CLASS-AWARE LAYER-A COMBAT MICRO-SIMULATION**
+Important discovery:
+- default CHARGER critical recipes produced 0 windups
+- default E11/E19 SIEGER produced 0 shots
+- SUPPORTER role exists with high class sensitivity
+- SPLITTER transforms, but meaningful child lifetime is under-instrumented
+
+## Role-expression admission
+`BLOCKED` pending localized calibration/instrumentation.
 
 ---
 
-# 6. Current active documents
+# 6. Monster Role Expression Contract
+
+Current minimum expressions:
+
+- GRUNT — baseline exempt
+- RUNNER — speed changes arrival/front-order behavior
+- BRUTE — meaningful durable frontline/screening
+- SHIELD — mitigation changes effective damage/hit investment
+- FLYER — vertical geometry creates real line/splash/target-order difference
+- CHARGER — visible windup + readable response window
+- SPLITTER — meaningful post-death population/target-state change
+- SUPPORTER — non-self aura for meaningful interval
+- SIEGER — standoff + readable first-shot opportunity
+
+Current status:
+- GRUNT = BASELINE_EXEMPT
+- RUNNER = MEASUREMENT_REQUIRED
+- BRUTE = PRELIMINARY_ROLE_PRESENT / METRIC_REQUIRED
+- SHIELD = MEASUREMENT_REQUIRED
+- FLYER = MEASUREMENT_REQUIRED
+- CHARGER = FAIL_DEFAULT_GEOMETRY
+- SPLITTER = PARTIAL_PASS / WATCH
+- SUPPORTER = PASS_WITH_WATCH
+- SIEGER = FAIL_DEFAULT_GEOMETRY
+
+Future monsters must define:
+`coreMechanic / minimumRoleExpression / readableCounterplay / failureClass / requiredMetrics`.
+
+---
+
+# 7. Activation-window search
+
+Absolute entry depth is independent from relative FRONT/MID/BACK depth.
+Activation is non-monotonic.
+
+Current diagnostic anchors only:
+- E07 CHARGER: useful evidence begins around ~0.25; interrupt around ~0.30
+- E17 CHARGER: all-five windup visibility around ~0.45
+- E11 SIEGER: all-five actual-shot visibility around ~0.70–0.80; collapse near ~0.85
+- E19 SIEGER: all-five actual-shot visibility around ~0.75–0.80; collapse near ~0.85
+
+Fine search set:
+- E07 0.20–0.40
+- E17 0.35–0.55
+- E11 0.65–0.84
+- E19 0.68–0.84
+- step .01
+
+These are search ranges, not production coordinates.
+
+---
+
+# 8. Active document map
 
 ## Core structure
 - `01_META_PROGRESSION.md`
 - `02_TIER_SYSTEM.md`
-- `03_STAGE_STRUCTURE_50.md` — V0.2 Model-A/Lv31 aligned
+- `03_STAGE_STRUCTURE_50.md`
 - `04_MONSTER_ENCOUNTER_MODEL.md`
 - `05_LEGACY_EVIDENCE_MAP.md`
-- `06_SIMULATION_CALIBRATION_PLAN.md` — V0.2
+- `06_SIMULATION_CALIBRATION_PLAN.md`
 - `07_AUTHORING_DATA_SCHEMA.md`
 - `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
 - `15_ACHIEVEMENT_TITLE_CROSS_CLASS_PROGRESSION_V0_1.md`
@@ -188,7 +249,7 @@ No numeric patch is authorized from this diagnostic.
 - `30_LAYER0_MODEL_A_VALIDATION_REPORT_V0_1.md`
 - `31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-## Encounter authoring / preflight tranche
+## Encounter / Layer-A tranche
 - `32_MODEL_A_TIER_ENCOUNTER_AVAILABILITY_V0_1.md`
 - `33_MODEL_A_FORMATION_CADENCE_VOCABULARY_V0_1.md`
 - `34_MODEL_A_FREQUENCY_RANGE_ENVELOPE_V0_1.md`
@@ -198,6 +259,13 @@ No numeric patch is authorized from this diagnostic.
 - `38_FORMATION_DEPTH_SCHEMA_AMENDMENT_V0_1.md`
 - `39_FRONTMOST_DPS_SENSITIVITY_REPORT_V0_1.md`
 - `40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
+- `41_CLASS_AWARE_ACTION_TRACE_MODEL_V0_1.md`
+- `42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
+- `43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
+- `44_ENTRY_DEPTH_ACTIVATION_WINDOW_REPORT_V0_1.md`
+- `45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+- `46_ROLE_EXPRESSION_ADMISSION_AUDIT_V0_1.md`
+- `47_ROLE_EXPRESSION_SCHEMA_AMENDMENT_V0_1.md`
 
 ## Machine-readable data
 - `data/model_a_campaign_spine_v0_1.yaml`
@@ -205,6 +273,9 @@ No numeric patch is authorized from this diagnostic.
 - `data/model_a_representative_recipes_v0_1.yaml`
 - `data/model_a_kinematic_anchor_v0_1.yaml`
 - `data/model_a_combat_sensitivity_anchor_v0_1.yaml`
+- `data/model_a_class_action_trace_bracket_v0_1.yaml`
+- `data/monster_role_expression_contract_v0_1.yaml`
+- `data/role_expression_activation_search_v0_1.yaml`
 
 ## Analysis tools
 - `../tools/validate_campaign_spine.py`
@@ -212,26 +283,15 @@ No numeric patch is authorized from this diagnostic.
 - `../tools/analyze_representative_recipes.py`
 - `../tools/simulate_recipe_kinematics.py`
 - `../tools/simulate_frontmost_dps_sensitivity.py`
+- `../tools/simulate_class_aware_layer_a.py`
+- `../tools/sweep_special_activation_entry_depth.py`
+- `../tools/validate_monster_role_expression_contract.py`
+- `../tools/evaluate_stateful_role_expression.py`
+- `../tools/scan_activation_window_candidates.py`
 
 ---
 
-# 7. Formation depth amendment
-
-Current design direction adds a formation-authoring capability equivalent to:
-```yaml
-spawnXOffset: number|null
-```
-
-Purpose:
-- create real front/back geometry
-- avoid label-only BACK intent
-- preserve actual frontmost targeting authority
-
-Current X offsets are simulation candidates only, not production coordinates.
-
----
-
-# 8. Parked / superseded active candidates
+# 9. Parked / superseded candidates
 
 Historical evidence only:
 - `09_TIER_LADDER_CANDIDATE_V0_1.md`
@@ -245,19 +305,23 @@ Do not resume these as current authority.
 
 ---
 
-# 9. Exact next layer
+# 10. Exact next layer
 
-**Class-aware Layer-A combat micro-simulation.**
+**Critical-set role-expression calibration.**
 
-Required before synthetic Tier slices:
-- deterministic action traces
-- SKILLED_V2 conservative/central/strong model inputs
-- class normal/heavy/P×P behavior
-- explicit CURRENT_AUTHORITY / LEGACY_PARITY_CANDIDATE / FUTURE_SKILL_PLACEHOLDER modes
-- special capability activation/uptime under real class behavior
-- class opportunity/starvation analysis
+Before synthetic Tier slices:
+1. fine-scan CHARGER E07/E17 windows
+2. fine-scan SIEGER E11/E19 windows
+3. reject unavoidable wall-pressure ranges
+4. instrument first-shot-opportunity separately from actual SIEGER shot
+5. instrument SPLITTER child meaningful lifetime/frontline effect
+6. normalize SUPPORTER aura metrics
+7. add RUNNER/BRUTE/SHIELD/FLYER role metrics
+8. rerun 10-recipe critical subset
+9. expand to all 20 only after critical role-expression PASS/acceptable WATCH
+10. fit SKILLED_V2 only after role-expression structure is stable
 
-After Layer-A PASS:
+Then:
 - synthetic Tier slices
 - full Tier simulation
 - 5-class soft-wall map
@@ -267,11 +331,12 @@ After Layer-A PASS:
 
 ---
 
-# 10. Still not frozen
+# 11. Still not frozen
 
 - final launch Tier count
 - exact Tier unlock policy
 - production monster coefficients
+- production entry coordinates
 - exact 200-Stage schedule
 - exact EXP formula
 - Lv11+ production coefficients
