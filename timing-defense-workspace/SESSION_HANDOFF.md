@@ -16,300 +16,308 @@ Live remote wins over memory/chat/handoff.
 
 # CRITICAL CURRENT DIRECTION
 
-The project is in a **Master Campaign Progression Spine / Master Campaign Matrix** phase.
+The large Master Campaign Spine tranche has completed its static/Layer-0 admission work.
 
-Primary current docs:
-1. `legacy-game-structure/16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
-2. `legacy-game-structure/17_MASTER_CAMPAIGN_MATRIX_V0_1.md`
-3. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
-4. `legacy-game-structure/19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`
-5. `legacy-game-structure/18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
-6. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
-7. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
-8. `legacy-game-structure/02_TIER_SYSTEM.md`
-9. `legacy-game-structure/01_META_PROGRESSION.md`
+Current phase:
+**Bounded Simulation Authoring**
 
-Do not resume detailed T1 monster-count/cadence work until this spine is closed.
+Read first:
+1. `PROJECT_STATUS.md`
+2. `NEXT_WORK.md`
+3. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
+4. `legacy-game-structure/30_LAYER0_MODEL_A_VALIDATION_REPORT_V0_1.md`
+5. `legacy-game-structure/28_MODEL_A_TIER_AUTHORING_WINDOWS_V0_1.md`
+6. `legacy-game-structure/29_MODEL_A_TIER_PRESSURE_COMPLEXITY_ENVELOPE_V0_1.md`
+7. `legacy-game-structure/22_PLAYER_POWER_SPINE_LV6_31_V0_1.md`
+8. `legacy-game-structure/24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
+9. `legacy-game-structure/25_MODEL_A_META_PROGRESS_VOLUME_AND_SOFT_WALL_ENVELOPE_V0_1.md`
+10. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
+11. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+12. `legacy-game-structure/04_MONSTER_ENCOUNTER_MODEL.md`
+
+Machine-readable:
+- `legacy-game-structure/data/model_a_campaign_spine_v0_1.yaml`
+- `tools/validate_campaign_spine.py`
 
 ---
 
-# User-confirmed progression truth
+# USER-CONFIRMED PROGRESSION TRUTH
 
-- 5 classes progress independently through Tiers.
-- Same Tier/Stage combat content is shared by all classes.
-- Tier = 50 Stage.
-- fail 1–19 = 0★; fail 20–39 = 1★; fail 40–49 = 2★; Stage50 clear = 3★.
-- stars = broad account-wide permanent growth.
-- achievements = targeted cross-class progression.
-- a class may hit a recoverable soft wall.
+- 5 classes: Knight / Rogue / Tank / Archer / Mage.
+- Each class progresses through Tiers independently.
+- Same Tier/Stage combat content is shared across classes.
+- 1 Tier = 50 Stage.
+- fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / Stage50 clear=3★.
+- stars are non-spendable broad account permanent growth.
+- achievements are targeted cross-class permanent growth.
+- one class may hit a recoverable soft wall.
 - other-class stars/achievements should help that class later.
 - hard class lockout is forbidden.
-- Lv31 must be obtained early enough to be used and enjoyed over multiple late-run Stages before Stage50.
+- current 9 ordinary monsters are V1 capability foundation, not lifetime final roster.
+- T1 should not expose all 9.
+- higher Tiers should introduce new monster types.
+- future T5/T6/T7+ Tier/monster expansion must remain open.
+- non-T1 intended-entry SKILLED_V2 full-Tier clear probability should normally be <60%.
+- combo40 is achievable skilled play, not high-mastery-only.
 - **Lv31 target unlock window = Stage41–45.**
+- Stage46–49 should provide repeated Lv31 use/mastery.
+- Stage50 should use an already-familiar Lv31 skill.
 
 ---
 
-# Master Campaign principle
+# MASTER CAMPAIGN RESULT
 
-Central coordinate:
+Current default bounded simulation spine:
 
 ```text
-Tier × Stage1..50 × Content Novelty × Player Power × Meta Progression
+MODEL A
+T1: GRUNT / RUNNER / BRUTE
+T2: + SHIELD / FLYER
+T3: + CHARGER / SPLITTER
+T4: + SUPPORTER / SIEGER
+T5+: future expansion
 ```
 
-Use progressive deepening:
-1. align whole campaign shallowly
-2. close upstream dependencies
-3. add candidate detail
-4. simulate
-5. revise the spine
-6. only then increase precision
+Status:
+- Static Master Audit: PASS
+- Layer-0 validator: PASS
+- validation output: `errors=0 warnings=0`
 
----
+This is NOT final production Tier freeze.
+It is the default spine for lower-layer simulation.
 
-# Monster progression — USER CONFIRMED
-
-Current mechanically-authoritative V1 set:
-GRUNT / RUNNER / BRUTE / SHIELD / FLYER / CHARGER / SPLITTER / SUPPORTER / SIEGER.
-
-Important interpretation:
-- V1 roster = fixed current capability foundation
-- lifetime/final roster cap = NOT fixed
-
-Canonical clarification:
-`18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
-
-Rules:
-- do not force all 9 into T1
-- higher Tiers should introduce new monster archetypes
-- new Tier entry should deliver real content novelty
-- returning monsters can be reinterpreted by formation/composition/cadence
-- T5/T6/T7... future expansion remains open
-- no `monsterCount==9` hardcoding
-- MonsterRegistry / Tier availability are versioned
-- taxonomy may expand if future capabilities need new pressure language
-
----
-
-# Difficulty target — USER CONFIRMED
-
-General non-T1 target:
-
-> intended-entry `SKILLED_V2` full-Tier Stage1→50 clear probability should normally be **below 60%**.
-
-Interpretation:
-- 60% is an upper bound
-- T1 may be easier
-- measure full Tier 3★ clear probability
-- evaluate at the expected progression state for first serious Tier attempts
-- do not use overgrown replay accounts for this gate
-- class clear rates may differ
-- soft-wall classes may be far lower
-
-## Skilled profile reset
-- combo 40 should be achievable skilled play, not high-mastery-only
-- stronger combo maintenance/timing/heavy-completion than old skilled
-- HIGH_MASTERY_STRESS remains a separate upper profile
-- exact timing/combo probabilities remain OPEN until measured
-
----
-
-# Master Campaign Matrix V0.1
-
-## Model A — preferred test hypothesis
-**4 initial Tiers + open-ended T5+ expansion**
-
-- T1: GRUNT / RUNNER / BRUTE
-- T2: +SHIELD / +FLYER
-- T3: +CHARGER / +SPLITTER
-- T4: +SUPPORTER / +SIEGER
-- T5+: future monster/content expansion
-
-## Model B — fallback
-5 initial Tiers:
-- T1 G/R/B
-- T2 +SH/F
-- T3 +C/SP
-- T4 +SUP
-- T5 +SI
-- T6+ future
-
-## 6-Tier model
-Currently low priority with the current 9-monster roster because of campaign-length and novelty-starvation risk.
-
----
-
-# Model A/B audit result
-
-Canonical audit:
-`19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`
-
-Key results:
-- T1 with G/R/B can still support all 5 class roles through formation/cadence authoring.
-- T2 role coverage is naturally strong.
-- T3 strongly rewards Tank/Mage; returning BRUTE/SHIELD should preserve Rogue durable-target value.
-- T4 strongly rewards Tank/Archer; Rogue/Mage value must be preserved through durable screens/cluster formations.
-- SUPPORTER + SIEGER in the same T4 is a **WATCH, not FAIL**.
-
-T4 learning-density mitigation:
+Fallback Model B:
 ```text
-1–9   returning formation recap
-10    checkpoint
-11–19 SUPPORTER teach/mix
-20    first gate
-21–29 SIEGER teach/mix
-30    synthesis checkpoint
-31–39 combined formation/objective pressure
-40–49 mastery
-50    final
+T1 G/R/B
+T2 +SH/F
+T3 +C/SP
+T4 +SUP
+T5 +SI
 ```
-
-If this proves too dense in simulation/playtest, use Model B and split SIEGER into T5.
+Use only if Model A T4 evidence fails.
 
 ---
 
-# Lv31 mastery play-window — USER CONFIRMED
+# MODEL A TIER IDENTITIES
 
-Canonical:
-`20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+## T1 — Foundation / Timing & Frontline
+- G/R/B
+- BASELINE high
+- RUSH/BULWARK medium
+- C0/C1 dominant
 
-Required structure:
+## T2 — Mitigation / Geometry
+- +SH/F
+- BULWARK high
+- AERIAL medium-high
+- C1/C2 dominant
 
+## T3 — Burst / Transformation
+- +C/SP
+- BREACH high
+- REPLICATE high
+- FLOOD/RUSH medium-high
+- C2 dominant, C3 meaningful late
+
+## T4 — Formation / Siege
+- +SUP/SI
+- SUPPORT/SIEGE high at Tier-identity level
+- BULWARK medium-high as screen support
+- C2/C3 late dominant; C4 bounded mainly 46–50
+
+HIGH does not mean simultaneous in every Stage.
+
+---
+
+# MODEL A INTRODUCTION WINDOWS
+
+Range candidates, not exact production locks.
+
+## T1
+- G teach1–2 / mixed4–6 / pressure21–29
+- R teach5–7 / mixed8–12 / first high21–24
+- B teach15–17 / mixed18–20 / first high21–23
+
+## T2
+- SH teach5–7 / mixed8–12 / first high21–24
+- F teach15–17 / mixed18–22 / first high28–31
+
+## T3
+- C teach5–7 / mixed8–14 / first high21–24
+- SP teach15–17 / mixed18–22 / first high28–31
+
+## T4
+- SUP teach11–13 / mixed14–19 / first high29–31
+- SI teach22–24 / mixed25–29 / first high37–39
+
+No new core ordinary teaching in Stage41+.
+
+---
+
+# PLAYER POWER SPINE
+
+First calibration candidate:
+- Lv6 Stage5–7
+- Lv11 11–14
+- Lv16 18–21
+- Lv21 25–28
+- Lv26 32–36
+- Lv31 **41–45**
+
+Only Lv31 is user-confirmed as a target window.
+Others are calibration candidates.
+
+Late-band contract:
 ```text
-Lv26 late growth
- -> Stage41~45 Lv31 unlock
- -> Stage46~49 repeated real use / adaptation / mastery
- -> Stage50 final using an already-familiar Lv31 skill
+31–39 pressure / soft-wall build
+40     2★ gate
+41–45  LV31 ASCENSION WINDOW
+46–49  POST-LV31 MASTERY
+50     TIER FINAL
 ```
 
-User-confirmed target:
+Important distinction:
+- class T1 skill unlocks can be pedagogic novelty.
+- same-class T2+ unlocks are mostly repeated run-local power spikes.
+- monster-learning collision and power-attribution collision are separate checks.
 
+---
+
+# SKILLED_V2
+
+Do not reuse old weak skilled profile.
+
+Profiles for calibration:
+- LEARNING
+- AVERAGE
+- SKILLED_V2_CONSERVATIVE
+- SKILLED_V2_CENTRAL
+- SKILLED_V2_STRONG
+- HIGH_MASTERY_STRESS
+
+SKILLED_V2 must model:
+- combo40 as non-outlier skilled performance
+- context-sensitive timing degradation
+- combo survival
+- heavy/P×P usage
+- target-turnover recovery
+
+General non-T1 gate:
 ```text
-Lv31 target unlock window = Stage41..45
+P(Stage1→50 full clear | intended-entry SKILLED_V2_CENTRAL) < 0.60
 ```
 
-Interpretation:
-- Stage41–45 is the Lv31 acquisition-transition band.
-- Stage46–49 is the explicit post-Lv31 mastery-use band.
-- Stage50 is not the tutorial for Lv31.
-- exact EXP formula is still open and must later be calibrated to produce this structure.
-
-Distribution rules:
-- measure P25/P50/P75/P90 unlock Stage, not only average
-- P50 outside Stage41–45 requires analysis
-- substantial Stage45+ drift triggers `LATE_LV31_DISTRIBUTION`
-- widespread Stage49/50 first-use outcome is FAIL
-
-Failure classifications:
-- `INSUFFICIENT_LV31_PLAY_WINDOW`
-- `LATE_LV31_DISTRIBUTION`
-- `LV31_POWER_CLIFF_TOO_HIGH`
-- `LV31_CLASS_CLEAR_RATE_DIVERGENCE`
-- `LV26_WINDOW_COMPRESSED`
+T1 may be easier.
 
 ---
 
-# Play-volume sensitivity
+# SOFT-WALL / META FINDING
 
-Rough geometric comparison only, assuming eventual 3★ on all class×Tier records:
+Clear probability alone is insufficient.
+Fail location controls star/meta progression.
 
-| full-clear q | 4 Tier | 5 Tier | 6 Tier |
-|---:|---:|---:|---:|
-| .59 | 33.9 attempts | 42.4 | 50.9 |
-| .50 | 40.0 | 50.0 | 60.0 |
-| .40 | 50.0 | 62.5 | 75.0 |
+Preferred normal soft-wall shape:
+```text
+late fail -> 1★/2★
+ -> progress other classes
+ -> gain broad/targeted permanent growth
+ -> return
+ -> old wall becomes attainable
+```
 
-This is not production prediction because fail Stage and meta growth vary.
-It demonstrates that one extra Tier is expensive under the desired difficulty.
+Avoid a normal campaign where hard classes mostly fail Stage1–19 for 0★.
+That creates dead progression lanes and excessive retry volume.
+
+First Tier-unlock simulation hypothesis:
+`CLEAR_LOCK` = Stage50 clear required to unlock same class next Tier.
+This is OPEN, not user-frozen.
 
 ---
 
-# Parked historical candidates
+# BOSS PLACEHOLDER POLICY
 
-Do not continue as active authority:
+Not boss design freeze.
+
+- Stage10 = checkpoint, boss optional
+- around Stage30 = optional boss-signature preview slot
+- Stage50 = Tier Final boss candidate
+- mandatory Stage50 boss decision grammar must be previewed earlier
+- T4 boss-only novelty budget LOW
+
+---
+
+# MACHINE VALIDATION
+
+Data:
+`legacy-game-structure/data/model_a_campaign_spine_v0_1.yaml`
+
+Validator:
+`tools/validate_campaign_spine.py`
+
+Current report:
+`legacy-game-structure/30_LAYER0_MODEL_A_VALIDATION_REPORT_V0_1.md`
+
+Result:
+```text
+PASS errors=0 warnings=0
+```
+
+Two candidate windows were moved after automatic attribution warnings:
+- T1 BRUTE first-high 24–29 -> 21–23
+- T4 SUPPORTER first-high 31–33 -> 29–31
+
+GRUNT baseline is exempt from capability-novelty collision warning.
+
+---
+
+# PARKED / SUPERSEDED ACTIVE CANDIDATES
+
+Historical evidence only:
 - `09_TIER_LADDER_CANDIDATE_V0_1.md`
 - `13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
 - `14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
+- `17_MASTER_CAMPAIGN_MATRIX_V0_1.md`
 
-Reason: old assumption that T1 teaches all current 9 monsters.
-Preserve for reusable analysis only.
-
----
-
-# Run skill-power spine candidate
-
-Exact EXP curve remains open.
-Desired relative reach now includes play-window constraints:
-- Lv6 early
-- Lv11 early-mid
-- Lv16 mid
-- Lv21 mid-late
-- Lv26 late, with its own meaningful use window before Lv31
-- Lv31 target unlock = **Stage41–45**
-- Stage46–49 = post-Lv31 mastery-use band
-- Stage50 = final application
-
-Legacy pacing that reaches Lv21 around old Stage10 cannot be assumed final for a 50-Stage run.
+Do not resume them as current authority.
 
 ---
 
-# Meta-power scenario profiles
+# EXACT NEXT BOUNDARY
 
-- P0 FRESH
-- P1 BALANCED
-- P2 STAR_GROWN
-- P3 ACHIEVEMENT_ASSISTED
-- OVERGROWN replay/stress
+The upstream Master Campaign structure is closed enough for bounded encounter authoring.
 
-Candidate coverage:
-- T1 primarily P0
-- T2 P0–P1
-- T3 P1–P2
-- T4 P1–P3
-- T5+ P2–P3/future
+Next tranche:
+1. map E01–E20 encounter archetypes to Model A Tier roster availability,
+2. define which archetypes are unavailable/invalid before their required monsters unlock,
+3. define Tier-specific formation vocabulary,
+4. define Tier-specific cadence vocabulary,
+5. convert pressure LOW/MED/HIGH to bounded candidate frequency ranges,
+6. convert complexity envelopes to bounded frequency ranges,
+7. author representative deterministic recipes only,
+8. static authored/effective entity and 4s/6s readability checks,
+9. Layer-A micro simulation,
+10. revise envelope before exact 50-Stage schedules.
 
----
-
-# Exact next boundary
-
-Use Model A as the default test hypothesis, not a freeze.
-
-Next:
-1. define novelty budget for T1–T4 beyond monster count
-2. place boss novelty placeholders
-3. refine Lv6/11/16/21/26 reach bands around fixed Lv31 Stage41–45 target
-4. preserve meaningful Lv26 play window before Lv31
-5. reserve Stage46–49 for post-Lv31 mastery opportunities
-6. audit monster-novelty vs skill-novelty collisions
-7. define SKILLED_V2 parameter measurement plan
-8. estimate stars/soft-wall progression play volume
-9. static audit Model A campaign matrix
-10. if PASS, choose Model A as bounded simulation spine
-11. if T4 overload FAIL, switch to Model B
-12. only then resume encounter frequency/count/composition/cadence
-
-Do not yet freeze:
-- initial Tier count
-- exact monster unlock points
-- exact EXP formula
-- class-specific Lv31 percentile cutoffs
-- production monster coefficients
-- star reward coefficients
-- achievement reward graph/value
-- shop cadence
-- boss cadence
-- Lv11+ live implementation
+Do NOT yet:
+- freeze production monster coefficients,
+- author exact 200 launch stages,
+- change live gameplay code,
+- freeze permanent star values,
+- freeze achievement reward edges/values,
+- freeze boss/shop cadence,
+- start detailed 3P/4P production balance.
 
 ---
 
 # Handoff discipline
 
 New session must:
-1. check live branch HEAD
-2. read this handoff
-3. read PROJECT_STATUS / NEXT_WORK
-4. read Master Spine + Matrix + Lv31 window + Model audit + Governance
-5. verify no newer remote changes
+1. check live `timing-defense-workspace` HEAD,
+2. read this handoff,
+3. read PROJECT_STATUS / NEXT_WORK,
+4. read Matrix V0.2 + Layer0 report + authoring windows + pressure envelope,
+5. verify no newer remote changes,
+6. continue only from the exact encounter-authoring boundary.
 
-Current tranche changed planning/corpus docs only.
-No live gameplay code or production balance number was changed.
+Current tranche modifies planning/corpus/analysis tooling only.
+No live gameplay code or production balance value was changed.
