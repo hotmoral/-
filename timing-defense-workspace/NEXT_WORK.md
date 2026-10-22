@@ -2,15 +2,15 @@
 
 Updated: 2026-10-22 KST
 
-## Executable production checkpoint
+## Production checkpoint
 - v0.45 SIEGER FULL PASS
-- production/source baseline HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - production branch `timing-defense-cloudflare-do-poc`
-- no gameplay/numerical implementation authorized after v0.45
+- production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- production gameplay/numerical changes remain unauthorized during calibration
 
 ---
 
-# ACTIVE PHASE — SKILLED_V2 Harness Browser/Device Validation + Pilot Readiness
+# ACTIVE PHASE — SEPARATE CALIBRATION DEPLOYMENT + DEVICE SMOKE
 
 Completed chain:
 
@@ -18,202 +18,126 @@ Completed chain:
 Master Campaign Spine
  -> Layer-0 PASS
  -> encounter envelope PASS
- -> class-aware role-expression calibration
+ -> role-expression calibration
  -> Critical 10 PASS_WITH_WATCHES
  -> All-20 PASS_WITH_WATCHES
- -> SKILLED_V2 measurement/harness schema READY
- -> isolated playable harness preflight PASS
- -> isolated HARNESS_ONLY source implementation V0.1 COMPLETE
+ -> SKILLED_V2 harness/schema READY
+ -> isolated playable harness source COMPLETE
  -> source isolation PASS
+ -> high-mastery anchor classification established
+ -> separate calibration deployment AUTHORIZED
 ```
 
-The current blocker is no longer campaign structure, monster role geometry, or harness specification.
-The current blocker is **real browser/device evidence from the isolated harness**.
+Current blocker:
+**Cloudflare account-side creation/connection of the separate calibration Workers Builds project.**
+
+The repository side is ready.
 
 ---
 
 # Read first
 
-1. `legacy-game-structure/60_SKILLED_V2_HARNESS_IMPLEMENTATION_STATUS_V0_1.md`
-2. `legacy-game-structure/59_SKILLED_V2_HARNESS_IMPLEMENTATION_PREFLIGHT_V0_1.md`
-3. `legacy-game-structure/58_SKILLED_V2_PLAYABLE_HARNESS_IMPLEMENTATION_CONTRACT_V0_1.md`
-4. `legacy-game-structure/57_SKILLED_V2_COLLECTION_READINESS_REVIEW_V0_1.md`
-5. `legacy-game-structure/56_SKILLED_V2_TRACE_COLLECTION_PIPELINE_V0_1.md`
-6. `legacy-game-structure/55_SKILLED_V2_CONTROLLED_HARNESS_AND_FIT_SCHEMA_V0_1.md`
-7. `legacy-game-structure/54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
-8. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
+1. `legacy-game-structure/62_SKILLED_V2_CALIBRATION_DEPLOYMENT_READINESS_V0_1.md`
+2. `legacy-game-structure/61_HIGH_MASTERY_PLAYER_ANCHOR_AMENDMENT_V0_1.md`
+3. `legacy-game-structure/60_SKILLED_V2_HARNESS_IMPLEMENTATION_STATUS_V0_1.md`
+4. `legacy-game-structure/58_SKILLED_V2_PLAYABLE_HARNESS_IMPLEMENTATION_CONTRACT_V0_1.md`
+5. `legacy-game-structure/55_SKILLED_V2_CONTROLLED_HARNESS_AND_FIT_SCHEMA_V0_1.md`
+6. `legacy-game-structure/54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
+7. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-Harness implementation:
+Harness branch:
+- `timing-defense-skilled-v2-harness-v01`
+- deployment-ready reviewed HEAD `85396e7da53eee1d64769d76b2a0e9700577aa34`
+- root `timing-defense-skilled-v2-harness`
+- Worker name `timing-defense-skilled-v2-harness`
+- deployment guide `timing-defense-skilled-v2-harness/DEPLOY_WORKERS_BUILDS.md`
+
+---
+
+# Player classification boundary
+
+The primary user's first traces are interpreted as:
+
+`HIGH_MASTERY_STRESS_CANDIDATE`
+
+They MUST NOT be used directly as `SKILLED_V2_CENTRAL` before comparative evidence exists.
+This is a provisional analysis label, not an objective rank certification.
+
+Use those traces for:
+- upper-tail cadence/timing
+- combo40/60+ survival
+- heavy/P×P reliability
+- turnover reacquisition
+- stateful response latency
+- checking whether high-throughput play erases monster role expression
+
+The non-T1 `<60%` full-Tier difficulty gate applies only to future fitted `SKILLED_V2_CENTRAL`.
+Do not tune the campaign until the user's own clear rate is below 60%.
+
+---
+
+# Calibration deployment settings
+
+Use the same validated route as the existing Timing Defense Cloudflare deployment: Workers Builds + GitHub integration.
+
+Required settings:
+- repository `hotmoral/-`
 - branch `timing-defense-skilled-v2-harness-v01`
-- last reviewed HEAD `7c541e3eb1e51ef9788f943e4603debc5a775e79`
-- directory `timing-defense-skilled-v2-harness/`
-- distinct Worker name `timing-defense-skilled-v2-harness`
+- root directory `timing-defense-skilled-v2-harness`
+- Worker/project name `timing-defense-skilled-v2-harness`
+- build command empty unless required
+- deploy command `npx wrangler deploy`
 
-Canonical player-model data/tools:
-- `legacy-game-structure/data/skilled_v2_controlled_harness_v0_1.yaml`
-- `legacy-game-structure/data/skilled_v2_trace_schema_v0_1.yaml`
-- `tools/validate_skilled_v2_harness.py`
-- `tools/validate_skilled_v2_trace_dataset.py`
-- `tools/summarize_skilled_v2_trace_dataset.py`
-
----
-
-# User-confirmed structural truth
-
-- 5 classes; independent class Tier progression.
-- same Tier/Stage combat content across classes.
-- Tier = exactly 50 Stages.
-- fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / Stage50 clear=3★.
-- stars = broad account permanent growth.
-- achievements = targeted cross-class growth.
-- recoverable soft walls intended; hard class lockout forbidden.
-- current 9 monsters are V1 foundation, not lifetime final roster.
-- T1 does not expose all 9; higher Tiers introduce species.
-- future T5/T6/T7+ and new monsters remain open.
-- fitted non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be **<60%**.
-- the <60% value is a post-fit game-difficulty gate, never a reason to weaken the fitted player model.
-- combo40 is ordinary skilled-achievable, not high-mastery-only.
-- Lv31 target unlock window = Stage41–45.
-- Stage46–49 = post-Lv31 mastery; Stage50 = final application.
-- intended monster roles must become perceivable before deletion; readable counterplay is required, full enemy activation is not guaranteed.
-
----
-
-# Current Model A
-
-```text
-T1: GRUNT / RUNNER / BRUTE
-T2: +SHIELD / +FLYER
-T3: +CHARGER / +SPLITTER
-T4: +SUPPORTER / +SIEGER
-T5+: future expansion
-```
-
-Status: bounded simulation spine, **not production frozen**.
-
----
-
-# Role-expression status
-
-Critical 10: `PASS_WITH_WATCHES`.
-
-All 20 representative recipes: `PASS_WITH_WATCHES`.
-
-Evidence volume:
-```text
-20 recipes × 3 deterministic brackets × 5 classes = 300 combat rows
-36 designated recipe-role pairs × 15 rows = 540 role checks
-540 / 540 structural role gates PASS
-```
-
-Remaining watches are deferred to fitted-player evidence rather than more broad geometry tuning:
-- E20 CHARGER ~250ms lower-tail window
-- FLYER ~255–325ms lower-tail geometry opportunity
-- modest RUNNER lower-tail advance in some rows
-- some conservative siege wall pressure after response begins
-
-Do not resume broad encounter geometry tuning unless fitted traces reopen a specific failure.
-
----
-
-# Isolated harness state
-
-Source baseline:
-`ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-
-Implementation branch:
-`timing-defense-skilled-v2-harness-v01`
-
-Last reviewed implementation HEAD:
-`7c541e3eb1e51ef9788f943e4603debc5a775e79`
-
-Implemented:
-- H0 TIMING_BASELINE
-- H1 SUSTAINED_TEMPO
-- H2 DURABLE_RHYTHM
-- H3 TURNOVER_DENSITY
-- H4 STATEFUL_READ
-- H5 MIXED_PRESSURE
-- audited timing/judgment semantics
-- combo/charge/heavy/P×P tracing
-- H3 target-turnover/no-target state evidence
-- H4/H5 CHARGER-style WINDUP evidence
-- local anonymous calibration ID
-- local JSONL copy/download
-- bounded in-browser trace checks
-- source selftest
-
-Isolation:
-- separate directory/project
-- separate Worker name
-- no production room/WebSocket integration
-- no campaign star/Tier/achievement/EXP/coin/shop persistence
-- no external telemetry service
-- no public calibration deployment performed
-
-Source checks:
-- JS syntax PASS
-- source contract selftest PASS
-- source isolation comparison PASS
-
----
-
-# Instrumentation WATCH
-
-`noTargetWaitMsBeforeAction` is optional in schema V0.1.
-
-The raw trace preserves no-target ground truth through ordered:
-`NO_TARGET_START -> NO_TARGET_END -> TARGET_REORDER -> first post-turnover ACTION`.
-
-The current convenience ACTION field may be zero after the target returns. Before broad collection, browser smoke must verify this and either:
-- carry the closed interval into the first post-turnover ACTION, or
-- formally derive it from ordered raw STATE timestamps in the collection pipeline.
-
-Do not discard raw STATE order.
+This MUST be a separate project from `timing-defense-do-poc`.
 
 ---
 
 # EXACT NEXT BOUNDARY
 
-Next bounded tranche = **HARNESS BROWSER/DEVICE SMOKE + SAMPLE TRACE VALIDATION**.
+Immediately after the separate Cloudflare project is connected/deployed:
 
-Required order:
-1. H0 smoke in a real browser/device.
-   - timing surface usable
-   - >=40 ACTION records possible
-   - combo sequence recorded
+1. verify calibration `/health` identity.
+2. H0 real-device smoke.
+   - usable timing surface
+   - >=40 ACTION records
+   - combo sequence coherent
    - heavy/P×P fields coherent
-2. H3 smoke.
-   - NO_TARGET_START/END
-   - TARGET_REORDER
-   - first post-turnover action
-   - reacquisition delay
-   - inspect/fix `noTargetWaitMsBeforeAction` convenience field
-3. H4 smoke.
-   - readable WINDUP_START
+3. H3 smoke.
+   - `NO_TARGET_START`
+   - `NO_TARGET_END`
+   - `TARGET_REORDER`
+   - first post-turnover ACTION
+   - reacquisition timing
+   - inspect/fix or formally derive `noTargetWaitMsBeforeAction`
+4. H4 smoke.
+   - readable `WINDUP_START`
    - response action linkage
-   - interrupt/full-activation truth reconstructable
-4. verify JSONL copy/download on target browser/device.
-5. run exported traces through canonical `validate_skilled_v2_trace_dataset.py`.
-6. verify harness activity cannot mutate production campaign state and does not submit data externally.
-7. only after smoke PASS, decide whether a **separate calibration deployment** is useful for small controlled pilot collection.
-8. collect a small H0–H5 pilot dataset.
-9. run data-quality review before any numeric fitting.
-10. only then fit/bound `SKILLED_V2_CONSERVATIVE/CENTRAL/STRONG`; keep `HIGH_MASTERY_STRESS` separate.
-11. rerun all-20 role-expression candidates under fitted traces.
-12. then build the 10-Stage synthetic Tier slice.
+   - INTERRUPTED / FULL_ACTIVATION truth reconstructable
+5. verify JSONL copy/download on the user's mobile browser.
+6. run sample export through `validate_skilled_v2_trace_dataset.py`.
+7. verify production worker/state is untouched.
+8. patch only smoke-demonstrated harness defects.
+9. collect a small H0–H5 pilot from the user as `HIGH_MASTERY_STRESS_CANDIDATE`.
+10. data-quality review before any numeric fit.
+11. later acquire/derive ordinary-skilled evidence separately.
+12. fit `SKILLED_V2_CONSERVATIVE/CENTRAL/STRONG` while keeping `HIGH_MASTERY_STRESS` separate.
+13. rerun All-20 role-expression candidates under fitted traces.
+14. then build the 10-Stage synthetic Tier slice.
 
-Do NOT yet:
-- deploy or modify the production v0.45 worker
-- publicly deploy the calibration harness without explicit authorization
-- invent missing observed player probabilities
-- promote old deterministic 600/750/900ms brackets to SKILLED_V2
+---
+
+# Do not yet
+
+- modify/deploy production v0.45 gameplay
+- use the user's traces as ordinary-skilled center
+- invent missing observed probabilities
+- promote old deterministic 600/750/900ms probes to fitted SKILLED_V2
 - author exact 200 launch Stages
-- freeze production monster coefficients/entry coordinates
+- freeze production monster coefficients/coordinates
 - freeze final Tier count
 - freeze exact EXP/star/achievement values
 - freeze boss/shop cadence
-- start detailed 3P/4P production balance
+- begin detailed 3P/4P production balance
 
 Governance:
-`structure -> role-expression PASS -> observed player harness -> fitted player model -> role regression -> synthetic slice -> full Tier -> soft-wall/meta recovery -> explicit freeze -> implementation`.
+`structure -> role-expression PASS -> observed player harness -> fitted player model -> role regression -> synthetic slice -> full Tier -> soft-wall/meta recovery -> explicit freeze -> production implementation`.
