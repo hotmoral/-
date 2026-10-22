@@ -3,22 +3,21 @@
 Updated: 2026-10-22 KST
 
 ## Current architecture
-Primary lane: **Cloudflare Workers + Durable Objects event-driven multiplayer.**
+Primary lane: **Cloudflare Workers + Durable Objects event-driven multiplayer**.
 
 Public URL:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 
 Watched deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- current validated HEAD `d1bac2effbd866aa221d55829678f959bc099b82`
-- health `0.43-cf.1`
+- validated HEAD `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
+- health `0.44-cf.1`
 
 Last fully closed checkpoint:
-- **v0.43 SPLITTER authoritative child-spawn capability FULL PASS**
-- branch `timing-defense-cloudflare-v043-splitter-pass-20261022`
-- HEAD `d1bac2effbd866aa221d55829678f959bc099b82`
-- live validation run `39705143877`
-- live validation job `119583316125`
+- **v0.44 SUPPORTER authoritative dynamic movement-speed aura FULL PASS**
+- branch `timing-defense-cloudflare-v044-supporter-pass-20261022`
+- HEAD `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
+- live run/job `39706896662` / `119588945997`
 
 ## Read first
 1. `SESSION_HANDOFF.md`
@@ -26,185 +25,129 @@ Last fully closed checkpoint:
 3. `NEXT_WORK.md`
 4. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 5. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-6. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
-7. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
-8. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
-9. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
-10. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
+6. `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
+7. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
+8. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
+9. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
+10. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+11. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
 ---
 
-# Frozen/closed combat foundations
+# Frozen foundations
+- v0.36 exact EXP/N2/Lv6 authority retained.
+- v0.38 512-event cursor kernel, reconnect and 3H/4H/mixed-party flow retained.
+- v0.39 N3 product contract frozen: milestones 5/10/20/30/+10, budgets 60/90/150/210, class geometry, no recursive/generated side effects, normal kill/economy/armor attribution.
 
-## v0.36
-- exact EXP: NORMAL8 / GOOD12 / PERFECT18 / HEAVY10 / HEAVY+14 / GREAT18 / SUPER23 / CRITICAL28
-- AI stage multiplier: `1 + (stage - 1) * 0.035`
-- Lv6: Knight +12%; Rogue +55 ms second dagger at55%; Tank +30% knock; Archer up to2 strict-line52%; Mage up to3 nearby50%.
-
-## v0.38 event/multiplayer kernel
-- 512 retained events
-- per-WebSocket event cursor
-- monotonic event-batch
-- explicit event-gap
-- resume/eventFloor replay suppression
-- 3H / 4H / 2H+2AI / 3H+1AI
-- host reconnect / READY / START / Team Shop / NEXT validated.
-
-## v0.39 N3 — FROZEN
-- milestones 5 / 10 / 20 / 30 / every +10
-- budgets 60 / 90 / 150 / 210
-- Rogue 2/3/4/5; Knight67/33; Tank60/20/20; Archer70/30 strict line; Mage55/15/15/15
-- no generated EXP/charge/combo/ordinary crit/recursive skill/recursive N3
-- normal armor / kill / kill coin / contribution
-- boss scalars retained
-- NORMAL-equivalent generic N3 knockback.
+Do not reconstruct legacy Stage4→10 as final campaign. Stage1–3 are regression fixtures. Production direction remains approximately 50 stages with tier/S-E-X authoring and later deterministic simulation/calibration.
 
 ---
 
-# Campaign direction
-Do **not** resume legacy Stage 4 -> Stage 10 reconstruction as the production campaign.
-
-Production direction:
-- approximately 50 stages
-- tier identities
-- S / E / X pressure grammar
-- 2/3/4-player composition scaling
-- re-authored monster combinations
-- deterministic simulation/calibration before production-number freeze.
-
-Stage 1–3 remain regression fixtures only.
-Old branch `timing-defense-cloudflare-v040-stage4-shield` remains preflight-only.
-
----
-
-# Monster Capability Contract V1 — STRUCTURE FROZEN
+# Monster Capability Contract V1
 Nine ordinary archetypes:
-1. GRUNT — baseline
-2. RUNNER — sustained tempo
-3. BRUTE — durability + knock resistance
-4. SHIELD — armor mitigation
-5. FLYER — authoritative Y geometry
-6. CHARGER — telegraphed interruptible burst dash
-7. SPLITTER — parent death -> exactly two non-recursive children
-8. SUPPORTER — non-stacking movement-speed aura only
-9. SIEGER — standoff + repeated telegraphed wall attack
+1. GRUNT baseline
+2. RUNNER sustained tempo
+3. BRUTE durability/knock
+4. SHIELD armor
+5. FLYER Y geometry
+6. CHARGER interruptible burst
+7. SPLITTER two-child nonrecursive split
+8. SUPPORTER non-stacking movement aura
+9. SIEGER standoff/repeated wall attack
 
-Bosses are separate capability compositions.
-No hard class lockouts. No manual target-selection requirement. Relevant gameplay state is server authoritative.
-Current capability coefficients remain **PROVISIONAL** unless separately frozen.
+Bosses are separate capability compositions. No hard class lockouts. No manual target-selection requirement. Gameplay-relevant state server authoritative. Current capability numbers are provisional unless explicitly frozen.
 
 ---
 
 # Capability checkpoint chain
 
 ## Foundation
-- branch `timing-defense-cloudflare-v040-monster-capability-foundation`
-- HEAD `68882c2013d1d35aaedbf12e5725fde377795044`
-- **22/22 PASS**
+`timing-defense-cloudflare-v040-monster-capability-foundation` @ `68882c2013d1d35aaedbf12e5725fde377795044` — **22/22 PASS**.
 
-## v0.40 SHIELD — FULL PASS
-- branch `timing-defense-cloudflare-v040-shield-pass-20261022`
-- HEAD `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad`
-- common armor/rawDamage path and SHIELD identity validated.
+## v0.40 SHIELD
+`timing-defense-cloudflare-v040-shield-pass-20261022` @ `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad` — common rawDamage/armor path and SHIELD identity PASS.
 
-## v0.41 FLYER — FULL PASS
-- branch `timing-defense-cloudflare-v041-flyer-pass-20261022`
-- HEAD `7a68ba6d78b3ac8611c815f582e24e871a947f03`
-- health `0.41-cf.1`
-- authoritative Y phase, moving-Y Lv6/N3 geometry and network presentation contract validated.
+## v0.41 FLYER
+`timing-defense-cloudflare-v041-flyer-pass-20261022` @ `7a68ba6d78b3ac8611c815f582e24e871a947f03` — authoritative Y phase/geometry/reconnect/client parity PASS.
 
-## v0.42 CHARGER — FULL PASS
-- branch `timing-defense-cloudflare-v042-charger-pass-20261022`
-- HEAD `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a`
-- health `0.42-cf.1`
-- authoritative `ADVANCE -> WINDUP -> CHARGE`, interrupt/re-arm, state-aware movement/wall/reconnect and chronological replay validated.
+## v0.42 CHARGER
+`timing-defense-cloudflare-v042-charger-pass-20261022` @ `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a` — authoritative ADVANCE→WINDUP→CHARGE, interruption/re-arm and chronological replay PASS.
 
-## v0.43 SPLITTER — FULL PASS
-- branch `timing-defense-cloudflare-v043-splitter-pass-20261022`
-- HEAD `d1bac2effbd866aa221d55829678f959bc099b82`
-- health `0.43-cf.1`
-- live run `39705143877`
-- live job `119583316125`
-- report `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
+## v0.43 SPLITTER
+`timing-defense-cloudflare-v043-splitter-pass-20261022` @ `d1bac2effbd866aa221d55829678f959bc099b82` — exact two-child deterministic spawn/nonrecursion/N3 retarget/reconnect PASS. Reward `4+2+2=8` is provisional test accounting only.
+
+## v0.44 SUPPORTER — FULL PASS
+`timing-defense-cloudflare-v044-supporter-pass-20261022` @ `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
+health `0.44-cf.1`
+live run/job `39706896662` / `119588945997`
+report `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
+preflight `SUPPORTER_AURA_AUTHORITY_PREFLIGHT_2026-10-22.md`
 
 Authoritative semantics:
-- parent death creates exactly two deterministic children at death timestamp
-- authoritative child IDs/order and fixed Y offsets
-- children persist `canSplit=false` and never recursively split
-- parent and children share a package attribution ID
-- explicit parent/child movement, wall, size and knock identity
-- no extra immediate split event; split metadata rides on the damage event to preserve earlier annotation ordering
-- simultaneous splits deterministic
-- spawned children prevent premature stage clear
-- Rogue N3 parent-kill -> deterministic child retarget validated
-- Tank N3 child knock metadata validated
-- reconnect and event-ID monotonicity validated.
+- movement-speed aura only
+- self excluded; overlaps non-stacking
+- persisted source IDs
+- exact materialize-before-membership-change
+- no fixed gameplay tick
+- deterministic static crossing and FLYER root-refined crossing
+- death/wall/knock topology changes exact at event timestamp
+- FLYER X-only composition
+- CHARGER ADVANCE/CHARGE boosted; WINDUP zero
+- SPLITTER children reconcile at spawn
+- reconnect and nextDueAt crossing semantics validated.
 
-Provisional sandbox accounting currently uses parent4 + child2 + child2 = total8. **This is test accounting only and is NOT the production reward/economy freeze.**
+Provisional: HP280/speed.055/wall70/knock.90/reward8/radius.18/speed×1.18 and Euclidean sandbox geometry. **Not production frozen**.
 
-Validation evidence:
-- foundation **22/22**
-- N3 **57/57**
-- SHIELD **11/11**
-- FLYER **10/10**
-- CHARGER **17/17**
-- SPLITTER **14/14**
+Pre-live compatibility regression: first generic wallAt override weakened no-aura CHARGER prediction; fixed by delegating inherited wallAt when aura inactive. No numerical change.
+
+Evidence:
+- foundation22/22
+- N3 57/57
+- SHIELD11/11
+- FLYER10/10
+- CHARGER17/17
+- SPLITTER14/14
+- SUPPORTER17/17
 - root-loader PASS
-- V038 FULL REGRESSION PASS
-- N3 CLIENT PASS
-- N3 4H STRESS PASS
-- **FINAL PASS**
+- prior browser/WebSocket FINAL PASS.
 
-No Samsung Browser smoke: SPLITTER has no visible authored encounter/final split VFX yet.
+No Samsung Browser smoke: no visible authored SUPPORTER encounter/final aura VFX.
 
 ---
 
-# Active next boundary — SUPPORTER authoritative dynamic movement-speed aura
-Stage-number-independent capability work; not a legacy stage implementation.
+# Active next boundary — SIEGER authoritative standoff/repeated wall-attack kernel
+Stage-number-independent capability work.
 
-Frozen V1 structure:
-- aura modifies nearby monster **movement speed only**
-- SUPPORTER never buffs itself
-- multiple SUPPORTER auras do not stack
-- no heal / armor / damage / wall-damage / knock-resistance buff
-- no manual target-selection requirement
-- no legacy stage recipe enabled.
+Frozen structure:
+`ADVANCE -> standoff -> WINDUP -> FIRE -> COOLDOWN -> WINDUP ...`
 
-Provisional sandbox anchors:
-- HP280 / speed `.055` / wall70 / knock `.90` / armor1 / reward8
-- aura radius `.18`
-- aura speed multiplier `1.18`
+Provisional test anchors:
+- HP520
+- approach speed `.045`
+- knock resistance `.55`
+- armor1
+- reward11
+- standoff X `.38`
+- windup800ms
+- ranged wall shot75
+- repeat2200ms
 
 These are **not production frozen**.
 
-Critical architecture risk:
-aura membership changes continuously as monsters move relative to one another. A naive snapshot/tick check can make movement depend on poll frequency and create authoritative timestamp drift.
+Must resolve/validate:
+- exact standoff-arrival timestamp,
+- repeated wall-shot timing while monster remains alive,
+- team DEF application,
+- knockback/reposition during windup/cooldown,
+- SUPPORTER aura changes approach speed only, not shot cadence/damage,
+- `nextDueAt()` and reconnect/late-alarm chronology,
+- repeated shot events preserve event-stream semantics,
+- no legacy stage recipe.
 
-Required before live implementation:
-1. define exact enter/leave crossing semantics,
-2. integrate movement deterministically across crossings,
-3. supporter death/wall removal changes affected speeds at the exact event timestamp,
-4. multi-supporter overlap remains non-stacking,
-5. CHARGER phase speed composition is deterministic,
-6. SPLITTER children can enter/leave aura deterministically after spawn,
-7. FLYER aura affects X only; Y phase remains independent,
-8. `wallAt` / `nextDueAt` remain exact enough for alarm scheduling,
-9. reconnect reconstructs the same movement state.
-
-Do not silently adopt tick-based approximation if it changes motion semantics. If exact continuous crossing creates disproportionate complexity, classify alternatives and obtain an explicit architecture/product decision first.
-
-Following:
-SIEGER.
-
-After capabilities:
-1. remaining player-skill authority needed for calibration,
-2. approximately 50-stage tier/S-E-X authoring,
-3. large deterministic 2/3/4-player simulation,
-4. classify/report/discuss,
-5. explicit production numerical freeze.
+Following SIEGER completion: review remaining player-skill authority needed for calibration, then approximately-50-stage tier/S-E-X authoring and large deterministic 2/3/4-player simulation.
 
 ## Validation policy
-Automatable validation must not be delegated to the user when CI can execute it.
+`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
 
 ## Governance
 No numerical change without:
