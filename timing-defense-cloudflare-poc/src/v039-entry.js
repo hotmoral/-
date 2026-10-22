@@ -16,7 +16,8 @@ const TYPE_META={
   grunt:{knockResist:.85,size:1.00},
   runner:{knockResist:1.00,size:.70},
   brute:{knockResist:.38,size:1.34},
-  shield:{knockResist:.62,size:1.08}
+  shield:{knockResist:.62,size:1.08},
+  flyer:{knockResist:.90,size:.78}
 };
 
 function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store"}})}
@@ -53,7 +54,8 @@ function latestEvent(run,pred,minId=0){
 }
 function pointAt(room,monster,at){
   if(!monster)return null;const d=TYPE_META[monster.type]||TYPE_META.grunt;
-  return{id:monster.id,type:monster.type,x:room.xAt(monster,at),y:monster.y,size:d.size||1,boss:!!monster.boss};
+  const y=typeof room.yAt==='function'?room.yAt(monster,at):monster.y;
+  return{id:monster.id,type:monster.type,x:room.xAt(monster,at),y,size:d.size||1,boss:!!monster.boss};
 }
 function actorOrigin(slot){return{x:.105,y:SLOT_Y[Math.max(0,Math.min(3,(slot||1)-1))]||.30}}
 function knightSecondary(room,primary,at){
