@@ -19,33 +19,19 @@ Updated: 2026-10-22 KST
 14. v0.43 SPLITTER — **FULL PASS**
 15. v0.44 SUPPORTER — **FULL PASS**
 16. v0.45 SIEGER — **FULL PASS**
+17. Player Skill Authority Review — **COMPLETE / DECISION GATE OPEN**
 
-## Exact latest checkpoint
+## Exact latest executable checkpoint
 - branch `timing-defense-cloudflare-v045-sieger-pass-20261022`
 - HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - health `0.45-cf.1`
 - live run/job `39725993894` / `119649887564`
 
-Closure report:
+SIEGER closure report:
 `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
 
-Evidence:
-- Foundation **22/22 PASS**
-- N3 **57/57 PASS**
-- SHIELD **11/11 PASS**
-- FLYER **10/10 PASS**
-- CHARGER **17/17 PASS**
-- SPLITTER **14/14 PASS**
-- SUPPORTER **17/17 PASS**
-- SIEGER **20/20 PASS**
-- exact Cloudflare deployment marker PASS
-- root-loader PASS
-- prior browser/WebSocket regression PASS
-- live validation job SUCCESS
-
-First v0.45 live gate failure was only an outdated workflow expected-count of 18 while the final SIEGER suite contained 20. Deployed gameplay diagnostics were already 20/20; the gate was corrected without gameplay or numerical changes and the complete live gate then passed.
-
-No Samsung Browser smoke required: no visible authored SIEGER encounter/final telegraph presentation exists yet.
+Player-skill authority review:
+`PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
 
 ---
 
@@ -58,57 +44,96 @@ Stage1–3 remain regression fixtures only.
 
 ---
 
-# Monster Capability Contract V1 — STRUCTURE FROZEN / MECHANICAL FOUNDATION COMPLETE
-Ordinary roster:
-1. GRUNT — baseline
-2. RUNNER — sustained tempo
-3. BRUTE — durability + knock resistance
-4. SHIELD — armor mitigation
-5. FLYER — authoritative Y geometry
-6. CHARGER — telegraphed interruptible burst
-7. SPLITTER — exact two-child non-recursive split
-8. SUPPORTER — non-stacking movement-speed aura
-9. SIEGER — standoff + repeated telegraphed wall attack
+# Monster Capability V1 — MECHANICAL FOUNDATION COMPLETE
+All nine ordinary archetypes now have a server-authoritative mechanical foundation:
+GRUNT / RUNNER / BRUTE / SHIELD / FLYER / CHARGER / SPLITTER / SUPPORTER / SIEGER.
 
-All nine ordinary archetypes now have a server-authoritative mechanical foundation.
-
-This does **not** mean their current executable coefficients are production-frozen. Current capability-test coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately approved.
+Current capability coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately approved.
 
 Bosses remain a separate capability-composition layer.
 
 ---
 
-# Active bounded slice — remaining player-skill authority review
-Do not begin approximately-50-stage production authoring yet.
+# Player-skill authority review — recovered truth
 
-First recover the exact player-skill progression state from live repository/canonical/legacy sources.
+## Current authoritative
+- Lv6 class skills: **FROZEN+AUTHORITATIVE** through v0.36 and later regressions.
+- N3 combo milestone system: **FROZEN+AUTHORITATIVE** through v0.39 and later regressions.
 
-Known closed authority:
-- v0.36 Lv6 class skills are authoritative and regression-protected.
-- v0.39 N3 is frozen and authoritative.
+## Exact legacy parity candidates
+Legacy v0.16 actually implemented/deployed and v7 exact simulation mirrored:
+- Lv11
+- Lv16
+- Lv21
 
-Required review:
-1. search for post-Lv6 progression contracts, especially Lv11 / Lv16 / Lv21,
-2. identify exact legacy/design behavior and numerical values where they exist,
-3. distinguish production-frozen decisions from old prototype behavior,
-4. identify planned-but-not-authoritative mechanics,
-5. identify unresolved choices that require explicit product discussion,
-6. determine which missing skill authorities would materially block campaign calibration/simulation.
+These are **LEGACY-REFERENCE / parity candidates**, not silently re-frozen by the review.
 
-**Do not implement or invent post-Lv6 skill values during this review.**
+`CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md` previously classified Lv6–21 as migration candidates and explicitly left Lv26/Lv31 design-only.
 
-Deliverable:
-- a player-skill authority matrix by class and milestone,
-- source/evidence for each entry,
-- status `FROZEN+AUTHORITATIVE / DESIGNED-NOT-AUTHORITATIVE / LEGACY-REFERENCE / UNRESOLVED`,
-- exact recommended implementation boundary before 50-stage simulation.
+## Design-only / unresolved later milestones
+- Lv26: explicit class concepts and several proposed coefficients exist, but no playable authority implementation existed.
+- Lv31: final identity concepts exist, but multiple implementation-critical damage/geometry/timing details remain underspecified.
 
-After the required player-skill authority is resolved:
-1. build approximately-50-stage tier/S-E-X authoring model,
-2. generate deterministic 2/3/4-player candidate recipes,
-3. run large simulation for pressure/density/role opportunity/clear envelope,
-4. classify suspicious values or stages,
-5. report and discuss,
+Do not silently implement Lv26/Lv31 from roadmap prose.
+
+---
+
+# Active decision gate — post-Lv6 parity strategy
+
+No code should be written for Lv11+ until this product decision is explicit.
+
+Recommended default:
+**adopt the exact v0.16 Lv11/Lv16/Lv21 combat formulas as parity candidates and port them server-authoritatively in three bounded slices; keep Lv26/Lv31 out of implementation until their contracts are reviewed against the new 9-monster roster and approximately-50-stage campaign.**
+
+If approved, implementation order:
+
+### P1 — Lv11 authoritative parity
+- Knight: +1 normal / +2 heavy penetration, legacy secondary 85%
+- Rogue: +6 percentage-point native proc crit
+- Tank: shared wall incoming damage -10%, nonstack
+- Archer: +10% base damage; projectile-speed change remains presentation/time-of-flight unless later made gameplay-relevant
+- Mage: radius ×1.35, splash 60%
+
+### P2 — Lv16 authoritative parity
+- Knight: PERFECT-containing ×1.18 damage / ×1.20 knock
+- Rogue: qualifying recovery 390ms -> 312ms with server action-cadence validation
+- Tank: 80 wall shield / 3000ms refresh, nonstack
+- Archer: PERFECT armor-ignore / preserved 100% penetration damage
+- Mage: delayed ~180ms 55% outer-ring resonance, center excluded
+
+### P3 — Lv21 authoritative parity
+- Knight: heavy ×1.20 / up to3 extra penetrations, legacy secondary 85%
+- Rogue: heavy 100% + four 45% follow-ups
+- Tank: broad heavy multi-target / heavy knockback ×2.0
+- Archer: strict-line triple heavy 100%+65%+65%
+- Mage: heavy ×1.20 / blast radius ×1.60
+
+Each slice must retain all v0.39–v0.45 regression gates.
+
+### P4 — Lv26/Lv31 product-contract review
+Before full late-campaign calibration, explicitly resolve:
+- whether the six-milestone roadmap remains final,
+- structural skill identities,
+- underspecified Lv26/Lv31 semantics,
+- provisional simulation coefficients versus production-frozen values,
+- expected unlock timing under the final 50-stage EXP curve.
+
+---
+
+# Why this blocks final calibration
+Under the old accepted EXP rule, `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md` found Lv21 was already commonly reached by Stage10 at Skilled proficiency. Therefore an approximately-50-stage calibration using only current Lv6 server authority would materially misrepresent player power.
+
+The authoring **infrastructure** may be designed before Lv26/Lv31 final freeze, but final late-campaign numerical calibration/freeze should wait until later skill contracts and progression timing are resolved.
+
+---
+
+# After parity decision
+If P1/P2/P3 are approved and closed:
+1. review/freeze the structural Lv26/Lv31 contract or explicitly redesign the later progression,
+2. build approximately-50-stage tier/S-E-X authoring model,
+3. generate deterministic 2/3/4-player candidate recipes,
+4. run large simulation for pressure/density/role opportunity/clear envelope,
+5. classify/report/discuss,
 6. patch only after explicit decision,
 7. explicitly freeze production monster/stage values.
 
