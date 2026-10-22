@@ -1,7 +1,7 @@
 # Timing Defense — Legacy Game Structure Corpus
 
 Date: 2026-10-22 KST  
-Status: **STRUCTURAL CORPUS / CRITICAL ROLE-EXPRESSION V0.2 RERUN NEXT**
+Status: **STRUCTURAL CORPUS / SYSTEM DEPENDENCY + RUN-STATE PRE-SYNTHETIC-TIER**
 
 ## 0. 목적
 
@@ -9,45 +9,70 @@ This corpus establishes and validates campaign/meta/combat structure before live
 
 Principles:
 - candidate != production authority
-- close upstream structure before detailed authoring
+- close upstream semantics before detailed numerical tuning
 - catch cheap errors with static/machine validation first
 - require representative role-expression evidence before exact Stage authoring
+- integrate coupled systems progressively rather than balancing them independently and summing later
+- re-check upstream invariants whenever a new power layer is added
 - do not change live production values before explicit freeze
 
 ---
 
 # 1. Current center
 
-Top-level spine:
+Top-level campaign spine:
 - `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
 
-Integrated campaign matrix:
+Integrated bounded campaign matrix:
 - `31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
+
+Current execution-order authority:
+- `70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
+- `data/system_dependency_calibration_order_v0_1.yaml`
+
+Latest central-skilled structural evidence:
+- `66_SKILLED_V2_CENTRAL_DESIGN_PRIOR_AND_HARNESS_CLOSURE_AMENDMENT_V0_1.md`
+- `67_SKILLED_V2_CENTRAL_SEQUENCE_MODEL_V0_1.md`
+- `68_SKILLED_V2_CENTRAL_ALL20_INTEGRATION_PREFLIGHT_V0_1.md`
+- `69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 
 Current monster-role authority/evidence:
 - `45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
-- `48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md`
-- `50_CROSS_BRACKET_ROLE_EXPRESSION_ROBUSTNESS_V0_1.md`
 - `52_ROLE_METRICS_V0_2_INSTRUMENTATION.md`
+- `53_CRITICAL_ROLE_EXPRESSION_V0_2_RERUN_REPORT_V0_1.md`
+- `54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
+- `69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 
-Pipeline:
+Current pipeline:
+
 ```text
-Master Spine
+Master Spine / Model A
  -> Layer0 structural PASS
  -> Encounter Envelope PASS
  -> Static/Kinematic/Sensitivity preflight
- -> Class-aware Layer-A V0.1
+ -> Class-aware Layer-A
  -> Role-Expression Contract
- -> Fine Activation Calibration
- -> Role Metrics V0.2
- -> Critical 10-Recipe Audit
- -> All-20 Audit
- -> Fitted Player Model
- -> Synthetic Slice
- -> Full Tier
- -> Soft-wall/Meta
- -> Explicit Freeze
- -> Live Implementation
+ -> Critical 10 + All-20 role audits
+ -> provisional streak-aware SKILLED_V2_CENTRAL design prior
+ -> corrected central All-20 role integration PASS
+ -> P1 Run-State Lifecycle Contract
+ -> P2 Modifier Pipeline / Power Attribution Contract
+ -> P3 10-Stage Persistent Run Kernel
+ -> P4 Player-Power Spine
+ -> P5 Coin/Shop Candidate
+ -> P6 Joint Run-Power Convergence
+ -> P7 Boss/Checkpoint Proxy
+ -> P8 Solo P0 Full-Tier Baseline
+ -> P9 Soft-Wall + Stat Sensitivity
+ -> P10 Multiplayer Combat Scaling
+ -> P11 Stars-Only Progression
+ -> P12 Achievement Cross-Class Graph
+ -> P13 Account Route Simulation
+ -> P14 Launch Tier Count / Unlock Gate
+ -> P15 Exact Campaign/Boss Authoring
+ -> P16 Multiplayer Progression-Credit Audit
+ -> P17 Full-System Stress / Numerical Freeze
+ -> P18 Production Implementation
 ```
 
 ---
@@ -65,19 +90,31 @@ Master Spine
 - T1 does not force all 9
 - higher Tiers introduce new monsters
 - future T5/T6/T7+ expansion open
-- fitted non-T1 `SKILLED_V2_CENTRAL` full-clear normally <60%
+- non-T1 `SKILLED_V2_CENTRAL` full-clear normally <60% as an upper gate
 - combo40 is skilled-achievable
 - Lv31 target unlock = Stage41–45
 - Stage46–49 = post-Lv31 mastery
 - Stage50 = final, not Lv31 tutorial
-- intended role encounters must not spawn-delete a monster before its role becomes meaningfully perceivable
+- intended role encounters must not delete a monster before its role becomes meaningfully perceivable
 
 Role-expression semantics:
+
 ```text
 minimum role expression required
 readable counterplay required
 full enemy activation not guaranteed
 ```
+
+Ordinary-skilled design prior currently authorized for bounded simulation:
+
+```text
+PERFECT 70%
+GOOD    20%
+NORMAL  10%
+```
+
+This is implemented as a streak-aware deterministic candidate and is **not empirical population telemetry**.
+The primary user's observed traces remain separate as `HIGH_MASTERY_STRESS_CANDIDATE` evidence.
 
 ---
 
@@ -110,6 +147,7 @@ Fallback Model B remains available only if T4 lower-layer evidence fails.
 Only Lv31 is user-confirmed as a target window.
 
 Late grammar:
+
 ```text
 31–39 pressure / soft wall
 40     2★ gate
@@ -117,6 +155,11 @@ Late grammar:
 46–49  Post-Lv31 Mastery
 50     Tier Final
 ```
+
+Important current systems dependency:
+- EXP is tied to valid timing events.
+- Shop/permanent power can change kill speed and therefore the number of EXP-producing events.
+- Skill reach must be revalidated after shop integration and again after permanent-power integration.
 
 ---
 
@@ -127,13 +170,26 @@ Late grammar:
 - Representative static recipe preflight: PASS
 - Kinematic preflight: PASS WITH WATCHES
 - Generic DPS sensitivity: COMPLETE
-- Class-aware Layer-A V0.1 critical subset: COMPLETE
+- Class-aware Layer-A V0.1: COMPLETE
 - Monster Role Expression Contract: ESTABLISHED
-- Fine CHARGER/SIEGER activation search: COMPLETE
-- Three-bracket role robustness probe: COMPLETE
+- Fine activation calibration: COMPLETE
+- Three-bracket role robustness: COMPLETE
 - Passive-role structural anchor audit: COMPLETE
-- Role Metrics V0.2 instrumentation: READY
-- Critical 10-recipe V0.2 rerun: NEXT
+- Role Metrics V0.2 instrumentation: COMPLETE
+- Critical 10 V0.2 rerun: PASS_WITH_WATCHES
+- Historical All-20 audit: PASS_WITH_WATCHES / 540 OF 540
+- High-mastery H0/H3 observed traces: retained as upper-anchor evidence
+- H4 stateful-read skill-fit premise: superseded for player-skill calibration under current input semantics
+- provisional SKILLED_V2_CENTRAL sequence candidate: ESTABLISHED
+- corrected central All-20 integration: PASS_WITH_WATCHES / 540 OF 540
+- historical regression after E08/E20 refinements: 540 OF 540
+- system dependency / calibration-order review: ACTIVE AUTHORITY
+
+Latest central watches:
+- T4 E10/E11/E18/E19 siege wall pressure
+- T3 E13 wall pressure
+- E20 CHARGER lower-tail readability
+- combo40 requires persistent multi-stage evidence, not short encounter rows
 
 ---
 
@@ -158,81 +214,60 @@ Do not equate role expression with successful full ability activation.
 
 ---
 
-# 7. Current activation candidates
+# 7. Current localized role candidates / watches
 
 Diagnostic only; not production coordinates.
 
-## E07 CHARGER
-- initial search range was too narrow
-- three-bracket all-five windup robust around `~0.54`
-- broad all-profile expression region observed to about `~0.64`
+## E08 SPLITTER
+Current additional-10 content V0.2 shifts the two representative SPLITTER insertions to:
 
-## E17 CHARGER
-- current strong anchor `~0.49`
-- CONSERVATIVE/CENTRAL/STRONG all 5/5 windup
-- sampled wall damage 0
+```text
+500ms
+2000ms
+```
 
-## E11 SIEGER
-- CENTRAL all-five actual-shot window roughly `0.70..0.82`
-- low-change candidate near `~0.70`
-- delay only the two ordinary GRUNTs by +250ms:
-  - SHIELD 0
-  - BRUTE 250
-  - GRUNT 750
-  - GRUNT 1000
-  - SIEGER 1550
-- CENTRAL: all-five shot expression with ordinary contact leak removed
-- STRONG may prevent completed shot after SIEGER becomes readable; valid counterplay
-- E11 remains wall-pressure WATCH until V0.2 temporal evidence
+This prevents the provisional central Mage path from erasing parent and newborn children in the same authoritative action while retaining historical role gates.
 
-## E19 SIEGER
-- current lower anchor `~0.70`
-- CENTRAL all-five shot expression and no ordinary contact leak at anchor
-- STRONG still retains five-class standoff/windup opportunity even when some shots are prevented
+## E20 SPLITTER + CHARGER
+Current bounded re-author candidate:
+
+```text
+SPLITTER spawn       = 0ms
+SPLITTER relative X  = -0.02
+CHARGER spawn        = 2000ms
+CHARGER relative X   = -0.50
+```
+
+Central and historical role gates remain intact.
+CHARGER lower-tail readability remains a WATCH, not a frozen threshold.
+
+Other historical activation candidates remain evidence only and do not become production coordinates automatically.
 
 ---
 
-# 8. Passive identity anchors
+# 8. System dependency authority
 
-Raw mechanics are distinct enough to measure rather than redesign:
+The project no longer uses a coarse assumption that all run economy / boss / multiplayer work can be treated as one undifferentiated downstream block.
 
-- RUNNER speed ~1.93× GRUNT; no-combat wall arrival lead ~6.33s
-- BRUTE HP 2.8125× GRUNT; knock displacement response ~44.7% of GRUNT
-- SHIELD 28% mitigation under current provisional model; ~750 raw-equivalent durability
-- FLYER has distinct Y oscillation; combat geometry value remains measurement-dependent
+`70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md` establishes:
 
-No production coefficient freeze follows from these anchors.
+- explicit run-state lifecycle before multi-stage simulation;
+- explicit modifier operation/stack semantics before reward values;
+- EXP/skill ↔ shop ↔ permanent-power feedback rechecks;
+- boss/checkpoint proxy before final full-Tier/star calibration;
+- multiplayer combat scaling before permanent progression values are finalized;
+- multiplayer progression-credit/exploit audit later, after meta candidates exist;
+- exact campaign authoring late;
+- two-stage freeze policy: structural/semantic first, numerical/content last.
 
----
-
-# 9. V0.2 role telemetry
-
-V0.1 simulator remains preserved for reproducibility.
-
-New V0.2 lane:
-- `tools/simulate_class_aware_role_metrics_v0_2.py`
-- `tools/evaluate_role_expression_v0_2.py`
-
-New outputs include:
-- per-type alive/frontline/hit/damage/prevented-damage metrics
-- RUNNER distance advanced
-- BRUTE frontline/hits/absorbed damage
-- SHIELD mitigated hits/prevented damage
-- FLYER Archer/Mage geometry opportunity time
-- CHARGER windup visible time
-- SPLITTER child alive/frontline/reorder/peak-delta
-- SUPPORTER alive time, unique aura targets, screened-aura ratio
-- SIEGER opportunity entries and visible windup time
-- wall damage/hits by source, with `SIEGER_SHOT` separated
-
-Automatic evaluator can require five-class structural role expression.
-Exact minimum milliseconds/rates remain open until fitted SKILLED_V2.
+Machine-readable dependency authority:
+`data/system_dependency_calibration_order_v0_1.yaml`.
 
 ---
 
-# 10. Active document map
+# 9. Active document map
 
-## Core structure
+## Core structure / governance
 - `01_META_PROGRESSION.md`
 - `02_TIER_SYSTEM.md`
 - `03_STAGE_STRUCTURE_50.md`
@@ -243,6 +278,7 @@ Exact minimum milliseconds/rates remain open until fitted SKILLED_V2.
 - `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
 - `15_ACHIEVEMENT_TITLE_CROSS_CLASS_PROGRESSION_V0_1.md`
 - `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
+- `70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 
 ## Master Campaign tranche
 - `18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
@@ -282,6 +318,25 @@ Exact minimum milliseconds/rates remain open until fitted SKILLED_V2.
 - `50_CROSS_BRACKET_ROLE_EXPRESSION_ROBUSTNESS_V0_1.md`
 - `51_PASSIVE_ROLE_STRUCTURAL_ANCHOR_REPORT_V0_1.md`
 - `52_ROLE_METRICS_V0_2_INSTRUMENTATION.md`
+- `53_CRITICAL_ROLE_EXPRESSION_V0_2_RERUN_REPORT_V0_1.md`
+- `54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
+
+## Player calibration / central candidate tranche
+- `55_SKILLED_V2_CONTROLLED_HARNESS_AND_FIT_SCHEMA_V0_1.md`
+- `56_SKILLED_V2_TRACE_COLLECTION_PIPELINE_V0_1.md`
+- `57_SKILLED_V2_COLLECTION_READINESS_REVIEW_V0_1.md`
+- `58_SKILLED_V2_PLAYABLE_HARNESS_IMPLEMENTATION_CONTRACT_V0_1.md`
+- `59_SKILLED_V2_HARNESS_IMPLEMENTATION_PREFLIGHT_V0_1.md`
+- `60_SKILLED_V2_HARNESS_IMPLEMENTATION_STATUS_V0_1.md`
+- `61_HIGH_MASTERY_PLAYER_ANCHOR_AMENDMENT_V0_1.md`
+- `62_SKILLED_V2_CALIBRATION_DEPLOYMENT_READINESS_V0_1.md`
+- `63_HIGH_MASTERY_H0_OBSERVED_TRACE_REPORT_V0_1.md`
+- `64_HIGH_MASTERY_H3_OBSERVED_TRACE_REPORT_V0_1.md`
+- `65_HIGH_MASTERY_H4_OBSERVED_TRACE_INSTRUMENTATION_AUDIT_V0_1.md`
+- `66_SKILLED_V2_CENTRAL_DESIGN_PRIOR_AND_HARNESS_CLOSURE_AMENDMENT_V0_1.md`
+- `67_SKILLED_V2_CENTRAL_SEQUENCE_MODEL_V0_1.md`
+- `68_SKILLED_V2_CENTRAL_ALL20_INTEGRATION_PREFLIGHT_V0_1.md`
+- `69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 
 ## Machine-readable data
 - `data/model_a_campaign_spine_v0_1.yaml`
@@ -291,9 +346,12 @@ Exact minimum milliseconds/rates remain open until fitted SKILLED_V2.
 - `data/model_a_combat_sensitivity_anchor_v0_1.yaml`
 - `data/model_a_class_action_trace_bracket_v0_1.yaml`
 - `data/monster_role_expression_contract_v0_1.yaml`
-- `data/role_expression_activation_search_v0_1.yaml` — content V0.2
-- `data/role_expression_activation_window_candidates_v0_1.yaml`
-- `data/model_a_role_expression_geometry_overrides_v0_1.yaml`
+- `data/model_a_critical_role_expression_candidates_v0_1.yaml`
+- `data/model_a_additional10_role_expression_candidates_v0_1.yaml` — content V0.2
+- `data/skilled_v2_central_sequence_candidate_v0_1.yaml`
+- `data/skilled_v2_controlled_harness_v0_1.yaml`
+- `data/skilled_v2_trace_schema_v0_1.yaml`
+- `data/system_dependency_calibration_order_v0_1.yaml`
 
 ## Analysis tools
 - `../tools/validate_campaign_spine.py`
@@ -302,18 +360,16 @@ Exact minimum milliseconds/rates remain open until fitted SKILLED_V2.
 - `../tools/simulate_recipe_kinematics.py`
 - `../tools/simulate_frontmost_dps_sensitivity.py`
 - `../tools/simulate_class_aware_layer_a.py`
-- `../tools/sweep_special_activation_entry_depth.py`
-- `../tools/validate_monster_role_expression_contract.py`
-- `../tools/evaluate_stateful_role_expression.py`
-- `../tools/scan_activation_window_candidates.py`
-- `../tools/probe_sieger_readability_budget.py`
-- `../tools/probe_passive_role_contract_anchors.py`
 - `../tools/simulate_class_aware_role_metrics_v0_2.py`
 - `../tools/evaluate_role_expression_v0_2.py`
+- `../tools/validate_skilled_v2_harness.py`
+- `../tools/validate_skilled_v2_trace_dataset.py`
+- `../tools/validate_skilled_v2_central_sequence.py`
+- `../tools/run_skilled_v2_central_role_probe.py`
 
 ---
 
-# 11. Parked / superseded candidates
+# 10. Parked / superseded candidates
 
 Historical evidence only:
 - `09_TIER_LADDER_CANDIDATE_V0_1.md`
@@ -323,35 +379,54 @@ Historical evidence only:
 - `14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
 - `17_MASTER_CAMPAIGN_MATRIX_V0_1.md`
 
-Do not resume these as current authority.
+Historical deterministic 600/750/900ms trace brackets remain diagnostic probes and are not current fitted skilled population authority.
+
+Do not resume parked documents as current authority merely because their implementation or numbers are older and concrete.
 
 ---
 
-# 12. Exact next layer
+# 11. Exact next layer
 
-**10-recipe Critical-Set Role-Expression V0.2 Rerun.**
+Current foundation is closed enough for multi-stage integration, but **do not implement the 10-stage kernel before its state semantics are explicit**.
 
-Before synthetic Tier slices:
-1. apply current diagnostic geometry overrides to a non-production candidate dataset
-2. run 10 critical recipes × 3 brackets × 5 classes through V0.2
-3. automatically evaluate all-five minimum expression
-4. inspect temporal contact-wall pressure
-5. make only localized recipe geometry/cadence changes if needed
-6. close critical-set role-expression admission
-7. expand V0.2 audit to all 20 recipes
-8. only then return to fitted SKILLED_V2 harness
+Next in parallel:
+
+## P1 — Run-State Lifecycle Contract
+Define reset/persist/derive/owner semantics for:
+- base/wall HP;
+- combo;
+- charge/heavy;
+- level/EXP;
+- run coin;
+- shop ranks;
+- Stage/Tier failure/end;
+- reconnect restoration;
+- deterministic RNG/replay state.
+
+## P2 — Modifier Pipeline / Power Attribution Contract
+Define:
+- modifier scopes;
+- operation ordering;
+- stack policies;
+- source/version attribution;
+- effective damage/control/wall-event explanation.
 
 Then:
-- synthetic Tier slices
-- full Tier simulation
-- 5-class soft-wall map
-- stars-only recovery
-- achievement bridge model
-- account simulation
+
+## P3 — 10-Stage Persistent Run Kernel
+Purpose:
+- state continuity;
+- failure semantics;
+- base HP persistence;
+- combo/charge continuity;
+- deterministic replay;
+- early skill-window integration.
+
+Do not yet include final permanent values, exact shop curve, final boss novelty or multiplayer progression credit.
 
 ---
 
-# 13. Still not frozen
+# 12. Still not frozen
 
 - final launch Tier count
 - exact Tier unlock policy
@@ -360,10 +435,11 @@ Then:
 - exact 200-Stage schedule
 - exact EXP formula
 - Lv11+ production coefficients
-- permanent star reward values
+- exact shop cadence/economy
+- modifier numerical stack coefficients
+- permanent star reward values/milestones
 - achievement reward graph/value
-- boss cadence/design
-- shop cadence/economy
-- detailed multiplayer balance
+- exact boss cadence/design
+- detailed multiplayer balance/progression credit
 
 No live gameplay patch is authorized by this corpus tranche.
