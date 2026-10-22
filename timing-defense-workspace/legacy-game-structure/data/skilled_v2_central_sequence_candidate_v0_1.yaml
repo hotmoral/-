@@ -72,12 +72,14 @@ validationReference:
     judgmentsPerSeed: 10000
     totalJudgments: 1000000
     observedApprox:
-      PERFECT: 0.699729
-      GOOD: 0.200121
-      NORMAL: 0.100150
-      FOCUS_share: 0.399384
+      PERFECT: 0.701020
+      GOOD: 0.199446
+      NORMAL: 0.099534
+      FOCUS_share: 0.402011
   comboProbe:
     seeds: 5000
     judgmentsPerSeed: 100
-    observedCombo40ReachApprox: 0.5886
+    observedCombo40ReachApprox: 0.5848
+    observedMedianPeak: 46
+    observedMaxPeak: 100
     note: diagnostic only; not a frozen production target
