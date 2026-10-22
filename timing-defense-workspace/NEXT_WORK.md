@@ -28,12 +28,36 @@ Master Campaign Spine
  -> central 540 OF 540 PASS
  -> historical regression 540 OF 540 PASS
  -> system dependency / calibration-order review
+ -> user-approval decision gate governance
 ```
 
 Current execution authority:
 - `legacy-game-structure/69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 - `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
+- `legacy-game-structure/71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md`
 - `legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`
+
+---
+
+# Decision governance — mandatory from this point
+
+For unresolved game/product decisions, do not silently choose and close a rule.
+
+Required sequence:
+
+```text
+live canonical inspection
+ -> dependency / interaction analysis
+ -> calculation or simulation where useful
+ -> compare material alternatives
+ -> assistant recommendation + reasons + risks
+ -> USER DECISION GATE
+ -> only then record accepted/frozen direction
+```
+
+Diagnostic work and reversible candidate simulations may proceed without asking permission for every step, but a candidate passing a simulation does not itself authorize a design decision.
+
+Approval scope is narrow: approving one rule does not freeze related numbers or adjacent systems unless they were explicitly included in the decision packet.
 
 ---
 
@@ -68,13 +92,15 @@ P6 Joint Run-Power Convergence
 
 ## P1 — RUN_STATE_LIFECYCLE_CONTRACT
 
-Explicitly decide or parameterize for every state field:
+First perform analysis and prepare decision packets; **do not silently close unresolved material choices**.
+
+For every state field determine or propose:
 - reset boundary;
 - persistence boundary;
 - derived vs stored;
 - authoritative owner.
 
-Required topics:
+Material topics requiring recommendation before closure:
 1. Tier attempt start/end semantics.
 2. base/wall HP persistence and any recovery between Stages/shop.
 3. combo persistence — current direction: Stage/shop/target-wait does not break combo.
@@ -86,9 +112,23 @@ Required topics:
 9. reconnect restoration boundary.
 10. deterministic RNG/replay state ownership.
 
-No numerical balancing is required in P1.
+P1 workflow:
+
+```text
+inspect accepted rules + legacy/runtime evidence
+ -> map interactions with EXP/skill/shop/stars/achievements/Tank/multiplayer/reconnect
+ -> identify tightly coupled decision groups
+ -> calculate/simulate candidate consequences where useful
+ -> present recommendation and alternatives to user
+ -> obtain approval
+ -> author structural contract
+```
+
+No numerical balancing is required in P1 unless a bounded numeric example is needed only to compare semantics.
 
 ## P2 — MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
+
+Likewise analyze/propose first; user approval is required before material stacking semantics are structurally frozen.
 
 Define semantics before values for:
 - base class/weapon/objective stats;
@@ -100,13 +140,13 @@ Define semantics before values for:
 - monster mitigation/state interaction;
 - wall defense/shields.
 
-Required outputs:
+Required outputs after approval:
 - `statId`/scope/operation/value/stackPolicy/source/version schema;
 - explicit operation ordering;
 - no implicit multiplicative stacking;
 - attribution/debug contract for final damage/control/wall events.
 
-P1 and P2 may be designed together, but P3 is blocked until both are coherent.
+P1 and P2 may be analyzed together where dependencies overlap, but P3 is blocked until their material decisions are user-approved and coherent.
 
 ---
 
@@ -164,6 +204,7 @@ Multiplayer combat scaling is validated first; star/achievement credit rules are
 - freeze multiplayer progression-credit/scaling values
 - infer production clear rate from the 300-row all-20 structural probes
 - treat the 70/20/10 central prior as empirical population telemetry
+- convert a simulation candidate into an accepted decision without user approval
 
 Governance:
 
@@ -177,4 +218,14 @@ freeze meaning
  -> full-system stress
  -> explicit numerical freeze
  -> production implementation
+```
+
+Decision gate overlay:
+
+```text
+ANALYZE / CALCULATE / PROPOSE
+             ↓
+        USER APPROVAL
+             ↓
+AUTHOR / VALIDATE / RECORD
 ```
