@@ -1,4 +1,5 @@
 name: Timing Defense v0.45 SIEGER Candidate CI
+# rerun after timestamp epsilon test hardening
 
 on:
   push:
