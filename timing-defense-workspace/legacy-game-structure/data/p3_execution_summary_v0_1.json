@@ -1,0 +1,47 @@
+{
+  "version": "p3-persistent-run-execution-summary-v0.1",
+  "status": "P3_STRUCTURAL_PASS_NOT_BALANCE_CALIBRATION",
+  "executedCanonicalBlobs": {
+    "runner": "a9395716166185dd253685991a074dfdac3bf3c7",
+    "validator": "f7f4d183c58220435bb7d33aa7add58dd858023b",
+    "fixture": "cf809f34991fabd94037a8f5a3205731b3447451"
+  },
+  "validation": {
+    "result": "PASS",
+    "primaryRuns": 30,
+    "targetedFixtures": 8,
+    "lv6AttributionByClass": {
+      "knight": 208,
+      "rogue": 90,
+      "tank": 209,
+      "archer": 116,
+      "mage": 96
+    },
+    "combo40ObservedRuns": 30
+  },
+  "targetedFixtures": [
+    {"fixture": "F1_CHARGE_CONTINUITY", "pass": true},
+    {"fixture": "F2_COMBO_N3_BOUNDARY", "pass": true},
+    {"fixture": "F3_FAILURE_RETRY_RESET", "pass": true},
+    {"fixture": "F4_SNAPSHOT_RESUME_EQUIVALENCE", "pass": true},
+    {"fixture": "F5_MODIFIER_AGGREGATION_ATTRIBUTION", "pass": true},
+    {"fixture": "F6_TEMPORARY_EFFECT_BOUNDARY", "pass": true},
+    {"fixture": "F7_NO_TRANSIENT_LEAKAGE", "pass": true},
+    {"fixture": "F8_BASE_HP_ATTRITION_CONTINUITY", "pass": true, "startHp": 5000, "afterStage1": 4490, "afterStage2": 3980}
+  ],
+  "primaryInvariants": {
+    "all30Deterministic": true,
+    "all30SettledTenStages": true,
+    "all30PlayerStreamContinuous": true,
+    "lv1RunsHaveZeroLv6Attribution": true,
+    "forcedLv6RunsHavePositiveLv6Attribution": true
+  },
+  "warnings": [
+    "Structural integration only.",
+    "Primary Base HP sentinel 100000 is test-only.",
+    "Forced Lv6 at Stage6 is a plumbing hook, not an EXP reach claim.",
+    "Shop is OFF/NEUTRAL.",
+    "Combo40 occurrence in this fixture is diagnostic and not a production frequency target.",
+    "Exact launch Stage1-10 authoring is not frozen."
+  ]
+}
