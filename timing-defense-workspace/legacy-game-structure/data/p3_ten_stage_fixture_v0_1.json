@@ -6,7 +6,10 @@
     "representativeRecipes": {
       "path": "legacy-game-structure/data/model_a_representative_recipes_v0_1.yaml",
       "blobSha": "431032b0b4b264f936bd599fe315fd0a3b0b4108",
-      "recipeIds": ["T1_E01_M", "T1_E02_M"]
+      "recipeIds": [
+        "T1_E01_M",
+        "T1_E02_M"
+      ]
     },
     "kinematicAnchor": {
       "path": "legacy-game-structure/data/model_a_kinematic_anchor_v0_1.yaml",
@@ -34,62 +37,247 @@
     "primaryRunCoin": 0,
     "primaryShopRanks": {},
     "forcedLv6Stage": 6,
-    "baseSeeds": [101, 211, 307],
-    "classes": ["knight", "rogue", "tank", "archer", "mage"],
-    "lanes": ["LV1_CONTINUITY", "FORCED_LV6_TRANSITION"]
+    "baseSeeds": [
+      101,
+      211,
+      307
+    ],
+    "classes": [
+      "knight",
+      "rogue",
+      "tank",
+      "archer",
+      "mage"
+    ],
+    "lanes": [
+      "LV1_CONTINUITY",
+      "FORCED_LV6_TRANSITION"
+    ]
   },
-  "world": {"wallX": 0.155, "spawnX": 1.075},
+  "world": {
+    "wallX": 0.155,
+    "spawnX": 1.075
+  },
   "monsters": {
-    "GRUNT": {"hp": 320, "armor": 1.0, "wallDamage": 90, "speed": 0.07, "knockResist": 0.85},
-    "RUNNER": {"hp": 165, "armor": 1.0, "wallDamage": 60, "speed": 0.135, "knockResist": 1.0}
+    "GRUNT": {
+      "hp": 320,
+      "armor": 1.0,
+      "wallDamage": 90,
+      "speed": 0.07,
+      "knockResist": 0.85
+    },
+    "RUNNER": {
+      "hp": 165,
+      "armor": 1.0,
+      "wallDamage": 60,
+      "speed": 0.135,
+      "knockResist": 1.0
+    }
   },
   "recipes": {
     "T1_E01_M": {
       "formation": "F01",
       "spawns": [
-        {"tMs": 0, "type": "GRUNT", "y": 0.46},
-        {"tMs": 750, "type": "GRUNT", "y": 0.46},
-        {"tMs": 1500, "type": "GRUNT", "y": 0.46},
-        {"tMs": 2250, "type": "GRUNT", "y": 0.46},
-        {"tMs": 3000, "type": "GRUNT", "y": 0.46},
-        {"tMs": 3750, "type": "GRUNT", "y": 0.46}
+        {
+          "tMs": 0,
+          "type": "GRUNT",
+          "y": 0.46
+        },
+        {
+          "tMs": 750,
+          "type": "GRUNT",
+          "y": 0.46
+        },
+        {
+          "tMs": 1500,
+          "type": "GRUNT",
+          "y": 0.46
+        },
+        {
+          "tMs": 2250,
+          "type": "GRUNT",
+          "y": 0.46
+        },
+        {
+          "tMs": 3000,
+          "type": "GRUNT",
+          "y": 0.46
+        },
+        {
+          "tMs": 3750,
+          "type": "GRUNT",
+          "y": 0.46
+        }
       ]
     },
     "T1_E02_M": {
       "formation": "F01",
       "spawns": [
-        {"tMs": 0, "type": "RUNNER", "y": 0.45},
-        {"tMs": 250, "type": "RUNNER", "y": 0.47},
-        {"tMs": 1500, "type": "GRUNT", "y": 0.45},
-        {"tMs": 1750, "type": "RUNNER", "y": 0.47},
-        {"tMs": 3000, "type": "GRUNT", "y": 0.45},
-        {"tMs": 3250, "type": "RUNNER", "y": 0.47},
-        {"tMs": 4500, "type": "GRUNT", "y": 0.46}
+        {
+          "tMs": 0,
+          "type": "RUNNER",
+          "y": 0.45
+        },
+        {
+          "tMs": 250,
+          "type": "RUNNER",
+          "y": 0.47
+        },
+        {
+          "tMs": 1500,
+          "type": "GRUNT",
+          "y": 0.45
+        },
+        {
+          "tMs": 1750,
+          "type": "RUNNER",
+          "y": 0.47
+        },
+        {
+          "tMs": 3000,
+          "type": "GRUNT",
+          "y": 0.45
+        },
+        {
+          "tMs": 3250,
+          "type": "RUNNER",
+          "y": 0.47
+        },
+        {
+          "tMs": 4500,
+          "type": "GRUNT",
+          "y": 0.46
+        }
       ]
     }
   },
   "stages": [
-    {"stage": 1, "phases": [{"recipeId": "T1_E01_M", "offsetMs": 0}]},
-    {"stage": 2, "phases": [{"recipeId": "T1_E01_M", "offsetMs": 0}]},
-    {"stage": 3, "phases": [{"recipeId": "T1_E01_M", "offsetMs": 0}]},
-    {"stage": 4, "phases": [{"recipeId": "T1_E01_M", "offsetMs": 0}]},
-    {"stage": 5, "phases": [{"recipeId": "T1_E02_M", "offsetMs": 0}]},
-    {"stage": 6, "phases": [{"recipeId": "T1_E02_M", "offsetMs": 0}]},
-    {"stage": 7, "phases": [{"recipeId": "T1_E02_M", "offsetMs": 0}]},
-    {"stage": 8, "phases": [{"recipeId": "T1_E02_M", "offsetMs": 0}]},
-    {"stage": 9, "phases": [{"recipeId": "T1_E01_M", "offsetMs": 0}, {"recipeId": "T1_E02_M", "offsetMs": 12000}]},
-    {"stage": 10, "phases": [{"recipeId": "T1_E02_M", "offsetMs": 0}, {"recipeId": "T1_E01_M", "offsetMs": 12000}]}
+    {
+      "stage": 1,
+      "phases": [
+        {
+          "recipeId": "T1_E01_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "phases": [
+        {
+          "recipeId": "T1_E01_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "phases": [
+        {
+          "recipeId": "T1_E01_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 4,
+      "phases": [
+        {
+          "recipeId": "T1_E01_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 5,
+      "phases": [
+        {
+          "recipeId": "T1_E02_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 6,
+      "phases": [
+        {
+          "recipeId": "T1_E02_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 7,
+      "phases": [
+        {
+          "recipeId": "T1_E02_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 8,
+      "phases": [
+        {
+          "recipeId": "T1_E02_M",
+          "offsetMs": 0
+        }
+      ]
+    },
+    {
+      "stage": 9,
+      "phases": [
+        {
+          "recipeId": "T1_E01_M",
+          "offsetMs": 0
+        },
+        {
+          "recipeId": "T1_E02_M",
+          "offsetMs": 12000
+        }
+      ]
+    },
+    {
+      "stage": 10,
+      "phases": [
+        {
+          "recipeId": "T1_E02_M",
+          "offsetMs": 0
+        },
+        {
+          "recipeId": "T1_E01_M",
+          "offsetMs": 12000
+        }
+      ]
+    }
   ],
   "centralModel": {
-    "initialState": {"FOCUS": 0.4, "BASE": 0.6},
+    "initialState": {
+      "FOCUS": 0.4,
+      "BASE": 0.6
+    },
     "states": {
       "FOCUS": {
-        "judgmentDistribution": {"PERFECT": 1.0, "GOOD": 0.0, "NORMAL": 0.0},
-        "transitionAfterJudgment": {"FOCUS": 0.98, "BASE": 0.02}
+        "judgmentDistribution": {
+          "PERFECT": 1.0,
+          "GOOD": 0.0,
+          "NORMAL": 0.0
+        },
+        "transitionAfterJudgment": {
+          "FOCUS": 0.98,
+          "BASE": 0.02
+        }
       },
       "BASE": {
-        "judgmentDistribution": {"PERFECT": 0.5, "GOOD": 0.3333333333333333, "NORMAL": 0.16666666666666666},
-        "transitionAfterJudgment": {"FOCUS": 0.013333333333333334, "BASE": 0.9866666666666667}
+        "judgmentDistribution": {
+          "PERFECT": 0.5,
+          "GOOD": 0.3333333333333333,
+          "NORMAL": 0.16666666666666666
+        },
+        "transitionAfterJudgment": {
+          "FOCUS": 0.013333333333333334,
+          "BASE": 0.9866666666666667
+        }
       }
     }
   }
