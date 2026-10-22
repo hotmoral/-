@@ -55,6 +55,7 @@ TimingDefenseRoom.prototype.wallAt=function(monster){
 TimingDefenseRoom.prototype.spawnSplitterChildren=function(parent,at){
   const run=this.room?.run;if(!run||parent?.type!=='splitter'||parent.canSplit===false)return[];
   ensureSplitterState(parent);const x=parent.x,y=parent.y,packageId=parent.splitterPackageId||`splitter:${run.id}:${parent.id}`;
+  parent.splitterPackageId=packageId;
   const specs=[{dy:-.018,index:0},{dy:.018,index:1}],children=[];
   for(const spec of specs){
     const id=run.nextMonsterId++;
