@@ -45,6 +45,7 @@ Do not resume detailed T1 monster-count/cadence work until this spine is closed.
 - other-class stars/achievements should help that class later.
 - hard class lockout is forbidden.
 - Lv31 must be obtained early enough to be used and enjoyed over multiple late-run Stages before Stage50.
+- **Lv31 target unlock window = Stage41–45.**
 
 ---
 
@@ -167,46 +168,41 @@ If this proves too dense in simulation/playtest, use Model B and split SIEGER in
 
 ---
 
-# Lv31 mastery play-window — USER CONFIRMED DIRECTION
+# Lv31 mastery play-window — USER CONFIRMED
 
 Canonical:
 `20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
 
-Required experience:
+Required structure:
 
 ```text
 Lv26 late growth
- -> Lv31 unlock
- -> multiple Stages of real use/practice
- -> late mastery encounters
+ -> Stage41~45 Lv31 unlock
+ -> Stage46~49 repeated real use / adaptation / mastery
  -> Stage50 final using an already-familiar Lv31 skill
 ```
 
-Forbidden outcome:
+User-confirmed target:
 
 ```text
-Lv31 first meaningful use at Stage49/50
- -> Tier immediately ends
+Lv31 target unlock window = Stage41..45
 ```
 
-First calibration hypothesis:
-- intended-entry `SKILLED_V2` Lv31 expected reach around Stage38–42
-- approximately 8–12 late Stages of meaningful use opportunity
-- Stage41–49 explicitly contains Lv31 mastery-use opportunities
-- Stage50 is not the tutorial for Lv31
+Interpretation:
+- Stage41–45 is the Lv31 acquisition-transition band.
+- Stage46–49 is the explicit post-Lv31 mastery-use band.
+- Stage50 is not the tutorial for Lv31.
+- exact EXP formula is still open and must later be calibrated to produce this structure.
 
-This is not an EXP numeric freeze.
+Distribution rules:
+- measure P25/P50/P75/P90 unlock Stage, not only average
+- P50 outside Stage41–45 requires analysis
+- substantial Stage45+ drift triggers `LATE_LV31_DISTRIBUTION`
+- widespread Stage49/50 first-use outcome is FAIL
 
-Simulation must record:
-- Lv31 unlock-stage distribution, not only average
-- post-Lv31 Stage/event count
-- Stage50-entry Lv31 possession rate
-- late clear-rate shift before/after Lv31
-- class divergence from Lv31 power spikes
-- whether Lv26's own play window was compressed
-
-Failure classifications include:
+Failure classifications:
 - `INSUFFICIENT_LV31_PLAY_WINDOW`
+- `LATE_LV31_DISTRIBUTION`
 - `LV31_POWER_CLIFF_TOO_HIGH`
 - `LV31_CLASS_CLEAR_RATE_DIVERGENCE`
 - `LV26_WINDOW_COMPRESSED`
@@ -248,10 +244,10 @@ Desired relative reach now includes play-window constraints:
 - Lv11 early-mid
 - Lv16 mid
 - Lv21 mid-late
-- Lv26 late, with its own meaningful use window
-- Lv31 late/mastery, but **before** the final few Stages
-
-First Lv31 calibration hypothesis: Stage38–42 for `SKILLED_V2`, subject to simulation.
+- Lv26 late, with its own meaningful use window before Lv31
+- Lv31 target unlock = **Stage41–45**
+- Stage46–49 = post-Lv31 mastery-use band
+- Stage50 = final application
 
 Legacy pacing that reaches Lv21 around old Stage10 cannot be assumed final for a 50-Stage run.
 
@@ -281,20 +277,22 @@ Use Model A as the default test hypothesis, not a freeze.
 Next:
 1. define novelty budget for T1–T4 beyond monster count
 2. place boss novelty placeholders
-3. refine relative skill-reach bands
-4. explicitly preserve meaningful Lv26/Lv31 post-unlock windows
-5. audit monster-novelty vs skill-novelty collisions
-6. define SKILLED_V2 parameter measurement plan
-7. estimate stars/soft-wall progression play volume
-8. static audit Model A campaign matrix
-9. if PASS, choose Model A as bounded simulation spine
-10. if T4 overload FAIL, switch to Model B
-11. only then resume encounter frequency/count/composition/cadence
+3. refine Lv6/11/16/21/26 reach bands around fixed Lv31 Stage41–45 target
+4. preserve meaningful Lv26 play window before Lv31
+5. reserve Stage46–49 for post-Lv31 mastery opportunities
+6. audit monster-novelty vs skill-novelty collisions
+7. define SKILLED_V2 parameter measurement plan
+8. estimate stars/soft-wall progression play volume
+9. static audit Model A campaign matrix
+10. if PASS, choose Model A as bounded simulation spine
+11. if T4 overload FAIL, switch to Model B
+12. only then resume encounter frequency/count/composition/cadence
 
 Do not yet freeze:
 - initial Tier count
 - exact monster unlock points
-- exact EXP curve / Lv31 Stage
+- exact EXP formula
+- class-specific Lv31 percentile cutoffs
 - production monster coefficients
 - star reward coefficients
 - achievement reward graph/value
