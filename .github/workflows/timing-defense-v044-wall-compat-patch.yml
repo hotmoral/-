@@ -1,0 +1,38 @@
+name: Timing Defense v0.44 One-shot wallAt compatibility patch
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v044-supporter-aura
+    paths:
+      - '.github/workflows/timing-defense-v044-wall-compat-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-cloudflare-v044-supporter-aura
+      - name: Preserve inherited wallAt when aura is inactive
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('timing-defense-cloudflare-poc/src/v044-supporter-entry.js')
+          s=p.read_text()
+          old="""// wallAt intentionally predicts only the current motion segment. Any aura\n// crossing or CHARGER phase transition that comes first is itself a nextDueAt event.\nTimingDefenseRoom.prototype.wallAt=function(monster){\n  if(!monster)return Infinity;\n  if(monster.x<=WALL_X)return Number(monster.refAt)||0;\n  const speed=this.currentSegmentSpeed(monster,monster.refAt);\n  if(!(speed>0))return Infinity;\n  return Number(monster.refAt||0)+(monster.x-WALL_X)/speed*1000;\n};\n"""
+          new="""const inheritedWallAt=TimingDefenseRoom.prototype.wallAt;\n// Preserve every prior archetype's already-validated wall prediction when no\n// SUPPORTER aura is active. Only an actually aura-modified movement segment (or\n// SUPPORTER itself) needs the current-segment prediction; its next aura/phase\n// boundary is separately scheduled by nextDueAt().\nTimingDefenseRoom.prototype.wallAt=function(monster){\n  if(!monster)return Infinity;\n  ensureAuraState(monster);\n  if(monster.type!=='supporter'&&this.movementSpeedMultiplier(monster)===1)return inheritedWallAt.call(this,monster);\n  if(monster.x<=WALL_X)return Number(monster.refAt)||0;\n  const speed=this.currentSegmentSpeed(monster,monster.refAt);\n  if(!(speed>0))return Infinity;\n  return Number(monster.refAt||0)+(monster.x-WALL_X)/speed*1000;\n};\n"""
+          if s.count(old)!=1: raise SystemExit(f'expected one wallAt block, got {s.count(old)}')
+          p.write_text(s.replace(old,new))
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add timing-defense-cloudflare-poc/src/v044-supporter-entry.js
+          git diff --cached --check
+          git commit -m "Preserve prior wallAt semantics outside active aura"
+          git push origin HEAD:timing-defense-cloudflare-v044-supporter-aura
