@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "node test/harness-selftest.mjs",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
