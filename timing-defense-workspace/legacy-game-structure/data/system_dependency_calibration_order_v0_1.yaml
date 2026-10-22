@@ -45,11 +45,14 @@ workPackages:
 
   P2:
     name: MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
-    status: PROPOSED_AWAITING_USER_DECISION
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
     dependsOn: [P0]
     proposal:
       - 73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md
-    decisionTopics:
+    authority:
+      - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+      - data/modifier_pipeline_contract_v0_1.yaml
+    approvedSemantics:
       - typed_hybrid_same_stat_additive_stacking
       - scalar_stat_vs_effect_rule_separation
       - outgoing_attack_pipeline_order
@@ -62,15 +65,33 @@ workPackages:
       - operation_order
       - stack_policy_schema
       - source_attribution_contract
+    deferredToLater:
+      - exact_modifier_values
+      - crit_chance_cap
+      - generic_defense_cap
+      - unresolved_per_skill_crit_inheritance
+      - exact_numeric_representation
 
   P3:
     name: TEN_STAGE_PERSISTENT_RUN_KERNEL
-    status: BLOCKED_BY_P2_USER_DECISION
+    status: NEXT_ACTIVE_INTEGRATION
     dependsOn: [P1, P2]
+    purpose: STATE_AND_PIPELINE_INTEGRATION_NOT_FINAL_BALANCE
     output:
       - deterministic_multistage_state_continuity
       - base_hp_and_failure_semantics
+      - combo_charge_continuity
+      - modifier_pipeline_execution_trace
+      - attribution_ledger_trace
       - provisional_lv6_reach_evidence
+    exclusions:
+      - exact_permanent_star_values
+      - achievement_reward_values
+      - final_shop_tuning
+      - final_exp_formula
+      - final_boss_novelty
+      - multiplayer_progression_credit
+      - exact_launch_stage_authoring
 
   P4:
     name: FULL_PLAYER_POWER_SPINE_CANDIDATE
@@ -258,7 +279,7 @@ freezePolicy:
       - multiplayer_scaling_coefficients
 
 currentBoundary:
-  completedThrough: P1
-  activeProposal: P2
-  awaitingUserDecision: true
+  completedThrough: P2
+  next: P3
   nextIntegration: P3
+  awaitingUserDecision: false
