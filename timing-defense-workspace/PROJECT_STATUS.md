@@ -13,24 +13,35 @@ Primary architecture: **Cloudflare Workers + Durable Objects event-driven multip
 - checkpoint: `timing-defense-cloudflare-v045-sieger-pass-20261022`
 - live run/job: `39725993894` / `119649887564`
 
+No gameplay/numerical implementation has been authorized after v0.45.
+
+## Current planning phase
+The project has entered a **structure-first campaign/meta design phase** before further gameplay implementation.
+
+Primary planning corpus:
+`legacy-game-structure/`
+
 Read first:
 1. `NEXT_WORK.md`
-2. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-3. `MONSTER_CAPABILITY_CONTRACT_V1.md`
-4. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-5. `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
-6. `SKILL_PLAN_LV6_31.md`
-7. `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
-8. `V016_IMPLEMENTATION_REPORT.md`
-9. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-10. `DESIGN_DECISIONS.md`
+2. `legacy-game-structure/README.md`
+3. `legacy-game-structure/01_META_PROGRESSION.md`
+4. `legacy-game-structure/02_TIER_SYSTEM.md`
+5. `legacy-game-structure/03_STAGE_STRUCTURE_50.md`
+6. `legacy-game-structure/04_MONSTER_ENCOUNTER_MODEL.md`
+7. `legacy-game-structure/05_LEGACY_EVIDENCE_MAP.md`
+8. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+9. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
+10. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+11. `MONSTER_CAPABILITY_CONTRACT_V1.md`
+12. `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
 
 ---
 
 # Closed combat/network foundations
-- v0.36: exact EXP table, AI stage multiplier, Lv6 class skill authority.
-- v0.38: 512-event cursor kernel, reconnect, 3H/4H/mixed-party flow.
-- v0.39: N3 product contract frozen and authoritative.
+- v0.36: exact EXP/N2/Lv6 authority — PASS.
+- v0.38: 512-event multiplayer/reconnect kernel — PASS.
+- v0.39: N3 frozen and authoritative — PASS.
+- v0.40–v0.45: SHIELD / FLYER / CHARGER / SPLITTER / SUPPORTER / SIEGER capability authority — FULL PASS.
 - Stage1–3 are regression fixtures only, not final campaign recipes.
 
 ## Lv6 authoritative summary
@@ -48,111 +59,105 @@ Read first:
 
 ---
 
-# Campaign direction
-Do **not** reconstruct legacy Stage4→10 as production content.
-
-Production direction remains approximately 50 stages with:
-- tier identities,
-- S/E/X pressure grammar,
-- 2/3/4-player composition scaling,
-- re-authored monster combinations,
-- deterministic simulation/calibration,
-- explicit production-number freeze only after report/discussion/decision.
-
----
-
-# Monster Capability V1 — MECHANICAL FOUNDATION COMPLETE
-All nine ordinary archetypes now have server-authoritative mechanical foundations:
+# Monster Capability V1 — mechanical foundation complete
+Nine ordinary archetypes:
 GRUNT / RUNNER / BRUTE / SHIELD / FLYER / CHARGER / SPLITTER / SUPPORTER / SIEGER.
 
-Checkpoint chain:
-- Foundation `68882c2013d1d35aaedbf12e5725fde377795044` — 22/22 PASS.
-- v0.40 SHIELD `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad` — FULL PASS.
-- v0.41 FLYER `7a68ba6d78b3ac8611c815f582e24e871a947f03` — FULL PASS.
-- v0.42 CHARGER `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a` — FULL PASS.
-- v0.43 SPLITTER `d1bac2effbd866aa221d55829678f959bc099b82` — FULL PASS.
-- v0.44 SUPPORTER `b2dc0269e144d9fa13ee490bba36ae93839f6a20` — FULL PASS.
-- v0.45 SIEGER `ea22cc279603394dc4b439b6fdbb0c83aff4299a` — FULL PASS.
-
-Current monster capability coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately approved.
+Structure is frozen V1 and current Cloudflare mechanical authority exists through v0.45.
+Production balance coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately approved.
 
 Bosses remain a separate capability-composition layer.
 
-## v0.45 SIEGER closure
-- authoritative standoff arrival.
-- persistent ADVANCE/WINDUP/COOLDOWN; FIRE is instantaneous.
-- repeated ranged wall shots keep SIEGER alive.
-- team DEF applies.
-- knockback can force reposition/fresh windup.
-- SUPPORTER affects approach only.
-- reconnect, late replay and monotonic events validated.
-- SIEGER selftest **20/20 PASS**.
-- prior complete browser/WebSocket regression PASS.
+---
 
-The first live gate failure was only a stale workflow expectation of 18 checks while the final suite contained 20. No gameplay/numerical change was required.
+# Campaign/meta structure — NEW ACTIVE AUTHORITY DIRECTION
+
+## Class-independent Tier progression
+Each of the five classes progresses through Tiers independently.
+
+## Tier length and stars
+Each Tier has 50 stages.
+
+Attempt result:
+- fail Stage 1–19 -> 0★
+- fail Stage 20–39 -> 1★
+- fail Stage 40–49 -> 2★
+- clear Stage 50 -> 3★
+
+Each `class x Tier` stores a maximum best result of 3★.
+Repeated attempts do not farm stars beyond that best result.
+
+## Global permanent progression
+`GlobalStarTotal` is the sum of all class/Tier best-star records.
+Stars are non-spendable achievement progression.
+Cumulative star milestones automatically grant account-wide permanent stats that apply to all classes.
+
+Example: all five classes clear Tier1 at 3★ -> 15★ total.
+
+Permanent-stat thresholds and coefficients are not yet frozen.
+
+Tier unlock semantics and multiplayer Tier eligibility remain open decisions.
 
 ---
 
-# Player Skill Authority Review — COMPLETE
-Canonical review:
-`PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+# Encounter taxonomy — S/E/X demoted
+The old S/E/X grammar is retained as historical analysis only.
+It is no longer sufficient as the main production taxonomy for the 9-monster roster.
 
-Recovered six-milestone roadmap:
-`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`.
+New pressure vocabulary:
+- BASELINE
+- FLOOD
+- RUSH
+- BULWARK
+- BREACH
+- AERIAL
+- REPLICATE
+- SUPPORT
+- SIEGE
 
-## Classification
-### Lv6
-**FROZEN+AUTHORITATIVE** in current Cloudflare.
+Encounter authoring must also track:
+- monster type counts/frequencies,
+- archetype composition,
+- formation/frontline order,
+- spawn order,
+- cadence,
+- geometry,
+- active concurrency,
+- target reorder,
+- frontline block time,
+- backline exposure/capability uptime.
 
-### Lv11 / Lv16 / Lv21
-**LEGACY-REFERENCE / exact parity candidates.**
-
-Evidence:
-- actually implemented/deployed in legacy v0.16,
-- exact formulas mirrored by v7 simulation,
-- old Cloudflare preflight explicitly classified Lv6–21 as migration candidates,
-- old handoff explicitly planned later server-side migration of Lv6/Lv11/Lv16/Lv21 multiplayer effects.
-
-They are not current Cloudflare authority and are not automatically re-frozen by this review.
-
-### Lv26
-**DESIGNED-NOT-AUTHORITATIVE.**
-Explicit class concepts/proposed coefficients exist, but no playable authority implementation existed.
-
-### Lv31
-**UNRESOLVED for production implementation.**
-Final class identities exist, but multiple damage/geometry/timing details remain underspecified.
-
-Legacy `v016-core.js` has no `v016Has(26)` or `v016Has(31)` combat branch.
-
-## Why this matters for 50-stage calibration
-Under the old accepted EXP rule, Skilled players commonly reached Lv21 by Stage10. Therefore full ~50-stage calibration using only current Lv6 server authority would materially under-model player power.
-
-Do not infer final Lv26/Lv31 reach timing yet; final EXP/campaign pacing remains to be calibrated.
+This reflects the actual system-driven/frontmost target model and prevents false assumptions about free backline targeting.
 
 ---
 
-# Active decision gate
-No Lv11+ code should be written until the parity strategy is explicitly approved.
+# Player Skill Authority Review
+Current truth remains:
+- Lv6 — **FROZEN+AUTHORITATIVE**
+- Lv11/Lv16/Lv21 — **LEGACY-REFERENCE / exact parity candidates**
+- Lv26 — **DESIGNED-NOT-AUTHORITATIVE**
+- Lv31 — **UNRESOLVED**
 
-Recommended default:
-- adopt exact v0.16 **Lv11/Lv16/Lv21** combat formulas as parity candidates,
-- port them server-authoritatively as three bounded slices P1/P2/P3,
-- keep **Lv26/Lv31** out of implementation until their contracts are reviewed against the new 9-monster roster and ~50-stage goals,
-- do not production-freeze new Lv26/Lv31 numbers now.
+The previous Lv11/Lv16/Lv21 parity slices remain candidates, but implementation is parked during the structure-first phase.
 
-Proposed slices:
-- **P1 Lv11:** Knight penetration85%; Rogue +6pp crit; Tank wall -10% nonstack; Archer +10% damage; Mage radius×1.35/splash60%.
-- **P2 Lv16:** Knight PERFECT ×1.18 damage/×1.20 knock; Rogue recovery390→312 with server cadence validation; Tank 80 shield/3s; Archer PERFECT armor-ignore/100% penetration; Mage delayed180ms 55% outer ring.
-- **P3 Lv21:** Knight heavy×1.20/up to3 extra penetration; Rogue 100%+4×45%; Tank broad heavy/×2 knock; Archer strict-line 100+65+65; Mage heavy×1.20/radius×1.60.
-
-After P1–P3 closure, explicitly review Lv26/Lv31 before final late-campaign calibration.
+Late 50-stage calibration must eventually include the higher skill curve; Lv6-only calibration is not sufficient.
 
 ---
 
-# Validation policy
-`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
+# Current work boundary
+Do **not** resume legacy Stage4→10 reconstruction.
+Do **not** begin Lv11+ implementation yet.
+Do **not** freeze new production values yet.
 
-# Governance
-No unapproved numerical change:
-`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
+Current work is:
+1. expand and audit the legacy game-structure evidence,
+2. define Tier/Stage/encounter authoring structure,
+3. create 9-monster frequency/count/composition/cadence candidates,
+4. model class-independent star progression and account-wide permanent growth,
+5. run deterministic encounter -> Stage -> Tier -> account progression simulations,
+6. classify/report/discuss,
+7. explicitly freeze,
+8. only then apply to the current Cloudflare game.
+
+## Governance
+`recover -> structure -> model -> simulate -> classify -> report -> discuss -> explicit freeze -> implement`.
