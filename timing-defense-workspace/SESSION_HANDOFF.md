@@ -10,14 +10,14 @@ Public URL:
 
 Watched deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- validated HEAD `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
-- health `0.44-cf.1`
+- validated HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- health `0.45-cf.1`
 
 Last fully closed checkpoint:
-- **v0.44 SUPPORTER authoritative dynamic movement-speed aura FULL PASS**
-- branch `timing-defense-cloudflare-v044-supporter-pass-20261022`
-- HEAD `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
-- live run/job `39706896662` / `119588945997`
+- **v0.45 SIEGER authoritative standoff/repeated wall-attack FULL PASS**
+- branch `timing-defense-cloudflare-v045-sieger-pass-20261022`
+- HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- live run/job `39725993894` / `119649887564`
 
 ## Read first
 1. `SESSION_HANDOFF.md`
@@ -25,12 +25,13 @@ Last fully closed checkpoint:
 3. `NEXT_WORK.md`
 4. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 5. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-6. `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
-7. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
-8. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
-9. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
-10. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
-11. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
+6. `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
+7. `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
+8. `CLOUDFLARE_V043_SPLITTER_CAPABILITY_PASS_2026-10-22.md`
+9. `CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
+10. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
+11. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+12. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
 ---
 
@@ -76,29 +77,28 @@ Bosses are separate capability compositions. No hard class lockouts. No manual t
 ## v0.43 SPLITTER
 `timing-defense-cloudflare-v043-splitter-pass-20261022` @ `d1bac2effbd866aa221d55829678f959bc099b82` — exact two-child deterministic spawn/nonrecursion/N3 retarget/reconnect PASS. Reward `4+2+2=8` is provisional test accounting only.
 
-## v0.44 SUPPORTER — FULL PASS
-`timing-defense-cloudflare-v044-supporter-pass-20261022` @ `b2dc0269e144d9fa13ee490bba36ae93839f6a20`
-health `0.44-cf.1`
-live run/job `39706896662` / `119588945997`
-report `CLOUDFLARE_V044_SUPPORTER_CAPABILITY_PASS_2026-10-22.md`
-preflight `SUPPORTER_AURA_AUTHORITY_PREFLIGHT_2026-10-22.md`
+## v0.44 SUPPORTER
+`timing-defense-cloudflare-v044-supporter-pass-20261022` @ `b2dc0269e144d9fa13ee490bba36ae93839f6a20` — event-driven non-stacking movement aura, exact topology crossing, FLYER/CHARGER/SPLITTER composition, reconnect PASS.
+
+## v0.45 SIEGER — FULL PASS
+`timing-defense-cloudflare-v045-sieger-pass-20261022` @ `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+health `0.45-cf.1`
+live run/job `39725993894` / `119649887564`
+report `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
 
 Authoritative semantics:
-- movement-speed aura only
-- self excluded; overlaps non-stacking
-- persisted source IDs
-- exact materialize-before-membership-change
-- no fixed gameplay tick
-- deterministic static crossing and FLYER root-refined crossing
-- death/wall/knock topology changes exact at event timestamp
-- FLYER X-only composition
-- CHARGER ADVANCE/CHARGE boosted; WINDUP zero
-- SPLITTER children reconcile at spawn
-- reconnect and nextDueAt crossing semantics validated.
+- exact standoff arrival
+- persistent `ADVANCE / WINDUP / COOLDOWN`; FIRE is instantaneous authoritative event
+- repeated ranged wall shots keep SIEGER alive
+- team DEF applies to siege shots
+- knockback during WINDUP/COOLDOWN may force ADVANCE/reposition and a fresh windup
+- SUPPORTER changes approach only, never shot cadence/damage
+- no ordinary direct-contact wall resolution while correctly sieging
+- SIEGER presence blocks premature stage clear
+- reconnect / late-advance chronological replay / repeated event monotonicity validated
+- public phase timestamps/metadata support reconstruction.
 
-Provisional: HP280/speed.055/wall70/knock.90/reward8/radius.18/speed×1.18 and Euclidean sandbox geometry. **Not production frozen**.
-
-Pre-live compatibility regression: first generic wallAt override weakened no-aura CHARGER prediction; fixed by delegating inherited wallAt when aura inactive. No numerical change.
+Provisional: HP520 / speed.045 / knock.55 / armor1 / reward11 / standoffX.38 / windup800ms / shot75 / repeat2200ms. **Not production frozen**.
 
 Evidence:
 - foundation22/22
@@ -108,43 +108,55 @@ Evidence:
 - CHARGER17/17
 - SPLITTER14/14
 - SUPPORTER17/17
+- SIEGER20/20
+- exact deployment marker PASS
 - root-loader PASS
-- prior browser/WebSocket FINAL PASS.
+- prior browser/WebSocket full regression PASS
+- live validation SUCCESS.
 
-No Samsung Browser smoke: no visible authored SUPPORTER encounter/final aura VFX.
+First live workflow failed only because it expected 18 SIEGER checks while final selftest contained 20; deployed diagnostics were already 20/20. The validation gate was fixed without gameplay/numerical changes and rerun successfully.
+
+No Samsung Browser smoke: no visible authored SIEGER encounter/final telegraph/VFX was introduced.
 
 ---
 
-# Active next boundary — SIEGER authoritative standoff/repeated wall-attack kernel
-Stage-number-independent capability work.
+# Monster Capability V1 milestone
+All nine ordinary monster archetypes now have a server-authoritative mechanical foundation.
 
-Frozen structure:
-`ADVANCE -> standoff -> WINDUP -> FIRE -> COOLDOWN -> WINDUP ...`
+This closes the Monster Capability Layer mechanical sequence. It does **not** freeze final production monster values or final stage recipes.
 
-Provisional test anchors:
-- HP520
-- approach speed `.045`
-- knock resistance `.55`
-- armor1
-- reward11
-- standoff X `.38`
-- windup800ms
-- ranged wall shot75
-- repeat2200ms
+---
 
-These are **not production frozen**.
+# Active next boundary — remaining player-skill authority review
+Before final approximately-50-stage authoring/calibration, recover the post-Lv6 player progression state from live repository/canonical/legacy source.
 
-Must resolve/validate:
-- exact standoff-arrival timestamp,
-- repeated wall-shot timing while monster remains alive,
-- team DEF application,
-- knockback/reposition during windup/cooldown,
-- SUPPORTER aura changes approach speed only, not shot cadence/damage,
-- `nextDueAt()` and reconnect/late-alarm chronology,
-- repeated shot events preserve event-stream semantics,
-- no legacy stage recipe.
+Known closed:
+- Lv6 class skills are authoritative and regression-protected.
+- N3 is frozen and authoritative.
 
-Following SIEGER completion: review remaining player-skill authority needed for calibration, then approximately-50-stage tier/S-E-X authoring and large deterministic 2/3/4-player simulation.
+Now determine:
+1. which later milestone skills/progression already have approved contracts,
+2. which are only legacy prototype/reference,
+3. which are designed but not server-authoritative,
+4. which remain unresolved and need explicit discussion,
+5. which are actually required before campaign calibration.
+
+Search especially Lv11 / Lv16 / Lv21 and class-specific progression references.
+
+Do **not** invent or implement new post-Lv6 values until the authority matrix is recovered and reviewed.
+
+Required deliverable:
+- class × milestone matrix,
+- exact source/evidence,
+- status `FROZEN+AUTHORITATIVE / DESIGNED-NOT-AUTHORITATIVE / LEGACY-REFERENCE / UNRESOLVED`,
+- exact recommended implementation slice(s) required before 50-stage simulation.
+
+Then:
+1. resolve required player-skill authority,
+2. build approximately-50-stage tier/S-E-X authoring model,
+3. deterministic 2/3/4-player candidate simulation,
+4. classify/report/discuss,
+5. explicit production numerical freeze.
 
 ## Validation policy
 `code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
