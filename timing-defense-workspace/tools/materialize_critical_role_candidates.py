@@ -27,16 +27,17 @@ def main() -> int:
     by_id = {str(r["id"]): copy.deepcopy(r) for r in base.get("recipes", [])}
     common_spawn_x = float(kin["world"]["spawnX"])
     formation_offsets = kin.get("formationXOffsets", {})
+    recipe_cfgs = overlay.get("roleRecipes") or overlay.get("criticalRecipes") or {}
 
     out = {
-        "version": "model-a-critical-role-expression-materialized-v0.1",
+        "version": "model-a-role-expression-materialized-v0.2",
         "status": "BOUNDED_DIAGNOSTIC_CANDIDATES_NOT_PRODUCTION_AUTHORING",
         "sourceBaseVersion": base.get("version"),
         "sourceOverlayVersion": overlay.get("version"),
         "recipes": [],
     }
 
-    for recipe_id, cfg in (overlay.get("criticalRecipes") or {}).items():
+    for recipe_id, cfg in recipe_cfgs.items():
         if recipe_id not in by_id:
             raise SystemExit(f"base recipe not found: {recipe_id}")
         r = copy.deepcopy(by_id[recipe_id])
