@@ -1,4 +1,4 @@
-version: role-expression-activation-search-v0.1
+version: role-expression-activation-search-v0.2
 status: BOUNDED_DIAGNOSTIC_SEARCH_NOT_PRODUCTION_COORDINATES
 
 common:
@@ -7,22 +7,23 @@ common:
   shiftStep: 0.01
   objective:
     - find_contiguous_all_five_structural_expression_window
-    - minimize_wall_pressure_inside_expression_window
+    - minimize_non_special_wall_leak_inside_expression_window
     - preserve_readable_counterplay
   caveats:
     - current trace bracket is not fitted SKILLED_V2
     - actual production coordinates remain open
     - global HP/speed/trigger/standoff changes are prohibited during this search
+    - SIEGER shot damage is intended mechanic pressure and must be separated from ordinary contact wall leak
 
 searches:
-  - id: CHARGER_E07_FINE
+  - id: CHARGER_E07_FINE_V2
     recipeId: T3_E07_M
     specialType: CHARGER
     expressionMetric: chargerWindups
-    shiftStart: 0.20
-    shiftStop: 0.40
+    shiftStart: 0.45
+    shiftStop: 0.65
     relativeSpecialOffset: 0.10
-    rationale: coarse diagnostic first showed windup for some classes around 0.25 and interruption around 0.30
+    rationale: initial 0.20..0.40 range was too narrow; extended deterministic probe found all-five windup exposure emerging near 0.53 while preserving zero contact wall leak through a bounded interval
 
   - id: CHARGER_E17_FINE
     recipeId: T3_E17_M
@@ -31,7 +32,7 @@ searches:
     shiftStart: 0.35
     shiftStop: 0.55
     relativeSpecialOffset: 0.10
-    rationale: coarse diagnostic showed all-five windup visibility around 0.45
+    rationale: fine probe found all-five windup visibility beginning near 0.43; retain wider bounds to map the full readable region
 
   - id: SIEGER_E11_FINE
     recipeId: T4_E11_M
@@ -40,7 +41,7 @@ searches:
     shiftStart: 0.65
     shiftStop: 0.84
     relativeSpecialOffset: 0.10
-    rationale: coarse diagnostic showed all-five actual-shot visibility around 0.70 to 0.80 and collapse near 0.85
+    rationale: fine probe found all-five actual-shot visibility approximately 0.70..0.82; contact wall leak remains a WATCH and must be separated from siege-shot wall damage
 
   - id: SIEGER_E19_FINE
     recipeId: T4_E19_M
@@ -49,13 +50,14 @@ searches:
     shiftStart: 0.68
     shiftStop: 0.84
     relativeSpecialOffset: 0.10
-    rationale: coarse diagnostic showed all-five actual-shot visibility around 0.75 to 0.80 and collapse near 0.85
+    rationale: fine probe found all-five actual-shot visibility approximately 0.70..0.83 with a low-leak sample near 0.70 and collapse by 0.84
 
 admissionRules:
   structural:
     requireAllFiveClassesOpportunity: true
     rejectGuaranteedPreExpressionDeletion: true
     rejectUnavoidablePreResponseWallDamage: true
+    separateSpecialAbilityWallDamageFromContactLeak: true
   numericThresholds:
     status: OPEN
     note: fitted SKILLED_V2 required before production acceptance thresholds
