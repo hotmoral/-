@@ -6,23 +6,26 @@ Updated: 2026-10-22 KST
 - v0.45 SIEGER FULL PASS
 - production branch `timing-defense-cloudflare-do-poc`
 - production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-- production gameplay/numerical implementation remains frozen during calibration
+- production gameplay/numerical implementation remains frozen during planning/calibration
 
 ---
 
 # Current phase
 
-**SEPARATE SKILLED_V2/HIGH-MASTERY CALIBRATION DEPLOYMENT + DEVICE SMOKE**
+**SYSTEM DEPENDENCY / RUN-STATE PRE-SYNTHETIC-TIER STRUCTURING**
 
-Campaign spine, representative encounter role-expression, harness schema, and isolated harness source are complete enough to move to observed player evidence.
+The isolated high-mastery harness tranche is no longer the active blocker.
+The project has moved through:
+- campaign spine validation;
+- all-20 role-expression validation;
+- high-mastery observation boundary clarification;
+- user-authorized provisional `SKILLED_V2_CENTRAL` design prior;
+- central all-20 role integration.
 
-Current planning authority:
-- `31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
-- `54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
-- `55_SKILLED_V2_CONTROLLED_HARNESS_AND_FIT_SCHEMA_V0_1.md`
-- `60_SKILLED_V2_HARNESS_IMPLEMENTATION_STATUS_V0_1.md`
-- `61_HIGH_MASTERY_PLAYER_ANCHOR_AMENDMENT_V0_1.md`
-- `62_SKILLED_V2_CALIBRATION_DEPLOYMENT_READINESS_V0_1.md`
+Current execution authority:
+- `legacy-game-structure/69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
+- `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
+- `legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`
 
 ---
 
@@ -38,7 +41,7 @@ Current planning authority:
 - current 9 monsters are V1 foundation, not lifetime final roster.
 - T1 does not expose all 9; higher Tiers introduce species.
 - future T5/T6/T7+ and new monsters remain open.
-- fitted non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
+- fitted/provisional non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60% as an upper difficulty gate.
 - combo40 belongs inside ordinary skilled play.
 - Lv31 target unlock window = Stage41–45.
 - Stage46–49 = post-Lv31 mastery; Stage50 = final application.
@@ -66,123 +69,102 @@ NOT production frozen.
 - class-aware role probes: COMPLETE
 - Monster Role Expression Contract: ESTABLISHED
 - Critical 10: PASS_WITH_WATCHES
-- Full 20 representative audit: PASS_WITH_WATCHES
+- Full historical 20 representative audit: PASS_WITH_WATCHES
+- provisional central sequence integration: PASS_WITH_WATCHES
 
-All-20 evidence:
+Historical all-20 evidence:
 ```text
-20 recipes × 3 deterministic brackets × 5 classes = 300 combat rows
+20 recipes × 3 deterministic historical brackets × 5 classes = 300 combat rows
 36 designated role pairs × 15 rows = 540 structural checks
 540 / 540 PASS
 ```
 
-Remaining watches move forward into observed-player validation rather than broad geometry redesign.
+Corrected provisional central evidence after row-seed repair and localized E08/E20 refinements:
+```text
+20 recipes × 3 base seeds × 5 classes = 300 combat rows
+36 designated role pairs × 15 rows = 540 structural checks
+540 / 540 PASS
+```
+
+Historical regression after those localized encounter refinements also remains `540 / 540 PASS`.
+
+Important watches:
+- T4 siege wall pressure in synthetic/persistent runs;
+- T3 E13 wall pressure;
+- E20 CHARGER lower-tail readability;
+- combo40 cannot be judged from short representative encounters.
 
 ---
 
 # Player-model boundary
 
-Historical 600/750/900ms brackets are analysis probes only and are NOT fitted SKILLED_V2.
+The primary user is treated separately as `HIGH_MASTERY_STRESS_CANDIDATE` for observed traces.
+Those traces are not ordinary-skilled population evidence.
 
-Required future fitted profiles:
-- `SKILLED_V2_CONSERVATIVE`
-- `SKILLED_V2_CENTRAL`
-- `SKILLED_V2_STRONG`
-- `HIGH_MASTERY_STRESS`
+For bounded design work, the user explicitly authorized a provisional ordinary-skilled central prior:
 
-The primary user reports that their own play should be treated above ordinary skilled.
-Therefore their first observed traces are classified provisionally as:
-
-`HIGH_MASTERY_STRESS_CANDIDATE`
-
-This is a user-supplied calibration classification, not an objective rank certification.
-Their traces MUST NOT be promoted directly into `SKILLED_V2_CENTRAL`.
-
-The `<60%` non-T1 difficulty gate remains attached to future fitted `SKILLED_V2_CENTRAL`, not to the high-mastery candidate.
-
----
-
-# Isolated harness implementation
-
-Harness branch:
-`timing-defense-skilled-v2-harness-v01`
-
-Deployment-ready reviewed harness HEAD:
-`85396e7da53eee1d64769d76b2a0e9700577aa34`
-
-Dedicated root:
-`timing-defense-skilled-v2-harness/`
-
-Dedicated Worker name:
-`timing-defense-skilled-v2-harness`
-
-Implemented:
-- H0–H5 selector
-- audited timing input surface
-- combo/charge/heavy/P×P trace
-- H3 turnover/no-target evidence
-- H4/H5 windup/response evidence
-- local JSONL copy/download
-- source selftest
-- calibration-only health endpoint
-
-Isolation:
-- separate directory/project
-- production source unchanged
-- no production room/WebSocket integration
-- no campaign stars/Tier/achievement/EXP/coin/shop persistence
-- no external telemetry backend
-
-Source status:
 ```text
-JS syntax PASS
-source contract selftest PASS
-source isolation PASS
-browser/device smoke PENDING
-sample JSONL validation PENDING
+PERFECT 70%
+GOOD    20%
+NORMAL  10%
 ```
 
----
+It is implemented as a streak-aware deterministic candidate rather than iid rolls.
+Status:
+`PROVISIONAL DESIGN PRIOR / NOT EMPIRICAL POPULATION FIT`.
 
-# Calibration deployment authority
-
-A separate calibration deployment is now AUTHORIZED for:
-- browser/device smoke;
-- sample JSONL validation;
-- small controlled H0–H5 pilot.
-
-It does NOT authorize production gameplay changes or broad public collection.
-
-Deployment route:
-Cloudflare Workers Builds + GitHub integration.
-
-Required project settings:
-- repo `hotmoral/-`
-- branch `timing-defense-skilled-v2-harness-v01`
-- root `timing-defense-skilled-v2-harness`
-- Worker `timing-defense-skilled-v2-harness`
-- deploy command `npx wrangler deploy`
-
-The remaining blocker is Cloudflare account-side creation/connection of that separate project. The current chat environment has no Cloudflare connector.
+Do not reinterpret this as measured population telemetry.
 
 ---
 
-# Exact next work
+# System-order authority
 
-After the separate Cloudflare project is connected:
-1. health check.
-2. H0 mobile smoke.
-3. H3 turnover smoke.
-4. H4 stateful smoke.
-5. JSONL export/copy.
-6. canonical dataset validator.
-7. verify production untouched.
-8. patch only demonstrated harness defects.
-9. collect small H0–H5 `HIGH_MASTERY_STRESS_CANDIDATE` pilot.
-10. data-quality review.
-11. acquire/derive ordinary-skilled evidence separately.
-12. fit skilled profiles while keeping high mastery separate.
-13. rerun role-expression regression.
-14. build 10-Stage synthetic Tier slice.
+`70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md` refines the older coarse execution order.
+
+Key principles:
+- structural/semantic freeze before numerical freeze;
+- explicit run-state lifecycle before multi-stage simulation;
+- modifier stack semantics before reward values;
+- EXP/skill ↔ shop ↔ permanent-power feedback must be revalidated iteratively;
+- boss/checkpoint impact must be represented before final full-Tier/star calibration;
+- multiplayer combat scaling is separated from later multiplayer progression-credit rules;
+- exact campaign authoring is delayed until system envelopes converge.
+
+Machine-readable DAG:
+`legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`.
+
+---
+
+# Exact current boundary
+
+Completed through:
+`P0 CURRENT_FOUNDATION_CLOSURE`.
+
+Next two work packages may proceed in parallel conceptually but must both close before the next simulator layer:
+
+## P1 — RUN_STATE_LIFECYCLE_CONTRACT
+Must define reset/persist/derive/authority semantics for:
+- base HP across Stages/shop;
+- combo;
+- charge/heavy state;
+- level/EXP;
+- run coin;
+- shop ranks;
+- Stage/Tier failure/end;
+- reconnect restoration.
+
+## P2 — MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
+Must define:
+- modifier scopes;
+- operation ordering;
+- stack-policy schema;
+- source attribution for damage/control/wall effects.
+
+Then:
+
+## P3 — 10-STAGE PERSISTENT RUN KERNEL
+A state/persistence integration slice only.
+It is not yet a full shop/meta/boss/multiplayer balance test.
 
 ---
 
@@ -194,8 +176,11 @@ After the separate Cloudflare project is connected:
 - exact 200-Stage schedule
 - exact EXP formula
 - Lv11+ production coefficients
-- permanent star/achievement values
-- boss/shop cadence
-- detailed multiplayer balance
+- exact shop cadence/economy
+- modifier numeric stacking coefficients
+- permanent star milestone/value ladder
+- achievement reward graph/value
+- exact boss cadence/design
+- multiplayer progression credit/scaling coefficients
 
-No production gameplay source or production balance value was changed by this calibration tranche.
+No production gameplay source or production balance value was changed by this structural review.
