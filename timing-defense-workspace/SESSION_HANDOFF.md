@@ -17,7 +17,7 @@ Last executable checkpoint:
 - **v0.45 SIEGER FULL PASS**
 - branch `timing-defense-cloudflare-v045-sieger-pass-20261022`
 - HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-- live run/job `39725993894` / `119649887564`
+- run/job `39725993894` / `119649887564`
 
 No gameplay/numerical implementation has been authorized after this checkpoint.
 
@@ -31,10 +31,11 @@ Do not immediately:
 - reconstruct legacy Stage4→10,
 - freeze production monster numbers,
 - promote old S/E/X recipes,
-- numerically author all Tiers at once.
+- assign exact recipes to all 50 stages,
+- expand to 3P/4P before 2P structure is stable.
 
 Required order:
-`structure -> static consistency audit -> candidate authoring data -> deterministic simulation -> explicit freeze -> live implementation`.
+`structure -> static consistency audit -> candidate authoring data -> micro-sim -> synthetic slice -> full Tier sim -> explicit freeze -> live implementation`.
 
 ---
 
@@ -52,11 +53,12 @@ Required order:
 11. `legacy-game-structure/09_TIER_LADDER_CANDIDATE_V0_1.md`
 12. `legacy-game-structure/12_T1_STATIC_DISTRIBUTION_AUDIT_V0_1.md`
 13. `legacy-game-structure/13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
-14. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
-15. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
-16. `legacy-game-structure/05_LEGACY_EVIDENCE_MAP.md`
-17. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-18. `MONSTER_CAPABILITY_CONTRACT_V1.md`
+14. `legacy-game-structure/14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
+15. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+16. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
+17. `legacy-game-structure/05_LEGACY_EVIDENCE_MAP.md`
+18. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+19. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 
 ---
 
@@ -100,9 +102,8 @@ Open decisions:
 
 ---
 
-# Encounter taxonomy truth
-
-Old S/E/X = `LEGACY_ANALYSIS_REFERENCE` only.
+# Encounter model truth
+Old S/E/X = legacy analysis only.
 
 Current vocabulary:
 - BASELINE neutral reference
@@ -115,7 +116,7 @@ Current vocabulary:
 - SUPPORT
 - SIEGE
 
-Formation/front/mid/back is authoring intent, not a target override.
+Formation/front/mid/back is authoring intent, not target override.
 Actual targeting remains runtime system-driven/frontmost/validity based.
 
 Complexity:
@@ -129,7 +130,7 @@ Complexity != difficulty.
 
 ---
 
-# Governance now frozen for corpus work
+# Governance
 Canonical:
 `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
 
@@ -143,10 +144,10 @@ Every tranche must check:
 - meta/economy snowball,
 - multiplayer implications,
 - authority boundary,
-- simulation determinism,
+- deterministic simulation,
 - scope/cost control.
 
-Cross-category decisions that cannot be made in isolation:
+Cross-category decisions requiring linked review:
 - Tier unlock,
 - permanent stat ladder,
 - shop cadence,
@@ -157,9 +158,8 @@ Cross-category decisions that cannot be made in isolation:
 ---
 
 # Tier ladder candidate
-First bounded full-campaign simulation spine = **5 Tier candidate**, NOT final Tier-count freeze.
+First bounded full-campaign simulation spine = **5 Tier candidate**, not final Tier-count freeze.
 
-Formulas:
 - minimum successful class-stage volume = `250T`
 - max stars = `15T`
 
@@ -174,44 +174,66 @@ Final Tier count/name/order remains open.
 
 ---
 
-# T1 structural work completed this tranche
+# T1 structural work
 
 ## V0.1 skeleton
-`11_T1_STAGE_SKELETON_CANDIDATE_V0_1.md`
-
 Static audit found:
 - SIEGE Stage26–30 five-stage run,
-- SIEGE 12/50 Stage presence despite T1 LOW intention,
+- SIEGE 12/50 Stage presence,
 - SPLITTER E08 Stage20–22 repetition,
-- late C3/C4 concentration.
+- late synergy concentration.
 
-Audit:
-`12_T1_STATIC_DISTRIBUTION_AUDIT_V0_1.md`
-
-## V0.2 active candidate
+## V0.2 active skeleton
 `13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
 
-Structural result:
-- last first-teach = Stage26 SIEGER,
+Result:
+- last first-teach Stage26,
 - no new core ordinary capability Stage40+,
 - 61 encounter occurrences,
 - C0 4 / C1 19 / C2 27 / C3 9 / C4 2,
 - C0–C2 = 82.0%,
 - SIEGE Stage presence 12 -> 9,
-- SIEGE five-stage run removed,
-- SPLITTER three-stage repetition removed,
-- C4 only Stage49/50,
-- Final Examination includes focused extremes instead of constant synergy.
+- repetition defects corrected,
+- C4 Stage49/50 only.
 
 Status:
-**T1 STRUCTURAL PASS / NUMERIC CANDIDATE DATA NOT YET AUTHORED**.
+**T1 STRUCTURAL PASS / NUMERIC PRODUCTION VALUES NOT FROZEN**.
 
-Remaining WATCH:
-- BULWARK 19/50 Stage presence,
-- Stage20–26 teaching density,
-- FORTRESS necessity at T1 49/50,
-- no-permanent-stat first-class survivability,
-- class opportunity after geometry/count authoring.
+---
+
+# T1 2P authoring envelope V0.1
+`14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
+
+Status:
+**SIMULATION CANDIDATE / NOT PRODUCTION BALANCE**.
+
+Completed:
+- E01–E19 L/M/H/X candidate compositions,
+- authored/effective count separation,
+- SPLITTER child-volume accounting,
+- T1 one-SUPPORTER default package,
+- T1 one-SIEGER default package,
+- E19 T1 bounded L/M policy,
+- cadence IDs CD01–CD08,
+- formation IDs F01–F09,
+- initial static readability alerts.
+
+Historical old 5-monster 2P reference:
+- P95 4s ≈11,
+- P95 6s ≈13.5.
+
+New candidate authoring alerts:
+- authored 4s normal <=8 / WATCH 9–10 / warning >10,
+- effective 4s normal <=10 / WATCH 11–13 / warning >13,
+- peak active target mostly 6–8 / WATCH 9–10 / stress 11+.
+
+These are not runtime hard caps.
+
+WATCH:
+- E08/E15/E16 SPLITTER X effective volume 13–14,
+- SIEGER actual shot uptime still unknown,
+- SUPPORTER actual aura uptime still unknown,
+- CHARGER telegraph overlap still unmeasured.
 
 ---
 
@@ -221,33 +243,34 @@ Remaining WATCH:
 - Lv26: DESIGNED_NOT_AUTHORITATIVE.
 - Lv31: OPEN/UNRESOLVED.
 
-Parity implementation is parked.
+Parity implementation remains parked.
 Late 50-stage simulation must later include higher-skill candidate modes.
 
 ---
 
 # Exact next boundary
-Continue corpus authoring, not live code.
+Continue corpus analysis/simulation, not live code.
 
 Next bounded tranche:
-**T1 2-player candidate numeric authoring envelope**.
+**T1 representative encounter micro-simulation preflight**.
 
 Order:
-1. E01–E19 T1-used archetypes: authored monster count ranges,
-2. effective entity volume incl. SPLITTER children,
-3. cadence bucket candidate values,
-4. concrete formation IDs / arrival-order intent,
-5. static active/4s/6s density calculation,
-6. representative encounter micro-simulation,
-7. fix defects before expanding scope,
-8. 10-stage synthetic slice,
-9. full T1 50-stage simulation only after slice passes,
-10. 3P/4P scaling only after 2P structure stabilizes.
+1. map E01–E19 to allowed formation/cadence combinations,
+2. select representative L/M/H recipes actually needed by T1 V0.2,
+3. generate deterministic spawn schedules,
+4. compute authored 4s/6s burst density,
+5. stress SPLITTER child creation,
+6. model frontmost arrival/screening for E11/E12/E17/E18/E19,
+7. measure SIEGER first-shot/screened firing opportunity,
+8. measure SUPPORTER screened aura opportunity,
+9. inspect CHARGER telegraph concurrency,
+10. revise authoring envelope,
+11. only after PASS build a 10-stage synthetic slice.
 
 Do not yet freeze:
-- production HP/speed/armor/reward,
-- permanent stat thresholds,
+- production monster coefficients,
 - final Tier count,
+- permanent stat thresholds,
 - shop cadence,
 - boss cadence,
 - Lv11+ implementation.
@@ -256,12 +279,11 @@ Do not yet freeze:
 
 # New-session recovery rule
 Do not trust this handoff alone.
-Always re-read the live `timing-defense-workspace` branch HEAD and current files first.
-Live remote wins over chat/memory/handoff text.
+Always re-read live `timing-defense-workspace` HEAD and current files first.
+Live remote wins over chat/memory/handoff.
 
-When a work group closes, sync:
+When a work group closes, synchronize:
 - `PROJECT_STATUS.md`
 - `NEXT_WORK.md`
 - `SESSION_HANDOFF.md`
-- active corpus evidence/audit documents
-before moving to a new session.
+- active corpus evidence/audit files.
