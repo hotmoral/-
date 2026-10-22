@@ -9,26 +9,27 @@ Primary architecture:
 Public deployment:
 - `https://timing-defense-do-poc.sktjsek.workers.dev`
 - watched branch: `timing-defense-cloudflare-do-poc`
-- watched HEAD: `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad`
-- health: `0.40-cf.2`
+- watched HEAD: `7a68ba6d78b3ac8611c815f582e24e871a947f03`
+- health: `0.41-cf.1`
 
 Last fully closed checkpoint:
-- **v0.40 SHIELD/common armor capability FULL PASS**
-- branch `timing-defense-cloudflare-v040-shield-pass-20261022`
-- HEAD `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad`
+- **v0.41 FLYER authoritative Y capability FULL PASS**
+- branch `timing-defense-cloudflare-v041-flyer-pass-20261022`
+- HEAD `7a68ba6d78b3ac8611c815f582e24e871a947f03`
 
 Preserved checkpoints include:
-- `timing-defense-cloudflare-v038-slice-c-pass-20261022`
 - `timing-defense-cloudflare-v039-pass-20261022`
 - `timing-defense-cloudflare-v040-shield-pass-20261022`
+- `timing-defense-cloudflare-v041-flyer-pass-20261022`
 
 Read first:
 1. `NEXT_WORK.md`
 2. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 3. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-4. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
-5. `MONSTER_CAPABILITY_FOUNDATION_PASS_2026-10-22.md`
-6. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
+4. `CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
+5. `CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+6. `MONSTER_CAPABILITY_FOUNDATION_PASS_2026-10-22.md`
+7. `CLOUDFLARE_V039_N3_FULL_PASS_2026-10-22.md`
 
 ---
 
@@ -49,7 +50,7 @@ Lv6 authority:
 - Mage up to three nearby 50% splash hits
 
 ## Stage 1–3 regression fixtures
-These remain useful for regression of the validated kernel but are **not final approximately 50-stage campaign authoring commitments**.
+Stage 1–3 remain regression fixtures for the validated network/combat kernel. They are not the production approximately-50-stage campaign specification.
 
 ## v0.38 event/multiplayer kernel
 - 512 retained authoritative events
@@ -74,17 +75,9 @@ Frozen:
 - boss scalars retained
 - NORMAL-equivalent generic N3 knockback
 
-v0.39 live automation:
-- V038 full regression PASS
-- N3 server 57/57
-- N3 client PASS
-- N3 4H stress PASS
-- FINAL PASS
-
 ---
 
 # Campaign direction
-
 Legacy Stage 4 -> Stage 10 reconstruction is stopped as a production path.
 
 Production direction:
@@ -95,100 +88,117 @@ Production direction:
 - re-authored monster combinations,
 - deterministic simulation before production numerical freeze.
 
-Do not promote old stage recipes into production merely because legacy code contains them.
+Do not promote legacy stage recipes merely because they exist in source.
 
 ---
 
 # Monster Capability Contract V1 — STRUCTURE FROZEN
-
 Nine ordinary archetypes:
 1. GRUNT — baseline/reference
 2. RUNNER — sustained tempo
 3. BRUTE — raw durability + knock resistance
 4. SHIELD — armor mitigation
-5. FLYER — Y/spatial geometry
+5. FLYER — authoritative Y/spatial geometry
 6. CHARGER — telegraphed interruptible burst dash
 7. SPLITTER — death -> exactly two non-recursive children
 8. SUPPORTER — non-stacking movement-speed aura only
 9. SIEGER — standoff + repeated telegraphed wall attack
 
 Bosses are separate capability compositions.
-
-Production monster coefficients are **not frozen**. Current executable values are provisional capability-test anchors only.
+Production monster coefficients remain **NOT FROZEN**; current executable values are provisional capability-test anchors.
 
 ---
 
 # Monster Capability Foundation — PASS
-
-Branch:
-`timing-defense-cloudflare-v040-monster-capability-foundation`
-
-Validated HEAD:
-`68882c2013d1d35aaedbf12e5725fde377795044`
-
-GitHub Actions foundation selftest:
-**22/22 PASS**.
+Branch `timing-defense-cloudflare-v040-monster-capability-foundation`
+Validated HEAD `68882c2013d1d35aaedbf12e5725fde377795044`
+Foundation selftest **22/22 PASS**.
 
 ---
 
 # v0.40 SHIELD/common armor — FULL PASS
-
-Exact closure:
-- branch `timing-defense-cloudflare-v040-shield-pass-20261022`
+Checkpoint:
+- `timing-defense-cloudflare-v040-shield-pass-20261022`
 - HEAD `7a3bdf0134e38f36383b52d4bc69b40147b0e5ad`
-- health `0.40-cf.2`
-- live Actions run `39696308376`
 
-Validated capability semantics:
-- SHIELD movement/wall timing uses SHIELD speed, not GRUNT fallback,
-- authoritative armor applies exactly once to each target,
-- event exposes pre-armor `rawDamage` and post-armor `damage`,
-- AI stage multiplier precedes armor,
-- human / AI / passive / Lv6 / N3 use the common armor policy,
-- Lv6/N3 geometry uses SHIELD size 1.08,
-- knock paths use SHIELD knock resistance .62,
-- kill / coin / killCoinEarned / contribution remain authoritative.
+Closed semantics:
+- SHIELD own speed/size/knock identity
+- server armor applied once per target
+- explicit pre-armor `rawDamage`
+- AI multiplier before armor
+- human/passive/AI/Lv6/N3 same armor policy
+- Lv6 secondary derives from pre-armor primary raw damage
+- kill/coin/contribution authoritative
 
-Important hardening:
-- Lv6 secondary damage now derives from pre-armor primary raw damage before the secondary target applies its own armor. This prevents double-armor behavior while preserving prior armor=1 results.
+Evidence:
+- foundation 22/22
+- N3 57/57
+- SHIELD 11/11
+- full browser/WebSocket regression FINAL PASS
+
+---
+
+# v0.41 FLYER authoritative Y — FULL PASS
+Exact closure:
+- branch `timing-defense-cloudflare-v041-flyer-pass-20261022`
+- HEAD `7a68ba6d78b3ac8611c815f582e24e871a947f03`
+- health `0.41-cf.1`
+- live Actions run `39697563460`
+- artifact `12391810817`
+
+Authoritative behavior:
+- stable `flyerBaseY + flyerEpochAt` phase model
+- `yAt(monster, at)` is the gameplay Y truth
+- X materialization/knockback does not reset Y phase
+- public snapshots expose phase metadata
+- Lv6 Archer/Mage and N3 Archer geometry consume authoritative moving Y
+- FLYER uses own `.100` X speed, `.78` size, `.90` knock resistance, reward 7
+- no ground immunity
+- reconnect reconstruction preserves identical future Y
+
+Client hardening:
+- server phase metadata drives network FLYER presentation
+- legacy local `type==='flyer'` oscillator is suppressed in network mode
+- same phase is extrapolated presentation-only between snapshots
+- no client gameplay authority introduced
 
 Live evidence:
-- capability foundation 22/22 PASS
-- v0.39 N3 57/57 PASS
-- SHIELD authority 11/11 PASS
-- V038 full browser/WebSocket regression PASS
-- N3 client PASS
-- N3 4H stress PASS
+- capability foundation **22/22 PASS**
+- N3 **57/57 PASS**
+- SHIELD **11/11 PASS**
+- FLYER server **10/10 PASS**
+- FLYER client authority **5/5 PASS**
+- V038 FULL REGRESSION PASS
+- N3 CLIENT PASS
+- N3 4H STRESS PASS
 - FINAL PASS
 
-Current SHIELD `.72` armor and related coefficients are still **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN**.
-
-No device smoke was required because this slice did not place SHIELD into a visible public encounter.
+No Samsung Browser smoke was required because no FLYER is yet placed in a visible authored encounter.
 
 Exact report:
-`CLOUDFLARE_V040_SHIELD_CAPABILITY_PASS_2026-10-22.md`
+`CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
 
 ---
 
 # Active next bounded work
+**CHARGER authoritative state machine**, stage-number-independent.
 
-**FLYER / authoritative Y geometry**, stage-number-independent.
+Focus:
+- authoritative ADVANCE / WINDUP / CHARGE phases,
+- exact transition scheduling under non-constant speed,
+- positive knockback during WINDUP cancels charge,
+- provisional re-arm delay after cancel,
+- CHARGE remains a temporary burst distinct from RUNNER sustained speed,
+- public phase/timing metadata for later telegraph presentation,
+- preserve v0.41/v0.40/v0.39 regressions,
+- do not enable a legacy stage recipe.
 
-Required focus:
-- one authoritative Y truth for server targeting/geometry and client presentation,
-- Archer strict-line and Mage AoE consume the same Y state,
-- reconnect/state reconstruction remains deterministic,
-- no ground-immunity rule,
-- no legacy stage recipe enablement,
-- preserve all v0.40/v0.39 regressions.
-
-Following capability order:
-CHARGER -> SPLITTER -> SUPPORTER -> SIEGER.
+Following: SPLITTER -> SUPPORTER -> SIEGER.
 
 After capability completion:
 - remaining player-skill authority needed for calibration,
 - approximately 50-stage tier/S-E-X authoring,
-- large deterministic simulation,
+- large deterministic 2/3/4-player simulation,
 - explicit discussion before production numerical freeze.
 
 # Validation policy
