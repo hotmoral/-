@@ -15,7 +15,7 @@ Depends on:
 # 0. Scope
 
 This document records the P1 run-state lifecycle directions explicitly approved by the user.
-It does not freeze numerical balance values, shop healing values, reconnect timeout duration, multiplayer disconnect substitution policy, or production persistence infrastructure.
+It does not freeze numerical balance values, shop healing values, reconnect timeout duration, disconnected-player AI substitution policy, long-disconnect reward policy, host migration details, or production persistence infrastructure.
 
 ---
 
@@ -68,11 +68,14 @@ Existing rule remains authoritative:
 
 ---
 
-# 3. Reconnect continuity — USER APPROVED DIRECTION
+# 3. Reconnect continuity — USER APPROVED
 
+## 3.1 Core reconnect identity
 - Network disconnect by itself is not a Tier-attempt failure.
-- Reconnect should restore the same authoritative Tier attempt when that attempt still exists.
-- Reconnect itself must not reset gameplay state.
+- Disconnect and explicit leave/abandon are different semantic events.
+- A temporarily disconnected player keeps the authoritative player slot and run identity while that reconnectable attempt still exists.
+- Reconnect restores the same player into the same authoritative Tier attempt.
+- Reconnect itself must not reset gameplay state or act as an implicit heal/reset.
 
 State that must be restorable from authoritative run state includes at least:
 - current Stage
@@ -86,15 +89,40 @@ State that must be restorable from authoritative run state includes at least:
 - player/session/run identity
 - input sequence/replay guards required for authoritative duplicate/stale-action rejection
 
-This structural direction does not yet freeze:
-- reconnect grace duration
-- durable recovery after server/process loss
-- disconnected-player AI takeover/substitution
-- multiplayer enemy scaling behavior during temporary disconnect
-- reward/star/achievement eligibility after long disconnect or abandonment
-- host migration details beyond already validated prototype behavior
+## 3.2 Multiplayer transient-disconnect structural rules
+The user approved the following bounded multiplayer semantics:
 
-Those remain explicit future decision gates.
+1. **Disconnect != leave.**
+   - A transient network loss does not immediately remove the player from the run or convert the event into voluntary abandonment.
+   - Slot/state remain reserved for reconnect under the future grace/persistence policy.
+
+2. **Same-player / same-run restoration.**
+   - A reconnecting player returns to their existing run state rather than receiving a new player state.
+   - Level, EXP, coin, shop ranks, combo, charge and other run-local progression are not regenerated or reset merely because the connection dropped.
+
+3. **No immediate difficulty rescaling on transient disconnect.**
+   - A temporary disconnect does not itself authorize an immediate 4P->3P, 3P->2P, etc. enemy-pressure reduction.
+   - This prevents disconnect from becoming a difficulty-manipulation exploit and avoids mid-encounter authored-pressure discontinuity.
+   - The eventual policy for very long disconnect/abandonment remains open.
+
+4. **No immediate reward invalidation on transient disconnect.**
+   - A temporary disconnect alone does not immediately strip star/reward/achievement eligibility.
+   - Eligibility after long absence, abandonment, AI substitution or low contribution remains a later multiplayer progression-credit decision.
+
+## 3.3 Explicitly deferred multiplayer reconnect policy
+The structural rules above intentionally do **not** decide:
+- reconnect grace duration;
+- whether/when disconnected players are controlled by AI;
+- whether AI inherits the exact disconnected player's class/level/shop state;
+- long-disconnect or abandonment thresholds;
+- whether enemy scaling changes after confirmed abandonment;
+- reward/star/achievement eligibility after long absence or AI takeover;
+- host migration details;
+- behavior when all humans disconnect simultaneously;
+- durable recovery after server/process loss;
+- exact storage/retention implementation.
+
+These require later analysis against P10 multiplayer combat scaling and P16 multiplayer progression-credit/exploit rules before user approval.
 
 ---
 
@@ -137,7 +165,9 @@ It also keeps attribution legible:
 - Tank/defense/HP/shop choices can have cumulative value;
 - combo and charge are not accidentally coupled to shop cadence;
 - retry cannot farm run-local EXP/coin from a failed late Stage without restarting the Tier attempt;
-- reconnect does not become an unintended heal/reset exploit.
+- reconnect does not become an unintended heal/reset exploit;
+- transient disconnect cannot be used as an immediate multiplayer difficulty-reduction exploit;
+- ordinary network instability does not automatically erase legitimate run progression.
 
 ---
 
@@ -148,8 +178,12 @@ The following are not approved by this document:
 - any automatic or explicit healing amount/cadence
 - shop cadence/price/value
 - reconnect grace duration
-- multiplayer disconnect substitution/takeover policy
-- multiplayer progression/reward credit during disconnect
+- disconnected-player AI substitution/takeover timing and behavior
+- confirmed-abandonment semantics after the reconnect window
+- multiplayer progression/reward credit after long disconnect, abandonment or AI takeover
+- multiplayer rescaling after confirmed abandonment
+- all-player disconnect behavior
+- exact host migration policy
 - exact persistent storage technology or retention period
 - Stage restart/checkpoint feature, if one is ever proposed
 
