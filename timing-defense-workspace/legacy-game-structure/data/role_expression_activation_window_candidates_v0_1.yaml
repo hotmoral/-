@@ -1,0 +1,54 @@
+version: role-expression-activation-window-candidates-v0.1
+status: BOUNDED_DIAGNOSTIC_CANDIDATES_NOT_PRODUCTION_COORDINATES
+sourceReport: 48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md
+profile: TRACE_BRACKET_CENTRAL
+powerMode: CURRENT_AUTHORITY_LV6
+
+rules:
+  - prefer_earliest_readable_all_five_role_expression
+  - prefer_zero_or_low_contact_wall_leak
+  - preserve_counterplay_after_expression
+  - do_not_freeze_coordinates_before_fitted_skilled_v2
+  - do_not_change_global_monster_hp_from_this_dataset
+
+candidates:
+  T3_E07_M:
+    specialType: CHARGER
+    observedAllFiveActivation:
+      minShift: 0.53
+      maxObservedShift: 0.65
+    observedZeroContactLeak:
+      minShift: 0.53
+      maxShift: 0.64
+    nextFocusBand: {minShift: 0.53, maxShift: 0.60}
+    status: CANDIDATE_ROLE_EXPRESSION_WINDOW_FOUND
+
+  T3_E17_M:
+    specialType: CHARGER
+    observedAllFiveActivation: {minShift: 0.43, maxShift: 0.55}
+    primaryZeroContactLeakBand: {minShift: 0.43, maxShift: 0.50}
+    nextFocusBand: {minShift: 0.43, maxShift: 0.50}
+    status: STRONG_CANDIDATE_WINDOW
+
+  T4_E11_M:
+    specialType: SIEGER
+    observedAllFiveActualShot: {minShift: 0.70, maxShift: 0.82}
+    lowestPressureObservedShift: 0.70
+    contactLeakWatch:
+      present: true
+      note: one class currently permits ordinary contact wall leak near the lowest all-five sample
+    nextFocusBand: {minShift: 0.69, maxShift: 0.73}
+    requiresSpawnSpacingSearch: true
+    status: ACTIVATION_WINDOW_FOUND_CONTACT_WALL_LEAK_WATCH
+
+  T4_E19_M:
+    specialType: SIEGER
+    observedAllFiveActualShot: {minShift: 0.70, maxShift: 0.83}
+    zeroContactLeakAnchorShift: 0.70
+    nextFocusBand: {minShift: 0.69, maxShift: 0.72}
+    status: STRONG_CANDIDATE_WINDOW
+
+notes:
+  - SIEGER actual-shot visibility is stricter than the minimum contract of first-shot opportunity.
+  - Later instrumentation may admit a wider role-expression window than the actual-shot window.
+  - All values are normalized simulation geometry offsets, not live coordinates.
