@@ -1,0 +1,61 @@
+version: model-a-class-action-trace-bracket-v0.1
+status: CALIBRATION_BRACKET_NOT_FITTED
+purpose: deterministic class-aware Layer-A mechanics probes; not production SKILLED_V2 calibration
+
+sourceTruth:
+  baseDamageAndCombo: LEGACY_IMPLEMENTED_REFERENCE
+  lv6ClassSkills: CURRENT_AUTHORITATIVE
+  n3Milestones: CURRENT_AUTHORITATIVE
+  lv11Plus: EXCLUDED_FROM_THIS_DATASET
+
+important:
+  - These profiles are bounded sensitivity traces, not measured player distributions.
+  - Do not use them to claim the production SKILLED_V2 clear rate.
+  - combo40 must remain achievable inside the eventual fitted SKILLED_V2_CENTRAL model.
+  - Turnover/context penalties are not fitted yet; zero-delay reacquisition makes these traces intentionally optimistic throughput probes.
+
+powerModes:
+  CURRENT_AUTHORITY_LV1:
+    fixedLevel: 1
+    lv6Enabled: false
+    n3Enabled: true
+    lv11PlusEnabled: false
+  CURRENT_AUTHORITY_LV6:
+    fixedLevel: 6
+    lv6Enabled: true
+    n3Enabled: true
+    lv11PlusEnabled: false
+
+profiles:
+  TRACE_BRACKET_CONSERVATIVE:
+    actionIntervalMs: 900
+    perfectStreakJudges: 40
+    breakJudge: GOOD
+    targetReacquireDelayMs: 0
+    status: ANALYSIS_BRACKET_ONLY
+  TRACE_BRACKET_CENTRAL:
+    actionIntervalMs: 750
+    perfectStreakJudges: 55
+    breakJudge: GOOD
+    targetReacquireDelayMs: 0
+    status: ANALYSIS_BRACKET_ONLY
+  TRACE_BRACKET_STRONG:
+    actionIntervalMs: 600
+    perfectStreakJudges: 75
+    breakJudge: GOOD
+    targetReacquireDelayMs: 0
+    status: ANALYSIS_BRACKET_ONLY
+
+judgeStreamRule:
+  description: repeat N PERFECT judge events followed by one GOOD judge event
+  heavyConsumesTwoJudgeEvents: true
+  heavyChargeRule: every fourth action when charge starts at zero and increments on non-heavy actions
+  note: deterministic stream exists only to exercise current authority reproducibly before telemetry fitting
+
+requiredFutureFit:
+  - action/turn cadence distribution from controlled harness
+  - PERFECT/GOOD/NORMAL/MISS by pressure context
+  - target-turnover reacquisition delay
+  - heavy completion and P-by-P completion
+  - combo survival distribution
+  - context-sensitive degradation
