@@ -10,146 +10,138 @@ Updated: 2026-10-23 KST
 
 ---
 
-# ACTIVE PHASE — P4 FULL PLAYER POWER SPINE / USER DECISION GATE
+# ACTIVE PHASE — P4-B LV6_TO_LV21 COMBAT FEEDBACK INTEGRATION
 
 Completed chain:
 
 ```text
-Master Campaign Spine
- -> Layer-0 PASS
- -> encounter envelope PASS
- -> historical all-20 540/540
- -> provisional streak-aware SKILLED_V2_CENTRAL
- -> corrected central all-20 540/540
- -> P1 Run-State Lifecycle USER_APPROVED_STRUCTURAL_COMPLETE
- -> P2 Modifier Pipeline / Power Attribution USER_APPROVED_STRUCTURAL_COMPLETE
- -> P3 Ten-Stage Persistent Run Kernel P3_STRUCTURAL_PASS
- -> P4 EXP dependency analysis + reproducible diagnostic
- -> P4 methodology proposal complete
+P0 Foundation
+ -> all-20 / SKILLED_V2_CENTRAL closure
+ -> P1 Run-State Lifecycle
+ -> P2 Modifier / Attribution Pipeline
+ -> P3 Persistent 10-Stage Kernel PASS
+ -> P4 EXP methodology USER APPROVED
+ -> P4-A Marker-Only 50-Stage Inverse Design PASS
 ```
 
-Current authority/proposal:
-- `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
-- `legacy-game-structure/71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md`
-- `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/77_P3_TEN_STAGE_PERSISTENT_RUN_EXECUTION_REPORT_V0_1.md`
-- `legacy-game-structure/78_P4_FULL_PLAYER_POWER_SPINE_EXP_MODEL_PROPOSAL_V0_1.md` — **PROPOSED / NOT YET APPROVED**
-- `legacy-game-structure/data/p4_exp_preproposal_diagnostics_v0_1.json`
-- `tools/analyze_p4_exp_baseline_from_p3.py`
+Current dependency plan:
+- `legacy-game-structure/data/system_dependency_calibration_order_v0_4.yaml`
+
+Current P4 authority/evidence:
+- `legacy-game-structure/79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/80_P4A_MARKER_ONLY_INVERSE_DESIGN_EXECUTION_REPORT_V0_1.md`
+- `legacy-game-structure/data/p4a_marker_opportunity_corpus_v0_1.json`
+- `legacy-game-structure/data/p4a_marker_inverse_design_summary_v0_1.json`
+- `tools/run_p4a_marker_inverse_design_v0_1.py`
+- `tools/validate_p4a_marker_inverse_design_v0_1.py`
 
 ---
 
-# P3 CLOSED STRUCTURALLY
+# P4-A CLOSED FOR MARKER-ONLY SCOPE
 
-Final result:
+Evidence:
 
 ```text
-30 / 30 primary persistent runs PASS
-8 / 8 targeted fixtures PASS
+12 synthetic 50-Stage fixtures
+× 100 deterministic player streams
+= 1,200 marker-only Tier runs
 ```
 
-P3 proved lifecycle/pipeline integration only.
-It did not freeze EXP, Base HP, shop, exact Stage authoring, clear-rate balance, permanent progression, boss or multiplayer values.
+Static corpus checks PASS.
+
+Marker-only CENTRAL T1–T4 supports non-empty common threshold intervals for all six milestones.
+Therefore Tier-specific XP multipliers are not structurally required at this layer.
+
+First candidate anchors only:
+
+```text
+A6    130.59375
+A11   251.84375
+A16   389.40625
+A21   562.18750
+A26   747.87500
+A31   987.84375
+```
+
+These are P4-B starting points, not frozen EXP requirements.
+
+Important P4-A lesson:
+- the initial Lv16/Lv21 mismatch was corrected by bounded encounter-opportunity redistribution in T2/T4 rather than hidden EXP correction;
+- EXP must not homogenize Tier encounter identity;
+- LOW/HIGH opportunity stress envelopes remain intentionally wider than target milestone windows.
 
 ---
 
-# P4 ANALYSIS RESULT
+# EXACT NEXT TASK — P4-B
 
-Current reach windows:
-
-```text
-Lv6   Stage 5–7   candidate
-Lv11  Stage11–14  candidate
-Lv16  Stage18–21  candidate
-Lv21  Stage25–28  candidate
-Lv26  Stage32–36  candidate
-Lv31  Stage41–45  USER-CONFIRMED
-```
-
-Reproducible preproposal diagnostic shows the old 10-Stage prototype absolute EXP curve is far too fast under current P3 conditions:
+Goal:
+measure the feedback loop:
 
 ```text
-old thresholds applied to P3 first-10:
-Lv6   P50 Stage2
-Lv11  P50 Stage6
-Lv16  P50 Stage10
+skill unlock
+ -> class power / control change
+ -> kill speed / target availability change
+ -> completed local timing-turn count changes
+ -> later XP accumulation changes
+ -> later skill reach shifts
 ```
 
-The old absolute scale is therefore rejected as current P4 authority.
+P4-B permitted simulation authority:
 
-The same diagnostic also confirms material self-feedback from offensive skill power:
+## Lv6
+Use current authoritative mechanics.
 
-```text
-forced Lv6 event-opportunity delta in P3 first-10
-Knight  ~ -0.2%
-Rogue   ~ -20.2%
-Tank      0.0%
-Archer  ~ -18.9%
-Mage    ~ -14.7%
-```
+## Lv11 / Lv16 / Lv21
+Use exact v0.16 mechanics as **simulation-only parity candidates**.
+This does not promote their values into production authority.
 
-This feedback must be measured before any catch-up/compensation rule is proposed.
+## Lv26 / Lv31
+Power remains OFF.
+They remain reach markers only until their separate P4-C/P4-D user gates.
 
 ---
 
-# P4 PROPOSAL — AWAITING USER APPROVAL
+# P4-B required outputs
 
-Proposal:
-`legacy-game-structure/78_P4_FULL_PLAYER_POWER_SPINE_EXP_MODEL_PROPOSAL_V0_1.md`
+At minimum measure by class/Tier:
+- P25/P50/P75/P90 unlock Stage for Lv6/11/16/21/26/31;
+- completed local timing-turn counts before/after each unlock;
+- change from P4-A marker-only opportunity;
+- class-specific kill-speed / opportunity shift;
+- pre/post unlock power slope;
+- whether the six universal milestone-anchor intervals remain jointly feasible;
+- if not, which class/Tier/milestone causes the conflict;
+- whether the cause is encounter workload distribution or skill power.
 
-Recommended package:
-1. valid completed local timing-turn EXP only; no kill/damage/passive/flat Stage-clear EXP and no hidden class compensation in the baseline;
-2. one EXP grant per completed turn; Heavy X+Y gets one combined quality reward;
-3. calibrate in dimensionless `XP_CREDIT`; legacy relative quality shape is primary candidate, absolute old EXP values discarded;
-4. six cumulative milestone anchors (`A6/A11/A16/A21/A26/A31`) + transparent monotonic interpolation instead of old closed-form `levelNeed()`;
-5. T1–T4 multi-schedule synthetic 50-Stage corpus, initially three legal timing-opportunity envelopes per Tier; no exact launch Stage authoring;
-6. marker-only inverse-design first, then Lv6 authoritative + Lv11/16/21 exact legacy-parity mechanics as simulation-only feedback candidates; Lv26/Lv31 stay behind separate P4 decision gates;
-7. fit first against P50 milestone windows while always recording P25/P50/P75/P90; exact tail cutoffs follow first evidence; Lv31 Stage41–45 remains structurally fixed;
-8. one universal EXP curve across classes/Tiers; kill-speed-driven opportunity reduction is measured self-damping unless evidence proves structural failure. Any stabilizer/catch-up requires a later user decision.
-
-Implementation is blocked until this package is approved or modified.
+Use paired deterministic seeds wherever comparisons are made.
 
 ---
 
-# After approval — intended P4 work order
+# P4-B decision discipline
 
-```text
-P4-A  build legal T1–T4 synthetic 50-Stage opportunity corpus
-      + XP_CREDIT model
-      + six milestone-anchor inverse design
+If P4-B exposes divergence, do NOT automatically add class/Tier XP multipliers.
 
-P4-B  integrate Lv6 + Lv11/16/21 simulation candidates
-      -> measure kill-speed / event-opportunity feedback
-      -> refit/check reach distributions
+Inspect in this order:
+1. exact skill mechanic / simulation parity correctness;
+2. encounter opportunity and Tier identity;
+3. whether gameplay-natural Stage adjustments could solve the problem without homogenization;
+4. whether candidate anchor refit alone is sufficient;
+5. only if structural failure remains, prepare a new stabilizer/catch-up decision packet.
 
-P4-C  Lv26 analysis -> user decision -> bounded simulation contract
-      -> rerun late reach to Lv31
-
-P4-D  Lv31 analysis -> user decision -> bounded simulation contract
-      -> Stage46–49 mastery / power-slope evidence
-
-P4-E  percentile/tail review -> final P4 candidate decision
-```
-
-Only after P4 candidate closure does P5 shop/economy open.
+No new material correction semantics may be silently introduced.
 
 ---
 
 # Do not yet
 
-- implement/freeze P4-A/B methodology before user approval
 - modify/deploy production v0.45 gameplay
-- reuse old `60+12*(level-1)` as current level authority
-- freeze exact EXP grant numbers or milestone thresholds
-- add kill/damage/Stage-clear/catch-up EXP without a later evidence-backed approval
-- use class-specific hidden EXP multipliers
-- promote Lv11–21 legacy candidates to production authority
-- invent Lv26/Lv31 numeric proxies
-- freeze exact shop cadence/price/value curve
-- freeze exact Base HP
-- freeze permanent star/achievement values
+- freeze the P4-A midpoint anchors
+- freeze player-visible EXP numbers
+- promote Lv11–21 parity candidates to production authority
+- invent Lv26/Lv31 power proxies
+- add hidden class-specific or Tier-specific EXP multipliers
+- freeze tail percentile gates
+- freeze shop/Base HP/permanent progression/boss/multiplayer values
 - author exact 200 launch Stages
-- freeze exact boss mechanics
-- freeze multiplayer progression/scaling values
+
+After P4-B evidence, the next unresolved material gate is **P4-C Lv26 simulation contract**.
