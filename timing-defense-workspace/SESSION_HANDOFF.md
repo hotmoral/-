@@ -19,19 +19,42 @@ Last executable checkpoint:
 - HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - live run/job `39725993894` / `119649887564`
 
-## Read first
+No gameplay/numerical implementation has been authorized after this checkpoint.
+
+---
+
+# Read first
 1. `SESSION_HANDOFF.md`
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
-4. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-5. `MONSTER_CAPABILITY_CONTRACT_V1.md`
-6. `MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md`
-7. `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
-8. `SKILL_PLAN_LV6_31.md`
-9. `CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md`
-10. `V016_IMPLEMENTATION_REPORT.md`
-11. `BALANCE_SIM_REPORT_V7_V016_EXACT.md`
-12. `DESIGN_DECISIONS.md`
+4. `legacy-game-structure/README.md`
+5. `legacy-game-structure/01_META_PROGRESSION.md`
+6. `legacy-game-structure/02_TIER_SYSTEM.md`
+7. `legacy-game-structure/03_STAGE_STRUCTURE_50.md`
+8. `legacy-game-structure/04_MONSTER_ENCOUNTER_MODEL.md`
+9. `legacy-game-structure/05_LEGACY_EVIDENCE_MAP.md`
+10. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+11. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
+12. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+13. `MONSTER_CAPABILITY_CONTRACT_V1.md`
+14. `CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
+
+---
+
+# Critical session direction
+The project is currently in a **structure-first design/calibration phase**.
+
+Do not immediately:
+- implement Lv11+,
+- reconstruct legacy Stage4→10,
+- author final live 50-stage content,
+- freeze production monster numbers,
+- promote old S/E/X recipes into production.
+
+First complete:
+`legacy structure recovery -> Tier/meta structure -> encounter model -> candidate authoring data -> deterministic simulation -> explicit freeze`.
+
+Only after that should the current Cloudflare game be changed.
 
 ---
 
@@ -46,100 +69,124 @@ GRUNT / RUNNER / BRUTE / SHIELD / FLYER / CHARGER / SPLITTER / SUPPORTER / SIEGE
 
 Current monster capability coefficients are still **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN**.
 
-Do not reconstruct legacy Stage4→10 as production campaign content. Stage1–3 are regression fixtures only. Final direction remains approximately 50 stages with tier/S-E-X authoring and deterministic 2/3/4-player simulation/calibration.
+Stage1–3 are regression fixtures only.
 
 ---
 
-# v0.45 SIEGER closure
-Checkpoint `timing-defense-cloudflare-v045-sieger-pass-20261022` @ `ea22cc279603394dc4b439b6fdbb0c83aff4299a`.
+# New Legacy Game Structure Corpus
+Directory:
+`legacy-game-structure/`
 
-Validated:
-- exact standoff arrival,
-- ADVANCE/WINDUP/COOLDOWN authoritative state,
-- instantaneous FIRE event,
-- repeated wall shots while monster remains alive,
-- team DEF,
-- knock/reposition/fresh windup,
-- SUPPORTER approach-only interaction,
-- no premature stage clear,
-- reconnect/late replay/event monotonicity,
-- SIEGER **20/20 PASS**,
-- complete prior browser/WebSocket regression PASS.
+Purpose:
+- stop repeatedly scraping scattered old files,
+- preserve evidence status,
+- build one structural model before further implementation,
+- separate frozen structure from provisional numeric balance.
 
-Initial live workflow failure was an outdated 18-check expectation only; deployed gameplay diagnostics were already 20/20. The gate was corrected without gameplay/numerical changes and rerun SUCCESS.
-
-No Samsung Browser smoke was required because no visible authored SIEGER encounter/final telegraph presentation exists yet.
+Status labels used:
+- CURRENT_FROZEN_STRUCTURE
+- CURRENT_AUTHORITATIVE
+- USER_CONFIRMED_STRUCTURE
+- LEGACY_IMPLEMENTED_REFERENCE
+- LEGACY_ANALYSIS_REFERENCE
+- SUPERSEDED
+- OPEN_DECISION
 
 ---
 
-# Player Skill Authority Review — COMPLETE / DECISION REQUIRED
-Canonical review:
-`PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+# User-confirmed progression structure
 
-Six intended milestones exist:
-`Lv6 / Lv11 / Lv16 / Lv21 / Lv26 / Lv31`.
+## Independent class progression
+Knight / Rogue / Tank / Archer / Mage each own an independent Tier progression record.
 
-## Current truth
-- **Lv6:** FROZEN+AUTHORITATIVE in Cloudflare.
-- **Lv11/Lv16/Lv21:** exact legacy v0.16 playable formulas exist and were v7-simulated; current status is LEGACY-REFERENCE / parity candidate, not current server authority.
-- **Lv26:** DESIGNED-NOT-AUTHORITATIVE; no playable implementation existed.
-- **Lv31:** final identity concepts exist but production implementation is UNRESOLVED because critical numerical/geometry/timing details remain unspecified.
+## Tier and star rule
+Each Tier = 50 stages.
 
-Old migration preflight explicitly classified Lv6–21 as migration candidates and Lv26/Lv31 as design-only. Legacy `v016-core.js` has no Lv26/Lv31 combat branches.
+Attempt result:
+- fail Stage 1–19 -> 0★
+- fail Stage 20–39 -> 1★
+- fail Stage 40–49 -> 2★
+- clear Stage 50 -> 3★
 
-## Recommended parity strategy — NOT YET APPROVED
-Do not code Lv11+ until explicit approval.
+A `class x Tier` stores the best result only, maximum 3★.
+Repeated attempts do not create unlimited stars.
 
-Recommended:
-1. port exact legacy **Lv11** formulas as bounded server-authority slice P1,
-2. port exact legacy **Lv16** formulas as bounded slice P2,
-3. port exact legacy **Lv21** formulas as bounded slice P3,
-4. leave **Lv26/Lv31** design-only until reviewed against the new monster roster and approximately-50-stage structure,
-5. do not production-freeze new Lv26/Lv31 values yet.
+## Global stars / permanent stats
+`GlobalStarTotal = sum(bestStars across all class x Tier records)`.
 
-### P1 Lv11 candidate
-- Knight: +1 normal / +2 heavy penetration, secondary 85%.
-- Rogue: +6 percentage-point native proc crit.
-- Tank: shared wall incoming -10%, nonstack.
-- Archer: +10% base damage; old +25% projectile speed is presentation/time-of-flight unless later made gameplay relevant.
-- Mage: radius×1.35 / splash60%.
+Stars are not spent.
+Cumulative star thresholds automatically grant permanent account-wide stats applied to all classes.
 
-### P2 Lv16 candidate
-- Knight: PERFECT-containing ×1.18 damage / ×1.20 knock.
-- Rogue: recovery390→312ms with authoritative cadence validation.
-- Tank: 80 wall shield / 3s refresh, nonstack.
-- Archer: PERFECT armor-ignore / 100% preserved penetration.
-- Mage: ~180ms delayed 55% outer-ring blast, center excluded.
+Example:
+- all five classes obtain 3★ in Tier1 -> total 15★.
 
-### P3 Lv21 candidate
-- Knight: heavy×1.20 / up to3 extra penetrations, legacy secondary85%.
-- Rogue: heavy 100% + four45% follow-ups.
-- Tank: broad heavy multi-target / heavy knock×2.0.
-- Archer: strict-line triple shot 100+65+65.
-- Mage: heavy×1.20 / radius×1.60.
+Exact permanent-stat thresholds, categories and coefficients are not yet production frozen.
 
-Why this matters: under the old accepted EXP model Lv21 was already commonly reachable by Stage10, so an approximately-50-stage calibration using only current Lv6 authority would materially understate player power.
+Open decisions:
+- next-Tier unlock condition,
+- multiplayer Tier eligibility/host rules.
 
-Do not infer final Lv26/Lv31 reach timing until the final EXP/campaign progression is calibrated.
+---
+
+# Encounter model reset
+Old `S / E / X` remains historical analysis only.
+
+New top-level pressure vocabulary:
+- BASELINE
+- FLOOD
+- RUSH
+- BULWARK
+- BREACH
+- AERIAL
+- REPLICATE
+- SUPPORT
+- SIEGE
+
+Encounter design additionally owns:
+- monster count/frequency,
+- composition,
+- formation/frontline order,
+- spawn order,
+- cadence,
+- geometry,
+- active concurrency,
+- target reorder,
+- frontline block time,
+- backline exposure/capability uptime.
+
+Reason: the current combat does not assume free manual target selection. Basic direct/AI/passive targeting is system-driven/frontmost-first; penetration/AoE are class-specific soft advantages.
+
+Initial structural encounter library is documented in:
+`legacy-game-structure/04_MONSTER_ENCOUNTER_MODEL.md`.
+
+---
+
+# Player skill authority truth
+- Lv6: **FROZEN+AUTHORITATIVE**.
+- Lv11/Lv16/Lv21: exact v0.16 **LEGACY-REFERENCE / parity candidates**.
+- Lv26: **DESIGNED-NOT-AUTHORITATIVE**.
+- Lv31: **UNRESOLVED**.
+
+The old proposed P1/P2/P3 parity migration remains valid as a later candidate but is now **parked behind the structure phase**.
+
+50-stage final calibration eventually requires a credible higher-skill progression model; current Lv6-only authority cannot represent late-campaign player power.
 
 ---
 
 # Exact next boundary
-**Product decision, not implementation:** approve/reject/modify the recommended Lv11/Lv16/Lv21 exact parity strategy.
+Continue the corpus, not live code.
 
-If approved, start P1 Lv11 from exact v0.45 PASS checkpoint and retain all existing regression gates.
+Next work sequence:
+1. finish source-level audit of legacy run/lobby/shop/result/persistence/boss/progression flows,
+2. fill Tier structure with candidate identities and monster availability,
+3. create Tier/Stage monster frequency/count/composition/cadence candidates using the 9-monster taxonomy,
+4. build target-order/screening-aware encounter micro-simulation,
+5. expand to 50-stage Tier simulation,
+6. add 2/3/4-player scaling,
+7. add 5-class account star/permanent-stat progression simulation,
+8. check order dependence/snowball/star-boundary cliffs/class opportunity,
+9. report and explicitly decide/freeze,
+10. only then resume gameplay implementation.
 
-After P1/P2/P3 closure:
-- review/freeze Lv26/Lv31 structural contracts or redesign later progression,
-- build approximately-50-stage tier/S-E-X authoring model,
-- generate 2/3/4-player candidate recipes,
-- run deterministic simulation,
-- classify/report/discuss,
-- explicitly freeze production numbers only after decision.
-
-## Validation policy
-`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`.
-
-## Governance
-No numerical change without:
-`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
+## Validation/governance
+`recover -> structure -> model -> simulate -> classify -> report -> discuss -> explicit freeze -> implement`.
