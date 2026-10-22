@@ -180,7 +180,7 @@ recipes:
     archetype: E17
     intensity: M
     formation: F02
-    cadence: CD06
+    cadence: CD07
     useCase: breach-screen-standard
     spawns:
       - {tMs: 0, type: SHIELD, y: 0.43}
