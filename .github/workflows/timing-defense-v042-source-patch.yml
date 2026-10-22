@@ -1,0 +1,38 @@
+name: Timing Defense v0.42 One-shot CHARGER Metadata Patch
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v042-charger
+    paths:
+      - '.github/workflows/timing-defense-v042-source-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-cloudflare-v042-charger
+      - name: Add CHARGER to N3 geometry/knock metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('timing-defense-cloudflare-poc/src/v039-entry.js')
+          s=p.read_text()
+          old='  flyer:{knockResist:.90,size:.78}\n'
+          new='  flyer:{knockResist:.90,size:.78},\n  charger:{knockResist:.80,size:1.00}\n'
+          if s.count(old)!=1: raise SystemExit(f'expected one TYPE_META match, got {s.count(old)}')
+          p.write_text(s.replace(old,new))
+          PY
+      - name: Commit metadata patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add timing-defense-cloudflare-poc/src/v039-entry.js
+          git diff --cached --check
+          git commit -m "Add CHARGER metadata to N3 geometry and knock paths"
+          git push origin HEAD:timing-defense-cloudflare-v042-charger
