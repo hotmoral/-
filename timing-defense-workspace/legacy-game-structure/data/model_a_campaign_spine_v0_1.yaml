@@ -60,14 +60,15 @@ tiers:
         firstTeach: [1, 2]
         firstMixed: [4, 6]
         firstHighPressure: [21, 29]
+        baselineCollisionExempt: true
       RUNNER:
         firstTeach: [5, 7]
         firstMixed: [8, 12]
         firstHighPressure: [21, 24]
       BRUTE:
         firstTeach: [15, 17]
-        firstMixed: [18, 22]
-        firstHighPressure: [24, 29]
+        firstMixed: [18, 20]
+        firstHighPressure: [21, 23]
     pressureEnvelope:
       BASELINE: HIGH
       FLOOD: LOW_MED
@@ -150,7 +151,7 @@ tiers:
       SUPPORTER:
         firstTeach: [11, 13]
         firstMixed: [14, 19]
-        firstHighPressure: [31, 33]
+        firstHighPressure: [29, 31]
       SIEGER:
         firstTeach: [22, 24]
         firstMixed: [25, 29]
