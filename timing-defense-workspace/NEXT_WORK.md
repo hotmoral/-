@@ -13,44 +13,46 @@ Updated: 2026-10-22 KST
 8. v0.38 larger-party/event kernel — **FULL PASS**
 9. v0.39 N3 authority — **FULL PASS**
 10. Monster Capability Foundation V1 — **PASS**
-11. v0.40 SHIELD/common armor capability — **FULL PASS**
-12. v0.41 FLYER authoritative Y geometry — **FULL PASS**
+11. v0.40 SHIELD/common armor — **FULL PASS**
+12. v0.41 FLYER authoritative Y — **FULL PASS**
+13. v0.42 CHARGER authoritative state machine — **FULL PASS**
 
 ## Exact latest checkpoint
-- branch `timing-defense-cloudflare-v041-flyer-pass-20261022`
-- HEAD `7a68ba6d78b3ac8611c815f582e24e871a947f03`
-- public health `0.41-cf.1`
-- live validation run `39697563460`
+- branch `timing-defense-cloudflare-v042-charger-pass-20261022`
+- HEAD `57e6fc1bb4ef388b1d1de5403b60866c48b5c07a`
+- public health `0.42-cf.1`
+- live validation run `39703741827`
 
 Closure report:
-`CLOUDFLARE_V041_FLYER_CAPABILITY_PASS_2026-10-22.md`
+`CLOUDFLARE_V042_CHARGER_CAPABILITY_PASS_2026-10-22.md`
 
-v0.41 evidence:
-- Monster Capability Foundation **22/22 PASS**
-- v0.39 N3 **57/57 PASS**
-- v0.40 SHIELD **11/11 PASS**
-- v0.41 FLYER server **10/10 PASS**
-- FLYER client authority **5/5 PASS**
-- V038 full browser/WebSocket regression PASS
-- N3 client PASS
-- N3 4H stress PASS
-- FINAL PASS
+v0.42 evidence:
+- Foundation **22/22 PASS**
+- N3 **57/57 PASS**
+- SHIELD **11/11 PASS**
+- FLYER **10/10 PASS**
+- CHARGER **17/17 PASS**
+- root-loader PASS
+- V038 FULL REGRESSION PASS
+- N3 CLIENT PASS
+- N3 4H STRESS PASS
+- **FINAL PASS**
 
-No Samsung Browser smoke was required because FLYER was not inserted into a public authored encounter.
+No Samsung Browser smoke was required because CHARGER is not inserted into a visible authored encounter.
 
 ---
 
 # Campaign-direction rule
 Do **not** reconstruct legacy Stage 4 -> Stage 10 as the production campaign.
 
-The final direction remains an approximately 50-stage campaign with:
+Final direction remains an approximately 50-stage campaign with:
 - tier identities,
 - S / E / X pressure grammar,
 - 2/3/4-player composition scaling,
 - re-authored monster combinations,
-- later deterministic simulation/calibration.
+- deterministic simulation/calibration before numerical freeze.
 
-Existing Stage 1–3 content is retained as regression fixture material only.
+Stage 1–3 remain regression fixtures only.
 
 ---
 
@@ -62,76 +64,93 @@ Ordinary roster:
 4. SHIELD — armor mitigation
 5. FLYER — authoritative Y/spatial geometry
 6. CHARGER — telegraphed interruptible burst dash
-7. SPLITTER — death -> two non-recursive children
+7. SPLITTER — death -> exactly two non-recursive children
 8. SUPPORTER — non-stacking movement-speed aura only
 9. SIEGER — standoff + repeated telegraphed wall attacks
 
-All current executable monster coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately frozen by an explicit decision.
+All current executable monster coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately approved.
 
 ---
 
-# Closed capability — SHIELD/common armor
-- stage-independent common armor path
-- pre-armor `rawDamage`, post-armor event `damage`
+# Closed capability summaries
+
+## SHIELD
+- common single-application armor path
+- explicit pre-armor `rawDamage`
 - AI multiplier before armor
-- Lv6 secondary raw-damage hardening prevents double armor
-- SHIELD own size/knock/speed identity
-- full prior regression PASS
+- Lv6 secondaries derive from raw primary damage
+- own speed/size/knock/reward identity.
 
-# Closed capability — FLYER authoritative Y
-- stable server-owned `baseY + epoch` phase
-- materialize/knockback does not reset Y phase
-- public snapshots expose phase metadata
-- Archer Lv6/N3 and Mage Lv6 consume authoritative moving Y
-- FLYER own speed/size/knock/reward identity
-- client legacy local FLYER oscillator suppressed in network mode
-- client extrapolates the same authoritative phase between snapshots
-- reconnect reconstructs identical future Y
-- no ground immunity
+## FLYER
+- stable authoritative baseY/epoch phase
+- `yAt()` gameplay truth
+- materialize/knock/reconnect preserve phase
+- Lv6/N3 geometry uses moving Y
+- legacy client local oscillator suppressed in network mode.
+
+## CHARGER
+- authoritative `ADVANCE -> WINDUP -> CHARGE`
+- state-aware non-constant X and wall timing
+- WINDUP stationary
+- positive knockback during WINDUP interrupts
+- provisional re-arm after interrupt
+- due timestamps included in scheduler
+- reconnect reconstruction and public phase metadata
+- late `advanceTo()` chronological replay validated.
+
+CHARGER test coefficients remain provisional: HP380 / advance .060 / wall110 / knock .80 / armor1 / reward8 / windup650ms / charge .210 / trigger x .62 / re-arm900ms.
 
 ---
 
-# Active next bounded slice — CHARGER authoritative state machine
+# Active next bounded slice — SPLITTER authoritative child-spawn kernel
 This is stage-number-independent capability work, not a production stage recipe.
 
 Frozen structural behavior:
-`ADVANCE -> WINDUP -> CHARGE -> wall/contact resolution`
+`parent death -> exactly two child monsters -> children cannot split again`
 
-Required boundary:
-- base movement and charge movement are separate authoritative phases,
-- WINDUP is stationary/readable enough to be telegraphed by later presentation,
-- positive authoritative knockback during WINDUP cancels the pending charge,
-- cancellation returns CHARGER to ADVANCE with a provisional sandbox re-arm delay,
-- CHARGE uses its own high temporary speed and must not collapse into RUNNER's always-fast identity,
-- wall timing/scheduler must account for state transitions rather than assume one constant speed,
-- public state exposes phase/timing metadata for later client telegraphing,
-- normal/passive/AI/Lv6/N3 damage/reward/contribution remain authoritative,
-- no legacy stage recipe is enabled,
-- provisional CHARGER coefficients are not production-frozen.
+Required implementation boundary:
+- children are created by the server at the exact parent-death timestamp,
+- exactly two children per parent death,
+- deterministic child IDs from authoritative `nextMonsterId`,
+- deterministic child ordering/offsets,
+- `canSplit=false` is authoritative and persisted,
+- SPLITTER children have explicit movement/wall/combat metadata and must never fall back to GRUNT defaults,
+- simultaneous parent deaths produce deterministic child order,
+- parent removal + child insertion must be safe while Lv6/N3/AI/passive loops are iterating,
+- children participate normally in targeting, knockback, wall collision, event delivery and reconnect,
+- event history/cursors remain monotonic,
+- no recursive child spawning even when a child is killed by Lv6/N3,
+- no legacy stage recipe enabled.
 
-Provisional sandbox anchors currently approved for capability testing only:
-- HP 380
-- advance speed `.060`
-- wall damage 110
-- knock resistance `.80`
-- armor `1.00`
-- reward 8
-- windup 650 ms
-- charge speed `.210`
-- test trigger x `.62`
-- test re-arm delay 900 ms
+Provisional sandbox anchors already approved for capability testing only:
+- parent HP 420
+- parent speed `.065`
+- parent wall damage 100
+- parent knock resistance `.82`
+- parent armor `1.00`
+- package reward budget 8
+- child HP 120
+- child speed `.115`
+- child wall damage 40
+- child Y offsets `-0.018 / +0.018`
+
+## Important unresolved economy semantic
+The structural contract says the package has provisional reward budget 8, but it has **not** yet frozen how reward is divided between parent and children.
+
+Do not silently convert that into a production economy rule. Capability implementation may use an explicitly provisional accounting rule for tests, but production reward allocation must be discussed/frozen later with campaign calibration.
 
 Validation order:
-1. audit existing constant-speed `xAt/wallAt/nextDueAt` assumptions,
-2. deterministic state-transition/interrupt/wall-time tests,
-3. prior v0.41/v0.40/v0.39 regression,
-4. live GitHub Actions Chromium/WebSocket validation,
-5. only if a visible CHARGER sandbox encounter is introduced, minimum Samsung Browser telegraph/readability smoke.
+1. audit kill/removal/iteration paths in ordinary hit, passive, AI, Lv6 and N3,
+2. deterministic parent-death/child-ID/non-recursion tests,
+3. simultaneous-split and multi-target mutation stress,
+4. reconnect/event-stream regression,
+5. prior v0.42/v0.41/v0.40/v0.39 regression,
+6. GitHub Actions live validation,
+7. device smoke only if a visible SPLITTER sandbox presentation is introduced.
 
 ## Following capability slices
-1. SPLITTER child-spawn kernel
-2. SUPPORTER dynamic movement-speed aura
-3. SIEGER repeated wall-attack kernel
+1. SUPPORTER dynamic movement-speed aura
+2. SIEGER repeated wall-attack kernel
 
 After capabilities:
 - remaining player-skill authority needed for calibration,
@@ -146,5 +165,5 @@ After capabilities:
 Do not delegate automatable validation to the user.
 
 ## Governance
-No unapproved numerical change. Continue:
+No unapproved numerical change:
 `implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
