@@ -1,0 +1,61 @@
+version: role-expression-activation-search-v0.1
+status: BOUNDED_DIAGNOSTIC_SEARCH_NOT_PRODUCTION_COORDINATES
+
+common:
+  profile: TRACE_BRACKET_CENTRAL
+  powerMode: CURRENT_AUTHORITY_LV6
+  shiftStep: 0.01
+  objective:
+    - find_contiguous_all_five_structural_expression_window
+    - minimize_wall_pressure_inside_expression_window
+    - preserve_readable_counterplay
+  caveats:
+    - current trace bracket is not fitted SKILLED_V2
+    - actual production coordinates remain open
+    - global HP/speed/trigger/standoff changes are prohibited during this search
+
+searches:
+  - id: CHARGER_E07_FINE
+    recipeId: T3_E07_M
+    specialType: CHARGER
+    expressionMetric: chargerWindups
+    shiftStart: 0.20
+    shiftStop: 0.40
+    relativeSpecialOffset: 0.10
+    rationale: coarse diagnostic first showed windup for some classes around 0.25 and interruption around 0.30
+
+  - id: CHARGER_E17_FINE
+    recipeId: T3_E17_M
+    specialType: CHARGER
+    expressionMetric: chargerWindups
+    shiftStart: 0.35
+    shiftStop: 0.55
+    relativeSpecialOffset: 0.10
+    rationale: coarse diagnostic showed all-five windup visibility around 0.45
+
+  - id: SIEGER_E11_FINE
+    recipeId: T4_E11_M
+    specialType: SIEGER
+    expressionMetric: siegeShots
+    shiftStart: 0.65
+    shiftStop: 0.84
+    relativeSpecialOffset: 0.10
+    rationale: coarse diagnostic showed all-five actual-shot visibility around 0.70 to 0.80 and collapse near 0.85
+
+  - id: SIEGER_E19_FINE
+    recipeId: T4_E19_M
+    specialType: SIEGER
+    expressionMetric: siegeShots
+    shiftStart: 0.68
+    shiftStop: 0.84
+    relativeSpecialOffset: 0.10
+    rationale: coarse diagnostic showed all-five actual-shot visibility around 0.75 to 0.80 and collapse near 0.85
+
+admissionRules:
+  structural:
+    requireAllFiveClassesOpportunity: true
+    rejectGuaranteedPreExpressionDeletion: true
+    rejectUnavoidablePreResponseWallDamage: true
+  numericThresholds:
+    status: OPEN
+    note: fitted SKILLED_V2 required before production acceptance thresholds
