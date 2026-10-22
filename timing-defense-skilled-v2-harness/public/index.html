@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Timing Defense · SKILLED_V2 Calibration Harness</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <section class="card">
+    <h1>TIMING DEFENSE · SKILLED_V2 HARNESS</h1>
+    <div class="sub"><span class="badge">HARNESS_ONLY</span><span class="badge">NO CAMPAIGN REWARDS</span><span class="badge">LOCAL TRACE ONLY</span></div>
+    <div class="sub">숙련 플레이어의 타이밍·콤보·Heavy/P×P·타깃 전환·상태형 대응을 측정하기 위한 격리 측정판입니다. 별/티어/EXP/코인/업적/멀티플레이에 연결되지 않습니다.</div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <canvas id="game"></canvas>
+      <div class="row"><span class="tap">화면 탭 또는 SPACE로 판정</span></div>
+    </section>
+
+    <section class="card">
+      <div class="two">
+        <label class="sub">HARNESS<select id="harnessId"><option value="H0">H0 · TIMING BASELINE</option><option value="H1">H1 · SUSTAINED TEMPO</option><option value="H2">H2 · DURABLE RHYTHM</option><option value="H3">H3 · TURNOVER DENSITY</option><option value="H4">H4 · STATEFUL READ</option><option value="H5">H5 · MIXED PRESSURE</option></select></label>
+        <label class="sub">CLASS TAG<select id="classId"><option value="knight">KNIGHT</option><option value="rogue">ROGUE</option><option value="tank">TANK</option><option value="archer">ARCHER</option><option value="mage">MAGE</option></select></label>
+      </div>
+      <div class="row"><button id="start" class="primary">측정 시작</button><button id="abort">중단</button></div>
+      <div class="stats">
+        <div class="stat"><span class="sub">COMBO</span><b id="combo">0</b></div>
+        <div class="stat"><span class="sub">LONGEST</span><b id="longest">0</b></div>
+        <div class="stat"><span class="sub">CHARGE</span><b id="charge">0/3</b></div>
+        <div class="stat"><span class="sub">INPUT</span><b id="inputs">0/80</b></div>
+        <div class="stat"><span class="sub">PHASE</span><b id="phase">IDLE</b></div>
+      </div>
+      <div class="rule"></div>
+      <div class="sub">TRACE</div><div id="traceInfo" class="mono">아직 실행 안 됨</div>
+      <div class="sub" style="margin-top:8px">VALIDATION</div><div id="validation">검증 대기</div>
+      <div class="sub" style="margin-top:8px">RECORDS <b id="recordCount">0</b></div>
+      <div class="row"><button id="copyTrace">JSONL 복사</button><button id="downloadTrace">JSONL 저장</button></div>
+      <div class="rule"></div>
+      <div class="sub">ANONYMOUS CALIBRATION ID</div><div id="anonId" class="mono"></div>
+      <div class="row"><button id="resetIdentity">ID 재설정</button></div>
+      <div class="sub warn">현재 구현은 관측 데이터 수집용입니다. 이 결과만으로 SKILLED_V2 숫자나 캠페인 난도를 확정하지 않습니다.</div>
+    </section>
+  </div>
+</div>
+<script type="module" src="/harness.js"></script>
+</body>
+</html>
