@@ -1,0 +1,267 @@
+version: skilled-v2-controlled-harness-v0.1
+status: CALIBRATION_SPEC_NOT_FITTED
+purpose: measure and fit skilled player behavior without campaign progression contamination
+
+userAnchors:
+  oldSkilledTooWeak: true
+  combo40OrdinarySkilledAchievable: true
+  nonT1CentralFullTierClearUpperBound: 0.60
+  note: clear-rate target is evaluated after fitting; it must not be used to weaken the fitted player model
+
+lane:
+  id: HARNESS_ONLY
+  campaignAttempt: false
+  affectsStars: false
+  affectsTierRecords: false
+  affectsPermanentProgression: false
+  affectsAchievements: false
+  affectsTitles: false
+  affectsRunShopEconomy: false
+  persistsCampaignExp: false
+  persistsCampaignCoin: false
+  preserveGameInputJudgmentSemantics: true
+
+pressureContexts:
+  - BASELINE
+  - TEMPO
+  - DURABLE
+  - TURNOVER
+  - STATEFUL
+  - MIXED
+
+harnesses:
+  - id: H0
+    name: TIMING_BASELINE
+    pressureContext: BASELINE
+    purpose:
+      - clean_timing_ceiling
+      - baseline_action_cadence
+      - baseline_combo_survival
+      - clean_heavy_pp_execution
+    monsterSemantics: [GRUNT_REFERENCE]
+    controls:
+      targetTurnover: MINIMIZED_OR_MARKED
+      statefulMechanics: DISABLED
+      geometryComplexity: MINIMIZED
+      progressionEffects: DISABLED
+      longEnoughForCombo40Opportunity: true
+    requiredMetrics:
+      - timingOutcomeSequence
+      - interActionMs
+      - comboReach10
+      - comboReach20
+      - comboReach40
+      - comboReach60Plus
+      - longestCombo
+      - heavyOpportunity
+      - heavyAttempt
+      - heavyCompletion
+      - ppAttempt
+      - ppCompletion
+
+  - id: H1
+    name: SUSTAINED_TEMPO
+    pressureContext: TEMPO
+    purpose:
+      - tempo_degradation_vs_h0
+      - sustained_combo_maintenance
+      - cadence_adaptation
+    monsterSemantics: [RUNNER]
+    controls:
+      targetTurnover: LOW_TO_MODERATE
+      statefulMechanics: DISABLED
+      geometryComplexity: LOW
+      progressionEffects: DISABLED
+    requiredMetrics:
+      - timingOutcomeSequence
+      - interActionMs
+      - comboSurvival
+      - missDeltaVsH0
+      - cadenceDriftVsH0
+
+  - id: H2
+    name: DURABLE_RHYTHM
+    pressureContext: DURABLE
+    purpose:
+      - long_target_exposure
+      - heavy_usage_behavior
+      - pp_behavior
+      - long_rhythm_concentration
+    monsterSemantics: [BRUTE]
+    controls:
+      targetTurnover: LOW
+      statefulMechanics: DISABLED
+      geometryComplexity: LOW
+      progressionEffects: DISABLED
+    requiredMetrics:
+      - timingOutcomeSequence
+      - comboSurvival
+      - heavyOpportunity
+      - heavyAttempt
+      - heavyCompletion
+      - ppAttempt
+      - ppCompletion
+      - interActionDrift
+
+  - id: H3
+    name: TURNOVER_DENSITY
+    pressureContext: TURNOVER
+    purpose:
+      - target_reacquisition
+      - post_turnover_accuracy
+      - no_target_wait_recovery
+      - turnover_specific_combo_break
+    monsterSemantics: [LOW_DURABILITY_MULTI_TARGET]
+    controls:
+      targetTurnover: HIGH_AND_INTENTIONAL
+      statefulMechanics: DISABLED
+      progressionEffects: DISABLED
+    requiredMetrics:
+      - targetChangeCount
+      - reacquireDelayMs
+      - firstPostTurnoverJudgment
+      - noTargetWaitMs
+      - comboBreakCause
+      - turnoverSpecificBreakRate
+
+  - id: H4
+    name: STATEFUL_READ
+    pressureContext: STATEFUL
+    purpose:
+      - telegraph_reading_degradation
+      - tactical_response_latency
+      - response_induced_combo_effect
+    monsterSemantics: [CHARGER]
+    roleExpressionDependency:
+      contractMonster: CHARGER
+      requireReadableWindup: true
+      sourceEvidence:
+        - 53_CRITICAL_ROLE_EXPRESSION_V0_2_RERUN_REPORT_V0_1.md
+        - 54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md
+    controls:
+      targetTurnover: LOW_TO_MODERATE
+      telegraphRequired: true
+      progressionEffects: DISABLED
+    requiredMetrics:
+      - telegraphVisibleAtMs
+      - responseActionAtMs
+      - responseLatencyMs
+      - interruptAttempt
+      - interruptSuccess
+      - timingBeforeTelegraph
+      - timingDuringTelegraph
+      - timingAfterTelegraph
+      - comboBreakCause
+
+  - id: H5
+    name: MIXED_PRESSURE
+    pressureContext: MIXED
+    purpose:
+      - campaign_like_context_transfer
+      - nonlinear_pressure_degradation
+      - combined_turnover_stateful_effect
+    monsterSemantics: [MIXED_ALREADY_LEARNED_ROLES]
+    minimumDistinctPressureFamilies: 2
+    controls:
+      brandNewMechanic: FORBIDDEN
+      roleExpressionAlreadyValidated: true
+      progressionEffects: DISABLED
+    requiredMetrics:
+      - timingOutcomeSequence
+      - comboSurvival
+      - longestCombo
+      - reacquireDelayMs
+      - statefulResponseLatencyMs
+      - degradationVsH0
+
+traceSchema:
+  sessionRequiredFields:
+    - traceId
+    - harnessVersion
+    - harnessId
+    - attemptIndex
+    - calibrationFlags
+  sessionOptionalFields:
+    - anonymousPlayerId
+    - classId
+    - powerMode
+    - startedAt
+    - deviceContext
+  actionRequiredFields:
+    - seq
+    - atMs
+    - pressureContext
+    - judgment
+    - comboBefore
+    - comboAfter
+    - comboBreakCause
+    - chargeBefore
+    - chargeAfter
+    - heavyOpportunity
+    - heavyAttempted
+    - heavyCompleted
+    - ppAttempted
+    - ppCompleted
+  actionContextFields:
+    - targetId
+    - targetType
+    - targetGeneration
+    - targetChangedSincePriorAction
+    - noTargetWaitMsBeforeAction
+    - interActionMs
+    - reacquireDelayMs
+  stateEventRequiredFields:
+    - atMs
+    - monsterId
+    - monsterType
+    - state
+  stateEventOptionalFields:
+    - readableSinceMs
+    - relatedActionSeq
+
+fitting:
+  methodClass: SEQUENCE_AWARE_CONTEXT_CONDITIONED
+  forbidden:
+    - single_global_iid_judgment_vector_as_complete_model
+    - reverse_fit_player_weakness_to_hit_clear_rate_target
+    - classify_combo40_as_high_mastery_only
+    - fit_from_single_trace_only
+    - mix_harness_rewards_with_campaign_progression
+  requiredComponents:
+    - baselineCadenceDistribution
+    - judgmentDistributionByContext
+    - comboBreakHazardByContextAndComboBand
+    - turnoverReacquisitionDistribution
+    - heavyAttemptAndCompletionModel
+    - ppCompletionModel
+    - statefulResponseLatencyModel
+    - pressureDegradationModel
+  profiles:
+    - SKILLED_V2_CONSERVATIVE
+    - SKILLED_V2_CENTRAL
+    - SKILLED_V2_STRONG
+    - HIGH_MASTERY_STRESS
+  highMasterySeparateFromOrdinarySkilled: true
+
+holdout:
+  preserveSequenceOrder: true
+  splitByPlayerOrSessionGroup: true
+  requireTransferValidationWhenSamplePermits: true
+  reportSampleCountsAndUncertainty: true
+
+postFitGates:
+  combo40:
+    centralMustNotTreatAsExtremeTailInStableRepresentativeConditions: true
+    exactProbabilityFrozen: false
+  roleExpressionRegression:
+    rerunAll20RepresentativeCandidates: true
+    preExpressionDeletionRequiresReview: true
+  difficulty:
+    evaluatedOnlyAfterFit: true
+    nonT1CentralFullTierClearUpperBound: 0.60
+    tier1ExceptionAllowed: true
+  lv31:
+    centralTargetUnlockStageBand: [41, 45]
+
+numericFitValues:
+  status: OPEN_UNTIL_OBSERVED_TRACES
