@@ -14,10 +14,8 @@ except ImportError as exc:
     raise SystemExit("PyYAML is required: pip install pyyaml") from exc
 
 from simulate_class_aware_layer_a import (
-    ALIASES if False else CLASSES,
-)
-from simulate_class_aware_layer_a import (
     BASE_DAMAGE,
+    CLASSES,
     SLOT_Y,
     Monster,
     allocate_budget,
@@ -65,7 +63,6 @@ def simulate(recipe, kin, combat, trace, cls: str, power_mode: dict) -> dict:
     windup_seen: set[int] = set()
     siege_opportunity_seen: set[int] = set()
     support_aura_target_ids: set[int] = set()
-    split_parent_ids: set[int] = set()
 
     role_track: dict[int, dict] = {}
     split_baselines: list[int] = []
@@ -207,7 +204,6 @@ def simulate(recipe, kin, combat, trace, cls: str, power_mode: dict) -> dict:
             metrics["siegerErasedBeforeOpportunity"] += 1
         if m.type == "SPLITTER" and m.generation == 0:
             metrics["splitterParentsKilled"] += 1
-            split_parent_ids.add(m.id)
             split_baselines.append(len(alive_list()) + 1)
             for dy in combat["combatModel"]["childOffsetsY"]:
                 d = type_stats("SPLITTER_CHILD")
