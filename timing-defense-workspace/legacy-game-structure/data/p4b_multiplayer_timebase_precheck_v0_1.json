@@ -1,0 +1,70 @@
+{
+  "version": "p4b-multiplayer-timebase-precheck-v0.1",
+  "status": "BOUNDED_LEGACY_MULTIPLAYER_DIAGNOSTIC_NOT_PRODUCTION_BALANCE",
+  "method": "legacy 5-monster player-count-scaled pressure lane + current SKILLED_V2_CENTRAL + exact v0.16 Lv6-Lv21 parity formulas; all-human bounded diagnostic",
+  "seedsPerTierCompositionLevel": {"2P": 8, "3P": 8, "4P": 12},
+  "limitations": [
+    "not current full 9-monster production multiplayer scaling",
+    "fixed-level snapshots rather than a persistent 50-stage co-op run",
+    "absolute clear-rate, stage-time and XP/min values are directional diagnostics only",
+    "slot action phases were randomized/rotated to remove fixed-slot ordering bias"
+  ],
+  "selected4PLevel21": {
+    "TTTT": {"stageTimeSec":48.250,"creditPerPlayerStage":77.733,"actionsPerPlayerStage":34.974,"creditPerMinute":96.663,"clearRate":1.0},
+    "RRRR": {"stageTimeSec":46.726,"creditPerPlayerStage":68.314,"actionsPerPlayerStage":31.010,"creditPerMinute":87.720,"clearRate":1.0},
+    "AAAA": {"stageTimeSec":47.016,"creditPerPlayerStage":62.919,"actionsPerPlayerStage":28.286,"creditPerMinute":80.296,"clearRate":1.0},
+    "MMMM": {"stageTimeSec":46.455,"creditPerPlayerStage":68.121,"actionsPerPlayerStage":30.714,"creditPerMinute":87.983,"clearRate":1.0},
+    "TRAM": {"stageTimeSec":47.118,"creditPerPlayerStage":66.734,"actionsPerPlayerStage":30.167,"creditPerMinute":84.979,"clearRate":1.0},
+    "KRAM": {"stageTimeSec":46.981,"creditPerPlayerStage":65.219,"actionsPerPlayerStage":29.745,"creditPerMinute":83.291,"clearRate":1.0},
+    "KTRA": {"stageTimeSec":46.102,"creditPerPlayerStage":66.764,"actionsPerPlayerStage":29.932,"creditPerMinute":86.891,"clearRate":1.0},
+    "KTRM": {"stageTimeSec":46.019,"creditPerPlayerStage":70.298,"actionsPerPlayerStage":31.656,"creditPerMinute":91.655,"clearRate":1.0}
+  },
+  "fourPlayerTRAMCreditPerMinuteByClass": {
+    "Lv6": {"Tank":108.831,"Rogue":104.651,"Archer":97.957,"Mage":98.274,"maxMinSpreadPct":11.10},
+    "Lv11": {"Tank":108.254,"Rogue":105.045,"Archer":96.159,"Mage":98.312,"maxMinSpreadPct":12.58},
+    "Lv16": {"Tank":103.461,"Rogue":105.852,"Archer":91.897,"Mage":90.488,"maxMinSpreadPct":16.98},
+    "Lv21": {"Tank":91.825,"Rogue":93.530,"Archer":79.316,"Mage":75.064,"maxMinSpreadPct":24.60}
+  },
+  "fourPlayerSameClassTeammateSensitivityLv21": {
+    "Knight": {"minComp":"KKKK","minCreditPerMinute":89.056,"maxComp":"KTRM","maxCreditPerMinute":101.743,"relativeRangePct":14.25},
+    "Rogue": {"minComp":"KTRA","minCreditPerMinute":87.444,"maxComp":"TRAM","maxCreditPerMinute":93.530,"relativeRangePct":6.96},
+    "Tank": {"minComp":"KTRA","minCreditPerMinute":90.142,"maxComp":"TTTT","maxCreditPerMinute":96.623,"relativeRangePct":7.19},
+    "Archer": {"minComp":"KTRA","minCreditPerMinute":75.133,"maxComp":"AAAA","maxCreditPerMinute":80.286,"relativeRangePct":6.86},
+    "Mage": {"minComp":"KRAM","minCreditPerMinute":73.675,"maxComp":"MMMM","maxCreditPerMinute":88.002,"relativeRangePct":19.45}
+  },
+  "playerCountExamplesLv21": {
+    "TankOnly": {"2P":81.236,"3P":93.419,"4P":96.663},
+    "ArcherOnly": {"2P":68.289,"3P":78.807,"4P":80.296}
+  },
+  "tankHomogeneousEarlyClearWatch": {
+    "3P": {
+      "Lv6":{"clearRate":0.9375,"creditPerMinute":114.065},
+      "Lv11":{"clearRate":0.9375,"creditPerMinute":113.219},
+      "Lv16":{"clearRate":0.9062,"creditPerMinute":111.629},
+      "Lv21":{"clearRate":1.0,"creditPerMinute":93.419}
+    },
+    "4P": {
+      "Lv6":{"clearRate":0.6875,"creditPerMinute":112.200},
+      "Lv11":{"clearRate":0.6458,"creditPerMinute":111.746},
+      "Lv16":{"clearRate":0.6042,"creditPerMinute":111.391},
+      "Lv21":{"clearRate":1.0,"creditPerMinute":96.663}
+    }
+  },
+  "findings": {
+    "soloDivergenceGeneralizesDirectlyToMultiplayer": false,
+    "sharedTeamKillTimeCompressesClassSpread": true,
+    "mixedTeamIndividualXpRateFullyEqualized": false,
+    "teammateCompositionAffectsSameClassXpRate": true,
+    "wallClockNormalizationEliminatesCompositionDependence": false,
+    "spawnCadenceFloorObservedAtLv21": true,
+    "tankOnlyHigherXpOpportunityCanCoincideWithHigherFailureRisk": true,
+    "playerCountScalingAffectsPerPlayerXpRate": true,
+    "optionDImmediateApprovalSupported": false
+  },
+  "classifications": [
+    "SOLO_PROGRESSION_DIVERGENCE_WATCH",
+    "TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH",
+    "PLAYER_COUNT_SCALING_XP_DEPENDENCY",
+    "MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE"
+  ]
+}
