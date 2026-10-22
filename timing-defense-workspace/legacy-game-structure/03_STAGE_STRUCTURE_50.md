@@ -1,27 +1,37 @@
-# Timing Defense — 50 Stage Structure
+# Timing Defense — 50 Stage Structure V0.2
 
 Date: 2026-10-22 KST  
-Status: **STRUCTURAL FOUNDATION / EXACT STAGE DATA OPEN**
+Status: **STRUCTURAL FOUNDATION / MODEL-A ALIGNED / EXACT STAGE DATA OPEN**
 
 ## 1. 기본 구조
 
 한 Tier는 50개의 Stage로 구성한다.
-Stage는 단순히 숫자가 커질수록 HP/count를 올리는 방식이 아니라, 학습 -> 조합 -> 압박 -> 종합 시험으로 전개한다.
+Stage는 단순 HP/count 증가가 아니라:
 
-중요: **Stage design band와 star reward band는 서로 다른 분류**다.
-Stage 30처럼 design상 checkpoint이면서 reward상 1★ 구간인 Stage가 존재하므로 하나의 enum으로 합치지 않는다.
+```text
+establish/teach
+ -> mix
+ -> deepen
+ -> pressure/soft wall
+ -> Lv31 ascension
+ -> post-Lv31 mastery
+ -> final
+```
+
+으로 전개한다.
+
+중요:
+**Stage design band와 star reward band는 서로 다른 분류다.**
 
 ---
 
-# 2. Star reward band — USER_CONFIRMED_STRUCTURE
+# 2. Star reward band — USER_CONFIRMED
 
-Attempt outcome 기준:
-- Stage 1~19에서 실패: 0★
-- Stage 20~39에서 실패: 1★
-- Stage 40~49에서 실패: 2★
-- Stage 50 클리어: 3★
-
-정확한 계산:
+Attempt outcome:
+- Stage1–19 실패: 0★
+- Stage20–39 실패: 1★
+- Stage40–49 실패: 2★
+- Stage50 clear: 3★
 
 ```text
 if tierCleared(Stage50): 3
@@ -30,98 +40,152 @@ else if failedStage >= 20: 1
 else: 0
 ```
 
-따라서 20/40/50은 reward progression의 구조적 anchor다.
+20 / 40 / 50은 reward anchors다.
 
 ---
 
-# 3. Stage design bands
+# 3. Current common macro grammar
 
-정확한 encounter는 미정이지만 50 Stage authoring은 다음 band를 기본 골격으로 사용한다.
+Model A bounded simulation에서 사용할 공통 뼈대:
 
-### Stage 1~9 — Teach / Establish
-- Tier identity 소개
-- 신규 monster/capability를 한 번에 너무 많이 겹치지 않음
-- baseline + 단일 pressure 위주
-- target-order/formation 읽기 학습
+## Stage1–9 — Establish / first teaching
+- returning baseline 또는 Tier 첫 신규 mechanic 소개
+- 한 번에 여러 major mechanic 겹침 억제
+- low/moderate complexity
 
-### Stage 10 — First Checkpoint
-- 1~9에서 학습한 핵심 mechanic 확인
-- 반드시 boss일 필요 없음
+## Stage10 — Checkpoint A
+- 1–9 read check
+- boss optional
+- unpreviewed boss novelty 금지에 가까운 기본값
 
-### Stage 11~19 — Expand
-- 2종/복합 조합 증가
-- formation과 cadence 변화
-- Stage 20 직전 첫 meaningful pressure ramp
+## Stage11–19 — Introduce & Mix
+- 신규 monster/mechanic second teaching window 가능
+- first mixed use
+- Stage20 1★ boundary 준비
 
-### Stage 20~29 — Synthesis A
-- reward상 1★ 구간
-- Tier의 주요 encounter archetype을 본격적으로 조합
-- 단순 소개보다 실제 대응 능력 확인
+## Stage20 — Star Gate A
+- 1★ zone entry
+- 첫 meaningful Tier synthesis
 
-### Stage 30 — Mid Checkpoint
-- design상 중간 전환점
-- reward상 여전히 1★ 구간
-- 후반 mechanic 조합으로 넘어가기 전 검증
+## Stage21–29 — Deepen
+- first high-pressure windows
+- returning + new monster 조합
+- Lv21 power window와 attribution collision 관리
 
-### Stage 31~39 — Escalate
-- reward상 1★ 구간
-- overlap, backline protection, stateful threat 조합 증가
-- Stage 40 진입이 명확한 성취가 되도록 난이도 상승
+## Stage30 — Checkpoint B / optional Boss Preview
+- mid synthesis
+- Stage50 boss가 mandatory unique decision grammar를 가진다면 여기서 낮은 강도로 preview 가능
+- boss preview는 optional
 
-### Stage 40~49 — Final Examination
-- reward상 2★ 구간
-- Tier identity의 고난도 조합
-- 단순 수치 폭증보다 이미 배운 문제를 더 짧은 판단 시간/강한 formation/더 복합 cadence로 제시
-- Tier의 핵심 ordinary capability를 **처음 소개하는 구간으로 사용하지 않는 것**을 기본 guardrail로 한다
+## Stage31–39 — Pressure / Soft-Wall Build
+- class asymmetry가 본격적으로 드러남
+- formation/cadence pressure 강화
+- Lv26 Stage32–36 candidate
+- ordinary soft wall의 기본 형성 구간
 
-### Stage 50 — Tier Clear / 3★
-- 해당 Tier의 최종 시험
-- clear 시 3★
-- boss/final composition 여부는 별도 decision
+## Stage40 — Star Gate B
+- 2★ zone entry
+- late mastery transition
 
-## T1 candidate의 추가 guardrail
-`09_TIER_LADDER_CANDIDATE_V0_1.md`에서는 T1의 9종 ordinary vocabulary teaching을 Stage 29까지 완료하는 방향을 첫 candidate로 둔다.
-이는 T1 candidate이지 모든 Tier의 절대 규칙은 아니다.
+## Stage41–45 — Lv31 Ascension Window — USER-CONFIRMED DIRECTION
+- Lv31 target unlock Stage41–45
+- 새 core ordinary capability first-teach 금지
+- unpreviewed mandatory boss mechanic 금지
+- 모든 Stage를 peak complexity로 만들지 않음
+- known mechanics를 moderate/high pressure에서 사용하며 Lv31 first-use runway 제공
+
+## Stage46–49 — Post-Lv31 Mastery
+- Lv31 반복 사용/숙련
+- class opportunity rotation
+- high difficulty 가능
+- C4는 bounded하게 사용 가능
+- hard class lockout 금지
+
+## Stage50 — Tier Final / 3★
+- Lv31 tutorial 아님
+- already-familiar full kit 종합 시험
+- boss candidate
+- core ordinary mechanic first introduction 금지
+- mandatory boss-only grammar가 있다면 earlier preview 필요
 
 ---
 
-# 4. Stage lifecycle
+# 4. Monster introduction policy
 
-강한 legacy reference:
+현재 active direction은 **T1에서 9종 전부를 teaching하지 않는다.**
 
+Model A bounded spine:
+```text
+T1 G/R/B
+T2 +SH/F
+T3 +C/SP
+T4 +SUP/SI
+T5+ future expansion
+```
+
+각 new monster lifecycle:
+```text
+firstTeach
+ -> firstMixed
+ -> firstHighPressure
+ -> later-Tier reinterpretation
+```
+
+Current range candidates는:
+`28_MODEL_A_TIER_AUTHORING_WINDOWS_V0_1.md`를 따른다.
+
+---
+
+# 5. Player power overlay
+
+First calibration candidate:
+- Lv6: Stage5–7
+- Lv11: 11–14
+- Lv16: 18–21
+- Lv21: 25–28
+- Lv26: 32–36
+- Lv31: **41–45**
+
+Only Lv31 window is user-confirmed.
+Others remain simulation candidates.
+
+Important distinction:
+- class T1에서는 skill unlock이 pedagogic novelty일 수 있음
+- same-class T2+에서는 familiar run-local power spike인 경우가 많음
+
+따라서 `skill learning collision`과 `power attribution collision`을 분리한다.
+
+---
+
+# 6. Stage lifecycle / inter-stage flow
+
+Strong legacy reference:
 ```text
 Stage intro
  -> combat
  -> stage clear
  -> inter-stage progression/shop
- -> next stage intro
+ -> next stage
 ```
 
-현재 canonical combat rule에서 Stage intro 동안:
+Stage intro 동안 현재 canonical behavior reference:
 - movement/spawn 없음
 - AI/passive 없음
 - Timing input 없음
 
-새 Timing turn은 visible target이 있을 때만 시작하며 이미 시작된 valid turn은 마지막 적이 사라져도 완료할 수 있다.
+### Shop cadence remains OPEN
+Legacy every-stage shop을 50 Stage에 자동 복제하지 않는다.
+Candidate later comparison:
+- every-stage
+- checkpoint
+- selected-stage
+- optional/fast continue
 
-### Shop frequency는 OPEN_DECISION
-Legacy v0.35에는 Stage 1 clear -> team shop -> READY -> next Stage 흐름이 실제 구현되었다.
-그러나 50 Stage Tier에서 매 Stage마다 shop을 강제하면 최대 49회의 interruption이 생길 수 있다.
-
-따라서 production에서는 다음 후보를 별도 비교한다.
-- every-stage shop
-- checkpoint shop
-- selected-stage shop
-- fast auto-continue + optional shop
-
-기존 구현을 이유로 빈도를 자동 freeze하지 않는다.
-Shop cadence는 `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`의 cross-category Gate G3로 관리한다.
+Gate G3에서 별도 검토.
 
 ---
 
-# 5. Stage authoring 최소 필드
-
-각 Stage는 최소 다음 데이터를 가진다.
+# 7. Stage authoring fields
 
 ```text
 stageNumber
@@ -142,13 +206,14 @@ bossPolicy
 teamScaling
 rewardProfile
 shopPolicy
+expectedSkillWindow
 ```
 
-`designBand`와 `rewardBand`를 별도 저장한다.
+Design/reward band를 분리 저장한다.
 
 ---
 
-# 6. Encounter event 최소 필드
+# 8. Encounter event fields
 
 ```text
 EncounterEvent
@@ -163,144 +228,86 @@ EncounterEvent
   overlapWith
 ```
 
-`composition`만으로는 부족하다.
-전열 자동 타게팅 때문에 `spawnOrder`와 `formation`이 실제 전술을 바꾼다.
-
-예:
-
-```text
-SHIELD -> BRUTE -> SIEGER
-```
-
-와
-
-```text
-SIEGER -> SHIELD -> BRUTE
-```
-
-는 같은 3종 조합이어도 위협 구조가 다르다.
-
-단, FRONT/MID/BACK은 고정 aggro slot이 아니다.
-실제 runtime target은 authoritative X/validity 규칙을 따른다.
-Formation depth는 의도된 arrival/screening order를 표현한다.
+전열 자동 타게팅 때문에 composition만으로는 부족하다.
+FRONT/MID/BACK은 authoring intent이며 runtime target authority를 덮지 않는다.
 
 ---
 
-# 7. Stage에서 측정할 개수/빈도
+# 9. Required metrics
 
-### Total authored spawn
-Stage data가 직접 생성하도록 작성한 entity 수.
-SPLITTER child는 authored spawn에 포함하지 않는다.
+## Entity/readability
+- authored spawn count
+- effective entity count
+- peak active
+- max 4s/6s density
 
-### Effective entity count
-parent death -> child spawn 등 실제 전투 중 생성된 총 entity 수.
-
-### Peak active count
-동시에 살아 있는 최대 monster 수.
-
-### Short-window spawn density
-- max 4-second spawns
-- max 6-second spawns
-
-과거 concrete recipe 분석의 4s P95 수치는 historical readability reference로만 보존한다. 현재 9종 roster로 다시 측정한다.
-
-### Type presence
-각 monster type이 Stage에 존재하는지.
-
-### Meaningful threat presence
-단순 filler가 아니라 해당 capability가 실제 문제를 만드는지.
-
-### Capability threat-time
-해당 capability가 유효 위협 상태로 존재한 시간.
-특히 SUPPORTER/SIEGER는 spawn share보다 이 값이 중요할 수 있다.
-
----
-
-# 8. Target-order metrics
-
-현재 전투는 system-driven frontmost target acquisition이 핵심 제약이다.
-따라서 각 Stage에서 다음을 측정한다.
-
+## Target order
 - frontline block time
 - target reorder count
-- backline exposure time
-- SUPPORTER aura uptime while screened
-- SIEGER firing uptime while screened
-- CHARGER windup interrupt opportunity count
-- SPLITTER child-created frontline occupancy
-- FLYER line/AoE geometry opportunities
+- backline exposure
+- SUPPORTER screened aura uptime
+- SIEGER screened firing uptime
+- CHARGER windup/interrupt opportunities
+- SPLITTER child frontline occupancy
+- FLYER geometry opportunity
 
-이 지표가 없으면 같은 spawn count라도 실제 난이도 차이를 설명할 수 없다.
-
----
-
-# 9. Anti-repetition
-
-50 Stage가 반복적으로 느껴지지 않도록 구조적 제약을 둔다.
-
-- 동일 encounter signature 연속 반복 금지/억제
-- 동일 monster composition이라도 formation/cadence/geometry를 바꾸어 다른 문제로 만들 수 있음
-- 같은 주 pressure를 같은 time window에 장기간 반복하지 않음
-- 특수 monster를 모든 Stage에 의무적으로 넣지 않음
-- high Tier도 모든 Stage를 복합 chaos로 만들지 않음
+## Power progression
+- EXP
+- level distribution
+- skill unlock distribution P25/P50/P75/P90
+- post-unlock meaningful Stage/event count
+- pre/post skill clear-rate slope
 
 ---
 
-# 10. Difficulty ramp 원칙
+# 10. Difficulty / soft wall
 
-Stage difficulty는 다음을 서로 독립적으로 조정한다.
-- quantity
-- durability
-- speed/tempo
-- formation protection
-- capability overlap
-- cadence compression
-- geometry difficulty
-- objective pressure
-
-한 Stage에서 모든 축을 동시에 최대화하는 것은 예외로 취급한다.
-
----
-
-# 11. Stage reward / EXP / skill reach
-
-50 Stage authoring은 encounter만 봐서는 안 된다.
-Stage별로 함께 계산해야 한다.
-- timing event 수
-- EXP 획득량
-- 예상 level
-- Lv6/11/16/21/26/31 도달 시점
-- kill coin
-- clear reward
-- shop purchasing power
-
-현재 Lv6만 current authoritative이며 Lv11~21은 exact legacy parity candidate, Lv26/31은 미확정이므로 late-stage 최종 calibration은 해당 skill authority decision과 연결한다.
-EXP/skill reach는 governance Gate G4다.
-
----
-
-# 12. Failure/Star analytics
-
-각 Stage simulation 결과는 최종적으로 다음 Tier outcome bucket으로 집계한다.
-
+General non-T1 user target:
 ```text
-FAIL_EARLY      = failedStage 1..19  -> 0★
-FAIL_STAR1      = failedStage 20..39 -> 1★
-FAIL_STAR2      = failedStage 40..49 -> 2★
-CLEAR_TIER      = Stage50 clear      -> 3★
+intended-entry SKILLED_V2_CENTRAL full-Tier clear <60%
 ```
 
-Stage별 fail histogram을 통해 난이도 cliff를 찾는다.
-특히 19->20, 39->40, 49->50에서 별 boundary 때문에 인위적인 벽이 생기지 않는지 별도로 검사한다.
+But desired difficulty를 대부분 Stage1–19 failure로 만들지 않는다.
+
+Preferred ordinary soft-wall shape:
+- Stage31+에서 pressure 증가
+- 1★/2★를 확보할 수 있는 진행 경로 유지
+- 다른 class progression 후 재도전 가치 제공
+
+Fail histogram을 반드시 본다.
 
 ---
 
-# 13. 다음 작업
+# 11. Anti-repetition
 
-다음은 `04_MONSTER_ENCOUNTER_MODEL.md`와 `09_TIER_LADDER_CANDIDATE_V0_1.md`를 이용해:
-- T1 firstTeach/firstMixed/firstHighPressure candidate
-- encounter complexity tagging
-- Tier별 frequency envelope -> exact simulation candidate count
-- 50-stage signature skeleton
-- team-size recipe
-를 생성하는 단계다.
+- identical encounter signature 연속 반복 억제
+- formation/cadence/geometry variation
+- special monster every Stage 강제 금지
+- higher Tier constant C3/C4 chaos 금지
+- recovery/focused challenge 유지
+
+---
+
+# 12. Boss placeholder
+
+Current structural candidate:
+- Stage10 checkpoint / boss optional
+- Stage30 optional boss-signature preview
+- Stage50 boss candidate
+
+Final boss의 mandatory unique decision grammar는 Stage50에서 처음 공개하지 않는다.
+
+---
+
+# 13. Current exact downstream
+
+Master Campaign Layer-0 has passed.
+
+Next:
+- Tier-specific encounter archetype availability
+- formation/cadence availability
+- pressure/complexity bounded frequency ranges
+- representative deterministic recipes
+- micro simulation
+
+Do not yet author exact 200 launch Stages or freeze production numbers.
