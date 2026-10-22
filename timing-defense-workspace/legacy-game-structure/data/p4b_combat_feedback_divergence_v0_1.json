@@ -1,0 +1,109 @@
+{
+  "version": "p4b-combat-feedback-divergence-v0.1",
+  "status": "DERIVED_DIAGNOSTIC_USER_DECISION_REQUIRED_NOT_BALANCE_AUTHORITY",
+  "scope": {
+    "tiers": ["T1", "T2", "T3", "T4"],
+    "classes": ["knight", "rogue", "tank", "archer", "mage"],
+    "activeSkillPower": ["Lv6 current authority", "Lv11/Lv16/Lv21 exact v0.16 parity candidates"],
+    "inactiveSkillPower": ["Lv26", "Lv31"],
+    "shop": "OFF_NEUTRAL",
+    "permanentPower": "P0_FRESH",
+    "productionAuthority": false
+  },
+  "p3CrossCheck": {
+    "actualFirst10Lv6TurnDeltaPct": {
+      "knight": -0.2,
+      "rogue": -20.2,
+      "tank": 0.0,
+      "archer": -18.9,
+      "mage": -14.7
+    },
+    "boundedFeedbackModelPredictedDeltaPct": {
+      "knight": 0.0,
+      "rogue": -20.73,
+      "tank": 0.0,
+      "archer": -19.64,
+      "mage": -19.27
+    },
+    "interpretation": "Knight/Rogue/Tank/Archer closely reproduce the independent P3 signal. Mage is stronger than P3 by about 4.6 percentage points and is retained as a conservative WATCH."
+  },
+  "all20ActionRatioVsLv1Median": {
+    "knight": {"Lv6": 1.0, "Lv11": 0.546, "Lv16": 0.5, "Lv21": 0.447},
+    "rogue": {"Lv6": 0.636, "Lv11": 0.633, "Lv16": 0.633, "Lv21": 0.5},
+    "tank": {"Lv6": 1.0, "Lv11": 1.0, "Lv16": 1.0, "Lv21": 0.521},
+    "archer": {"Lv6": 0.675, "Lv11": 0.658, "Lv16": 0.552, "Lv21": 0.435},
+    "mage": {"Lv6": 0.65, "Lv11": 0.544, "Lv16": 0.449, "Lv21": 0.429}
+  },
+  "all20ActionRatioRanges": {
+    "knight": {"Lv6": [0.9,1.0], "Lv11": [0.381,0.7], "Lv16": [0.381,0.667], "Lv21": [0.333,0.667]},
+    "rogue": {"Lv6": [0.543,0.75], "Lv11": [0.543,0.75], "Lv16": [0.514,0.75], "Lv21": [0.348,0.667]},
+    "tank": {"Lv6": [0.933,1.071], "Lv11": [1.0,1.0], "Lv16": [1.0,1.0], "Lv21": [0.333,0.667]},
+    "archer": {"Lv6": [0.571,0.938], "Lv11": [0.571,0.938], "Lv16": [0.393,0.75], "Lv21": [0.286,0.75]},
+    "mage": {"Lv6": [0.444,0.846], "Lv11": [0.417,0.731], "Lv16": [0.333,0.682], "Lv21": [0.312,0.636]}
+  },
+  "p4aMidpointFeedbackPropagationP50Examples": {
+    "knight": {"T1": [7,13,22,36,51,51], "T2": [6,12,23,35,50,51], "T3": [5,12,22,36,51,51], "T4": [7,13,26,37,50,51]},
+    "rogue": {"T1": [7,15,24,36,51,51], "T2": [6,15,25,36,50,51], "T3": [5,15,24,34,50,51], "T4": [7,17,26,36,46,51]},
+    "tank": {"T1": [7,13,18,25,40,51], "T2": [6,11,18,26,41,51], "T3": [5,12,19,26,40,51], "T4": [7,13,21,27,39,51]},
+    "archer": {"T1": [7,15,24,37,51,51], "T2": [6,14,24,36,50,51], "T3": [5,14,21.5,34,49,51], "T4": [7,15,25.5,35,46,51]},
+    "mage": {"T1": [7,15,24,37,51,51], "T2": [6,15,25,40,51,51], "T3": [5,15,25,41,51,51], "T4": [7,16,26,38,51,51]}
+  },
+  "bestUniversalPurePerTurnThresholdSearch": {
+    "Lv6":  {"thresholdApprox":130.5,"maxWindowMissStages":0,"classTierMisses":0},
+    "Lv11": {"thresholdApprox":233.0,"maxWindowMissStages":1,"classTierMisses":1},
+    "Lv16": {"thresholdApprox":328.0,"maxWindowMissStages":3,"classTierMisses":7},
+    "Lv21": {"thresholdApprox":457.25,"maxWindowMissStages":4,"classTierMisses":15},
+    "Lv26": {"thresholdApprox":539.5,"maxWindowMissStages":5,"classTierMisses":7},
+    "Lv31": {"thresholdApprox":656.5,"maxWindowMissStages":5,"classTierMisses":8}
+  },
+  "purePerTurnRepresentativeConflicts": {
+    "Lv16": ["Rogue T4 about Stage24 vs target 18-21", "Mage T4 about Stage24 vs target 18-21", "Tank T2 about Stage15 vs target 18-21"],
+    "Lv21": ["Mage T3/T4 about Stage32 vs target 25-28", "Tank T1/T2/T3 about Stage21 vs target 25-28"],
+    "Lv31": ["Mage T3 about Stage50 and T2 about Stage49 vs confirmed target 41-45", "Tank T1/T3 about Stage36 and T2/T4 about Stage37 vs confirmed target 41-45", "Knight T3 about Stage46"]
+  },
+  "feedbackAttenuationSensitivity": {
+    "alphaMeaning": "1.0 = full bounded skill-opportunity feedback; lower alpha artificially attenuates the feedback toward marker-only behavior for robustness testing.",
+    "alpha1_00": {"Lv11MaxMiss":1,"Lv16MaxMiss":3,"Lv21MaxMiss":4,"Lv31MaxMiss":5},
+    "alpha0_75": {"Lv11MaxMiss":0,"Lv16MaxMiss":2,"Lv21MaxMiss":3,"Lv31MaxMiss":3},
+    "alpha0_50": {"Lv11MaxMiss":0,"Lv16MaxMiss":1,"Lv21MaxMiss":1,"Lv31MaxMiss":2},
+    "alpha0_25": {"Lv11MaxMiss":0,"Lv16MaxMiss":1,"Lv21MaxMiss":0,"Lv31MaxMiss":1},
+    "interpretation": "The conflict is not explained only by a small modeling error. P3 directly supports near-full early feedback for Rogue and Archer, so alpha=0.25 is not a plausible representation of those early effects."
+  },
+  "flatStageClearCreditExplorationNotApproved": {
+    "status": "EXPLORATORY_ONLY",
+    "results": {
+      "F0":  {"worstMissStages":5,"totalClassTierMilestoneMisses":37},
+      "F2":  {"worstMissStages":4,"totalClassTierMilestoneMisses":29},
+      "F5":  {"worstMissStages":3,"totalClassTierMilestoneMisses":30},
+      "F10": {"worstMissStages":2,"totalClassTierMilestoneMisses":24}
+    },
+    "interpretation": "A small flat Stage-clear bonus is not sufficient and would also violate the currently approved no-flat-stage-XP baseline unless separately approved."
+  },
+  "qualityNormalizedStageBudgetHybridExplorationNotApproved": {
+    "status": "REDUCED_ORDER_SENSITIVITY_ONLY",
+    "formulaShape": "stageCredit = rawWeight * SUM(turnQualityCredit) + (1-rawWeight) * nominalStageOpportunity * meanActualTurnQuality",
+    "rawWeight0_00": {"allMilestoneWindowsFeasible":true,"worstMissStages":0},
+    "rawWeight0_10": {"allMilestoneWindowsFeasible":true,"worstMissStages":0},
+    "rawWeight0_25": {"allMilestoneWindowsFeasible":false,"worstMissStages":1,"missedMilestones":["Lv16","Lv31"]},
+    "rawWeight0_50": {"allMilestoneWindowsFeasible":false,"worstMissStages":2,"missedMilestones":["Lv16","Lv21","Lv26","Lv31"]},
+    "rawWeight0_75": {"allMilestoneWindowsFeasible":false,"worstMissStages":3},
+    "rawWeight1_00": {"allMilestoneWindowsFeasible":false,"worstMissStages":5},
+    "interpretation": "A class-neutral opportunity-normalized quality component is directionally capable of removing the divergence, but the exact blend is not authoritative. The reduced-order result suggests a tiny corrective bonus is insufficient if all current milestone windows are retained."
+  },
+  "classification": {
+    "primary": "P4B_UNIVERSAL_PURE_PER_TURN_WINDOW_CONFLICT",
+    "secondary": [
+      "EARLY_OFFENSIVE_SKILL_XP_SELF_DAMPING_LARGE",
+      "DEFENSIVE_TANK_EARLY_XP_LEAD",
+      "CONFIRMED_LV31_WINDOW_NOT_JOINTLY_FEASIBLE_UNDER_PURE_PER_TURN_BASELINE"
+    ],
+    "automaticFixAuthorized": false
+  },
+  "warnings": [
+    "This is a bounded planning/calibration diagnostic, not production balance authority.",
+    "Lv11/Lv16/Lv21 are simulation-only legacy parity candidates.",
+    "The Mage feedback model is somewhat stronger than the independent P3 first-10 observation and must remain a WATCH.",
+    "The quality-normalized Stage-budget hybrid is exploratory and requires an explicit new user decision before implementation as methodology.",
+    "No class/Tier XP multiplier, skill nerf, encounter rewrite, or Stage-clear XP rule is authorized by this file."
+  ]
+}
