@@ -27,15 +27,19 @@ def load_jsonl(path: Path):
 
 
 def expressed(monster: str, row: dict) -> tuple[bool, str]:
-    role = row.get("roleMetricsByType", {})
     if monster == "GRUNT":
         return True, "baseline-exempt"
     if monster == "RUNNER":
         ok = float(row.get("runnerDistanceAdvancedMax") or 0) > 0
         return ok, "distance-advanced" if ok else "no-speed-expression-observed"
     if monster == "BRUTE":
-        ok = int(row.get("bruteFrontlineMs") or 0) > 0 and int(row.get("bruteHitsReceived") or 0) > 0
-        return ok, "frontline-and-hit-attention" if ok else "no-meaningful-frontline-attention"
+        frontline = int(row.get("bruteFrontlineMs") or 0)
+        hits = int(row.get("bruteHitsReceived") or 0)
+        absorbed = float(row.get("bruteDamageAbsorbed") or 0)
+        # BRUTE may express as a durable screen without ever becoming authoritative frontmost
+        # (for example behind a SHIELD while absorbing secondary/line damage).
+        ok = hits > 0 and (frontline > 0 or absorbed > 0)
+        return ok, "durable-attention-or-screening" if ok else "no-meaningful-durable-attention"
     if monster == "SHIELD":
         ok = int(row.get("shieldMitigatedHits") or 0) > 0 and float(row.get("shieldPreventedDamage") or 0) > 0
         return ok, "mitigation-observed" if ok else "mitigation-not-observed"
@@ -67,10 +71,22 @@ def expressed(monster: str, row: dict) -> tuple[bool, str]:
     return False, "unknown-monster"
 
 
+def load_designations(path: Path | None) -> dict[str, set[str]]:
+    if path is None:
+        return {}
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    out: dict[str, set[str]] = {}
+    for recipe_id, cfg in (data.get("criticalRecipes") or {}).items():
+        roles = cfg.get("designatedRoleMonsters") or []
+        out[str(recipe_id)] = {str(x) for x in roles}
+    return out
+
+
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("simulation_jsonl", type=Path)
     p.add_argument("contract_yaml", type=Path)
+    p.add_argument("--designation-yaml", type=Path, default=None)
     p.add_argument("--monster", action="append", default=[])
     p.add_argument("--require-all-five", action="store_true")
     args = p.parse_args()
@@ -82,18 +98,20 @@ def main() -> int:
     if unknown:
         raise SystemExit(f"unknown contract monsters: {unknown}")
 
+    designations = load_designations(args.designation_yaml)
     rows = load_jsonl(args.simulation_jsonl)
-    grouped = defaultdict(list)
-    for row in rows:
-        grouped[(row["recipeId"], row.get("profile"), row["classId"])].append(row)
 
     results = []
     for row in rows:
+        recipe_id = str(row["recipeId"])
         present = set((row.get("roleMetricsByType") or {}).keys())
-        for monster in sorted(wanted & present):
+        recipe_wanted = wanted & present
+        if designations:
+            recipe_wanted &= designations.get(recipe_id, set())
+        for monster in sorted(recipe_wanted):
             ok, reason = expressed(monster, row)
             results.append({
-                "recipeId": row["recipeId"],
+                "recipeId": recipe_id,
                 "profile": row.get("profile"),
                 "classId": row["classId"],
                 "monster": monster,
@@ -134,6 +152,7 @@ def main() -> int:
 
     print(json.dumps({
         "evaluation": "ROLE_EXPRESSION_V0_2",
+        "designationFiltered": bool(designations),
         "requireAllFive": args.require_all_five,
         "overallPass": overall_pass,
         "summaries": summaries,
