@@ -1,0 +1,305 @@
+version: model-a-representative-recipes-v0.1
+status: DESIGNED_NOT_AUTHORITATIVE
+purpose: representative deterministic Layer-A0.5 preflight inputs
+
+staticDensityGuardrails:
+  authored4sNormalMax: 8
+  authored4sWatchMax: 10
+  effective4sNormalMax: 10
+  effective4sWatchMax: 13
+
+notes:
+  - Counts are bounded simulation anchors, not production balance.
+  - SPLITTER effective density assumes immediate parent death and immediate two-child creation for conservative static stress.
+  - Spawn offsets are deterministic authoring candidates, not production cadence freeze.
+
+recipes:
+  - id: T1_E01_M
+    tier: T1
+    archetype: E01
+    intensity: M
+    formation: F01
+    cadence: CD02
+    useCase: baseline-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.46}
+      - {tMs: 750, type: GRUNT, y: 0.46}
+      - {tMs: 1500, type: GRUNT, y: 0.46}
+      - {tMs: 2250, type: GRUNT, y: 0.46}
+      - {tMs: 3000, type: GRUNT, y: 0.46}
+      - {tMs: 3750, type: GRUNT, y: 0.46}
+
+  - id: T1_E02_M
+    tier: T1
+    archetype: E02
+    intensity: M
+    formation: F01
+    cadence: CD03
+    useCase: rush-standard
+    spawns:
+      - {tMs: 0, type: RUNNER, y: 0.45}
+      - {tMs: 250, type: RUNNER, y: 0.47}
+      - {tMs: 1500, type: GRUNT, y: 0.45}
+      - {tMs: 1750, type: RUNNER, y: 0.47}
+      - {tMs: 3000, type: GRUNT, y: 0.45}
+      - {tMs: 3250, type: RUNNER, y: 0.47}
+      - {tMs: 4500, type: GRUNT, y: 0.46}
+
+  - id: T1_E03_M
+    tier: T1
+    archetype: E03
+    intensity: M
+    formation: F02
+    cadence: CD05
+    useCase: durability-standard
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 550, type: GRUNT, y: 0.43}
+      - {tMs: 1100, type: GRUNT, y: 0.49}
+      - {tMs: 1650, type: BRUTE, y: 0.46}
+      - {tMs: 2200, type: GRUNT, y: 0.46}
+
+  - id: T2_E04_M
+    tier: T2
+    archetype: E04
+    intensity: M
+    formation: F02
+    cadence: CD05
+    useCase: shield-standard
+    spawns:
+      - {tMs: 0, type: SHIELD, y: 0.46}
+      - {tMs: 550, type: GRUNT, y: 0.42}
+      - {tMs: 1100, type: GRUNT, y: 0.50}
+      - {tMs: 1650, type: GRUNT, y: 0.44}
+      - {tMs: 2200, type: GRUNT, y: 0.48}
+
+  - id: T2_E05_M
+    tier: T2
+    archetype: E05
+    intensity: M
+    formation: F02
+    cadence: CD05
+    useCase: mixed-wall-standard
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.43}
+      - {tMs: 450, type: SHIELD, y: 0.49}
+      - {tMs: 1050, type: GRUNT, y: 0.44}
+      - {tMs: 1650, type: GRUNT, y: 0.48}
+      - {tMs: 2250, type: GRUNT, y: 0.46}
+
+  - id: T2_E06_M
+    tier: T2
+    archetype: E06
+    intensity: M
+    formation: F05
+    cadence: CD03
+    useCase: air-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.47}
+      - {tMs: 250, type: FLYER, y: 0.34}
+      - {tMs: 1500, type: GRUNT, y: 0.45}
+      - {tMs: 1750, type: FLYER, y: 0.58}
+      - {tMs: 3000, type: GRUNT, y: 0.47}
+      - {tMs: 3250, type: GRUNT, y: 0.43}
+
+  - id: T2_E14_H
+    tier: T2
+    archetype: E14
+    intensity: H
+    formation: F05
+    cadence: CD04
+    useCase: air-rush-high
+    spawns:
+      - {tMs: 0, type: RUNNER, y: 0.46}
+      - {tMs: 180, type: FLYER, y: 0.34}
+      - {tMs: 360, type: RUNNER, y: 0.48}
+      - {tMs: 540, type: FLYER, y: 0.58}
+      - {tMs: 1400, type: RUNNER, y: 0.44}
+      - {tMs: 1580, type: FLYER, y: 0.36}
+      - {tMs: 1760, type: RUNNER, y: 0.50}
+
+  - id: T3_E07_M
+    tier: T3
+    archetype: E07
+    intensity: M
+    formation: F01
+    cadence: CD07
+    useCase: charger-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.43}
+      - {tMs: 700, type: GRUNT, y: 0.49}
+      - {tMs: 1400, type: GRUNT, y: 0.45}
+      - {tMs: 2100, type: GRUNT, y: 0.47}
+      - {tMs: 2800, type: CHARGER, y: 0.46}
+
+  - id: T3_E08_M
+    tier: T3
+    archetype: E08
+    intensity: M
+    formation: F09
+    cadence: CD03
+    useCase: splitter-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 250, type: SPLITTER, y: 0.46}
+      - {tMs: 1500, type: GRUNT, y: 0.50}
+      - {tMs: 1750, type: SPLITTER, y: 0.46}
+      - {tMs: 3000, type: GRUNT, y: 0.46}
+
+  - id: T3_E13_H
+    tier: T3
+    archetype: E13
+    intensity: H
+    formation: F08
+    cadence: CD04
+    useCase: rush-breach-high
+    spawns:
+      - {tMs: 0, type: RUNNER, y: 0.42}
+      - {tMs: 180, type: RUNNER, y: 0.50}
+      - {tMs: 360, type: CHARGER, y: 0.46}
+      - {tMs: 1200, type: RUNNER, y: 0.43}
+      - {tMs: 1380, type: RUNNER, y: 0.49}
+      - {tMs: 1560, type: CHARGER, y: 0.46}
+
+  - id: T3_E15_M
+    tier: T3
+    archetype: E15
+    intensity: M
+    formation: F09
+    cadence: CD03
+    useCase: replicate-rush-standard
+    spawns:
+      - {tMs: 0, type: RUNNER, y: 0.42}
+      - {tMs: 250, type: SPLITTER, y: 0.46}
+      - {tMs: 1500, type: RUNNER, y: 0.50}
+      - {tMs: 1750, type: SPLITTER, y: 0.46}
+      - {tMs: 3000, type: RUNNER, y: 0.46}
+
+  - id: T3_E17_M
+    tier: T3
+    archetype: E17
+    intensity: M
+    formation: F02
+    cadence: CD06
+    useCase: breach-screen-standard
+    spawns:
+      - {tMs: 0, type: SHIELD, y: 0.43}
+      - {tMs: 250, type: BRUTE, y: 0.49}
+      - {tMs: 500, type: GRUNT, y: 0.44}
+      - {tMs: 750, type: GRUNT, y: 0.48}
+      - {tMs: 1450, type: CHARGER, y: 0.46}
+
+  - id: T3_E20_L
+    tier: T3
+    archetype: E20
+    intensity: L
+    formation: F09
+    cadence: CD07
+    useCase: collapse-chain-low-stress
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 700, type: SPLITTER, y: 0.46}
+      - {tMs: 1400, type: GRUNT, y: 0.50}
+      - {tMs: 2300, type: CHARGER, y: 0.46}
+
+  - id: T4_E09_M
+    tier: T4
+    archetype: E09
+    intensity: M
+    formation: F06
+    cadence: CD06
+    useCase: support-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 250, type: RUNNER, y: 0.50}
+      - {tMs: 500, type: GRUNT, y: 0.44}
+      - {tMs: 750, type: RUNNER, y: 0.48}
+      - {tMs: 1100, type: GRUNT, y: 0.46}
+      - {tMs: 1700, type: SUPPORTER, y: 0.46}
+
+  - id: T4_E10_M
+    tier: T4
+    archetype: E10
+    intensity: M
+    formation: F06
+    cadence: CD06
+    useCase: siege-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 250, type: GRUNT, y: 0.50}
+      - {tMs: 500, type: GRUNT, y: 0.44}
+      - {tMs: 750, type: GRUNT, y: 0.48}
+      - {tMs: 1500, type: SIEGER, y: 0.46}
+
+  - id: T4_E11_M
+    tier: T4
+    archetype: E11
+    intensity: M
+    formation: F07
+    cadence: CD06
+    useCase: escort-siege-standard
+    spawns:
+      - {tMs: 0, type: SHIELD, y: 0.42}
+      - {tMs: 250, type: BRUTE, y: 0.50}
+      - {tMs: 500, type: GRUNT, y: 0.44}
+      - {tMs: 750, type: GRUNT, y: 0.48}
+      - {tMs: 1550, type: SIEGER, y: 0.46}
+
+  - id: T4_E12_M
+    tier: T4
+    archetype: E12
+    intensity: M
+    formation: F07
+    cadence: CD06
+    useCase: buffed-bulwark-standard
+    spawns:
+      - {tMs: 0, type: SHIELD, y: 0.42}
+      - {tMs: 250, type: SHIELD, y: 0.50}
+      - {tMs: 500, type: BRUTE, y: 0.46}
+      - {tMs: 750, type: GRUNT, y: 0.44}
+      - {tMs: 1000, type: GRUNT, y: 0.48}
+      - {tMs: 1650, type: SUPPORTER, y: 0.46}
+
+  - id: T4_E16_M
+    tier: T4
+    archetype: E16
+    intensity: M
+    formation: F09
+    cadence: CD07
+    useCase: cascade-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 500, type: SPLITTER, y: 0.46}
+      - {tMs: 1000, type: GRUNT, y: 0.50}
+      - {tMs: 1500, type: SPLITTER, y: 0.46}
+      - {tMs: 2100, type: GRUNT, y: 0.46}
+      - {tMs: 3000, type: SUPPORTER, y: 0.46}
+
+  - id: T4_E18_M
+    tier: T4
+    archetype: E18
+    intensity: M
+    formation: F08
+    cadence: CD07
+    useCase: dual-axis-standard
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 400, type: FLYER, y: 0.34}
+      - {tMs: 800, type: GRUNT, y: 0.50}
+      - {tMs: 1200, type: FLYER, y: 0.58}
+      - {tMs: 1800, type: SHIELD, y: 0.46}
+      - {tMs: 3000, type: SIEGER, y: 0.46}
+
+  - id: T4_E19_M
+    tier: T4
+    archetype: E19
+    intensity: M
+    formation: F07
+    cadence: CD06
+    useCase: fortress-bounded
+    spawns:
+      - {tMs: 0, type: SHIELD, y: 0.42}
+      - {tMs: 250, type: BRUTE, y: 0.50}
+      - {tMs: 500, type: GRUNT, y: 0.46}
+      - {tMs: 900, type: SUPPORTER, y: 0.44}
+      - {tMs: 1800, type: SIEGER, y: 0.48}
