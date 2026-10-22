@@ -29,7 +29,7 @@ P0 Foundation / role expression
 ```
 
 Active dependency plan:
-- `legacy-game-structure/data/system_dependency_calibration_order_v0_2.yaml`
+- `legacy-game-structure/data/system_dependency_calibration_order_v0_3.yaml`
 
 P4 proposal / evidence:
 - `legacy-game-structure/78_P4_FULL_PLAYER_POWER_SPINE_EXP_MODEL_PROPOSAL_V0_1.md` — **PROPOSED / NOT YET APPROVED**
