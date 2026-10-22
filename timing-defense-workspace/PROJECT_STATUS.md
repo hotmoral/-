@@ -12,25 +12,29 @@ Updated: 2026-10-23 KST
 
 # Current phase
 
-**P3 — TEN-STAGE PERSISTENT RUN KERNEL / STATE+PIPELINE INTEGRATION**
+**P3 — TEN-STAGE PERSISTENT RUN KERNEL / PROPOSAL AWAITING USER DECISION**
 
-The project has completed:
+Completed:
 - campaign spine validation;
 - all-20 role-expression validation;
 - provisional streak-aware `SKILLED_V2_CENTRAL` integration;
 - system dependency / calibration-order review;
 - user-approval decision governance;
 - P1 Run-State Lifecycle structural closure;
-- P2 Modifier Pipeline / Power Attribution structural closure.
+- P2 Modifier Pipeline / Power Attribution structural closure;
+- P3 dependency/fixture/state-boundary analysis and proposal authoring.
 
-Current execution authority:
+Current authority / proposal:
 - `legacy-game-structure/69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 - `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 - `legacy-game-structure/71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md`
 - `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/75_TEN_STAGE_PERSISTENT_RUN_KERNEL_PROPOSAL_V0_1.md` — **PROPOSED / NOT APPROVED**
 - `legacy-game-structure/data/modifier_pipeline_contract_v0_1.yaml`
 - `legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`
+
+P3 implementation is not yet authorized.
 
 ---
 
@@ -44,15 +48,7 @@ Current execution authority:
 - achievements = targeted cross-class growth.
 - recoverable soft walls intended; hard class lockout forbidden.
 - current 9 monsters are V1 foundation, not lifetime final roster.
-- T1 does not expose all 9; higher Tiers introduce species.
-- future T5/T6/T7+ and new monsters remain open.
-- provisional non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60% as an upper difficulty gate.
-- combo40 belongs inside ordinary skilled play.
-- Lv31 target unlock window = Stage41–45.
-- Stage46–49 = post-Lv31 mastery; Stage50 = final application.
-- intended monster roles must become perceivable before deletion.
-
-Model A remains the default bounded simulation spine:
+- current bounded Model A roster ladder:
 
 ```text
 T1 G/R/B
@@ -62,50 +58,43 @@ T4 +SUP/SI
 T5+ future
 ```
 
-NOT production frozen.
+- provisional non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60% as an upper difficulty gate.
+- combo40 belongs inside ordinary skilled play.
+- Lv31 target unlock window = Stage41–45.
+- Stage46–49 = post-Lv31 mastery; Stage50 = final application.
+- intended monster roles must become perceivable before deletion.
+
+Model A is the active bounded simulation spine, not production freeze.
 
 ---
 
-# Closed validation chain
+# Closed lower-layer validation
 
 Historical all-20:
 ```text
 20 recipes × 3 deterministic brackets × 5 classes = 300 combat rows
-36 designated role pairs × 15 rows = 540 structural checks
+36 designated role pairs × 15 rows = 540 checks
 540 / 540 PASS
 ```
 
 Corrected provisional central all-20:
 ```text
 20 recipes × 3 base seeds × 5 classes = 300 combat rows
-36 designated role pairs × 15 rows = 540 structural checks
+36 designated role pairs × 15 rows = 540 checks
 540 / 540 PASS
 ```
 
-Historical regression after localized E08/E20 refinements also remains `540 / 540 PASS`.
+Historical regression after localized E08/E20 refinements remains `540 / 540 PASS`.
 
-Important watches:
+Watches retained:
 - T4 siege wall pressure in persistent/full-Tier runs;
 - T3 E13 wall pressure;
 - E20 CHARGER lower-tail readability;
-- combo40 cannot be judged from short representative encounters.
+- combo40 needs persistent-run context.
 
----
-
-# Player-model boundary
-
-Primary-user observed traces remain `HIGH_MASTERY_STRESS_CANDIDATE`, not ordinary-skilled population evidence.
-
-User-authorized bounded design prior:
-
-```text
-PERFECT 70%
-GOOD    20%
-NORMAL  10%
-```
-
-Implemented as a streak-aware deterministic candidate.
-Status: `PROVISIONAL DESIGN PRIOR / NOT EMPIRICAL POPULATION FIT`.
+Player central prior remains a design prior, not empirical population fit:
+`PERFECT 70 / GOOD 20 / NORMAL 10`, implemented streak-aware.
+Primary-user observed traces remain upper-tail `HIGH_MASTERY_STRESS_CANDIDATE` evidence only.
 
 ---
 
@@ -114,26 +103,15 @@ Status: `PROVISIONAL DESIGN PRIOR / NOT EMPIRICAL POPULATION FIT`.
 Authority: `72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`.
 
 Approved:
-- Base HP / Max HP persist through Stage/shop within the attempt.
-- no automatic Stage/shop healing.
+- Base HP / Max HP persist across Stage/shop; no automatic transition heal.
 - Base HP 0 ends the attempt.
-- retry starts a fresh Stage1 run-local state while account-permanent state remains.
-- combo and charge persist through Stage/shop downtime.
+- retry starts fresh Stage1 run-local state while account-permanent state remains.
+- combo and charge persist across Stage/shop downtime.
 - started Heavy X->Y resolves before Stage transition finalizes.
-- disconnect != leave.
-- reconnect restores same authoritative run/player state without reset/heal.
-- transient multiplayer disconnect does not immediately reduce enemy pressure.
-- transient disconnect alone does not immediately invalidate reward/star/achievement eligibility.
+- reconnect restores same authoritative attempt without reset/heal.
+- transient multiplayer disconnect does not immediately lower pressure or invalidate progression credit.
 
-Deferred to P10/P16 or later engineering policy:
-- reconnect grace duration;
-- AI takeover/substitution;
-- confirmed-abandonment threshold;
-- pressure rescaling after abandonment;
-- reward/achievement credit after long disconnect/AI takeover;
-- host migration details;
-- all-human disconnect behavior;
-- storage/retention implementation.
+Reconnect grace, AI takeover, abandonment, post-abandon scaling, long-absence reward credit, host migration and durable storage remain downstream.
 
 ---
 
@@ -142,48 +120,41 @@ Deferred to P10/P16 or later engineering policy:
 Authority: `74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`.
 
 Approved:
-- ordinary same-stat progression bonuses aggregate additively by default;
-- multiplication is explicit/opt-in, not implied by subsystem boundaries;
-- scalar stats are separated from effect rules/procs/geometry;
-- authoritative outgoing order is action validation -> timing/Heavy/P×P -> attack template -> effective scalar stats -> action transforms/combo -> crit policy -> hit geometry -> per-target mitigation -> realized effect -> consequences -> isolated procs;
-- generic wall DR -> unique class/team defense -> shield -> Base HP;
-- source modifier state is authoritative and effective stats are derived/recomputable;
-- deterministic Power Attribution Ledger is required for simulator/test authority;
-- repeated intermediate rounding is avoided; rounding occurs at realized effect boundaries, preserving existing fixed-budget contracts.
+- same ordinary scalar stat progression bonuses aggregate additively by default;
+- multiplication is explicit/opt-in;
+- scalar stats are separate from effect rules/procs/geometry;
+- outgoing and incoming operation orders are explicit;
+- source modifier state is authoritative; effective values are derived/recomputable;
+- deterministic Power Attribution Ledger is required for simulator/test;
+- repeated intermediate rounding is avoided; realized-effect-boundary rounding is the default.
 
-Still open:
-- exact star/achievement/shop values;
-- crit and generic defense caps;
-- exact Base HP;
-- unresolved multihit crit inheritance;
-- final Lv26/Lv31 contracts;
-- exact numeric representation;
-- production implementation.
+Exact star/achievement/shop values, caps, Base HP, unresolved multihit crit inheritance, final Lv26/Lv31 contracts and production implementation remain OPEN.
 
 ---
 
-# Exact current boundary
+# P3 proposal — USER DECISION REQUIRED
 
-Completed through:
-`P2 MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION`.
+Authority candidate:
+`75_TEN_STAGE_PERSISTENT_RUN_KERNEL_PROPOSAL_V0_1.md`.
 
-## NEXT — P3 TEN_STAGE_PERSISTENT_RUN_KERNEL
-Purpose:
-- integrate P1 state lifecycle and P2 power pipeline in one deterministic multi-stage run;
-- validate persistence/transition/failure/retry and attribution;
-- expose provisional multi-stage wall-pressure and early skill-reach evidence;
-- **not** final campaign balance.
+Key consistency correction:
+- old `11_T1_STAGE_SKELETON_CANDIDATE_V0_1.md` belongs to the superseded all-nine-monsters-in-T1 direction;
+- current Model A first 10 T1 Stages use GRUNT baseline and RUNNER teach/mix, with BRUTE first-teach later;
+- P3 therefore proposes a separate current-Model-A synthetic fixture, not exact launch authoring.
 
-P3 must keep OFF / parameterized:
-- permanent star values;
-- achievement values;
-- final shop tuning;
-- exact final EXP formula;
-- final boss novelty;
-- multiplayer progression credit;
-- exact launch Stage authoring.
+Recommended package awaiting approval:
+1. T1-shaped GRUNT/RUNNER first-10 synthetic fixture; no BRUTE/boss in the main lane.
+2. `LV1_CONTINUITY` + `FORCED_LV6_TRANSITION` power lanes; no exact EXP formula/reach claim.
+3. neutral Stage transition; no real shop/economy; sentinel coin/shop persistence tests only.
+4. ordinary Stage-local TEMPORARY combat effects settle then clear; only explicit RUN-scoped effects may persist.
+5. `STAGE_SETTLED` barrier drains authorized current-action effects and forbids transient leakage.
+6. one continuous skilled judgment/RNG state across the whole attempt; no per-Stage reseeding.
+7. 30-run primary structural matrix plus bounded targeted fixtures.
+8. P3 output = `lv6_transition_plumbing_evidence`; actual Lv6 reach calibration remains P4.
 
-Material P3 design choices still require analysis -> proposal -> user approval before closure.
+Until approved:
+- do not implement P3 kernel/data/validator;
+- do not treat any P3 proposal item as structural freeze.
 
 ---
 
@@ -198,27 +169,27 @@ inspect live canonical
  -> compare alternatives
  -> recommend
  -> USER APPROVAL
- -> record accepted direction
+ -> author / validate / record accepted direction
 ```
 
-A candidate passing simulation is not authorization to freeze it.
+A passing simulation does not self-authorize a design decision.
 
 ---
 
 # Still not frozen
 
-- final launch Tier count
-- exact Tier unlock policy
+- final launch Tier count / unlock policy
 - production monster coefficients/coordinates
 - exact 200-Stage schedule
 - exact EXP formula
-- Lv11+ production coefficients not already frozen
 - exact shop cadence/economy
+- exact Base HP
 - modifier numeric coefficients/caps
-- permanent star milestone/value ladder
+- permanent star values
 - achievement reward graph/value
 - exact boss cadence/design
+- unresolved Lv26/Lv31 details
 - multiplayer disconnect operational policy
 - multiplayer progression credit/scaling coefficients
 
-No production gameplay source or production balance value was changed by P2 closure.
+No production gameplay source or production balance value was changed by the P3 proposal.
