@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8"><title>v0.41 FLYER client selftest</title><body><pre id="out">RUNNING</pre><script>
+window.H=1000;window.W=2000;
+window.MONSTER_TYPES={flyer:{speed:.100,size:.78}};
+const monster={id:1,type:'flyer',x:1200,y:340,baseY:340,v034TargetY:340};
+window.S={monsters:[monster]};
+window.__TDMP34CF={active:true,state:null,monsterById:new Map([[1,monster]])};
+let legacyRan=false,seenType='';
+window.update=function(now,dt){seenType=monster.type;if(monster.type==='flyer'){legacyRan=true;monster.y+=999}return true};
+</script><script src="v041-flyer-authority.js?v=cf0411"></script><script>
+const checks=[];function c(name,pass,actual,expected){checks.push({name,pass:!!pass,actual,expected})}
+try{
+  const api=window.__TDFlyerYV041;
+  c('API_PRESENT',!!api,!!api,true);
+  const y=api.yNormalized({baseY:.34,yEpochAt:1000,yAmp:.020,yOmega:5},1000+Math.PI/(2*5)*1000);
+  c('SAME_PHASE_FORMULA',Math.abs(y-.36)<1e-9,y,.36);
+  monster.v041Flyer={baseY:.34,yEpochAt:1000,yAmp:.020,yOmega:5,serverTime:1000,perfAt:performance.now()};
+  update(monster.v041Flyer.perfAt+Math.PI/(2*5)*1000,.016);
+  c('LEGACY_LOCAL_OSCILLATOR_SUPPRESSED',legacyRan===false,{legacyRan,seenType},{legacyRan:false,seenType:'flyer_net'});
+  c('TYPE_RESTORED_AFTER_UPDATE',monster.type==='flyer',monster.type,'flyer');
+  c('AUTHORITATIVE_TARGET_Y_EXTRAPOLATED',Math.abs(monster.v034TargetY-360)<.001,monster.v034TargetY,360);
+}catch(e){c('EXCEPTION',false,String(e?.stack||e),'no exception')}
+const passed=checks.filter(x=>x.pass).length,ok=passed===checks.length;document.getElementById('out').textContent=`${ok?'FINAL · PASS':'FINAL · FAIL'} · ${passed}/${checks.length}\n`+JSON.stringify(checks,null,2);document.body.dataset.final=ok?'pass':'fail';
+</script></body>
