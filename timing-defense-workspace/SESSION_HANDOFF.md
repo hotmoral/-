@@ -16,11 +16,12 @@ Live remote wins over memory/chat/handoff.
 
 # CURRENT PHASE
 
-**Critical-Set Role-Expression V0.2 Rerun**
+**SKILLED_V2 Controlled Harness / Player-Model Fitting**
 
-Broad campaign redesign is not the blocker.
-Fine activation scans found viable CHARGER/SIEGER geometry candidates without global HP inflation.
-The current task is now to rerun the 10 critical representative recipes with direct per-monster role telemetry and automatic five-class contract evaluation.
+Campaign structure and representative monster role-expression are no longer the blocker.
+The full 20-recipe representative library has passed the bounded role-expression audit with watches.
+
+Do NOT resume broad encounter geometry tuning unless fitted player evidence reopens a specific watch.
 
 ---
 
@@ -28,35 +29,25 @@ The current task is now to rerun the 10 critical representative recipes with dir
 
 1. `PROJECT_STATUS.md`
 2. `NEXT_WORK.md`
-3. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
-4. `legacy-game-structure/48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md`
-5. `legacy-game-structure/50_CROSS_BRACKET_ROLE_EXPRESSION_ROBUSTNESS_V0_1.md`
-6. `legacy-game-structure/52_ROLE_METRICS_V0_2_INSTRUMENTATION.md`
-7. `legacy-game-structure/49_E11_SIEGE_TIMING_ADJUSTMENT_REPORT_V0_1.md`
-8. `legacy-game-structure/51_PASSIVE_ROLE_STRUCTURAL_ANCHOR_REPORT_V0_1.md`
-9. `legacy-game-structure/46_ROLE_EXPRESSION_ADMISSION_AUDIT_V0_1.md`
-10. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
-11. `legacy-game-structure/24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
+3. `legacy-game-structure/54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
+4. `legacy-game-structure/53_CRITICAL_ROLE_EXPRESSION_V0_2_RERUN_REPORT_V0_1.md`
+5. `legacy-game-structure/24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
+6. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+7. `legacy-game-structure/52_ROLE_METRICS_V0_2_INSTRUMENTATION.md`
+8. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
 Machine-readable:
-- `legacy-game-structure/data/monster_role_expression_contract_v0_1.yaml`
-- `legacy-game-structure/data/role_expression_activation_search_v0_1.yaml` — file name retained; content version V0.2
-- `legacy-game-structure/data/role_expression_activation_window_candidates_v0_1.yaml`
-- `legacy-game-structure/data/model_a_role_expression_geometry_overrides_v0_1.yaml`
+- `legacy-game-structure/data/model_a_critical_role_expression_candidates_v0_1.yaml` — content V0.2
+- `legacy-game-structure/data/model_a_additional10_role_expression_candidates_v0_1.yaml`
 - `legacy-game-structure/data/model_a_class_action_trace_bracket_v0_1.yaml`
-- `legacy-game-structure/data/model_a_representative_recipes_v0_1.yaml`
-- `legacy-game-structure/data/model_a_kinematic_anchor_v0_1.yaml`
-- `legacy-game-structure/data/model_a_combat_sensitivity_anchor_v0_1.yaml`
+- `legacy-game-structure/data/monster_role_expression_contract_v0_1.yaml`
+- base representative/kinematic/combat anchor YAMLs remain inputs
 
 Tools:
-- `tools/simulate_class_aware_layer_a.py` — preserve V0.1 evidence
-- `tools/simulate_class_aware_role_metrics_v0_2.py` — current role telemetry lane
+- `tools/materialize_critical_role_candidates.py` — supports critical or role overlays
+- `tools/simulate_class_aware_role_metrics_v0_2.py`
 - `tools/evaluate_role_expression_v0_2.py`
-- `tools/scan_activation_window_candidates.py`
-- `tools/probe_sieger_readability_budget.py`
-- `tools/probe_passive_role_contract_anchors.py`
-- `tools/validate_monster_role_expression_contract.py`
-- prior Layer-0/static/kinematic tools remain available
+- previous activation/readability/passive probes remain evidence tools
 
 ---
 
@@ -66,60 +57,38 @@ Tools:
 - Same Tier/Stage combat content across all classes.
 - Tier = exactly 50 Stage.
 - fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / clear50=3★.
-- stars = broad account permanent growth.
-- achievements = targeted cross-class progression.
+- stars broad permanent account growth.
+- achievements targeted cross-class growth.
 - recoverable soft walls intended; hard class lockout forbidden.
 - current 9 monsters are V1 foundation, not lifetime final roster.
 - T1 does not expose all 9; higher Tiers introduce new species.
-- future T5/T6/T7+ expansion remains open.
+- future T5/T6/T7+ and new monsters remain open.
 - fitted non-T1 `SKILLED_V2_CENTRAL` full-clear should normally be <60%.
 - combo40 is skilled-achievable, not high-mastery-only.
 - Lv31 target unlock window = Stage41–45.
-- Stage46–49 is post-Lv31 mastery.
-- Stage50 is final application, not Lv31 tutorial.
-- intended encounters must not let monsters spawn and disappear before their role becomes meaningfully perceivable.
+- Stage46–49 = post-Lv31 mastery.
+- Stage50 = final application, not Lv31 tutorial.
+- intended monster roles must be perceivable before deletion.
 
 ---
 
 # MONSTER ROLE-EXPRESSION RULE
 
-Do not collapse these concepts:
-
 ```text
-1. MINIMUM ROLE EXPRESSION
-2. READABLE COUNTERPLAY
-3. FULL ENEMY ACTIVATION
+1. minimum role expression = required
+2. readable counterplay = required
+3. full enemy activation = not guaranteed
 ```
 
-Rules:
-- #1 and #2 required in designated role-expression encounters.
-- #3 not guaranteed; skilled play may prevent it.
-- `PRE_EXPRESSION_DEATH_WITHOUT_READABLE_COUNTERPLAY` is invalid authoring.
-- global HP inflation is not the first fix.
-- geometry / cadence / screen timing first.
+`PRE_EXPRESSION_DEATH_WITHOUT_READABLE_COUNTERPLAY` is invalid authoring.
 
 Examples:
-- CHARGER windup visible -> player interrupts = VALID
-- CHARGER deleted before any windup = INVALID intended CHARGER encounter
-- SIEGER standoff/windup visible -> strong player kills before shot = VALID
-- SIEGER routinely disappears before standoff/windup opportunity = INVALID
+- CHARGER windup visible -> player interrupts = valid
+- SIEGER standoff/windup visible -> strong player kills before shot = valid
+- routine deletion before those states = invalid intended role encounter
 
----
-
-# CURRENT NINE-MONSTER CONTRACT
-
-- GRUNT: baseline exempt
-- RUNNER: speed changes arrival/front-order behavior
-- BRUTE: meaningful durable frontline/screening
-- SHIELD: mitigation changes effective damage/hit investment
-- FLYER: vertical geometry changes line/splash/target opportunities
-- CHARGER: visible windup + readable response window
-- SPLITTER: split creates meaningful post-death population/target-state change
-- SUPPORTER: aura affects at least one non-self target for meaningful interval
-- SIEGER: standoff + readable first-shot opportunity
-
-Future monsters must define:
-`coreMechanic / minimumRoleExpression / readableCounterplay / failureClass / requiredMetrics`.
+Do not solve role disappearance with global HP inflation first.
+Geometry/cadence/screen timing comes first.
 
 ---
 
@@ -138,195 +107,121 @@ Status:
 
 ---
 
-# FINE-SCAN RESULTS
+# ROLE-EXPRESSION AUDIT CLOSED
 
-All values below are diagnostic normalized offsets, NOT production coordinates.
+Critical 10:
+`PASS_WITH_WATCHES`.
 
-## E07 CHARGER
-Initial fine search was too narrow.
+Full representative 20:
+`PASS_WITH_WATCHES`.
 
-Current cross-bracket evidence:
-- around `~0.54`, CONSERVATIVE/CENTRAL/STRONG all 5/5 classes observe windup
-- all-profile role-expression region continues broadly to about `~0.64`
-- some CONSERVATIVE runs allow completed charge and wall impact after readable windup; that is later difficulty/counterplay, not spawn-delete failure
-
-Diagnostic anchor:
-`~0.54`.
-
-## E17 CHARGER
-Best current three-bracket anchor:
-`~0.49`.
-
-At that probe:
-- CONSERVATIVE 5/5 windup
-- CENTRAL 5/5
-- STRONG 5/5
-- sampled wall damage = 0
-
-## E11 SIEGER
-CENTRAL all-five actual-shot window roughly `0.70..0.82`.
-
-Low-change timing candidate near `~0.70`:
+Audit scale:
 ```text
-SHIELD   0ms
-BRUTE    250ms
-GRUNT    750ms
-GRUNT    1000ms
-SIEGER   1550ms
+20 recipes × 3 brackets × 5 classes = 300 combat rows
+36 designated recipe-role pairs × 15 rows = 540 structural role checks
+540 / 540 PASS
 ```
 
-Only the two ordinary GRUNTs move +250ms from the original representative candidate.
-CENTRAL current probe gives five-class actual-shot expression with zero ordinary contact leak.
-
-Under STRONG, some classes kill before the full 800ms shot completes. This is not automatically a role failure.
-SIEGER readability-budget proxy shows every class still has bounded standoff/windup response-state survival.
-
-E11 remains WATCH because weaker-trace temporal contact-wall pressure must be inspected using V0.2 event decomposition.
-
-## E19 SIEGER
-Current lower anchor:
-`~0.70`.
-
-CENTRAL:
-- all-five actual-shot expression
-- zero ordinary contact leak in current decomposition
-
-STRONG:
-- some shots prevented by fast removal
-- all five still retain bounded response-state opportunity in readability proxy
+This means all five classes get a structural role opportunity under each current deterministic bracket in every designated representative role.
+It does NOT mean production difficulty is balanced.
 
 ---
 
-# PASSIVE ROLE ANCHORS
+# IMPORTANT REFINED CANDIDATES
 
-Raw mechanics are sufficiently differentiated to measure rather than redesign:
+All diagnostic only.
 
-RUNNER:
-- speed .135 vs GRUNT .070 = ~1.93×
-- common-spawn wall arrival lead ~6.33s
+## CHARGER
+- E07: shift ~0.44; CHARGER 1550ms; min current visible windup ~435ms
+- E13: shift ~0.425; CHARGER 760/1960ms; min ~430ms
+- E17: shift ~0.49; +0.10 relative depth; min ~445ms
+- E20: base formation retained; SPLITTER 1400ms; CHARGER late insert 2350ms at relative X ~-0.46; min ~250ms WATCH
 
-BRUTE:
-- HP900 vs GRUNT320 = 2.8125×
-- knock response .38 vs .85 = ~44.7% of GRUNT displacement response
+## SUPPORTER
+- E09: SUPPORTER 800ms, total relative X 0.00; min aura ~1005ms / screened ratio ~0.735
+- E12: SUPPORTER 1050ms, total relative X ~+0.02; min aura ~755ms / ratio ~0.827
+- E16: SUPPORTER 2800ms, total relative X 0.00; min aura ~955ms / ratio ~0.389
+- E19 remains strong support candidate
 
-SHIELD:
-- armor multiplier .72 = 28% mitigation
-- current simple raw-equivalent durability ~750
-- representative hit counts materially exceed GRUNT
+## SIEGER
+- E10: shift ~0.70; SIEGER 900ms at total relative depth 0.00; min windup opportunity ~1275ms
+- E11: shift ~0.70; GRUNTs 750/1000ms; SIEGER 1250ms; min ~470ms
+- E18: shift ~0.685; SIEGER 2300ms at total relative depth 0.00; min ~1230ms
+- E19: shift ~0.70; min ~535ms
 
-FLYER:
-- distinct Y oscillation exists
-- actual role value still depends on line/splash geometry telemetry
-
-These are analysis anchors, not production coefficient freezes.
-
----
-
-# V0.2 ROLE TELEMETRY
-
-Existing V0.1 simulator must remain untouched for reproducibility.
-
-V0.2 adds direct metrics:
-
-RUNNER:
-- distance advanced / alive / frontline
-
-BRUTE:
-- frontline time / hits / damage absorbed
-
-SHIELD:
-- mitigated hits / prevented damage / frontline
-
-FLYER:
-- Archer line-opportunity ms
-- Mage splash-opportunity ms
-- actual secondary hits
-
-CHARGER:
-- windup entries / visible ms / interrupt / completion / pre-windup erasure
-
-SPLITTER:
-- child alive/frontline ms
-- split-driven target reorder
-- peak-active delta
-
-SUPPORTER:
-- supporter alive ms
-- unique aura targets
-- screened-aura ratio
-
-SIEGER:
-- standoff/windup opportunity entries
-- visible windup ms
-- pre-opportunity erasure
-- actual shot remains a separate outcome
-
-Wall pressure:
-- `wallDamageByType`
-- `wallHitsByType`
-- SIEGER shots use `SIEGER_SHOT`
-
-Automatic evaluator:
-`tools/evaluate_role_expression_v0_2.py`
-can require all-five structural expression.
-
-Exact minimum milliseconds/probabilities remain OPEN until fitted SKILLED_V2.
+Candidate geometry/timing is not production frozen.
 
 ---
 
-# PLAYER-TRACE AUTHORITY BOUNDARY
+# CURRENT WATCHES
 
-Current trace brackets:
-- CONSERVATIVE 900ms / 40 PERFECT then GOOD
-- CENTRAL 750ms / 55
-- STRONG 600ms / 75
+- E20 CHARGER minimum current visible window ~250ms
+- FLYER lower-tail geometry opportunity ~255–325ms
+- modest RUNNER lower-tail advance in some high-pressure rows
+- some CONSERVATIVE siege ordinary wall contact occurs after the response state begins
+- exact minimum readable time remains open
 
-They are **not fitted SKILLED_V2**.
-They are deterministic mechanics probes.
+These should now be evaluated against fitted player traces rather than triggering more broad geometry work.
+
+---
+
+# PLAYER MODEL AUTHORITY BOUNDARY
+
+Current deterministic brackets:
+- CONSERVATIVE: 900ms, PERFECT streak40 then GOOD
+- CENTRAL: 750ms, streak55
+- STRONG: 600ms, streak75
+
+Status:
+**CALIBRATION BRACKET NOT FITTED**.
+
+Never cite these as production skilled distributions.
+
+User calibration anchors:
+- current old-skilled conception was too weak
+- combo40 is easy enough when concentrating to belong inside ordinary skilled play
+- non-T1 skilled full-Tier clear should normally be below 60%
 
 ---
 
 # EXACT NEXT BOUNDARY
 
-Proceed with **10-recipe Critical-Set Role-Expression V0.2 Rerun**.
+Proceed with **SKILLED_V2 controlled harness / fitting preparation**.
 
-Order:
-1. build a non-production candidate recipe dataset applying current diagnostic overrides
-2. run 10 critical recipes × 3 trace brackets × 5 classes through V0.2
-3. run contract evaluator with all-five structural requirement
-4. inspect CHARGER visible-windup time
-5. inspect SIEGER opportunity/windup time, not guaranteed shot
-6. inspect ordinary contact wall-hit timing separately from special ability damage
-7. confirm SPLITTER meaningful second state
-8. confirm SUPPORTER normalized aura expression
-9. confirm RUNNER/BRUTE/SHIELD/FLYER direct roles
-10. patch only localized recipe geometry/cadence if failures remain
-11. close critical-set role-expression admission
-12. expand same audit to all 20 recipes
-13. then return to fitted SKILLED_V2 harness
-14. synthetic Tier slices only after player model is fitted or sufficiently bounded
+Required work:
+1. machine-readable H0–H5 harness definitions
+2. telemetry/event schema
+3. cadence + timing outcome measurement by context
+4. combo10/20/40/60 reach/survival
+5. heavy/P×P completion and abandonment
+6. target-turnover reacquisition delay
+7. pressure-context degradation
+8. Conservative/Central/Strong fitting or defensible bounded ranges
+9. HIGH_MASTERY_STRESS kept separate
+10. role-expression regression using fitted traces
+11. then 10-Stage synthetic Tier slice
+12. later full-Tier skilled clear/failure/star calibration
 
 Do NOT yet:
-- author exact 200 launch Stages
-- freeze production monster coefficients or entry coordinates
-- freeze the current trace brackets as SKILLED_V2
+- author exact 200 launch stages
+- freeze production monster coefficients/entry coordinates
+- freeze current brackets as SKILLED_V2
 - freeze final Tier count
 - freeze EXP/star/achievement values
 - change live gameplay code
 - freeze boss/shop cadence
-- begin detailed 3P/4P production balance
+- start detailed 3P/4P production balance
 
 ---
 
 # HANDOFF DISCIPLINE
 
 New session must:
-1. fetch live `timing-defense-workspace` HEAD
-2. read PROJECT_STATUS + NEXT_WORK + this file
-3. read docs 45,48,50,52,49,51,46
-4. inspect role contract + candidate geometry data
-5. verify no newer remote changes
-6. continue only from the V0.2 critical-set rerun boundary
+1. fetch live branch HEAD
+2. read this handoff + PROJECT_STATUS + NEXT_WORK
+3. read Reports 54 and 53, then Protocol 24
+4. verify no newer remote changes
+5. continue from SKILLED_V2 controlled-harness boundary only
 
-Current tranche changes planning/corpus/data/analysis tools only.
+Current tranche changed planning/corpus/data/analysis tools only.
 No live gameplay source or production balance value was changed.
