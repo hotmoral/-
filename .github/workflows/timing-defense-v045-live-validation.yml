@@ -42,7 +42,7 @@ jobs:
           node <<'NODE'
           const fs=require('fs');
           (async()=>{const r=await fetch(`${process.env.BASE_URL}/api/diagnostics/v045-sieger?ci=${Date.now()}`,{cache:'no-store'}),text=await r.text();fs.writeFileSync('artifacts/sieger-diagnostics.json',text);console.log(text);let d;try{d=JSON.parse(text)}catch{};
-          const ok=r.ok&&d?.ok&&d?.version==='0.45-cf.1-diagnostics'&&d?.foundation?.ok&&d?.foundation?.passed===22&&d?.v039?.ok&&d?.v039?.passed===57&&d?.shield?.ok&&d?.shield?.passed===11&&d?.flyer?.ok&&d?.flyer?.passed===10&&d?.charger?.ok&&d?.charger?.passed===17&&d?.splitter?.ok&&d?.splitter?.passed===14&&d?.supporter?.ok&&d?.supporter?.passed===17&&d?.sieger?.ok&&d?.sieger?.passed===18&&d?.sieger?.total===18;
+          const ok=r.ok&&d?.ok&&d?.version==='0.45-cf.1-diagnostics'&&d?.foundation?.ok&&d?.foundation?.passed===22&&d?.v039?.ok&&d?.v039?.passed===57&&d?.shield?.ok&&d?.shield?.passed===11&&d?.flyer?.ok&&d?.flyer?.passed===10&&d?.charger?.ok&&d?.charger?.passed===17&&d?.splitter?.ok&&d?.splitter?.passed===14&&d?.supporter?.ok&&d?.supporter?.passed===17&&d?.sieger?.ok&&d?.sieger?.passed===20&&d?.sieger?.total===20;
           if(!ok)process.exit(1)})().catch(e=>{console.error(e);process.exit(1)});
           NODE
 
