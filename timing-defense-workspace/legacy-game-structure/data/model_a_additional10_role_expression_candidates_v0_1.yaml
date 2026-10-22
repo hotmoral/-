@@ -1,0 +1,80 @@
+version: model-a-additional10-role-expression-candidates-v0.1
+status: BOUNDED_DIAGNOSTIC_CANDIDATES_NOT_PRODUCTION_AUTHORING
+
+source:
+  baseRecipes: model-a-representative-recipes-v0.1
+  parentAudit: 53_CRITICAL_ROLE_EXPRESSION_V0_2_RERUN_REPORT_V0_1.md
+  playerModel: model-a-class-action-trace-bracket-v0.1
+  playerModelStatus: CALIBRATION_BRACKET_NOT_FITTED
+  powerMode: CURRENT_AUTHORITY_LV6
+
+rules:
+  - roleRecipes contains the 10 representative recipes not included in the earlier critical subset
+  - baseline E01 has no special designated role gate
+  - exact coordinates/timings and minimum-readable milliseconds remain open
+  - localized cadence/geometry changes are preferred over global monster coefficient changes
+
+roleRecipes:
+  T1_E01_M:
+    designatedRoleMonsters: []
+    evidenceNote: neutral baseline reference only
+
+  T1_E02_M:
+    designatedRoleMonsters: [RUNNER]
+
+  T2_E04_M:
+    designatedRoleMonsters: [SHIELD]
+
+  T2_E05_M:
+    designatedRoleMonsters: [BRUTE, SHIELD]
+
+  T2_E06_M:
+    designatedRoleMonsters: [FLYER]
+
+  T3_E08_M:
+    designatedRoleMonsters: [SPLITTER]
+
+  T3_E20_L:
+    designatedRoleMonsters: [SPLITTER, CHARGER]
+    relativeSpecialOffsets:
+      CHARGER: -0.46
+    spawnTimeOverridesMs:
+      - {occurrenceType: SPLITTER, occurrenceIndex: 1, tMs: 1400}
+      - {occurrenceType: CHARGER, occurrenceIndex: 1, tMs: 2350}
+    evidenceNote: preserves meaningful split consequence for STRONG Mage while using CD07/LATE_INSERT semantics to inject CHARGER near its trigger without moving the whole formation; minimum current visible CHARGER window ~250ms, so readability remains WATCH
+
+  T4_E09_M:
+    designatedRoleMonsters: [SUPPORTER]
+    relativeSpecialOffsets:
+      SUPPORTER: 0.00
+    spawnTimeOverridesMs:
+      - {occurrenceType: SUPPORTER, occurrenceIndex: 1, tMs: 800}
+    evidenceNote: local support timing/depth refinement raises minimum aura expression to ~1005ms and minimum screened-aura ratio to ~0.735 across current brackets, with zero sampled wall damage
+
+  T4_E10_M:
+    designatedRoleMonsters: [SIEGER]
+    entryShiftTowardWall: 0.70
+    relativeSpecialOffsets:
+      SIEGER: 0.00
+    spawnTimeOverridesMs:
+      - {occurrenceType: SIEGER, occurrenceIndex: 1, tMs: 900}
+    evidenceNote: focused-siege candidate places SIEGER directly into a readable standoff problem; minimum current accumulated windup ~1275ms across three brackets/five classes; sampled ordinary GRUNT wall contact occurs only long after the initial SIEGER response state
+
+  T4_E18_M:
+    designatedRoleMonsters: [FLYER, SHIELD, SIEGER]
+    entryShiftTowardWall: 0.685
+    relativeSpecialOffsets:
+      SIEGER: 0.00
+    spawnTimeOverridesMs:
+      - {occurrenceType: SIEGER, occurrenceIndex: 1, tMs: 2300}
+    evidenceNote: localized dual-axis candidate yields all-five SIEGER opportunity and all-five FLYER geometry across all brackets; minimum SIEGER windup ~1230ms, minimum FLYER geometry opportunity ~300ms; ordinary contact examples occur after SIEGER response state begins
+
+admission:
+  requireAllFiveClassesPerProfile: true
+  profiles:
+    - TRACE_BRACKET_CONSERVATIVE
+    - TRACE_BRACKET_CENTRAL
+    - TRACE_BRACKET_STRONG
+  structuralOnly: true
+  exactMinimumVisibleMs: OPEN
+  productionFreeze: false
