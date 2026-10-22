@@ -1,0 +1,121 @@
+version: p3-persistent-run-kernel-contract-v0.1
+status: USER_APPROVED_STRUCTURAL_COMPLETE_NO_NUMERICAL_FREEZE
+authorityDoc: 76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md
+proposalDoc: 75_TEN_STAGE_PERSISTENT_RUN_KERNEL_PROPOSAL_V0_1.md
+
+purpose: STATE_AND_PIPELINE_INTEGRATION_NOT_FINAL_BALANCE
+
+mainFixture:
+  shape: CURRENT_MODEL_A_T1_FIRST10_SYNTHETIC
+  allowedRecipes: [T1_E01_M, T1_E02_M]
+  allowedMonsters: [GRUNT, RUNNER]
+  bruteInMainFixture: false
+  bossInMainFixture: false
+  exactLaunchAuthoring: false
+
+powerLanes:
+  - LV1_CONTINUITY
+  - FORCED_LV6_TRANSITION
+forcedLv6:
+  stage: 6
+  status: TEST_HOOK_ONLY
+  actualReachClaim: false
+
+exp:
+  exactFormulaEnabled: false
+  output: lv6_transition_plumbing_evidence
+  actualReachCalibration: P4
+
+shop:
+  policy: OFF_NEUTRAL
+  economyTuningEnabled: false
+  sentinelPersistenceFixturesAllowed: true
+
+temporaryEffectBoundary:
+  defaultScope: STAGE_LOCAL_TEMPORARY
+  alreadyAuthorizedEffectsDrainBeforeSettlement: true
+  clearAtStageSettled: true
+  crossStagePersistenceRequiresExplicitRunScope: true
+
+stageSettlement:
+  barrier: STAGE_SETTLED
+  require:
+    - last_authored_spawn_occurred
+    - no_live_stage_owned_enemy
+    - no_new_current_stage_turn
+    - authorized_effect_queue_drained
+    - no_half_heavy_or_delayed_stage_hit_or_stage_local_transient
+  persistentAcrossBoundary:
+    - base_hp
+    - base_max_hp
+    - level
+    - exp
+    - run_coin
+    - shop_ranks
+    - combo
+    - charge
+    - run_identity
+    - deterministic_player_model_state
+  clearAtBoundary:
+    - target_identity
+    - enemy_instances
+    - monster_capability_state
+    - stage_clock
+    - pending_stage_action_queue
+    - stage_local_temporary_objects
+  simultaneousTerminalCollision: OPEN_DECISION_STOP
+
+rng:
+  playerModelContinuousAcrossAttempt: true
+  resetPerStage: false
+  namedSubstreams:
+    - JUDGMENT
+    - COMBAT_PROC
+  stageFixtureConsumesRng: false
+
+primaryMatrix:
+  classes: [knight, rogue, tank, archer, mage]
+  seeds: [101, 211, 307]
+  lanes: [LV1_CONTINUITY, FORCED_LV6_TRANSITION]
+  expectedRuns: 30
+  purpose: STRUCTURAL_INTEGRATION
+  clearRateInterpretation: FORBIDDEN
+
+targetedFixtures:
+  required:
+    - F1_CHARGE_CONTINUITY
+    - F2_COMBO_N3_BOUNDARY
+    - F3_FAILURE_RETRY_RESET
+    - F4_SNAPSHOT_RESUME_EQUIVALENCE
+    - F5_MODIFIER_AGGREGATION_ATTRIBUTION
+    - F6_TEMPORARY_EFFECT_BOUNDARY
+    - F7_NO_TRANSIENT_LEAKAGE
+  additionalDiagnosticsAllowed: true
+
+acceptance:
+  deterministicReplay: required
+  tenStageSettlement: required
+  p1StateContinuity: required
+  forcedLv6Attribution: required
+  neutralTransitionCoinShopMutation: forbidden
+  snapshotResumeEquivalence: required
+  failureRetryResetParity: required
+  p2AdditiveAggregationAndLedger: required
+  forbiddenTransientLeakage: false
+  balanceFreezeFromTestConstants: forbidden
+
+openDecisions:
+  - exact_exp_formula
+  - actual_lv6_reach_distribution
+  - exact_base_hp
+  - exact_shop_cadence_price_value
+  - exact_coin_curve
+  - exact_t1_stage1_10_production_authoring
+  - stage10_boss_design
+  - permanent_star_values
+  - achievement_values
+  - final_clear_rates
+  - production_numerical_coefficients
+  - multiplayer_progression_scaling
+  - simultaneous_terminal_collision_precedence
+  - production_implementation
