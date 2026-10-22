@@ -33,7 +33,7 @@ formationXOffsets:
   F08:
     SIEGER: 0.080
   F09:
-    SUPPORTER: 0.080
+    SUPPORTER: 0.020
 
 monsters:
   GRUNT:
