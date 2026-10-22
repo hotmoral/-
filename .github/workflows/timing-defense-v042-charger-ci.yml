@@ -49,11 +49,16 @@ jobs:
             sleep 1
           done
           if [ "$ready" -ne 1 ]; then cat "$LOG"; exit 1; fi
-          curl -fsS http://127.0.0.1:8787/api/diagnostics/v042-charger >/tmp/v042-diagnostics.json || { cat /tmp/v042-diagnostics.json 2>/dev/null || true; cat "$LOG"; exit 1; }
-          cat /tmp/v042-diagnostics.json
+          CODE=$(curl -sS -o /tmp/v042-diagnostics.json -w '%{http_code}' http://127.0.0.1:8787/api/diagnostics/v042-charger || true)
+          echo "diagnostics HTTP $CODE"
+          cat /tmp/v042-diagnostics.json || true
           node - <<'NODE'
           const fs=require('fs');const d=JSON.parse(fs.readFileSync('/tmp/v042-diagnostics.json','utf8'));
           const ok=d?.ok&&d?.foundation?.ok&&d?.v039?.ok&&d?.shield?.ok&&d?.flyer?.ok&&d?.charger?.ok;
-          if(!ok){console.error(JSON.stringify({failed:{foundation:d?.foundation?.failed,v039:d?.v039?.failed,shield:d?.shield?.failed,flyer:d?.flyer?.failed,charger:d?.charger?.failed}},null,2));process.exit(1)}
+          if(!ok){
+            const failed={foundation:d?.foundation?.failed,v039:d?.v039?.failed,shield:d?.shield?.failed,flyer:d?.flyer?.failed,charger:d?.charger?.failed};
+            const chargerChecks=(d?.charger?.checks||[]).filter(x=>!x.pass);
+            console.error(JSON.stringify({failed,chargerChecks,error:d?.error},null,2));process.exit(1)
+          }
           console.log(`CHARGER ${d.charger.passed}/${d.charger.total} PASS`);
           NODE
