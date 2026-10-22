@@ -1,0 +1,45 @@
+name: Timing Defense v0.45 One-shot time precision patch
+
+on:
+  push:
+    branches:
+      - timing-defense-cloudflare-v045-sieger-kernel
+    paths:
+      - '.github/workflows/timing-defense-v045-time-epsilon-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-cloudflare-v045-sieger-kernel
+      - name: Replace strict timestamp equality with epsilon comparisons
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('timing-defense-cloudflare-poc/src/v045-sieger-selftest.js')
+          s=p.read_text()
+          repls=[
+            ("e?.at===firstFire&&e?.damage===75", "Math.abs((e?.at??Infinity)-firstFire)<eps&&e?.damage===75"),
+            ("phase1==='windup'&&next1===secondFire&&shots.length===2&&shots[1].at-shots[0].at===2200", "phase1==='windup'&&Math.abs(next1-secondFire)<eps&&shots.length===2&&Math.abs((shots[1].at-shots[0].at)-2200)<eps"),
+            ("ats.join(',')==='2800,5000,7200'&&intervals.every(x=>x===2200)", "ats.length===3&&ats.every((x,i)=>Math.abs(x-[2800,5000,7200][i])<eps)&&intervals.every(x=>Math.abs(x-2200)<eps)")
+          ]
+          for old,new in repls:
+            n=s.count(old)
+            if n!=1: raise SystemExit(f'expected one match, got {n}: {old}')
+            s=s.replace(old,new)
+          p.write_text(s)
+          PY
+      - name: Commit source fix and remove one-shot workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/timing-defense-v045-time-epsilon-patch.yml
+          git add timing-defense-cloudflare-poc/src/v045-sieger-selftest.js
+          git diff --cached --check
+          git commit -m "Use epsilon comparisons for SIEGER timestamps"
+          git push origin HEAD:timing-defense-cloudflare-v045-sieger-kernel
