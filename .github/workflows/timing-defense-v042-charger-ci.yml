@@ -32,5 +32,12 @@ jobs:
           import { runMonsterCapabilityV1SelfTest } from './timing-defense-cloudflare-poc/src/monster-capability-v1-selftest.js';
           const r=runMonsterCapabilityV1SelfTest();console.log(JSON.stringify(r,null,2));if(!r.ok)process.exit(1);
           NODE
+      - name: CHARGER deterministic self-test
+        run: |
+          node --input-type=module <<'NODE'
+          import { TimingDefenseRoom } from './timing-defense-cloudflare-poc/src/v042-charger-entry.js';
+          import { runV042ChargerSelfTest } from './timing-defense-cloudflare-poc/src/v042-charger-selftest.js';
+          const r=runV042ChargerSelfTest(TimingDefenseRoom);console.log(JSON.stringify(r,null,2));if(!r.ok)process.exit(1);
+          NODE
       - name: Worker bundle dry-run
         run: npx --yes wrangler@4.45.0 deploy --dry-run --config timing-defense-cloudflare-poc/wrangler.jsonc
