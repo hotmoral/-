@@ -1,0 +1,83 @@
+version: skilled-v2-central-sequence-candidate-v0.1
+status: PROVISIONAL_DESIGN_CANDIDATE_NOT_PRODUCTION_FROZEN
+purpose: deterministic streak-aware central skilled judgment stream for campaign simulation
+
+authority:
+  marginalDesignPrior:
+    PERFECT: 0.70
+    GOOD: 0.20
+    NORMAL: 0.10
+    source: USER_AUTHORIZED_DESIGN_PRIOR
+    empiricalPopulationFit: false
+  comboAnchor:
+    combo40OrdinarilyAchievableWhenConcentrating: true
+  highMasteryObservedTraceUse: UPPER_TAIL_STRESS_ANCHOR_ONLY
+
+model:
+  type: TWO_STATE_MARKOV_WITH_DETERMINISTIC_PRNG
+  rng: XORSHIFT32
+  seedRequired: true
+  initialState:
+    FOCUS: 0.40
+    BASE: 0.60
+  states:
+    FOCUS:
+      judgmentDistribution:
+        PERFECT: 1.0
+        GOOD: 0.0
+        NORMAL: 0.0
+      transitionAfterJudgment:
+        FOCUS: 0.98
+        BASE: 0.02
+      interpretation: sustained concentration run
+    BASE:
+      judgmentDistribution:
+        PERFECT: 0.50
+        GOOD: 0.3333333333333333
+        NORMAL: 0.1666666666666667
+      transitionAfterJudgment:
+        FOCUS: 0.0133333333333333
+        BASE: 0.9866666666666667
+      interpretation: ordinary skilled rhythm outside a concentration run
+
+stationaryProperties:
+  focusShare: 0.40
+  baseShare: 0.60
+  impliedMarginal:
+    PERFECT: 0.70
+    GOOD: 0.20
+    NORMAL: 0.10
+  meanStateRunJudgments:
+    FOCUS: 50.0
+    BASE: 75.0
+
+sequenceSemantics:
+  GOODBreaksPerfectCombo: true
+  NORMALBreaksPerfectCombo: true
+  MISSBaselineProbability: NOT_ASSIGNED
+  INVALIDBaselineProbability: NOT_ASSIGNED
+  heavyConsumesTwoJudgmentEvents: true
+  contextEffectsAppliedSeparately: true
+
+calibrationBoundary:
+  - This file is a simulation candidate, not a measured population model.
+  - Do not change production timing-square size or line speed to fit this candidate.
+  - Target-turnover, encounter pressure, and no-target effects are separate context layers and are not numerically frozen here.
+  - Do not infer conservative or strong brackets from this central candidate.
+  - Exact transition coefficients may be revised if downstream encounter behavior is structurally implausible or future player evidence is collected.
+
+validationReference:
+  longRunProbe:
+    seeds: 100
+    judgmentsPerSeed: 10000
+    totalJudgments: 1000000
+    observedApprox:
+      PERFECT: 0.699729
+      GOOD: 0.200121
+      NORMAL: 0.100150
+      FOCUS_share: 0.399384
+  comboProbe:
+    seeds: 5000
+    judgmentsPerSeed: 100
+    observedCombo40ReachApprox: 0.5886
+    note: diagnostic only; not a frozen production target
