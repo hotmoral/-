@@ -1,0 +1,151 @@
+version: skilled-v2-trace-schema-v0.1
+status: COLLECTION_SCHEMA_NOT_FITTED
+format: JSONL
+harnessVersionRequired: skilled-v2-controlled-harness-v0.1
+
+recordTypes:
+  SESSION_START:
+    required:
+      - recordType
+      - traceId
+      - harnessVersion
+      - harnessId
+      - attemptIndex
+      - calibrationFlags
+    optional:
+      - anonymousPlayerId
+      - classId
+      - powerMode
+      - startedAt
+      - deviceContext
+      - inputSurfaceVersion
+
+  ACTION:
+    required:
+      - recordType
+      - traceId
+      - harnessVersion
+      - harnessId
+      - seq
+      - atMs
+      - pressureContext
+      - judgment
+      - comboBefore
+      - comboAfter
+      - comboBreakCause
+      - chargeBefore
+      - chargeAfter
+      - heavyOpportunity
+      - heavyAttempted
+      - heavyCompleted
+      - ppAttempted
+      - ppCompleted
+    optional:
+      - targetId
+      - targetType
+      - targetGeneration
+      - targetChangedSincePriorAction
+      - noTargetWaitMsBeforeAction
+      - interActionMs
+      - reacquireDelayMs
+
+  STATE:
+    required:
+      - recordType
+      - traceId
+      - harnessVersion
+      - harnessId
+      - atMs
+      - monsterId
+      - monsterType
+      - state
+    optional:
+      - readableSinceMs
+      - relatedActionSeq
+      - targetBefore
+      - targetAfter
+
+  SESSION_END:
+    required:
+      - recordType
+      - traceId
+      - harnessVersion
+      - harnessId
+      - endedAtMs
+      - completedAsDesigned
+      - exclusionReasons
+
+allowed:
+  harnessIds: [H0, H1, H2, H3, H4, H5]
+  pressureContexts: [BASELINE, TEMPO, DURABLE, TURNOVER, STATEFUL, MIXED]
+  judgments: [PERFECT, GOOD, NORMAL, MISS, INVALID]
+  comboBreakCauses: [NONE, TIMING, TARGET_TURNOVER, NO_TARGET, TACTICAL_RESPONSE, INVALID_INPUT, OTHER]
+  stateValues: [WINDUP_START, WINDUP_END, INTERRUPTED, FULL_ACTIVATION, TARGET_REORDER, NO_TARGET_START, NO_TARGET_END, OTHER]
+
+harnessContextMap:
+  H0: BASELINE
+  H1: TEMPO
+  H2: DURABLE
+  H3: TURNOVER
+  H4: STATEFUL
+  H5: MIXED
+
+semanticRules:
+  - id: UNIQUE_SESSION_BOUNDARIES
+    rule: exactly_one_session_start_and_end_per_trace
+  - id: ACTION_SEQ_STRICT
+    rule: action_seq_strictly_increasing_per_trace
+  - id: NONNEGATIVE_TIME
+    rule: atMs_and_endedAtMs_nonnegative
+  - id: HEAVY_COMPLETION_IMPLIES_ATTEMPT
+    rule: heavyCompleted_implies_heavyAttempted
+  - id: HEAVY_ATTEMPT_REQUIRES_OPPORTUNITY
+    rule: heavyAttempted_implies_heavyOpportunity_unless_explicit_invalid_attempt_is_added_in_future_schema
+  - id: PP_COMPLETION_IMPLIES_ATTEMPT
+    rule: ppCompleted_implies_ppAttempted
+  - id: H3_TURNOVER_EVIDENCE
+    rule: completed_H3_requires_target_turnover_evidence
+  - id: H4_STATEFUL_EVIDENCE
+    rule: completed_H4_requires_readable_stateful_event
+  - id: COMBO_BREAK_EXPLAINED
+    rule: combo_drop_requires_non_NONE_break_cause_unless_authority_reset_is_explicitly_recorded
+  - id: NO_CAMPAIGN_REWARD_FIELDS_REQUIRED
+    rule: trace_schema_does_not_require_star_tier_reward_or_persistent_progression_fields
+
+summaryOutputs:
+  timing:
+    - judgmentCountsByHarness
+    - judgmentSharesByHarness
+    - interActionQuantilesByHarness
+  combo:
+    - reach10
+    - reach20
+    - reach40
+    - reach60Plus
+    - longestComboDistribution
+    - breakCauseDistribution
+  heavy:
+    - opportunityCount
+    - attemptRateGivenOpportunity
+    - completionRateGivenAttempt
+    - ppAttemptRate
+    - ppCompletionRateGivenAttempt
+  turnover:
+    - targetChangeCount
+    - reacquireDelayDistribution
+    - firstPostTurnoverJudgment
+  stateful:
+    - responseLatencyDistribution
+    - interruptAttemptAndSuccess
+    - localJudgmentDeltaAroundState
+  coverage:
+    - traceCount
+    - playerCountWhenAvailable
+    - sessionCountByHarness
+    - completedVsExcluded
+    - actionCount
+    - missingHarnesses
+
+fitAuthority:
+  numericSkilledV2AllowedFromSchemaAlone: false
+  insufficientCoverageClassification: INSUFFICIENT_OBSERVED_TRACE_COVERAGE
