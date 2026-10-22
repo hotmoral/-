@@ -1,0 +1,42 @@
+version: model-a-combat-sensitivity-anchor-v0.1
+status: DESIGNED_NOT_AUTHORITATIVE
+purpose: generic frontmost-DPS sensitivity sweep; not player skill calibration
+
+sourceValueStatus: LEGACY_IMPLEMENTED_REFERENCE
+sourceNotes:
+  - HP/armor/wall/capability values come from current v0.45 capability chain and are explicitly provisional.
+  - Raw DPS sweep values are analysis probes only and do not represent SKILLED_V2.
+
+rawDpsSweep: [120, 240, 480]
+
+monsters:
+  GRUNT: {hp: 320, armor: 1.0, wallDamage: 90}
+  RUNNER: {hp: 165, armor: 1.0, wallDamage: 60}
+  BRUTE: {hp: 900, armor: 1.0, wallDamage: 180}
+  SHIELD: {hp: 540, armor: 0.72, wallDamage: 120}
+  FLYER: {hp: 225, armor: 1.0, wallDamage: 70}
+  CHARGER: {hp: 380, armor: 1.0, wallDamage: 110}
+  SPLITTER:
+    hp: 420
+    armor: 1.0
+    wallDamage: 100
+    childHp: 120
+    childArmor: 1.0
+    childWallDamage: 40
+  SUPPORTER: {hp: 280, armor: 1.0, wallDamage: 70}
+  SIEGER: {hp: 520, armor: 1.0, shotWallDamage: 75}
+
+combatModel:
+  targetRule: frontmost-X-only
+  damageModel: continuous raw DPS times armor multiplier
+  knockback: disabled
+  crit: disabled
+  classSkills: disabled
+  N3: disabled
+  splitterChildren: enabled-on-parent-death
+  childOffsetsY: [-0.018, 0.018]
+  purpose: sensitivity only
+
+interpretation:
+  - A recipe that only expresses its special capability at the lowest DPS is a WATCH, not automatic FAIL.
+  - Production judgement requires SKILLED_V2 traces and class skills later.
