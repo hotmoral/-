@@ -9,168 +9,122 @@ Updated: 2026-10-22 KST
 
 ---
 
-# ACTIVE PHASE — Class-aware Layer-A Combat Micro-Simulation
+# ACTIVE PHASE — Class-aware Layer-A Capability Window Calibration
 
-The large structure/authoring preflight tranche is now closed through:
+Completed chain:
 
 ```text
 Master Campaign Spine
- -> Layer-0 structural validation PASS
+ -> Layer-0 PASS
  -> Tier encounter envelope PASS
- -> representative recipe static preflight PASS
+ -> static recipe preflight PASS
  -> kinematic preflight PASS WITH WATCHES
- -> generic DPS sensitivity diagnostic COMPLETE
- -> Layer-A preflight admission PASS
+ -> generic DPS sensitivity COMPLETE
+ -> Layer-A admission PASS
+ -> class-aware CURRENT_AUTHORITY micro-sim V0.1 COMPLETE
+ -> absolute entry-depth activation diagnostic COMPLETE
 ```
 
-Canonical admission review:
-`legacy-game-structure/40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
+Current key docs:
+1. `legacy-game-structure/42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
+2. `legacy-game-structure/44_ENTRY_DEPTH_ACTIVATION_WINDOW_REPORT_V0_1.md`
+3. `legacy-game-structure/43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
+4. `legacy-game-structure/41_CLASS_AWARE_ACTION_TRACE_MODEL_V0_1.md`
+5. `legacy-game-structure/40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
+6. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
----
-
-# Read first
-
-1. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
-2. `legacy-game-structure/40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
-3. `legacy-game-structure/39_FRONTMOST_DPS_SENSITIVITY_REPORT_V0_1.md`
-4. `legacy-game-structure/37_REPRESENTATIVE_RECIPE_KINEMATIC_PREFLIGHT_REPORT_V0_1.md`
-5. `legacy-game-structure/36_REPRESENTATIVE_RECIPE_STATIC_PREFLIGHT_REPORT_V0_1.md`
-6. `legacy-game-structure/35_LAYERA0_ENCOUNTER_ENVELOPE_VALIDATION_REPORT_V0_1.md`
-7. `legacy-game-structure/38_FORMATION_DEPTH_SCHEMA_AMENDMENT_V0_1.md`
-8. `legacy-game-structure/24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
-9. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
-
-Machine-readable inputs:
-- `legacy-game-structure/data/model_a_campaign_spine_v0_1.yaml`
-- `legacy-game-structure/data/model_a_encounter_envelope_v0_1.yaml`
+Data/tools:
+- `legacy-game-structure/data/model_a_class_action_trace_bracket_v0_1.yaml`
 - `legacy-game-structure/data/model_a_representative_recipes_v0_1.yaml`
 - `legacy-game-structure/data/model_a_kinematic_anchor_v0_1.yaml`
 - `legacy-game-structure/data/model_a_combat_sensitivity_anchor_v0_1.yaml`
-
-Tools:
-- `tools/validate_campaign_spine.py`
-- `tools/validate_encounter_envelope.py`
-- `tools/analyze_representative_recipes.py`
-- `tools/simulate_recipe_kinematics.py`
-- `tools/simulate_frontmost_dps_sensitivity.py`
+- `tools/simulate_class_aware_layer_a.py`
+- `tools/sweep_special_activation_entry_depth.py`
 
 ---
 
-# User-confirmed structural truth
+# Current authoritative design truth
 
-- 5 classes progress independently through Tiers.
-- Same Tier/Stage content is shared across classes.
-- Tier = 50 Stage.
-- fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / Stage50 clear=3★.
-- stars = broad permanent account growth.
-- achievements = targeted cross-class growth.
-- recoverable soft walls are intentional; hard class lockout forbidden.
-- current 9 monsters are V1 foundation, not lifetime final roster.
-- T1 does not expose all 9; higher Tiers introduce new monsters.
-- future T5/T6/T7+ expansion remains open.
-- non-T1 intended-entry `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
-- combo40 is skilled-achievable, not high-mastery-only.
-- **Lv31 target unlock window = Stage41–45.**
-- Stage46–49 = post-Lv31 mastery.
-- Stage50 = final using an already-familiar Lv31 skill.
-
----
-
-# Current bounded simulation spine — Model A
-
-```text
-T1: GRUNT / RUNNER / BRUTE
-T2: +SHIELD / +FLYER
-T3: +CHARGER / +SPLITTER
-T4: +SUPPORTER / +SIEGER
-T5+: future expansion
-```
-
-Status:
-**default bounded simulation spine / NOT production freeze**
-
-Model B fallback:
-- T4 +SUPPORTER
-- T5 +SIEGER
-
-Only switch if lower-layer T4 evidence fails.
+- same Tier/Stage content across all five classes
+- class progression independent
+- 50 Stage per Tier
+- 0/1/2/3★ boundaries remain 1–19 / 20–39 / 40–49 / Stage50 clear
+- stars broad account growth; achievements targeted cross-class growth
+- recoverable soft walls allowed; hard class lockout forbidden
+- Model A remains default bounded simulation spine:
+  - T1 G/R/B
+  - T2 +SH/F
+  - T3 +C/SP
+  - T4 +SUP/SI
+- future T5+ expansion open
+- non-T1 intended-entry fitted `SKILLED_V2_CENTRAL` full-clear target remains <60%
+- combo40 must remain skilled-achievable
+- Lv31 target window remains Stage41–45
 
 ---
 
-# Validation/preflight status
+# New class-aware findings
 
-## Master campaign Layer-0
-`PASS errors=0 warnings=0`
+Critical subset:
+- 10 representative recipes
+- 3 unfitted deterministic trace brackets
+- 5 classes
+- CURRENT_AUTHORITY_LV6
 
-## Encounter envelope Layer-A0
-`PASS errors=0 warnings=0`
+Headline diagnostics:
+- Mage/Rogue/Archer clear much faster than Knight/Tank in the current optimistic trace bracket.
+- Tank clear time alone is a bad utility metric because knockback can lengthen combat while protecting the wall.
+- default T3 CHARGER representative recipes produced **0 windups** across the critical trace/class sweep.
+- default T4 E11/E19 SIEGER produced **0 shots** across the critical trace/class sweep.
+- SUPPORTER remains active but screened-aura duration varies strongly by class/throughput.
+- SPLITTER population transformation occurs, but current optimistic brackets produced no child wall leak in the sampled recipes.
 
-## Representative recipe static preflight
-PASS.
-- 20 deterministic representative recipes
-- max authored 4s density = 7
-- max conservative effective 4s density = 10
-- no current density WATCH/ERROR
+These results are structural diagnostics, not production balance verdicts.
 
-## Kinematic preflight
-PASS WITH WATCHES.
+---
 
-Confirmed:
-- T3 representative CHARGER windup concurrency max1
-- E10 focused siege vs E11 escorted siege geometry is mechanically distinct
-- E19 durable-screened first SIEGER shot can be realized
-- SUPPORTER aura opportunity exists in E09/E12/E16/E19
+# Absolute entry-depth finding
 
-Discovered/fixed:
-- `BACK` role cannot rely only on delayed spawn when unit speeds differ
-- formation authoring now requires actual initial X-depth capability (`spawnXOffset` design direction)
+Relative FRONT/MID/BACK depth is not sufficient.
+The whole encounter's absolute entry position is a separate authoring axis.
 
-## Generic frontmost-DPS sensitivity
-Diagnostic complete.
+Current diagnostic only:
+- T3_E17 CHARGER all-five windup visibility emerged around ~0.45 X shift toward wall.
+- T4_E11 SIEGER broad 5-class shot visibility appeared around ~0.70–0.80 X shift.
+- T4_E19 broad 5-class shot visibility appeared around ~0.75–0.80 X shift.
+- too much forward shift can remove capability again because the special becomes exposed/frontmost and dies during windup.
 
-Key finding:
-- special capability pressure is highly throughput-sensitive
-- SIEGER can fire multiple times under low generic DPS but zero times at medium/high probes
-- CHARGER can be killed before windup under high throughput
-- SUPPORTER aura uptime changes sharply with screen removal speed
-- SPLITTER wall leakage changes sharply with throughput
-
-Therefore production HP/count patching before class-aware simulation is prohibited.
+Therefore activation is **non-monotonic**.
+These coordinates are NOT production values.
 
 ---
 
 # EXACT NEXT BOUNDARY
 
-Next bounded tranche = **class-aware Layer-A combat micro-simulation**.
+Next bounded tranche = **stateful capability activation-window authoring**.
 
 Order:
-1. define deterministic action-trace representation,
-2. represent class-specific normal/heavy/P×P/timing sequences,
-3. run explicit model modes:
-   - CURRENT_AUTHORITY
-   - LEGACY_PARITY_CANDIDATE
-   - FUTURE_SKILL_PLACEHOLDER only where required,
-4. create/fill `SKILLED_V2_CONSERVATIVE/CENTRAL/STRONG` action traces or calibrated parameter sets,
-5. simulate representative recipes × 5 classes,
-6. measure kill order/frontline block/target reorder/wall damage,
-7. measure CHARGER windup/complete/interrupt/erased-before-windup,
-8. measure SPLITTER parent death/children/child occupancy,
-9. measure SUPPORTER aura/screened-aura uptime,
-10. measure SIEGER first-shot probability/shot count/screened firing uptime,
-11. measure FLYER geometry opportunity,
-12. classify class starvation/hard-lockout/power-cliff defects,
-13. revise recipes/envelope,
-14. only after Layer-A PASS build synthetic Tier slices.
+1. formalize absolute entry-depth candidate ranges for T3 CHARGER recipes,
+2. preserve first-teach reaction/readability time,
+3. preserve relative screen/backline order,
+4. find CHARGER windows where windup is visible and interruptable rather than erased,
+5. formalize SIEGER entry/spawn-time windows without unavoidable wall damage,
+6. require SIEGER first-shot visibility across multiple classes while retaining class asymmetry,
+7. rerun CURRENT_AUTHORITY five-class micro-sim,
+8. add normalized role metrics for Tank control and Archer/Mage/Rogue geometry/throughput,
+9. only after capability-expression PASS expand from critical subset to all 20 representative recipes,
+10. then fit/collect actual SKILLED_V2 harness data,
+11. synthetic Tier slice only after fitted or sufficiently bounded player model exists.
 
 Do NOT yet:
-- assign exact recipes to all 200 launch candidate Stages,
-- freeze production HP/speed/armor/wall damage,
-- freeze final launch Tier count,
-- freeze exact EXP formula,
-- freeze star/achievement reward values,
+- author exact 200 Stage campaign,
+- freeze production HP/speed/armor/trigger/standoff values,
+- promote the current 600/750/900 ms trace brackets to SKILLED_V2,
+- freeze final Tier count,
+- freeze EXP/star/achievement values,
 - change live gameplay code,
 - freeze boss/shop cadence,
 - start detailed 3P/4P production balance.
 
-## Governance
-`Master Spine -> Layer0 -> Encounter Envelope -> Static/Kinematic/Sensitivity Preflight -> Class-aware Layer-A -> Synthetic Slice -> Full Tier -> Soft-wall Map -> Meta Recovery -> Explicit Freeze -> Implementation`.
+Governance:
+`structure -> encounter envelope -> class-aware capability expression -> fitted player model -> synthetic slice -> full Tier -> meta recovery -> explicit freeze -> implementation`.
