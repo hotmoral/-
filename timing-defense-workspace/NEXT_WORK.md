@@ -1,6 +1,6 @@
 # Timing Defense — Next Work Boundary
 
-Updated: 2026-10-22 KST
+Updated: 2026-10-23 KST
 
 ## Production checkpoint
 - v0.45 SIEGER FULL PASS
@@ -10,7 +10,7 @@ Updated: 2026-10-22 KST
 
 ---
 
-# ACTIVE PHASE — P2 MODIFIER PIPELINE / POWER ATTRIBUTION
+# ACTIVE PHASE — P3 TEN-STAGE PERSISTENT RUN KERNEL
 
 Completed chain:
 
@@ -26,51 +26,64 @@ Master Campaign Spine
  -> system dependency / calibration-order review
  -> user-approval decision gate governance
  -> P1 Run-State Lifecycle USER_APPROVED_STRUCTURAL_COMPLETE
- -> P2 analysis / proposal complete
+ -> P2 Modifier Pipeline / Power Attribution USER_APPROVED_STRUCTURAL_COMPLETE
 ```
 
-Current execution authority / proposal:
+Current authority:
 - `legacy-game-structure/69_SKILLED_V2_CENTRAL_ALL20_EXECUTION_REPORT_V0_1.md`
 - `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 - `legacy-game-structure/71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md`
 - `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md` — **PROPOSED / NOT APPROVED**
+- `legacy-game-structure/73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md` — historical proposal
+- `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/data/modifier_pipeline_contract_v0_1.yaml`
 - `legacy-game-structure/data/system_dependency_calibration_order_v0_1.yaml`
 
 ---
 
 # P1 CLOSED STRUCTURALLY
 
-User-approved P1 directions:
+Approved P1 directions remain:
 - Base HP / Base Max HP persist across Stage/shop within one Tier attempt.
-- No automatic Stage/shop heal.
-- Base HP 0 ends the Tier attempt.
-- Retry starts a fresh Stage1 Tier attempt; run-local state resets and permanent account state remains.
-- combo persists across Stage/shop downtime under the existing combo contract.
-- charge persists across Stage/shop.
-- an in-progress Heavy X->Y resolves before Stage transition finalizes.
+- no automatic Stage/shop healing.
+- Base HP 0 ends the attempt.
+- retry starts a fresh Stage1 attempt; run-local state resets and permanent account state remains.
+- combo and charge persist across Stage/shop downtime.
+- started Heavy X->Y resolves before Stage transition finalizes.
 - disconnect != leave.
 - reconnect restores the same authoritative player/run state without implicit reset/heal.
-- a transient multiplayer disconnect does not immediately rescale enemy pressure downward.
-- a transient disconnect alone does not immediately invalidate rewards/stars/achievement eligibility.
+- transient multiplayer disconnect does not immediately reduce enemy pressure.
+- transient disconnect alone does not immediately invalidate reward/star/achievement eligibility.
 
-Still open for later P10/P16 analysis:
-- reconnect grace duration;
-- disconnected-player AI takeover/substitution;
-- long-disconnect/abandonment threshold;
-- rescaling after confirmed abandonment;
-- long-disconnect reward/achievement credit;
-- host migration exact policy;
-- all-player disconnect behavior;
-- durable persistence/storage implementation.
+P10/P16 later decide disconnect grace, AI substitution, abandonment, post-abandonment scaling, reward credit and host migration details.
 
-These deferred items do not block P2/P3.
+---
+
+# P2 CLOSED STRUCTURALLY
+
+Approved P2 directions:
+1. **Typed hybrid stacking** — ordinary same-stat progression bonuses aggregate additively by default; multiplication is explicit/opt-in.
+2. **Stat/effect separation** — penetration, splash, shields, armor-ignore, tracking, proc generation, etc. remain effect rules rather than fake scalar stats.
+3. **Outgoing attack pipeline** — action validation -> timing/Heavy/P×P -> attack template -> effective scalar stats -> action transforms/combo -> crit policy -> hit materialization -> per-target mitigation -> realized effect -> death/secondary consequences -> isolated post-action procs.
+4. **Incoming wall pipeline** — monster raw damage -> capability/state modifier -> generic DR -> unique class/team defense -> shield -> Base HP.
+5. **Derived stats remain derived** — source state is authoritative; effective values are recomputed/cache only.
+6. **Deterministic Power Attribution Ledger** required for simulator/test authority.
+7. **Delayed rounding** — avoid repeated intermediate rounding; round at realized hit/control boundaries while preserving frozen fixed-budget allocators such as N3.
+
+Still OPEN:
+- exact star/achievement/shop modifier values;
+- crit cap and generic defense cap;
+- exact Base HP;
+- unresolved per-skill crit inheritance;
+- final Lv26/Lv31 contracts;
+- exact numeric representation;
+- production implementation.
 
 ---
 
 # Decision governance — mandatory
 
-For unresolved product/game decisions:
+For unresolved material decisions:
 
 ```text
 live canonical inspection
@@ -82,47 +95,40 @@ live canonical inspection
  -> only then record accepted/frozen direction
 ```
 
-Diagnostic work may proceed without micro-approval, but passing a test does not authorize a design decision.
+Diagnostic work may proceed without micro-approval, but test success is not self-authorizing.
 
 ---
 
-# EXACT CURRENT BOUNDARY
+# EXACT NEXT BOUNDARY
 
-## P2 — USER DECISION GATE
+## P3 — TEN_STAGE_PERSISTENT_RUN_KERNEL
 
-Analysis/proposal is complete in:
-`legacy-game-structure/73_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_PROPOSAL_V0_1.md`.
+Purpose:
+- integrate the approved P1 state lifecycle with the approved P2 modifier/attribution semantics;
+- prove deterministic state continuity across multiple Stage transitions;
+- expose the first multi-stage attrition and progression traces;
+- do **not** treat the result as final campaign balance.
 
-Recommended structural package awaiting user approval:
-1. **typed hybrid stacking** — ordinary bonuses to the same scalar stat aggregate additively; multiplication is explicit/opt-in.
-2. **stat/effect separation** — penetration, splash, shields, armor-ignore, tracking, proc generation, etc. are effect rules rather than fake scalar stats.
-3. **outgoing attack pipeline** — resolve action/template -> persistent stats -> action transforms/combo -> crit policy -> hit geometry -> per-target mitigation -> realized effect.
-4. **defensive pipeline** — monster raw damage -> generic DR -> explicit unique class/team defense -> shield -> Base HP.
-5. **derived stats remain derived** — source modifiers/ranks/unlocks are authoritative; effective stats are recomputed/cache, not independent truth.
-6. **deterministic attribution ledger** for simulator/test paths.
-7. **delayed rounding** — avoid repeated intermediate rounding; round per realized hit/control application, preserving fixed-budget contracts such as N3.
+Required P3 design/implementation analysis before execution:
+1. define the smallest 10-stage state machine using the P1 attempt lifecycle;
+2. decide which already-authoritative/candidate combat content is safe for the kernel without pretending it is final launch Stage content;
+3. define deterministic Stage-transition and seed behavior;
+4. persist and verify Base HP, combo, charge, level/EXP candidate state and run identity;
+5. execute the approved P2 modifier pipeline even when many downstream modifiers are zero/disabled;
+6. emit deterministic Power Attribution records;
+7. validate failure/reset/retry behavior;
+8. measure, but do not freeze, provisional Lv6 reach and accumulated wall pressure.
 
-Important:
-- this package is `PROPOSED`, not `USER_APPROVED_DIRECTION`;
-- no numeric star/shop/achievement values or caps are frozen;
-- unresolved per-skill crit inheritance and later Lv26/Lv31 details remain separate gates.
-
-P3 remains blocked until the material P2 semantics are explicitly approved.
-
----
-
-# P3 preview — after P2 closure
-
-10-stage persistent run kernel will validate state continuity using the approved P1/P2 contracts.
-It is a state/persistence integration slice, not a final difficulty test.
-
-Initial exclusions:
+P3 exclusions:
 - exact permanent star values OFF
 - achievement reward values OFF
 - final shop tuning OFF
+- exact final EXP formula OFF
 - final boss novelty OFF
 - multiplayer progression credit OFF
 - exact launch Stage authoring OFF
+
+Any new material P3 design choice must follow analysis -> recommendation -> user approval before structural closure.
 
 ---
 
@@ -137,4 +143,4 @@ Initial exclusions:
 - freeze exact boss mechanics
 - freeze multiplayer disconnect timeout/AI/reward details
 - freeze multiplayer progression-credit/scaling values
-- convert P2 proposal into an accepted decision without user approval
+- silently resolve unresolved Lv26/Lv31 or multihit crit semantics
