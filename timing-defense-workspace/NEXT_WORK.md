@@ -14,12 +14,13 @@ Updated: 2026-10-22 KST
 Read first:
 1. `legacy-game-structure/16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
 2. `legacy-game-structure/17_MASTER_CAMPAIGN_MATRIX_V0_1.md`
-3. `legacy-game-structure/19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`
-4. `legacy-game-structure/18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
-5. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
-6. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
-7. `legacy-game-structure/02_TIER_SYSTEM.md`
-8. `legacy-game-structure/01_META_PROGRESSION.md`
+3. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+4. `legacy-game-structure/19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`
+5. `legacy-game-structure/18_MONSTER_ROSTER_EXTENSIBILITY_AMENDMENT_2026-10-22.md`
+6. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
+7. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+8. `legacy-game-structure/02_TIER_SYSTEM.md`
+9. `legacy-game-structure/01_META_PROGRESSION.md`
 
 ---
 
@@ -35,6 +36,7 @@ Read first:
 - T1 should not force all 9
 - higher Tiers should introduce new monsters
 - future monster/Tier expansion must remain open
+- Lv31 must be obtained early enough to be used and enjoyed across multiple late-run Stages before Stage50
 
 ---
 
@@ -84,6 +86,30 @@ Use if Model A T4 learning-density testing fails.
 
 ---
 
+# Lv31 mastery play-window — NEW REQUIRED GUARDRAIL
+
+Canonical:
+`legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+
+User-confirmed intent:
+- Lv31 is not a Stage50-only reward.
+- The player should unlock it, use it repeatedly, learn its feel, then bring it into Stage50.
+
+First calibration hypothesis:
+- intended-entry `SKILLED_V2` Lv31 expected reach around Stage38–42
+- roughly 8–12 late Stages of meaningful use opportunity before/through Stage50
+- Stage41–49 should include Lv31 mastery-use opportunities
+
+Failure conditions:
+- Lv31 effectively first appears at Stage49/50
+- Stage50 is the first meaningful use case
+- Lv31 power spike trivializes the entire final band
+- Lv26 use window is compressed away
+
+Exact EXP and unlock Stage remain OPEN.
+
+---
+
 # Play-volume sensitivity
 
 If all class×Tier records are eventually 3★ and full-clear probability q is treated as a simple constant for rough comparison:
@@ -116,12 +142,13 @@ Next:
 1. define novelty budget per T1–T4 beyond monster count
 2. place boss novelty placeholders
 3. refine relative Lv6/11/16/21/26/31 reach bands
-4. audit skill-novelty collision by Tier/Stage band
-5. define SKILLED_V2 parameter-measurement plan
-6. estimate progression/play volume under stars/soft walls
-7. static audit Model A campaign matrix
-8. if PASS, choose Model A as bounded simulation spine
-9. if T4 overload FAIL, switch to Model B
-10. only then reopen encounter frequency/count/composition/cadence
+4. explicitly preserve meaningful post-Lv31 play window before Stage50
+5. audit skill-novelty collision by Tier/Stage band
+6. define SKILLED_V2 parameter-measurement plan
+7. estimate progression/play volume under stars/soft walls
+8. static audit Model A campaign matrix
+9. if PASS, choose Model A as bounded simulation spine
+10. if T4 overload FAIL, switch to Model B
+11. only then reopen encounter frequency/count/composition/cadence
 
 No production values freeze yet.
