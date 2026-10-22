@@ -37,6 +37,7 @@ Read first:
 - higher Tiers should introduce new monsters
 - future monster/Tier expansion must remain open
 - Lv31 must be obtained early enough to be used and enjoyed across multiple late-run Stages before Stage50
+- **Lv31 target unlock window = Stage41–45**
 
 ---
 
@@ -86,27 +87,29 @@ Use if Model A T4 learning-density testing fails.
 
 ---
 
-# Lv31 mastery play-window — NEW REQUIRED GUARDRAIL
+# Lv31 mastery play-window — REQUIRED GUARDRAIL
 
 Canonical:
 `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
 
-User-confirmed intent:
+User-confirmed:
 - Lv31 is not a Stage50-only reward.
-- The player should unlock it, use it repeatedly, learn its feel, then bring it into Stage50.
+- **target unlock window = Stage41–45.**
+- Stage46–49 should provide repeated real-use/mastery opportunities.
+- Stage50 should be final application of an already-familiar Lv31 skill.
 
-First calibration hypothesis:
-- intended-entry `SKILLED_V2` Lv31 expected reach around Stage38–42
-- roughly 8–12 late Stages of meaningful use opportunity before/through Stage50
-- Stage41–49 should include Lv31 mastery-use opportunities
+Structural consequence:
+- Stage41–45 is the unlock-transition band.
+- Stage46–49 is the explicit post-Lv31 mastery-use band.
+- Stage50 is not the Lv31 tutorial.
 
 Failure conditions:
-- Lv31 effectively first appears at Stage49/50
-- Stage50 is the first meaningful use case
-- Lv31 power spike trivializes the entire final band
+- intended-entry skilled distribution drifts materially beyond Stage45
+- Lv31 first meaningful use occurs at Stage49/50
+- Lv31 power spike trivializes the final band
 - Lv26 use window is compressed away
 
-Exact EXP and unlock Stage remain OPEN.
+Exact EXP formula and percentile cutoffs remain OPEN.
 
 ---
 
@@ -141,14 +144,15 @@ Use Model A as the **default test hypothesis**, not a freeze.
 Next:
 1. define novelty budget per T1–T4 beyond monster count
 2. place boss novelty placeholders
-3. refine relative Lv6/11/16/21/26/31 reach bands
-4. explicitly preserve meaningful post-Lv31 play window before Stage50
-5. audit skill-novelty collision by Tier/Stage band
-6. define SKILLED_V2 parameter-measurement plan
-7. estimate progression/play volume under stars/soft walls
-8. static audit Model A campaign matrix
-9. if PASS, choose Model A as bounded simulation spine
-10. if T4 overload FAIL, switch to Model B
-11. only then reopen encounter frequency/count/composition/cadence
+3. refine relative Lv6/11/16/21/26/31 reach bands around the fixed Lv31 Stage41–45 target window
+4. explicitly preserve meaningful Lv26 play window before Lv31
+5. reserve Stage46–49 as post-Lv31 mastery-use territory
+6. audit skill-novelty collision by Tier/Stage band
+7. define SKILLED_V2 parameter-measurement plan
+8. estimate progression/play volume under stars/soft walls
+9. static audit Model A campaign matrix
+10. if PASS, choose Model A as bounded simulation spine
+11. if T4 overload FAIL, switch to Model B
+12. only then reopen encounter frequency/count/composition/cadence
 
 No production values freeze yet.
