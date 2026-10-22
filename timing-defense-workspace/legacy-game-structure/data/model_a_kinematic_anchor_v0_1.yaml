@@ -1,20 +1,39 @@
 version: model-a-kinematic-anchor-v0.1
-status: LEGACY_IMPLEMENTED_REFERENCE
+status: DESIGNED_NOT_AUTHORITATIVE
 purpose: movement-only preflight; not production balance
 
 source:
   branch: timing-defense-cloudflare-do-poc
   capabilityFile: timing-defense-cloudflare-poc/src/monster-capability-v1.js
   spawnReferenceFile: timing-defense-cloudflare-poc/src/v035-entry.js
+  sourceValueStatus: LEGACY_IMPLEMENTED_REFERENCE
   notes:
     - capability coefficients are explicitly provisional in live source
-    - spawnX uses deterministic midpoint of legacy/current inherited 1.055..1.095 spawn range for comparison
+    - spawnX uses deterministic midpoint of inherited 1.055..1.095 spawn range for comparison
+    - formation X-depth offsets below are new simulation candidates, not live values
 
 world:
   wallX: 0.155
   spawnX: 1.075
   timeStepMs: 10
   horizonMs: 30000
+
+formationXOffsets:
+  F01: {}
+  F02: {}
+  F03: {}
+  F04: {}
+  F05: {}
+  F06:
+    SUPPORTER: 0.030
+    SIEGER: 0.100
+  F07:
+    SUPPORTER: 0.120
+    SIEGER: 0.120
+  F08:
+    SIEGER: 0.080
+  F09:
+    SUPPORTER: 0.080
 
 monsters:
   GRUNT:
@@ -51,6 +70,7 @@ monsters:
 simulationScope:
   includes:
     - deterministic spawn timing
+    - formation-specific initial X-depth offsets
     - X movement
     - FLYER Y oscillation for aura distance
     - SUPPORTER movement-speed aura membership
