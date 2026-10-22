@@ -36,8 +36,6 @@ def expressed(monster: str, row: dict) -> tuple[bool, str]:
         frontline = int(row.get("bruteFrontlineMs") or 0)
         hits = int(row.get("bruteHitsReceived") or 0)
         absorbed = float(row.get("bruteDamageAbsorbed") or 0)
-        # BRUTE may express as a durable screen without ever becoming authoritative frontmost
-        # (for example behind a SHIELD while absorbing secondary/line damage).
         ok = hits > 0 and (frontline > 0 or absorbed > 0)
         return ok, "durable-attention-or-screening" if ok else "no-meaningful-durable-attention"
     if monster == "SHIELD":
@@ -75,8 +73,9 @@ def load_designations(path: Path | None) -> dict[str, set[str]]:
     if path is None:
         return {}
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    recipe_cfgs = data.get("roleRecipes") or data.get("criticalRecipes") or {}
     out: dict[str, set[str]] = {}
-    for recipe_id, cfg in (data.get("criticalRecipes") or {}).items():
+    for recipe_id, cfg in recipe_cfgs.items():
         roles = cfg.get("designatedRoleMonsters") or []
         out[str(recipe_id)] = {str(x) for x in roles}
     return out
