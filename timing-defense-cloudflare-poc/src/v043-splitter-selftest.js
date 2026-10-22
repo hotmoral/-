@@ -42,8 +42,9 @@ export function runV043SplitterSelfTest(RoomClass){
   }catch(e){checks.push(pack('SPLITTER_SPEED_EXCEPTION',false,String(e?.stack||e),'no exception'))}
 
   try{
-    const a=actor(RoomClass,{monsters:[parent(1,.20,.40,at),child(2,.20,.45,at)],defRank:4});const pHit=a.wallAt(a.room.run.monsters[0]);a.processAt(pHit);const pe=a.room.run.events.find(e=>e.type==='wall'&&e.targetId===1);const c=a.room.run.monsters.find(m=>m.id===2),cHit=a.wallAt(c);a.processAt(cHit);const ce=a.room.run.events.find(e=>e.type==='wall'&&e.targetId===2);
-    checks.push(pack('SPLITTER_PARENT_CHILD_WALL_DAMAGE_IDENTITY',pe?.damage===90&&ce?.damage===36&&a.room.run.baseHp===1874,{parent:pe,child:ce,baseHp:a.room.run.baseHp},{parentDamage:90,childDamage:36,baseHp:1874}));
+    const pa=actor(RoomClass,{monsters:[parent(1,.20,.40,at)],defRank:4});const pm=pa.room.run.monsters[0],pHit=pa.wallAt(pm);pa.processAt(pHit);const pe=pa.room.run.events.find(e=>e.type==='wall'&&e.targetId===1);
+    const ca=actor(RoomClass,{monsters:[child(2,.20,.45,at)],defRank:4});const cm=ca.room.run.monsters[0],cHit=ca.wallAt(cm);ca.processAt(cHit);const ce=ca.room.run.events.find(e=>e.type==='wall'&&e.targetId===2);
+    checks.push(pack('SPLITTER_PARENT_CHILD_WALL_DAMAGE_IDENTITY',pe?.damage===90&&ce?.damage===36&&pa.room.run.baseHp===1910&&ca.room.run.baseHp===1964,{parent:pe,child:ce,parentBaseHp:pa.room.run.baseHp,childBaseHp:ca.room.run.baseHp},{parentDamage:90,childDamage:36,parentBaseHp:1910,childBaseHp:1964}));
   }catch(e){checks.push(pack('SPLITTER_WALL_EXCEPTION',false,String(e?.stack||e),'no exception'))}
 
   try{
