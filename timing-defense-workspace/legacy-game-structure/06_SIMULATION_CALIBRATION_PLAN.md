@@ -1,232 +1,262 @@
-# Timing Defense — Simulation & Calibration Plan
+# Timing Defense — Simulation & Calibration Plan V0.2
 
 Date: 2026-10-22 KST  
-Status: **PRE-IMPLEMENTATION ANALYSIS PLAN / MASTER-SPINE ALIGNED**
+Status: **PRE-IMPLEMENTATION ANALYSIS PLAN / MODEL A LAYER-0 PASSED**
 
 ## 1. 목적
 
-Production 설계 승격 전 전체 게임을 여러 층으로 나눠 deterministic하게 계산·시뮬레이션한다.
+Production 승격 전 campaign을 여러 층으로 나눠 deterministic하게 검증한다.
 
-상위 기준:
-- `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
-- `08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
+Current top input:
+- `31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
+- `data/model_a_campaign_spine_v0_1.yaml`
 
-핵심 절차:
-
+Pipeline:
 ```text
-master spine
- -> campaign matrix
- -> authoring data
- -> deterministic simulation
- -> failure classification
+Master Spine
+ -> Layer-0 structural validator
+ -> encounter authoring envelope
+ -> Layer-A micro sim
+ -> synthetic Tier slices
+ -> full Tier sim
+ -> class soft-wall map
+ -> stars/meta recovery
+ -> achievement bridges
+ -> account sim
+ -> multiplayer expansion
  -> report
- -> discussion
  -> explicit freeze
  -> live implementation
 ```
 
-현재는 이전 T1 micro-sim보다 **Master Campaign Matrix 선행**이 우선이다.
+---
+
+# 2. Layer-0 — Campaign Spine validation
+
+Current status:
+**PASS**
+
+Evidence:
+`30_LAYER0_MODEL_A_VALIDATION_REPORT_V0_1.md`
+
+Result:
+```text
+errors=0 warnings=0
+```
+
+Validated structurally:
+- 4-Tier Model A candidate
+- cumulative roster
+- future expansion open
+- skill window ordering
+- Lv31 Stage41–45
+- late-band ordering
+- star contract
+- boss preview policy
+- pressure-attribution spacing
+
+Layer-0 PASS does not freeze production values.
 
 ---
 
-# 2. Simulation layer 0 — Campaign Spine validation
+# 3. Layer A0 — Encounter authoring-envelope static validation
 
-세부 encounter 전에 먼저 검증한다.
+Before combat simulation, generate Tier-specific candidate envelopes.
 
-입력:
-- Tier count candidate: 4 / 5 / 6
-- Tier novelty budget
-- monster availability/unlock ladder
-- 50-Stage macro role
-- expected run skill-reach window
-- expected meta-power state
-- skilled clear-rate target envelope
+Inputs:
+- Tier monster availability
+- E01–E20 archetype requirements
+- pressure envelope
+- complexity envelope
+- formation vocabulary
+- cadence vocabulary
+- skill reach windows
 
-출력:
-- total successful Stage volume
-- max stars
-- monster novelty spacing
-- empty/overloaded Tier detection
-- skill-novelty collision
-- meta-progression room
-- future monster expansion room
+Outputs:
+- valid archetypes by Tier
+- invalid/unavailable archetypes by Tier
+- candidate occurrence ranges
+- formation/cadence availability
+- representative recipe set
+- authored/effective entity bounds
+- static 4s/6s density warnings
 
-이 layer가 통과하지 않으면 T1 exact monster count/cadence를 더 세밀화하지 않는다.
+No production HP/speed freeze required.
 
 ---
 
-# 3. Simulation layer A — Encounter micro simulation
+# 4. Layer A — Encounter micro simulation
 
-목적:
-- 한 encounter 조합이 실제 target-order에서 어떤 문제를 만드는지 확인.
+Purpose:
+한 encounter가 실제 frontmost targeting에서 어떤 문제를 만드는지 확인.
 
-입력:
-- monster composition
+Inputs:
+- composition
 - formation
 - spawn order
-- spawn cadence
-- movement/capability candidate values
-- player class/skill state
+- cadence
+- candidate movement/capability values
+- class/skill state
 
-출력:
+Metrics:
 - frontline block time
 - target reorder count
-- backline exposure time
-- peak active count
-- short-window spawn density
+- backline exposure
+- peak active
+- authored/effective entity count
+- 4s/6s density
 - kill order
 - wall pressure
-- class-specific opportunity
+- class opportunity
 
-특수 metric:
-- SUPPORTER screened aura uptime
-- SIEGER screened firing uptime / shot count
-- CHARGER completed/interrupted ratio
-- SPLITTER child active/frontline occupancy
+Special:
+- SUPPORTER aura uptime / screened uptime
+- SIEGER shot count / screened firing uptime
+- CHARGER windup/complete/interrupt
+- SPLITTER children / active/frontline occupancy
 - FLYER geometry exposure
 
 ---
 
-# 4. Simulation layer B — Stage simulation
+# 5. Layer B — Stage simulation
 
-입력:
-- base flow
-- encounter events
-- Stage rewards
+Inputs:
+- Stage encounter sequence
 - run level/EXP
 - shop upgrades
 - class
 - mastery profile
 - team size
-- meta-power profile
+- meta-power state
 
-출력:
+Outputs:
 - clear/fail
 - clear time
-- base HP remaining
+- wall/base HP
 - damage/kills
-- EXP/level/skill reach
+- EXP/level
+- skill reach
 - coin/spend capacity
-- monster actual count
+- actual monster frequency
 - peak active
 - 4s/6s density
-- pressure/capability uptime
+- capability uptime
 
 ---
 
-# 5. Simulation layer C — 50 Stage Tier simulation
+# 6. Layer C — 50 Stage Tier simulation
 
-Stage1~50을 이어서 실행한다.
-
-필수 출력:
-- failure histogram by Stage
-- 0★ fail 1~19
-- 1★ fail 20~39
-- 2★ fail 40~49
-- 3★ clear 50
+Required outputs:
+- fail histogram by Stage
+- 0★ / 1★ / 2★ / 3★ distribution
 - full-Tier clear probability
-- level distribution
-- Lv6/11/16/21/26/31 reach distribution
-- coin/upgrades curve
+- level/skill distributions
+- Lv6/11/16/21/26/31 P25/P50/P75/P90
+- post-skill meaningful Stage/event count
+- coin/upgrades
 - encounter repetition
-- monster-type actual frequency
 - class opportunity coverage
 
-별 boundary 별도 검사:
+Critical boundaries:
 - 19→20
 - 39→40
-- 49→50
+- 40→41 Lv31 Ascension entry
+- 45→46 post-Lv31 mastery entry
+- 49→50 final
 
 ---
 
-# 6. Difficulty calibration — USER-CONFIRMED TARGET
+# 7. Difficulty target — USER-CONFIRMED
 
-## 6.1 기본 목표
-
-Tier1을 제외한 일반 campaign Tier의 기본 calibration rule:
-
-> **SKILLED_V2 기준 full-Tier clear probability < 60%.**
-
-60%는 목표 중앙값이 아니라 **상한 기준**이다.
-특별한 제품 의도가 없는데 60% 이상이면 `TOO_EASY_FOR_SKILLED`로 분류한다.
-
-## 6.2 T1 exception
-
-T1은 onboarding/first-contact 역할 때문에 숙련자 clear rate를 더 높게 허용할 수 있다.
-T1 exact target은 OPEN_DECISION이다.
-
-다만 prototype처럼 숙련자에게 사실상 자동 clear가 되는 수준은 지양한다.
-
-## 6.3 측정 단위
-
-기본 clear rate:
-
+General non-T1:
 ```text
-attempt starts Stage1
- -> continuous Tier run
- -> Stage50 clear
+P(full clear Stage1→50 | intended-entry SKILLED_V2_CENTRAL) < 0.60
 ```
 
-즉 개별 Stage clear rate가 아니라 **Tier 3★ full-run probability**다.
+Interpretation:
+- 60% is upper bound, not target mean
+- T1 may be higher
+- overgrown replay excluded
+- class rates may differ
+- hard class lockout forbidden
 
-## 6.4 평가 progression state
-
-다음 상태에서 측정한다.
-- 해당 Tier를 처음 의미 있게 공략하는 intended-entry account state
-- 해당 class의 예상 star/achievement support 범위
-- intended run skill progression
-
-과성장 replay account는 별도 `OVERGROWN` profile로 본다.
-
-## 6.5 Class asymmetry
-
-모든 class가 같은 clear rate일 필요는 없다.
-일부 class가 훨씬 낮아 soft wall을 만드는 것은 허용한다.
-
-단:
-- hard interaction lockout 금지
-- stars/achievements로 회복 가능한 경로 필요
+Clear rate alone is insufficient.
+Fail-location distribution must be evaluated because it drives star progression.
 
 ---
 
-# 7. Mastery profiles — 재정의
+# 8. Mastery profiles
 
-기존 profile을 그대로 쓰지 않는다.
-
-최소 profile:
+Required:
 - LEARNING
 - AVERAGE
-- SKILLED_V2
+- SKILLED_V2_CONSERVATIVE
+- SKILLED_V2_CENTRAL
+- SKILLED_V2_STRONG
 - HIGH_MASTERY_STRESS
 
-## SKILLED_V2 philosophy
+SKILLED_V2:
+- combo40 is not an extreme-tail event
+- context-sensitive timing degradation
+- combo survival
+- heavy/P×P usage
+- turnover recovery
 
-사용자 직접 플레이 관찰을 calibration evidence로 반영한다.
-- 집중하면 combo 40은 쉽게 달성 가능한 수준
-- 현재 prototype Stage 난도는 너무 낮았음
+Canonical protocol:
+`24_SKILLED_V2_MEASUREMENT_PROTOCOL_V0_1.md`
 
-따라서:
-- combo 40을 high-mastery-only event로 취급하지 않는다.
-- high combo maintenance probability를 기존 skilled보다 높게 잡는다.
-- timing accuracy / heavy completion / recovery discipline도 재산정한다.
-- HIGH_MASTERY_STRESS는 SKILLED_V2보다 명확히 상위다.
-
-아직 freeze하지 않는 parameter:
-- PERFECT/GOOD/NORMAL distribution
-- combo survival model
-- miss/error rate
-- heavy completion rate
-- reaction/cadence distribution
-
-이 값은 실제 플레이 데이터/테스트를 받아 parameterize한다.
+Do not reduce profile to one iid PERFECT/GOOD/NORMAL vector.
 
 ---
 
-# 8. Simulation layer D — Account/meta progression
+# 9. Player power targets
 
-Stars + achievements를 함께 본다.
+First calibration candidate:
+- Lv6 5–7
+- Lv11 11–14
+- Lv16 18–21
+- Lv21 25–28
+- Lv26 32–36
+- Lv31 **41–45**
 
-최소 path:
+USER-CONFIRMED:
+Lv31 target window Stage41–45.
+
+Late band:
+```text
+41–45 Lv31 Ascension
+46–49 post-Lv31 mastery
+50 final
+```
+
+Metrics:
+- unlock distribution
+- post-unlock Stage/event count
+- pre/post power slope
+- class divergence
+
+---
+
+# 10. Skill authority modes
+
+Current truth:
+- Lv6 authoritative
+- Lv11/16/21 exact legacy parity candidates
+- Lv26 designed-not-authoritative
+- Lv31 design unresolved numerically
+
+Simulation modes:
+- CURRENT_AUTHORITY
+- LEGACY_PARITY_CANDIDATE
+- FUTURE_SKILL_PLACEHOLDER
+
+Late Tier production freeze cannot rely only on Lv6 mode.
+
+---
+
+# 11. Layer D — Meta/account progression
+
+Paths:
 - FIRST_CLASS
 - BALANCED_FIVE_CLASS
 - STAR_STACKED
@@ -235,30 +265,69 @@ Stars + achievements를 함께 본다.
 - ACHIEVEMENT_FOCUSED_SOLO
 - HIGH_MASTERY
 
-출력:
+Outputs:
 - stars over time
 - permanent milestones
-- achievement completions
-- target-class modifiers
 - class clear order
-- first-class vs later-class difficulty
 - repeat attempts
-- account progression time
-- snowball coefficient
-- dominant-route detection
+- soft-wall recovery events
+- dominant route
+- snowball
 - graph reachability
+
+### Soft-wall requirement
+Normal difficulty should not rely mainly on Stage1–19 0★ failures.
+Blocked class should usually have a reasonable route to 1★/2★ and account contribution.
+
+Tier unlock first simulation hypothesis:
+`CLEAR_LOCK`.
+Not frozen.
 
 ---
 
-# 9. Simulation layer E — Multiplayer
+# 12. Stars / achievements
 
-2/3/4-player에서:
-- active count/readability
-- kill speed scaling
+Stars:
+- broad foundation
+- reward ladder only after soft-wall simulation
+
+Achievements:
+- targeted cross-class bridge
+- reward edges only after class soft-wall map exists
+
+Required order:
+```text
+soft-wall map
+ -> stars-only recovery
+ -> achievement edge candidate
+ -> combined account simulation
+```
+
+---
+
+# 13. Boss simulation policy
+
+Placeholder only:
+- Stage10 checkpoint boss optional
+- Stage30 optional boss-signature preview
+- Stage50 final boss candidate
+
+If Stage50 has mandatory unique decision grammar, earlier preview required.
+
+T4 boss-only novelty LOW by default.
+
+---
+
+# 14. Layer E — Multiplayer
+
+Only after solo/shared campaign spine is stable.
+
+2/3/4P checks:
+- entity/readability
+- kill-speed scaling
 - wall pressure
-- composition viability
+- class composition
 - AI/human mix
-- shared wall upgrade impact
 - specialist starvation
 
 Scaling priority:
@@ -268,94 +337,25 @@ Scaling priority:
 4. cadence/overlap
 5. limited durability adjustment
 
-Global HP inflation은 후순위다.
-Solo campaign spine을 먼저 닫은 뒤 확장한다.
+Avoid blanket HP inflation first.
 
 ---
 
-# 10. Skill authority modes
+# 15. Determinism
 
-현재:
-- Lv6 authoritative
-- Lv11/16/21 exact legacy parity candidate
-- Lv26 designed-not-authoritative
-- Lv31 unresolved
-
-Modes:
-- CURRENT_AUTHORITY
-- LEGACY_PARITY_CANDIDATE
-- FUTURE_SKILL_PLACEHOLDER
-
-Late Tier production freeze는 Lv6-only 결과에 의존하지 않는다.
-
----
-
-# 11. Permanent stat / achievement calibration
-
-Stars:
-- broad foundation
-- expected soft-wall shift를 기준으로 reward ladder 설계
-
-Achievements:
-- targeted cross-class bridge
-- 실제 soft-wall map이 나온 뒤 reward edge 배치
-
-검사:
-- first class가 불합리하게 막히지 않는가
-- later class가 trivial해지지 않는가
-- 특정 class가 shared stat에서 과효율을 얻지 않는가
-- stars + achievements가 multiplicative runaway를 만들지 않는가
-- 한 achievement가 mandatory key가 되지 않는가
-
----
-
-# 12. Encounter frequency calibration
-
-Tier별 비교:
-- monster spawn share
-- Stage presence
-- meaningful threat presence
-- pressure family presence
-- archetype frequency
-- formation/cadence/geometry frequency
-- backline-screen time
-- capability uptime
-
-단순 monster % 하나로 Tier identity를 판정하지 않는다.
-
----
-
-# 13. Readability guardrail
-
-Historical 5-monster 4s/6s density는 reference only.
-새 roster unlock ladder가 정해진 뒤 Tier별로 새로 측정한다.
-
-SPLITTER:
-- authored count
-- effective entity count
-- peak active
-
-SUPPORTER/SIEGER:
-- count보다 capability uptime 중시
-
----
-
-# 14. Determinism
-
-동일:
+Same:
 - campaign spine version
-- roster registry version
+- MonsterRegistry version
 - Tier/Stage data version
 - seed
 - class/team
 - mastery profile
-- meta-power profile
+- meta profile
 - shop policy
-이면 동일 결과가 재현되어야 한다.
+must reproduce the same result.
 
-Report 필수:
-- data version/hash
-- registry version
+Report:
+- data hash/version
 - seed range
 - run count
 - model mode
@@ -363,12 +363,32 @@ Report 필수:
 
 ---
 
-# 15. Failure classification
+# 16. Failure classifications
 
+## Campaign/novelty
 - CAMPAIGN_SPINE_EMPTY_TIER
 - NOVELTY_OVERLOAD
 - NOVELTY_STARVATION
+- SKILL_MONSTER_ATTRIBUTION_COLLISION
+
+## Difficulty/player model
 - TOO_EASY_FOR_SKILLED
+- SKILLED_PROFILE_TOO_WEAK
+- SKILLED_PROFILE_TOO_STRONG
+- COMBO40_MODELED_AS_OUTLIER
+- DIFFICULTY_GATE_PROFILE_UNSTABLE
+
+## Skill windows
+- SKILL_REACH_TOO_EARLY
+- SKILL_REACH_TOO_LATE
+- SKILL_WINDOW_COMPRESSED
+- LV26_WINDOW_COMPRESSED
+- INSUFFICIENT_LV31_PLAY_WINDOW
+- LATE_LV31_DISTRIBUTION
+- LV31_POWER_CLIFF_TOO_HIGH
+- LV31_CLASS_CLEAR_RATE_DIVERGENCE
+
+## Encounter
 - TOO_MANY_ENTITIES
 - FRONTLINE_SCREEN_TOO_LONG
 - SIEGE_UPTIME_TOO_HIGH
@@ -378,56 +398,61 @@ Report 필수:
 - CADENCE_COMPRESSION
 - CLASS_STARVATION
 - HARD_CLASS_LOCKOUT
-- SKILL_POWER_SPIKE
+
+## Meta/economy
 - SHOP_SNOWBALL
 - PERMANENT_STAT_SNOWBALL
 - ACHIEVEMENT_ROUTE_DEADLOCK
 - DOMINANT_PROGRESSION_ROUTE
 - STAR_BOUNDARY_CLIFF
+
+## Multiplayer
 - TEAM_SCALING_DEFECT
 
-한 원인을 global HP/count patch로 덮지 않는다.
+Do not hide one cause with a global HP/count patch.
 
 ---
 
-# 16. Revised execution order
+# 17. Current execution order
 
-1. Master Campaign Matrix
-2. Tier count 4/5/6 comparison
-3. Tier novelty budget
-4. current 9-monster unlock ladder
-5. future monster expansion contract
-6. Tier 50-Stage macro flow
-7. run skill-reach windows
-8. meta-power P0/P1/P2/P3
-9. skilled clear target envelopes
-10. cross-category static audit
-11. encounter micro-sim
-12. synthetic slice
+Completed:
+1. Master Campaign Spine
+2. 4/5/6 comparison
+3. Model A novelty/roster/power/meta static audit
+4. machine-readable Model A
+5. Layer-0 validator PASS
+
+Next:
+6. Tier encounter archetype availability
+7. Tier formation/cadence vocabulary
+8. bounded pressure/complexity frequency ranges
+9. representative deterministic recipes
+10. static readability/entity checks
+11. Layer-A micro sim
+12. synthetic Tier slices
 13. full Tier sim
 14. 5-class soft-wall map
 15. stars-only recovery
-16. achievement bridge modeling
-17. account progression sim
-18. 2/3/4P expansion
+16. achievement bridge model
+17. account sim
+18. multiplayer expansion
 19. report / explicit freeze
 20. live implementation
 
 ---
 
-# 17. Freeze gate
+# 18. Freeze gate
 
-Simulation만으로 자동 freeze하지 않는다.
-
-- final Tier count
-- monster unlock ladder
-- future monster release cadence
-- production monster numbers
-- encounter frequencies
-- star reward thresholds/coefficients
-- achievement reward graph/value
+Not automatically frozen by simulation:
+- final launch Tier count
+- exact Tier unlock
+- production monster values
+- exact encounter frequency
+- exact EXP formula
+- star reward values
+- achievement graph/value
+- boss cadence/design
 - shop cadence/economy
-- boss cadence
-- Lv26/31 skill contract
+- Lv26/31 production skill coefficients
 
-Simulation은 decision support다.
+Simulation is decision support; explicit production approval remains required.
