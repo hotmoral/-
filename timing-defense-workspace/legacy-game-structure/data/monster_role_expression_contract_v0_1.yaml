@@ -1,0 +1,117 @@
+version: monster-role-expression-contract-v0.1
+status: USER_CONFIRMED_STRUCTURE_PLUS_CANDIDATE_METRICS
+
+globalRules:
+  purpose: ensure monsters do not enter and disappear before their intended role is perceivable
+  designatedEncounterRequirement: true
+  spawnDeleteGuard:
+    enabled: true
+    rule: pre_expression_death_without_readable_counterplay_is_invalid
+  counterplayRule:
+    rule: expression_opportunity_required_but_successful_activation_not_always_required
+  targetAuthority:
+    rule: actual_frontmost_position_only
+  numericThresholdsFrozen: false
+  futureMonsterExtensionRequired: true
+
+expressionClasses:
+  BASELINE:
+    requiresExpressionGate: false
+  PASSIVE_IDENTITY:
+    requiresExpressionGate: true
+  DURABILITY_FRONTLINE:
+    requiresExpressionGate: true
+  MITIGATION_FRONTLINE:
+    requiresExpressionGate: true
+  GEOMETRY:
+    requiresExpressionGate: true
+  TELEGRAPH_STATEFUL:
+    requiresExpressionGate: true
+  POPULATION_TRANSFORM:
+    requiresExpressionGate: true
+  AURA_SUPPORT:
+    requiresExpressionGate: true
+  OBJECTIVE_STATEFUL:
+    requiresExpressionGate: true
+
+monsters:
+  GRUNT:
+    expressionClass: BASELINE
+    coreMechanic: neutral_reference_body
+    minimumRoleExpression: baseline_exempt
+    readableCounterplay: ordinary_targeting
+    failureClass: null
+    requiredMetrics: [aliveTime, frontlineTime]
+
+  RUNNER:
+    expressionClass: PASSIVE_IDENTITY
+    coreMechanic: sustained_fast_approach
+    minimumRoleExpression: speed_must_create_observable_arrival_or_front_order_difference_before_death
+    readableCounterplay: react_to_accelerated_wall_approach
+    failureClass: RUNNER_SPEED_IDENTITY_ERASED
+    requiredMetrics: [aliveTime, distanceAdvanced, frontOrderChanges, timeToWallDeltaVsGrunt]
+
+  BRUTE:
+    expressionClass: DURABILITY_FRONTLINE
+    coreMechanic: raw_hp_and_knock_resistant_frontline
+    minimumRoleExpression: must_absorb_meaningful_frontline_attention_before_death
+    readableCounterplay: commit_multiple_hits_or_use_heavy_control
+    failureClass: BRUTE_DURABILITY_IDENTITY_ERASED
+    requiredMetrics: [frontlineBlockTime, hitsReceived, rawDamageAbsorbed, screenTimeProvided]
+
+  SHIELD:
+    expressionClass: MITIGATION_FRONTLINE
+    coreMechanic: armor_mitigation
+    minimumRoleExpression: mitigation_must_change_effective_damage_or_required_hits_before_death
+    readableCounterplay: recognize_reduced_damage_and_adapt
+    failureClass: SHIELD_MITIGATION_IDENTITY_ERASED
+    requiredMetrics: [mitigatedHits, preventedDamage, effectiveHitCount, frontlineBlockTime]
+
+  FLYER:
+    expressionClass: GEOMETRY
+    coreMechanic: vertical_geometry
+    minimumRoleExpression: vertical_position_must_create_nonzero_geometry_or_targeting_opportunity_before_death
+    readableCounterplay: exploit_or_adapt_to_y_axis_separation
+    failureClass: FLYER_GEOMETRY_IDENTITY_ERASED
+    requiredMetrics: [flyerGeometryOpportunityTime, lineOpportunityChanges, splashOpportunityChanges, targetOrderChanges]
+
+  CHARGER:
+    expressionClass: TELEGRAPH_STATEFUL
+    coreMechanic: telegraphed_interruptible_charge
+    minimumRoleExpression: enter_windup_and_present_readable_response_window
+    readableCounterplay: interrupt_or_delete_during_visible_windup
+    failureClass: CHARGER_PRE_WINDUP_ERASURE
+    requiredMetrics: [windupEntries, windupVisibleTime, interrupted, completedCharges, erasedBeforeWindup]
+
+  SPLITTER:
+    expressionClass: POPULATION_TRANSFORM
+    coreMechanic: parent_death_to_two_nonrecursive_children
+    minimumRoleExpression: split_must_create_real_post_death_population_or_target_state_change
+    readableCounterplay: adapt_to_two_children_and_new_target_order
+    failureClass: SPLITTER_TRANSFORM_IDENTITY_ERASED
+    requiredMetrics: [parentDeaths, childrenSpawned, childAliveTime, childFrontlineTime, peakActiveDeltaAfterSplit, targetReordersFromSplit]
+
+  SUPPORTER:
+    expressionClass: AURA_SUPPORT
+    coreMechanic: nonstacking_movement_speed_aura
+    minimumRoleExpression: at_least_one_other_monster_receives_aura_for_a_meaningful_observable_interval
+    readableCounterplay: break_screen_or_remove_supporter_before_extended_aura_value
+    failureClass: SUPPORTER_AURA_IDENTITY_ERASED
+    requiredMetrics: [auraTargetCount, auraUptime, screenedAuraUptime, screenedAuraRatio, supporterAliveTime]
+
+  SIEGER:
+    expressionClass: OBJECTIVE_STATEFUL
+    coreMechanic: standoff_repeated_wall_attack
+    minimumRoleExpression: reach_standoff_enter_windup_and_have_a_real_first_shot_opportunity
+    readableCounterplay: break_screen_reposition_or_delete_during_visible_windup
+    failureClass: SIEGER_PRE_SHOT_OPPORTUNITY_ERASURE
+    requiredMetrics: [standoffReach, windupEntries, firstShotOpportunity, firstShotAt, shotCount, screenedFirstShot, erasedBeforeFirstShotOpportunity]
+
+validation:
+  designatedRoleEncounter:
+    requireAllFiveClassesStructuralOpportunity: true
+    requireReadableCounterplayWindow: true
+    forbidGuaranteedPreExpressionDeletion: true
+  numericRates:
+    status: OPEN
+    note: exact percentages and minimum milliseconds require fitted SKILLED_V2 evidence
