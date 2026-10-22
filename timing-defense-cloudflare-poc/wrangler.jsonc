@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "timing-defense-do-poc",
-  "main": "src/v040-shield-audit-entry.js",
+  "main": "src/v041-flyer-audit-entry.js",
   "compatibility_date": "2026-10-20",
   "durable_objects": {
     "bindings": [
