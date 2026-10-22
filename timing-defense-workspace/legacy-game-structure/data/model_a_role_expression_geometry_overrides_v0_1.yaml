@@ -1,0 +1,60 @@
+version: model-a-role-expression-geometry-overrides-v0.1
+status: BOUNDED_DIAGNOSTIC_OVERRIDES_NOT_PRODUCTION_AUTHORING
+sourceReports:
+  - 48_ROLE_EXPRESSION_FINE_SCAN_REPORT_V0_1.md
+  - 49_E11_SIEGE_TIMING_ADJUSTMENT_REPORT_V0_1.md
+
+common:
+  powerMode: CURRENT_AUTHORITY_LV6
+  sourceTrace: TRACE_BRACKET_CENTRAL
+  productionFreeze: false
+  monsterCoefficientChanges: false
+
+recipeOverrides:
+  T3_E07_M:
+    entryShiftFocus: {min: 0.53, max: 0.60}
+    preferredDiagnosticAnchor: 0.53
+    relativeSpecialOffset: 0.10
+    notes:
+      - preserve exposed/baseline CHARGER identity
+      - lower edge preferred for reaction time
+
+  T3_E17_M:
+    entryShiftFocus: {min: 0.43, max: 0.50}
+    preferredDiagnosticAnchor: 0.43
+    relativeSpecialOffset: 0.10
+    notes:
+      - screened CHARGER case
+      - all-five windup expression begins near lower edge in current probe
+
+  T4_E11_M:
+    entryShiftFocus: {min: 0.69, max: 0.73}
+    preferredDiagnosticAnchor: 0.70
+    relativeSpecialOffset: 0.10
+    spawnTimeDeltaMs:
+      SHIELD: 0
+      BRUTE: 0
+      GRUNT_OCCURRENCES: [250, 250]
+      SIEGER: 0
+    resultingCandidateSpawnTimesMs:
+      SHIELD: [0]
+      BRUTE: [250]
+      GRUNT: [750, 1000]
+      SIEGER: [1550]
+    notes:
+      - removes current CENTRAL ordinary contact wall leak while preserving all-five actual-shot expression
+      - do not promote before bracket robustness test
+
+  T4_E19_M:
+    entryShiftFocus: {min: 0.69, max: 0.72}
+    preferredDiagnosticAnchor: 0.70
+    relativeSpecialOffset: 0.10
+    notes:
+      - current CENTRAL probe shows all-five actual-shot expression with zero ordinary contact leak at anchor
+
+admissionStillRequires:
+  - conservative_central_strong_bracket_robustness
+  - first_shot_opportunity_separate_from_actual_shot
+  - passive_role_metrics
+  - splitter_child_meaningful_state_metrics
+  - supporter_normalized_aura_metrics
