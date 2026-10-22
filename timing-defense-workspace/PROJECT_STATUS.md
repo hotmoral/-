@@ -11,23 +11,26 @@ Updated: 2026-10-22 KST
 
 # Current planning phase
 
-**Class-aware Layer-A Combat Micro-Simulation**
+**Class-aware Layer-A Capability Window Calibration**
 
-Upstream structure is sufficiently closed.
-Current default campaign spine is Model A.
+Upstream campaign structure remains sufficiently closed.
+Model A remains the default bounded simulation spine, not a production freeze.
 
-Primary integrated authority:
+Primary campaign authority:
 - `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-Current admission boundary:
-- `legacy-game-structure/40_LAYER_A_PREFLIGHT_ADMISSION_REPORT_V0_1.md`
+Current Layer-A evidence:
+- `41_CLASS_AWARE_ACTION_TRACE_MODEL_V0_1.md`
+- `42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
+- `43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
+- `44_ENTRY_DEPTH_ACTIVATION_WINDOW_REPORT_V0_1.md`
 
 ---
 
 # Core user-confirmed truth
 
-- 5 classes, independent Tier progression.
-- Shared Tier/Stage combat content across classes.
+- 5 classes progress independently through Tiers.
+- Same Tier/Stage combat content is shared across classes.
 - 1 Tier = 50 Stage.
 - fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / Stage50 clear=3★.
 - stars = broad account permanent growth.
@@ -36,159 +39,143 @@ Current admission boundary:
 - current 9 ordinary monsters are not lifetime final roster.
 - T1 does not teach all 9; higher Tiers introduce new monsters.
 - future Tier/monster expansion open.
-- non-T1 intended-entry `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
+- non-T1 intended-entry fitted `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
 - combo40 is skilled-achievable.
-- **Lv31 target unlock window = Stage41–45.**
+- Lv31 target unlock window = Stage41–45.
 - Stage46–49 = post-Lv31 mastery.
-- Stage50 = final, not Lv31 tutorial.
+- Stage50 is final, not Lv31 tutorial.
 
 ---
 
 # Model A
 
 ```text
-T1 G/R/B              Foundation / Timing & Frontline
-T2 +SH/F              Mitigation / Geometry
-T3 +C/SP              Burst / Transformation
-T4 +SUP/SI            Formation / Siege
-T5+ future            Expansion
+T1 G/R/B
+T2 +SH/F
+T3 +C/SP
+T4 +SUP/SI
+T5+ future expansion
 ```
 
-Status:
-**default bounded simulation spine / NOT production freeze**
-
-Fallback Model B:
-- T4 +SUPPORTER
-- T5 +SIEGER
-- only if T4 lower-layer evidence fails.
-
----
-
-# Player power spine candidate
-
-- Lv6 5–7
-- Lv11 11–14
-- Lv16 18–21
-- Lv21 25–28
-- Lv26 32–36
-- Lv31 **41–45**
-
-Only Lv31 window is user-confirmed.
-Other windows remain calibration candidates.
-
-Late grammar:
-```text
-31–39 pressure / soft-wall build
-40     2★ gate
-41–45  Lv31 Ascension
-46–49  post-Lv31 mastery
-50     Tier Final
-```
+Fallback Model B remains available only if T4 lower-layer evidence fails.
 
 ---
 
 # Current validation chain
 
-## Master Campaign Layer-0
-PASS, `errors=0 warnings=0`.
-
-## Encounter Envelope Layer-A0
-PASS, `errors=0 warnings=0`.
-
-Tier legal archetypes:
-- T1: 3
-- T2: 7
-- T3: 13
-- T4: all current E01–E20
-
-## Representative recipe static preflight
-PASS.
-- 20 recipes
-- max authored 4s = 7
-- max conservative effective 4s = 10
-- no density WATCH/ERROR
-
-## Kinematic preflight
-PASS WITH WATCHES.
-
-Key confirmed geometry:
-- E10 focused siege first shot unscreened
-- E11 escorted siege first shot screened
-- E19 fortress can produce durable-screened siege
-- representative CHARGER max simultaneous windup = 1
-
-Important schema finding:
-- delayed spawn alone cannot reliably represent `BACK`
-- formation authoring needs actual initial X-depth (`spawnXOffset` design direction)
-- target authority still uses actual frontmost X; no target override
-
-## Generic DPS sensitivity
-Diagnostic complete; high throughput sensitivity confirmed.
-
-- SIEGER capability can disappear entirely when front screen is removed quickly
-- CHARGER can die before windup
-- SUPPORTER protected-aura duration changes sharply with throughput
-- SPLITTER wall leakage changes sharply with throughput
-
-No numeric patch authorized from this diagnostic.
+- Master Campaign Layer-0: PASS, errors=0 warnings=0
+- Encounter Envelope Layer-A0: PASS, errors=0 warnings=0
+- Representative recipe static preflight: PASS
+- Kinematic preflight: PASS WITH WATCHES
+- Generic DPS sensitivity: COMPLETE
+- Class-aware CURRENT_AUTHORITY micro-sim V0.1: COMPLETE for critical subset
+- Absolute entry-depth activation diagnostic: COMPLETE
 
 ---
 
-# Difficulty / meta principle
+# Class-aware V0.1 findings
 
-Full clear rate alone is insufficient.
-Fail location controls stars and therefore cross-class progression.
+Critical set:
+- 10 representative recipes
+- 3 deterministic trace brackets
+- 5 classes
+- CURRENT_AUTHORITY_LV6
 
-Preferred ordinary soft wall:
-```text
-late fail -> 1★/2★
- -> other-class progression
- -> permanent growth
- -> return
- -> old wall becomes attainable
-```
+CENTRAL bracket mean clear time over the critical set:
+- Mage ~4.725 s
+- Rogue ~5.016 s
+- Archer ~5.700 s
+- Knight ~8.100 s
+- Tank ~8.400 s
 
-Avoid normal difficulty dominated by Stage1–19 0★ failures.
+These are not production balance targets because the trace bracket is not fitted SKILLED_V2.
 
-Tier unlock first simulation hypothesis:
-`CLEAR_LOCK` = same class Stage50 clear required to unlock next Tier.
-Not frozen.
+Lv6 clear-time effect is highly asymmetric in this diagnostic:
+- Mage/Rogue/Archer gain large throughput
+- Knight gains modest raw throughput
+- Tank may clear slower because control/knockback is utility rather than DPS
 
----
-
-# Current exact boundary
-
-Now work on:
-**class-aware representative encounter micro-simulation**.
-
-Required next outputs:
-- deterministic action traces / SKILLED_V2 parameterization
-- class-specific kill order and target reorder
-- frontline block time
-- wall pressure
-- CHARGER telegraph/interrupt viability
-- SPLITTER population pressure
-- SUPPORTER aura/screened uptime
-- SIEGER first-shot/shot-count/screened-firing uptime
-- class opportunity/starvation
-
-After PASS:
-synthetic Tier slices, then full Tier simulation.
+Therefore class evaluation must be multi-metric.
 
 ---
 
-# Still not frozen
+# Stateful capability defect
 
-- final launch Tier count
-- exact Tier unlock policy
-- production monster coefficients
+Default representative geometry currently fails to express some Tier-defining mechanics under the optimistic class-aware traces.
+
+CHARGER:
+- sampled T3 representative recipes: 0 windups across the critical class/trace sweep
+- special bodies are erased before windup
+
+SIEGER:
+- E11/E19: 0 shots across the critical class/trace sweep
+
+SUPPORTER:
+- capability remains present but screened-aura duration varies sharply by class/throughput
+
+SPLITTER:
+- transformation occurs; no sampled child wall leak under the current optimistic brackets
+
+This is a recipe/capability-expression issue, not permission to buff HP globally.
+
+---
+
+# Absolute entry-depth result
+
+New authoring distinction:
+- relative depth = FRONT/MID/BACK ordering inside formation
+- absolute entry depth = where the whole encounter enters the battlefield
+
+Current diagnostics show non-monotonic activation windows.
+
+Examples, not production coordinates:
+- T3_E17 CHARGER all-five windup visibility around ~0.45 X shift toward wall
+- T4_E11 SIEGER broad activation around ~0.70–0.80
+- T4_E19 broad activation around ~0.75–0.80
+- excessive forward shift can remove capability again by exposing the special too early
+
+Thus the next task is an activation envelope, not a single coordinate.
+
+---
+
+# Player-trace authority boundary
+
+Current trace bracket:
+- 900 ms / perfect streak 40
+- 750 ms / perfect streak 55
+- 600 ms / perfect streak 75
+
+Status:
+**CALIBRATION BRACKET NOT FITTED**
+
+It must not be promoted to SKILLED_V2.
+Actual controlled harness/telemetry still needs to fit:
+- cadence
+- timing outcomes by context
+- combo survival
+- heavy/P×P completion
+- target-turnover recovery
+- pressure degradation
+
+---
+
+# Current exact work
+
+Now allowed:
+1. CHARGER/SIEGER absolute entry-depth and spawn-time window authoring
+2. five-class capability activation/interrupt/shot visibility tests
+3. role-specific metrics beyond clear time
+4. repeat critical micro-sim after geometry revision
+5. then expand to all 20 representative recipes
+
+Not allowed yet:
 - exact 200-Stage schedule
-- exact EXP formula
-- Lv11+ production coefficients
-- permanent star reward values
-- achievement reward graph/value
-- boss cadence/design
-- shop cadence/economy
-- detailed multiplayer balance
+- production monster coefficient freeze
+- fitted SKILLED_V2 claims from current brackets
+- live campaign patch
+- final Tier count
+- exact EXP/star/achievement values
+- boss/shop freeze
+- detailed 3P/4P production balance
 
-No live gameplay code or production balance number was changed by the current tranche.
+No live gameplay code or production balance value was changed by this tranche.
