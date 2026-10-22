@@ -1,0 +1,71 @@
+{
+  "version": "p4-exp-preproposal-diagnostics-v0.1",
+  "status": "DERIVED_DIAGNOSTIC_NOT_DESIGN_AUTHORITY",
+  "sourceBoundary": {
+    "runner": "P3 canonical runner",
+    "fixture": "P3 canonical synthetic first-10 fixture",
+    "important": "P3 fixture is not exact launch authoring."
+  },
+  "legacyPrototype": {
+    "grantByCompletedTurn": {
+      "NORMAL": 8,
+      "GOOD": 12,
+      "PERFECT": 18,
+      "HEAVY": 10,
+      "HEAVY+": 14,
+      "GREAT": 18,
+      "SUPER": 23,
+      "CRITICAL": 28
+    },
+    "cumulativeMilestoneThresholds": {
+      "6": 420,
+      "11": 1140,
+      "16": 2160,
+      "21": 3480,
+      "26": 5100,
+      "31": 7020
+    },
+    "p3First10CumulativeCreditQuantiles": {
+      "1": {"P25": 171.0, "P50": 201, "P75": 218.0},
+      "2": {"P25": 399.0, "P50": 446, "P75": 447.0},
+      "3": {"P25": 599.0, "P50": 647, "P75": 656.0},
+      "4": {"P25": 809.0, "P50": 857, "P75": 857.0},
+      "5": {"P25": 973.0, "P50": 1021, "P75": 1021.0},
+      "6": {"P25": 1137.0, "P50": 1223, "P75": 1223.0},
+      "7": {"P25": 1301.0, "P50": 1394, "P75": 1402.0},
+      "8": {"P25": 1465.0, "P50": 1558, "P75": 1566.0},
+      "9": {"P25": 1831.0, "P50": 1968, "P75": 1978.0},
+      "10": {"P25": 2203.0, "P50": 2313, "P75": 2380.0}
+    },
+    "legacyThresholdUnlockStageInsideP3": {
+      "6": {"reachedWithinP3": 15, "runs": 15, "P25": 2.0, "P50": 2, "P75": 3.0},
+      "11": {"reachedWithinP3": 15, "runs": 15, "P25": 6.0, "P50": 6, "P75": 7.0},
+      "16": {"reachedWithinP3": 15, "runs": 15, "P25": 10.0, "P50": 10, "P75": 10.0},
+      "21": {"reachedWithinP3": 0, "runs": 15, "P25": null, "P50": null, "P75": null},
+      "26": {"reachedWithinP3": 0, "runs": 15, "P25": null, "P50": null, "P75": null},
+      "31": {"reachedWithinP3": 0, "runs": 15, "P25": null, "P50": null, "P75": null}
+    }
+  },
+  "lv6EventOpportunityFeedback": {
+    "knight": {"lv1EventMean": 151.66666666666666, "forcedLv6EventMean": 151.33333333333334, "eventDeltaPct": -0.2197802197802079, "lv1LegacyCreditMean": 2298.6666666666665, "forcedLv6LegacyCreditMean": 2292.6666666666665, "legacyCreditDeltaPct": -0.2610208816705373},
+    "rogue": {"lv1EventMean": 151.66666666666666, "forcedLv6EventMean": 121, "eventDeltaPct": -20.219780219780215, "lv1LegacyCreditMean": 2298.6666666666665, "forcedLv6LegacyCreditMean": 1870.3333333333333, "legacyCreditDeltaPct": -18.633990719257543},
+    "tank": {"lv1EventMean": 150, "forcedLv6EventMean": 150, "eventDeltaPct": 0.0, "lv1LegacyCreditMean": 2282, "forcedLv6LegacyCreditMean": 2282, "legacyCreditDeltaPct": 0.0},
+    "archer": {"lv1EventMean": 151.66666666666666, "forcedLv6EventMean": 123, "eventDeltaPct": -18.9010989010989, "lv1LegacyCreditMean": 2298.6666666666665, "forcedLv6LegacyCreditMean": 1901.6666666666667, "legacyCreditDeltaPct": -17.270881670533633},
+    "mage": {"lv1EventMean": 150, "forcedLv6EventMean": 128, "eventDeltaPct": -14.66666666666666, "lv1LegacyCreditMean": 2282, "forcedLv6LegacyCreditMean": 1960.6666666666667, "legacyCreditDeltaPct": -14.081215308209172}
+  },
+  "legacyShapeExpectedGrantPerCompletedTurn": {
+    "oldAverage_iid": 13.625,
+    "oldSkilled_iid": 15.780000000000001,
+    "currentCentral_markov": 17.87466666666667,
+    "perfect": 20.5,
+    "currentCentralVsOldAveragePct": 31.190214067278312,
+    "perfectVsCurrentCentralPct": 14.68745337908397
+  },
+  "interpretation": [
+    "Legacy absolute level thresholds are structurally too fast for the current 50-Stage target.",
+    "Legacy relative quality-reward shape remains separable from absolute threshold scale and can be tested independently.",
+    "Forced Lv6 offensive power materially reduces later timing-event opportunity for Rogue/Archer/Mage in the P3 fixture.",
+    "No class-specific EXP compensation is authorized by this diagnostic.",
+    "No P4 EXP formula or threshold is frozen by this diagnostic."
+  ]
+}
