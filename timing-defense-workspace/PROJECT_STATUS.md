@@ -27,15 +27,16 @@ Critical current documents:
 1. `NEXT_WORK.md`
 2. `legacy-game-structure/README.md`
 3. `legacy-game-structure/08_STRUCTURE_CONSISTENCY_GOVERNANCE.md`
-4. `legacy-game-structure/09_TIER_LADDER_CANDIDATE_V0_1.md`
-5. `legacy-game-structure/10_ENCOUNTER_COMPLEXITY_MATRIX_V0_1.md`
-6. `legacy-game-structure/12_T1_STATIC_DISTRIBUTION_AUDIT_V0_1.md`
-7. `legacy-game-structure/13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
-8. `legacy-game-structure/14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
-9. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
-10. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
-11. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-12. `MONSTER_CAPABILITY_CONTRACT_V1.md`
+4. `legacy-game-structure/01_META_PROGRESSION.md`
+5. `legacy-game-structure/15_ACHIEVEMENT_TITLE_CROSS_CLASS_PROGRESSION_V0_1.md`
+6. `legacy-game-structure/09_TIER_LADDER_CANDIDATE_V0_1.md`
+7. `legacy-game-structure/10_ENCOUNTER_COMPLEXITY_MATRIX_V0_1.md`
+8. `legacy-game-structure/13_T1_STAGE_SKELETON_CANDIDATE_V0_2.md`
+9. `legacy-game-structure/14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
+10. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+11. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
+12. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+13. `MONSTER_CAPABILITY_CONTRACT_V1.md`
 
 ---
 
@@ -55,7 +56,15 @@ Stage1–3 remain regression fixtures only.
 ---
 
 # Meta progression structural truth
-- five classes progress through Tiers independently,
+
+## Shared Tier content / independent class records
+- same Tier/Stage authoring data is shared across all classes,
+- each class has independent Tier progression and best-star records,
+- class-specific difficulty differences are allowed,
+- hard class lockout is forbidden,
+- soft walls recoverable through cross-class progression are intentional.
+
+## Stars — broad account growth
 - 1 Tier = 50 stages,
 - fail 1–19 -> 0★,
 - fail 20–39 -> 1★,
@@ -63,13 +72,34 @@ Stage1–3 remain regression fixtures only.
 - clear 50 -> 3★,
 - `bestStars[class][tier] = max(previous, attemptStars)`,
 - `GlobalStarTotal = sum(bestStars)`,
-- stars are non-spendable achievement progression,
-- cumulative stars grant account-wide permanent stats.
+- stars are non-spendable,
+- cumulative stars grant broad account-wide permanent stats.
 
-Open:
-- permanent reward ladder,
-- Tier unlock semantics,
-- multiplayer Tier eligibility/credit.
+## Achievements — targeted cross-class growth
+User-confirmed future direction:
+- class-specific Tier milestone achievements,
+- all-class Tier milestone achievements,
+- class-specific pure SOLO / AI 0 Tier-clear achievements,
+- some achievement rewards strengthen a **different class** from the source class.
+
+Intended progression loop:
+```text
+Class A blocked
+ -> progress other classes
+ -> gain stars + achievements
+ -> broad + targeted permanent growth
+ -> return to A
+ -> previous soft wall becomes attainable
+```
+
+Titles are the presentation/collection layer. Current structural default is gameplay reward on achievement completion and cosmetic title equip; title-equipped stats remain open.
+
+Not frozen:
+- achievement catalog,
+- exact title names,
+- sourceClass -> targetClass edges,
+- stat type/value,
+- stacking rules.
 
 ---
 
@@ -77,22 +107,11 @@ Open:
 Old S/E/X is legacy analysis only.
 
 Current vocabulary:
-BASELINE neutral reference / FLOOD / RUSH / BULWARK / BREACH / AERIAL / REPLICATE / SUPPORT / SIEGE.
+BASELINE / FLOOD / RUSH / BULWARK / BREACH / AERIAL / REPLICATE / SUPPORT / SIEGE.
 
-Encounter authoring tracks:
-- monster count/frequency,
-- composition,
-- formation/frontline intent,
-- spawn order,
-- cadence,
-- geometry,
-- active concurrency,
-- target reorder,
-- frontline block time,
-- backline exposure/capability uptime.
+Encounter authoring tracks composition, formation/frontline intent, spawn order, cadence, geometry, active concurrency, target reorder, frontline block time and backline/capability uptime.
 
 Formation metadata does not override runtime target authority.
-
 Complexity C0–C4 is separate from difficulty.
 
 ---
@@ -105,10 +124,11 @@ Required review lenses:
 - product purpose,
 - internal consistency,
 - cross-category dependencies,
-- player learning/readability,
-- targeting/formation truth,
-- class fairness,
-- progression/economy snowball,
+- learning/readability,
+- target/formation truth,
+- class asymmetry vs hard lockout,
+- stars/achievement snowball,
+- progression graph reachability,
 - multiplayer implications,
 - authority boundary,
 - deterministic simulation,
@@ -145,13 +165,6 @@ Source:
 - C4 Stage49/50 only,
 - V0.1 SIEGE/SPLITTER repetition issues corrected.
 
-Remaining WATCH:
-- BULWARK 19/50 Stage presence,
-- Stage20–26 learning density,
-- T1 FORTRESS necessity,
-- first-class/no-permanent-stat survivability,
-- class opportunity after geometry/count authoring.
-
 ---
 
 # T1 2P Authoring Envelope V0.1 — SIMULATION CANDIDATE
@@ -159,7 +172,7 @@ Source:
 `legacy-game-structure/14_T1_2P_AUTHORING_ENVELOPE_V0_1.md`
 
 Completed:
-- L/M/H/X candidate compositions for T1-used E01–E19,
+- L/M/H/X candidate compositions for E01–E19,
 - authored vs effective entity count separation,
 - SPLITTER child-volume accounting,
 - conservative single-SUPPORTER/single-SIEGER T1 package policy,
@@ -167,22 +180,12 @@ Completed:
 - formation IDs F01–F09,
 - first static readability alert envelope.
 
-Historical old 5-monster 2P reference:
-- P95 4s spawn ≈11,
-- P95 6s ≈13.5.
-
-New T1 candidate analysis targets:
+Candidate alerts:
 - authored 4s normal <=8 / WATCH 9–10 / warning >10,
 - effective 4s normal <=10 / WATCH 11–13 / warning >13,
-- peak active target mostly 6–8 / WATCH 9–10 / stress 11+.
+- peak active mostly 6–8 / WATCH 9–10 / stress 11+.
 
-These are simulator/authoring alerts, not production hard caps.
-
-Key guardrails:
-- T1 E10/E11/E18/E19 default one SIEGER package,
-- T1 E09/E12/E16/E19 default one SUPPORTER package,
-- E19 Stage49/50 starts L/M despite C4 complexity,
-- SPLITTER X packages remain stress-only until micro-sim.
+Not production caps.
 
 ---
 
@@ -201,24 +204,20 @@ Do not:
 - resume legacy Stage4→10 reconstruction,
 - start Lv11+ implementation,
 - freeze production monster numbers,
+- freeze achievement reward values,
 - assign exact recipes to all 50 stages yet,
 - expand to 3P/4P yet.
 
 Next bounded tranche:
 **T1 representative encounter micro-simulation preflight**.
 
-Order:
-1. E01–E19 allowed formation/cadence matrix,
-2. representative L/M/H recipe set,
-3. deterministic spawn schedules,
-4. static authored 4s/6s density,
-5. SPLITTER child burst stress,
-6. screen/arrival-order model for E11/E12/E17/E18/E19,
-7. SIEGER screened first-shot/shot-uptime analysis,
-8. SUPPORTER screened aura analysis,
-9. CHARGER telegraph concurrency analysis,
-10. revise candidate envelope,
-11. then 10-stage synthetic slice.
+After micro-sim and T1 full simulation:
+1. generate 5-class viability / soft-wall map,
+2. simulate stars-only recovery,
+3. place cross-class achievement edges only where progression structure benefits,
+4. verify reward-graph reachability / circular deadlock / dominant route / snowball,
+5. run stars + achievements combined account simulation,
+6. only then discuss/freeze reward mappings and values.
 
 ## Governance
-`recover -> structure -> static audit -> candidate data -> micro-sim -> synthetic slice -> full Tier sim -> report -> explicit freeze -> implement`.
+`recover -> structure -> static audit -> candidate data -> micro-sim -> synthetic slice -> full Tier sim -> soft-wall map -> cross-class reward model -> account sim -> report -> explicit freeze -> implement`.
