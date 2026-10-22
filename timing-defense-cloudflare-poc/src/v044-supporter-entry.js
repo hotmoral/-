@@ -50,10 +50,15 @@ TimingDefenseRoom.prototype.currentSegmentSpeed=function(monster,at=monster?.ref
   return Number.isFinite(v)&&v>0?v:0;
 };
 
-// wallAt intentionally predicts only the current motion segment. Any aura
-// crossing or CHARGER phase transition that comes first is itself a nextDueAt event.
+const inheritedWallAt=TimingDefenseRoom.prototype.wallAt;
+// Preserve every prior archetype's already-validated wall prediction when no
+// SUPPORTER aura is active. Only an actually aura-modified movement segment (or
+// SUPPORTER itself) needs the current-segment prediction; its next aura/phase
+// boundary is separately scheduled by nextDueAt().
 TimingDefenseRoom.prototype.wallAt=function(monster){
   if(!monster)return Infinity;
+  ensureAuraState(monster);
+  if(monster.type!=='supporter'&&this.movementSpeedMultiplier(monster)===1)return inheritedWallAt.call(this,monster);
   if(monster.x<=WALL_X)return Number(monster.refAt)||0;
   const speed=this.currentSegmentSpeed(monster,monster.refAt);
   if(!(speed>0))return Infinity;
