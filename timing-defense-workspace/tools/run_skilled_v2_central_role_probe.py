@@ -13,6 +13,7 @@ except ImportError as exc:
     raise SystemExit("PyYAML is required: pip install pyyaml") from exc
 
 import simulate_class_aware_role_metrics_v0_2 as sim
+from evaluate_role_expression_v0_2 import expressed
 from validate_skilled_v2_central_sequence import RNG, choose
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -150,6 +151,51 @@ def consumption_metrics(consumed: list[str], actions: int) -> dict:
     }
 
 
+def summarize(rows: list[dict], role_checks: list[dict], expected_role_checks: int) -> dict:
+    combo_peaks = sorted(int(r.get("comboPeak") or 0) for r in rows)
+    wall_rows = [r for r in rows if int(r.get("wallDamage") or 0) > 0]
+    uncleared = [r for r in rows if r.get("clearMs") is None]
+    judge_counts = Counter()
+    heavy_total = 0
+    pp_total = 0
+    for r in rows:
+        judge_counts.update(r.get("judgeCounts") or {})
+        heavy_total += int(r.get("heavyCount") or 0)
+        pp_total += int(r.get("ppCount") or 0)
+
+    failed_roles = [x for x in role_checks if not x["expressed"]]
+    n = len(combo_peaks)
+    return {
+        "recordType": "AUDIT_SUMMARY",
+        "audit": "SKILLED_V2_CENTRAL_ALL20_ROLE_PROBE_V0_1",
+        "combatRows": len(rows),
+        "roleChecks": len(role_checks),
+        "expectedRoleChecks": expected_role_checks,
+        "roleCheckCountMatchesExpected": len(role_checks) == expected_role_checks,
+        "roleExpressionOverallPass": not failed_roles and len(role_checks) == expected_role_checks,
+        "failedRoleChecks": failed_roles,
+        "clearRows": len(rows) - len(uncleared),
+        "unclearedRows": len(uncleared),
+        "wallDamageRows": len(wall_rows),
+        "maxWallDamage": max((int(r.get("wallDamage") or 0) for r in rows), default=0),
+        "comboPeak": {
+            "min": min(combo_peaks, default=0),
+            "median": combo_peaks[n // 2] if n else None,
+            "max": max(combo_peaks, default=0),
+        },
+        "consumedJudgments": {
+            "PERFECT": int(judge_counts["PERFECT"]),
+            "GOOD": int(judge_counts["GOOD"]),
+            "NORMAL": int(judge_counts["NORMAL"]),
+        },
+        "heavyCount": heavy_total,
+        "ppCount": pp_total,
+        "ppRate": (pp_total / heavy_total) if heavy_total else None,
+        "frontReordersTotal": sum(int(r.get("frontReorders") or 0) for r in rows),
+        "warning": "This is a bounded structural probe using a design-prior central sequence and a non-fitted timing control; it is not a production clear-rate claim.",
+    }
+
+
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--recipes", type=Path, default=DEFAULT_RECIPES)
@@ -194,7 +240,13 @@ def main() -> int:
         raise SystemExit(f"unknown power mode: {args.power_mode}")
     power_mode = power_modes[args.power_mode]
 
+    expected_role_checks = (
+        sum(len(r.get("designatedRoleMonsters") or []) for r in recipes)
+        * len(seeds)
+        * len(sim.CLASSES)
+    )
     metadata = {
+        "recordType": "RUN_METADATA",
         "simulation": "SKILLED_V2_CENTRAL_ALL20_ROLE_PROBE_V0_1",
         "recipeVersion": base.get("version"),
         "overlayVersions": [o.get("version") for o in overlays],
@@ -204,6 +256,8 @@ def main() -> int:
         "powerMode": args.power_mode,
         "actionIntervalMs": args.action_interval_ms,
         "actionIntervalStatus": "BOUNDED_CURRENT_MECHANIC_SIMULATION_CONTROL_NOT_SKILL_FIT",
+        "expectedCombatRows": len(recipes) * len(seeds) * len(sim.CLASSES),
+        "expectedRoleChecks": expected_role_checks,
         "warnings": [
             "70/20/10 is a user-authorized design prior, not empirical population telemetry.",
             "This probe applies no fitted turnover/density judgment penalty.",
@@ -213,6 +267,8 @@ def main() -> int:
     }
     print(json.dumps(metadata, ensure_ascii=False, separators=(",", ":")))
 
+    rows: list[dict] = []
+    role_checks: list[dict] = []
     original_judge_stream = sim.judge_stream
     try:
         for seed in seeds:
@@ -234,6 +290,7 @@ def main() -> int:
                     out = sim.simulate(recipe, kin, combat, trace_control, cls, power_mode)
                     extra = consumption_metrics(consumed, int(out.get("actions") or 0))
                     row = {
+                        "recordType": "COMBAT_ROW",
                         "recipeId": recipe["id"],
                         "tier": recipe["tier"],
                         "archetype": recipe["archetype"],
@@ -245,11 +302,25 @@ def main() -> int:
                         **extra,
                         **out,
                     }
+                    rows.append(row)
+                    for monster in recipe.get("designatedRoleMonsters") or []:
+                        ok, reason = expressed(str(monster), row)
+                        role_checks.append({
+                            "recipeId": recipe["id"],
+                            "profile": profile_id,
+                            "sequenceSeed": seed,
+                            "classId": cls,
+                            "monster": str(monster),
+                            "expressed": bool(ok),
+                            "reason": reason,
+                        })
                     print(json.dumps(row, ensure_ascii=False, separators=(",", ":")))
     finally:
         sim.judge_stream = original_judge_stream
 
-    return 0
+    audit = summarize(rows, role_checks, expected_role_checks)
+    print(json.dumps(audit, ensure_ascii=False, separators=(",", ":")))
+    return 0 if audit["roleExpressionOverallPass"] else 2
 
 
 if __name__ == "__main__":
