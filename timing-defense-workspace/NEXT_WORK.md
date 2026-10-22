@@ -19,7 +19,7 @@ Updated: 2026-10-22 KST
 14. v0.43 SPLITTER — **FULL PASS**
 15. v0.44 SUPPORTER — **FULL PASS**
 16. v0.45 SIEGER — **FULL PASS**
-17. Player Skill Authority Review — **COMPLETE / DECISION GATE OPEN**
+17. Player Skill Authority Review — **COMPLETE**
 
 ## Exact latest executable checkpoint
 - branch `timing-defense-cloudflare-v045-sieger-pass-20261022`
@@ -27,119 +27,135 @@ Updated: 2026-10-22 KST
 - health `0.45-cf.1`
 - live run/job `39725993894` / `119649887564`
 
-SIEGER closure report:
-`CLOUDFLARE_V045_SIEGER_CAPABILITY_PASS_2026-10-22.md`
-
-Player-skill authority review:
-`PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+Stage1–3 remain regression fixtures only. Do not reconstruct legacy Stage4→10 as production content.
 
 ---
 
-# Campaign direction
-Do **not** reconstruct legacy Stage4→10 as production content.
+# ACTIVE PHASE — Legacy Game Structure Corpus
 
-Final direction remains approximately 50 stages with tier identities, S/E/X pressure grammar, 2/3/4-player composition scaling, re-authored monster combinations, and deterministic simulation before production balance freeze.
+The immediate next boundary is **game-structure design/analysis, not gameplay implementation**.
 
-Stage1–3 remain regression fixtures only.
+Canonical structure workspace:
+`legacy-game-structure/`
+
+Read in order:
+1. `legacy-game-structure/README.md`
+2. `legacy-game-structure/01_META_PROGRESSION.md`
+3. `legacy-game-structure/02_TIER_SYSTEM.md`
+4. `legacy-game-structure/03_STAGE_STRUCTURE_50.md`
+5. `legacy-game-structure/04_MONSTER_ENCOUNTER_MODEL.md`
+6. `legacy-game-structure/05_LEGACY_EVIDENCE_MAP.md`
+7. `legacy-game-structure/06_SIMULATION_CALIBRATION_PLAN.md`
+8. `legacy-game-structure/07_AUTHORING_DATA_SCHEMA.md`
+
+This corpus is separate from live implementation authority. It organizes recovered legacy evidence, current frozen contracts, user-confirmed structural intent, and open decisions before production authoring/calibration.
 
 ---
 
-# Monster Capability V1 — MECHANICAL FOUNDATION COMPLETE
-All nine ordinary archetypes now have a server-authoritative mechanical foundation:
+# User-confirmed meta progression structure
+
+Each of the five classes progresses through Tiers independently.
+
+Each Tier has 50 stages. Attempt star result:
+- fail Stage 1–19 -> `0★`
+- fail Stage 20–39 -> `1★`
+- fail Stage 40–49 -> `2★`
+- clear Stage 50 -> `3★`
+
+Each `class x Tier` stores a maximum/best result of 3 stars; repeated attempts do not farm additional stars beyond the best result.
+
+`GlobalStarTotal = sum(bestStars[class][tier])`.
+
+Stars are not a spendable currency. Cumulative stars automatically unlock account-wide permanent stats applied to all classes.
+
+Example: all five classes earn 3★ in Tier1 -> total 15★.
+
+Permanent-stat thresholds and coefficients are **OPEN / NOT NUMERICALLY FROZEN**.
+
+Tier-unlock semantics and multiplayer eligibility rules remain explicit decision gates.
+
+---
+
+# Encounter taxonomy reset
+
+The old `S / E / X` grammar is retained only as `LEGACY_ANALYSIS_REFERENCE`.
+It is no longer the production top-level authoring taxonomy because the current 9-monster roster contains distinct special mechanics that `X` over-compresses.
+
+New pressure vocabulary:
+- BASELINE
+- FLOOD
+- RUSH
+- BULWARK
+- BREACH
+- AERIAL
+- REPLICATE
+- SUPPORT
+- SIEGE
+
+Production authoring must additionally model:
+- monster type frequency/count,
+- encounter archetype,
+- formation/frontline order,
+- spawn order,
+- cadence,
+- geometry,
+- active concurrency,
+- target reorder,
+- frontline block time,
+- backline exposure/capability uptime.
+
+This is required because direct/AI/passive target acquisition is system-driven/frontmost-first rather than free manual backline selection.
+
+---
+
+# Monster Capability V1 remains frozen structurally
+
+Nine ordinary archetypes:
 GRUNT / RUNNER / BRUTE / SHIELD / FLYER / CHARGER / SPLITTER / SUPPORTER / SIEGER.
 
-Current capability coefficients remain **PROVISIONAL — NOT PRODUCTION BALANCE FROZEN** unless separately approved.
-
-Bosses remain a separate capability-composition layer.
-
----
-
-# Player-skill authority review — recovered truth
-
-## Current authoritative
-- Lv6 class skills: **FROZEN+AUTHORITATIVE** through v0.36 and later regressions.
-- N3 combo milestone system: **FROZEN+AUTHORITATIVE** through v0.39 and later regressions.
-
-## Exact legacy parity candidates
-Legacy v0.16 actually implemented/deployed and v7 exact simulation mirrored:
-- Lv11
-- Lv16
-- Lv21
-
-These are **LEGACY-REFERENCE / parity candidates**, not silently re-frozen by the review.
-
-`CLOUDFLARE_POST_V035_PREFLIGHT_2026-10-21.md` previously classified Lv6–21 as migration candidates and explicitly left Lv26/Lv31 design-only.
-
-## Design-only / unresolved later milestones
-- Lv26: explicit class concepts and several proposed coefficients exist, but no playable authority implementation existed.
-- Lv31: final identity concepts exist, but multiple implementation-critical damage/geometry/timing details remain underspecified.
-
-Do not silently implement Lv26/Lv31 from roadmap prose.
+Their mechanical foundations are authoritative through v0.45.
+Production balance coefficients remain provisional unless separately frozen.
+Bosses remain a separate layer.
 
 ---
 
-# Active decision gate — post-Lv6 parity strategy
+# Player skill parity — PARKED, NOT CANCELLED
 
-No code should be written for Lv11+ until this product decision is explicit.
+Authority truth remains:
+- Lv6 — **FROZEN+AUTHORITATIVE**
+- Lv11/Lv16/Lv21 — **LEGACY-REFERENCE / exact parity candidates**
+- Lv26 — **DESIGNED-NOT-AUTHORITATIVE**
+- Lv31 — **UNRESOLVED**
 
-Recommended default:
-**adopt the exact v0.16 Lv11/Lv16/Lv21 combat formulas as parity candidates and port them server-authoritatively in three bounded slices; keep Lv26/Lv31 out of implementation until their contracts are reviewed against the new 9-monster roster and approximately-50-stage campaign.**
+The previous P1/P2/P3 parity strategy remains a valid candidate, but it is **not the immediate next implementation task**.
 
-If approved, implementation order:
+Do not write Lv11+ code until the higher-level game structure has been sufficiently aligned and the user explicitly resumes implementation.
 
-### P1 — Lv11 authoritative parity
-- Knight: +1 normal / +2 heavy penetration, legacy secondary 85%
-- Rogue: +6 percentage-point native proc crit
-- Tank: shared wall incoming damage -10%, nonstack
-- Archer: +10% base damage; projectile-speed change remains presentation/time-of-flight unless later made gameplay-relevant
-- Mage: radius ×1.35, splash 60%
-
-### P2 — Lv16 authoritative parity
-- Knight: PERFECT-containing ×1.18 damage / ×1.20 knock
-- Rogue: qualifying recovery 390ms -> 312ms with server action-cadence validation
-- Tank: 80 wall shield / 3000ms refresh, nonstack
-- Archer: PERFECT armor-ignore / preserved 100% penetration damage
-- Mage: delayed ~180ms 55% outer-ring resonance, center excluded
-
-### P3 — Lv21 authoritative parity
-- Knight: heavy ×1.20 / up to3 extra penetrations, legacy secondary 85%
-- Rogue: heavy 100% + four 45% follow-ups
-- Tank: broad heavy multi-target / heavy knockback ×2.0
-- Archer: strict-line triple heavy 100%+65%+65%
-- Mage: heavy ×1.20 / blast radius ×1.60
-
-Each slice must retain all v0.39–v0.45 regression gates.
-
-### P4 — Lv26/Lv31 product-contract review
-Before full late-campaign calibration, explicitly resolve:
-- whether the six-milestone roadmap remains final,
-- structural skill identities,
-- underspecified Lv26/Lv31 semantics,
-- provisional simulation coefficients versus production-frozen values,
-- expected unlock timing under the final 50-stage EXP curve.
+The skill model must later be fed into 50-stage simulation because late-stage power cannot be calibrated credibly with Lv6-only player authority.
 
 ---
 
-# Why this blocks final calibration
-Under the old accepted EXP rule, `BALANCE_SIM_REPORT_V3_SKILL_CURVE.md` found Lv21 was already commonly reached by Stage10 at Skilled proficiency. Therefore an approximately-50-stage calibration using only current Lv6 server authority would materially misrepresent player power.
+# Immediate work order
 
-The authoring **infrastructure** may be designed before Lv26/Lv31 final freeze, but final late-campaign numerical calibration/freeze should wait until later skill contracts and progression timing are resolved.
+1. Continue structural recovery of legacy run/lobby/shop/result/persistence/boss/progression evidence.
+2. Complete Tier-system decisions that can be made structurally without production numbers.
+3. Build the new 9-monster encounter-archetype library and synergy/target-order matrix.
+4. Define candidate monster introduction/frequency/count/composition/cadence data by Tier and Stage band.
+5. Build/adapt deterministic authoring and simulation tooling around the new schema.
+6. Run encounter micro-sim before full 50-stage authoring.
+7. Run single-Tier 50-stage simulations for class/mastery/team-size/star-outcome distributions.
+8. Add account-level star/permanent-stat progression simulation, including first-class vs later-class order effects.
+9. Report/classify problems.
+10. Freeze only after explicit discussion/decision.
+11. Resume targeted live implementation only after the structure gate is closed.
 
----
-
-# After parity decision
-If P1/P2/P3 are approved and closed:
-1. review/freeze the structural Lv26/Lv31 contract or explicitly redesign the later progression,
-2. build approximately-50-stage tier/S-E-X authoring model,
-3. generate deterministic 2/3/4-player candidate recipes,
-4. run large simulation for pressure/density/role opportunity/clear envelope,
-5. classify/report/discuss,
-6. patch only after explicit decision,
-7. explicitly freeze production monster/stage values.
-
-## Validation policy
-`code audit -> deterministic tests -> GitHub Actions live Chromium/WebSocket validation -> only necessary Samsung Browser visual/input smoke`
+## Do not do yet
+- no production monster-number freeze,
+- no final Tier count/name freeze,
+- no permanent-stat coefficient freeze,
+- no final 50-stage live campaign patch,
+- no Lv11+ live implementation,
+- no automatic promotion of old S/E/X or old Stage1–10 recipes.
 
 ## Governance
-No unapproved numerical change:
-`implement/test -> measure -> classify -> report -> discuss -> explicit decision -> patch/freeze`.
+`recover -> structure -> model -> simulate -> classify -> report -> discuss -> explicit freeze -> implement`.
