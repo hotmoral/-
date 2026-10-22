@@ -10,7 +10,7 @@ Updated: 2026-10-23 KST
 
 ---
 
-# ACTIVE PHASE — P4-B LV6_TO_LV21 COMBAT FEEDBACK INTEGRATION
+# ACTIVE PHASE — P4-B EXP OPPORTUNITY STABILIZATION DECISION
 
 Completed chain:
 
@@ -22,126 +22,127 @@ P0 Foundation
  -> P3 Persistent 10-Stage Kernel PASS
  -> P4 EXP methodology USER APPROVED
  -> P4-A Marker-Only 50-Stage Inverse Design PASS
+ -> P4-B Lv6→Lv21 combat-feedback diagnostic COMPLETE
+ -> universal pure-per-turn window conflict identified
 ```
 
 Current dependency plan:
-- `legacy-game-structure/data/system_dependency_calibration_order_v0_4.yaml`
+- `legacy-game-structure/data/system_dependency_calibration_order_v0_5.yaml`
 
-Current P4 authority/evidence:
+Current P4 evidence:
 - `legacy-game-structure/79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/80_P4A_MARKER_ONLY_INVERSE_DESIGN_EXECUTION_REPORT_V0_1.md`
-- `legacy-game-structure/data/p4a_marker_opportunity_corpus_v0_1.json`
-- `legacy-game-structure/data/p4a_marker_inverse_design_summary_v0_1.json`
-- `tools/run_p4a_marker_inverse_design_v0_1.py`
-- `tools/validate_p4a_marker_inverse_design_v0_1.py`
+- `legacy-game-structure/81_P4B_LV6_LV21_COMBAT_FEEDBACK_EXECUTION_REPORT_V0_1.md`
+- `legacy-game-structure/data/p4b_combat_feedback_divergence_v0_1.json`
+
+Current decision proposal:
+- `legacy-game-structure/82_P4B_EXP_STABILIZATION_DECISION_PROPOSAL_V0_1.md`
 
 ---
 
-# P4-A CLOSED FOR MARKER-ONLY SCOPE
+# P4-B finding
 
-Evidence:
+Activating current Lv6 and exact v0.16 Lv11/Lv16/Lv21 parity candidates changes the number of valid EXP-producing timing turns substantially by class.
+
+Structural pattern:
 
 ```text
-12 synthetic 50-Stage fixtures
-× 100 deterministic player streams
-= 1,200 marker-only Tier runs
+Rogue / Archer / Mage early offensive efficiency
+ -> fewer later timing turns
+ -> slower later EXP
+
+Tank Lv6–16 defensive/control identity
+ -> retains more timing turns
+ -> faster later EXP
 ```
 
-Static corpus checks PASS.
+P3 independently supports the early direction/magnitude for Rogue and Archer.
 
-Marker-only CENTRAL T1–T4 supports non-empty common threshold intervals for all six milestones.
-Therefore Tier-specific XP multipliers are not structurally required at this layer.
+With pure additive per-turn EXP and one universal curve, refitting the six thresholds alone does not keep the current common milestone windows jointly feasible.
+The confirmed Lv31 Stage41–45 target is the critical blocker.
 
-First candidate anchors only:
+P4-B classification:
 
 ```text
-A6    130.59375
-A11   251.84375
-A16   389.40625
-A21   562.18750
-A26   747.87500
-A31   987.84375
+P4B_UNIVERSAL_PURE_PER_TURN_WINDOW_CONFLICT
 ```
 
-These are P4-B starting points, not frozen EXP requirements.
-
-Important P4-A lesson:
-- the initial Lv16/Lv21 mismatch was corrected by bounded encounter-opportunity redistribution in T2/T4 rather than hidden EXP correction;
-- EXP must not homogenize Tier encounter identity;
-- LOW/HIGH opportunity stress envelopes remain intentionally wider than target milestone windows.
+No automatic fix is authorized.
 
 ---
 
-# EXACT NEXT TASK — P4-B
+# EXACT NEXT DECISION
 
-Goal:
-measure the feedback loop:
+Choose progression direction before P4-C Lv26 work.
+
+## A — Pure per-turn EXP, accept wider/class-dependent skill reach
+- preserves current EXP semantics;
+- would require reopening the common Lv31 Stage41–45 direction or accepting material class exceptions.
+
+## B — Class-specific XP/threshold correction
+- numerically easy;
+- hidden and hard to maintain;
+- not recommended.
+
+## C — Encounter-authoring-only correction
+- use HP/count/cadence/formation/pressure to manage pacing;
+- should remain a local gameplay tool;
+- not sufficient as the sole general correction because all classes share the same Stage.
+
+## D — Class-neutral Stage Quality Budget + raw-turn hybrid — RECOMMENDED
+Concept:
 
 ```text
-skill unlock
- -> class power / control change
- -> kill speed / target availability change
- -> completed local timing-turn count changes
- -> later XP accumulation changes
- -> later skill reach shifts
+StageCredit
+= λ × SUM(valid turn-quality credits)
++ (1-λ) × class-neutral Stage progression budget × mean timing quality
 ```
 
-P4-B permitted simulation authority:
+Purpose:
+- timing quality still drives faster growth;
+- efficient classes are not punished by losing most EXP opportunities;
+- a limited raw-turn component may preserve healthy self-damping;
+- no hidden class/Tier XP multiplier;
+- Tier encounter identities remain free to differ.
 
-## Lv6
-Use current authoritative mechanics.
-
-## Lv11 / Lv16 / Lv21
-Use exact v0.16 mechanics as **simulation-only parity candidates**.
-This does not promote their values into production authority.
-
-## Lv26 / Lv31
-Power remains OFF.
-They remain reach markers only until their separate P4-C/P4-D user gates.
+Exact `λ`, budget values, display timing and visible EXP are NOT proposed as frozen values.
 
 ---
 
-# P4-B required outputs
+# If D is approved
 
-At minimum measure by class/Tier:
-- P25/P50/P75/P90 unlock Stage for Lv6/11/16/21/26/31;
-- completed local timing-turn counts before/after each unlock;
-- change from P4-A marker-only opportunity;
-- class-specific kill-speed / opportunity shift;
-- pre/post unlock power slope;
-- whether the six universal milestone-anchor intervals remain jointly feasible;
-- if not, which class/Tier/milestone causes the conflict;
-- whether the cause is encounter workload distribution or skill power.
+Next bounded package becomes `P4-B2 STAGE_QUALITY_BUDGET_BLEND_COMPARISON`.
 
-Use paired deterministic seeds wherever comparisons are made.
+First candidate comparison only:
 
----
+```text
+λ = 0.00 / 0.10 / 0.25 / 0.50
+```
 
-# P4-B decision discipline
+Measure:
+- Lv6/11/16/21/26/31 P25/P50/P75/P90;
+- class/Tier spread;
+- timing-quality sensitivity;
+- remaining self-damping;
+- Stage-budget smoothness;
+- T1–T4 encounter identity preservation;
+- Mage feedback sensitivity.
 
-If P4-B exposes divergence, do NOT automatically add class/Tier XP multipliers.
-
-Inspect in this order:
-1. exact skill mechanic / simulation parity correctness;
-2. encounter opportunity and Tier identity;
-3. whether gameplay-natural Stage adjustments could solve the problem without homogenization;
-4. whether candidate anchor refit alone is sufficient;
-5. only if structural failure remains, prepare a new stabilizer/catch-up decision packet.
-
-No new material correction semantics may be silently introduced.
+Then return a second numerical recommendation before selecting any provisional blend.
 
 ---
 
 # Do not yet
 
+- start P4-C Lv26 simulation contract
 - modify/deploy production v0.45 gameplay
-- freeze the P4-A midpoint anchors
-- freeze player-visible EXP numbers
-- promote Lv11–21 parity candidates to production authority
+- approve Stage Quality Budget without user decision
+- freeze P4-A anchors
+- freeze visible EXP values
+- add hidden class-specific or Tier-specific XP multipliers
+- nerf class skills to manufacture equal attack counts
+- homogenize Tier Stage flow for EXP
 - invent Lv26/Lv31 power proxies
-- add hidden class-specific or Tier-specific EXP multipliers
 - freeze tail percentile gates
 - freeze shop/Base HP/permanent progression/boss/multiplayer values
 - author exact 200 launch Stages
-
-After P4-B evidence, the next unresolved material gate is **P4-C Lv26 simulation contract**.
