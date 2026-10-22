@@ -11,7 +11,7 @@ Updated: 2026-10-22 KST
 
 # Current planning phase
 
-**Class-aware Layer-A Capability Window Calibration**
+**Monster Role-Expression / Activation-Window Calibration**
 
 Upstream campaign structure remains sufficiently closed.
 Model A remains the default bounded simulation spine, not a production freeze.
@@ -19,7 +19,12 @@ Model A remains the default bounded simulation spine, not a production freeze.
 Primary campaign authority:
 - `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
 
-Current Layer-A evidence:
+Current role-expression authority:
+- `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+- `legacy-game-structure/46_ROLE_EXPRESSION_ADMISSION_AUDIT_V0_1.md`
+- `legacy-game-structure/47_ROLE_EXPRESSION_SCHEMA_AMENDMENT_V0_1.md`
+
+Supporting Layer-A evidence:
 - `41_CLASS_AWARE_ACTION_TRACE_MODEL_V0_1.md`
 - `42_CLASS_AWARE_LAYER_A_MICROSIM_REPORT_V0_1.md`
 - `43_ABSOLUTE_ENTRY_DEPTH_AMENDMENT_V0_1.md`
@@ -44,6 +49,13 @@ Current Layer-A evidence:
 - Lv31 target unlock window = Stage41–45.
 - Stage46–49 = post-Lv31 mastery.
 - Stage50 is final, not Lv31 tutorial.
+- intended encounters must not allow a monster to spawn and disappear before its role is meaningfully perceivable.
+
+Role-expression interpretation:
+- minimum expression opportunity required
+- full ability completion not always required
+- skilled counterplay after readable expression is valid
+- pre-expression deletion without readable counterplay is invalid authoring
 
 ---
 
@@ -61,7 +73,7 @@ Fallback Model B remains available only if T4 lower-layer evidence fails.
 
 ---
 
-# Current validation chain
+# Validation chain
 
 - Master Campaign Layer-0: PASS, errors=0 warnings=0
 - Encounter Envelope Layer-A0: PASS, errors=0 warnings=0
@@ -70,107 +82,136 @@ Fallback Model B remains available only if T4 lower-layer evidence fails.
 - Generic DPS sensitivity: COMPLETE
 - Class-aware CURRENT_AUTHORITY micro-sim V0.1: COMPLETE for critical subset
 - Absolute entry-depth activation diagnostic: COMPLETE
+- Monster Role Expression Contract V0.1: ESTABLISHED
+- Role-expression critical admission: BLOCKED pending localized fixes/instrumentation
 
 ---
 
-# Class-aware V0.1 findings
+# Monster role-expression contract
 
-Critical set:
-- 10 representative recipes
-- 3 deterministic trace brackets
-- 5 classes
-- CURRENT_AUTHORITY_LV6
+Current nine:
+- GRUNT — baseline reference, exempt from special expression gate
+- RUNNER — speed must create observable arrival/front-order difference
+- BRUTE — must meaningfully hold/absorb frontline attention
+- SHIELD — mitigation must change effective damage/hit investment
+- FLYER — vertical geometry must create a real opportunity/targeting difference
+- CHARGER — visible windup + readable response window
+- SPLITTER — split must produce meaningful post-death population/target-state change
+- SUPPORTER — aura must affect at least one non-self target for a meaningful interval
+- SIEGER — standoff + readable first-shot opportunity
 
-CENTRAL bracket mean clear time over the critical set:
-- Mage ~4.725 s
-- Rogue ~5.016 s
-- Archer ~5.700 s
-- Knight ~8.100 s
-- Tank ~8.400 s
-
-These are not production balance targets because the trace bracket is not fitted SKILLED_V2.
-
-Lv6 clear-time effect is highly asymmetric in this diagnostic:
-- Mage/Rogue/Archer gain large throughput
-- Knight gains modest raw throughput
-- Tank may clear slower because control/knockback is utility rather than DPS
-
-Therefore class evaluation must be multi-metric.
+Every future monster must declare:
+`coreMechanic / minimumRoleExpression / readableCounterplay / failureClass / requiredMetrics`.
 
 ---
 
-# Stateful capability defect
+# Current role-expression admission
 
-Default representative geometry currently fails to express some Tier-defining mechanics under the optimistic class-aware traces.
+```text
+ROLE_EXPRESSION_ADMISSION = BLOCKED
+```
 
-CHARGER:
-- sampled T3 representative recipes: 0 windups across the critical class/trace sweep
-- special bodies are erased before windup
+Per monster:
+- GRUNT: BASELINE_EXEMPT
+- RUNNER: MEASUREMENT_REQUIRED
+- BRUTE: PRELIMINARY_ROLE_PRESENT / METRIC_REQUIRED
+- SHIELD: MEASUREMENT_REQUIRED
+- FLYER: MEASUREMENT_REQUIRED
+- CHARGER: FAIL_DEFAULT_GEOMETRY
+- SPLITTER: PARTIAL_PASS / WATCH
+- SUPPORTER: PASS_WITH_WATCH
+- SIEGER: FAIL_DEFAULT_GEOMETRY
 
-SIEGER:
-- E11/E19: 0 shots across the critical class/trace sweep
+This is not a request for broad campaign redesign.
+It is localized encounter geometry + simulation observability work.
+
+---
+
+# Stateful capability evidence
+
+CHARGER default critical T3 recipes:
+- 60 pre-windup erasures
+- 0 windups in prior 3-profile × 5-class critical sweep
+
+SIEGER default E11/E19:
+- 0 shots in prior critical class/trace sweep
 
 SUPPORTER:
-- capability remains present but screened-aura duration varies sharply by class/throughput
+- role expression exists
+- screened aura duration varies strongly by class/throughput
 
 SPLITTER:
-- transformation occurs; no sampled child wall leak under the current optimistic brackets
+- parent -> two-child transformation works
+- meaningful child lifetime/frontline impact still under-instrumented
 
-This is a recipe/capability-expression issue, not permission to buff HP globally.
+No global HP buff is authorized from these findings.
 
 ---
 
-# Absolute entry-depth result
+# Activation-window search
 
-New authoring distinction:
-- relative depth = FRONT/MID/BACK ordering inside formation
-- absolute entry depth = where the whole encounter enters the battlefield
+Absolute entry depth and relative screen depth are separate variables.
+Capability activation is non-monotonic.
 
-Current diagnostics show non-monotonic activation windows.
+Current diagnostic anchors only:
+- E07 CHARGER useful activation evidence begins around ~0.25; interruption around ~0.30
+- E17 CHARGER all-five windup visibility around ~0.45
+- E11 SIEGER all-five actual-shot visibility around ~0.70–0.80; collapse near ~0.85
+- E19 SIEGER all-five actual-shot visibility around ~0.75–0.80; collapse near ~0.85
 
-Examples, not production coordinates:
-- T3_E17 CHARGER all-five windup visibility around ~0.45 X shift toward wall
-- T4_E11 SIEGER broad activation around ~0.70–0.80
-- T4_E19 broad activation around ~0.75–0.80
-- excessive forward shift can remove capability again by exposing the special too early
+Fine scan configuration now exists at 0.01 steps in:
+`data/role_expression_activation_search_v0_1.yaml`.
 
-Thus the next task is an activation envelope, not a single coordinate.
+These are not production coordinates.
+
+---
+
+# Current tools/data
+
+Data:
+- `data/monster_role_expression_contract_v0_1.yaml`
+- `data/role_expression_activation_search_v0_1.yaml`
+- `data/model_a_class_action_trace_bracket_v0_1.yaml`
+- `data/model_a_representative_recipes_v0_1.yaml`
+
+Tools:
+- `validate_monster_role_expression_contract.py`
+- `evaluate_stateful_role_expression.py`
+- `scan_activation_window_candidates.py`
+- `simulate_class_aware_layer_a.py`
+- `sweep_special_activation_entry_depth.py`
 
 ---
 
 # Player-trace authority boundary
 
-Current trace bracket:
-- 900 ms / perfect streak 40
-- 750 ms / perfect streak 55
-- 600 ms / perfect streak 75
+Current deterministic trace bracket remains:
+- 900 ms / PERFECT streak 40 then GOOD
+- 750 ms / PERFECT streak 55 then GOOD
+- 600 ms / PERFECT streak 75 then GOOD
 
 Status:
 **CALIBRATION BRACKET NOT FITTED**
 
-It must not be promoted to SKILLED_V2.
-Actual controlled harness/telemetry still needs to fit:
-- cadence
-- timing outcomes by context
-- combo survival
-- heavy/P×P completion
-- target-turnover recovery
-- pressure degradation
+Do not use it to claim production SKILLED_V2 clear probability.
 
 ---
 
 # Current exact work
 
 Now allowed:
-1. CHARGER/SIEGER absolute entry-depth and spawn-time window authoring
-2. five-class capability activation/interrupt/shot visibility tests
-3. role-specific metrics beyond clear time
-4. repeat critical micro-sim after geometry revision
-5. then expand to all 20 representative recipes
+1. critical-set role-expression calibration
+2. fine CHARGER/SIEGER activation-window scanning
+3. SIEGER standoff/windup/first-shot-opportunity instrumentation
+4. SPLITTER child lifetime/frontline/population-delta instrumentation
+5. SUPPORTER normalized aura metrics
+6. RUNNER/BRUTE/SHIELD/FLYER passive-role instrumentation
+7. repeat CURRENT_AUTHORITY five-class critical micro-sim
+8. expand to all 20 recipes only after critical-set admission improves to PASS/acceptable WATCH
 
 Not allowed yet:
 - exact 200-Stage schedule
-- production monster coefficient freeze
+- production monster coefficient or coordinate freeze
 - fitted SKILLED_V2 claims from current brackets
 - live campaign patch
 - final Tier count
@@ -178,4 +219,4 @@ Not allowed yet:
 - boss/shop freeze
 - detailed 3P/4P production balance
 
-No live gameplay code or production balance value was changed by this tranche.
+No live gameplay source or production balance value was changed by this tranche.
