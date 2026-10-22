@@ -1,0 +1,47 @@
+{
+  "allEnvelopeP50ReachAtMidpointCandidates": {
+    "11": {"T1_CENTRAL":13.0,"T1_HIGH":13.0,"T1_LOW":14.0,"T2_CENTRAL":11.0,"T2_HIGH":11.0,"T2_LOW":14.0,"T3_CENTRAL":12.0,"T3_HIGH":16.0,"T3_LOW":15.0,"T4_CENTRAL":13.0,"T4_HIGH":14.0,"T4_LOW":17.0},
+    "16": {"T1_CENTRAL":19.0,"T1_HIGH":18.0,"T1_LOW":19.0,"T2_CENTRAL":18.0,"T2_HIGH":16.0,"T2_LOW":22.0,"T3_CENTRAL":19.0,"T3_HIGH":22.0,"T3_LOW":21.0,"T4_CENTRAL":21.0,"T4_HIGH":21.0,"T4_LOW":25.0},
+    "21": {"T1_CENTRAL":26.0,"T1_HIGH":25.0,"T1_LOW":27.0,"T2_CENTRAL":27.0,"T2_HIGH":21.0,"T2_LOW":30.0,"T3_CENTRAL":26.0,"T3_HIGH":26.0,"T3_LOW":31.0,"T4_CENTRAL":27.0,"T4_HIGH":27.0,"T4_LOW":33.0},
+    "26": {"T1_CENTRAL":34.0,"T1_HIGH":32.0,"T1_LOW":37.0,"T2_CENTRAL":34.0,"T2_HIGH":28.0,"T2_LOW":41.0,"T3_CENTRAL":34.0,"T3_HIGH":33.0,"T3_LOW":41.0,"T4_CENTRAL":34.0,"T4_HIGH":32.0,"T4_LOW":40.0},
+    "31": {"T1_CENTRAL":43.0,"T1_HIGH":40.0,"T1_LOW":49.0,"T2_CENTRAL":43.0,"T2_HIGH":37.0,"T2_LOW":51.0,"T3_CENTRAL":45.0,"T3_HIGH":41.0,"T3_LOW":51.0,"T4_CENTRAL":41.0,"T4_HIGH":40.0,"T4_LOW":48.0},
+    "6": {"T1_CENTRAL":7.0,"T1_HIGH":7.0,"T1_LOW":7.0,"T2_CENTRAL":6.0,"T2_HIGH":6.0,"T2_LOW":7.0,"T3_CENTRAL":5.0,"T3_HIGH":8.0,"T3_LOW":7.0,"T4_CENTRAL":7.0,"T4_HIGH":7.0,"T4_LOW":9.0}
+  },
+  "centralP50FeasibleThresholdIntervals": {
+    "11":{"lowerExclusive":227.5,"nonEmpty":true,"upperInclusive":276.1875},
+    "16":{"lowerExclusive":382.0625,"nonEmpty":true,"upperInclusive":396.75},
+    "21":{"lowerExclusive":532.8125,"nonEmpty":true,"upperInclusive":591.5625},
+    "26":{"lowerExclusive":702.625,"nonEmpty":true,"upperInclusive":793.125},
+    "31":{"lowerExclusive":973.0,"nonEmpty":true,"upperInclusive":1002.6875},
+    "6":{"lowerExclusive":119.75,"nonEmpty":true,"upperInclusive":141.4375}
+  },
+  "centralReachAtMidpointCandidates": {
+    "11":{"T1":{"P25":13.0,"P50":13.0,"P75":13.0,"P90":13.0},"T2":{"P25":11.0,"P50":11.0,"P75":12.0,"P90":12.0},"T3":{"P25":12.0,"P50":12.0,"P75":12.0,"P90":12.0},"T4":{"P25":13.0,"P50":13.0,"P75":13.0,"P90":13.0}},
+    "16":{"T1":{"P25":18.0,"P50":19.0,"P75":19.0,"P90":19.0},"T2":{"P25":18.0,"P50":18.0,"P75":18.0,"P90":18.0},"T3":{"P25":18.0,"P50":19.0,"P75":19.0,"P90":19.0},"T4":{"P25":21.0,"P50":21.0,"P75":21.0,"P90":21.10000000000001}},
+    "21":{"T1":{"P25":26.0,"P50":26.0,"P75":26.0,"P90":26.0},"T2":{"P25":26.0,"P50":27.0,"P75":27.0,"P90":27.0},"T3":{"P25":26.0,"P50":26.0,"P75":26.0,"P90":27.0},"T4":{"P25":27.0,"P50":27.0,"P75":27.0,"P90":28.0}},
+    "26":{"T1":{"P25":34.0,"P50":34.0,"P75":35.0,"P90":35.0},"T2":{"P25":34.0,"P50":34.0,"P75":35.0,"P90":35.0},"T3":{"P25":34.0,"P50":34.0,"P75":34.0,"P90":34.0},"T4":{"P25":34.0,"P50":34.0,"P75":34.0,"P90":34.0}},
+    "31":{"T1":{"P25":43.0,"P50":43.0,"P75":43.0,"P90":43.0},"T2":{"P25":43.0,"P50":43.0,"P75":44.0,"P90":44.0},"T3":{"P25":44.0,"P50":45.0,"P75":45.0,"P90":45.0},"T4":{"P25":41.0,"P50":41.0,"P75":42.0,"P90":42.0}},
+    "6":{"T1":{"P25":7.0,"P50":7.0,"P75":7.0,"P90":7.0},"T2":{"P25":5.0,"P50":6.0,"P75":6.0,"P90":6.0},"T3":{"P25":5.0,"P50":5.0,"P75":5.0,"P90":5.0},"T4":{"P25":7.0,"P50":7.0,"P75":7.0,"P90":7.0}}
+  },
+  "firstPassMidpointAnchorCandidates":{"11":251.84375,"16":389.40625,"21":562.1875,"26":747.875,"31":987.84375,"6":130.59375},
+  "fixtureMetrics": {
+    "T1_CENTRAL":{"complexityCounts":{"0":9,"1":22,"2":15,"3":4},"creditP50Stage50":1128.5625,"pressureCounts":{"BASELINE":30,"BULWARK":15,"FLOOD":11,"RUSH":17},"turnsP50":507.0,"twoPackageStages":8,"workloadEhp":118860.0},
+    "T1_HIGH":{"complexityCounts":{"0":8,"1":24,"2":14,"3":4},"creditP50Stage50":1252.25,"pressureCounts":{"BASELINE":30,"BULWARK":17,"FLOOD":11,"RUSH":17},"turnsP50":567.5,"twoPackageStages":14,"workloadEhp":132060.0},
+    "T1_LOW":{"complexityCounts":{"0":9,"1":23,"2":14,"3":4},"creditP50Stage50":1022.4375,"pressureCounts":{"BASELINE":30,"BULWARK":9,"FLOOD":11,"RUSH":17},"turnsP50":458.5,"twoPackageStages":4,"workloadEhp":106140.0},
+    "T2_CENTRAL":{"complexityCounts":{"0":5,"1":18,"2":19,"3":8},"creditP50Stage50":1139.875,"pressureCounts":{"AERIAL":14,"BASELINE":22,"BULWARK":22,"FLOOD":11,"RUSH":16},"turnsP50":509.0,"twoPackageStages":10,"workloadEhp":120050.0},
+    "T2_HIGH":{"complexityCounts":{"0":4,"1":15,"2":23,"3":8},"creditP50Stage50":1449.9375,"pressureCounts":{"AERIAL":14,"BASELINE":21,"BULWARK":30,"FLOOD":7,"RUSH":9},"turnsP50":654.0,"twoPackageStages":16,"workloadEhp":156205.0},
+    "T2_LOW":{"complexityCounts":{"0":4,"1":18,"2":21,"3":7},"creditP50Stage50":907.1875,"pressureCounts":{"AERIAL":22,"BASELINE":22,"BULWARK":19,"FLOOD":9,"RUSH":17},"turnsP50":408.0,"twoPackageStages":4,"workloadEhp":93770.0},
+    "T3_CENTRAL":{"complexityCounts":{"0":2,"1":12,"2":19,"3":14,"4":3},"creditP50Stage50":1123.625,"pressureCounts":{"AERIAL":9,"BASELINE":17,"BREACH":19,"BULWARK":12,"FLOOD":22,"REPLICATE":19,"RUSH":14},"turnsP50":506.0,"twoPackageStages":10,"workloadEhp":118490.0},
+    "T3_HIGH":{"complexityCounts":{"0":2,"1":10,"2":21,"3":14,"4":3},"creditP50Stage50":1325.25,"pressureCounts":{"AERIAL":9,"BASELINE":16,"BREACH":19,"BULWARK":17,"FLOOD":21,"REPLICATE":19,"RUSH":14},"turnsP50":597.5,"twoPackageStages":12,"workloadEhp":140430.0},
+    "T3_LOW":{"complexityCounts":{"0":2,"1":13,"2":19,"3":13,"4":3},"creditP50Stage50":945.4375,"pressureCounts":{"AERIAL":9,"BASELINE":17,"BREACH":19,"BULWARK":9,"FLOOD":22,"REPLICATE":19,"RUSH":22},"turnsP50":420.0,"twoPackageStages":6,"workloadEhp":97090.0},
+    "T4_CENTRAL":{"complexityCounts":{"0":2,"1":8,"2":16,"3":20,"4":4},"creditP50Stage50":1258.375,"pressureCounts":{"AERIAL":9,"BASELINE":11,"BREACH":9,"BULWARK":21,"FLOOD":11,"REPLICATE":9,"RUSH":9,"SIEGE":19,"SUPPORT":19},"turnsP50":567.0,"twoPackageStages":7,"workloadEhp":134290.0},
+    "T4_HIGH":{"complexityCounts":{"0":2,"1":8,"2":16,"3":20,"4":4},"creditP50Stage50":1393.375,"pressureCounts":{"AERIAL":9,"BASELINE":11,"BREACH":9,"BULWARK":22,"FLOOD":11,"REPLICATE":9,"RUSH":9,"SIEGE":19,"SUPPORT":19},"turnsP50":625.5,"twoPackageStages":10,"workloadEhp":149845.0},
+    "T4_LOW":{"complexityCounts":{"0":2,"1":9,"2":16,"3":19,"4":4},"creditP50Stage50":1051.4375,"pressureCounts":{"AERIAL":9,"BASELINE":11,"BREACH":9,"BULWARK":14,"FLOOD":11,"REPLICATE":9,"RUSH":9,"SIEGE":19,"SUPPORT":19},"turnsP50":475.0,"twoPackageStages":4,"workloadEhp":110935.0}
+  },
+  "initialDiagnostic":{"action":"Small synthetic workload redistribution within existing Tier identity/ranges: T2 mid-band workload shifted later; T4 support/siege-compatible workload shifted earlier.","finding":"Before bounded T2/T4 central workload redistribution, universal central P50 threshold intervals were empty at Lv16 and Lv21 while Lv6/Lv11/Lv26/Lv31 were feasible.","result":"All six CENTRAL T1-T4 P50 threshold intervals became non-empty without Tier-specific XP multipliers."},
+  "simulationSeedsPerFixture":100,
+  "status":"P4A_MARKER_ONLY_DIAGNOSTIC_PASS_CANDIDATE_THRESHOLDS_NOT_FROZEN",
+  "validation":{"availabilityAndTeach":true,"c4Guards":true,"classOpportunity10Stage":true,"complexityRange":true,"exactSignatureTriple":true,"fixtureCount":true,"pressureRange":true,"vocabulary":true},
+  "version":"p4a-marker-inverse-design-summary-v0.1",
+  "watches":["LOW/HIGH opportunity envelopes are stress envelopes and are not required to hit every candidate milestone window.","P4-B skill power can materially change event opportunity and must rerun reach.","workloadEhp is a relative marker-only opportunity proxy, not production difficulty or Stage HP authority.","exact anchors, quality vector and percentile tail acceptance gates remain unfrozen."]
+}
