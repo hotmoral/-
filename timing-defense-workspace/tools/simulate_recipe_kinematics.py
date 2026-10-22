@@ -15,6 +15,7 @@ except ImportError as exc:
 def simulate(recipe, anchor):
     world = anchor["world"]
     meta = anchor["monsters"]
+    formation_offsets = anchor.get("formationXOffsets", {}).get(recipe.get("formation"), {})
     dt = int(world["timeStepMs"])
     horizon = int(world["horizonMs"])
     spawn_x = float(world["spawnX"])
@@ -43,10 +44,11 @@ def simulate(recipe, anchor):
     while t <= horizon:
         while spawn_idx < len(specs) and int(specs[spawn_idx]["tMs"]) <= t:
             s = specs[spawn_idx]
+            typ = s["type"]
             monsters.append({
                 "id": next_id,
-                "type": s["type"],
-                "x": spawn_x,
+                "type": typ,
+                "x": spawn_x + float(formation_offsets.get(typ, 0.0)),
                 "y0": float(s["y"]),
                 "spawnMs": int(s["tMs"]),
                 "phase": "advance",
@@ -161,6 +163,7 @@ def simulate(recipe, anchor):
         "id": recipe["id"],
         "tier": recipe["tier"],
         "archetype": recipe["archetype"],
+        "formation": recipe["formation"],
         "maxConcurrentChargerWindups": max_charger_windups,
         "supporters": dict(supporter),
         "siegers": shots,
@@ -178,7 +181,7 @@ def main():
     recipe_data = yaml.safe_load(args.recipes.read_text(encoding="utf-8"))
     anchor = yaml.safe_load(args.anchor.read_text(encoding="utf-8"))
 
-    print(f"SIMULATION=KINEMATIC_PRELIGHT recipes={len(recipe_data.get('recipes', []))}")
+    print(f"SIMULATION=KINEMATIC_PREFLIGHT recipes={len(recipe_data.get('recipes', []))}")
     for recipe in recipe_data.get("recipes", []):
         out = simulate(recipe, anchor)
         support_parts = []
@@ -192,7 +195,7 @@ def main():
                 f"SI#{row['siegeId']}:shot={row['firstShotAtMs']/1000:.2f}s,screened={row['screenedAtFirstShot']},front={row['frontTypeAtShot']}"
             )
         print(
-            f"{out['id']} chargerWindupMax={out['maxConcurrentChargerWindups']} "
+            f"{out['id']} formation={out['formation']} chargerWindupMax={out['maxConcurrentChargerWindups']} "
             f"{' '.join(support_parts) if support_parts else '-'} "
             f"{' '.join(siege_parts) if siege_parts else '-'}"
         )
