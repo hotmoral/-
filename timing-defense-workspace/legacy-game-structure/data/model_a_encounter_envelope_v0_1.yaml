@@ -1,0 +1,156 @@
+version: model-a-encounter-envelope-v0.1
+status: DESIGNED_NOT_AUTHORITATIVE
+
+qualitativeStagePresenceRanges:
+  NONE: [0, 0]
+  LOW: [2, 5]
+  LOW_MED: [5, 11]
+  MED: [9, 17]
+  MED_HIGH: [14, 22]
+  HIGH: [19, 30]
+
+formationDefinitions:
+  F01: LINE_LIGHT
+  F02: LINE_DURABLE_FRONT
+  F03: CLUSTER_LIGHT
+  F04: SCATTER_LIGHT
+  F05: AIR_OFFSET
+  F06: SCREEN_BACKLINE
+  F07: ESCORT_COLUMN
+  F08: SPLIT_AXIS
+  F09: REPLICATION_CLUSTER
+
+cadenceDefinitions:
+  CD01: DRIP_SLOW
+  CD02: DRIP
+  CD03: WAVE
+  CD04: BURST_LIGHT
+  CD05: STAGGER
+  CD06: ESCORT
+  CD07: LATE_INSERT
+  CD08: OVERLAP_BOUNDED
+
+archetypes:
+  E01: {name: BASELINE_MARCH, complexity: C0, earliestTier: T1}
+  E02: {name: RUSH_WAVE, complexity: C1, earliestTier: T1}
+  E03: {name: HEAVY_LINE, complexity: C1, earliestTier: T1}
+  E04: {name: SHIELD_SCREEN, complexity: C1, earliestTier: T2}
+  E05: {name: MIXED_WALL, complexity: C2, earliestTier: T2}
+  E06: {name: AIR_PRESSURE, complexity: C1, earliestTier: T2}
+  E07: {name: CHARGE_BREAK, complexity: C1, earliestTier: T3}
+  E08: {name: SPLIT_FLOOD, complexity: C2, earliestTier: T3}
+  E09: {name: SUPPORT_COLUMN, complexity: C2, earliestTier: T4}
+  E10: {name: SIEGE_LINE, complexity: C2, earliestTier: T4}
+  E11: {name: ESCORT_SIEGE, complexity: C3, earliestTier: T4}
+  E12: {name: BUFFED_BULWARK, complexity: C3, earliestTier: T4}
+  E13: {name: RUSH_BREACH, complexity: C2, earliestTier: T3}
+  E14: {name: AIR_RUSH, complexity: C2, earliestTier: T2}
+  E15: {name: REPLICATE_RUSH, complexity: C2, earliestTier: T3}
+  E16: {name: CASCADE, complexity: C3, earliestTier: T4}
+  E17: {name: BREACH_SCREEN, complexity: C3, earliestTier: T3}
+  E18: {name: DUAL_AXIS, complexity: C3, earliestTier: T4}
+  E19: {name: FORTRESS, complexity: C4, earliestTier: T4}
+  E20: {name: COLLAPSE_CHAIN, complexity: C4, earliestTier: T3}
+
+tiers:
+  T1:
+    legalArchetypes: [E01, E02, E03]
+    formations: [F01, F02, F03, F04, F08]
+    formationLimited: [F08]
+    cadences: [CD01, CD02, CD03, CD04, CD05]
+    cadenceLimited: [CD04, CD05]
+    pressureLabels:
+      BASELINE: HIGH
+      FLOOD: LOW_MED
+      RUSH: MED
+      BULWARK: MED
+      BREACH: NONE
+      AERIAL: NONE
+      REPLICATE: NONE
+      SUPPORT: NONE
+      SIEGE: NONE
+    dominantComplexityRanges:
+      C0: [8, 14]
+      C1: [22, 30]
+      C2: [8, 15]
+      C3: [0, 4]
+      C4: [0, 0]
+
+  T2:
+    legalArchetypes: [E01, E02, E03, E04, E05, E06, E14]
+    formations: [F01, F02, F03, F04, F05, F08]
+    formationLimited: [F08]
+    cadences: [CD01, CD02, CD03, CD04, CD05, CD07]
+    cadenceLimited: [CD07]
+    pressureLabels:
+      BASELINE: MED_HIGH
+      FLOOD: LOW_MED
+      RUSH: MED
+      BULWARK: HIGH
+      BREACH: NONE
+      AERIAL: MED_HIGH
+      REPLICATE: NONE
+      SUPPORT: NONE
+      SIEGE: NONE
+    dominantComplexityRanges:
+      C0: [4, 8]
+      C1: [15, 22]
+      C2: [18, 25]
+      C3: [4, 8]
+      C4: [0, 2]
+
+  T3:
+    legalArchetypes: [E01, E02, E03, E04, E05, E06, E07, E08, E13, E14, E15, E17, E20]
+    formations: [F01, F02, F03, F04, F05, F08, F09]
+    formationLimited: []
+    cadences: [CD01, CD02, CD03, CD04, CD05, CD07, CD08]
+    cadenceLimited: [CD08]
+    pressureLabels:
+      BASELINE: MED
+      FLOOD: MED_HIGH
+      RUSH: MED_HIGH
+      BULWARK: MED
+      BREACH: HIGH
+      AERIAL: MED
+      REPLICATE: HIGH
+      SUPPORT: NONE
+      SIEGE: NONE
+    dominantComplexityRanges:
+      C0: [2, 5]
+      C1: [10, 16]
+      C2: [19, 26]
+      C3: [8, 14]
+      C4: [0, 3]
+
+  T4:
+    legalArchetypes: [E01, E02, E03, E04, E05, E06, E07, E08, E09, E10, E11, E12, E13, E14, E15, E16, E17, E18, E19, E20]
+    formations: [F01, F02, F03, F04, F05, F06, F07, F08, F09]
+    formationLimited: []
+    cadences: [CD01, CD02, CD03, CD04, CD05, CD06, CD07, CD08]
+    cadenceLimited: [CD08]
+    pressureLabels:
+      BASELINE: LOW_MED
+      FLOOD: LOW_MED
+      RUSH: MED
+      BULWARK: MED_HIGH
+      BREACH: MED
+      AERIAL: MED
+      REPLICATE: MED
+      SUPPORT: HIGH
+      SIEGE: HIGH
+    dominantComplexityRanges:
+      C0: [2, 4]
+      C1: [8, 14]
+      C2: [16, 22]
+      C3: [14, 20]
+      C4: [1, 4]
+
+staticGuardrails:
+  maxConsecutiveSameArchetype: 2
+  maxConsecutiveC4: 1
+  maxC4InFiveStageWindow: 2
+  warnIfAllFiveStagesC3OrHigher: true
+  classOpportunityRollingWindowStages: 10
+  noNewCoreTeachStage40Plus: true
+  lv31AscensionWindow: [41, 45]
+  avoidConsecutiveC4InLv31Ascension: true
