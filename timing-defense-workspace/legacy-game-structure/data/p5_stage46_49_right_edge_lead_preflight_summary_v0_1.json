@@ -1,0 +1,67 @@
+{
+  "classification": {
+    "ESCORT_OR_FRONTMOST_PROTECTION_REQUIRED": true,
+    "FULL_COMBAT_RECONVERGENCE_REQUIRED": true,
+    "MIDFIELD_POP_IN_REQUIRED": false,
+    "NAKED_EARLY_SIEGER_IS_SAFE_REPLACEMENT": false,
+    "STAGE46_49_TRAVEL_LEAD_RAMP_IS_KINEMATICALLY_COHERENT": true
+  },
+  "nakedSiegerKillRoots": {
+    "Archer": {"damagePerRootApprox": 276.32, "rootsToKill520": 2},
+    "Knight": {"damagePerRootApprox": 331.986, "rootsToKill520": 2},
+    "Mage": {"damagePerRootApprox": 251.2, "rootsToKill520": 3},
+    "RoguePrimaryPackage": {"damagePerRootApprox": 389.36, "rootsToKill520": 2},
+    "Tank": {"damagePerRootApprox": 251.2, "rootsToKill520": 3}
+  },
+  "oldProxyConversion": {
+    "durableSpawnXCenter0.65EquivalentLeadSeconds": 6.75,
+    "durableSpawnXRange0.60_0.70EquivalentLeadSeconds": [5.5, 8.0],
+    "siegerSpawnXCenter0.48EquivalentLeadSeconds": 9.778,
+    "siegerSpawnXRange0.45_0.55EquivalentLeadSeconds": [8.222, 10.444]
+  },
+  "rng": "NONE",
+  "shopAtkMultiplier": 1.256,
+  "stages": {
+    "46": {
+      "durableLeadSeconds": 3.0,
+      "durableSecondsFromReferenceToWallIfUntouched": 16.125,
+      "durableXAtPressureReferenceIfUntouched": 0.8,
+      "intent": "POWER_REVELATION_LIGHT_ESCORT",
+      "rootOpportunitiesDuringSiegerLeadApprox": 3,
+      "siegerLeadSeconds": 4.0,
+      "siegerSecondsFromReferenceToFirstPossibleShotIfUntouched": 8.8,
+      "siegerXAtPressureReferenceIfUntouched": 0.74
+    },
+    "47": {
+      "durableLeadSeconds": 4.5,
+      "durableSecondsFromReferenceToWallIfUntouched": 14.625,
+      "durableXAtPressureReferenceIfUntouched": 0.74,
+      "intent": "ESCORTED_SECOND_PULSE",
+      "rootOpportunitiesDuringSiegerLeadApprox": 5,
+      "siegerLeadSeconds": 6.0,
+      "siegerSecondsFromReferenceToFirstPossibleShotIfUntouched": 6.8,
+      "siegerXAtPressureReferenceIfUntouched": 0.65
+    },
+    "48": {
+      "durableLeadSeconds": 6.0,
+      "durableSecondsFromReferenceToWallIfUntouched": 13.125,
+      "durableXAtPressureReferenceIfUntouched": 0.68,
+      "intent": "PROTECTED_ROLE_PULSE",
+      "rootOpportunitiesDuringSiegerLeadApprox": 7,
+      "siegerLeadSeconds": 8.0,
+      "siegerSecondsFromReferenceToFirstPossibleShotIfUntouched": 4.8,
+      "siegerXAtPressureReferenceIfUntouched": 0.56
+    },
+    "49": {
+      "durableLeadSeconds": 6.75,
+      "durableSecondsFromReferenceToWallIfUntouched": 12.375,
+      "durableXAtPressureReferenceIfUntouched": 0.65,
+      "intent": "DURABLE_PLUS_SIEGER_TIME_BUDGET",
+      "rootOpportunitiesDuringSiegerLeadApprox": 8,
+      "siegerLeadSeconds": 9.75,
+      "siegerSecondsFromReferenceToFirstPossibleShotIfUntouched": 3.05,
+      "siegerXAtPressureReferenceIfUntouched": 0.4813
+    }
+  },
+  "version": "p5-stage46-49-right-edge-lead-preflight-result-v0.1"
+}
