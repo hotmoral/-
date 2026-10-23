@@ -11,31 +11,32 @@ Read/check in this order:
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
 4. `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-5. `legacy-game-structure/data/system_dependency_calibration_order_v0_13.yaml`
+5. `legacy-game-structure/data/system_dependency_calibration_order_v0_14.yaml`
 6. `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
 7. `legacy-game-structure/88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md`
 8. `legacy-game-structure/89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md`
 9. `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
-10. `legacy-game-structure/95_P4D2_STAGE46_STATEFUL_TEMPORAL_PRESSURE_PROBE_V0_1.md`
-11. `legacy-game-structure/96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md`
-12. `legacy-game-structure/99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md`
-13. `legacy-game-structure/100_P4D2_STAGE48_49_CADENCE_CORRECTED_DIRECTIONAL_FEEDBACK_V0_1.md`
-14. `legacy-game-structure/101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md`
-15. `legacy-game-structure/data/p4d2_armored_durable_proxy_fixture_v0_1.json`
-16. `tools/run_p4d2_armored_durable_proxy_probe_v0_1.py`
-17. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_2.py`
+10. `legacy-game-structure/96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md`
+11. `legacy-game-structure/99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md`
+12. `legacy-game-structure/100_P4D2_STAGE48_49_CADENCE_CORRECTED_DIRECTIONAL_FEEDBACK_V0_1.md`
+13. `legacy-game-structure/101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md`
+14. `legacy-game-structure/102_P4D2_DURABLE_TEMPORAL_PRESSURE_DIRECTIONAL_PROBE_V0_1.md`
+15. `legacy-game-structure/103_P4D2_TANK_BARRIER_FIDELITY_CORRECTION_V0_1.md`
+16. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_3.py`
+17. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_2.py` — historical pre-barrier-correction replay only
 18. `legacy-game-structure/data/p4d2_stage48_49_dynamic_rotating_grammar_fixture_v0_1.json`
-19. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-20. `SKILL_PLAN_LV6_31.md`
-21. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
-22. `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
-23. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
-24. current production/harness heads
-25. older P4-A/P4-B/P3 evidence only as needed for causal context/revalidation triggers
+19. `legacy-game-structure/data/p4d2_armored_durable_proxy_fixture_v0_1.json`
+20. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+21. `SKILL_PLAN_LV6_31.md`
+22. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+23. `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
+24. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+25. current production/harness heads
+26. older P4-A/P4-B/P3 evidence only as needed for causal context/revalidation triggers
 
-Historical proposal90 is superseded where it conflicts with approved docs91/96.
-The old Stage48 dynamic runner v0.1 is common-cadence preflight only and is not class-fairness authority.
+Historical proposal90 is superseded where it conflicts with approved docs91/96, but its Tank T-B shared-barrier non-downgrade clause remains applicable unless explicitly superseded.
 The armored durable proxy is diagnostic only and is not an approved new monster.
+The user idea of a BRUTE carrying/using SHIELD-like protection is parked for future monster design only.
 Do not rerun closed P1/P2/P3/P4-C1/C2 solely because a session restarted.
 
 Live remote always wins.
@@ -69,9 +70,11 @@ P4-C2 = COMPLETE / PASS_WITH_WATCHES
 P4-D1 = USER_APPROVED_WITH_MODIFICATION
 P4-D2 Stage46 pressure existence = CANDIDATE ENVELOPE FOUND
 P4-D2 Archer wider gameplay corridor = USER APPROVED
-P4-D2 Stage48–49 cadence-corrected directional feedback = COMPLETE / EXACT V0.2 REPLAY PENDING
-P4-D2 armored durable pressure axis = SUPPORTED STATIC DIAGNOSTIC
-P4-D2 temporal durable role-pressure probe = NEXT
+P4-D2 cadence/no-target methodology = CORRECTED
+P4-D2 durable static pressure axis = SUPPORTED
+P4-D2 durable temporal direction = SUPPORTED DIRECTIONALLY
+P4-D2 Tank barrier-family fidelity defect = CONFIRMED / V0.3 PREPARED
+P4-D2 exact v0.3 replay + Tank time-budget / Mage margin refinement = NEXT
 P4-E = BLOCKED_PENDING_P4D2
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -118,9 +121,11 @@ Do not silently freeze these.
 
 ---
 
-# Cadence/no-target fidelity correction
+# Methodology fidelity — mandatory
 
-Recovered Rogue Lv16:
+## Rogue cadence
+
+Recovered Lv16:
 
 ```text
 recovery390ms ->312ms
@@ -136,32 +141,42 @@ NO_TARGET_OPPORTUNITIES_DO_NOT_BANK
 ```
 
 `1.047s` is not production cadence authority.
-Do not treat Assassin Rhythm as blanket20% whole-cycle speed.
 
-Cadence-corrected directional feedback:
-- Rogue one isolated missed final becomes recoverable;
-- two consecutive misses bury across all four tested starts;
-- Tank/Mage remain much more tolerant in the current rotation;
-- naive universal pressure increase is rejected as the first repair layer.
+## Tank barrier family
 
-Expected exact v0.2 full-output SHA remains:
+Tank T-B requires:
 
 ```text
-63da011ac97fd809168d8ffc9c3a9721c9962a2ae3c3496aa91e0d2de0b592f8
+shared non-additive barrier family
+active Lv31 barrier cannot be downgraded by weaker Lv16 guard
 ```
 
-Do not promote it to exact replay authority until committed-runner checkout execution matches.
+Old Stage46/v0.2 runner violated this by replacing `250` with `80` on the next ordinary PERFECT.
+
+Therefore:
+
+```text
+v0.2 Tank miss-severity = historical pre-correction evidence only
+v0.3 = required class-fairness runner
+```
+
+Directional corrected Tank examples:
+
+```text
+Distributed durable / two misses: 1584 ->1924
+Strong durable role pulse: one1301->1661 / two1073->1497
+Durable+SUPPORTER/SIEGER: one1226->1661 / two1092->1480
+```
+
+Exact v0.3 repository-checkout execution/hash is still pending.
 
 ---
 
-# Armored durable pressure probe
-
-User hypothesis: late high-HP/high-armor threats may pressure Tank/Mage without nerfing their final skills.
+# Durable pressure direction
 
 `ARMORED_DURABLE_PROXY` is diagnostic only.
-It combines BRUTE-like HP + SHIELD-like mitigation with moderate knock resistance.
 
-Diagnostic center:
+Current diagnostic center:
 
 ```text
 HP1600
@@ -169,76 +184,108 @@ armor multiplier.55
 knock resistance.65
 ```
 
-Sensitivity:
+Key static separation:
 
 ```text
-HP1400/1600/1800
-armor.65/.55/.50
+Knight removes65.4%
+Rogue kills one with16 daggers
+Tank removes15.5% but pushes
+Archer removes94.9% through armor ignore
+Mage primary removes24.8%
 ```
 
-Single durable, one Lv31 final:
+Mage temporal authoring lever:
 
 ```text
-Knight removes65.4% / leaves~553
-Rogue kills with16 daggers
-Tank removes15.5% / leaves~1353 + pushes~.0764
-Archer removes94.9% / leaves~82 due armor ignore
-Mage primary removes24.8% / leaves~1204
+distributed durable:
+30s wall2000
+40s1360
+45s1040
+50s720
+55s400
+60s80
+
+clustered durable:
+60s wall2000
 ```
 
-Three clustered vs distributed durable reset fraction:
+Tank control ablation:
 
 ```text
-clustered:
-Knight43.6 Rogue48.8 Tank15.5 Archer63.3 Mage45.4%
-
-distributed:
-Knight21.8 Rogue48.8 Tank15.5 Archer31.6 Mage29.7%
+control present -> wall2000 / no durable wall contacts
+push removed -> wall816 / 16 durable wall contacts
 ```
 
 Interpretation:
-- durable pressure is a promising Tank/Mage late-pressure lever;
-- Rogue execution identity remains strong;
-- Archer armor-ignore identity remains strong while corridor geometry matters;
-- Tank still has a control answer because knock resistance is not extreme;
-- Mage retains clustering payoff and loses efficiency when the durable pressure is intentionally separated.
+- Tank survival is control/time-budget driven;
+- Mage has a real distributed-pressure weakness and a cluster-based recovery answer;
+- Rogue/Archer/Knight identities remain distinct;
+- no new monster is approved.
 
-Classification:
+---
+
+# Stage48 / Stage49 direction
+
+## Stage48-like
+- lighter durable pressure;
+- alternating geometry;
+- intermittent readable SIEGER/CHARGER second pulse;
+- all-success clearly recoverable.
+
+## Stage49-like
+- persistent durable backlog;
+- protected role second/third pulse;
+- use true Tank barrier uptime to consume the time it buys;
+- distributed pressure challenges Mage;
+- clustered windows restore Mage payoff.
+
+Rejected default:
 
 ```text
-DURABLE_PRESSURE_AXIS=SUPPORTED
-NEW_MONSTER_APPROVED=NO
-NUMERICAL_FREEZE=NO
+every-cycle durable + SIEGER + CHARGER
 ```
 
-Hard-counter safeguard:
-- do not stack extreme HP+armor+knock resistance;
-- Tank displacement must remain valid;
-- Mage needs clusterable windows;
-- future actual monster/variant identity requires a separate decision/telegraph gate.
+because it overpressures Mage even on successful-final play.
+
+Do not equalize class mistake budgets mechanically.
+
+---
+
+# Archer watch
+
+`LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH = HIGH` remains active.
+
+Inspect:
+1. SPLITTER death/child timing;
+2. target/band order;
+3. capability exposure;
+4. encounter ordering;
+5. only then skill numbers.
+
+Do not reverse approved wider corridor from current evidence.
 
 ---
 
 # Exact next work
 
-1. build temporal durable-pressure fixture while preserving cadence/no-target corrections;
-2. isolated durable after successful reset;
-3. distributed durable arrivals across successive reset windows;
-4. durable frontline + timed SUPPORTER/SIEGER second pulse;
-5. durable frontline + CHARGER window;
-6. measure Tank time bought by knockback/barrier;
-7. measure Mage clustered vs separated recovery;
-8. verify Knight/Rogue are not unfairly killed before Tank/Mage receive pressure;
-9. keep exact Stage48 v0.2 replay and Archer chronology follow-up active;
+1. execute `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_3.py` in repo checkout;
+2. establish exact v0.3 replay hash;
+3. supersede v0.2 Tank class-fairness numbers;
+4. refine SIEGER multi-pulse / CHARGER timing around true Tank barrier uptime;
+5. determine how sustained missed P×P exhausts Tank's time budget without invalidating control;
+6. improve Mage all-success margin in the strongest Stage49 durable-role candidate while keeping distributed pressure meaningful;
+7. preserve cluster recovery windows for Mage;
+8. keep Knight/Rogue from becoming first casualties of generic scalar escalation;
+9. continue Archer chronology investigation;
 10. reassess P4-D2 provisional closure.
 
-No user decision is pending unless temporal durable pressure requires a material new-monster or class-identity choice.
+No user decision is pending unless a material class identity or monster-identity change is exposed.
 
 ---
 
 # Do not yet
 
-- promote armored durable proxy to an actual monster;
+- promote durable proxy or BRUTE+SHIELD visual idea to an actual monster;
 - freeze proxy HP/armor/knock values;
 - freeze Rogue16 daggers;
 - freeze Archer2.30 or exact corridor width;
