@@ -8,6 +8,12 @@ Updated: 2026-10-23 KST
 - production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - production gameplay/numerical implementation remains frozen during planning/calibration
 
+## Operating / recovery authority
+Mandatory session-recovery and cross-stage consistency protocol:
+- `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
+
+Every material phase must be checked against upstream invariants, downstream consumers, active feedback loops, authority/supersession, scope/cost, production boundaries and handoff impact. Already-closed PASS/APPROVED work is not repeated without a concrete revalidation trigger.
+
 ---
 
 # Current phase
@@ -199,9 +205,10 @@ Before any P4-C2 power simulation:
 1. recover exact evidence for all five Lv26 skills;
 2. classify each element as authoritative / parity-candidate / unresolved;
 3. audit interactions with Lv6/11/16/21 and monster roles;
-4. compare meaningful alternatives only where unresolved;
-5. present recommendation, risks and reversibility;
-6. require user approval before structural freeze.
+4. apply the cross-stage review protocol in document 86;
+5. compare meaningful alternatives only where unresolved;
+6. present recommendation, risks and reversibility;
+7. require user approval before structural freeze.
 
 Do not invent generic Lv26 power proxies.
 
