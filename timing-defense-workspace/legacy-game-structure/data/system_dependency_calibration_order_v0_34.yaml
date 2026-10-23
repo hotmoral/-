@@ -1,0 +1,125 @@
+version: system-dependency-calibration-order-v0.34
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_33.yaml
+
+authorityDocs:
+  - 02_TIER_SYSTEM.md
+  - 04_MONSTER_ENCOUNTER_MODEL.md
+  - 16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md
+  - 91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md
+  - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+  - 135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md
+  - 142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md
+  - 143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md
+  - 144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md
+  - 145_P5_P6_STAGE46_47_ARMORED_MIDWAVE_REPLACEMENT_DIAGNOSTIC_V0_1.md
+  - 146_P5_P6_ARMORED_PLACEMENT_AND_TIER_AUTHORING_BOUNDARY_V0_1.md
+  - 147_ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX_V0_1.md
+  - 148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md
+  - ../CHARACTER_PROFILE_RADAR_V1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_or_scalar_tuning
+  - encounter_composition_before_class_scalar_conclusion
+  - use_existing_evidence_before_new_simulation
+  - do_not_repeat_closed_work_without_concrete_trigger
+  - important_design_numerical_phase_or_content_adoption_requires_user_approval
+  - exact_scalar_freeze_last
+  - diagnostic_foundation_roster_is_not_final_tier1_roster
+  - exact_tier_authoring_applies_active_monster_availability_ladder_first
+  - production_changes_require_explicit_authorization
+  - maintain_session_handoff_at_group_boundaries
+
+workPackages:
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+  P5:
+    status: ENCOUNTER_COMPOSITION_RESPONSE_DIAGNOSTIC_COMPLETE
+    productionAuthority: false
+    fidelityBridge: COMPLETE_EXACT_TEMP_PASS
+    entryChargeComboCause: CLOSED_AS_PRIMARY_EXPLANATION
+    armoredCountChronologyBandDiagnostic: COMPLETE
+    armoredCoordinateMicrotuning: STOPPED
+    classResponseMatrix:
+      source: 147_ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX_V0_1.md
+      status: COMPLETE_FOR_CURRENT_CAUSAL_QUESTION
+      conclusion:
+        - ENCOUNTER_COMPOSITION_ADVANTAGE_IS_MATERIAL_CONFIRMED_CAUSE
+        - CURRENT_STAGE46_47_CLASS_SPREAD_IS_NOT_PROOF_OF_INTRINSIC_CLASS_NUMERIC_IMBALANCE
+        - NO_NEW_SIMULATION_REQUIRED_FOR_CURRENT_MATRIX
+      highConfidence:
+        - MAGE_CLUSTER_DENSITY_ADVANTAGE
+        - MAGE_DISTRIBUTED_DURABLE_WEAKNESS
+        - ARCHER_ALIGNED_LINE_ADVANTAGE
+        - ARCHER_SCATTER_WEAKNESS
+        - KNIGHT_PENETRATION_GENERALIST_CAUSALITY
+        - ROGUE_DURABLE_TARGET_EXECUTION
+        - TANK_CONTROL_OBJECTIVE_ADVANTAGE_AND_LOW_REMOVAL
+        - COMPOSITION_CHRONOLOGY_GEOMETRY_CHANGE_CLASS_RESPONSE
+    opportunityFramework:
+      source: 148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md
+      status: PROPOSAL_NOT_ADOPTED
+      purpose: PREVENT_ENCOUNTER_DISTRIBUTION_SKEW_FROM_BEING_MISTAKEN_FOR_CLASS_IMBALANCE
+      exactQuotaFrozen: false
+      exactWeightFormulaFrozen: false
+
+  P6:
+    status: NOT_FORMALLY_STARTED_USER_APPROVAL_REQUIRED
+    purpose: JOINT_RUN_POWER_CONVERGENCE
+
+campaignSpine:
+  tierAuthoringStatus: EXACT_TIER1_AUTHORING_NOT_STARTED
+  activeTierAvailabilityAuthority:
+    - 02_TIER_SYSTEM.md
+    - 16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md
+  oldAllNineInT1Candidate: SUPERSEDED_LEGACY_CANDIDATE
+  exactTierCount: OPEN
+  exactMonsterUnlockLadder: OPEN
+  exactTier1Roster: OPEN
+  recommendedPreAuthoringOrder:
+    - SELECT_BOUNDED_TIER_COUNT_CANDIDATE
+    - SELECT_MONSTER_AVAILABILITY_INTRODUCTION_LADDER_CANDIDATE
+    - APPLY_TIER_NOVELTY_IDENTITY
+    - BUILD_50_STAGE_MACRO_FLOW
+    - APPLY_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_GUARDS
+    - THEN_AUTHOR_EXACT_STAGE_COMPOSITIONS
+
+currentBoundary:
+  activePackage: USER_DECISION_GATE_AFTER_ENCOUNTER_RESPONSE_DIAGNOSTIC
+  completed:
+    - ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX
+  proposalPrepared:
+    - ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK
+  nextOptions:
+    A:
+      name: CAMPAIGN_SPINE_TIER_COUNT_AND_MONSTER_AVAILABILITY_CANDIDATE
+      description: Return to campaign spine before exact Tier1 authoring
+    B:
+      name: FORMALLY_ENTER_P6_JOINT_RUN_POWER_CONVERGENCE
+      description: Continue coupled power/shop/EXP convergence before campaign authoring
+  recommendedDirection: A_CAMPAIGN_SPINE_BOUNDED_CANDIDATE
+  reason: CURRENT_CLASS_SKEW_IS_MATERIALLY_EXPLAINED_BY_ENCOUNTER_COMPOSITION_AND_EXACT_TIER1_AUTHORING_CANNOT_BEGIN_BEFORE_AVAILABILITY_LADDER
+  userApprovalRequiredBefore:
+    - ADOPTING_ENCOUNTER_OPPORTUNITY_QUOTAS_OR_THRESHOLDS
+    - SELECTING_TIER_COUNT_CANDIDATE_AS_WORKING_SPINE
+    - ADOPTING_MONSTER_AVAILABILITY_UNLOCK_LADDER
+    - FORMALLY_ENTERING_P6
+    - ADOPTING_STAGE46_47_ARMORED_CONTENT
+    - APPROVING_NEW_MONSTER_OR_HARDENED_IDENTITY
+    - CHANGING_CLASS_MONSTER_SHOP_EXP_PXP_NUMERICS
+    - PRODUCTION_GAMEPLAY_CHANGE
+  productionChangesAuthorized: false
