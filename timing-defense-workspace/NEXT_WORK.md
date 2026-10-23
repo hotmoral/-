@@ -13,121 +13,155 @@ Before local work, fetch live `timing-defense-workspace` HEAD and read:
 1. `PROJECT_STATUS.md`
 2. `SESSION_HANDOFF.md`
 3. `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md`
-4. `legacy-game-structure/141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md`
-5. **latest:** `legacy-game-structure/142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
-6. active dependency YAML
-7. only then the exact source/runner files needed for the next bounded unit.
+4. `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
+5. `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
+6. `legacy-game-structure/142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
+7. **latest:** `legacy-game-structure/143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md`
+8. active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_31.yaml`
+9. only then exact source/runner files needed for the next bounded unit.
 
 Do not rerun closed P1/P2/P3/P4 or the whole class-identity group merely because the chat is new.
+Do not resume Stage48 micro-tuning before resolving the current fidelity/work-boundary gate.
 
 ---
 
-# ACTIVE PACKAGE — P5
+# ACTIVE PACKAGE — P5 / P5→P6 GATE
 
 ```text
 A2 shop = USER APPROVED
 class identity group = DIRECTIONALLY CLOSED
 STAGE_SETTLED = REQUIRED
-old repeated Stage48 proxy packet = REJECTED
-simple BRUTE/SHIELD replacement = INSUFFICIENT
-real-monster layered handoff alone = INSUFFICIENT
-limited armored/hardened frontline exploration axis = USER APPROVED
-GRUNT-like fodder / cheap-target chronology axis = DIAGNOSTICALLY VALID
-real BRUTE+GRUNT only = INSUFFICIENT CURRENT REPLACEMENT
-SUPPORTER = SECONDARY TRAVEL AID / PHASE RISK WATCH
-global SIEGER standoff movement = NO OBSERVED SAFE ALL-CLASS REPAIR WINDOW
-current state = USER DECISION GATE
-P6 = BLOCKED_PENDING_P5
+limited armored/hardened exploration axis = USER APPROVED
+GRUNT-like cheap-target/fodder chronology = DIAGNOSTICALLY VALID
+global SIEGER standoff movement = STRONGLY DISFAVORED AS PRIMARY REPAIR
+prior Stage46->49 late-run numbers = ALL-PERFECT / EFFECTIVELY ALL-P×P UPPER BOUND
+SKILLED_V2 central diagnostic = MATERIAL UPSTREAM STAGE46/47 FAILURE EXPOSED
+factor isolation = REDUCED P×P / Lv31-final FREQUENCY IS DOMINANT SENSITIVITY
+current P5 runner = NOT FULLY AUTHORITATIVE FOR P1 PERSISTENT COMBO/CHARGE
+current state = USER DECISION GATE ON BOUNDED P5→P6 FIDELITY BRIDGE
+full P6 = NOT YET STARTED
+production = UNCHANGED / UNAUTHORIZED
 ```
 
-No Stage48 packet, armored monster, elite system, standoff value, class coefficient, shop coefficient or production change is approved here.
+No Stage48 packet, armored monster, elite system, standoff value, Tank coefficient, class/monster/shop/EXP number or production change is approved here.
 
 ---
 
 # What was just learned
 
-## 1. Fodder hypothesis works, but only as chronology design
-The user proposed adding cheap bodies so Mage follow-up targeting is less likely to reach SIEGER immediately.
+## 1. Previous late-run interpretation was too strong
+The existing P5 Stage46→49 simulator used:
+- ordinary attack = `PERFECT`;
+- successful Heavy = `CRITICAL`;
+- current chains = no Heavy miss index.
 
-Evidence:
-- late `GRUNT2` consistently delayed first Mage damage to SIEGER and extended life;
-- `GRUNT3` did not materially beat `GRUNT2`;
-- fast fragile bodies first were usually consumed too early;
-- one durable first body + one trailing GRUNT could approximate two durable bodies for Mage protection;
-- sending fodder too early can shift Mage heavy timing and make SIEGER exposure worse.
+Therefore previous survival/reserve results are an idealized upper-bound, not `SKILLED_V2_CENTRAL` balance evidence.
+`BALANCED` meant shop allocation, not mastery.
 
-Therefore:
+## 2. Central skilled screen
+Run `39968100989`, deterministic repeat PASS, SHA256:
+`ec4ed61d8288b9a2bb2e1575bf5f8d4e1191fdbabcae9a5d11cae9b7cde8d6c9`
 
-```text
-EXTRA_MOB_COUNT != SOLUTION
-TYPE + ORDER + ARRIVAL_PHASE + SPATIAL DENSITY = CAUSAL
-```
-
-## 2. Cleanest current Stage48 diagnostic center
-Current bounded center:
+20 seeds × 5 classes = 100 cases.
+Realized judgments approximately:
 
 ```text
-3 spatial armored diagnostic bodies
-+ 2 late GRUNT
-+ 1 SIEGER
+PERFECT 72.37%
+GOOD    18.45%
+NORMAL   9.19%
+P×P Heavy / CRITICAL ~= 58.06%
 ```
 
-It improved cross-class protection balance but still produced no SIEGER firing at global standoff `0.38`.
-This packet is **not approved**.
-
-Real BRUTE+GRUNT only did not reproduce the same Mage/Rogue protection envelope.
-
-## 3. SUPPORTER is secondary only
-Existing SUPPORTER speed aura moved SIEGER slightly farther, but did not solve firing uptime and can alter Mage phase chronology adversely.
-
-## 4. Global standoff search has no observed useful window
-BALANCED cross-stage evidence:
+Outcome:
 
 ```text
-0.50/0.55 -> all survive, Stage48 all 0 shots
-0.60/0.65 -> all survive, Archer only 1 shot
-0.70      -> all survive, Knight+Archer only; Archer/Tank reserves already severe
-0.72      -> Archer dies Stage49; Mage/Tank Stage48 still 0
-0.74      -> Archer dies Stage49; Mage/Tank Stage48 still 0
-0.76      -> first all-five Stage48 firing, but Archer dies Stage49 and Tank reserve is severe
-0.78/0.82 -> broader cross-stage failure confirmed earlier
+through Stage49 = 45/100
+fail Stage46 = 26
+fail Stage47 = 21
+fail Stage48 = 0
+fail Stage49 = 8
 ```
 
-Hence there is currently no observed global threshold that both:
-- gives all-class Stage48 SIEGER role expression; and
-- preserves the current Stage46→49 survival/reserve shape.
+Per-class through Stage49:
 
-`0.38` is still not frozen; global standoff movement is simply strongly disfavored as the primary repair.
+```text
+Knight  3/20
+Rogue   4/20
+Tank    2/20
+Archer 18/20
+Mage   18/20
+```
+
+Stage48 is therefore not the current primary failure source under central skilled timing.
+
+## 3. Factor isolation
+Run `39968400953`, deterministic repeat PASS, SHA256:
+`1ae220cb0bbebd388f9c014a9208335c4b8eeb895b4163109e78895f95b4a420`
+
+Stage46→47 result:
+
+```text
+ordinary central + Heavy forced P×P     = 100/100 through47
+ordinary PERFECT + Heavy central P×P    = 63/100 through47
+full central skilled                    = 58/100 through47
+```
+
+Tank with ordinary PERFECT but central Heavy frequency:
+
+```text
+0/20 through47
+```
+
+Conclusion:
+
+```text
+ordinary non-PERFECT quality alone != primary cause
+reduced P×P / Lv31-final frequency = dominant current sensitivity
+```
+
+Do not respond by buffing Tank, nerfing Stage46, changing SIEGER, or adjusting monster HP yet.
+
+## 4. Why the exact percentages are not final balance authority
+P1 requires combo and charge to persist across Stage/shop.
+The current P5 late-run runner does not carry the full P1/P3 action state and does not integrate the full combo/N3 pipeline across Stage46→49.
+
+P3 already has persistent combo/charge/SKILLED_V2/N3 fidelity, while P5 has the newer P4-D2 Lv31 packages, shop, right-edge chronology and STAGE_SETTLED late-run logic.
+There is not yet one authoritative runner combining both sets.
+
+This is now a simulator/lifecycle fidelity problem before it is an exact balance problem.
 
 ---
 
 # CURRENT USER DECISION REQUIRED
 
-Choose the next **direction**, not an exact number:
+Choose the next **work direction**, not a balance number.
 
-A. **Recommended:** keep global SIEGER behavior unchanged for now and continue Stage48 through limited armored/hardened frontline + GRUNT-like cheap target layer + order/timing/spatial-density chronology.
+### A — Recommended
+Open a bounded **P5→P6 fidelity bridge** before more Stage48 micro-tuning.
+Combine only the minimum needed:
+- persistent combo;
+- persistent charge / charge-driven Heavy;
+- persistent SKILLED_V2 judgment state;
+- combo/N3 effects;
+- P4-D2 Lv31 P×P packages;
+- P5 shop snapshot/attribution;
+- Stage46→49 right-edge + STAGE_SETTLED + wall-deficit semantics.
 
-B. Introduce a Stage48-specific SIEGER setup/mechanic. This is a semantic exception.
+Then compare ALL_PERFECT vs SKILLED_V2 on paired deterministic seeds and return to Stage48 armored+fodder tuning with the faithful baseline.
 
-C. Change Stage48 intent: protected travel/threat introduction at Stage48, guaranteed meaningful firing deferred to Stage49.
+This **does not formally close P5 or start full P6** by itself.
 
-D. Escalate to explicit resistance / protective aura / elite-hardened state / another skill-like protective mechanic.
+### B
+Keep tuning Stage48 on the current partial P5 runner.
+Risk: optimize against the wrong player-power surface and redo work later.
 
-No option is adopted until the user approves it.
+### C
+Close P5 now and enter full P6 convergence immediately.
+Risk: larger phase jump than necessary; skips a narrow runner-admission bridge.
 
----
+Recommendation: **A**.
 
-# If user approves A
-
-Proceed in this order:
-1. keep physical spawn `x=0.92`, STAGE_SETTLED and current global SIEGER semantics unchanged;
-2. use the validated cheap-target/fodder principle, not indiscriminate extra bodies;
-3. reduce reliance on the extreme proxy by searching the **smallest** hardened durability/mitigation envelope;
-4. jointly vary body order, arrival phase, spatial density and relative travel speed;
-5. measure Mage/Archer volume-erasure time, SIEGER protected time/death X, and all-class wall pressure;
-6. preserve Knight/Rogue/Tank identities and avoid hard class lockout;
-7. replay Stage46→49 once a promising Stage48 packet exists;
-8. stop again for approval before adopting an exact monster identity, packet or numerical value.
+Do not adopt A/B/C until the user explicitly approves.
 
 ---
 
@@ -138,11 +172,13 @@ ALL ENEMIES ENTER FROM RIGHT EDGE x=0.92
 NO MID-FIELD POP-IN
 STAGE_SETTLED REQUIRED
 WALL DEFICIT PERSISTS
+COMBO PERSISTS ACROSS STAGE/SHOP
+CHARGE PERSISTS ACROSS STAGE/SHOP
 SURVIVAL != CLEAR
 NO HARD CLASS LOCKOUT
 NO GLOBAL ARCHER NERF
 NO MAGE BUFF TO FIX BAD AUTHORING
-NO TANK CONTROL NERF AS FIRST REPAIR
+NO TANK BUFF/CONTROL NERF FROM THE CURRENT PARTIAL-RUNNER RESULT
 NO ROGUE RETARGET REMOVAL AS FIRST REPAIR
 NO GLOBAL SIEGER STANDOFF SHIFT AS CURRENT PRIMARY REPAIR
 IMPORTANT ADOPTION REQUIRES USER APPROVAL
