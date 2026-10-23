@@ -6,6 +6,7 @@ Status: **METHODOLOGY CORRECTION REQUIRED BEFORE STAGE48–49 CLASS-FAIRNESS ADM
 Authority:
 - `../PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
 - `../SKILL_PLAN_LV6_31.md`
+- `64_HIGH_MASTERY_H3_OBSERVED_TRACE_REPORT_V0_1.md`
 - `95_P4D2_STAGE46_STATEFUL_TEMPORAL_PRESSURE_PROBE_V0_1.md`
 - `98_P4D2_STAGE48_49_GRAMMAR_RESET_PROXY_V0_1.md`
 - `data/p4d2_stage48_49_dynamic_rotating_grammar_fixture_v0_1.json`
@@ -39,6 +40,8 @@ Therefore a common-cadence temporal kernel can be used as a broad pressure-exist
 
 > Rogue has intrinsically much lower P×P miss tolerance than the other classes.
 
+A second temporal fidelity issue is also present: the old runner leaves an overdue `next_attack` clock untouched while there is no target. When a target returns, that can create artificial catch-up attacks over subsequent short simulation ticks. This is unsuitable for class-fairness admission because classes that clear the screen more often can receive hidden banked action opportunities.
+
 ---
 
 # 1. Why this matters specifically now
@@ -53,11 +56,13 @@ That means the divergence is not safely attributable only to:
 
 It is partly entangled with an omitted lower-milestone cadence effect.
 
-User governance requires this kind of upstream inconsistency to be corrected before downstream balance patches.
+Likewise, the old no-target clock can favor classes whose strong Lv31 package creates empty-screen windows, because scheduled attack opportunities can effectively remain overdue and then be consumed in a catch-up burst after new spawns.
+
+User governance requires these upstream simulation inconsistencies to be corrected before downstream balance patches.
 
 ---
 
-# 2. Important semantic boundary
+# 2. Important Rogue semantic boundary
 
 Do **not** reinterpret Assassin Rhythm as a blanket `20% faster whole combat loop` rule.
 
@@ -135,18 +140,19 @@ No need to reopen Lv31 identities.
 
 Before admitting dynamic rotating-grammar results:
 
-1. preserve the existing deterministic Stage46 combat semantics;
+1. preserve the existing deterministic combat/effect semantics wherever they are not under correction;
 2. make cadence lane explicit in output metadata;
 3. run `COMMON_1P125` for continuity;
 4. run `ROGUE_RECOVERY_DELTA_78MS` sensitivity for Rogue;
 5. label grammar family active at each Heavy/P×P opportunity by **timestamp**, not by assuming a fixed heavy-index-to-grammar mapping;
 6. generate miss suites from the actual class-specific Heavy timeline;
-7. compare successful-P×P vs miss outcomes without assuming monotonicity;
-8. keep any `miss produces better end-wall` case as a target-order/authoring WATCH instead of hiding it.
+7. prevent no-target periods from banking overdue attack opportunities into catch-up bursts;
+8. compare successful-P×P vs miss outcomes without assuming monotonicity;
+9. keep any `miss produces better end-wall` case as a target-order/authoring WATCH instead of hiding it.
 
 ---
 
-# 6. New execution-quality guard
+# 6. Grammar-timeline execution-quality guard
 
 Hardcoded miss indices such as:
 
@@ -173,7 +179,40 @@ This avoids false class comparisons caused by different cadence alignment.
 
 ---
 
-# 7. Current interpretation of class miss tolerance
+# 7. No-target action-clock guard
+
+The old temporal kernel effectively behaves like:
+
+```text
+if scheduled attack time arrives but no target exists:
+    leave next_attack overdue
+
+when a target later appears:
+    attack
+    next_attack += interval
+    if still overdue, additional near-immediate catch-up attacks can follow
+```
+
+That creates a hidden **banked-action** mechanism.
+No approved player-skill or run-state contract intentionally grants such banking.
+
+Observed H3 calibration evidence instead shows a real target-reacquisition interval before the first post-turnover action; it does not support instant consumption of multiple stored attacks. The H3 median target-available -> action delay was about 632ms for the high-mastery stress participant, but that value is not a universal player constant and must not be silently frozen into campaign cadence.
+
+Therefore the corrected P4-D2 class-fairness runner must use the structural rule:
+
+```text
+NO_TARGET_OPPORTUNITIES_DO_NOT_BANK
+```
+
+A minimal diagnostic implementation may drop/advance an expired action opportunity while no target exists, rather than preserving an overdue queue.
+
+If a reacquisition-delay numeric value is needed later, it must be a separate explicit sensitivity lane using calibration authority; do not smuggle 632ms into the core combat model now.
+
+This correction does **not** change production gameplay. It removes an accidental simulator-only advantage.
+
+---
+
+# 8. Current interpretation of class miss tolerance
 
 Do not require identical numbers of tolerated P×P misses across classes.
 Class asymmetry is allowed.
@@ -185,16 +224,16 @@ no class may ignore Lv31/P×P indefinitely in Stage48–49 mastery pressure
 +
 sustained or badly timed P×P failure must eventually produce dangerous backlog/burial
 +
-that failure path should arise from class/encounter interaction, not an omitted cadence rule
+that failure path should arise from class/encounter interaction, not an omitted cadence rule or hidden banked-action artifact
 ```
 
 Exact error-budget targets remain open.
 
 ---
 
-# 8. Exact next boundary
+# 9. Exact next boundary
 
-`P4-D2 TEMPORAL CADENCE-FIDELITY CORRECTION / GRAMMAR-TIMELINE MAPPING`
+`P4-D2 TEMPORAL CADENCE-FIDELITY CORRECTION / GRAMMAR-TIMELINE MAPPING / NO-TARGET CLOCK CORRECTION`
 
 Do this before accepting Stage48–49 dynamic class-fairness results.
 
@@ -202,6 +241,7 @@ No user decision is required because this is a simulation-method fidelity correc
 
 Do not:
 - nerf Rogue because of the old common-cadence miss result;
+- buff/nerf classes to compensate for banked-action artifacts;
 - add hidden compensation;
 - freeze Stage48–49 mistake budgets;
 - modify production gameplay.
