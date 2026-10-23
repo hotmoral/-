@@ -1,0 +1,207 @@
+version: system-dependency-calibration-order-v0.6
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_5.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md
+  - 85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md
+
+principles:
+  - freeze_semantics_before_values
+  - isolate_then_integrate
+  - recheck_upstream_invariants_after_power_layers
+  - paired_deterministic_seeds_for_comparisons
+  - exact_content_authoring_late
+  - production_changes_require_explicit_freeze
+  - material_decisions_require_user_approval
+  - universal_progression_before_hidden_class_corrections
+  - encounter_identity_must_not_be_homogenized_for_exp
+  - systemic_progression_bias_must_not_be_hidden_by_encounter_authoring
+  - separate_skill_power_definition_from_final_multiplayer_exp_convergence
+  - compare_stage_time_failure_and_team_context_before_final_progression_judgment
+
+workPackages:
+  P0: {name: CURRENT_FOUNDATION_CLOSURE, status: PASS_WITH_WATCHES}
+  P1:
+    name: RUN_STATE_LIFECYCLE_CONTRACT
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+    authority: [72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md]
+  P2:
+    name: MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+    authority:
+      - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+      - data/modifier_pipeline_contract_v0_1.yaml
+  P3:
+    name: TEN_STAGE_PERSISTENT_RUN_KERNEL
+    status: P3_STRUCTURAL_PASS_COMPLETE
+    authority:
+      - 76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md
+      - 77_P3_TEN_STAGE_PERSISTENT_RUN_EXECUTION_REPORT_V0_1.md
+      - data/p3_persistent_run_kernel_contract_v0_1.yaml
+      - data/p3_ten_stage_fixture_v0_1.json
+      - data/p3_execution_summary_v0_1.json
+      - ../tools/run_p3_persistent_kernel_v0_1.py
+      - ../tools/validate_p3_persistent_kernel_v0_1.py
+
+  P4:
+    name: FULL_PLAYER_POWER_SPINE_CANDIDATE
+    status: R2_APPROVED_SKILL_POWER_WORK_CONTINUES_EXP_FINALIZATION_DEFERRED
+    dependsOn: [P3]
+    purpose: PROVISIONAL_FIFTY_STAGE_PLAYER_POWER_SPINE_WITH_EXP_WATCHES
+    approvedAuthority:
+      - 79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md
+      - 85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md
+    internalGates:
+      P4A:
+        name: OPPORTUNITY_AND_EXP_INVERSE_DESIGN
+        status: PASS_COMPLETE_MARKER_ONLY
+        authority:
+          - 80_P4A_MARKER_ONLY_INVERSE_DESIGN_EXECUTION_REPORT_V0_1.md
+          - data/p4a_marker_opportunity_corpus_v0_1.json
+          - data/p4a_marker_inverse_design_summary_v0_1.json
+        evidence:
+          fixtures: 12
+          seedsPerFixture: 100
+          markerRuns: 1200
+          centralUniversalThresholdIntersections: PASS_ALL_SIX_MILESTONES
+          exactAnchorFreeze: false
+      P4B:
+        name: LV6_TO_LV21_COMBAT_FEEDBACK_AND_MULTIPLAYER_PRECHECK
+        status: DIAGNOSTIC_COMPLETE_WITH_ACTIVE_WATCHES
+        authorityEvidence:
+          - 81_P4B_LV6_LV21_COMBAT_FEEDBACK_EXECUTION_REPORT_V0_1.md
+          - data/p4b_combat_feedback_divergence_v0_1.json
+          - 83_P4B_MULTIPLAYER_TIMEBASE_PRECHECK_V0_1.md
+          - data/p4b_multiplayer_timebase_precheck_v0_1.json
+        findings:
+          soloPurePerTurnWindowConflict: true
+          multiplayerCompressesSoloDivergence: true
+          multiplayerEliminatesDivergence: false
+          teammateCompositionDependencyObserved: true
+          playerCountScalingDependencyObserved: true
+          timebaseCompressionComplete: false
+      P4B_DECISION:
+        name: EXP_ROUTING_REASSESSMENT
+        status: USER_APPROVED_R2
+        authority:
+          - 84_P4B_EXP_DECISION_REASSESSMENT_PROPOSAL_V0_1.md
+          - 85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md
+        route: PROVISIONAL_PURE_PER_TURN_PLUS_DEFERRED_MANDATORY_RECONVERGENCE
+        stageQualityBudgetApproved: false
+        purePerTurnFinalFreeze: false
+      P4C1:
+        name: LV26_STRUCTURAL_SKILL_CONTRACT_DECISION
+        status: NEXT_USER_DECISION_GATE
+        dependsOn: [P4B_DECISION]
+        requiresUserDecision: true
+        genericPowerProxyForbidden: true
+      P4C2:
+        name: LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK
+        status: BLOCKED_PENDING_P4C1
+        dependsOn: [P4C1]
+      P4D1:
+        name: LV31_STRUCTURAL_SKILL_CONTRACT_DECISION
+        status: BLOCKED_PENDING_P4C2
+        dependsOn: [P4C2]
+        requiresUserDecision: true
+      P4D2:
+        name: LV31_BOUNDED_MASTERY_POWER_FEEDBACK
+        status: BLOCKED_PENDING_P4D1
+        dependsOn: [P4D1]
+      P4E:
+        name: PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES
+        status: BLOCKED_PENDING_P4D2
+        dependsOn: [P4D2]
+        finalExpConvergenceAllowed: false
+    activeWatches:
+      - SOLO_PROGRESSION_DIVERGENCE_WATCH
+      - TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+      - PLAYER_COUNT_SCALING_XP_DEPENDENCY
+      - MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+    candidateOnlyNotFrozen:
+      xpCreditVector: LEGACY_RELATIVE_SHAPE_PRIMARY_CANDIDATE
+      p4aMilestoneMidpointAnchors:
+        Lv6: 130.59375
+        Lv11: 251.84375
+        Lv16: 389.40625
+        Lv21: 562.1875
+        Lv26: 747.875
+        Lv31: 987.84375
+    constraints:
+      - lv31_stage41_45_user_confirmed_direction_to_retest
+      - pure_per_turn_is_provisional_diagnostic_baseline_only
+      - option_D_stage_quality_budget_not_approved
+      - no_class_specific_hidden_exp_compensation_without_explicit_user_gate
+      - no_tier_flow_homogenization_for_exp
+      - no_Lv26_or_Lv31_power_proxy_before_separate_gate
+      - no_final_exp_claim_before_P10R
+
+  P5: {name: RUN_COIN_AND_SHOP_CANDIDATE, status: BLOCKED, dependsOn: [P4]}
+  P6: {name: JOINT_RUN_POWER_CONVERGENCE, status: BLOCKED, dependsOn: [P4, P5]}
+  P7: {name: BOSS_CHECKPOINT_MECHANICAL_PROXY, status: BLOCKED, dependsOn: [P6]}
+  P8: {name: SOLO_P0_FULL_TIER_BASELINE, status: BLOCKED, dependsOn: [P7]}
+  P9: {name: SOFT_WALL_AND_STAT_SENSITIVITY, status: BLOCKED, dependsOn: [P8]}
+  P10:
+    name: MULTIPLAYER_COMBAT_SCALING_BASELINE
+    status: BLOCKED
+    dependsOn: [P8]
+  P10R:
+    name: EXP_MULTIPLAYER_TIMEBASE_RECONVERGENCE
+    status: BLOCKED_PENDING_P10
+    dependsOn: [P10]
+    mandatoryBefore: [P11, P12, P13]
+    requiresUserDecision: true
+    comparisons:
+      - SOLO
+      - 2P
+      - 3P
+      - 4P
+      - HOMOGENEOUS_TEAMS
+      - MIXED_TEAMS
+      - SAME_CLASS_DIFFERENT_TEAMMATES
+      - STAGE_BASED_REACH
+      - WALL_CLOCK_REACH
+      - CLEAR_FAIL_RETRY_ADJUSTED_PROGRESSION
+      - TEAM_COMPOSITION_SENSITIVITY
+      - PLAYER_COUNT_SENSITIVITY
+  P11: {name: STARS_ONLY_PERMANENT_PROGRESSION, status: BLOCKED_PENDING_P9_P10R, dependsOn: [P9, P10R]}
+  P12: {name: ACHIEVEMENT_CROSS_CLASS_GRAPH, status: BLOCKED_PENDING_P9_P10R_P11, dependsOn: [P9, P10R, P11]}
+  P13: {name: ACCOUNT_PROGRESSION_ROUTE_SIM, status: BLOCKED, dependsOn: [P11, P12]}
+  P14: {name: LAUNCH_TIER_COUNT_AND_UNLOCK_DECISION_GATE, status: BLOCKED, dependsOn: [P13]}
+  P15: {name: EXACT_CAMPAIGN_AND_BOSS_AUTHORING, status: BLOCKED, dependsOn: [P14]}
+  P16: {name: MULTIPLAYER_PROGRESSION_CREDIT_AND_EXPLOIT_AUDIT, status: BLOCKED, dependsOn: [P10R, P13, P15]}
+  P17: {name: FULL_SYSTEM_STRESS_AND_NUMERICAL_FREEZE_GATE, status: BLOCKED, dependsOn: [P15, P16]}
+  P18: {name: PRODUCTION_IMPLEMENTATION, status: BLOCKED, dependsOn: [P17]}
+
+feedbackLoops:
+  L1: {nodes: [encounter_pressure, exp_event_count, skill_reach, player_power], gate: P4_and_P10R}
+  L2: {nodes: [shop_power, kill_speed, exp_event_count, skill_reach], gate: P6_and_P10R}
+  L3: {nodes: [permanent_power, kill_speed, exp_event_count, skill_reach], gate: P11_after_P10R}
+  L4: {nodes: [stars, permanent_power, future_clear_rate, stars], gate: P13}
+  L5: {nodes: [soft_wall, achievement_edge, target_class_power, soft_wall], gate: P12}
+  L6: {nodes: [team_power, reward_acquisition, permanent_power, future_team_solo_difficulty], gate: P16}
+  L7: {nodes: [launch_tier_count, max_stars, permanent_ladder, late_tier_difficulty], gate: P14}
+
+freezePolicy:
+  structuralSemanticFreeze:
+    mayFreezeEarly:
+      - state_lifecycle
+      - reward_band_meaning
+      - modifier_schema
+      - stage_settlement_semantics
+      - rng_ownership_semantics
+      - role_expression_contract
+      - skill_identity_after_each_explicit_gate
+      - exp_final_semantics_only_after_P10R_user_decision
+  numericalContentFreeze:
+    onlyAfter: P17
+
+currentBoundary:
+  completedThrough: P3
+  activePackage: P4
+  completedInternalThrough: P4B_DECISION_R2
+  next: P4C1
+  nextMode: USER_DECISION_GATE_AFTER_STRUCTURAL_REVIEW
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
