@@ -19,12 +19,12 @@ jobs:
           fetch-depth: 1
       - name: Install YAML dependency
         run: python3 -m pip install --quiet pyyaml
-      - name: Run refined preflight twice and verify deterministic bytes
+      - name: Run screened charger preflight twice and verify deterministic bytes
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p6_pressure_family_rotation_temp_v0_2.py > /tmp/run1.txt
-          cp p6_pressure_family_rotation_temp_v0_2.json /tmp/result1.json
-          python3 tools/run_p6_pressure_family_rotation_temp_v0_2.py > /tmp/run2.txt
-          cmp /tmp/result1.json p6_pressure_family_rotation_temp_v0_2.json
+          python3 tools/run_p6_pressure_family_rotation_temp_v0_3.py > /tmp/run1.txt
+          cp p6_pressure_family_rotation_temp_v0_3.json /tmp/result1.json
+          python3 tools/run_p6_pressure_family_rotation_temp_v0_3.py > /tmp/run2.txt
+          cmp /tmp/result1.json p6_pressure_family_rotation_temp_v0_3.json
           cat /tmp/run2.txt
