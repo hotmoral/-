@@ -5,16 +5,12 @@ on:
     branches:
       - timing-defense-workspace-temp-p6-b2-p4b-reconstruction
     paths:
-      - 'timing-defense-workspace/tools/run_p6_b2_p4b_reconstruction_preflight_temp.py'
-      - 'timing-defense-workspace/tools/run_p6_b2_p4b_existing_layera_lv6_fidelity_temp.py'
-      - 'timing-defense-workspace/tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py'
-      - 'timing-defense-workspace/tools/run_p6_b2_p4b_skilledv2_lv6_aggregation_fidelity_temp.py'
-      - 'timing-defense-workspace/tools/run_p6_b2_p4b_response_envelope_equivalence_temp.py'
+      - 'timing-defense-workspace/tools/run_p6_b2_p4b_propagation_semantics_matrix_temp.py'
       - '.github/workflows/timing-defense-p6-b2-p4b-reconstruction-temp.yml'
   workflow_dispatch:
 
 jobs:
-  reconstruction-preflight:
+  propagation-semantics-matrix:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -22,49 +18,13 @@ jobs:
           ref: timing-defense-workspace-temp-p6-b2-p4b-reconstruction
       - name: Install YAML dependency
         run: python3 -m pip install --quiet pyyaml
-      - name: Run static reconstruction preflight twice
+      - name: Run propagation semantics matrix twice
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p6_b2_p4b_reconstruction_preflight_temp.py > /tmp/p6b2-static-a.json
-          python3 tools/run_p6_b2_p4b_reconstruction_preflight_temp.py > /tmp/p6b2-static-b.json
-          cmp /tmp/p6b2-static-a.json /tmp/p6b2-static-b.json
-          sha256sum /tmp/p6b2-static-a.json
-      - name: Run existing Layer-A Lv6 fidelity probe twice
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd timing-defense-workspace
-          python3 tools/run_p6_b2_p4b_existing_layera_lv6_fidelity_temp.py > /tmp/p6b2-layera-a.json
-          python3 tools/run_p6_b2_p4b_existing_layera_lv6_fidelity_temp.py > /tmp/p6b2-layera-b.json
-          cmp /tmp/p6b2-layera-a.json /tmp/p6b2-layera-b.json
-          sha256sum /tmp/p6b2-layera-a.json
-      - name: Run materialized all-20 Lv6 fidelity probe twice
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd timing-defense-workspace
-          python3 tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py > /tmp/p6b2-materialized-a.json
-          python3 tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py > /tmp/p6b2-materialized-b.json
-          cmp /tmp/p6b2-materialized-a.json /tmp/p6b2-materialized-b.json
-          sha256sum /tmp/p6b2-materialized-a.json
-      - name: Run SKILLED_V2 Lv6 aggregation fidelity probe twice
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd timing-defense-workspace
-          python3 tools/run_p6_b2_p4b_skilledv2_lv6_aggregation_fidelity_temp.py > /tmp/p6b2-skilledv2-a.json
-          python3 tools/run_p6_b2_p4b_skilledv2_lv6_aggregation_fidelity_temp.py > /tmp/p6b2-skilledv2-b.json
-          cmp /tmp/p6b2-skilledv2-a.json /tmp/p6b2-skilledv2-b.json
-          sha256sum /tmp/p6b2-skilledv2-a.json
-      - name: Run response-envelope recovered-equivalence gate twice
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd timing-defense-workspace
-          python3 tools/run_p6_b2_p4b_response_envelope_equivalence_temp.py > /tmp/p6b2-envelope-a.json
-          python3 tools/run_p6_b2_p4b_response_envelope_equivalence_temp.py > /tmp/p6b2-envelope-b.json
-          cmp /tmp/p6b2-envelope-a.json /tmp/p6b2-envelope-b.json
-          sha256sum /tmp/p6b2-envelope-a.json
-          cat /tmp/p6b2-envelope-a.json
+          python3 tools/run_p6_b2_p4b_propagation_semantics_matrix_temp.py > /tmp/p6b2-matrix-a.json
+          python3 tools/run_p6_b2_p4b_propagation_semantics_matrix_temp.py > /tmp/p6b2-matrix-b.json
+          cmp /tmp/p6b2-matrix-a.json /tmp/p6b2-matrix-b.json
+          sha256sum /tmp/p6b2-matrix-a.json
+          cat /tmp/p6b2-matrix-a.json
