@@ -1,31 +1,44 @@
 version: system-dependency-calibration-order-v0.31
 status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
 supersedes: data/system_dependency_calibration_order_v0_30.yaml
+
 authorityDocs:
   - 86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md
   - 138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md
+  - 66_SKILLED_V2_CENTRAL_DESIGN_PRIOR_AND_HARNESS_CLOSURE_AMENDMENT_V0_1.md
+  - 67_SKILLED_V2_CENTRAL_SEQUENCE_MODEL_V0_1.md
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
   - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
   - 76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md
+  - 79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md
+  - 91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md
   - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
-  - 128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md
   - 129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md
   - 135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md
   - 137_P5_STAGE46_49_EXACT_EXECUTION_STAGE_SETTLED_BOUNDARY_RESULT_V0_1.md
   - 139_P5_STAGE48_SIEGER_PROTECTION_TIME_DIAGNOSTIC_V0_1.md
   - 140_P5_STAGE48_THREE_AXIS_COMPARISON_DECISION_GATE_V0_1.md
+  - 141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md
+  - 142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md
+  - 143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md
   - ../CHARACTER_PROFILE_RADAR_V1.md
 
 principles:
   - live_remote_wins
   - recover_whole_structure_reasoning_frame_before_local_tuning
   - check_upstream_downstream_feedback_and_contradictions_each_slice
-  - do_not_repeat_closed_work_without_concrete_trigger
   - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_fidelity_before_exact_encounter_scalars
   - bounded_probe_before_broad_reaudit
+  - do_not_repeat_closed_work_without_concrete_trigger
   - plain_language_causal_explanation_first
   - important_design_or_numerical_adoption_requires_user_approval
   - stage_advance_requires_stage_settled
   - carry_wall_current_max_and_absolute_deficit_across_stages
+  - carry_combo_and_charge_across_stage_shop_inside_one_tier_attempt
+  - stage_local_enemy_instances_do_not_leak_to_next_stage
   - normal_right_edge_entry_required
   - midfield_pop_in_forbidden
   - radar_high_axes_must_remain_causally_visible
@@ -46,108 +59,152 @@ workPackages:
   P3:
     status: STRUCTURAL_PASS_COMPLETE
     stageAdvanceBarrier: STAGE_SETTLED
+    persistentStateRequired: [base_hp, combo, charge, judgment_rng_state]
   P4: {status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES}
   P5:
-    status: STAGE48_THREE_AXIS_COMPARISON_COMPLETE_AWAITING_USER_DIRECTION
+    status: P5_TO_P6_FIDELITY_BRIDGE_USER_DECISION_GATE
     structuralContract: USER_APPROVED_A2
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    armoredHardenedExplorationAxis: USER_APPROVED
+    gruntLikeCheapTargetChronologyAxis: DIAGNOSTICALLY_VALID
     productionAuthority: false
+
+    fixedGuards:
+      physicalSpawnX: 0.92
+      midfieldPopIn: false
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+      survivalIsClear: false
+      noHardClassLockout: true
+      globalArcherNerfAuthorized: false
+      mageBuffToFixBadEncounterAuthorized: false
+      tankControlNerfAsFirstRepairAuthorized: false
+      rogueRetargetRemovalAsFirstRepairAuthorized: false
+
     workingEconomyCenters:
       fullShopReferenceCost: 16360
       spendRatio: 0.50
       incomeMix: 70_30
       shopEffectScale: 0.40
       status: DIAGNOSTIC_ONLY_NOT_FROZEN
+
     exactIntegratedRunner:
       checkoutExactExecution: PASS
       deterministicRepeat: PASS
       outputSha256: 0d08f52ad5a25049e3379831bb4a41e7dc63256d7675d3743a1891dfba35a45b
       runId: 39949346908
-      physicalSpawnX: 0.92
-      midfieldPopIn: false
+      masteryAuthority: ALL_PERFECT_EFFECTIVELY_ALL_PXP_UPPER_BOUND
+      fullRunStateAuthority: INCOMPLETE_FOR_COMBO_CHARGE_PERSISTENCE
+      productionAuthority: false
+
     stageBoundary:
-      resetAt60ReserveInterpretation: REJECTED
-      continuousEnemyCarryIntoNextStage: REJECTED
+      deleteRemainingAt60: REJECTED
+      carryEnemyInstancesAcrossStage: REJECTED
       requiredModel: STAGE_SETTLED_THEN_RESET_STAGE_LOCAL_ENEMIES
       exactEvidenceRunId: 39950165809
       exactEvidenceSha256: 2680ec99b9aecbc27eca9c647b6c95057780306eab2acf884b511581d3a95e0d
-    classIdentityClosure:
-      source: 135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md
-      reopenWholesale: false
-      Tank:
-        nextDamageCandidates: [0.20, 0.25, 0.30]
-        workingCenter: 0.25
-        selected: false
-      Rogue:
-        broadCleanupWatch: HIGH
-        retargetChangeAuthorized: false
-      Knight: {targetedRegression: ALIGNED}
-      Archer: {targetedRegression: ALIGNED}
-      Mage: {targetedRegression: ALIGNED_STAGE48_PACKET_FAILURE_NOT_CLASS_DEFECT}
-    stage48Comparison:
-      source: 140_P5_STAGE48_THREE_AXIS_COMPARISON_DECISION_GATE_V0_1.md
-      oldRepeatedProxyPacket: REJECTED_CONTAMINATED
-      realOnly:
-        verdict: INSUFFICIENT_STANDALONE
-        windups: 0
-        shots: 0
-      limitedArmored:
-        verdict: MOST_PROMISING_PRIMARY_EXPLORATION_AXIS_NOT_APPROVED
-        oldProxyAnchorAuthority: UPPER_BOUND_DIAGNOSTIC_ONLY
-        twoBodyObservedSiegerLifetimeSeconds:
-          Knight: 2.325
-          Rogue: 2.350
-          Tank: 5.700
-          Archer: 6.825
-          Mage: 7.200
-        threeBodyNonMonotonic: true
-        keyFinding: FORMATION_DENSITY_GEOMETRY_MATTER_MORE_THAN_SIMPLE_COUNT_INCREASE
-      standoffOnly:
-        verdict: POOR_PRIMARY_FIT
-        x078: TANK_ONLY_SHOTS
-        x090:
-          Knight: {windups: 1, shots: 0}
-          Rogue: {windups: 1, shots: 0}
-          Tank: {windups: 5, shots: 2}
-          Archer: {windups: 1, shots: 0}
-          Mage: {windups: 1, shots: 0}
-        keyFinding: NEAR_ENTRY_TRIGGER_STILL_FAILS_ALL_CLASS_MEANINGFUL_FIRE
-      buffsResistanceMechanics:
-        status: DEFERRED_OPEN_OPTION
-        reason: HIGHER_CROSS_SYSTEM_COUPLING
-      recommendation:
-        primary: LIMITED_ARMORED_HARDENED_FRONTLINE_EXPLORATION
-        secondary: MODEST_STANDOFF_ONLY_IF_NEEDED_AFTER_FORMATION_EVIDENCE
-        deferred: BUFF_RESISTANCE_SKILL_LIKE_MONSTER_MECHANICS
+
+    stage48Evidence:
+      oldRepeatedProxyPacket: REJECTED_NOT_ADMISSION_READY
+      simpleRealMonsterSubstitution: INSUFFICIENT
+      realMonsterLayeredScreenHandoff: INSUFFICIENT
+      armoredDesignIntent:
+        explorationDirectionApprovedByUser: true
+        purposes:
+          - reduce_late_mage_archer_ordinary_volume_instant_erasure
+          - buy_meaningful_protected_sieger_role_time
+        exactStatsApproved: false
+        exactPacketApproved: false
+        productionMonsterApproved: false
+        eliteSystemApproved: false
+      lowSpatialDensity: CAUSAL_PROMISING
+      temporalOverSeparation: COUNTERPRODUCTIVE
+      userFodderHypothesis:
+        status: DIAGNOSTICALLY_VALID_CHRONOLOGY_AXIS
+        invariant: FODDER_TYPE_ORDER_ARRIVAL_PHASE_AND_SPATIAL_DENSITY_ARE_CAUSAL
+      currentCleanDiagnosticCenter:
+        packet: THREE_SPATIAL_ARMORED_DIAGNOSTIC_BODIES_PLUS_TWO_GRUNT_PLUS_SIEGER
         adopted: false
-    nextSlices:
-      - USER_DECISION_ON_LIMITED_ARMORED_PRIMARY_DIAGNOSTIC_DIRECTION
-      - IF_APPROVED_TEST_FEW_FORMATION_CHRONOLOGY_LAYOUTS_NOT_BROAD_HP_ARMOR_GRID
-      - MEASURE_MAGE_ARCHER_PACKET_CLEAR_DELAY
-      - MEASURE_KNIGHT_PENETRATION_AND_ROGUE_RETARGET_LEAKAGE
-      - PRESERVE_TANK_SLOW_CLEAR_CONTROL_IDENTITY
-      - REQUIRE_SIEGER_FIRST_WINDUP_AND_SHOT_WITH_ALL_CLASS_VIABILITY
-      - REPLAY_STAGE46_49_STAGE_SETTLED_ONLY_AFTER_PROMISING_COMMON_LAYOUT
-      - USER_APPROVAL_BEFORE_ELITE_STATUS_NUMBERS_STANDOFF_OR_STAGE48_PACKET_ADOPTION
-      - STAGE49_ONLY_AFTER_STAGE48_DIRECTION_APPROVED
-  P6: {status: BLOCKED_PENDING_P5}
+      realBruteGruntOnly: INSUFFICIENT_CURRENT_REPLACEMENT
+      supporter: SECONDARY_TRAVEL_AID_PHASE_RISK_WATCH
+      globalStandoffPrimaryRepair: STRONGLY_DISFAVORED_NO_OBSERVED_SAFE_ALL_CLASS_WINDOW
+      current038Frozen: false
+
+    masteryReinterpretation:
+      source: 143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md
+      priorLateRunNumbers: ALL_PERFECT_EFFECTIVELY_ALL_PXP_UPPER_BOUND
+      skilledModel: skilled-v2-central-sequence-candidate-v0.1
+      expandedRun:
+        runId: 39968100989
+        sha256: ec4ed61d8288b9a2bb2e1575bf5f8d4e1191fdbabcae9a5d11cae9b7cde8d6c9
+        caseCount: 100
+        settledThrough49: 45
+        failureStageCounts: {stage46: 26, stage47: 21, stage48: 0, stage49: 8}
+        realizedJudgmentMix: {PERFECT: 0.723672, GOOD: 0.184456, NORMAL: 0.091871}
+        realizedPxpHeavyRate: 0.580635
+        perClassThrough49: {Knight: 3_of_20, Rogue: 4_of_20, Tank: 2_of_20, Archer: 18_of_20, Mage: 18_of_20}
+        balanceAuthority: CAUSAL_DIAGNOSTIC_ONLY_NOT_FINAL
+      factorIsolation:
+        runId: 39968400953
+        sha256: 1ae220cb0bbebd388f9c014a9208335c4b8eeb895b4163109e78895f95b4a420
+        ordinaryCentralHeavyForcedPxpThrough47: 100_of_100
+        ordinaryPerfectHeavyCentralThrough47: 63_of_100
+        fullCentralThrough47: 58_of_100
+        tankOrdinaryPerfectHeavyCentralThrough47: 0_of_20
+        dominantSensitivity: REDUCED_PXP_LV31_FINAL_FREQUENCY
+        interpretation: DO_NOT_TUNE_CLASS_OR_MONSTER_SCALARS_YET
+
+    simulatorFidelityGap:
+      exists: true
+      currentP5RunnerMissingOrIncomplete:
+        - canonical_stage_to_stage_charge_persistence
+        - canonical_stage_to_stage_combo_persistence
+        - full_combo_damage_bonus_pipeline
+        - full_N3_milestone_pipeline
+        - unified_persistent_skilled_judgment_state_with_p4d2_lv31_and_p5_shop
+      existingP3KernelProvides:
+        - persistent_combo
+        - persistent_charge
+        - skilled_v2_judgment_rng_state
+        - charge_driven_heavy
+        - combo_bonus
+        - N3_milestones
+      requiredBridgeGoal: COMBINE_P1_P3_STATE_FIDELITY_WITH_P4D2_LV31_P5_SHOP_AND_STAGE46_49_STAGE_SETTLED
+
+    currentDecisionGate:
+      source: 143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md
+      awaitingUserDecision: true
+      recommendedOption: A
+      options:
+        A: OPEN_BOUNDED_P5_TO_P6_FIDELITY_BRIDGE_BEFORE_MORE_STAGE48_MICROTUNING
+        B: CONTINUE_LOCAL_STAGE48_TUNING_ON_CURRENT_PARTIAL_RUNNER
+        C: CLOSE_P5_NOW_AND_ENTER_FULL_P6_CONVERGENCE
+      adoptedOption: null
+
+  P6:
+    status: BLOCKED_PENDING_USER_DECISION_ON_P5_TO_P6_FIDELITY_BRIDGE
+    plannedGoal: JOINT_RUN_POWER_CONVERGENCE
+    bridgeMayPrepareButDoesNotAutomaticallyCloseP5: true
   P10R: {status: BLOCKED_PENDING_P10}
 
 currentBoundary:
   activePackage: P5
-  next: USER_DECISION_GATE_STAGE48_PRIMARY_EXPLORATION_AXIS
-  nextMode: DECISION_SUPPORT_NO_ADOPTION_NO_NUMERICAL_FREEZE
+  next: USER_DECISION_ON_P5_TO_P6_FIDELITY_BRIDGE
+  nextMode: DECISION_GATE_NO_ADOPTION_BEFORE_APPROVAL
   awaitingUserDecision: true
-  recommendedDirection: LIMITED_ARMORED_PRIMARY_REAL_MONSTER_BASELINE_STANDOFF_SECONDARY
+  recommendedNext: OPTION_A_BOUNDED_FIDELITY_BRIDGE
   userApprovalRequiredBefore:
-    - ADOPTING_LIMITED_ARMORED_AS_WORKING_STAGE48_DIRECTION
-    - DEFINING_NEW_ELITE_OR_MONSTER_STATUS
-    - ADOPTING_NEW_STAGE48_WORKING_PACKET
-    - CHANGING_STAGE48_CADENCE_AS_WORKING_DIRECTION
-    - CHANGING_SIEGER_OR_ESCORT_STATS
-    - SELECTING_SIEGER_STANDOFF_VALUE
-    - INTRODUCING_BUFF_RESISTANCE_MECHANICS
+    - ADOPTING_P5_TO_P6_FIDELITY_BRIDGE_AS_NEXT_WORK_DIRECTION
+    - FORMALLY_CLOSING_P5
+    - FORMALLY_STARTING_FULL_P6_CONVERGENCE
+    - ADOPTING_NEW_STAGE48_PACKET
+    - APPROVING_NEW_MONSTER_OR_ELITE_OR_HARDENED_STATE
+    - OPENING_BUFF_RESISTANCE_SKILL_LIKE_MONSTER_MECHANIC_AS_DESIGN_DIRECTION
+    - CHANGING_SIEGER_STANDOFF_OR_WINDUP_AS_WORKING_VALUE
     - FREEZING_TANK_DAMAGE_COEFFICIENT
-    - CHANGING_CLASS_OR_MONSTER_OR_SHOP_NUMERICS
+    - CHANGING_CLASS_MONSTER_SHOP_EXP_NUMERICS
     - CHANGING_APPROVED_STRUCTURAL_CONTRACT
     - PRODUCTION_GAMEPLAY_CHANGE
   productionChangesAuthorized: false
