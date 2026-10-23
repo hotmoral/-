@@ -23,6 +23,14 @@
     ],
     "reason": "No canonical Stage46-49 purchase history is frozen. Inventing one here would mix economy-path assumptions into the identity/chronology diagnostic."
   },
+  "stageBoundaryModel": {
+    "wallStateCarried": true,
+    "enemyBacklogCarried": false,
+    "endActiveAlwaysRecorded": true,
+    "meaning": "The inherited 60s recipes are bounded stage-stress windows, not exact production stage scripts. Wall current/max/deficit carries across windows; living diagnostic mobs are not transplanted across the synthetic boundary.",
+    "watch": "P5_STAGE_BOUNDARY_BACKLOG_DISCARD_BIAS",
+    "interpretationRule": "If endActive is material, do not treat final wall reserve as exact stage-clear reserve; resolve stage-boundary/backlog fidelity before numerical freeze."
+  },
   "tankShockwaveDamageSensitivity": [
     0.2,
     0.25,
