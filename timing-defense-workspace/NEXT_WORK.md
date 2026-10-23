@@ -30,7 +30,10 @@ Authorities:
 - `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/92_P4D2_LV31_MASTERY_POWER_AND_STAGE46_PRESSURE_PREFLIGHT_V0_1.md`
 
-P4-D2 is authorized now.
+First-pass analytic evidence:
+- `legacy-game-structure/93_P4D2_FIRST_PASS_LV31_POWER_ENVELOPE_AND_PRESSURE_TARGETS_V0_1.md`
+
+P4-D2 is authorized and active.
 
 ---
 
@@ -65,11 +68,9 @@ Combo/timing/P×P maintenance is part of the intended Stage46+ difficulty.
 
 ---
 
-# Rogue Lv31 — corrected working direction
+# Rogue Lv31 — current first-pass result
 
 Rogue's final skill must culminate the thrown-projectile/multihit fantasy.
-
-Do not use proposal-90's conservative `8 daggers` as the working center.
 
 P4-D2 sensitivity:
 
@@ -78,26 +79,82 @@ P4-D2 sensitivity:
 working center = 16
 ```
 
-Structural rules:
+Using the provisional per-projectile continuity coefficient `0.45`:
+
+```text
+Lv21 Blade Barrage package = 2.80 root basis
+12 daggers = 5.40 = 1.93× Lv21 package
+16 daggers = 7.20 = 2.57× Lv21 package
+20 daggers = 9.00 = 3.21× Lv21 package
+```
+
+This makes 16 a useful center: clearly final-skill scale but still below the aggressive 20-projectile bracket.
+
+Future same-time all-Rogue stress target implied by the candidate range:
+
+```text
+4P × 12 = 48 projectiles
+4P × 16 = 64 projectiles
+4P × 20 = 80 projectiles
+```
+
+These counts are explicit performance-test targets, not automatic reasons to reduce projectile count.
+
+Structural rules remain:
 - one finite deterministic storm package per P×P root;
 - real visible/simulated projectiles/hits;
 - keep attacking current target while alive;
 - deterministic retarget after death/removal;
 - same-target cap absent;
 - boss scalar applies per realized hit;
-- no recursive projectile-generator tree;
-- performance is a watch/engineering problem, not an automatic design-nerf reason.
+- no recursive projectile-generator tree.
+
+16 and 0.45 are not numerically frozen.
 
 ---
 
-# Other Lv31 working interpretation
+# Other Lv31 first-pass power envelope
 
-- Knight: strong two-pass broad frontline break; bounded corridor identity, but not timid magnitude.
-- Tank: dramatic battlefield pressure reset through control + wall protection.
-- Archer: one strict-line unlimited-depth deletion; unlimited target count is part of the final fantasy.
-- Mage: bounded but spectacular three-stage density collapse + final chain; cluster deletion is allowed/desired.
+P4-D2 may test a stronger envelope than proposal 90's conservative ranges.
 
-Finite/deterministic effect graphs remain mandatory.
+- Knight: second wave `0.75 / 1.00 / 1.25` root-basis sensitivity, while preserving bounded Knight corridor identity.
+- Tank: battlefield shockwave `0.50 / 0.75 / 1.00` root-basis sensitivity plus strong control/wall protection.
+- Archer: start at `1.00` root basis per intersected target with unlimited strict-line depth; raise only if line geometry, not damage, proves insufficient.
+- Mage: three-stage collapse `0.55 / 0.75 / 1.00` root basis per stage, with radius tuned independently and recursion still bounded.
+
+All remain P4-D2 provisional inputs only.
+
+---
+
+# P4-D2 pressure target before exact numbers
+
+Stage46+ should be calibrated by backlog/reset behavior before freezing raw monster multipliers.
+
+Desired shape:
+
+```text
+Lv26-only sustained clearing < Stage46+ inflow/pressure
+successful Lv31 P×P = unmistakable pressure reset
+one missed reset = serious but potentially recoverable pressure
+repeated missed resets = burial cascade
+```
+
+Later simulation should record at minimum:
+
+```text
+backlog_before_final
+backlog_after_final
+pressure_reset_fraction
+seconds_to_reaccumulate_pre_reset_pressure
+lv26_only_backlog_slope
+lv31_backlog_slope_between_resets
+missed_pxp_recovery_probability
+consecutive_missed_pxp_to_burial
+wall_hp_delta_between_resets
+role_expression_count_before_death
+```
+
+Do not reduce this to HP-only scaling.
 
 ---
 
@@ -131,8 +188,6 @@ Vary pressure mainly through encounter grammar:
 - CHARGER timing;
 - SPLITTER rebound/population;
 - mixed-pressure composition.
-
-Do not solve the whole band by only multiplying HP.
 
 ## D. Combo/P×P mastery
 Measure:
