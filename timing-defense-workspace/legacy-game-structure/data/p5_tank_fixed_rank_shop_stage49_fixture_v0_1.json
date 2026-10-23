@@ -1,0 +1,27 @@
+{
+  "version": "p5-tank-fixed-rank-shop-stage49-fixture-v0.1",
+  "status": "BOUNDED_TANK_ONLY_SHOP_COMBAT_DIAGNOSTIC_NO_PRODUCTION_AUTHORITY",
+  "sourceStage49Fixture": "p4d2-stage49-full-rotation-fixture-v0.1",
+  "shopProfilesAtCenterSpendEnvelope": {
+    "ATTACK_HEAVY": {"atk": 9, "knock": 7, "fort": 7, "def": 6},
+    "DEFENSE_HEAVY": {"atk": 6, "knock": 8, "fort": 10, "def": 8},
+    "BALANCED": {"atk": 8, "knock": 8, "fort": 8, "def": 7},
+    "ROLE_AWARE_TANK": {"atk": 6, "knock": 10, "fort": 8, "def": 8}
+  },
+  "legacyPerRankMagnitudeReference": {
+    "atkPct": 0.08,
+    "knockbackPct": 0.10,
+    "fortificationFlatHpAndMatchedRepair": 100.0,
+    "genericWallDrPp": 0.025
+  },
+  "effectMagnitudeScaleSensitivity": [0.4, 0.6, 0.8, 1.0],
+  "consecutiveMissSweepMax": 16,
+  "limitations": [
+    "Tank only; this probe is not a five-class shop balance result.",
+    "CRIT and CRIT DAMAGE are omitted from this first scalar lane because attack-template crit policy is effect-specific.",
+    "Fortification is modeled as fully retained Stage49 starting reserve: 2000 + purchased matched repair. This is deliberately defense-favorable and acts as an upper-bound lane.",
+    "Ranks are fixed to Stage49 CENTER economy-policy snapshots rather than purchased over time.",
+    "The Stage49 rotation is diagnostic content, not launch authoring.",
+    "All exact shop effect magnitudes remain open."
+  ]
+}
