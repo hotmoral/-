@@ -26,19 +26,20 @@ jobs:
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.py > /tmp/run1.txt
-          cp p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.json /tmp/result1.json
-          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.py > /tmp/run2.txt
-          cmp /tmp/result1.json p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.json
+          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.py > /tmp/run1.txt
+          cp p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.json /tmp/result1.json
+          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.py > /tmp/run2.txt
+          cmp /tmp/result1.json p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.json
           python3 - <<'PY'
           import hashlib, json
           from pathlib import Path
-          p=Path('p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.json')
+          p=Path('p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.json')
           d=json.loads(p.read_text())
-          print('P5_SKILLED_V2_COMPARE='+json.dumps({
+          print('P5_SKILLED_V2_COMPARE_V2='+json.dumps({
             'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
             'aggregate': d['aggregate'],
             'skilledModel': d['skilledModel'],
             'seeds': d['skilledSeeds'],
+            'fidelityFixes': d.get('fidelityFixes'),
           }, sort_keys=True))
           PY
