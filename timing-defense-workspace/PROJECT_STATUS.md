@@ -10,7 +10,7 @@ Updated: 2026-10-23 KST
 
 ## Operating / recovery authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_15.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_16.yaml`
 
 Live remote and latest approved/superseding authority always win.
 Closed PASS/APPROVED work is not repeated without a concrete revalidation trigger.
@@ -19,7 +19,7 @@ Closed PASS/APPROVED work is not repeated without a concrete revalidation trigge
 
 # Current phase
 
-**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-D2 ACTIVE / DURABLE TEMPORAL DIRECTION SUPPORTED / TANK BARRIER FIDELITY CORRECTED / STAGE49 TIME-BUDGET ROLE MODULE PROMISING / V0.3 EXACT REPLAY + FULL ROTATION CHECK NEXT**
+**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-D2 ACTIVE / STAGE49 FULL ROTATION PROMISING / V0.3 REPLAY FAILED / V0.4 PREPARED / ARCHER CHRONOLOGY + STAGE46 ACQUISITION FAIRNESS NEXT**
 
 Current chain:
 
@@ -32,24 +32,27 @@ P0..P3 structural foundation complete
  -> P4-D1 Lv31 power-fantasy + Stage46 mastery gate USER APPROVED_WITH_MODIFICATION
  -> P4-D2 Stage46 pressure envelope FOUND
  -> Archer Lv31 wider real gameplay corridor USER APPROVED
- -> Stage48–49 cadence/no-target methodology corrected
- -> armored durable static pressure axis SUPPORTED
- -> durable temporal pressure direction SUPPORTED
- -> Tank barrier-family simulator defect CONFIRMED / v0.3 correction prepared
+ -> cadence/no-target fidelity corrected
+ -> armored durable pressure axis SUPPORTED
+ -> Tank barrier-family defect CONFIRMED
  -> Stage49 Tank time-budget role module PROMISING
- -> exact v0.3 replay + full complementary grammar integration = NEXT
+ -> v0.3 exact replay admission FAILED due runner source-patch guard
+ -> v0.4 fidelity runner PREPARED
+ -> Stage49 five-grammar full rotation PROMISING DIRECTIONALLY
+ -> exact v0.4 admission + Archer chronology + Stage46 acquisition fairness = NEXT
 ```
 
 Latest authority/evidence:
 - `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md`
 - `legacy-game-structure/99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md`
-- `legacy-game-structure/100_P4D2_STAGE48_49_CADENCE_CORRECTED_DIRECTIONAL_FEEDBACK_V0_1.md`
 - `legacy-game-structure/101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md`
-- `legacy-game-structure/102_P4D2_DURABLE_TEMPORAL_PRESSURE_DIRECTIONAL_PROBE_V0_1.md`
 - `legacy-game-structure/103_P4D2_TANK_BARRIER_FIDELITY_CORRECTION_V0_1.md`
-- `legacy-game-structure/104_P4D2_STAGE49_TANK_TIME_BUDGET_ROLE_PULSE_PREFLIGHT_V0_1.md`
-- `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_3.py`
+- `legacy-game-structure/105_P4D2_V03_REPLAY_FAILURE_AND_V04_RUNNER_CORRECTION_V0_1.md`
+- `legacy-game-structure/106_P4D2_STAGE49_FULL_ROTATION_DIRECTIONAL_PROBE_V0_1.md`
+- `legacy-game-structure/data/p4d2_stage49_full_rotation_directional_summary_v0_1.json`
+- `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_4.py`
+- `tools/run_p4d2_stage49_full_rotation_probe_v0_1.py`
 
 ---
 
@@ -67,6 +70,7 @@ Latest authority/evidence:
 - Lv31 acquisition transition target = Stage41–45.
 - Stage46+ = approved Lv31 mastery-gate pressure regime direction.
 - Stage50 = final application, not first Lv31 tutorial.
+- BaseHP persists across stages; no automatic stage heal.
 - material unresolved design choices require explicit user approval.
 
 ---
@@ -98,12 +102,12 @@ Consequences:
 
 ---
 
-# Methodology fidelity
+# Methodology fidelity — current authority
 
-Rogue Lv16 recovery authority:
+Rogue Lv16:
 
 ```text
-390ms ->312ms
+recovery390ms ->312ms
 exact delta=-78ms
 ```
 
@@ -115,25 +119,25 @@ ROGUE_RECOVERY_DELTA_78MS_NO_BANK =1.047s sensitivity
 NO_TARGET_OPPORTUNITIES_DO_NOT_BANK
 ```
 
-Tank T-B barrier family additionally requires:
+Tank shared barrier family:
 
 ```text
 Lv31 Absolute Barrier ->250 /6s candidate
 Lv16 Perfect Guard ->80 /3s
-weaker Lv16 guard may NOT downgrade an active Lv31 barrier
+active stronger Lv31 barrier may NOT be downgraded by weaker Lv16 guard
 ```
 
-The old Stage46/v0.2 runner violated this and is pre-correction Tank evidence only.
-Future Tank class-fairness replay authority is v0.3.
-Exact v0.3 repository-checkout execution/hash remains pending.
-
-Corrected directional Tank examples:
+Runner state:
 
 ```text
-Distributed durable / two misses: 1584 ->1924
-Strong durable role pulse: one1301->1661 / two1073->1497
-Durable+SUPPORTER/SIEGER: one1226->1661 / two1092->1480
+v0.2 = historical pre-Tank-barrier-correction evidence
+v0.3 = FAIL_SOURCE_PATCH_GUARD / do not admit
+v0.4 = current prepared fidelity runner
 ```
+
+v0.3 failed because it assumed both shield-consumption sites had identical indentation in the Stage46 source. They do not. v0.4 patches SIEGER-shot and wall-contact absorption independently.
+
+A source-equivalent local reconstruction reproduces the published v0.2 canonical directional metrics, including all-success values, one/two miss ranges, Rogue recovered-lane burial range, and all-finals-missed burial times. It is valid for directional work only; exact committed v0.4 checkout replay remains required for regression/freeze authority.
 
 ---
 
@@ -153,7 +157,7 @@ Mage    three stages.75 / radius1.25
 
 `ARMORED_DURABLE_PROXY` remains diagnostic only, not a tenth monster.
 
-Working diagnostic center:
+Diagnostic center:
 
 ```text
 HP1600
@@ -161,131 +165,134 @@ armor multiplier.55
 knock resistance.65
 ```
 
-Static class separation:
+Class separation remains useful:
+- Knight heavily chunks it;
+- Rogue executes one with the 16-dagger storm;
+- Tank leaves most HP but pushes/buys time;
+- Archer nearly deletes one through armor ignore;
+- Mage struggles with isolated/distributed durability but regains payoff when targets cluster.
 
-```text
-Knight removes ~65.4%
-Rogue kills one with16-dagger storm
-Tank removes ~15.5% but pushes
-Archer removes ~94.9% via armor ignore
-Mage primary removes ~24.8%
-```
-
-Mage positional contrast:
-
-```text
-Distributed durable 60s stress:
-30s2000 ->40s1360 ->45s1040 ->50s720 ->55s400 ->60s80
-
-Clustered durable stress:
-60s wall2000
-```
-
-Tank control ablation:
-
-```text
-control present -> wall2000 / no durable wall contacts
-push removed -> wall816 /16 durable wall contacts
-```
-
-Therefore:
-
-```text
-DURABLE_TEMPORAL_PRESSURE = SUPPORTED
-TANK_SURVIVAL_IS_CONTROL_DRIVEN = TRUE
-MAGE_DISTRIBUTED_DURABLE_PRESSURE = STRONG_LEVER
-MAGE_CLUSTERED_RECOVERY_ANSWER = PRESERVED
-NEW_MONSTER_APPROVED = NO
-NUMERICAL_FREEZE = NO
-```
-
-The user's BRUTE carrying/using SHIELD-like protection idea is parked for later monster identity/design work only.
+The user's BRUTE carrying/using SHIELD-like protection idea is parked for later monster-identity/design work only.
 
 ---
 
-# Stage49 Tank time-budget role module — promising
+# Stage49 full complementary rotation — PROMISING DIRECTIONAL
 
-A lighter role-specific module was directionally checked:
+Current bounded rotation candidate:
 
 ```text
-one durable threat every second pressure cycle
-+
-three readable SIEGER threats every second cycle
-+
-role pulse arrives after the initial reset window
+LINE_ESCORT
+CLUSTER_RECOVERY
+FRONTLINE_BREACH
+DURABLE_SCATTER
+TIME_BUDGET_SIEGER
 ```
 
-This is **one rotating grammar candidate**, not a full Stage49 recipe.
+`DURABLE_SCATTER` uses only one diagnostic durable proxy plus ordinary role bodies.
+`TIME_BUDGET_SIEGER` uses one durable proxy plus four readable SIEGER placements after the initial reset window.
 
-All-success directional wall:
+## All-success
 
 ```text
-Knight 2000
+Knight 1705
 Rogue  2000
 Tank   2000
-Archer 1325
-Mage   1850
+Archer 2000
+Mage   2000
 ```
 
-Tank consecutive missed-final sensitivity under barrier-corrected semantics:
+All five survive. Maximum all-success wall loss is Knight `295 / 2000 = 14.75%`.
+
+## One missed final
 
 ```text
-2 misses ->1855
-3 ->1785
-4 ->1370
-5 ->831
-6 ->121
+Knight 970..1595
+Rogue  1385..1705
+Tank   2000
+Archer 1740..2000
+Mage   1890..2000
 ```
 
-Interpretation:
-- Tank may legitimately have a larger mistake budget because control/protection is its identity;
-- sustained failure still exhausts the time budget;
-- Mage all-success margin is much healthier than the previous over-aggressive role pulse;
-- Knight/Rogue are not the first casualties in this module;
-- Archer off-corridor SIEGER exposure is the principal geometry watch.
+No burial across the five grammar starts.
 
-Do **not** make this module the whole late stage. It must rotate with complementary line/frontline/cluster/scatter grammars that pressure other class vulnerabilities.
+## Two consecutive missed finals
+
+```text
+Knight 820..1045
+Rogue  340..1050
+Tank   1725..2000
+Archer 1700..2000
+Mage   1890..2000
+```
+
+No class is forced into an identical mistake budget.
+
+## All finals missed from the beginning
+
+```text
+Knight 34.025s
+Rogue  29.100s
+Tank   34.575s
+Archer 57.025s
+Mage   52.225s
+```
+
+All five bury within the 60s stress.
+
+## Repeated-miss asymmetry
+
+First burial by grammar start generally occurs around:
+- Knight: 3–6 consecutive misses;
+- Rogue: 3–4;
+- Tank: 4–6;
+- Mage: TIME_BUDGET_SIEGER buries at 8; other starts can survive 8 with severe wall loss;
+- Archer: can survive the bounded 8-miss sweep, but several starts leave only `345..1195` wall and all-finals-missed still buries by57.025s.
+
+This is acceptable directional asymmetry. Tank has a larger defensive error budget because that is its class identity.
 
 ---
 
-# Stage48 / Stage49 authoring direction
+# New cross-stage watch — Stage49 -> Stage50 wall reserve
+
+Because BaseHP persists and there is no automatic heal:
 
 ```text
-Stage48-like
-  lighter durable pressure
-  alternating geometry
-  intermittent readable SIEGER/CHARGER pulse
-  all-success clearly recoverable
-
-Stage49-like
-  rotate complementary grammars
-  include the Tank time-budget durable/SIEGER module
-  keep Mage distributed-pressure and cluster-recovery windows
-  alternate Archer-aligned and off-axis role threats
-  use other grammars to pressure Knight/Rogue
+not buried at Stage49 != healthy Stage50 entry
 ```
 
-Rejected as default:
+New active watch:
+
+`STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH`
+
+Examples after eight consecutive missed finals in the bounded candidate:
 
 ```text
-every-cycle durable + SIEGER + CHARGER
+Archer DURABLE_SCATTER 345
+Archer TIME_BUDGET_SIEGER 785
+Mage LINE_ESCORT 355
+Mage CLUSTER_RECOVERY 575
+Mage TIME_BUDGET_SIEGER buried
 ```
 
-because it can overpressure Mage even on successful-final play.
+Exact acceptable Stage50 reserve floor is not frozen.
 
 ---
 
-# Active Archer watch
+# Archer chronology watch
 
-`LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH = HIGH`
+In the new full-rotation one/two-miss suites, no success-monotonicity reversal was observed for any class.
 
-Inspect before changing Archer power/width:
-1. SPLITTER death/child spawn chronology;
+This is encouraging but does not close the historical:
+
+`LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH`
+
+Directly trace before closure:
+1. SPLITTER parent death / child spawn timing;
 2. target/band order;
 3. CHARGER/SIEGER exposure;
 4. encounter ordering.
 
-Also keep `P4D2_ARCHER_ROLE_PULSE_GEOMETRY_WATCH` active: rotate aligned and off-axis SIEGER pulses rather than making off-corridor punishment constant.
+Do not reduce Archer width/power on current evidence.
 
 ---
 
@@ -299,18 +306,16 @@ Candidate Stage46 possession checkpoints remain `97/98/99%`; no exact threshold 
 
 # Exact next boundary
 
-**P4-D2 — V0.3 EXACT REPLAY + FULL ROTATING GRAMMAR INTEGRATION**
+**P4-D2 — V0.4 EXACT ADMISSION + ARCHER CHRONOLOGY + STAGE46 LV31 ACQUISITION FAIRNESS**
 
 Next:
-1. execute `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_3.py` in repo checkout;
-2. establish exact v0.3 replay hash;
-3. supersede v0.2 Tank class-fairness numbers;
-4. integrate the light Tank time-budget role module into a full rotating Stage49 diagnostic grammar;
-5. alternate Archer-aligned/off-axis SIEGER geometry;
-6. preserve Mage cluster-recovery windows;
-7. verify complementary grammars still pressure Knight/Rogue;
-8. continue Archer chronology investigation;
-9. reassess P4-D2 provisional closure with explicit watches.
+1. execute `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_4.py` and `tools/run_p4d2_stage49_full_rotation_probe_v0_1.py` from a repository checkout when exact execution is available;
+2. compare exact output to the directional reconstruction and promote only if matched;
+3. directly trace the historical Archer SPLITTER/target-order nonmonotonic path;
+4. preserve `STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH` in later authoring;
+5. resume Stage46 Lv31 acquisition-distribution fairness around candidate checkpoints97/98/99;
+6. keep Rogue multiplayer event-volume and P10R multiplayer EXP/timebase watches active;
+7. reassess P4-D2 provisional closure only after these remaining blockers/watches are classified.
 
 No user decision is currently pending.
 P4-E remains blocked until P4-D2 closes.
