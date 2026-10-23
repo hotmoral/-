@@ -2,9 +2,9 @@
 """TEMP P5 Stage48 low-density armored-front diagnostic.
 
 User-directed diagnostic question:
-Does sending only 2-3 armored-durable bodies well ahead of SIEGER, with lower temporal/spatial
-packing density, materially extend SIEGER role time—especially against Archer/Mage—without
-changing monster/class/shop numbers?
+Does sending only 2-3 armored-durable bodies ahead of SIEGER, while reducing temporal and/or
+spatial packing density, materially extend SIEGER role time—especially against Archer/Mage—
+without changing monster/class/shop numbers?
 
 Diagnostic only. No monster/elite/stage packet/count/timing/value is adopted or frozen.
 """
@@ -71,29 +71,42 @@ def main():
     base["monsterAnchors"]["ARMORED_DURABLE_PROXY"] = dict(refinement["knightRobustPair"]["anchor"])
     settled.install_fixed_schedule_hook()
 
-    # Baseline from the previous bounded comparison.
+    # Prior best two-body heavy-screen reference.
     baseline2 = [
         row("ARMORED_DURABLE_PROXY", -1, 6.0),
         row("ARMORED_DURABLE_PROXY", 1, 7.0),
         row("SIEGER", 2, 8.0, 2.0),
     ]
 
-    # Same two heavy bodies, but with more physical lead and wider band separation.
-    low2 = [
+    # Isolate SPATIAL density only: preserve t=6/t=7 but move both escorts away from SIEGER's band.
+    spatial2 = [
+        row("ARMORED_DURABLE_PROXY", -2, 6.0),
+        row("ARMORED_DURABLE_PROXY", 0, 7.0),
+        row("SIEGER", 2, 8.0, 2.0),
+    ]
+
+    # Slightly more front lead, but not so early that escorts are consumed before SIEGER arrives.
+    spatial2_moderate_lead = [
+        row("ARMORED_DURABLE_PROXY", -2, 5.5),
+        row("ARMORED_DURABLE_PROXY", 0, 6.75),
+        row("SIEGER", 2, 8.0, 2.0),
+    ]
+
+    # Three bodies kept near the SIEGER arrival window, but all outside its immediate band cluster.
+    spatial3 = [
+        row("ARMORED_DURABLE_PROXY", -2, 5.25),
+        row("ARMORED_DURABLE_PROXY", 0, 6.25),
+        row("ARMORED_DURABLE_PROXY", -1, 7.25),
+        row("SIEGER", 2, 8.0, 2.0),
+    ]
+
+    # Previous over-separated temporal variants retained as negative controls.
+    temporal2 = [
         row("ARMORED_DURABLE_PROXY", -2, 4.5),
         row("ARMORED_DURABLE_PROXY", 0, 6.5),
         row("SIEGER", 2, 8.0, 2.0),
     ]
-
-    # More aggressive two-body lead to test whether the first screen can already be established downfield.
-    low2_long = [
-        row("ARMORED_DURABLE_PROXY", -2, 3.5),
-        row("ARMORED_DURABLE_PROXY", 0, 6.0),
-        row("SIEGER", 2, 8.0, 2.0),
-    ]
-
-    # Three bodies, but deliberately staggered in both time and band instead of forming a dense clump.
-    low3 = [
+    temporal3 = [
         row("ARMORED_DURABLE_PROXY", -2, 2.5),
         row("ARMORED_DURABLE_PROXY", 0, 4.75),
         row("ARMORED_DURABLE_PROXY", -1, 6.75),
@@ -102,9 +115,11 @@ def main():
 
     variants = {
         "ARMORED2_BASELINE": make(direction, "ARMORED2_BASELINE", baseline2),
-        "ARMORED2_LOW_DENSITY": make(direction, "ARMORED2_LOW_DENSITY", low2),
-        "ARMORED2_LOW_DENSITY_LONG_LEAD": make(direction, "ARMORED2_LOW_DENSITY_LONG_LEAD", low2_long),
-        "ARMORED3_LOW_DENSITY": make(direction, "ARMORED3_LOW_DENSITY", low3),
+        "ARMORED2_SPATIAL_LOW_DENSITY": make(direction, "ARMORED2_SPATIAL_LOW_DENSITY", spatial2),
+        "ARMORED2_SPATIAL_MODERATE_LEAD": make(direction, "ARMORED2_SPATIAL_MODERATE_LEAD", spatial2_moderate_lead),
+        "ARMORED3_SPATIAL_LOW_DENSITY": make(direction, "ARMORED3_SPATIAL_LOW_DENSITY", spatial3),
+        "ARMORED2_TEMPORAL_OVERSEPARATED": make(direction, "ARMORED2_TEMPORAL_OVERSEPARATED", temporal2),
+        "ARMORED3_TEMPORAL_OVERSEPARATED": make(direction, "ARMORED3_TEMPORAL_OVERSEPARATED", temporal3),
     }
 
     scale = float(integration["shopEffectScale"])
@@ -165,7 +180,7 @@ def main():
     glb["hit"], glb["nearest"], glb["make_mob"] = hit_wrap, nearest_wrap, make_wrap
 
     out = {
-        "version": "p5-stage48-armored-low-density-front-temp-v0.1",
+        "version": "p5-stage48-armored-low-density-front-temp-v0.2",
         "authority": "TEMP_DIAGNOSTIC_ONLY_NO_ADOPTION_NO_FREEZE_NO_PRODUCTION_AUTHORITY",
         "fixed": {
             "spawnX": float(direction["globalRules"]["normalRightEdgeSpawnX"]),
