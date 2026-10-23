@@ -10,13 +10,20 @@ Read/check in this order:
 1. branch `timing-defense-workspace` HEAD
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
-4. `legacy-game-structure/data/system_dependency_calibration_order_v0_6.yaml`
-5. `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
-6. `legacy-game-structure/84_P4B_EXP_DECISION_REASSESSMENT_PROPOSAL_V0_1.md`
-7. `legacy-game-structure/83_P4B_MULTIPLAYER_TIMEBASE_PRECHECK_V0_1.md`
-8. `legacy-game-structure/81_P4B_LV6_LV21_COMBAT_FEEDBACK_EXECUTION_REPORT_V0_1.md`
-9. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-10. production and calibration-harness branch heads
+4. `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
+5. `legacy-game-structure/data/system_dependency_calibration_order_v0_6.yaml`
+6. `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
+7. `legacy-game-structure/84_P4B_EXP_DECISION_REASSESSMENT_PROPOSAL_V0_1.md`
+8. `legacy-game-structure/83_P4B_MULTIPLAYER_TIMEBASE_PRECHECK_V0_1.md`
+9. `legacy-game-structure/81_P4B_LV6_LV21_COMBAT_FEEDBACK_EXECUTION_REPORT_V0_1.md`
+10. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+11. production and calibration-harness branch heads
+
+Then follow the protocol's structural-spine and active-phase read packs before substantive work.
+
+Important:
+- `legacy-game-structure/README.md` is a valuable corpus/history map, but it contains older execution-order / `NEXT` references. Do not treat those older references as current authority when they conflict with live status, latest approved routing, or `system_dependency_calibration_order_v0_6.yaml`.
+- Do not re-run already-closed P1/P2/P3 or other PASS/APPROVED checks merely because a new session started. Revalidate only under the explicit triggers in document 86.
 
 Live remote always wins.
 
@@ -157,6 +164,8 @@ For each class:
 7. compare bounded alternatives where needed;
 8. give recommendation + risks + reversibility;
 9. STOP for USER APPROVAL before structural freeze or P4-C2.
+
+In addition, apply the mandatory cross-stage review lenses from document 86 before closing P4-C1 or any later package.
 
 Never invent a generic Lv26 power proxy just to keep simulation moving.
 
