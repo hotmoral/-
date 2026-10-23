@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage46_49_armored_standoff_chain_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_mage_fodder_screen_temp.py
 
 permissions:
   contents: read
@@ -20,17 +20,16 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage46-49 armored-standoff chain diagnostic
+      - name: Run Stage48 Mage fodder chronology screen
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage46_49_armored_standoff_chain_temp.py > /tmp/chain.json
+          python3 tools/run_p5_stage48_mage_fodder_screen_temp.py > /tmp/mage-fodder.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage46_49_armored_standoff_chain_temp.json').read_text())
-          print('P5_STAGE46_49_ARMORED_STANDOFF_AGG='+json.dumps(d['aggregate'],sort_keys=True))
+          d=json.loads(Path('p5_stage48_mage_fodder_screen_temp.json').read_text())
           for r in d['rows']:
-              print('P5_CHAIN_ROW='+json.dumps(r,sort_keys=True))
+              print('P5_MAGE_FODDER_ROW='+json.dumps(r,sort_keys=True))
           PY
