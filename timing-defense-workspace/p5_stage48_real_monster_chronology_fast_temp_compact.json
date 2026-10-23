@@ -1,0 +1,3677 @@
+{
+  "drainTailSeconds": 60.0,
+  "physicalSpawnX": 0.92,
+  "sha256": "db6fe5744d31733f44b473ab4cfbee9a9ee062b0dd47d0c7f7093ff311c57e1d",
+  "sourceCanonicalHead": "33cac0072964c620383ddb3c71e3d6ac75e71a98",
+  "spawnWindowSeconds": 60.0,
+  "stage48CycleSecondsHeldFixed": 4.9,
+  "tankCoefficientForCrossClassSearch": 0.25,
+  "variants": {
+    "BRUTE_PAIR_EARLY_SIEGER": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": -1,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 5.5,
+          "type": "BRUTE"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 0.5,
+          "spawnLeadSeconds": 5.5,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 1.5,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 14,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 13,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 14,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 14,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    },
+    "BRUTE_PAIR_EQUIV": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": -2,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 7.0,
+          "type": "BRUTE"
+        },
+        {
+          "band": 2,
+          "referenceOffset": 1.0,
+          "spawnLeadSeconds": 5.0,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 2.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 54,
+            "maxActive": 3,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 54,
+            "maxActive": 14,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 54,
+            "maxActive": 8,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 54,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 54,
+            "maxActive": 13,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 54,
+            "maxActive": 8,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 54,
+            "maxActive": 3,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 54,
+            "maxActive": 14,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 54,
+            "maxActive": 8,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 54,
+            "maxActive": 6,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 54,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 54,
+            "maxActive": 14,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 54,
+            "maxActive": 8,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 54,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    },
+    "BRUTE_PAIR_LATE_SHIELD": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": -1,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "BRUTE"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 0.4,
+          "spawnLeadSeconds": 5.9,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 0.8,
+          "spawnLeadSeconds": 5.6,
+          "type": "SHIELD"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 2.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 64,
+            "maxActive": 17,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 1
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 17,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 63,
+            "maxActive": 18,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 63,
+            "maxActive": 18,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    },
+    "BRUTE_PAIR_LATE_SIEGER": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": -1,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 5.5,
+          "type": "BRUTE"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 0.5,
+          "spawnLeadSeconds": 5.5,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 3.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 14,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 53,
+            "maxActive": 6,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 13,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 53,
+            "maxActive": 6,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 14,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 53,
+            "maxActive": 6,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 14,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 53,
+            "maxActive": 6,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    },
+    "BRUTE_PAIR_TIGHT_SCREEN": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": -1,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 5.5,
+          "type": "BRUTE"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 0.5,
+          "spawnLeadSeconds": 5.5,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 2.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 13,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 12,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 13,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 3,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 53,
+            "maxActive": 13,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 53,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.5,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 53,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    },
+    "BRUTE_SHIELD_LAYER": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": 0,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "BRUTE"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 0.4,
+          "spawnLeadSeconds": 5.4,
+          "type": "SHIELD"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 0.7,
+          "spawnLeadSeconds": 5.4,
+          "type": "SHIELD"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 2.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 64,
+            "maxActive": 16,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 1
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 15,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 63,
+            "maxActive": 17,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 63,
+            "maxActive": 17,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    },
+    "BRUTE_TRIPLE_TIGHT_SCREEN": {
+      "aggregate": {
+        "failures": [],
+        "perClass": {
+          "Archer": {
+            "maxStage48EndWall": 2298.8,
+            "minStage48EndWall": 1957.3,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Knight": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Mage": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Rogue": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          },
+          "Tank": {
+            "maxStage48EndWall": 2400.0,
+            "minStage48EndWall": 2280.0,
+            "rows": 4,
+            "siegerShotCases": 0,
+            "totalSiegerShots": 0
+          }
+        },
+        "settledThroughStage49Count": 20,
+        "stage48MaxSiegerShotsOneRow": 0,
+        "stage48SiegerShotCases": 0,
+        "stage48TotalSiegerShots": 0,
+        "totalRows": 20
+      },
+      "stage48Packet": [
+        {
+          "band": -1,
+          "referenceOffset": 0.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 0.3,
+          "spawnLeadSeconds": 5.8,
+          "type": "BRUTE"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 0.6,
+          "spawnLeadSeconds": 5.6,
+          "type": "BRUTE"
+        },
+        {
+          "band": 0,
+          "referenceOffset": 2.0,
+          "spawnLeadSeconds": 6.0,
+          "type": "SIEGER"
+        },
+        {
+          "band": -1,
+          "referenceOffset": 2.8,
+          "spawnLeadSeconds": 0.0,
+          "type": "RUNNER"
+        },
+        {
+          "band": 1,
+          "referenceOffset": 3.4,
+          "spawnLeadSeconds": 0.0,
+          "type": "CHARGER"
+        }
+      ],
+      "stage48Rows": [
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 63,
+            "maxActive": 18,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 1957.3,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 362.7,
+            "endActive": 0,
+            "endWall": 1957.3,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 362.7,
+            "startWall": 1957.3,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2320.0,
+          "profile": "BALANCED",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 17,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ATTACK_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 63,
+            "maxActive": 18,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2298.8,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 101.2,
+            "endActive": 0,
+            "endWall": 2298.8,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 101.2,
+            "startWall": 2298.8,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2400.0,
+          "profile": "DEFENSE_HEAVY",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2400.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2400.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2400.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Knight",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Rogue",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 4,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Tank",
+          "finalWall": 2320.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2320.0,
+            "kills": 63,
+            "maxActive": 18,
+            "maxWall": 2320.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2320.0,
+            "wallHits": 2
+          }
+        },
+        {
+          "class": "Archer",
+          "finalWall": 2223.6,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 56.4,
+            "endActive": 0,
+            "endWall": 2223.6,
+            "kills": 65,
+            "maxActive": 6,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 56.4,
+            "startWall": 2223.6,
+            "wallHits": 0
+          }
+        },
+        {
+          "class": "Mage",
+          "finalWall": 2280.0,
+          "profile": "ROLE_AWARE",
+          "settledThroughStage49": true,
+          "stage48": {
+            "authoredLastSpawnSeconds": 59.9,
+            "burialTime": null,
+            "endAbsoluteDeficit": 0.0,
+            "endActive": 0,
+            "endWall": 2280.0,
+            "kills": 65,
+            "maxActive": 5,
+            "maxWall": 2280.0,
+            "settledWithin120": true,
+            "siegerShots": 0,
+            "stage": 48,
+            "startAbsoluteDeficit": 0.0,
+            "startWall": 2280.0,
+            "wallHits": 0
+          }
+        }
+      ]
+    }
+  },
+  "version": "p5-stage48-real-monster-chronology-fast-temp-v0.1"
+}
