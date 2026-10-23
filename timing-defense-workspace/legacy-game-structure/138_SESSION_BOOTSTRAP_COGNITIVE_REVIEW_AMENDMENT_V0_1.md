@@ -251,3 +251,52 @@ Stage48 purpose = first protected post-Lv31 role pulse
 ```
 
 This example is illustrative of the method, not a frozen Stage48 design.
+
+---
+
+## 10. Armored-durable late-stage candidate intent — preserve across sessions
+
+The `ARMORED_DURABLE_PROXY` / BRUTE+SHIELD-like temporary package must **not** be remembered only as a SIEGER escort experiment.
+Its original user-directed design intent is broader:
+
+```text
+late-game Mage / Archer can erase ordinary high-count waves too quickly
++ Stage48 needs a way to create protected role pressure around SIEGER
+-> investigate a limited armored-durable pressure package
+```
+
+Therefore future reasoning must preserve both purposes when evaluating this candidate:
+
+1. **Late-stage anti-wave-clear pressure** — provide a durable/mitigated body that prevents Mage/Archer mass-clear strength from trivially ending late encounters while still respecting class identity and the no-hard-lockout rule.
+2. **Protected-role support** — potentially create enough frontline persistence for SIEGER or other backline/objective-role monsters to express their intended behavior.
+
+Do not misclassify the candidate as merely "extra HP for SIEGER escort" and then discard it because ordinary BRUTE/SHIELD chronology alone fails.
+Also do not silently promote it into a tenth ordinary archetype or a production monster.
+
+Current authority is only:
+
+```text
+DESIGN-INTENT CANDIDATE / DIAGNOSTIC REFERENCE
+NOT USER-APPROVED ROSTER CHANGE
+NOT PRODUCTION AUTHORITY
+NOT NUMERICALLY FROZEN
+```
+
+When this candidate becomes decision-relevant, compare at least:
+
+```text
+ordinary BRUTE/SHIELD encounter composition
+vs limited armored-durable elite/package
+vs SIEGER standoff/chronology changes
+```
+
+and judge them on the coupled objectives:
+- SIEGER role uptime;
+- Mage/Archer late-stage clear speed;
+- Knight/Rogue/Tank identity and fairness;
+- wall pressure / Stage46→49 continuity;
+- shop/EXP feedback;
+- readability and encounter diversity;
+- risk of creating a hard class lockout or generic HP sponge.
+
+Any adoption as an elite recipe, monster variant, roster change, or production value requires explicit user approval first.
