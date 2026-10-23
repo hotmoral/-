@@ -1,0 +1,55 @@
+name: Timing Defense P5-P6 armored midwave temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-armored-midwave
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  armored-midwave:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-armored-midwave
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run twice and verify deterministic bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p5_p6_stage46_47_armored_midwave_replacement_temp.py > /tmp/run1.txt
+          cp p5_p6_stage46_47_armored_midwave_replacement_temp.json /tmp/result1.json
+          python3 tools/run_p5_p6_stage46_47_armored_midwave_replacement_temp.py > /tmp/run2.txt
+          cmp /tmp/result1.json p5_p6_stage46_47_armored_midwave_replacement_temp.json
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p=Path('p5_p6_stage46_47_armored_midwave_replacement_temp.json')
+          d=json.loads(p.read_text())
+          compact={
+            'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
+            'variants': {
+              k: {
+                'skilled': {
+                  'through49': v['skilled']['through49'],
+                  'failureStages': v['skilled']['failureStages'],
+                  'perClass': {c: x['through49'] for c,x in v['skilled']['perClass'].items()},
+                },
+                'allPerfect': {
+                  'through49': v['allPerfect']['through49'],
+                  'perClass': {c: x['through49'] for c,x in v['allPerfect']['perClass'].items()},
+                },
+              }
+              for k,v in d['variants'].items()
+            },
+            'replacementLog': d['replacementLog'],
+          }
+          print('ARMORED_MIDWAVE='+json.dumps(compact,sort_keys=True))
+          PY
