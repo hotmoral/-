@@ -1,13 +1,18 @@
-name: Linkline A2 Cognitive Validation
+name: Linkline A3-C1 Calibration Selection
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - linkline/a3-calibration-set-validation
+    paths:
+      - .github/workflows/linkline-a2a-golden.yml
 
 permissions:
   contents: read
 
 jobs:
-  cognitive:
+  calibration:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch exact public commit
@@ -21,32 +26,80 @@ jobs:
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
 
-      - name: Verify bundle identity
+      - name: Reconstruct exact C1 bundle
+        shell: bash
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          repo = os.environ['GITHUB_REPOSITORY']
+          token = os.environ['GH_TOKEN']
+
+          def fetch_blob(sha):
+              req = Request(
+                  f'https://api.github.com/repos/{repo}/git/blobs/{sha}',
+                  headers={
+                      'Authorization': f'Bearer {token}',
+                      'Accept': 'application/vnd.github+json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'User-Agent': 'linkline-a3-c1-validation',
+                  },
+              )
+              with urlopen(req) as r:
+                  payload = json.load(r)
+              if payload.get('sha') != sha or payload.get('encoding') != 'base64':
+                  raise SystemExit(f'blob identity mismatch: {sha}')
+              return base64.b64decode(payload['content'])
+
+          def git_blob_sha(data):
+              return hashlib.sha1(f'blob {len(data)}\0'.encode() + data).hexdigest()
+
+          chunks = [
+              '2aecd8f72529b2c750478ff21e75fefabe1eb004',
+              '5a15526e6a33e446c7e120c2d4ac3d07ced09032',
+              '71e104af5c14789fd88a69c668faf44d7baa0a36',
+              'fff112d3bbce89779d3b908a578db8f99640af07',
+          ]
+          source = b''.join(fetch_blob(sha) for sha in chunks)
+          expected = '919f2413a3ca82d643f24dc000187c9e7bc7b3f2'
+          if git_blob_sha(source) != expected:
+              raise SystemExit('reconstructed C1 source mismatch')
+          Path('linkline/analysis/a3_calibration_set.py').write_bytes(source)
+
+          small = {
+              'edbe248b19fc48683f1a0b19ca989f5f91e2c317': 'linkline/tests/oracles/a3_calibration_selection_oracle.py',
+              'bd328d78e661d29b43af91bc60279084f7bd42b0': 'linkline/tests/fixtures/a3_calibration_selection_golden_v1.json',
+              '0483fa1c01e862649211ccb84c215536ac705eb6': 'linkline/tests/test_a3_calibration_selection_oracle.py',
+          }
+          for sha, path in small.items():
+              data = fetch_blob(sha)
+              if git_blob_sha(data) != sha:
+                  raise SystemExit(f'decoded blob mismatch: {path}')
+              target = Path(path)
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_bytes(data)
+          PY
+          test "$(git hash-object linkline/analysis/a3_calibration_set.py)" = "919f2413a3ca82d643f24dc000187c9e7bc7b3f2"
+          test "$(git hash-object linkline/tests/oracles/a3_calibration_selection_oracle.py)" = "edbe248b19fc48683f1a0b19ca989f5f91e2c317"
+          test "$(git hash-object linkline/tests/fixtures/a3_calibration_selection_golden_v1.json)" = "bd328d78e661d29b43af91bc60279084f7bd42b0"
+          test "$(git hash-object linkline/tests/test_a3_calibration_selection_oracle.py)" = "0483fa1c01e862649211ccb84c215536ac705eb6"
+          test "$(git hash-object linkline/tests/test_a3_calibration_set.py)" = "d6cca953fa3e1d6b42cfd5c2bc036d0b965c8f34"
+
+      - name: Verify frozen dependencies
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
           test "$(git hash-object linkline/reference/m2_state_model.py)" = "c2bf85974d317eb18a8b02a1ac4ee7eb244fcb77"
           test "$(git hash-object linkline/reference/m3_solver.py)" = "16b170656bbdffa8e836a891ffbf221de6c2935f"
-          test "$(git hash-object linkline/tests/oracles/a2_cognitive_oracle.py)" = "ce809e893543fc7dc47ee729e81699dc81a77624"
-          test "$(git hash-object linkline/tests/fixtures/a2_cognitive_golden_v1.json)" = "b9b739bbea6d79ad34def4b0806a8fbfa1f6e872"
-          test "$(git hash-object linkline/tests/test_a2_cognitive_oracle.py)" = "f9720adfc3dc3015e8a904d84779e36e006d344d"
           test "$(git hash-object linkline/analysis/a2_cognitive.py)" = "880aa4d8668fd71e2ce8222331f0da0368229400"
-          test "$(git hash-object linkline/tests/test_a2_cognitive.py)" = "df7e1bae12d48307dc4acb043d8960d7a9fbf62a"
-          test "$(git hash-object linkline/analysis/a2_e2_exact.py)" = "6f9026bd271dc083e9802dbf6c3af2e18962c8d3"
-          test "$(git hash-object linkline/tests/fixtures/a2_e2_exact_summary_v1.json)" = "41124e3b40c315490959bf479700614b53577d28"
-          test "$(git hash-object linkline/tests/test_a2_e2_exact.py)" = "7bbb7f7dec152464d562b3ca220435cc59014469"
-          sha256sum \
-            linkline/reference/m2_state_model.py \
-            linkline/reference/m3_solver.py \
-            linkline/tests/oracles/a2_cognitive_oracle.py \
-            linkline/tests/fixtures/a2_cognitive_golden_v1.json \
-            linkline/tests/test_a2_cognitive_oracle.py \
-            linkline/analysis/a2_cognitive.py \
-            linkline/tests/test_a2_cognitive.py \
-            linkline/analysis/a2_e2_exact.py \
-            linkline/tests/fixtures/a2_e2_exact_summary_v1.json \
-            linkline/tests/test_a2_e2_exact.py
+          test "$(git hash-object linkline/analysis/a3_structural_features.py)" = "35a6b997816ee3608d4d8064febd059159030796"
 
       - name: Validate seed 1
         shell: bash
@@ -57,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           python --version
-          python -m unittest tests.test_a2_cognitive_oracle tests.test_a2_cognitive tests.test_a2_e2_exact -v
+          python -m unittest tests.test_a3_calibration_selection_oracle tests.test_a3_calibration_set -v
 
       - name: Validate seed 777
         shell: bash
@@ -67,28 +120,42 @@ jobs:
           PYTHONHASHSEED: "777"
         run: |
           set -euo pipefail
-          python -m unittest tests.test_a2_cognitive_oracle tests.test_a2_cognitive tests.test_a2_e2_exact -v
+          python -m unittest tests.test_a3_calibration_selection_oracle tests.test_a3_calibration_set -v
 
-      - name: Report fingerprints and versions
+      - name: Construct exact calibration set
         shell: bash
         working-directory: repo/linkline
         env:
           PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
         run: |
           set -euo pipefail
           python - <<'PY'
-          from analysis.a2_cognitive import ANALYZER_VERSION
-          from analysis.a2_e2_exact import E2_VERSION
-          from tests.oracles.a2_cognitive_oracle import fingerprint, golden_payload
-          value = fingerprint(golden_payload())
-          expected = "198e1418691e29b8560c0b38270c69c8226034ae439fc6d66d6e02b866772d18"
-          print(f"payload_fingerprint={value}")
-          print(f"analyzer_version={ANALYZER_VERSION}")
-          print(f"e2_version={E2_VERSION}")
-          if value != expected:
-              raise SystemExit("payload fingerprint mismatch")
-          if ANALYZER_VERSION != "1.0.0":
-              raise SystemExit("analyzer version mismatch")
-          if E2_VERSION != "1.0.0":
-              raise SystemExit("E2 version mismatch")
+          import base64, gzip, json
+          from collections import Counter
+          from analysis.a3_calibration_set import construct_calibration_set, normalized_manifest_fingerprint
+
+          manifest = construct_calibration_set(max_analysis_budget=50_000, state_cap=100_000)
+          if manifest['identityUniverseCount'] != 84320:
+              raise SystemExit('identity universe count mismatch')
+          if manifest['identityUniverseFingerprint'] != '1e09cb9c8fff0d897480e5ad3721551ba4585d1e7c11e3fe1b924a2f8e6c13df':
+              raise SystemExit('identity universe fingerprint mismatch')
+          if manifest['manifestFingerprint'] != normalized_manifest_fingerprint(manifest):
+              raise SystemExit('manifest fingerprint mismatch')
+
+          roles = Counter(row['role'] for row in manifest['selected'])
+          print('C1_RESULT_STATUS=' + manifest['resultStatus'])
+          print('C1_ANALYSIS_BUDGET=' + str(manifest['analysisBudgetUsed']))
+          print('C1_EXACT_ELIGIBLE=' + str(manifest['exactEligibleCount']))
+          print('C1_OUTSIDE=' + str(manifest['outsideDomainCount']))
+          print('C1_INCOMPLETE=' + str(manifest['incompleteFeatureCount']))
+          print('C1_SELECTED=' + str(len(manifest['selected'])))
+          print('C1_ROLES=' + json.dumps(dict(sorted(roles.items())), sort_keys=True))
+          print('C1_PAIRS=' + json.dumps(manifest['coverage']['matchedPairCounts'], sort_keys=True))
+          print('C1_UNMET=' + json.dumps(manifest['coverage']['unmetTargets'], sort_keys=True))
+          print('C1_MANIFEST_FINGERPRINT=' + manifest['manifestFingerprint'])
+
+          raw = (json.dumps(manifest, sort_keys=True, indent=2) + '\n').encode()
+          encoded = base64.b64encode(gzip.compress(raw, mtime=0)).decode()
+          print('C1_MANIFEST_GZIP_B64=' + encoded)
           PY
