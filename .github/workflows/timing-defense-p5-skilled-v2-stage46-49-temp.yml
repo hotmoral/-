@@ -1,0 +1,44 @@
+name: Timing Defense P5 Skilled V2 Stage46-49 temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-check
+    paths:
+      - .github/workflows/timing-defense-p5-skilled-v2-stage46-49-temp.yml
+
+permissions:
+  contents: read
+
+jobs:
+  skilled-v2-compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-check
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run twice, verify determinism, print compact comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.py > /tmp/run1.txt
+          cp p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.json /tmp/result1.json
+          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.py > /tmp/run2.txt
+          cmp /tmp/result1.json p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.json
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p=Path('p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp.json')
+          d=json.loads(p.read_text())
+          print('P5_SKILLED_V2_COMPARE='+json.dumps({
+            'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
+            'aggregate': d['aggregate'],
+            'skilledModel': d['skilledModel'],
+            'seeds': d['skilledSeeds'],
+          }, sort_keys=True))
+          PY
