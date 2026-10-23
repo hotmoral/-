@@ -1,0 +1,128 @@
+{
+  "version": "p4d2-stage46-temporal-pressure-summary-v0.1",
+  "status": "BOUNDED_STATEFUL_STRESS_DIAGNOSTIC_NO_NUMERICAL_FREEZE",
+  "rng": "NONE",
+  "runner": "tools/run_p4d2_stage46_temporal_pressure_probe_v0_1.py",
+  "runnerGitBlobSha": "5965833f80422bd6cae94fea738706baf99a06e8",
+  "baseFixture": "legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json",
+  "temporalFixture": "legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json",
+  "expectedFullOutputSha256": "110ea2beb87dabb41b4d8dd48af61bbe97e21666413481a9f19df95507c75e75",
+  "stressEnvelope": {
+    "durationSeconds": 60.0,
+    "pressureCycleSeconds": 4.6,
+    "rootAttackIntervalSeconds": 1.125,
+    "heavyEveryRootActions": 4,
+    "wallHp": 2000,
+    "geometry": "five diagnostic probe bands; not production lanes/collision geometry",
+    "playerInput": "all PERFECT upper-tail stress unless a listed Heavy/PxP miss is injected",
+    "freeze": false
+  },
+  "gateSeparation": {
+    "classification": "CANDIDATE_PRESSURE_ENVELOPE_FOUND",
+    "allFiveLv26AllPerfectBuriedWithin60s": true,
+    "allFiveLv31AllPxpSurvive60s": true,
+    "lv26BurialTimesSeconds": {
+      "Knight": 35.8,
+      "Rogue": 28.65,
+      "Tank": 33.25,
+      "Archer": 52.65,
+      "Mage": 56.25
+    },
+    "lv31AllPxpEndWall": {
+      "Knight": 1175,
+      "Rogue": 1330,
+      "Tank": 2000,
+      "Archer": 2000,
+      "Mage": 2000
+    },
+    "lv31AllPxpEndActive": {
+      "Knight": 19,
+      "Rogue": 24,
+      "Tank": 9,
+      "Archer": 9,
+      "Mage": 4
+    },
+    "interpretation": "A combat-pressure gate that buries Lv31-less all-PERFECT play while allowing repeated-Lv31-PxP survival is feasible with the current nine-roster grammar, without a code-level level lock."
+  },
+  "missResponse": {
+    "oneMiss": {
+      "Knight": {"endWall": 900, "burialTime": null},
+      "Rogue": {"endWall": 175, "burialTime": null},
+      "Tank": {"endWall": 1981, "burialTime": null},
+      "Archer": {"endWall": 2000, "burialTime": null},
+      "Mage": {"endWall": 2000, "burialTime": null}
+    },
+    "twoConsecutiveMisses": {
+      "Knight": {"endWall": 255, "burialTime": null},
+      "Rogue": {"endWall": 0, "burialTime": 49.7},
+      "Tank": {"endWall": 1837, "burialTime": null},
+      "Archer": {"endWall": 1940, "burialTime": null},
+      "Mage": {"endWall": 2000, "burialTime": null}
+    },
+    "watch": "Miss severity is class-divergent in this candidate grammar; solve first through Stage48-49 sequential encounter grammar/geometry, not hidden class-specific buffs or silent final-skill nerfs."
+  },
+  "sensitivity": {
+    "Knight": {
+      "secondWave0.75": {"endWall": 345, "endActive": 23, "maxActive": 28, "kills": 138},
+      "secondWave1.00": {"endWall": 1175, "endActive": 19, "maxActive": 24, "kills": 152},
+      "secondWave1.25": {"endWall": 1175, "endActive": 19, "maxActive": 24, "kills": 152},
+      "workingInterpretation": "1.00 is a meaningful center; 1.25 saturates this fixture."
+    },
+    "Rogue": {
+      "daggers12": {"endWall": 0, "burialTime": 41.9, "kills": 82},
+      "daggers16": {"endWall": 1330, "burialTime": null, "endActive": 24, "maxActive": 28, "kills": 153},
+      "daggers20": {"endWall": 2000, "burialTime": null, "endActive": 5, "maxActive": 11, "kills": 178},
+      "workingInterpretation": "16 is a strong middle candidate: 12 is insufficient in this stress envelope, while 20 largely trivializes it."
+    },
+    "Tank": {
+      "damage0.50Knock2.5": {"endWall": 2000, "endActive": 18, "maxActive": 23, "kills": 163},
+      "damage0.75Knock2.5": {"endWall": 2000, "endActive": 9, "maxActive": 16, "kills": 174},
+      "damage1.00Knock2.5": {"endWall": 2000, "endActive": 8, "maxActive": 15, "kills": 175},
+      "workingInterpretation": "0.75/2.5 remains a useful center; stronger endpoints mostly saturate. Targeted CHARGER/SIEGER role-alignment evidence is still required."
+    },
+    "Archer": {
+      "strictWidthRadius0": {
+        "coeff1.00": {"endWall": 0, "burialTime": 52.65, "kills": 117},
+        "coeff1.50": {"endWall": 0, "burialTime": 52.65, "kills": 119},
+        "coeff2.00": {"endWall": 0, "burialTime": 52.65, "kills": 119},
+        "coeff2.30": {"endWall": 0, "burialTime": 52.65, "kills": 119}
+      },
+      "modestStraightWidthRadius1": {
+        "coeff1.00": {"endWall": 1930, "burialTime": null, "endActive": 10, "maxActive": 19, "kills": 170},
+        "coeff1.50": {"endWall": 2000, "burialTime": null, "endActive": 9, "maxActive": 16, "kills": 172},
+        "coeff2.00": {"endWall": 2000, "burialTime": null, "endActive": 9, "maxActive": 16, "kills": 172},
+        "coeff2.30": {"endWall": 2000, "burialTime": null, "endActive": 9, "maxActive": 16, "kills": 172}
+      },
+      "workingInterpretation": "Magnitude alone cannot rescue a narrow strict-width final under dispersed pressure. A modest wider but still straight/non-homing gameplay corridor is the dominant missing axis. This is a P4-D2 geometry candidate, not approved/frozen structure. 2.30 remains the per-target continuity center pending geometry decision."
+    },
+    "Mage": {
+      "stage0.55Radius1.25": {"endWall": 2000, "endActive": 8, "maxActive": 12, "kills": 175},
+      "stage0.75Radius1.00": {"endWall": 2000, "endActive": 10, "maxActive": 17, "kills": 171},
+      "stage0.75Radius1.25": {"endWall": 2000, "endActive": 4, "maxActive": 13, "kills": 179},
+      "stage0.75Radius1.50": {"endWall": 2000, "endActive": 7, "maxActive": 13, "kills": 176},
+      "stage1.00Radius1.25": {"endWall": 2000, "endActive": 4, "maxActive": 13, "kills": 179},
+      "workingInterpretation": "0.75/radius1.25 is a useful center; 1.00 saturates this fixture and larger radius is not monotonically better because chronology/target ordering changes."
+    }
+  },
+  "roleExpressionWatch": {
+    "KnightLv31AllPxp": {"chargerWindups": 10, "chargerCharges": 9, "siegerShots": 1},
+    "RogueLv31AllPxp": {"chargerWindups": 11, "chargerCharges": 10, "siegerShots": 6},
+    "TankLv31AllPxp": {"chargerWindups": 0, "chargerCharges": 0, "siegerShots": 0},
+    "ArcherLv31AllPxp": {"chargerWindups": 4, "chargerCharges": 2, "siegerShots": 0},
+    "MageLv31AllPxp": {"chargerWindups": 0, "chargerCharges": 0, "siegerShots": 0},
+    "interpretation": "Stage46+ mastery may legitimately preempt already-taught monster roles, but Tank/Mage/Archer pre-expression removal remains a targeted authoring watch. Separate aligned role-expression probes are required before exact late-band content freeze."
+  },
+  "notFrozen": [
+    "exact Stage46-50 content",
+    "4.6s pressure cycle",
+    "1.125s root cadence",
+    "five-band geometry",
+    "Archer wider gameplay corridor",
+    "Archer 2.30 coefficient",
+    "Rogue 16 daggers",
+    "Knight/Tank/Mage numerical centers",
+    "Stage46 Lv31 possession threshold",
+    "final EXP semantics",
+    "production gameplay values"
+  ]
+}
