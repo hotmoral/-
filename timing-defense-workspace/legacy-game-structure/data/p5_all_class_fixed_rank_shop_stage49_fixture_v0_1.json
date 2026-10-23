@@ -1,0 +1,52 @@
+{
+  "version": "p5-all-class-fixed-rank-shop-stage49-fixture-v0.1",
+  "status": "BOUNDED_ALL_CLASS_SHOP_COMBAT_DIAGNOSTIC_NO_PRODUCTION_AUTHORITY",
+  "sourceStage49Fixture": "p4d2-stage49-full-rotation-fixture-v0.1",
+  "classes": ["Knight", "Rogue", "Tank", "Archer", "Mage"],
+  "shopProfilesAtCenterSpendEnvelope": {
+    "ATTACK_HEAVY": {"atk": 9, "crit": 6, "critdmg": 9, "fort": 7, "def": 6, "knock": 7},
+    "DEFENSE_HEAVY": {"atk": 6, "crit": 6, "critdmg": 6, "fort": 10, "def": 8, "knock": 8},
+    "BALANCED": {"atk": 8, "crit": 7, "critdmg": 7, "fort": 8, "def": 7, "knock": 8}
+  },
+  "roleAwareProfilesAtCenterSpendEnvelope": {
+    "Knight": {"atk": 8, "crit": 6, "critdmg": 6, "fort": 8, "def": 6, "knock": 10},
+    "Rogue": {"atk": 10, "crit": 7, "critdmg": 7, "fort": 7, "def": 6, "knock": 7},
+    "Tank": {"atk": 6, "crit": 6, "critdmg": 6, "fort": 8, "def": 8, "knock": 10},
+    "Archer": {"atk": 9, "crit": 6, "critdmg": 9, "fort": 7, "def": 6, "knock": 7},
+    "Mage": {"atk": 10, "crit": 7, "critdmg": 7, "fort": 7, "def": 6, "knock": 7}
+  },
+  "legacyPerRankMagnitudeReference": {
+    "atkPct": 0.08,
+    "fortificationFlatHpAndMatchedRepair": 100.0,
+    "genericWallDrPp": 0.025,
+    "knockbackPctDeferred": 0.10,
+    "critChancePpDeferred": 0.02,
+    "critDamageBonusDeferred": 0.15
+  },
+  "crossClassAuthoritativeFamiliesThisLane": ["ATK", "FORTIFICATION", "DEFENSE"],
+  "deferredFamilies": {
+    "KNOCKBACK": "P5_KNOCKBACK_KERNEL_COVERAGE_GAP; current P4 kernel does not model ordinary push symmetrically for all five classes",
+    "CRIT": "attack-template crit policy is effect-specific",
+    "CRITDMG": "depends on policy-correct ordinary proc-crit lane"
+  },
+  "effectMagnitudeScaleSensitivity": [0.3, 0.4, 0.5],
+  "workingDiagnosticCenter": 0.4,
+  "detailedSweep": {
+    "effectScale": 0.4,
+    "profiles": ["BALANCED", "ROLE_AWARE"],
+    "maxConsecutiveMisses": 8
+  },
+  "archerMageAblation": {
+    "effectScales": [0.3, 0.4],
+    "profile": "BALANCED",
+    "lanes": ["NONE", "ATK_ONLY", "FORT_ONLY", "DEF_ONLY", "FORT_DEF", "ATK_FORT_DEF"]
+  },
+  "limitations": [
+    "Fixed Stage49 ranks are economy snapshots, not actual purchase-time history.",
+    "Fortification is modeled as fully retained Stage49 starting reserve, therefore it is defense-favorable.",
+    "The Stage49 rotation is diagnostic content rather than exact launch authoring.",
+    "No exact shop effect magnitude is frozen.",
+    "KNOCKBACK is intentionally excluded from cross-class conclusions in this lane.",
+    "CRIT and CRIT DAMAGE are intentionally excluded until attack-template policies are respected."
+  ]
+}
