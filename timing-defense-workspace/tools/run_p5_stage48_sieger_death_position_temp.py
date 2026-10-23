@@ -51,7 +51,7 @@ def main():
             after_alive=bool(getattr(target,'alive',False))
             collector.append({
                 **context,
-                'id':int(getattr(target,'id',-1)),
+                'id':str(getattr(target,'id','UNKNOWN')),
                 'x':round(before_x,4),
                 'state':before_state,
                 'hpBefore':round(before_hp,3),
