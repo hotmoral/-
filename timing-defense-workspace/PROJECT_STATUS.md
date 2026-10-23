@@ -6,49 +6,39 @@ Updated: 2026-10-23 KST
 - v0.45 SIEGER FULL PASS
 - production branch `timing-defense-cloudflare-do-poc`
 - production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-- production gameplay/numerical implementation remains frozen during planning/calibration
+- production gameplay/numerical implementation remains frozen/unauthorized during planning and calibration
 
 ## Operating / recovery authority
-Mandatory session-recovery and cross-stage consistency protocol:
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_8.yaml`
 
-Every material phase must be checked against upstream invariants, downstream consumers, active feedback loops, authority/supersession, scope/cost, production boundaries and handoff impact. Already-closed PASS/APPROVED work is not repeated without a concrete revalidation trigger.
+Live remote and latest approved/superseding authority always win. Closed PASS/APPROVED work is not repeated without a concrete revalidation trigger.
 
 ---
 
 # Current phase
 
-**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-C1 STRUCTURAL REVIEW COMPLETE / USER DECISION PENDING**
+**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-C2 COMPLETE / P4-D1 LV31 USER DECISION PENDING**
 
-Completed evidence/decision chain:
+Current chain:
 
 ```text
 P0 Foundation / role expression PASS_WITH_WATCHES
- -> SKILLED_V2_CENTRAL all-20 540/540 PASS
  -> P1 Run-State Lifecycle STRUCTURAL COMPLETE
  -> P2 Modifier Pipeline / Power Attribution STRUCTURAL COMPLETE
  -> P3 Ten-Stage Persistent Run Kernel STRUCTURAL PASS
  -> P4 methodology USER APPROVED
  -> P4-A Marker-Only Inverse Design PASS
- -> P4-B Solo Lv6→Lv21 Combat Feedback diagnostic COMPLETE
- -> P4-B Multiplayer / Timebase bounded precheck COMPLETE
- -> R2 revised routing USER APPROVED
- -> P4-C1 live/legacy/source evidence recovery COMPLETE
- -> P4-C1 cross-stage consistency review COMPLETE
- -> proposal 87 PROPOSED / AWAITING USER APPROVAL
+ -> P4-B Lv6→Lv21 feedback + multiplayer/timebase precheck COMPLETE
+ -> R2 routing USER APPROVED
+ -> P4-C1 Lv26 STRUCTURAL USER APPROVED
+ -> P4-C2 Lv26 bounded feedback COMPLETE / PASS_WITH_WATCHES
+ -> P4-D1 Lv31 structural proposal READY / AWAITING USER APPROVAL
 ```
 
-Active dependency plan:
-- `legacy-game-structure/data/system_dependency_calibration_order_v0_6.yaml`
-
-R2 authority:
-- `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
-
-Current P4-C1 proposal:
-- `legacy-game-structure/87_P4C1_LV26_STRUCTURAL_SKILL_CONTRACT_PROPOSAL_V0_1.md`
-- status: **PROPOSED / AWAITING USER APPROVAL / NO STRUCTURAL FREEZE**
-
-P4-C2 remains blocked until explicit user approval.
+Current proposal:
+- `legacy-game-structure/90_P4D1_LV31_STRUCTURAL_SKILL_CONTRACT_PROPOSAL_V0_1.md`
+- status: **PROPOSED / AWAITING USER APPROVAL / NO P4-D2 EXECUTION**
 
 ---
 
@@ -73,59 +63,50 @@ T5+ future
 
 - current 9 monsters are V1 foundation, not lifetime roster cap.
 - combo40 belongs inside ordinary skilled play.
-- Lv31 target unlock window = Stage41–45 direction to re-test, not final numerical guarantee.
-- Stage46–49 = post-Lv31 mastery; Stage50 = final application.
-- EXP must not force every Tier into the same encounter-flow shape.
-- final progression decisions must consider Stage reach, wall-clock reach, fail/retry and multiplayer context together.
+- Lv31 target unlock window = Stage41–45 structural direction.
+- Stage46–49 = explicit post-Lv31 mastery-use band.
+- Stage50 = final application, not first Lv31 tutorial.
+- EXP must not homogenize Tier encounter identity.
 - material unresolved design choices require explicit user approval.
 
 ---
 
 # Closed lower layers
 
-## P1
-Authority: `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
+P1 authority:
+- `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
 
-## P2
-Authority:
+P2 authority:
 - `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/data/modifier_pipeline_contract_v0_1.yaml`
 
-## P3
-Authority/evidence:
+P3 authority/evidence:
 - `legacy-game-structure/76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/77_P3_TEN_STAGE_PERSISTENT_RUN_EXECUTION_REPORT_V0_1.md`
+- 30/30 primary + 8/8 targeted PASS
 
-Result:
-```text
-30 / 30 primary 10-Stage runs PASS
-8 / 8 targeted fixtures PASS
-```
-
-No P1/P2/P3 reopening was required for P4-C1; the existing contracts were consumed as upstream invariants.
+No P1/P2/P3 reopening has been required by P4-C/D analysis.
 
 ---
 
-# P4 approved methodology / R2
+# P4 / R2 EXP state
 
 Authority:
 - `legacy-game-structure/79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
 
-Provisional diagnostic EXP baseline only:
-- valid completed local timing turn is the EXP source;
-- Heavy X+Y gives one combined-tier award;
-- timing quality matters;
-- `XP_CREDIT` is dimensionless calibration space;
-- one universal EXP curve remains preferred;
-- no hidden class/Tier multiplier;
-- encounter identity must not be homogenized to fit EXP.
+Current pure per-valid-turn EXP remains a **provisional diagnostic baseline only**.
+Still not final/frozen:
+- pure per-turn launch semantics;
+- Stage Quality Budget / Option D;
+- exact XP_CREDIT vector;
+- exact A6/A11/A16/A21/A26/A31;
+- player-visible EXP scale;
+- class/Tier/player-count hidden correction.
 
-R2 explicitly means this baseline is **not final EXP freeze**.
-Option D / Stage Quality Budget remains not approved.
-Mandatory final EXP/multiplayer-timebase reconvergence remains P10R.
+Mandatory P10R remains the future EXP / multiplayer-timebase reconvergence gate.
 
-Active watches:
+Core active watches:
 
 ```text
 SOLO_PROGRESSION_DIVERGENCE_WATCH
@@ -136,68 +117,120 @@ MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
 
 ---
 
-# P4-C1 evidence result
+# P4-C1 — Lv26 USER APPROVED
 
-Recovered authority boundary:
-- Lv6 = current Cloudflare combat authority.
-- Lv11/Lv16/Lv21 = exact v0.16 legacy parity candidates for simulation; not current production authority.
-- Lv26 = all five identities exist in `SKILL_PLAN_LV6_31.md` but remain `DESIGNED-NOT-AUTHORITATIVE` before this decision.
+Authority:
+- proposal: `legacy-game-structure/87_P4C1_LV26_STRUCTURAL_SKILL_CONTRACT_PROPOSAL_V0_1.md`
+- approved contract: `legacy-game-structure/88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md`
 
-Material structural findings:
+Approval freezes the **working structural semantics**, not production numerical values.
+Lv26 roadmap coefficients remain `P4C2_PROVISIONAL_SIMULATION_INPUT` and may be tuned later with evidence.
 
-1. **Knight** — roadmap maps cleanly to Lv11/Lv21 penetration: remove legacy 85% penetration decay and define bounded per-penetration knockback escalation.
-2. **Rogue** — one-per-root secondary dagger must be explicit; per-dagger recursion would create a generator tree at Lv21+26.
-3. **Tank** — slow zone must be Stage-local, non-stacking in magnitude, and explicitly compose with SUPPORTER/CHARGER/SIEGER movement states.
-4. **Archer** — real overlap found: Lv16 already preserves 100% PERFECT penetration damage, so Lv26's repeated `100% rear-target damage` phrase must not silently become a second damage bonus. Proposal treats it as inheritance/reaffirmation and makes +2 penetration the actual new Lv26 mechanic.
-5. **Mage** — highest recursion/order risk. Current Mage/SPLITTER behavior proves same-action death/spawn ordering is material. Proposal bounds Lv26 to one generation and max two new targets with no recursive chain.
+Approved identity summary:
+- Knight — full-damage bounded penetration with per-penetration knockback escalation.
+- Rogue — max one PERFECT Chain Throw per root action, deterministic secondary targeting.
+- Tank — Stage-local nonstacking Heavy Aftershock slow zone with explicit movement-state composition.
+- Archer — PERFECT +2 penetration; Lv16 remains the existing 100%-preservation/armor-ignore transform.
+- Mage — one-generation bounded chain after root-package death/spawn ordering; no recursive chain tree.
 
-No unavoidable contradiction with P1/P2/P3, Monster Capability V1, role-expression contract, Model A late-band grammar or future T5+ extensibility was found under proposal 87.
-
-New P4-C2 recheck obligations if approved:
-- Knight/Archer screen and T4 backline role-expression;
-- Rogue secondary tracking/fallback behavior;
-- Tank zone snapshot/settlement and movement-state composition;
-- Mage SPLITTER death/spawn/chain ordering;
-- T4 SUPPORTER/SIEGER uptime/first-shot opportunity;
-- class-specific timing-turn opportunity / progression feedback.
+No production implementation was authorized.
 
 ---
 
-# Current user decision boundary
+# P4-C2 — COMPLETE / PASS_WITH_WATCHES
+
+Authority/evidence:
+- `legacy-game-structure/89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md`
+- `legacy-game-structure/data/p4c2_lv26_bounded_feedback_v0_1.json`
+
+Accepted paired sensitivity lane:
+- named deterministic substreams: STAGE / JUDGMENT / COMBAT_PROC / AI;
+- 13,440 paired Lv21/Lv26 comparison rows;
+- historical five-monster pressure/formula-fidelity lane only — **not current 9-roster production balance**.
+
+Central 70% PERFECT sensitivity direction:
 
 ```text
-P4-C1 — APPROVE / MODIFY / REJECT proposal 87 Option A
+Knight  actions -0.71% / damage +7.66%
+Rogue   actions -2.49% / damage +12.05%
+Tank    actions +0.29% / damage +1.01%
+Archer  actions -4.05% / damage +4.42%
+Mage    actions -3.75% / damage +6.70%
 ```
 
-Recommended Option A:
-- preserve all five roadmap identities;
-- approve the bounded compositional semantics in proposal 87;
-- admit roadmap numeric values only as `P4C2_PROVISIONAL_SIMULATION_INPUT`;
-- do not numerically freeze them for production.
+Interpretation:
+- offensive Lv26 effects extend the P4-B self-damping loop: stronger killing can reduce later local timing/EXP opportunities;
+- Tank control can slightly extend target lifetime and timing opportunity;
+- no evidence supports final EXP convergence or hidden class correction now.
 
-Until explicit user approval:
+Current-roster structural watches found:
+- Knight/Archer can shorten screens / expose SUPPORTER-SIEGER faster.
+- Tank slow can increase pre-standoff exposure time for SIEGER even though fire cadence is unchanged.
+- Mage has the strongest watch: after a SPLITTER parent dies and children spawn, a qualifying Lv26 chain may select newborn children; GREAT+ Heavy chain can erase provisional 120-HP child test anchors immediately.
+
+Classification:
+`P4-C2 = PASS_WITH_WATCHES`, not a reason to reopen P4-C1 now.
+
+Additional active watches:
 
 ```text
-P4-C1 structural freeze = NO
-P4-C2 execution = BLOCKED
-P4-D1 = BLOCKED
+LV26_T4_ROLE_EXPRESSION_WATCH
+LV26_MAGE_SPLITTER_ORDERING_WATCH
+LV26_TANK_MOVEMENT_COMPOSITION_WATCH
+```
+
+Replay boundary:
+- report + machine-readable summary are committed;
+- P4-C2 is bounded directional evidence, not numerical-freeze authority;
+- if P4-C2 is later reopened for exact numerical freeze or exact-byte regression authority, an exact committed one-command replay runner must be materialized first rather than treating this directional package as final calibration infrastructure.
+
+---
+
+# P4-D1 — current user decision gate
+
+Source authority confirms all five Lv31 identities exist but remain `UNRESOLVED` for production:
+- Knight — Heaven-Splitting Slash: huge double blade wave / broad penetration / major knockback.
+- Rogue — Dagger Storm: 8 rapid tracking daggers over ~0.5s.
+- Tank — Absolute Barrier: battlefield-wide shockwave + 250 shield / 6s candidate.
+- Archer — Sky-Piercing Arrow: unlimited battlefield line penetration + armor ignore.
+- Mage — Arcane Collapse: large circle + three-stage blast + chained secondary explosions.
+
+Proposal 90 recommends **Option A: P×P final-template replacement with lower-kit continuity**.
+
+Reason:
+- fully additive interpretation would create uncontrolled/opaque event trees at Lv31;
+- complete replacement with no lower-kit inheritance would invalidate progression continuity;
+- top-level final-template replacement preserves lower passives/scalars but replaces duplicate same-action generators.
+
+Recommended class shapes:
+- Knight: bounded broad two-pass wave, not Archer-like unlimited ray.
+- Rogue: exactly 8 target-persistent scheduled daggers; Lv21/Lv26 dagger generators replaced for that P×P root.
+- Tank: control-first battlefield shockwave + nonstacking barrier + one local Lv26 Aftershock.
+- Archer: exactly one strict-line unlimited arrow; Triple Shot replaced for P×P.
+- Mage: one root direct impact + bounded three-stage fixed-circle AoE + one final chain generation; lower Mage generators replaced for P×P.
+
+All new exact coefficients/delays/radii remain **P4D2 provisional sensitivity inputs only**.
+
+Current decision:
+
+```text
+P4-D1 proposal 90 Option A = AWAITING USER APPROVAL
+P4-D2 = BLOCKED_PENDING_P4D1_USER_APPROVAL
 production changes = UNAUTHORIZED
 ```
 
 ---
 
-# Approved route after P4-C1 decision
+# Route after P4-D1
 
 ```text
-P4-C1 user decision
- -> P4-C2 Lv26 provisional feedback
- -> P4-D1 Lv31 structural decision
- -> P4-D2 Lv31 provisional mastery feedback
+P4-D1 user decision
+ -> P4-D2 Lv31 bounded mastery/power feedback
  -> P4-E provisional player-power-spine closure WITH EXP WATCHES
  -> P5/P6/P7/P8
  -> P10 current-roster multiplayer scaling baseline
  -> P10R mandatory EXP / multiplayer-timebase reconvergence
- -> only after P10R may permanent-progression layers rely on converged EXP behavior
+ -> P11+ only after converged EXP dependency is available
 ```
 
 ---
@@ -205,19 +238,14 @@ P4-C1 user decision
 # Still not frozen
 
 - Lv26 production numerical values / implementation
-- Lv31 exact mechanics/numbers
-- final EXP acquisition semantics
-- exact XP_CREDIT vector
-- exact A6/A11/A16/A21/A26/A31
-- intermediate-level formula
-- player-visible EXP scale
-- player-count progression treatment
-- percentile tail acceptance gates
-- production monster coefficients / exact 200 Stages
+- Lv31 structural contract until current user approval
+- all Lv31 exact production values
+- final EXP semantics/values
+- exact launch Stage content / production monster coefficients
 - shop/economy / Base HP
-- star/achievement numerical power
+- stars/achievements numerical power
 - boss values
 - multiplayer combat/progression scaling
 - production numerical implementation
 
-No production gameplay source was changed by P4-C1 review/proposal work.
+No production gameplay source was changed by P4-C1/C2/D1 planning work.
