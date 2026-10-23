@@ -4,6 +4,11 @@
 Decision support only. This tests whether combining two individually-insufficient axes can create
 actual SIEGER role expression without changing class stats, monster durability, windup, shop,
 spawnX, or production. No threshold/packet is adopted or frozen.
+
+Fidelity note:
+The threshold-specific SIMULATE function is dynamically rebuilt. STAGE_SETTLED's fixed-schedule
+hook therefore must be installed into EACH rebuilt function's globals after rebuild; otherwise
+the intended Stage48 integrated packet can silently fall back to the base stress schedule.
 """
 from __future__ import annotations
 
@@ -21,6 +26,21 @@ def load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
+def install_fixed_schedule_hook_on(sim_fn):
+    """Install the STAGE_SETTLED fixed authored schedule on this exact rebuilt function."""
+    glb = sim_fn.__globals__
+    fallback = glb["build_integrated_schedule"]
+
+    def hooked(cfg):
+        if "_p5FixedStageSchedule" in cfg:
+            duration = float(cfg["simulation"]["durationSeconds"])
+            return [tuple(x) for x in cfg["_p5FixedStageSchedule"] if float(x[0]) < duration]
+        return fallback(cfg)
+
+    glb["build_integrated_schedule"] = hooked
+    return sim_fn
+
+
 def main():
     base = load("legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json")
     temporal = load("legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json")
@@ -33,6 +53,8 @@ def main():
     integ.validate_right_edge_contract(direction)
     base = integ.inject_diagnostic_monsters(base, stage49)
     base["monsterAnchors"]["ARMORED_DURABLE_PROXY"] = dict(refinement["knightRobustPair"]["anchor"])
+
+    # Needed for the original integrated SIMULATE used by the pre-Stage48 carried-state setup.
     settled.install_fixed_schedule_hook()
 
     formations = {
@@ -55,8 +77,9 @@ def main():
     starts = v2.pre_stage48_states(base, temporal, direction, shop, integration, [profile_name], scale)
 
     out = {
-        "version": "p5-stage48-armored-standoff-hybrid-temp-v0.1",
+        "version": "p5-stage48-armored-standoff-hybrid-temp-v0.2",
         "authority": "TEMP_DIAGNOSTIC_ONLY_NO_ADOPTION_NO_FREEZE_NO_PRODUCTION_AUTHORITY",
+        "fidelityFix": "FIXED_SCHEDULE_HOOK_REINSTALLED_ON_EACH_REBUILT_SIMULATE",
         "fixed": {
             "spawnX": float(direction["globalRules"]["normalRightEdgeSpawnX"]),
             "siegerSpeed": float(base["monsterAnchors"]["SIEGER"]["speed"]),
@@ -75,23 +98,32 @@ def main():
     try:
         for formation_name, d in formations.items():
             cfg = integ.stage_temporal(temporal, d, integration, 48, "Knight")
-            out["schedules"][formation_name] = [
+            expected_schedule = [
                 {"t": round(t, 3), "type": typ, "band": band}
                 for t, typ, band in integ.build_integrated_schedule(cfg)
             ]
+            out["schedules"][formation_name] = expected_schedule
+
             for threshold in thresholds:
-                integ.SIMULATE = standoff.build_sim_with_threshold(threshold)
+                rebuilt = standoff.build_sim_with_threshold(threshold)
+                integ.SIMULATE = install_fixed_schedule_hook_on(rebuilt)
                 for cls in integ.CLASSES:
                     st = starts[(profile_name, cls)]
-                    sim, _ = settled.simulate_stage(
+                    sim, actual_schedule = settled.simulate_stage(
                         base, temporal, d, integration, cls, st["profile"], scale,
                         48, st["startStage48Wall"], 0.25 if cls == "Tank" else None, 120.0,
                     )
+                    actual_simple = [
+                        {"t": round(float(t), 3), "type": typ, "band": int(band)}
+                        for t, typ, band in actual_schedule
+                    ]
                     out["rows"].append({
                         "formation": formation_name,
                         "thresholdX": threshold,
                         "straightTravelSeconds": round((0.92-threshold)/0.045, 3),
                         "class": cls,
+                        "scheduleMatchesExpected": bool(actual_simple == expected_schedule),
+                        "actualSchedule": actual_simple,
                         "windups": int(sim.get("siegerWindups") or 0),
                         "shots": int(sim.get("siegerShots") or 0),
                         "repositions": int(sim.get("siegerRepositions") or 0),
