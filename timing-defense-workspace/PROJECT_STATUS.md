@@ -10,7 +10,7 @@ Updated: 2026-10-23 KST
 
 ## Operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_19.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_20.yaml`
 - live remote always wins
 - do not rerun closed PASS/APPROVED work without a concrete trigger
 
@@ -18,158 +18,175 @@ Updated: 2026-10-23 KST
 
 # Current phase
 
-**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 USER DECISION PENDING — REVISED RUN COIN / SHOP STRUCTURE A2**
-
-Current chain:
+**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 A2 USER_APPROVED — ECONOMY PREFLIGHT ACTIVE**
 
 ```text
 P0..P3 structural foundation complete
 -> P4 player-power spine provisional structural complete with watches
--> P4-D2 exact v0.5 + Stage49 v0.2 replay admitted
 -> P4-E complete; final EXP deferred to P10R
--> P5 shop/coin authority recovery COMPLETE
--> P5 quantitative precheck COMPLETE_DIRECTIONAL
--> prior Package A team-death-credit recommendation superseded
--> revised Package A2 READY
--> user decision pending before numerical shop simulation
+-> P5 authority recovery complete
+-> P5 quantitative precheck complete
+-> A2 USER APPROVED
+-> 50-Stage spend-capacity envelope built
+-> economy-only policy preflight directional PASS
+-> clear/kill income-mix + wall-pressure integration NEXT
 ```
 
 Latest P5 authority:
-- `legacy-game-structure/112_P5_RUN_COIN_SHOP_AUTHORITY_RECOVERY_V0_1.md`
-- `legacy-game-structure/114_P5_RUN_COIN_SHOP_QUANTITATIVE_PRECHECK_V0_1.md`
-- `legacy-game-structure/115_P5_RUN_COIN_SHOP_REVISED_STRUCTURAL_PROPOSAL_V0_2.md`
-- historical/superseded where conflicting: `legacy-game-structure/113_P5_RUN_COIN_SHOP_STRUCTURAL_PROPOSAL_V0_1.md`
-
-P4 closure authority:
-- `legacy-game-structure/109_P4D2_EXACT_V05_AND_STAGE49_V02_REPLAY_ADMISSION_V0_1.md`
-- `legacy-game-structure/110_P4D2_PROVISIONAL_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
-- `legacy-game-structure/111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md`
+- `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
+- `legacy-game-structure/117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md`
+- `legacy-game-structure/118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md`
+- `legacy-game-structure/data/p5_shop_economy_spend_capacity_fixture_v0_1.json`
+- `tools/run_p5_shop_economy_spend_capacity_probe_v0_1.py`
+- historical proposal/recovery: docs112–115; doc113 is superseded where conflicting.
 
 ---
 
 # P4 stable closure facts
 
-- Lv31 identities remain strong/class-defining and finite/deterministic/attributable.
-- Archer wider real gameplay corridor is USER APPROVED; no homing/bending/off-line retarget.
-- Stage46+ real combat mastery-gate direction supported.
-- Stage49 complementary rotation exact-admitted:
-  - all-success wall: Knight1705 / Rogue2000 / Tank2000 / Archer2000 / Mage2000
-  - all-finals-missed burial: Knight34.025 / Rogue29.100 / Tank34.575 / Archer57.025 / Mage52.225 seconds.
-- Tank is a time-budget/control class; identical class mistake budgets are not required.
-- durable high-HP/high-armor pressure axis is supported diagnostically but is not a new-monster approval.
+- 5 classes: Knight / Rogue / Tank / Archer / Mage.
+- Tier = 50 Stages; BaseHP persists; no automatic Stage heal.
+- Lv31 acquisition target direction Stage41–45; Stage46+ mastery pressure.
+- strong class-defining Lv31 finals remain finite/deterministic/attributable.
+- Archer wider straight gameplay corridor USER APPROVED.
+- Stage49 complementary rotation exact-admitted.
+- durable high-HP/high-armor pressure supported diagnostically, not a new-monster approval.
 - BRUTE carrying/using SHIELD-like protection remains parked for later monster design.
-- Archer SPLITTER nonmonotonicity root cause is explained chronology, not a skill-width/power defect.
-- BaseHP persists across stages; no automatic stage heal.
+- final EXP remains OPEN / P10R mandatory.
 
-Exact replay authority:
-
-```text
-v0.5 runner blob 8a548184272a71f3b17650f77e6d366533409e0c
-v0.5 output SHA-256 29c5c7dc5a6c74f1e67f07d7eb0d8a3235e860817d7559227da26da192e2dae1
-Stage49 v0.2 runner blob 1eb644766133d0a4e84130ab4d7be4c727cbee12
-Stage49 output SHA-256 c033d7fea455476ae2c4b9c0ffe4f770885d135533fd899a04709eb7cd0d6e02
-```
-
-EXP:
-- pure per-valid-turn EXP remains diagnostic only;
-- Stage46 97/98/99 possession checkpoints are sensitivity only;
-- no hidden class/Tier XP patch;
-- final EXP/timebase convergence mandatory at P10R.
+P4 exact replay identities remain in docs109–111 and must not be rerun without a trigger.
 
 ---
 
-# P5 quantitative review result
-
-Stable structure:
-- run coin exists and is run-local;
-- personal wallets remain a strong candidate;
-- shop ranks persist during the Tier attempt and reset on new attempt;
-- six categories remain sufficient: `ATK / CRIT / CRIT DMG / FORTIFICATION / DEF / KNOCKBACK`.
-
-## Killer-only coin risk downgraded
-
-Current evidence does **not** show that last-hit coin necessarily causes a large snowball.
-Early 2P sensitivity:
+# P5 A2 — USER APPROVED STRUCTURE
 
 ```text
-55:45 kill share -> ~6% total-coin gap
-60:40 -> ~12.3%
-70:30 -> ~26.2%
+EVERY_STAGE_AVAILABLE_BUT_NONBLOCKING
++
+PERSONAL WALLETS
++
+KILLER_ONLY_PERSONAL ordinary-monster coin baseline
++
+ALL-HUMAN Stage-clear income-floor candidate
++
+FORTIFICATION = max HP increase + matched current repair
++
+PERSONAL ATK/CRIT/CRITDMG/KNOCK
++
+PERSONAL PURCHASES CONTRIBUTING TO SHARED FORTIFICATION/DEF
++
+SIX SHOP CATEGORIES
 ```
 
-EXP is action-based, not kill-credit based. Therefore more last hits do not directly accelerate level-up.
-
-Classification:
+Six categories:
 
 ```text
-KILLER_ONLY_COIN = VALID BASELINE CANDIDATE
-CLASS_ECONOMY_SNOWBALL = WATCH / NOT DEMONSTRATED
+ATTACK
+CRIT CHANCE
+CRIT DAMAGE
+FORTIFICATION
+DEFENSE
+KNOCKBACK
 ```
 
-## Primary P5 economy risk = total supply / early saturation
-
-Naively extending prototype values to Stage49:
+New user-approved economy direction:
 
 ```text
-common Stage-clear coin Stage1..49 = 17,395
-all six legacy Rank10 tracks total cost = 16,350
+NO_ROUTINE_FULL_SHOP_MAXOUT_BY_STAGE49
 ```
 
-With zero kill coin, clear rewards alone can max all six tracks around Stage48.
-Single tracks can max around Stage16-18; HP+DEF around Stage26.
-These prototype values are unsuitable for 50-Stage production carryover.
+Meaning:
+- ordinary successful intended-entry runs must retain meaningful late allocation choices;
+- specialization may max/near-max selected tracks if other tracks are sacrificed;
+- six-track full max must not be the routine/expected Stage49 state.
 
-## Shop cadence
-
-Every-Stage access remains structurally viable only as a lightweight/nonblocking intermission, not 49 long mandatory shop screens.
-
-## Fortification
-
-`max HP increase + matched current repair` remains a strong semantic candidate, but legacy +100/rank is not approved. Repeated repair must not erase persistent attrition.
-
-## Shared DEF/HP
-
-Shared-wall contribution is structurally coherent, but legacy values have large player-count leverage. Final numerical normalization/caps remain P10 dependencies.
+No exact coin/reward/price/rank-effect/cap is frozen.
 
 ---
 
-# Revised P5 Package A2 — USER DECISION PENDING
+# Correct legacy cost reference
+
+The prototype cost function uses positive-value JavaScript `Math.round`.
+Correct nominal Rank10 full-shop sensitivity cost:
 
 ```text
-1. EVERY_STAGE_AVAILABLE_BUT_NONBLOCKING
-   - shop opportunity after every cleared Stage except Tier final
-   - purchase optional; immediate continue/ready possible
-
-2. PERSONAL KILL CREDIT BASELINE
-   - ordinary monster kill coin remains with the killing human as the simulation baseline
-   - all-human Stage-clear bonus remains a candidate income floor
-   - do not replace killer-only coin unless actual class/team simulation shows material divergence
-
-3. FORTIFICATION
-   - max HP increases by purchased amount
-   - current HP repairs by the same realized amount, clamped to new max
-   - not full heal / not automatic Stage heal
-
-4. OWNERSHIP
-   - ATK/CRIT/CRITDMG/KNOCK = personal modifiers
-   - FORTIFICATION/DEF = personal purchases contributing to the one shared wall
-
-5. SIX CATEGORIES RETAINED
+ATK 2725
+CRIT 3000
+CRITDMG 2725
+FORT 2455
+DEF 3000
+KNOCK 2455
+TOTAL 16360
 ```
 
-No exact coin amount, Stage reward, price, rank cap, rank effect, DR cap or shop timer is frozen.
+Earlier 16350 text came from banker-rounding on some `.5` values and is superseded numerically. Structural conclusions are unchanged.
 
 ---
 
-# Current decision gate
+# P5 spend-capacity preflight
 
-**Awaiting user decision on revised Package A2 from document115.**
+First bounded sensitivity:
 
-After approval:
-- write approved P5 structural contract;
-- build deterministic shop/economy fixture;
-- redesign 50-Stage supply/cost envelope rather than inherit prototype values;
-- compare ATTACK_HEAVY / CRIT_HEAVY / DEFENSE_HEAVY / BALANCED / SAVE_DELAY / ROLE_AWARE;
-- measure category saturation, class kill-share/coin divergence, Fortification attrition erasure, shared DEF leverage and P4 skill-reach drift.
+```text
+LOW45    = 7,362 nominal units
+CENTER50 = 8,180
+HIGH55   = 8,998
+```
 
+All are ratio-space candidates only.
+
+Economy-only result:
+- no tested 45/50/55 policy maxed all six tracks;
+- LOW45 maxed no single track;
+- CENTER50 permits selected late specialization maxes around Stage45–49 while balanced remains Rank7–8;
+- HIGH55 still preserves incomplete nonfavored tracks;
+- balanced CENTER Stage49 ≈ `ATK8 / CRIT7 / CRITDMG7 / FORT8 / DEF7 / KNOCK8`.
+
+Working direction:
+
+```text
+WORKING_SPEND_CAPACITY_CENTER = 50%
+SENSITIVITY = 45%..55%
+```
+
+Not a numerical freeze.
+
+---
+
+# Killer-only coin / income mix
+
+Kill credit does not directly grant EXP. Current evidence does not demonstrate a large first-order killer-only snowball.
+
+Next income-source sensitivity:
+
+```text
+CLEAR/KILL
+80/20
+70/30 <- working center candidate
+60/40
+```
+
+At CENTER50 with a ±20% relative kill-share perturbation:
+- 80/20 -> whole-wallet ~48%..52%
+- 70/30 -> ~47%..53%
+- 60/40 -> ~46%..54%
+
+For 70/30, balanced Stage49 stays broadly Rank7–8. Even ±40% relative kill-share stress gives ~44%..56% total capacity and does not approach full-shop maxout.
+
+`70/30` is a working candidate only, not frozen.
+
+---
+
+# P5 next boundary
+
+1. formalize clear/kill income-mix sensitivity and class/player-count perturbations;
+2. integrate Fortification + DEF with representative wall-pressure combat;
+3. reject any curve that erases attrition or trivializes Stage49->50 reserve;
+4. compare ATTACK_HEAVY / CRIT_HEAVY / DEFENSE_HEAVY / BALANCED / SAVE_DELAY / ROLE_AWARE under combat feedback;
+5. re-measure valid timing-event count / EXP / P4 skill-reach drift;
+6. keep P10 multiplayer normalization and P10R final EXP convergence downstream.
+
+P6 remains blocked until P5 closes.
+
+No user decision is currently pending.
 No production change is authorized.
