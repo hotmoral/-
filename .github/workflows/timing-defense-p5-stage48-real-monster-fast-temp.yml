@@ -19,18 +19,15 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run SIEGER windup diagnostic and print aggregate
+      - name: Run SIEGER death-position diagnostic
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_sieger_windup_diagnostic_temp.py > /tmp/windup.json
+          python3 tools/run_p5_stage48_sieger_death_position_temp.py > /tmp/death.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_sieger_windup_diagnostic_temp.json').read_text())
-          out={}
-          for name,v in d['variants'].items():
-            out[name]={k:v[k] for k in ('windupCases','totalWindups','shotCases','totalShots','repositionCases','totalRepositions','perClass')}
-          print('P5_STAGE48_SIEGER_WINDUP='+json.dumps(out,sort_keys=True))
+          d=json.loads(Path('p5_stage48_sieger_death_position_temp.json').read_text())
+          print('P5_STAGE48_SIEGER_DEATH_POSITION='+json.dumps(d,sort_keys=True))
           PY
