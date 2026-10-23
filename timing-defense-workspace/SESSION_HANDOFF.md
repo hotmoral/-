@@ -17,17 +17,19 @@ Read/check in this order:
 8. `legacy-game-structure/89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md`
 9. `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 10. `legacy-game-structure/92_P4D2_LV31_MASTERY_POWER_AND_STAGE46_PRESSURE_PREFLIGHT_V0_1.md`
-11. `legacy-game-structure/90_P4D1_LV31_STRUCTURAL_SKILL_CONTRACT_PROPOSAL_V0_1.md` only for superseded proposal context
-12. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
-13. `SKILL_PLAN_LV6_31.md`
-14. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
-15. `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
-16. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
-17. current production branch head and calibration-harness head
-18. older P4-A/P4-B/P3 evidence only as needed for causal context/revalidation triggers
+11. `legacy-game-structure/93_P4D2_FIRST_PASS_LV31_POWER_ENVELOPE_AND_PRESSURE_TARGETS_V0_1.md`
+12. `legacy-game-structure/90_P4D1_LV31_STRUCTURAL_SKILL_CONTRACT_PROPOSAL_V0_1.md` only for superseded proposal context
+13. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+14. `SKILL_PLAN_LV6_31.md`
+15. `legacy-game-structure/20_LV31_MASTERY_PLAY_WINDOW_V0_1.md`
+16. `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
+17. `legacy-game-structure/45_MONSTER_ROLE_EXPRESSION_CONTRACT_V0_1.md`
+18. current production branch head and calibration-harness head
+19. older P4-A/P4-B/P3 evidence only as needed for causal context/revalidation triggers
 
 Important:
-- proposal 90 is no longer the current decision boundary; document 91 is the superseding approved direction.
+- proposal 90 is superseded for current direction by approved document 91.
+- document 93 is first-pass P4-D2 analytic evidence, not numerical-freeze authority.
 - do not re-run closed P1/P2/P3/P4-C1/C2 solely because a new session starts.
 - production remains unchanged unless separately authorized.
 
@@ -60,12 +62,12 @@ Calibration harness:
 P4-C1 = USER_APPROVED_STRUCTURAL_COMPLETE
 P4-C2 = COMPLETE / PASS_WITH_WATCHES
 P4-D1 = USER_APPROVED_WITH_MODIFICATION
-P4-D2 = ACTIVE / BOUNDED MASTERY-POWER-PRESSURE FEEDBACK
+P4-D2 = ACTIVE / FIRST-PASS POWER ENVELOPE COMPLETE / FULL FEEDBACK CONTINUES
 production changes = UNAUTHORIZED
 ```
 
 Current exact next work:
-**execute P4-D2 according to document 92.**
+**continue P4-D2 from document 93 into bounded current-roster pressure-response probes.**
 
 No user decision is currently required unless a document-92 stop condition is hit.
 
@@ -119,19 +121,33 @@ Acquisition fairness requirement:
 
 ---
 
-# Rogue Lv31 correction
+# Rogue Lv31 — active first-pass bracket
 
 Rogue must culminate its multihit/thrown-projectile fantasy.
 
-Superseded working center:
-- proposal-90 `exactly 8 daggers`.
-
-Active P4-D2 sensitivity:
+P4-D2 sensitivity:
 
 ```text
 12 / 16 / 20 real Dagger Storm projectiles
 working center = 16
 ```
+
+Using provisional per-projectile coefficient `0.45`:
+
+```text
+Lv21 Blade Barrage = 2.80 root-basis package
+12 daggers = 5.40 = 1.93× Lv21 package
+16 daggers = 7.20 = 2.57× Lv21 package
+20 daggers = 9.00 = 3.21× Lv21 package
+```
+
+Future 4-Rogue simultaneous event-volume targets implied by this bracket:
+
+```text
+48 / 64 / 80 projectiles
+```
+
+These are performance-test targets, not automatic nerf triggers.
 
 Structural rules:
 - one root-owned finite deterministic storm package;
@@ -140,44 +156,50 @@ Structural rules:
 - deterministic retarget after death/removal;
 - no same-target cap;
 - boss scalar per realized hit;
-- no recursive generator tree;
-- event-volume/performance is a watch, not an automatic nerf order.
+- no recursive generator tree.
 
-16 is not numerically frozen.
-
----
-
-# Other Lv31 class direction
-
-- Knight: strong two-pass broad frontline break; bounded Knight geometry, but not timid magnitude.
-- Tank: dramatic battlefield pressure reset via control + wall protection.
-- Archer: unlimited strict-line deletion is a desired final fantasy.
-- Mage: bounded but spectacular staged density collapse; mass cluster deletion is allowed/desired.
-
-The finite-template rule exists to keep causality, determinism and tuning legible, not to make Lv31 weak.
+16 and 0.45 remain provisional.
 
 ---
 
-# P4-D2 execution question
+# Other Lv31 first-pass magnitude envelope
 
-Do not ask only:
-`Is Lv31 too strong?`
+Current P4-D2 analytic bracket from document 93:
+- Knight second wave `0.75 / 1.00 / 1.25` root basis.
+- Tank shockwave `0.50 / 0.75 / 1.00` root basis plus strong control/wall protection.
+- Archer starts at `1.00` root basis per intersected target with unlimited strict-line depth.
+- Mage three-stage collapse `0.55 / 0.75 / 1.00` root basis per stage, radius tuned independently.
 
-Ask:
+All are provisional P4-D2 sensitivity inputs.
+
+---
+
+# Stage46 pressure-response target
+
+Do not freeze raw monster multipliers first.
+Calibrate backlog/reset behavior:
 
 ```text
-Does Lv31 feel like a real final-class power spike?
-AND
-Can Stage46+ pressure require that power while preserving meaningful timing/combo mastery?
+Lv26-only sustained clearing < Stage46+ inflow/pressure
+successful Lv31 P×P = unmistakable pressure reset
+one missed reset = serious but potentially recoverable pressure
+repeated missed resets = burial cascade
 ```
 
-Required lanes:
-1. Stage46 Lv31 acquisition distribution / fairness.
-2. class-specific final-skill power expression.
-3. Stage46+ pressure absorption through encounter grammar, not HP-only scaling.
-4. P×P/combo maintenance and failure cascades.
-5. monster-role-expression checks.
-6. Rogue 12/16/20 event-volume/performance watch.
+Required future metrics:
+
+```text
+backlog_before_final
+backlog_after_final
+pressure_reset_fraction
+seconds_to_reaccumulate_pre_reset_pressure
+lv26_only_backlog_slope
+lv31_backlog_slope_between_resets
+missed_pxp_recovery_probability
+consecutive_missed_pxp_to_burial
+wall_hp_delta_between_resets
+role_expression_count_before_death
+```
 
 ---
 
