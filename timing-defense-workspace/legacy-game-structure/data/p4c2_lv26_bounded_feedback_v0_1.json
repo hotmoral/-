@@ -10,131 +10,57 @@
     "boundary": "legacy five-monster pressure/formula-fidelity sensitivity only; not current nine-roster production balance",
     "namedRngSubstreams": ["STAGE", "JUDGMENT", "COMBAT_PROC", "AI"],
     "pairedSeeds": true,
+    "seedsPerCell": 24,
+    "runCount": 13440,
     "profiles": {
       "legacySkilled40P": "legacy skilled quality sensitivity",
       "central70P_sensitivity": "70/20/10 quality sensitivity; not a claim of fitted current cadence"
     },
-    "runCount": 6720,
     "central70P_sensitivity": {
-      "Knight": {
-        "meanLocalActionsLv21": 39.875,
-        "meanLocalActionsLv26": 39.5551,
-        "localActionsDeltaPct": -0.8024,
-        "damageDeltaPct": 7.6626,
-        "durationDeltaPct": -0.3124,
-        "remainingWallHpDeltaPct": 5.9716,
-        "clearRateLv21": 0.94494,
-        "clearRateLv26": 0.96429,
-        "clearDeltaPp": 1.9345
-      },
-      "Rogue": {
-        "meanLocalActionsLv21": 41.3110,
-        "meanLocalActionsLv26": 40.2083,
-        "localActionsDeltaPct": -2.6692,
-        "damageDeltaPct": 11.7866,
-        "durationDeltaPct": -0.9504,
-        "remainingWallHpDeltaPct": 16.5552,
-        "clearRateLv21": 0.87946,
-        "clearRateLv26": 0.92708,
-        "clearDeltaPp": 4.7619,
-        "meanLv26AuxHits": 25.0223
-      },
-      "Tank": {
-        "meanLocalActionsLv21": 41.5134,
-        "meanLocalActionsLv26": 41.6667,
-        "localActionsDeltaPct": 0.3692,
-        "damageDeltaPct": 1.1493,
-        "durationDeltaPct": 0.3709,
-        "remainingWallHpDeltaPct": 1.7487,
-        "clearRateLv21": 0.97024,
-        "clearRateLv26": 0.97024,
-        "clearDeltaPp": 0.0,
-        "meanZonesCreated": 10.0997,
-        "meanCoveredMobSecondsApprox": 27.6501
-      },
-      "Archer": {
-        "meanLocalActionsLv21": 36.3705,
-        "meanLocalActionsLv26": 34.9048,
-        "localActionsDeltaPct": -4.0301,
-        "damageDeltaPct": 4.4629,
-        "durationDeltaPct": -2.4521,
-        "remainingWallHpDeltaPct": 3.1402,
-        "clearRateLv21": 0.99851,
-        "clearRateLv26": 1.0,
-        "clearDeltaPp": 0.1488
-      },
-      "Mage": {
-        "meanLocalActionsLv21": 38.5744,
-        "meanLocalActionsLv26": 37.1443,
-        "localActionsDeltaPct": -3.7073,
-        "damageDeltaPct": 6.6504,
-        "durationDeltaPct": -2.2166,
-        "remainingWallHpDeltaPct": 8.2848,
-        "clearRateLv21": 0.98661,
-        "clearRateLv26": 0.99851,
-        "clearDeltaPp": 1.1905,
-        "meanLv26AuxHits": 34.4539
-      }
+      "Knight": {"meanLocalActionsLv21":39.8914,"meanLocalActionsLv26":39.6094,"localActionsDeltaPct":-0.7069,"damageDeltaPct":7.6604,"durationDeltaPct":-0.2538,"remainingWallHpDeltaPct":6.2007,"clearRateLv21":0.93973,"clearRateLv26":0.95982,"clearDeltaPp":2.0089},
+      "Rogue": {"meanLocalActionsLv21":41.3415,"meanLocalActionsLv26":40.3125,"localActionsDeltaPct":-2.4891,"damageDeltaPct":12.0468,"durationDeltaPct":-0.8427,"remainingWallHpDeltaPct":16.4993,"clearRateLv21":0.87798,"clearRateLv26":0.93155,"clearDeltaPp":5.3571,"meanLv26AuxHits":25.1548},
+      "Tank": {"meanLocalActionsLv21":41.5305,"meanLocalActionsLv26":41.6503,"localActionsDeltaPct":0.2884,"damageDeltaPct":1.0124,"durationDeltaPct":0.2992,"remainingWallHpDeltaPct":1.3646,"clearRateLv21":0.97693,"clearRateLv26":0.97396,"clearDeltaPp":-0.2976,"meanZonesCreated":10.0975,"meanCoveredMobSecondsApprox":27.4563},
+      "Archer": {"meanLocalActionsLv21":36.4851,"meanLocalActionsLv26":35.0074,"localActionsDeltaPct":-4.0501,"damageDeltaPct":4.4230,"durationDeltaPct":-2.4723,"remainingWallHpDeltaPct":3.2793,"clearRateLv21":0.99851,"clearRateLv26":1.0,"clearDeltaPp":0.1488},
+      "Mage": {"meanLocalActionsLv21":38.0908,"meanLocalActionsLv26":36.6622,"localActionsDeltaPct":-3.7504,"damageDeltaPct":6.7008,"durationDeltaPct":-2.2125,"remainingWallHpDeltaPct":8.4768,"clearRateLv21":0.98884,"clearRateLv26":0.99851,"clearDeltaPp":0.9673,"meanLv26AuxHits":33.9807}
     },
     "legacySkilled40P_directionCheck": {
-      "Knight": {"localActionsDeltaPct": -0.38, "damageDeltaPct": 7.87},
-      "Rogue": {"localActionsDeltaPct": -1.00, "damageDeltaPct": 9.73},
-      "Tank": {"localActionsDeltaPct": 0.64, "damageDeltaPct": 1.46},
-      "Archer": {"localActionsDeltaPct": -2.87, "damageDeltaPct": 6.33},
-      "Mage": {"localActionsDeltaPct": -2.37, "damageDeltaPct": 10.29}
+      "Knight": {"localActionsDeltaPct":-0.2858,"damageDeltaPct":8.1613},
+      "Rogue": {"localActionsDeltaPct":-0.9410,"damageDeltaPct":9.8626},
+      "Tank": {"localActionsDeltaPct":0.4664,"damageDeltaPct":1.4561},
+      "Archer": {"localActionsDeltaPct":-2.7428,"damageDeltaPct":6.4183},
+      "Mage": {"localActionsDeltaPct":-2.6024,"damageDeltaPct":10.1932}
     }
   },
   "currentRosterStructuralProbes": {
-    "Knight": {
-      "secondaryPenetrationDamageIncreaseVsLv21Pct": 17.6471,
-      "approvedExtraTargetKnockbackSteps": [1.15, 1.30, 1.45],
-      "watch": "screen lifetime / CHARGER interrupt / SIEGER reposition"
-    },
-    "Rogue": {
-      "theoreticalPerfectContainingRootFractionAt70P": 0.7525,
-      "generatorBound": "max one Chain Throw per qualifying root action",
-      "watch": "secondary availability and backline exposure"
-    },
+    "Knight": {"secondaryPenetrationDamageIncreaseVsLv21Pct":17.6471,"approvedExtraTargetKnockbackSteps":[1.15,1.30,1.45],"watch":"screen lifetime / CHARGER interrupt / SIEGER reposition"},
+    "Rogue": {"theoreticalPerfectContainingRootFractionAt70P":0.7525,"generatorBound":"max one Chain Throw per qualifying root action","watch":"secondary availability and backline exposure"},
     "Tank": {
-      "supporterAndAftershockCombinedMovementMultiplier": 0.885,
-      "chargerAdvance": {"base": 0.060, "slow": 0.045, "supportPlusSlow": 0.0531},
-      "chargerCharge": {"base": 0.210, "slow": 0.1575, "supportPlusSlow": 0.18585},
-      "chargerWindupMsUnchanged": 650,
-      "siegerApproach": {"base": 0.045, "slow": 0.03375, "supportPlusSlow": 0.039825},
-      "siegerWindupMsUnchanged": 800,
-      "siegerRepeatMsUnchanged": 2200,
-      "watch": "slower approach can increase pre-expression exposure even though firing cadence is untouched"
+      "supporterAndAftershockCombinedMovementMultiplier":0.885,
+      "chargerAdvance":{"base":0.060,"slow":0.045,"supportPlusSlow":0.0531},
+      "chargerCharge":{"base":0.210,"slow":0.1575,"supportPlusSlow":0.18585},
+      "chargerWindupMsUnchanged":650,
+      "siegerApproach":{"base":0.045,"slow":0.03375,"supportPlusSlow":0.039825},
+      "siegerWindupMsUnchanged":800,
+      "siegerRepeatMsUnchanged":2200,
+      "watch":"slower approach can increase pre-expression exposure even though firing cadence is untouched"
     },
-    "Archer": {
-      "maxAdditionalTargetsPerQualifyingArrowLv21": 2,
-      "maxAdditionalTargetsPerQualifyingArrowLv26": 4,
-      "idealAlignedCapacityIncreasePct": 66.6667,
-      "watch": "deep-line screen deletion / protected SUPPORTER-SIEGER exposure"
-    },
+    "Archer": {"maxAdditionalTargetsPerQualifyingArrowLv21":2,"maxAdditionalTargetsPerQualifyingArrowLv26":4,"idealAlignedCapacityIncreasePct":66.6667,"watch":"deep-line screen deletion / protected SUPPORTER-SIEGER exposure"},
     "Mage": {
-      "splitterChildCapabilityTestHp": 120,
-      "chainCoefficient": 0.35,
+      "splitterChildCapabilityTestHp":120,
+      "chainCoefficient":0.35,
       "childOneShotProbe": {
-        "NORMAL": {"chainDamage": 35, "oneShotsChild": false},
-        "GOOD": {"chainDamage": 49, "oneShotsChild": false},
-        "PERFECT": {"chainDamage": 70, "oneShotsChild": false},
-        "HEAVY": {"chainDamage": 76, "oneShotsChild": false},
-        "HEAVY_PLUS": {"chainDamage": 97, "oneShotsChild": false},
-        "GREAT": {"chainDamage": 126, "oneShotsChild": true},
-        "SUPER": {"chainDamage": 168, "oneShotsChild": true},
-        "CRITICAL": {"chainDamage": 252, "oneShotsChild": true}
+        "NORMAL":{"chainDamage":35,"oneShotsChild":false},
+        "GOOD":{"chainDamage":49,"oneShotsChild":false},
+        "PERFECT":{"chainDamage":70,"oneShotsChild":false},
+        "HEAVY":{"chainDamage":76,"oneShotsChild":false},
+        "HEAVY_PLUS":{"chainDamage":97,"oneShotsChild":false},
+        "GREAT":{"chainDamage":126,"oneShotsChild":true},
+        "SUPER":{"chainDamage":168,"oneShotsChild":true},
+        "CRITICAL":{"chainDamage":252,"oneShotsChild":true}
       },
-      "watch": "when root package qualifies and kills parent, newborn children can be chain targets; GREAT+ heavy can erase 120-HP test-anchor children immediately"
+      "watch":"when root package qualifies and kills parent, newborn children can be chain targets; GREAT+ heavy can erase 120-HP capability-test-anchor children immediately"
     }
   },
-  "verdict": "PASS_WITH_WATCHES",
-  "activeWatches": [
-    "SOLO_PROGRESSION_DIVERGENCE_WATCH",
-    "TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH",
-    "PLAYER_COUNT_SCALING_XP_DEPENDENCY",
-    "MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE",
-    "LV26_T4_ROLE_EXPRESSION_WATCH",
-    "LV26_MAGE_SPLITTER_ORDERING_WATCH",
-    "LV26_TANK_MOVEMENT_COMPOSITION_WATCH"
-  ]
+  "verdict":"PASS_WITH_WATCHES",
+  "activeWatches":["SOLO_PROGRESSION_DIVERGENCE_WATCH","TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH","PLAYER_COUNT_SCALING_XP_DEPENDENCY","MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE","LV26_T4_ROLE_EXPRESSION_WATCH","LV26_MAGE_SPLITTER_ORDERING_WATCH","LV26_TANK_MOVEMENT_COMPOSITION_WATCH"]
 }
