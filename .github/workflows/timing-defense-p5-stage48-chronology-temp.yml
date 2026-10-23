@@ -1,0 +1,69 @@
+name: timing-defense-p5-stage48-chronology-temp
+
+on:
+  push:
+    branches:
+      - timing-defense-p5-stage48-chronology-temp-20261023
+    paths:
+      - '.github/workflows/timing-defense-p5-stage48-chronology-temp.yml'
+      - 'timing-defense-workspace/tools/run_p5_stage48_real_escort_chronology_search_temp.py'
+
+permissions:
+  contents: read
+
+jobs:
+  chronology-search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile bounded diagnostic
+        working-directory: timing-defense-workspace
+        run: |
+          git rev-parse HEAD
+          python -m py_compile tools/run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py
+          python -m py_compile tools/run_p5_stage48_real_escort_chronology_search_temp.py
+
+      - name: Run twice and require deterministic bytes
+        working-directory: timing-defense-workspace
+        run: |
+          python tools/run_p5_stage48_real_escort_chronology_search_temp.py > /tmp/search1.stdout
+          cp /tmp/p5-stage48-chronology-search.json /tmp/search1.json
+          python tools/run_p5_stage48_real_escort_chronology_search_temp.py > /tmp/search2.stdout
+          cp /tmp/p5-stage48-chronology-search.json /tmp/search2.json
+          cmp /tmp/search1.json /tmp/search2.json
+          sha256sum /tmp/search1.json /tmp/search2.json
+
+      - name: Print top diagnostic rows
+        working-directory: timing-defense-workspace
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('/tmp/search1.json').read_text())
+          print('spawnX=',p['normalRightEdgeSpawnX'],'midField=',p['midFieldPopInAllowed'])
+          for i,s in enumerate(p['summaries'][:12],1):
+              print('RANK',i,s['id'],
+                    'burials=',s['burials'],
+                    'unsettled=',s['unsettledBy240'],
+                    'minWallRatio=',s['minWallRatio'],
+                    'shotCases=',s['casesWithSiegerShot'],
+                    'shots=',s['totalSiegerShots'],
+                    'wallHits=',s['totalWallHits'],
+                    'spawn=',s['spawnCount'])
+              for cls,v in s['byClass'].items():
+                  print(' ',cls,v)
+          PY
+
+      - name: Upload search output
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-p5-stage48-chronology-temp
+          path: |
+            /tmp/search1.json
+            /tmp/search2.json
+            /tmp/search1.stdout
+            /tmp/search2.stdout
+          if-no-files-found: error
+          retention-days: 1
