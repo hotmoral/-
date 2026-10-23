@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_reduced_armored_fodder_crossclass_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_armored_fodder_support_mix_temp.py
 
 permissions:
   contents: read
@@ -20,16 +20,16 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run reduced armored plus fodder cross-class screen
+      - name: Run armored fodder supporter mix screen
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_reduced_armored_fodder_crossclass_temp.py > /tmp/reduced-armored-fodder.json
+          python3 tools/run_p5_stage48_armored_fodder_support_mix_temp.py > /tmp/support-mix.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_reduced_armored_fodder_crossclass_temp.json').read_text())
+          d=json.loads(Path('p5_stage48_armored_fodder_support_mix_temp.json').read_text())
           for r in d['rows']:
-              print('P5_REDUCED_ARMORED_FODDER_ROW='+json.dumps(r,sort_keys=True))
+              print('P5_SUPPORT_MIX_ROW='+json.dumps(r,sort_keys=True))
           PY
