@@ -1,0 +1,124 @@
+version: system-dependency-calibration-order-v0.20
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_19.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+  - 111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md
+  - 112_P5_RUN_COIN_SHOP_AUTHORITY_RECOVERY_V0_1.md
+  - 115_P5_RUN_COIN_SHOP_REVISED_STRUCTURAL_PROPOSAL_V0_2.md
+  - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+  - 117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md
+  - 118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md
+
+principles:
+  - freeze_semantics_before_values
+  - isolate_then_integrate
+  - production_changes_require_explicit_freeze
+  - material_decisions_require_user_approval
+  - no_routine_full_shop_maxout_by_stage49
+  - specialization_may_cap_selected_tracks_if_tradeoffs_remain
+  - measure_last_hit_coin_divergence_before_replacing_it
+  - total_economy_scale_is_primary_first_order_saturation_control
+  - shared_wall_stats_use_p2_modifier_pipeline
+  - explicit_fortification_repair_is_not_stage_auto_heal
+  - shop_feedback_must_recheck_exp_and_skill_reach
+  - final_exp_convergence_requires_p10r
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {status: P3_STRUCTURAL_PASS_COMPLETE}
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    finalExpClaimAllowed: false
+    productionAuthority: false
+
+  P5:
+    name: RUN_COIN_SHOP_CANDIDATE
+    status: STRUCTURAL_A2_APPROVED_ECONOMY_PREFLIGHT_ACTIVE
+    dependsOn: [P4]
+    structuralContract:
+      status: USER_APPROVED
+      source: 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+      shopCadence: EVERY_STAGE_AVAILABLE_BUT_NONBLOCKING
+      wallets: PERSONAL
+      monsterKillCoin: KILLER_ONLY_PERSONAL_BASELINE
+      stageClearIncome: ALL_HUMAN_CANDIDATE_FLOOR
+      fortification: MAX_HP_PLUS_MATCHED_CURRENT_REPAIR
+      offenseControlOwnership: PERSONAL
+      wallHpDefenseOwnership: PERSONAL_PURCHASE_CONTRIBUTES_TO_SHARED_WALL
+      categories: [ATK, CRIT, CRITDMG, FORTIFICATION, DEFENSE, KNOCKBACK]
+      fullShopRoutineMaxoutAllowed: false
+    exactLegacySensitivityReference:
+      rounding: JAVASCRIPT_MATH_ROUND_POSITIVE
+      rank10FullShopCost: 16360
+      note: supersedes_earlier_16350_bankers_rounding_precheck_figure
+    spendCapacityEnvelope:
+      source: 117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md
+      lowRatio: 0.45
+      workingCenterRatio: 0.50
+      highRatio: 0.55
+      status: CANDIDATE_NOT_FROZEN
+    economyOnlyPreflight:
+      source: 118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md
+      status: DIRECTIONAL_PASS
+      allSixMaxedInTestedRuns: false
+      centerBalancedFinalBand: RANK_7_TO_8
+      selectedTrackLateMaxAllowed: true
+      workingIncomeMixSensitivity:
+        clearKillCandidates: [80_20, 70_30, 60_40]
+        workingCenterCandidate: 70_30
+        status: NOT_FROZEN
+    runner:
+      fixture: data/p5_shop_economy_spend_capacity_fixture_v0_1.json
+      tool: ../../tools/run_p5_shop_economy_spend_capacity_probe_v0_1.py
+      authority: ECONOMY_ONLY_NO_COMBAT_AUTHORITY
+    valuesStillOpen:
+      - exact_coin_rewards
+      - exact_stage_clear_bonus
+      - exact_clear_kill_income_mix
+      - exact_shop_cost_curve
+      - exact_rank_caps
+      - exact_stat_values_per_rank
+      - exact_generic_wall_dr_cap
+      - exact_shop_intermission_timer_ui
+      - multiplayer_def_hp_normalization
+    nextAnalysis:
+      - CLEAR_KILL_INCOME_MIX_SENSITIVITY
+      - KILL_SHARE_CLASS_PLAYERCOUNT_PERTURBATION
+      - FORTIFICATION_DEF_WALL_PRESSURE_INTEGRATION
+      - PURCHASE_POLICY_COMBAT_FEEDBACK
+      - RECHECK_P4_EXP_SKILL_REACH
+    mandatoryFeedback:
+      - SHOP_SATURATION_TOO_EARLY
+      - FULL_SHOP_MAXOUT_ROUTINE
+      - DOMINANT_PURCHASE_POLICY
+      - FORTIFICATION_ATTRITION_ERASURE
+      - SHARED_DEF_PLAYER_COUNT_LEVERAGE
+      - COIN_INCOME_CLASS_DIVERGENCE
+      - SHOP_POWER_EXP_FEEDBACK_DISTORTION
+    productionAuthority: false
+
+  P6: {status: BLOCKED_PENDING_P5, dependsOn: [P5]}
+  P7: {status: BLOCKED, dependsOn: [P6]}
+  P8: {status: BLOCKED, dependsOn: [P7]}
+  P9: {status: BLOCKED, dependsOn: [P8]}
+  P10: {status: BLOCKED, dependsOn: [P8]}
+  P10R:
+    status: BLOCKED_PENDING_P10
+    dependsOn: [P10]
+    mandatoryPurpose: FINAL_EXP_AND_MULTIPLAYER_TIMEBASE_RECONVERGENCE
+
+freezePolicy:
+  numericalContentFreeze: {onlyAfter: P17}
+
+currentBoundary:
+  completedThrough: P4
+  activePackage: P5
+  next: P5_CLEAR_KILL_INCOME_MIX_AND_WALL_PRESSURE_INTEGRATION
+  nextMode: BOUNDED_SIMULATION_NO_NUMERICAL_FREEZE
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
