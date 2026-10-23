@@ -1,7 +1,8 @@
 {
   "schemaVersion": "p5-shop-economy-spend-capacity-v0.1",
   "status": "ECONOMY_ONLY_PREFLIGHT_NO_PRODUCTION_AUTHORITY",
-  "fullShopReferenceCost": 16350,
+  "fullShopReferenceCost": 16360,
+  "roundingContract": "javascript-math-round-positive-costs",
   "rankBaseCosts": [40, 65, 100, 145, 200, 265, 340, 425, 520, 625],
   "categoryMultipliers": {
     "atk": 1.0,
@@ -39,6 +40,7 @@
   },
   "notes": [
     "Legacy costs are normalized sensitivity units only.",
+    "Positive legacy category costs use JavaScript Math.round semantics; this makes the exact nominal full-shop reference cost 16360, not 16350.",
     "No coin denomination, reward amount, rank cap, stat effect or player-count scaling is production-frozen.",
     "ROLE_AWARE priorities are diagnostic heuristics, not recommended player builds.",
     "CRIT combat value cannot be inferred from rank arithmetic alone because attack-template crit policies remain effect-specific."
