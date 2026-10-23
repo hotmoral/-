@@ -21,14 +21,12 @@ Always fetch live remote first. Current key chain:
 - `91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 - `116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
 - `135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md`
-- `142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
-- `143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md`
 - `144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md`
-- `145_P5_P6_STAGE46_47_ARMORED_MIDWAVE_REPLACEMENT_DIAGNOSTIC_V0_1.md`
-- `146_P5_P6_ARMORED_PLACEMENT_AND_TIER_AUTHORING_BOUNDARY_V0_1.md`
 - `147_ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX_V0_1.md`
-- **latest proposal:** `148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md`
-- active plan `data/system_dependency_calibration_order_v0_34.yaml`
+- `148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md`
+- `149_P6_FORMAL_ENTRY_AND_FIRST_CAUSAL_SLICE_AUTHORIZATION_V0_1.md`
+- **latest:** `150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md`
+- active plan `data/system_dependency_calibration_order_v0_35.yaml`
 
 Live remote wins over memory/chat/copied SHA.
 
@@ -47,18 +45,19 @@ P5 class identity group = DIRECTIONALLY CLOSED
 P5 mastery reinterpretation = COMPLETE
 P5->P6 fidelity bridge = EXACT TEMP PASS
 entry charge/combo primary-cause checks = CLOSED
-Stage46/47 armored count/chronology/band diagnostics = COMPLETE
-armored exact-coordinate microtuning = STOPPED
+Stage46/47 armored count/chronology/band diagnostics = COMPLETE / NO ADOPTION
 encounter-composition class-response matrix = COMPLETE FOR CURRENT CAUSAL QUESTION
-encounter-opportunity distribution framework = PROPOSAL PREPARED / NOT ADOPTED
+armored exact-coordinate microtuning = STOPPED
 Stage48 local packet tuning = PAUSED
-P6 = NOT FORMALLY STARTED
-Tier1 exact 50-Stage authoring = NOT STARTED
-CURRENT = USER DECISION GATE: CAMPAIGN SPINE CANDIDATE vs FORMAL P6
+P6 = FORMALLY ENTERED / USER APPROVED
+P6-S1 Stage46-47 first causal convergence = COMPLETE
+CURRENT = USER DECISION GATE AFTER P6-S1 CAUSAL CLASSIFICATION
+Tier count / monster unlock ladder / exact Tier1 roster = DEFERRED UNTIL P6 CONVERGENCE EVIDENCE
+Tier1 exact Stage1-50 authoring = NOT STARTED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
-No Stage46/47 armored packet, Stage48 packet, hardened/new monster identity, exact SIEGER value, Tank scalar, class/monster/shop/EXP/P×P number, Tier count, Tier1 roster or unlock ladder is frozen.
+No class/monster/shop/EXP/P×P/Stage scalar, armored packet, Stage48 packet, exact Tier count, Tier1 roster or monster unlock ladder is frozen.
 
 ---
 
@@ -99,148 +98,269 @@ Keep `SURVIVAL != CLEAR`, no hard lockout, no automatic class buff/nerf from one
 
 ---
 
-# Tier authoring authority
+# Tier / campaign authoring boundary
 
-Current 9 ordinary monsters + `ARMORED_DURABLE_PROXY` are a **mechanical diagnostic vocabulary**, not the final Tier1 roster.
+The user explicitly approved this order:
 
-Active direction from `02` + `16`:
+```text
+P6 convergence
+-> use P6 evidence to constrain Tier monster availability / unlock order
+-> then author exact Tier1 Stage1-50
+```
+
+Current 9 ordinary monsters + `ARMORED_DURABLE_PROXY` remain **mechanical diagnostic vocabulary**, not the final Tier1 roster.
+
+Stable campaign direction remains:
 
 ```text
 T1 starts with a limited subset
--> higher Tier(s) introduce new monster archetypes
--> returning monsters gain new composition/formation/cadence roles
--> current nine are not the final lifetime roster
+-> higher Tier(s) introduce new monster roles
+-> returning monsters gain new composition / formation / cadence meanings
 ```
 
-`09_TIER_LADDER_CANDIDATE_V0_1.md` all-nine-in-T1 material is a superseded legacy candidate.
-Exact Tier count and exact unlock ladder remain OPEN.
+The old all-nine-in-T1 material in `09_TIER_LADDER_CANDIDATE_V0_1.md` is superseded legacy candidate material.
 
-Real Tier1 authoring order:
-
-```text
-monster availability ladder
--> Tier identity / novelty budget
--> 50-Stage macro flow
--> opportunity-distribution guards
--> exact frequency/count/composition/formation/cadence
-```
+Exact Tier count, exact unlock ladder and exact T1 roster remain OPEN.
 
 ---
 
-# Late-run mastery / fidelity facts
-
-Old P5 late-run results were effectively all-PERFECT/all-P×P upper-bound evidence.
+# Late-run mastery / fidelity facts retained
 
 Fidelity bridge `39971985538`:
-- deterministic repeat PASS
-- all-PERFECT `20/20` through Stage49
-- central-skilled by entry charge: `48/100`, `45/100`, `42/100`, `44/100`
-- Stage46 failures `23/100` at every entry charge
-- across charge states: Mage `72/80`, Archer `61/80`, Rogue `25/80`, Knight `20/80`, Tank `1/80`
+- deterministic repeat PASS;
+- all-PERFECT `20/20` through Stage49;
+- central-skilled by entry charge `48/100`, `45/100`, `42/100`, `44/100`;
+- Stage46 failures `23/100` for every entry charge;
+- across charge states Mage `72/80`, Archer `61/80`, Rogue `25/80`, Knight `20/80`, Tank `1/80`.
 
-Entry combo test `39972649909`:
-- combo0 `48/100`
-- combo40 `48/100`
+Entry combo `39972649909`:
+- combo0 `48/100`;
+- combo40 `48/100`.
 
-Therefore entry charge/combo are not the primary explanation.
-Reduced P×P/Lv31-final frequency remains an important sensitivity, but the current class split must be interpreted together with encounter composition.
+Thus entry charge/combo are not the primary explanation.
 
-User guidance:
-- mid-40% central-skilled late-segment completion is plausibly acceptable when all-PERFECT retains a 100% path;
-- do not default to raising global skilled completion;
-- `45%` is not frozen as a target.
-
----
-
-# Sparse armored Stage46/47 diagnostic — closed
-
-Existing proxy only; no new identity/scalar.
-
-Count `39976475153`:
-```text
-BASELINE      A18 M18 R6 K5 T1 = 48
-1 per Stage   A17 M17 R6 K5 T1 = 46
-2 per Stage   A13 M15 R4 K5 T1 = 38
-```
-
-Chronology `39978274698`:
-```text
-EARLY A16 M16 R6 K4 T1 = 43
-MID   A17 M17 R6 K5 T1 = 46
-LATE  A18 M16 R7 K5 T1 = 47
-```
-
-Band at MID `39978899281`:
-```text
--2 A16 M17 R6 K4 T1 = 44
- 0 A18 M17 R6 K5 T1 = 47
-+2 A17 M17 R6 K5 T1 = 46
-```
-
-All-PERFECT stayed `5/5` classes in every tested variant.
-`one proxy + MID + band +2` is only the cleanest tested diagnostic reference, not adopted content.
-No more exact-coordinate tuning before real Tier authoring.
+User interpretation to preserve:
+- a central-skilled late-segment completion rate around the mid-40% range can be acceptable if all-PERFECT retains a clear path;
+- do not default to globally raising skilled completion;
+- no exact percentage is frozen.
 
 ---
 
-# Encounter-composition class-response matrix — complete
+# Encounter-composition evidence retained
 
-Doc147 synthesizes existing evidence.
-High-confidence directional facts:
-- Mage: cluster/density `++`; distributed durable weakness real;
-- Archer: aligned line `++`; scatter/off-corridor weakness real;
-- Knight: frontline penetration/generalist advantage real;
-- Rogue: durable/high-value execution advantage real; broad-wave cleanup is intended weakness with a known Dagger Storm one-shot leakage watch;
-- Tank: control/objective protection advantage real; enemy-removal weakness real;
-- composition, chronology and geometry materially change class outcomes.
-
-Therefore:
+Doc147 established:
 
 ```text
 ENCOUNTER_COMPOSITION_ADVANTAGE = MATERIAL_CONFIRMED_CAUSE
 CURRENT_STAGE46_47_CLASS_SPREAD != PROOF_OF_INTRINSIC_CLASS_NUMERIC_IMBALANCE
 ```
 
-No additional simulation was needed to answer this causal question.
+High-confidence identity response:
+- Mage: cluster/density strong; distributed durable weak;
+- Archer: aligned line strong; scatter/off-corridor weak;
+- Knight: frontline penetration generalist;
+- Rogue: durable/high-value execution strong; broad-volume intended weakness with Dagger Storm leakage watch;
+- Tank: control/objective protection strong; enemy-removal weak.
+
+Sparse armored diagnostics remain evidence only; no proxy content is adopted.
 
 ---
 
-# Opportunity-distribution framework proposal
+# P6 formal entry
 
-Doc148 proposes how future Tier authoring should check class-opportunity distribution without forcing equal clear rates.
+User approved formal P6 entry and sequence in doc149.
 
-Key proposal:
-- classify per **encounter segment**, not only Stage;
-- track FAVORABLE / NEUTRAL / UNFAVORABLE / MIXED per class;
-- separate removal, control, objective protection, backline access and formation leverage;
-- track occurrence, threat-time and criticality separately;
-- check specialty starvation, weakness erasure, one-family dominance, long unfavorable runs and hard-lockout risk;
-- apply monster availability before balancing opportunity distribution.
+First slice:
+```text
+P6-S1 = Stage46-47 bounded causal convergence
+```
 
-No exact quota, weighting formula, maximum unfavorable run, recovery cadence or Tier1 roster is adopted.
+Fixed:
+- SKILLED_V2_CENTRAL;
+- persistent judgment/combo/charge state;
+- Heavy X/Y and P×P-only Lv31 final;
+- STAGE_SETTLED and wall carry;
+- current class semantics;
+- current Stage46/47 encounter geometry;
+- paired deterministic seeds;
+- no production changes.
+
+---
+
+# P6-S1 exact result
+
+Run:
+```text
+39983816058
+```
+Temp branch:
+```text
+timing-defense-workspace-temp-p6-stage46-47-causal
+```
+Temp HEAD:
+```text
+8cfcd43ad8e7565d359903d76fea629e9ab1959f
+```
+Result SHA256:
+```text
+9564363cee66e4f6a3fc2ea42329cd7f47c08050e2ae09366c48b3f616054cce
+```
+Exact-byte repeat:
+```text
+PASS
+```
+
+Volume:
+```text
+20 skilled seeds × 5 classes × 4 explicit shop profiles = 400 skilled chains
+20 all-PERFECT controls
+Stage46 -> Stage47 only
+```
+
+All-PERFECT:
+```text
+20/20 through Stage47
+```
+
+Skilled through Stage47:
+
+| profile | Archer | Mage | Rogue | Knight | Tank | total |
+|---|---:|---:|---:|---:|---:|---:|
+| BALANCED | 19 | 19 | 9 | 7 | 2 | 56 |
+| ATTACK_HEAVY | 19 | 19 | 9 | 7 | 2 | 56 |
+| DEFENSE_HEAVY | 18 | 17 | 9 | 7 | 2 | 53 |
+| ROLE_AWARE | 19 | 20 | 9 | 7 | 2 | 57 |
+
+Across four profiles:
+```text
+Archer 75/80
+Mage   75/80
+Rogue  36/80
+Knight 28/80
+Tank    8/80
+```
+
+Therefore:
+```text
+FIXED_LATE_SHOP_PROFILE != PRIMARY_CURRENT_CLASS_SPLIT_CAUSE
+```
+
+This does not close real purchase-history / EXP feedback because these profiles are fixed late-segment snapshots.
+
+---
+
+# P×P-conditioned result
+
+BALANCED descriptive bins:
+
+```text
+HIGH >0.65
+Archer 5/5, Mage 5/5, Rogue 6/7, Knight 5/6, Tank 2/6
+
+MID >0.40 <=0.65
+Archer 7/7, Mage 9/9, Rogue 3/7, Knight 2/7, Tank 0/4
+
+LOW <=0.40
+Archer 7/8, Mage 5/6, Rogue 0/6, Knight 0/7, Tank 0/10
+```
+
+Aggregate:
+```text
+HIGH 23/29
+MID  21/34
+LOW  12/37
+```
+
+Refined causal statement:
+
+```text
+PXP_EXPOSURE = STRONG GLOBAL MASTERY SENSITIVITY
+PXP_EXPOSURE_ALONE != CLASS_SPLIT_EXPLANATION
+CLASS_SPLIT = MASTERY/PXP × CLASS PACKAGE × ENCOUNTER COMPOSITION/GEOMETRY
+```
+
+Do not manipulate P×P probability to make this packet fit.
+
+---
+
+# Stage46 causal telemetry
+
+BALANCED skilled means:
+
+| class | damage | max active | wall loss | push distance |
+|---|---:|---:|---:|---:|
+| Mage | ~49,982 | ~14.95 | ~115 | ~0.021 |
+| Archer | ~49,289 | ~17.00 | ~565 | ~0.026 |
+| Rogue | ~46,315 | ~18.15 | ~909 | 0 |
+| Knight | ~44,678 | ~18.20 | ~948 | ~0.529 |
+| Tank | ~28,514 | ~26.20 | ~1,676 | ~6.641 |
+
+Stage46 failures:
+```text
+Archer 0/20
+Mage   0/20
+Rogue  5/20
+Knight 5/20
+Tank  13/20
+```
+
+Current-fixture interpretation:
+- removal throughput and target-access geometry strongly affect wall protection;
+- raw damage alone does not explain wall reserve;
+- Tank displacement is clearly present but does not substitute for removal quickly enough in this dense/high-volume pressure;
+- this is an encounter-specific causal result, not a universal Tank weakness verdict.
+
+---
+
+# Timing-event / EXP feedback watch
+
+BALANCED mean judgments consumed in attempted Stage46–47:
+```text
+Archer ~152.65
+Mage   ~149.95
+Rogue  ~123.15
+Knight ~121.05
+Tank    ~77.05
+```
+
+This confirms outcome-dependent event-opportunity divergence.
+But because Stage46–47 assumes Lv31 already exists and failures truncate playtime, it does **not** directly calibrate Lv6–31 reach.
+A progression-relevant P6 slice remains required before exact EXP/Tier-unlock authority.
+
+---
+
+# Current causal classification
+
+```text
+PXP/Lv31-final exposure = important global mastery sensitivity
+encounter composition × class package = important class-spread cause
+fixed late-shop snapshot choice = not primary current cause
+Tank control/displacement = present but current packet is removal-heavy
+EXP/timing-event feedback = active watch, not yet converged
+```
+
+No evidence authorizes a class buff/nerf or current Stage46/47 scalar repair.
 
 ---
 
 # Current decision gate
 
-Two legitimate next paths:
+### A — recommended first
+**P6 paired pressure-family convergence.**
+Keep the same run-power surface and compare dense/aligned pressure against durable/distributed/control-value pressure.
+Goal: verify that class advantage rotates with encounter family rather than forcing every Stage to class parity.
 
-### A — recommended now: Campaign Spine bounded candidate
-Prepare and then seek approval for:
+### B — required after/alongside A
+**P6 shop/EXP feedback slice.**
+Use a progression-relevant earlier window or synthetic run to measure real timing-event / skill-reach feedback under explicit shop policies.
 
+### C — not recommended yet
+Numerically tune current Stage46/47 class/monster/shop/pressure values to narrow the present completion spread.
+This risks fitting a deliberately specialty-biased packet and erasing class identity.
+
+Recommended sequence:
 ```text
-Tier count working candidate
-+
-monster availability / introduction ladder candidate
+A -> B -> constrain Tier count / monster unlock ladder -> exact Tier1 Stage1-50 authoring
 ```
 
-Reason:
-- encounter-response mapping is now sufficient;
-- exact Tier1 authoring cannot begin before availability is known;
-- this returns to the user-confirmed Campaign Progression Spine rather than overfitting late diagnostic fixtures.
-
-### B — formally enter P6 Joint Run-Power Convergence
-Continue coupled player-power/shop/EXP convergence before campaign authoring.
-Still necessary later, but not yet formally started.
-
-Here부터는 design/work-boundary decision이므로 no option is adopted without explicit user approval.
+No option after P6-S1 is adopted until user approval.
