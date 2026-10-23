@@ -1,0 +1,124 @@
+{
+  "assumptions": [
+    "Snapshots are diagnostic pressure states, not exact Stage46-50 authoring.",
+    "Geometry booleans only mark whether a body is intersected by the class-specific probe shape.",
+    "SIEGER shotWallDamage=75 is used only as a one-event wall-budget proxy.",
+    "SPLITTER child armor=1.0 and knockResist=1.0 are probe-only neutral fallbacks because child HP/speed/wall are the explicit current anchors; these fallback fields are not production authority.",
+    "No RNG is used.",
+    "No shop, BaseHP, N3, ordinary proc-crit, EXP, multiplayer scaling, or production coefficient is frozen by this fixture."
+  ],
+  "formulaReference": {
+    "archerRootMultiplier": 1.1,
+    "basePxpDamage": 600,
+    "criticalKnockDistance": 0.047,
+    "knightRootMultiplier": 1.58592,
+    "mageRootMultiplier": 1.2,
+    "rogueBossScalar": 0.7
+  },
+  "lv31Candidates": {
+    "Archer": {
+      "lv26MaxTargetsPerArrow": 5,
+      "lv26TripleAggregatePerTarget": 2.3,
+      "lv31PerTargetCoefficients": [1.0, 1.5, 2.0, 2.3]
+    },
+    "Knight": {
+      "knockMultipliers": [2.0, 2.5, 3.0],
+      "maxTargetsPerWave": 4,
+      "secondWaveCoefficients": [0.75, 1.0, 1.25]
+    },
+    "Mage": {
+      "finalChainCoefficient": 0.35,
+      "finalChainMaxTargets": 2,
+      "stageCoefficients": [0.55, 0.75, 1.0],
+      "stages": 3
+    },
+    "Rogue": {
+      "daggerCounts": [12, 16, 20],
+      "perDaggerCoefficient": 0.45
+    },
+    "Tank": {
+      "knockMultipliers": [2.0, 2.5, 3.0],
+      "shockwaveCoefficients": [0.5, 0.75, 1.0],
+      "shieldSeconds": 6,
+      "wallShield": 250
+    }
+  },
+  "monsterAnchors": {
+    "BRUTE": {"armor": 1.0, "hp": 900, "knockResist": 0.38, "speed": 0.04, "wall": 180},
+    "CHARGER": {"armor": 1.0, "hp": 380, "knockResist": 0.8, "speed": 0.06, "wall": 110},
+    "FLYER": {"armor": 1.0, "hp": 225, "knockResist": 0.9, "speed": 0.1, "wall": 70},
+    "GRUNT": {"armor": 1.0, "hp": 320, "knockResist": 0.85, "speed": 0.07, "wall": 90},
+    "RUNNER": {"armor": 1.0, "hp": 165, "knockResist": 1.0, "speed": 0.135, "wall": 60},
+    "SHIELD": {"armor": 0.72, "hp": 540, "knockResist": 0.62, "speed": 0.057, "wall": 120},
+    "SIEGER": {"armor": 1.0, "hp": 520, "knockResist": 0.55, "speed": 0.045, "wall": 75},
+    "SPLITTER": {"armor": 1.0, "children": {"armor": 1.0, "count": 2, "hp": 120, "knockResist": 1.0, "speed": 0.115, "wall": 40}, "hp": 420, "knockResist": 0.82, "speed": 0.065, "wall": 100},
+    "SUPPORTER": {"armor": 1.0, "hp": 280, "knockResist": 0.9, "speed": 0.055, "wall": 70}
+  },
+  "snapshots": [
+    {
+      "id": "S46_LINE_DEPTH_12",
+      "purpose": "strict-line depth / protected backline / durable-target continuity",
+      "mobs": [
+        {"type":"RUNNER","x":0.24,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"GRUNT","x":0.29,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"SHIELD","x":0.34,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"CHARGER","x":0.39,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"BRUTE","x":0.44,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"SPLITTER","x":0.49,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"GRUNT","x":0.54,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"FLYER","x":0.59,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"SHIELD","x":0.64,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"SUPPORTER","x":0.69,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"SIEGER","x":0.74,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"BRUTE","x":0.79,"lane":0,"knight":true,"archer":true,"mage":false}
+      ]
+    },
+    {
+      "id": "S46_DENSITY_CLUSTER_12",
+      "purpose": "Mage density collapse / Rogue retarget / SPLITTER chronology",
+      "mobs": [
+        {"type":"GRUNT","x":0.31,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"SPLITTER","x":0.34,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"RUNNER","x":0.36,"lane":1,"knight":true,"archer":false,"mage":true},
+        {"type":"FLYER","x":0.38,"lane":-1,"knight":true,"archer":false,"mage":true},
+        {"type":"GRUNT","x":0.40,"lane":1,"knight":true,"archer":false,"mage":true},
+        {"type":"SHIELD","x":0.42,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"CHARGER","x":0.44,"lane":-1,"knight":true,"archer":false,"mage":true},
+        {"type":"SUPPORTER","x":0.46,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"GRUNT","x":0.48,"lane":1,"knight":true,"archer":false,"mage":true},
+        {"type":"BRUTE","x":0.50,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"SIEGER","x":0.62,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"BRUTE","x":0.70,"lane":-1,"knight":false,"archer":false,"mage":false}
+      ]
+    },
+    {
+      "id": "S46_FORTRESS_OVERLAP_14",
+      "purpose": "frontline durability + protected SUPPORTER/SIEGER + mixed pressure",
+      "mobs": [
+        {"type":"SHIELD","x":0.23,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"BRUTE","x":0.26,"lane":1,"knight":true,"archer":false,"mage":true},
+        {"type":"SHIELD","x":0.29,"lane":-1,"knight":true,"archer":false,"mage":true},
+        {"type":"CHARGER","x":0.32,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"GRUNT","x":0.35,"lane":1,"knight":true,"archer":false,"mage":true},
+        {"type":"GRUNT","x":0.38,"lane":-1,"knight":true,"archer":false,"mage":true},
+        {"type":"SPLITTER","x":0.41,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"RUNNER","x":0.44,"lane":1,"knight":true,"archer":false,"mage":true},
+        {"type":"FLYER","x":0.47,"lane":-1,"knight":true,"archer":false,"mage":true},
+        {"type":"SUPPORTER","x":0.52,"lane":0,"knight":true,"archer":true,"mage":true},
+        {"type":"SIEGER","x":0.58,"lane":0,"knight":true,"archer":true,"mage":false},
+        {"type":"BRUTE","x":0.63,"lane":1,"knight":false,"archer":false,"mage":false},
+        {"type":"RUNNER","x":0.67,"lane":-1,"knight":false,"archer":false,"mage":false},
+        {"type":"SIEGER","x":0.73,"lane":0,"knight":true,"archer":true,"mage":false}
+      ]
+    }
+  ],
+  "sourceAuthority": {
+    "formulaReference": "combat_exact_v016.py (formula-fidelity reference only)",
+    "lv26Structure": "legacy-game-structure/88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md",
+    "lv31Direction": "legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md",
+    "monsterAnchors": "MONSTER_PROVISIONAL_TEST_ENVELOPE_V1.md",
+    "p4d2Preflight": "legacy-game-structure/92_P4D2_LV31_MASTERY_POWER_AND_STAGE46_PRESSURE_PREFLIGHT_V0_1.md"
+  },
+  "status": "BOUNDED_DIAGNOSTIC_FIXTURE_NOT_PRODUCTION_AUTHORING",
+  "version": "p4d2-lv31-pressure-probe-fixture-v0.1"
+}
