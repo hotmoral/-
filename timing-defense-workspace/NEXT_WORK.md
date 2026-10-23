@@ -10,194 +10,141 @@ Updated: 2026-10-23 KST
 
 ## Mandatory operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_10.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_11.yaml`
 
 Live remote wins.
 
 ---
 
-# ACTIVE PHASE — P4-D2 / ARCHER LV31 GAMEPLAY-WIDTH USER DECISION
+# ACTIVE PHASE — P4-D2 / STAGE48–49 DYNAMIC ROTATING-GRAMMAR FEEDBACK
 
 Completed inside P4-D2:
 
 ```text
 P4-D1 power-fantasy + Stage46 mastery-gate direction = USER APPROVED_WITH_MODIFICATION
-P4-D2 preflight = COMPLETE
-P4-D2 first power envelope = COMPLETE
-P4-D2 current-nine-roster static response = COMPLETE / PASS_WITH_CORRECTION
+P4-D2 current-nine-roster static response = COMPLETE
 P4-D2 stateful temporal Stage46 stress = COMPLETE / CANDIDATE PRESSURE ENVELOPE FOUND
+Archer Lv31 wider real gameplay corridor = USER APPROVED
+Archer width role-alignment proxy = COMPLETE / MID_ADJACENT diagnostic center preferred
+Stage48–49 static grammar reset proxy = COMPLETE / ROTATING_GRAMMAR direction supported
 ```
 
-Current evidence:
-- `legacy-game-structure/94_P4D2_LV31_CURRENT_ROSTER_PRESSURE_RESPONSE_PROBE_V0_1.md`
+Current authority/evidence:
 - `legacy-game-structure/95_P4D2_STAGE46_STATEFUL_TEMPORAL_PRESSURE_PROBE_V0_1.md`
-- `legacy-game-structure/data/p4d2_stage46_temporal_pressure_summary_v0_1.json`
-
-Replay:
-
-```text
-python tools/run_p4d2_stage46_temporal_pressure_probe_v0_1.py \
-  --base-fixture legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
-  --temporal-fixture legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
-  --json-out /tmp/p4d2_stage46_temporal.json > /dev/null
-```
-
-Expected full JSON SHA-256:
-`110ea2beb87dabb41b4d8dd48af61bbe97e21666413481a9f19df95507c75e75`
+- `legacy-game-structure/96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md`
+- `legacy-game-structure/97_P4D2_ROLE_ALIGNMENT_AND_ARCHER_WIDTH_PROBE_V0_1.md`
+- `legacy-game-structure/98_P4D2_STAGE48_49_GRAMMAR_RESET_PROXY_V0_1.md`
 
 ---
 
-# What the temporal probe established
+# Approved Archer Lv31 principle
 
-A candidate combat-pressure gate exists with the current nine-monster grammar.
+`Sky-Piercing Arrow`:
+- one locked straight final projectile/ray;
+- no homing/bending/off-line retarget;
+- unlimited penetration depth inside actual corridor;
+- **gameplay collision corridor wider than ordinary/Lv26 Archer arrows**.
 
-Same 60-second deterministic stress envelope:
+Exact width remains provisional.
 
-## Lv26 + every timing input PERFECT
-
-```text
-Rogue   buried 28.65s
-Tank    buried 33.25s
-Knight  buried 35.80s
-Archer  buried 52.65s
-Mage    buried 56.25s
-```
-
-## Lv31 + every P×P final successful
+Current geometry abstraction:
 
 ```text
-Knight survives / wall 1175
-Rogue  survives / wall 1330
-Tank   survives / wall 2000
-Archer survives / wall 2000
-Mage   survives / wall 2000
+NARROW       -> insufficient final-arrow width expression
+MID_ADJACENT -> preferred current diagnostic center
+FULL5        -> overbroad comparison endpoint; erases protected positioning
 ```
 
-This supports the approved direction:
-
-```text
-no code-level Lv31 gate
-+
-Lv26 cannot indefinitely stabilize late pressure
-+
-Lv31 P×P provides the necessary explosive pressure reset
-```
-
-The 60s duration, 4.6s pressure cycle, 1.125s root cadence and five geometry bands remain diagnostic stress inputs only.
+Per-target `2.30` remains only a continuity-center candidate, not a production freeze.
 
 ---
 
-# Current provisional centers — not frozen
+# Current provisional Lv31 centers — not frozen
 
 ```text
 Knight: second wave 1.00
 Rogue: 16 daggers × .45
 Tank: shockwave .75 / KB ×2.5 / barrier 250-for-6s candidate
-Archer: per-target 2.30 + gameplay-width principle PENDING
+Archer: per-target 2.30 / wider straight corridor / MID_ADJACENT diagnostic center
 Mage: stage .75 / radius1.25 candidate
 ```
 
-Rogue sensitivity is especially useful:
-
-```text
-12 daggers -> buried 41.90s
-16 daggers -> pressured but survives, wall 1330
-20 daggers -> largely trivializes this fixture, wall 2000 / only 5 active
-```
-
-16 remains the working center.
+No evidence currently justifies reducing Rogue projectile count or reversing Archer width approval.
 
 ---
 
-# CURRENT USER DECISION — Archer Sky-Piercing Arrow gameplay width
+# Stage48–49 pressure-grammar direction
 
-Static continuity already showed that Lv31 per-target 1.00 was too low relative to Lv26 Triple Shot, so P4-D2 uses `2.30` as a provisional per-target continuity center.
-
-Temporal evidence now shows:
-
-## Narrow ordinary-width straight ray
+Use four rotating pressure families:
 
 ```text
-coeff 1.00 -> buried 52.65s
-coeff 1.50 -> buried 52.65s
-coeff 2.00 -> buried 52.65s
-coeff 2.30 -> buried 52.65s
+A LINE_ESCORT
+B CLUSTER_CASCADE
+C FRONTLINE_BREACH
+D DURABLE_SCATTER
 ```
 
-Increasing damage does not solve enemies distributed just outside the narrow ray.
+Static reset proxy conclusion:
+`ROTATING_GRAMMAR_CAN_DISTRIBUTE_CLASS_VULNERABILITY`.
 
-## Modestly wider but still straight final-arrow corridor
+The point is not equal damage.
+The point is that each class should periodically encounter a grammar that exploits its natural geometry/control limitation if a P×P reset is missed.
 
-```text
-coeff 1.00 -> survives / wall 1930
-coeff 1.50 -> survives / wall 2000
-coeff 2.00 -> survives / wall 2000
-coeff 2.30 -> survives / wall 2000
-```
-
-The missing variable is therefore geometry, not raw damage.
-
-### Option A — RECOMMENDED
-Approve this Lv31-only principle:
-- `Sky-Piercing Arrow` has a gameplay collision corridor wider than ordinary/Lv26 arrows;
-- remains one locked straight projectile/ray;
-- no homing;
-- no bending;
-- no off-line retarget;
-- unlimited target depth only inside that straight corridor;
-- exact width remains a later P4-D2 calibration variable.
-
-Why recommended:
-- `huge arrow` becomes mechanically meaningful;
-- preserves Archer line-deletion identity;
-- avoids solving geometry failure through arbitrary damage inflation;
-- test evidence shows width is the dominant axis.
-
-### Option B
-Keep gameplay collision width identical to ordinary/Lv26 arrows and make `huge` visual-only.
-Then late dispersed pressure must be solved through another encounter or skill mechanism.
-
-### Option C
-Request another geometry analysis before choosing.
-
-Until the user decision:
-
-```text
-Archer wider gameplay corridor = CANDIDATE_ONLY
-P4-D2 = ACTIVE / USER_DECISION_PENDING
-P4-E = BLOCKED
-production changes = UNAUTHORIZED
-```
+Examples:
+- Archer premium on earned LINE alignment, weak against wide scatter.
+- Mage premium on dense CLUSTER, weak against widely separated durable pressure.
+- Knight premium on bounded FRONTLINE disruption.
+- Rogue premium on sustained tracking/multihit but not universal swarm deletion.
+- Tank gains time/control globally; raw immediate kill count must not be used alone to judge it.
 
 ---
 
-# Important carried watches after the decision
+# Exact next work
 
-Even if Option A is approved, P4-D2 still must test:
-1. targeted CHARGER WINDUP interrupt/re-arm under Knight/Tank finals;
-2. SIEGER standoff/windup/reposition opportunity;
-3. Stage48–49 miss-severity class divergence through encounter grammar;
-4. Mage/SPLITTER chronological transformation behavior;
-5. Stage46 Lv31 acquisition fairness;
-6. Rogue 2P/3P/4P 48/64/80 projectile performance stress later;
-7. final EXP remains deferred to P10R.
+Run a bounded **dynamic repeated-miss rotation probe**:
 
-Current miss-severity evidence:
-- one missed P×P nearly kills Rogue but barely affects Tank/Archer/Mage;
-- two consecutive misses bury Rogue and leave Knight near-terminal while stronger control/AoE classes recover much more easily.
-
-Do not repair this with hidden class-specific balance patches first. Repair the late-band encounter grammar/geometry first.
+1. rotate A/B/C/D grammar cycles over time;
+2. use current nine-roster provisional monster anchors;
+3. use current Lv31 working centers;
+4. compare:
+   - all P×P successful;
+   - one missed P×P;
+   - two consecutive missed P×P;
+5. record:
+   - burial time / end wall;
+   - active backlog;
+   - recovery after isolated miss;
+   - recovery after consecutive misses;
+   - CHARGER windup/interrupt opportunities;
+   - SIEGER standoff/windup/reposition/shot opportunities;
+   - SPLITTER parent/child rebound expression;
+6. change encounter grammar/ordering before class coefficients if divergence is caused by composition;
+7. keep exact Stage48–49 recipe and final EXP unfrozen.
 
 ---
 
-# Required user action
+# Still open after dynamic grammar probe
 
-Choose:
+- Stage46 Lv31 acquisition fairness (`97/98/99%` are candidate checkpoints only);
+- exact Archer width numeric calibration;
+- exact Lv31 coefficients/counts;
+- Rogue future 2P/3P/4P projectile-volume performance stress;
+- final EXP convergence at mandatory P10R;
+- exact Stage46–50 campaign authoring later in dependency order.
 
-```text
-A — approve wider straight Lv31 Archer gameplay corridor principle; exact width remains provisional
-B — reject gameplay-width increase
-C — request more geometry analysis
-```
+---
 
-No production implementation or exact number is authorized by A.
+# Stop conditions
+
+No user decision is currently pending.
+
+Stop for user decision only if work requires:
+- changing a class's Lv31 identity;
+- reversing the approved Archer wider-corridor principle;
+- adding a code-level Lv31 gate;
+- hidden class/player-count EXP compensation;
+- freezing exact Stage46 possession threshold;
+- changing final EXP semantics;
+- production implementation/numerical freeze.
+
+P4-E remains blocked until P4-D2 closes.
