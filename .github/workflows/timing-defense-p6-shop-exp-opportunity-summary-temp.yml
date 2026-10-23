@@ -1,0 +1,31 @@
+name: Timing Defense P6 Shop EXP Opportunity Summary temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p6-shop-exp-opportunity
+    paths:
+      - timing-defense-workspace/tools/summarize_p6_shop_exp_opportunity_temp.py
+      - .github/workflows/timing-defense-p6-shop-exp-opportunity-summary-temp.yml
+
+permissions:
+  contents: read
+
+jobs:
+  p6-shop-exp-summary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p6-shop-exp-opportunity
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Regenerate B1 output and print cumulative cohorts
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_shop_exp_opportunity_attribution_temp.py > /tmp/b1.txt
+          python3 tools/summarize_p6_shop_exp_opportunity_temp.py
