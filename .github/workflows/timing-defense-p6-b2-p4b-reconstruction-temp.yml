@@ -7,6 +7,7 @@ on:
     paths:
       - 'timing-defense-workspace/tools/run_p6_b2_p4b_reconstruction_preflight_temp.py'
       - 'timing-defense-workspace/tools/run_p6_b2_p4b_existing_layera_lv6_fidelity_temp.py'
+      - 'timing-defense-workspace/tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py'
       - '.github/workflows/timing-defense-p6-b2-p4b-reconstruction-temp.yml'
   workflow_dispatch:
 
@@ -37,4 +38,13 @@ jobs:
           python3 tools/run_p6_b2_p4b_existing_layera_lv6_fidelity_temp.py > /tmp/p6b2-layera-b.json
           cmp /tmp/p6b2-layera-a.json /tmp/p6b2-layera-b.json
           sha256sum /tmp/p6b2-layera-a.json
-          cat /tmp/p6b2-layera-a.json
+      - name: Run materialized all-20 Lv6 fidelity probe twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py > /tmp/p6b2-materialized-a.json
+          python3 tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py > /tmp/p6b2-materialized-b.json
+          cmp /tmp/p6b2-materialized-a.json /tmp/p6b2-materialized-b.json
+          sha256sum /tmp/p6b2-materialized-a.json
+          cat /tmp/p6b2-materialized-a.json
