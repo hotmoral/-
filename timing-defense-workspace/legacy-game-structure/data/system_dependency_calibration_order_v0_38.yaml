@@ -1,0 +1,177 @@
+version: system-dependency-calibration-order-v0.38
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_37.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_37.yaml
+
+canonicalUpdates:
+  - 153_P6_B2_P4B_RECONSTRUCTION_FIDELITY_BOUNDARY_RESULT_V0_1.md
+  - 152_P6_SHOP_ATK_EXP_OPPORTUNITY_BIDIRECTIONAL_FEEDBACK_RESULT_V0_1.md
+  - 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+  - CHARACTER_PROFILE_RADAR_V1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - encounter_composition_before_intrinsic_class_balance_claim
+  - bounded_probe_before_broad_reaudit
+  - do_not_relax_predeclared_fidelity_gate_after_results
+  - do_not_reverse_fit_missing_historical_runner_to_archived_targets
+  - important_design_numerical_or_phase_adoption_requires_user_approval
+  - preserve_class_specialties_and_real_weaknesses
+  - player_facing_radar_is_class_identity_contract
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    expBaseline:
+      purePerValidTimingTurn: PROVISIONAL_DIAGNOSTIC_BASELINE
+      heavyXYOneExpAward: true
+      finalExpRuleDeferred: true
+    historicalP4B:
+      resultDataAvailable: true
+      dedicatedRunnerRecovered: false
+      exactPerRecipeResponseMapRecovered: false
+      archivedResponseEnvelopeStillEvidence: true
+  P5:
+    status: ENCOUNTER_COMPOSITION_RESPONSE_DIAGNOSTIC_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+    productionAuthority: false
+  P6:
+    status: FORMALLY_ENTERED_USER_APPROVED
+    purpose: JOINT_RUN_POWER_CONVERGENCE
+    S1:
+      status: DIAGNOSTIC_COMPLETE
+      source: 150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md
+    A_encounterOpportunityConvergence:
+      status: DIAGNOSTIC_COMPLETE
+      source: 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+    B_shopExpFeedback:
+      status: B1_COMPLETE_B2_RECONSTRUCTION_BOUNDARY_NEW_METHOD_DECISION_REQUIRED
+      B1:
+        status: DIAGNOSTIC_COMPLETE
+        source: 152_P6_SHOP_ATK_EXP_OPPORTUNITY_BIDIRECTIONAL_FEEDBACK_RESULT_V0_1.md
+        attributionRunId: 40029402035
+        attributionSha256: 83b5e1630231fb38426ae878cd3f2b6e7f3cd99894a44bac8416d0f23d614788
+        cumulativeSummaryRunId: 40029618307
+        deterministicRepeat: PASS_EXACT_BYTES
+        causalClassification:
+          - SHOP_ATK_WITHIN_SURVIVED_STAGE_REDUCES_TIMING_ACTION_OPPORTUNITY
+          - SHOP_ATK_CAN_PREVENT_FAILURE_AND_CREATE_LATER_STAGE_OPPORTUNITY
+          - SHOP_ATK_TO_EXP_FEEDBACK_IS_BIDIRECTIONAL_AND_OUTCOME_CONDITIONED
+          - MONOTONIC_GLOBAL_SHOP_POWER_TO_EXP_DELAY_ASSUMPTION_REJECTED
+      B2:
+        status: USER_APPROVED_METHOD_A_EXECUTED_FIDELITY_GATE_NOT_MET
+        source: 153_P6_B2_P4B_RECONSTRUCTION_FIDELITY_BOUNDARY_RESULT_V0_1.md
+        selectedMethodWas: REBUILD_BOUNDED_P4B_STYLE_SYNTHETIC_RUNNER_THEN_INJECT_P5_STAGEWISE_SHOP_TRAJECTORY
+        shopInjectionExecuted: false
+        reasonShopInjectionBlocked: PREDECLARED_P4B_RECOVERED_EQUIVALENCE_GATE_NOT_MET
+        tempBranch: timing-defense-workspace-temp-p6-b2-p4b-reconstruction
+        finalMatrixRunId: 40033665060
+        finalMatrixCommit: 730f58ebdc5325766267b8ce9a7e7a72bfe79038
+        finalMatrixSha256: af4bb68afa10e6cef4f8e1f8102defb824c1d710e013a48aac82c269eee675ea
+        deterministicRepeat: PASS_EXACT_BYTES
+        predeclaredGate:
+          withinOneStageRateMin: 0.90
+          meanAbsStageErrorMax: 0.75
+          maxAbsStageErrorMax: 3.0
+        bestRecoveredMode:
+          name: GLOBAL_STAGE_BOUNDARY
+          exactPoints: 85
+          totalPoints: 120
+          withinOneStagePoints: 115
+          withinOneStageRate: 0.958333
+          meanAbsStageError: 0.354167
+          maxAbsStageError: 4.0
+          gatePass: false
+        reconstructedPerRecipeModes:
+          conclusion: WORSE_THAN_GLOBAL_AND_NOT_ACCEPTED
+          immediateWithinOneStageRate: 0.85
+          stageBoundaryWithinOneStageRate: 0.875
+          maxAbsStageError: 5.0
+        conclusions:
+          - OLD_P4B_DEDICATED_RUNNER_NOT_RECOVERED
+          - OLD_P4B_EXACT_PER_RECIPE_RESPONSE_MAP_NOT_RECOVERABLE_WITHOUT_TARGET_FITTING
+          - GLOBAL_RESPONSE_ENVELOPE_FAMILY_STRONGLY_SUPPORTED_BUT_NOT_GATE_PASSING_EXACT_REPLACEMENT
+          - DO_NOT_REVERSE_FIT_TO_FORCE_PASS
+          - P5_SHOP_INJECTION_INTO_RECOVERED_OLD_P4B_BLOCKED
+        nextMethodCandidates:
+          recommended: FRESH_FORWARD_P6
+          alternatives:
+            - ACCEPT_FAILED_GLOBAL_APPROXIMATION_NOT_RECOMMENDED
+            - DEFER_EXACT_SKILL_REACH
+        selectedNextMethod: NONE
+
+classIdentity:
+  radarAuthority: CHARACTER_PROFILE_RADAR_V1.md
+  Tank:
+    interpretation: CONTROL_DEFENSE_WALL_PROTECTION_SPECIALIST_LOW_REMOVAL_INTENTIONAL
+    lowRemovalByItselfIsDefect: false
+    killParityRequired: false
+    activeWatch: TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+    currentDamageBuffAuthorized: false
+
+campaignAuthoring:
+  exactTierCount: OPEN
+  exactMonsterUnlockLadder: OPEN
+  exactTier1Roster: OPEN
+  exactTier1Stage1To50: NOT_STARTED
+  orderingApprovedByUser:
+    - P6_CONVERGENCE_FIRST
+    - THEN_CONSTRAIN_TIER_MONSTER_AVAILABILITY_AND_UNLOCK_ORDER
+    - THEN_AUTHOR_EXACT_TIER1_STAGE1_TO50
+
+operationalWatches:
+  - id: TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+    evidence: one P6-B2 temp commit exposed a Workers Builds check for timing-defense-skilled-v2-harness and that check failed
+    successfulDeploymentObserved: false
+    gitHarnessBranchChanged: false
+    rule: MINIMIZE_TEMP_PUSHES_AND_RECHECK_HARNESS_PRODUCTION_HEADS_AT_BOUNDARIES
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  currentClassBuffNerfAuthorized: false
+  tankDamageBuffAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  failedP4BApproximationShopInjectionAuthorized: false
+  tierUnlockFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: P6_B2_POST_RECONSTRUCTION_METHOD_DECISION
+  P6FormalEntry: USER_APPROVED
+  P6S1: COMPLETE
+  P6A: COMPLETE
+  P6B1: COMPLETE
+  P6B2HistoricalReconstruction: COMPLETE_GATE_FAIL
+  recommendedNext: FRESH_FORWARD_P6
+  afterP6Convergence: TIER_COUNT_AND_MONSTER_UNLOCK_LADDER_CANDIDATE
+  awaitingUserDecision: true
