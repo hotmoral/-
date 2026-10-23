@@ -1,0 +1,90 @@
+{
+  "version": "p4d2-v05-stage49-v02-exact-replay-admission-v0.1",
+  "status": "EXACT_LIVE_BLOB_REPLAY_ADMITTED_NO_NUMERICAL_FREEZE",
+  "dateKst": "2026-10-23",
+  "v05DynamicGrammar": {
+    "sources": {
+      "stage46KernelBlob": "5965833f80422bd6cae94fea738706baf99a06e8",
+      "v02WrapperBlob": "aef5f348a089795c04b48d8ef6f9267d9726c504",
+      "v05RunnerBlob": "8a548184272a71f3b17650f77e6d366533409e0c",
+      "baseFixtureBlob": "035f11f07e1b5f35d8ca5a73511bad92e065889c",
+      "grammarFixtureBlob": "5d7a7d928242be1275474bf56ed86f1475e2c845"
+    },
+    "fullOutputSha256": "29c5c7dc5a6c74f1e67f07d7eb0d8a3235e860817d7559227da26da192e2dae1",
+    "allSuccessEndWall": {
+      "Knight": 895.0,
+      "RogueRecovered78ms": 1850.0,
+      "Tank": 2000.0,
+      "Archer": 1575.0,
+      "Mage": 2000.0
+    },
+    "oneMissEndWallRange": {
+      "Knight": [385.0, 1100.0],
+      "RogueRecovered78ms": [995.0, 1180.0],
+      "Tank": [2000.0, 2000.0],
+      "Archer": [1575.0, 1925.0],
+      "Mage": [2000.0, 2000.0]
+    },
+    "twoConsecutiveMissEndWallRange": {
+      "Knight": [0.0, 505.0],
+      "RogueRecovered78ms": [0.0, 0.0],
+      "Tank": [1857.0, 1981.0],
+      "Archer": [1775.0, 2000.0],
+      "Mage": [2000.0, 2000.0]
+    },
+    "twoMissBurialCountAcrossFourStarts": {
+      "Knight": 2,
+      "RogueRecovered78ms": 4,
+      "Tank": 0,
+      "Archer": 0,
+      "Mage": 0
+    },
+    "interpretation": "v0.5 is the first admitted runner that preserves NO_TARGET no-bank, Rogue -78ms recovery sensitivity and Tank Lv31 barrier non-downgrade while passing exact source guards."
+  },
+  "stage49FullRotationV02": {
+    "sources": {
+      "stage49RunnerBlob": "1eb644766133d0a4e84130ab4d7be4c727cbee12",
+      "v05RunnerBlob": "8a548184272a71f3b17650f77e6d366533409e0c",
+      "stage46KernelBlob": "5965833f80422bd6cae94fea738706baf99a06e8",
+      "v02WrapperBlob": "aef5f348a089795c04b48d8ef6f9267d9726c504",
+      "baseFixtureBlob": "035f11f07e1b5f35d8ca5a73511bad92e065889c",
+      "stage49FixtureBlob": "d430fdcc43fc356b849083d7f31b01e1c2f5690d"
+    },
+    "fullOutputSha256": "c033d7fea455476ae2c4b9c0ffe4f770885d135533fd899a04709eb7cd0d6e02",
+    "allSuccess": {
+      "Knight": {"endWall": 1705.0, "endActive": 21},
+      "Rogue": {"endWall": 2000.0, "endActive": 16},
+      "Tank": {"endWall": 2000.0, "endActive": 11},
+      "Archer": {"endWall": 2000.0, "endActive": 6},
+      "Mage": {"endWall": 2000.0, "endActive": 3}
+    },
+    "allFinalsMissedBurialSeconds": {
+      "Knight": 34.025,
+      "Rogue": 29.1,
+      "Tank": 34.575,
+      "Archer": 57.025,
+      "Mage": 52.225
+    },
+    "firstBurialConsecutiveMisses": {
+      "Knight": {"LINE_ESCORT": 4, "CLUSTER_RECOVERY": 4, "FRONTLINE_BREACH": 3, "DURABLE_SCATTER": 6, "TIME_BUDGET_SIEGER": 4},
+      "Rogue": {"LINE_ESCORT": 3, "CLUSTER_RECOVERY": 4, "FRONTLINE_BREACH": 4, "DURABLE_SCATTER": 3, "TIME_BUDGET_SIEGER": 3},
+      "Tank": {"LINE_ESCORT": 6, "CLUSTER_RECOVERY": 6, "FRONTLINE_BREACH": 5, "DURABLE_SCATTER": 5, "TIME_BUDGET_SIEGER": 4},
+      "Archer": {"withinEight": false, "endWallAtEight": {"LINE_ESCORT": 1195.0, "CLUSTER_RECOVERY": 960.0, "FRONTLINE_BREACH": 1650.0, "DURABLE_SCATTER": 345.0, "TIME_BUDGET_SIEGER": 785.0}},
+      "Mage": {"LINE_ESCORT": null, "CLUSTER_RECOVERY": null, "FRONTLINE_BREACH": null, "DURABLE_SCATTER": null, "TIME_BUDGET_SIEGER": 8}
+    },
+    "successMonotonicityWatchCountOneTwoMissSuites": 0,
+    "structuralChecks": {
+      "allFiveAllSuccessSurvive": true,
+      "allFiveAllFinalsMissedBuryWithin60s": true,
+      "identicalMistakeBudgetRequired": false,
+      "newMonsterApproved": false,
+      "productionAuthority": false
+    }
+  },
+  "freezeBoundary": {
+    "exactReplayAuthority": true,
+    "productionNumericalFreeze": false,
+    "exactStage49AuthoringFreeze": false,
+    "finalExpFreeze": false
+  }
+}
