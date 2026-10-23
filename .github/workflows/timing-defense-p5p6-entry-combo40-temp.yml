@@ -1,0 +1,40 @@
+name: Timing Defense P5-P6 Entry Combo40 temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p5p6-fidelity
+    paths:
+      - timing-defense-workspace/tools/run_p5_p6_entry_combo40_sensitivity_temp.py
+      - .github/workflows/timing-defense-p5p6-entry-combo40-temp.yml
+
+permissions:
+  contents: read
+
+jobs:
+  entry-combo40:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p5p6-fidelity
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run twice and verify deterministic bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p5_p6_entry_combo40_sensitivity_temp.py > /tmp/run1.txt
+          cp p5_p6_entry_combo40_sensitivity_temp.json /tmp/result1.json
+          python3 tools/run_p5_p6_entry_combo40_sensitivity_temp.py > /tmp/run2.txt
+          cmp /tmp/result1.json p5_p6_entry_combo40_sensitivity_temp.json
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('p5_p6_entry_combo40_sensitivity_temp.json')
+          d=json.loads(p.read_text())
+          print('P5P6_ENTRY_COMBO40='+json.dumps({'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'aggregate':d['aggregate']},sort_keys=True))
+          PY
