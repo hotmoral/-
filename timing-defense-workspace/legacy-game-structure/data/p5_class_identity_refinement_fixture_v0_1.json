@@ -1,0 +1,44 @@
+{
+  "version": "p5-class-identity-refinement-fixture-v0.1",
+  "status": "DIRECTIONAL_IDENTITY_REFINEMENT_NO_PRODUCTION_AUTHORITY",
+  "knightRobustPair": {
+    "purpose": "Measure penetration causality without one-shot/retarget chronology dominating the result.",
+    "monster": "ARMORED_DURABLE_PROXY",
+    "monsterCount": 5,
+    "anchor": {"hp": 1600, "armor": 0.55, "knockResist": 0.65, "speed": 0.04, "wall": 160},
+    "alignedBands": [0, 0, 0, 0, 0],
+    "dispersedBands": [-2, -1, 0, 1, 2],
+    "spawnOffsetsSeconds": [0.0, 0.1, 0.2, 0.3, 0.4],
+    "directionalReference": {
+      "balanced40pctLegacyShop": {"alignedClearSeconds": 9.2, "dispersedClearSeconds": 12.575, "ratio": 1.367},
+      "defenseHeavy40pctLegacyShop": {"alignedClearSeconds": 11.45, "dispersedClearSeconds": 12.575, "ratio": 1.098},
+      "noShop": {"alignedClearSeconds": 12.575, "dispersedClearSeconds": 15.95, "ratio": 1.268}
+    },
+    "authorityBoundary": "Directional formula-fidelity check only; committed full-kernel replay remains pending."
+  },
+  "rogueComparableBroadWave": {
+    "purpose": "Expose Dagger Storm distinct-target cleanup after the one-dagger GRUNT breakpoint.",
+    "durablePacket": [
+      {"type": "ARMORED_DURABLE_PROXY", "band": 0, "offset": 0.0},
+      {"type": "BRUTE", "band": 0, "offset": 1.8}
+    ],
+    "broadPacket": [
+      {"type": "GRUNT", "band": -2, "offset": 0.00}, {"type": "RUNNER", "band": 2, "offset": 0.10},
+      {"type": "GRUNT", "band": -1, "offset": 0.20}, {"type": "RUNNER", "band": 1, "offset": 0.30},
+      {"type": "GRUNT", "band": 0, "offset": 0.40}, {"type": "RUNNER", "band": -2, "offset": 0.50},
+      {"type": "GRUNT", "band": 2, "offset": 0.60}, {"type": "RUNNER", "band": -1, "offset": 0.70},
+      {"type": "GRUNT", "band": 1, "offset": 0.80}, {"type": "RUNNER", "band": 0, "offset": 0.90},
+      {"type": "GRUNT", "band": -2, "offset": 1.00}, {"type": "RUNNER", "band": 2, "offset": 1.10},
+      {"type": "GRUNT", "band": -1, "offset": 1.20}, {"type": "RUNNER", "band": 1, "offset": 1.30},
+      {"type": "GRUNT", "band": 0, "offset": 1.40}, {"type": "RUNNER", "band": -2, "offset": 1.50}
+    ],
+    "gruntHp": 320,
+    "daggerBaseRaw": 270,
+    "oneShotScaleThresholdByAtkRanks": {
+      "balancedAtk8": 0.289352,
+      "attackHeavyAtk9": 0.257202,
+      "roleAwareRogueAtk10": 0.231481
+    },
+    "authorityBoundary": "No target cap or retarget rule change is authorized by this fixture."
+  }
+}
