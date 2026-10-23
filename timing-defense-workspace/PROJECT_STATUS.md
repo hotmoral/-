@@ -10,7 +10,7 @@ Updated: 2026-10-23 KST
 
 ## Operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_18.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_19.yaml`
 - live remote always wins
 - do not rerun closed PASS/APPROVED work without a concrete trigger
 
@@ -18,7 +18,7 @@ Updated: 2026-10-23 KST
 
 # Current phase
 
-**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 USER DECISION PENDING — RUN COIN / SHOP STRUCTURE**
+**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 USER DECISION PENDING — REVISED RUN COIN / SHOP STRUCTURE A2**
 
 Current chain:
 
@@ -28,13 +28,17 @@ P0..P3 structural foundation complete
 -> P4-D2 exact v0.5 + Stage49 v0.2 replay admitted
 -> P4-E complete; final EXP deferred to P10R
 -> P5 shop/coin authority recovery COMPLETE
--> P5 structural proposal PACKAGE A RECOMMENDED
+-> P5 quantitative precheck COMPLETE_DIRECTIONAL
+-> prior Package A team-death-credit recommendation superseded
+-> revised Package A2 READY
 -> user decision pending before numerical shop simulation
 ```
 
 Latest P5 authority:
 - `legacy-game-structure/112_P5_RUN_COIN_SHOP_AUTHORITY_RECOVERY_V0_1.md`
-- `legacy-game-structure/113_P5_RUN_COIN_SHOP_STRUCTURAL_PROPOSAL_V0_1.md`
+- `legacy-game-structure/114_P5_RUN_COIN_SHOP_QUANTITATIVE_PRECHECK_V0_1.md`
+- `legacy-game-structure/115_P5_RUN_COIN_SHOP_REVISED_STRUCTURAL_PROPOSAL_V0_2.md`
+- historical/superseded where conflicting: `legacy-game-structure/113_P5_RUN_COIN_SHOP_STRUCTURAL_PROPOSAL_V0_1.md`
 
 P4 closure authority:
 - `legacy-game-structure/109_P4D2_EXACT_V05_AND_STAGE49_V02_REPLAY_ADMISSION_V0_1.md`
@@ -60,15 +64,10 @@ P4 closure authority:
 Exact replay authority:
 
 ```text
-v0.5 runner blob
-8a548184272a71f3b17650f77e6d366533409e0c
-v0.5 output SHA-256
-29c5c7dc5a6c74f1e67f07d7eb0d8a3235e860817d7559227da26da192e2dae1
-
-Stage49 v0.2 runner blob
-1eb644766133d0a4e84130ab4d7be4c727cbee12
-Stage49 output SHA-256
-c033d7fea455476ae2c4b9c0ffe4f770885d135533fd899a04709eb7cd0d6e02
+v0.5 runner blob 8a548184272a71f3b17650f77e6d366533409e0c
+v0.5 output SHA-256 29c5c7dc5a6c74f1e67f07d7eb0d8a3235e860817d7559227da26da192e2dae1
+Stage49 v0.2 runner blob 1eb644766133d0a4e84130ab4d7be4c727cbee12
+Stage49 output SHA-256 c033d7fea455476ae2c4b9c0ffe4f770885d135533fd899a04709eb7cd0d6e02
 ```
 
 EXP:
@@ -79,92 +78,98 @@ EXP:
 
 ---
 
-# P5 authority recovery result
+# P5 quantitative review result
 
-Stable upstream:
+Stable structure:
 - run coin exists and is run-local;
-- coin/shop ranks persist within the Tier attempt;
-- coin/shop reset on a new attempt;
-- six legacy categories map cleanly to P2 stat families:
-  `ATK / CRIT / CRIT DMG / WALL HP / DEF / KNOCKBACK`;
-- finite ranks + escalating costs are structurally appropriate;
-- exact values/costs/rank cap remain open.
+- personal wallets remain a strong candidate;
+- shop ranks persist during the Tier attempt and reset on new attempt;
+- six categories remain sufficient: `ATK / CRIT / CRIT DMG / FORTIFICATION / DEF / KNOCKBACK`.
 
-Legacy/current implementation evidence:
-- shop-after-every-Stage implemented through Stage1-3 prototype chain;
-- personal human wallets and independent purchases;
-- monster kill coin currently goes only to the killing human;
-- Stage-clear reward goes to each human;
-- HP purchase increases shared max HP and current HP together;
-- DEF ranks from all humans sum into shared generic wall DR;
-- v0.45 SIEGER path still reads summed human DEF ranks.
+## Killer-only coin risk downgraded
 
-These implementation details are references, not final production authority.
-
----
-
-# P5 identified structural risks
-
-## Killer-only coin
-Can create:
+Current evidence does **not** show that last-hit coin necessarily causes a large snowball.
+Early 2P sensitivity:
 
 ```text
-more last hits -> more coin -> more offense -> still more last hits
+55:45 kill share -> ~6% total-coin gap
+60:40 -> ~12.3%
+70:30 -> ~26.2%
 ```
 
-This conflicts with approved class asymmetry and can economically starve Tank/control contribution.
+EXP is action-based, not kill-credit based. Therefore more last hits do not directly accelerate level-up.
 
-## WALL HP purchase
-Legacy `max+current` is an explicit repair event, not merely max-HP growth. P1 allows explicit shop healing but did not previously approve its semantic.
+Classification:
+
+```text
+KILLER_ONLY_COIN = VALID BASELINE CANDIDATE
+CLASS_ECONOMY_SNOWBALL = WATCH / NOT DEMONSTRATED
+```
+
+## Primary P5 economy risk = total supply / early saturation
+
+Naively extending prototype values to Stage49:
+
+```text
+common Stage-clear coin Stage1..49 = 17,395
+all six legacy Rank10 tracks total cost = 16,350
+```
+
+With zero kill coin, clear rewards alone can max all six tracks around Stage48.
+Single tracks can max around Stage16-18; HP+DEF around Stage26.
+These prototype values are unsuitable for 50-Stage production carryover.
+
+## Shop cadence
+
+Every-Stage access remains structurally viable only as a lightweight/nonblocking intermission, not 49 long mandatory shop screens.
+
+## Fortification
+
+`max HP increase + matched current repair` remains a strong semantic candidate, but legacy +100/rank is not approved. Repeated repair must not erase persistent attrition.
 
 ## Shared DEF/HP
-Structurally coherent for one shared wall, but player-count leverage must remain a P10 scaling watch; no multiplayer numerical freeze in P5.
 
-## 50-Stage shop cadence
-Legacy shop-after-every-Stage is proven only as implementation reference. The evidence map explicitly marks 50-Stage cadence as OPEN_DECISION.
+Shared-wall contribution is structurally coherent, but legacy values have large player-count leverage. Final numerical normalization/caps remain P10 dependencies.
 
 ---
 
-# Recommended P5 Package A — USER DECISION PENDING
+# Revised P5 Package A2 — USER DECISION PENDING
 
 ```text
-1. EVERY_STAGE_AVAILABLE_BUT_FAST_CONTINUE
-   - lightweight shop opportunity after every cleared Stage except Tier final
-   - purchase optional; immediate READY/CONTINUE allowed
+1. EVERY_STAGE_AVAILABLE_BUT_NONBLOCKING
+   - shop opportunity after every cleared Stage except Tier final
+   - purchase optional; immediate continue/ready possible
 
-2. TEAM_DEATH_CREDIT / PERSONAL WALLETS
-   - every authoritative enemy death credits each active human's personal run wallet
-   - killer identity does not change coin income
-   - AI kills also generate the human team death-credit event
-   - all-human Stage-clear bonus retained as candidate source; values open
+2. PERSONAL KILL CREDIT BASELINE
+   - ordinary monster kill coin remains with the killing human as the simulation baseline
+   - all-human Stage-clear bonus remains a candidate income floor
+   - do not replace killer-only coin unless actual class/team simulation shows material divergence
 
-3. FORTIFICATION WALL HP
+3. FORTIFICATION
    - max HP increases by purchased amount
-   - current HP receives the same realized increase, clamped to new max
-   - not full heal and not automatic Stage healing
+   - current HP repairs by the same realized amount, clamped to new max
+   - not full heal / not automatic Stage heal
 
-4. ownership
+4. OWNERSHIP
    - ATK/CRIT/CRITDMG/KNOCK = personal modifiers
    - FORTIFICATION/DEF = personal purchases contributing to the one shared wall
+
+5. SIX CATEGORIES RETAINED
 ```
 
-Alternatives:
-- B: legacy killer-only baseline (not recommended)
-- C: checkpoint-only shop while keeping recommended economy/HP semantics
-- D: request another structural alternative.
-
-Approval freezes semantics only. No coin amounts, prices, rank values/caps, DR cap, or exact UI timing.
+No exact coin amount, Stage reward, price, rank cap, rank effect, DR cap or shop timer is frozen.
 
 ---
 
 # Current decision gate
 
-**Awaiting user decision: A / B / C / D from document113.**
+**Awaiting user decision on revised Package A2 from document115.**
 
 After approval:
-- draft approved P5 structural contract;
-- build bounded shop simulation fixture;
+- write approved P5 structural contract;
+- build deterministic shop/economy fixture;
+- redesign 50-Stage supply/cost envelope rather than inherit prototype values;
 - compare ATTACK_HEAVY / CRIT_HEAVY / DEFENSE_HEAVY / BALANCED / SAVE_DELAY / ROLE_AWARE;
-- measure SHOP_SNOWBALL, dominant strategy, Fortification attrition erasure, shared-defense runaway, class coin divergence and P4 skill-reach drift.
+- measure category saturation, class kill-share/coin divergence, Fortification attrition erasure, shared DEF leverage and P4 skill-reach drift.
 
 No production change is authorized.
