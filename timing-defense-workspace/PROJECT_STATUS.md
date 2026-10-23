@@ -10,16 +10,17 @@ Updated: 2026-10-23 KST
 
 ## Operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_27.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_28.yaml`
 - class identity gate: `legacy-game-structure/129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md`
 - class identity closure: `legacy-game-structure/135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md`
+- integrated runner preflight: `legacy-game-structure/136_P5_IDENTITY_AWARE_STAGE46_49_INTEGRATED_RUNNER_PREFLIGHT_V0_1.md`
 - live remote always wins
 
 ---
 
 # Current phase
 
-**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 A2 USER_APPROVED — CLASS IDENTITY DIAGNOSTIC GROUP DIRECTIONALLY CLOSED / IDENTITY-AWARE STAGE46–49 INTEGRATION NEXT**
+**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 A2 USER_APPROVED — CLASS IDENTITY GROUP DIRECTIONALLY CLOSED / IDENTITY-AWARE STAGE46–49 RUNNER AUTHORED / CHECKOUT-EXACT EXECUTION NEXT**
 
 ```text
 P0..P3 structural foundation complete
@@ -28,17 +29,15 @@ P0..P3 structural foundation complete
 -> five-class shop combat complete directionally
 -> normal-right-edge Stage46–49 direction promising
 -> radar identity promoted to balance invariant
--> finite-packet identity diagnostics complete directionally
--> Tank negative solo-throughput defect confirmed directionally
--> Rogue broad-wave cleanup breakpoint identified
--> Knight refined penetration probe supports identity
--> Archer line dependence strongly preserved
--> Mage density dependence strongly preserved
--> identity-aware Stage46–49 integration NEXT
+-> class-identity diagnostic group DIRECTIONALLY CLOSED
+-> identity-aware Stage46–49 integration runner + fixture authored
+-> static/source-patch preflight complete
+-> checkout-equivalent execution/result review NEXT
 ```
 
 No user decision is currently pending.
 No production change is authorized.
+No numerical value is frozen.
 
 ---
 
@@ -67,7 +66,8 @@ income mix center = 70/30
 common shop-effect diagnostic center = 40% legacy-relative
 ```
 
-No exact coin/reward/price/rank/effect value is frozen.
+The first integrated runner intentionally uses a fixed late-segment shop snapshot across Stage46–49 so it can isolate identity/chronology/wall-deficit behavior without inventing an unapproved per-stage purchase history.
+Actual ATK/DEF acquisition-time feedback remains pending fidelity work.
 
 ---
 
@@ -93,12 +93,11 @@ SURVIVAL != CLEAR
 
 ---
 
-# Class identity group closure
+# Class identity group closure — preserved
 
 ## Knight
 
-Refined durable pair avoids the first probe's one-shot/second-wave retarget instability.
-Directional reference:
+Refined durable pair:
 
 ```text
 BALANCED 40%: aligned 9.20s / dispersed 12.575s
@@ -112,72 +111,96 @@ Classification:
 ## Rogue
 
 Core multihit/durable execution identity remains valid.
-However current shop ATK can push one Dagger Storm projectile over a fresh GRUNT one-shot breakpoint.
-Approximate shop-effect scale thresholds under current ATK-rank snapshots:
+Current shop ATK can push one Dagger Storm projectile over a fresh GRUNT one-shot breakpoint.
+
+At the 40% diagnostic center the newly encoded analytic check gives approximately:
 
 ```text
-BALANCED atk8      ~0.289
-ATTACK_HEAVY atk9  ~0.257
-ROLE_AWARE atk10   ~0.231
+BALANCED atk8          -> 339.12 vs GRUNT HP320
+ATTACK_HEAVY atk9      -> 347.76
+DEFENSE_HEAVY atk6     -> 321.84
+ROLE_AWARE Rogue atk10 -> 356.40
 ```
 
-Current 0.40 diagnostic center is above all three.
+Therefore even DEFENSE_HEAVY narrowly crosses the fresh-GRUNT breakpoint.
+The important integrated metric is now distinct targets hit/killed per storm, not merely breakpoint existence.
+
 Active guard:
 `ROGUE_STORM_SINGLE_DAGGER_ORDINARY_ONESHOT_NOT_ROUTINE`.
-Do not remove approved deterministic retargeting as first repair.
+Approved deterministic retargeting remains unchanged.
 
 ## Tank
 
-Current provisional Lv31 shockwave damage center `0.75` makes Tank clear the mixed finite packet at roughly damage-class speed:
+Current provisional Lv31 shockwave damage center `0.75` remains directionally inconsistent with poor-solo-throughput identity.
+Preserve knockback/slow/barrier/control; first repair axis is battlefield-wide enemy damage contribution.
 
-```text
-Tank 8.079s
-non-Tank median ~7.830s
-ratio ~1.03x
-```
-
-This conflicts with the intended Tank weakness.
-Preserve knockback/slow/barrier/control; first repair axis is battlefield-wide damage contribution.
-
-Next integrated diagnostic range only:
+Integrated sensitivity only:
 
 ```text
 0.20 / 0.25 / 0.30
 working center = 0.25
 ```
 
-Reference mixed-packet clear:
-
-```text
-0.30 -> 14.829s
-0.25 -> 18.209s
-0.20 -> 21.578s
-```
-
-These are not production recommendations. Very low damage can overload Tank backlog, so Stage46–49 must measure survival/control and direct clear together.
+No production coefficient is selected.
 
 ## Archer
 
-Finite paired probe strongly preserves strict-line identity:
-
-```text
-aligned line ~3.58s
-scatter ~8.08s
-```
-
-The prior attack-heavy Stage49 problem is localized to encounter/frontmost chronology, not a global Archer identity collapse.
+Strict-line identity remains strongly preserved.
+The prior Stage49 issue remains localized to frontmost/HP-breakpoint/SIEGER chronology.
 No global Archer nerf is justified.
 
 ## Mage
 
-Density identity strongly preserved:
+Cluster-vs-distributed density identity remains strongly preserved.
+No structural Mage redesign is justified.
+
+---
+
+# New integrated runner state
+
+Assets:
 
 ```text
-cluster ~3.78s
-distributed ~8.08s
+tools/run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py
+legacy-game-structure/data/p5_identity_aware_stage46_49_integration_fixture_v0_1.json
+legacy-game-structure/136_P5_IDENTITY_AWARE_STAGE46_49_INTEGRATED_RUNNER_PREFLIGHT_V0_1.md
 ```
 
-No structural Mage redesign is justified.
+Encoded requirements:
+
+```text
+all physical spawnX = 0.92
+mid-field pop-in forbidden
+spawnLeadSeconds changes schedule only
+wall current/max/absolute deficit carried Stage46->47->48->49
+Tank 0.20/0.25/0.30, control package unchanged
+Rogue per-storm distinct-target hit/kill telemetry
+GRUNT/RUNNER/SHIELD fresh one-dagger breakpoint report
+Knight refined aligned/dispersed regression
+Archer line/scatter regression
+Mage cluster/distributed regression
+```
+
+The new runner avoids the existing P5 v0.1/v0.2 source-patch weakness where a module-level `hit()` line was targeted inside `inspect.getsource(stage46.simulate)`.
+ATK is now applied through a guarded `hit` wrapper; only `simulate()`-owned lines are source-patched.
+
+This is a runner-fidelity correction, not a reopening of the closed class-identity conclusions.
+
+---
+
+# Stage-boundary model / active watch
+
+The inherited recipes are bounded 60-second stress windows, not exact launch-stage scripts.
+The integrated runner carries wall state but does not transplant living diagnostic mobs across the synthetic stage boundary.
+
+Active watch:
+
+```text
+P5_STAGE_BOUNDARY_BACKLOG_DISCARD_BIAS
+```
+
+`endActive` is retained in output.
+If material backlog exists at a boundary, Stage49 wall reserve remains directional only and must not be interpreted as exact stage-clear reserve before the boundary model is refined.
 
 ---
 
@@ -199,27 +222,40 @@ Stage48 = first protected role pulse
 Stage49 = stronger escorted second pulse
 ```
 
-Do not tune Stage49 in isolation again. The next runner must carry class-identity constraints and wall state across Stage46→49.
+Do not tune Stage49 in isolation.
 
 ---
 
 # Exact replay boundary
 
-The class-identity group is directionally closed for design/handoff purposes.
-Committed/check-out-equivalent replay of the identity runner and other pending P4/P5 fidelity runners remains a watch.
-Do not restart this identity group from scratch merely because a new session begins.
+Completed now:
+- new integrated runner authored;
+- integration fixture authored;
+- local syntax compile of the authored runner content passed;
+- source-patch fidelity reviewed statically.
+
+Still pending:
+
+```text
+checkout-equivalent import/run of the new integrated runner
+repeat determinism/output admission
+numerical interpretation of Stage46-49 chain
+other pending P4/P5 exact fidelity replays
+```
+
+The current local execution environment cannot clone `github.com` because DNS resolution is unavailable; no exact output was fabricated from directional evidence.
 
 ---
 
 # Exact next boundary
 
-1. build identity-aware source-patched Stage46→49 normal-right-edge runner;
-2. carry wall current/max/absolute deficit through the four stages;
-3. scan Tank Lv31 damage contribution `0.20 / 0.25 / 0.30` while keeping control/barrier unchanged;
-4. add Rogue per-storm distinct-target count + ordinary one-shot breakpoint telemetry;
-5. keep Knight refined alignment metric, Archer line metric and Mage density metric as regression guards;
-6. then refine Stage49 packet chronology without breaking class identity;
-7. exact-admit pending fidelity runners when a byte-equivalent execution lane is available;
-8. later KNOCK parity, CRIT/CRITDMG policy, EXP/Lv feedback, P10/P10R.
+1. checkout-equivalent import/run of `run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py`;
+2. admit/fix only simulator fidelity if a guarded source patch fails;
+3. review Tank `0.20 / 0.25 / 0.30` survival-vs-clear behavior;
+4. review Rogue distinct-target cleanup and ordinary one-dagger runtime events;
+5. confirm Knight/Archer/Mage targeted regressions;
+6. inspect `endActive` and decide whether stage-boundary backlog fidelity must be raised before interpretation;
+7. only then refine Stage49 frontmost/escort chronology;
+8. later KNOCK parity, CRIT/CRITDMG policy, real shop acquisition timing/EXP feedback, P10/P10R.
 
 P6 remains blocked pending P5 closure.
