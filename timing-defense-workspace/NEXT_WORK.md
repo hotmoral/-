@@ -10,127 +10,148 @@ Updated: 2026-10-23 KST
 
 ## Mandatory operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_11.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_12.yaml`
 
 Live remote wins.
 
 ---
 
-# ACTIVE PHASE — P4-D2 / STAGE48–49 DYNAMIC ROTATING-GRAMMAR FEEDBACK
+# ACTIVE PHASE — P4-D2 TEMPORAL CADENCE-FIDELITY CORRECTION
 
-Completed inside P4-D2:
+Completed/approved:
 
 ```text
-P4-D1 power-fantasy + Stage46 mastery-gate direction = USER APPROVED_WITH_MODIFICATION
-P4-D2 current-nine-roster static response = COMPLETE
-P4-D2 stateful temporal Stage46 stress = COMPLETE / CANDIDATE PRESSURE ENVELOPE FOUND
-Archer Lv31 wider real gameplay corridor = USER APPROVED
-Archer width role-alignment proxy = COMPLETE / MID_ADJACENT diagnostic center preferred
-Stage48–49 static grammar reset proxy = COMPLETE / ROTATING_GRAMMAR direction supported
+P4-D1 Lv31 power-fantasy + Stage46 mastery gate = USER APPROVED_WITH_MODIFICATION
+Stage46 pressure-existence probe = CANDIDATE PRESSURE ENVELOPE FOUND
+Archer Lv31 wider real straight corridor = USER APPROVED
+Stage48–49 static rotating-grammar proxy = DIRECTION SUPPORTED
 ```
 
-Current authority/evidence:
-- `legacy-game-structure/95_P4D2_STAGE46_STATEFUL_TEMPORAL_PRESSURE_PROBE_V0_1.md`
-- `legacy-game-structure/96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md`
-- `legacy-game-structure/97_P4D2_ROLE_ALIGNMENT_AND_ARCHER_WIDTH_PROBE_V0_1.md`
-- `legacy-game-structure/98_P4D2_STAGE48_49_GRAMMAR_RESET_PROXY_V0_1.md`
+New methodology authority:
+- `legacy-game-structure/99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md`
 
 ---
 
-# Approved Archer Lv31 principle
+# Why execution order changed
 
-`Sky-Piercing Arrow`:
-- one locked straight final projectile/ray;
-- no homing/bending/off-line retarget;
-- unlimited penetration depth inside actual corridor;
-- **gameplay collision corridor wider than ordinary/Lv26 Archer arrows**.
-
-Exact width remains provisional.
-
-Current geometry abstraction:
+The prior temporal kernel used one root interval for all classes:
 
 ```text
-NARROW       -> insufficient final-arrow width expression
-MID_ADJACENT -> preferred current diagnostic center
-FULL5        -> overbroad comparison endpoint; erases protected positioning
+1.125s
 ```
 
-Per-target `2.30` remains only a continuity-center candidate, not a production freeze.
+Recovered Rogue Lv16 parity authority says:
+
+```text
+PERFECT-containing attack recovery: 390ms -> 312ms
+exact recovery delta: -78ms
+```
+
+Therefore the old common-cadence lane remains useful for pressure/geometry existence, but it cannot alone decide Rogue-vs-other-class miss tolerance.
+
+Do not treat Assassin Rhythm as blanket 20% whole-cycle speed.
 
 ---
 
-# Current provisional Lv31 centers — not frozen
+# Required lanes
+
+## Lane U — COMMON_1P125
 
 ```text
-Knight: second wave 1.00
-Rogue: 16 daggers × .45
-Tank: shockwave .75 / KB ×2.5 / barrier 250-for-6s candidate
-Archer: per-target 2.30 / wider straight corridor / MID_ADJACENT diagnostic center
-Mage: stage .75 / radius1.25 candidate
+all classes root interval candidate = 1.125s
 ```
 
-No evidence currently justifies reducing Rogue projectile count or reversing Archer width approval.
+Purpose:
+- continuity with document95;
+- broad pressure-existence comparison.
+
+## Lane R — Rogue recovery-delta sensitivity
+
+```text
+Rogue candidate interval = 1.125 - .078 = 1.047s
+```
+
+Purpose:
+- preserve recovered exact 78ms recovery delta without inventing a new whole-cycle rule.
+
+`1.047s` is diagnostic only, not production freeze.
 
 ---
 
-# Stage48–49 pressure-grammar direction
+# Grammar timeline correction
 
-Use four rotating pressure families:
+Do not use hardcoded assumptions such as:
 
 ```text
-A LINE_ESCORT
-B CLUSTER_CASCADE
-C FRONTLINE_BREACH
-D DURABLE_SCATTER
+Heavy4 = SCATTER
+Heavy5 = LINE
+...
 ```
 
-Static reset proxy conclusion:
-`ROTATING_GRAMMAR_CAN_DISTRIBUTE_CLASS_VULNERABILITY`.
+Once cadence differs, Heavy/P×P timing shifts relative to 4.6s pressure cycles.
 
-The point is not equal damage.
-The point is that each class should periodically encounter a grammar that exploits its natural geometry/control limitation if a P×P reset is missed.
+Correct method:
 
-Examples:
-- Archer premium on earned LINE alignment, weak against wide scatter.
-- Mage premium on dense CLUSTER, weak against widely separated durable pressure.
-- Knight premium on bounded FRONTLINE disruption.
-- Rogue premium on sustained tracking/multihit but not universal swarm deletion.
-- Tank gains time/control globally; raw immediate kill count must not be used alone to judge it.
+```text
+actual Heavy timestamp
+-> pressure cycle index
+-> active grammar label
+-> choose miss suite by grammar relation
+```
+
+Required grammar labels:
+
+```text
+LINE_ESCORT
+CLUSTER_CASCADE
+FRONTLINE_BREACH
+DURABLE_SCATTER
+```
+
+---
+
+# Existing Stage48–49 assets
+
+- `legacy-game-structure/data/p4d2_stage48_49_dynamic_rotating_grammar_fixture_v0_1.json`
+- `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_1.py`
+
+Current status:
+
+```text
+fixture = PREFLIGHT INPUT
+runner v0.1 = COMMON-CADENCE PREFLIGHT ONLY
+class-fairness admission = NO
+```
+
+They must not be used as final evidence until the cadence/timestamp mapping correction is applied.
+
+---
+
+# Current provisional Lv31 centers — unchanged
+
+```text
+Knight  second wave 1.00
+Rogue   16 daggers × .45
+Tank    shockwave .75 / KB ×2.5 / barrier250-for-6s candidate
+Archer  2.30 / wider straight corridor / MID_ADJACENT diagnostic center
+Mage    stage .75 / radius1.25
+```
+
+No current evidence justifies changing these while simulation fidelity is being corrected.
 
 ---
 
 # Exact next work
 
-Run a bounded **dynamic repeated-miss rotation probe**:
-
-1. rotate A/B/C/D grammar cycles over time;
-2. use current nine-roster provisional monster anchors;
-3. use current Lv31 working centers;
-4. compare:
-   - all P×P successful;
-   - one missed P×P;
-   - two consecutive missed P×P;
-5. record:
-   - burial time / end wall;
-   - active backlog;
-   - recovery after isolated miss;
-   - recovery after consecutive misses;
-   - CHARGER windup/interrupt opportunities;
-   - SIEGER standoff/windup/reposition/shot opportunities;
-   - SPLITTER parent/child rebound expression;
-6. change encounter grammar/ordering before class coefficients if divergence is caused by composition;
-7. keep exact Stage48–49 recipe and final EXP unfrozen.
-
----
-
-# Still open after dynamic grammar probe
-
-- Stage46 Lv31 acquisition fairness (`97/98/99%` are candidate checkpoints only);
-- exact Archer width numeric calibration;
-- exact Lv31 coefficients/counts;
-- Rogue future 2P/3P/4P projectile-volume performance stress;
-- final EXP convergence at mandatory P10R;
-- exact Stage46–50 campaign authoring later in dependency order.
+1. create cadence-corrected Stage48–49 runner/replay lane;
+2. explicitly label output with cadence model;
+3. map Heavy timestamps to active grammar;
+4. generate grammar-aligned one-miss and two-consecutive-miss suites dynamically;
+5. run common-cadence lane;
+6. run Rogue -78ms recovery sensitivity;
+7. compare burial/end-wall/backlog/role-expression direction;
+8. classify any `miss > success` outcome as target-order/authoring WATCH;
+9. only after this admit Stage48–49 class miss-tolerance conclusions.
 
 ---
 
@@ -138,13 +159,13 @@ Run a bounded **dynamic repeated-miss rotation probe**:
 
 No user decision is currently pending.
 
-Stop for user decision only if work requires:
-- changing a class's Lv31 identity;
-- reversing the approved Archer wider-corridor principle;
-- adding a code-level Lv31 gate;
-- hidden class/player-count EXP compensation;
+Stop only if work requires:
+- changing a class Lv31 identity;
+- reversing approved Archer wider corridor;
+- adding code-level Lv31 gate;
+- adding hidden class/player-count EXP compensation;
 - freezing exact Stage46 possession threshold;
 - changing final EXP semantics;
 - production implementation/numerical freeze.
 
-P4-E remains blocked until P4-D2 closes.
+P4-E remains blocked pending P4-D2.
