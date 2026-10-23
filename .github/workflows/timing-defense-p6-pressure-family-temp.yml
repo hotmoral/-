@@ -1,0 +1,30 @@
+name: Timing Defense P6 pressure-family temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p6-pressure-family
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pressure-family:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p6-pressure-family
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run preflight twice and verify deterministic bytes
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_pressure_family_rotation_temp_v0_1.py > /tmp/run1.txt
+          cp p6_pressure_family_rotation_temp_v0_1.json /tmp/result1.json
+          python3 tools/run_p6_pressure_family_rotation_temp_v0_1.py > /tmp/run2.txt
+          cmp /tmp/result1.json p6_pressure_family_rotation_temp_v0_1.json
+          cat /tmp/run2.txt
