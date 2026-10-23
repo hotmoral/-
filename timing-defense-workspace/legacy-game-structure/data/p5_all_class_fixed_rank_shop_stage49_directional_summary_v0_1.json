@@ -1,0 +1,162 @@
+{
+  "archerMageAblationKey": {
+    "Archer": {
+      "0.3": {
+        "ATK_FORT_DEF": {"burialTime": null, "endWall": 1861.0, "kills": 130, "siegerShots": 2, "wallHits": 4},
+        "ATK_ONLY": {"burialTime": null, "endWall": 1600.0, "kills": 130, "siegerShots": 2, "wallHits": 4},
+        "DEF_ONLY": {"burialTime": 59.325, "endWall": 0.0, "kills": 111, "siegerShots": 7, "wallHits": 16},
+        "FORT_DEF": {"burialTime": null, "endWall": 226.562, "kills": 113, "siegerShots": 7, "wallHits": 16},
+        "FORT_ONLY": {"burialTime": null, "endWall": 115.0, "kills": 113, "siegerShots": 7, "wallHits": 16},
+        "NONE": {"burialTime": 57.025, "endWall": 0.0, "kills": 99, "siegerShots": 6, "wallHits": 16}
+      },
+      "0.4": {
+        "ATK_FORT_DEF": {"burialTime": null, "endWall": 1948.0, "kills": 130, "siegerShots": 2, "wallHits": 4},
+        "ATK_ONLY": {"burialTime": null, "endWall": 1600.0, "kills": 130, "siegerShots": 2, "wallHits": 4},
+        "DEF_ONLY": {"burialTime": null, "endWall": 23.75, "kills": 113, "siegerShots": 7, "wallHits": 16},
+        "FORT_DEF": {"burialTime": null, "endWall": 343.75, "kills": 113, "siegerShots": 7, "wallHits": 16},
+        "FORT_ONLY": {"burialTime": null, "endWall": 195.0, "kills": 113, "siegerShots": 7, "wallHits": 16},
+        "NONE": {"burialTime": 57.025, "endWall": 0.0, "kills": 99, "siegerShots": 6, "wallHits": 16}
+      }
+    },
+    "Mage": {
+      "0.3": {
+        "ATK_FORT_DEF": {"burialTime": null, "endWall": 776.113, "kills": 113, "siegerShots": 9, "wallHits": 7},
+        "ATK_ONLY": {"burialTime": null, "endWall": 455.0, "kills": 113, "siegerShots": 9, "wallHits": 7},
+        "DEF_ONLY": {"burialTime": 54.625, "endWall": 0.0, "kills": 95, "siegerShots": 17, "wallHits": 9},
+        "FORT_DEF": {"burialTime": 55.525, "endWall": 0.0, "kills": 96, "siegerShots": 19, "wallHits": 10},
+        "FORT_ONLY": {"burialTime": 55.15, "endWall": 0.0, "kills": 95, "siegerShots": 18, "wallHits": 9},
+        "NONE": {"burialTime": 52.225, "endWall": 0.0, "kills": 92, "siegerShots": 16, "wallHits": 9}
+      },
+      "0.4": {
+        "ATK_FORT_DEF": {"burialTime": null, "endWall": 1227.25, "kills": 116, "siegerShots": 7, "wallHits": 5},
+        "ATK_ONLY": {"burialTime": null, "endWall": 825.0, "kills": 116, "siegerShots": 7, "wallHits": 5},
+        "DEF_ONLY": {"burialTime": 54.625, "endWall": 0.0, "kills": 95, "siegerShots": 17, "wallHits": 9},
+        "FORT_DEF": {"burialTime": 55.675, "endWall": 0.0, "kills": 96, "siegerShots": 20, "wallHits": 10},
+        "FORT_ONLY": {"burialTime": 55.35, "endWall": 0.0, "kills": 95, "siegerShots": 19, "wallHits": 9},
+        "NONE": {"burialTime": 52.225, "endWall": 0.0, "kills": 92, "siegerShots": 16, "wallHits": 9}
+      }
+    }
+  },
+  "crossClassFamiliesApplied": ["ATK", "FORTIFICATION", "DEFENSE"],
+  "deferredFamilies": ["KNOCKBACK", "CRIT", "CRITDMG"],
+  "noShopBaseline": {
+    "Archer": {"allFinalsMissedBurial": 57.025, "allSuccessActive": 6, "allSuccessWall": 2000.0},
+    "Knight": {"allFinalsMissedBurial": 34.025, "allSuccessActive": 21, "allSuccessWall": 1705.0},
+    "Mage": {"allFinalsMissedBurial": 52.225, "allSuccessActive": 3, "allSuccessWall": 2000.0},
+    "Rogue": {"allFinalsMissedBurial": 29.1, "allSuccessActive": 16, "allSuccessWall": 2000.0},
+    "Tank": {"allFinalsMissedBurial": 34.7, "allSuccessActive": 11, "allSuccessWall": 2000.0}
+  },
+  "scaleSummary": {
+    "0.3": {
+      "Archer": {"allFinalsMissedBurialRange": null, "allFinalsMissedEndActiveRange": [15,16], "allFinalsMissedEndWallRange": [1632.6,1861.0]},
+      "Knight": {"allFinalsMissedBurialRange": [35.2,38.9], "allFinalsMissedEndActiveRange": [24,27], "allFinalsMissedEndWallRange": [0.0,0.0]},
+      "Mage": {"allFinalsMissedBurialRange": null, "allFinalsMissedEndActiveRange": [26,27], "allFinalsMissedEndWallRange": [302.5,1087.875]},
+      "Rogue": {"allFinalsMissedBurialRange": [34.7,35.725], "allFinalsMissedEndActiveRange": [30,32], "allFinalsMissedEndWallRange": [0.0,0.0]},
+      "Tank": {"allFinalsMissedBurialRange": [36.325,37.05], "allFinalsMissedEndActiveRange": [30,31], "allFinalsMissedEndWallRange": [0.0,0.0]}
+    },
+    "0.4": {
+      "Archer": {"allFinalsMissedBurialRange": null, "allFinalsMissedEndActiveRange": [13,15], "allFinalsMissedEndWallRange": [1904.0,2032.0]},
+      "Knight": {"allFinalsMissedBurialRange": [36.7,39.15], "allFinalsMissedEndActiveRange": [24,26], "allFinalsMissedEndWallRange": [0.0,0.0]},
+      "Mage": {"allFinalsMissedBurialRange": null, "allFinalsMissedEndActiveRange": [23,27], "allFinalsMissedEndWallRange": [978.6,1687.8]},
+      "Rogue": {"allFinalsMissedBurialRange": [35.425,36.25], "allFinalsMissedEndActiveRange": [29,30], "allFinalsMissedEndWallRange": [0.0,0.0]},
+      "Tank": {"allFinalsMissedBurialRange": [36.325,37.225], "allFinalsMissedEndActiveRange": [29,31], "allFinalsMissedEndWallRange": [0.0,0.0]}
+    },
+    "0.5": {
+      "Archer": {"allFinalsMissedBurialRange": null, "allFinalsMissedEndActiveRange": [12,15], "allFinalsMissedEndWallRange": [2054.0,2140.0]},
+      "Knight": {"allFinalsMissedBurialRange": [39.3,40.5], "allFinalsMissedEndActiveRange": [22,24], "allFinalsMissedEndWallRange": [0.0,0.0]},
+      "Mage": {"allFinalsMissedBurialRange": null, "allFinalsMissedEndActiveRange": [23,26], "allFinalsMissedEndWallRange": [1442.5,1938.375]},
+      "Rogue": {"allFinalsMissedBurialRange": [36.325,38.45], "allFinalsMissedEndActiveRange": [28,29], "allFinalsMissedEndWallRange": [0.0,0.0]},
+      "Tank": {"allFinalsMissedBurialRange": [37.075,38.375], "allFinalsMissedEndActiveRange": [28,31], "allFinalsMissedEndWallRange": [0.0,0.0]}
+    }
+  },
+  "status": "DIRECTIONAL_RECONSTRUCTION_MATCHED_NO_SHOP_BASELINES_COMMITTED_RUNNER_REPLAY_PENDING",
+  "version": "p5-all-class-fixed-rank-shop-stage49-directional-summary-v0.1",
+  "watches": [
+    "P5_KNOCKBACK_KERNEL_COVERAGE_GAP",
+    "P5_STAGE49_POST_SHOP_PRESSURE_MARGIN_WATCH",
+    "FORTIFICATION_ATTRITION_ERASURE",
+    "SHOP_POWER_EXP_FEEDBACK_DISTORTION"
+  ],
+  "working40FirstBurialWithin8": {
+    "Knight": {
+      "BALANCED": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 557.65, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "FRONTLINE_BREACH": {"endWallAtLast": 1245.85, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 0.0, "firstBurial": 8, "lastMisses": 8},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 0.0, "firstBurial": 8, "lastMisses": 8}
+      },
+      "ROLE_AWARE": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 538.7, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "FRONTLINE_BREACH": {"endWallAtLast": 1234.3, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 0.0, "firstBurial": 8, "lastMisses": 8}
+      }
+    },
+    "Rogue": {
+      "BALANCED": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 306.55, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 0.0, "firstBurial": 6, "lastMisses": 6},
+        "FRONTLINE_BREACH": {"endWallAtLast": 1124.95, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7}
+      },
+      "ROLE_AWARE": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 465.8, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 0.0, "firstBurial": 6, "lastMisses": 6},
+        "FRONTLINE_BREACH": {"endWallAtLast": 1072.1, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7}
+      }
+    },
+    "Tank": {
+      "BALANCED": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 83.63, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "FRONTLINE_BREACH": {"endWallAtLast": 44.025, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7}
+      },
+      "ROLE_AWARE": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "DURABLE_SCATTER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "FRONTLINE_BREACH": {"endWallAtLast": 0.0, "firstBurial": 6, "lastMisses": 6},
+        "LINE_ESCORT": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 0.0, "firstBurial": 7, "lastMisses": 7}
+      }
+    },
+    "Archer": {
+      "BALANCED": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 2050.3, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 1655.05, "firstBurial": null, "lastMisses": 8},
+        "FRONTLINE_BREACH": {"endWallAtLast": 2217.7, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 2050.3, "firstBurial": null, "lastMisses": 8},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 1255.15, "firstBurial": null, "lastMisses": 8}
+      },
+      "ROLE_AWARE": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 2176.6, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 1795.9, "firstBurial": null, "lastMisses": 8},
+        "FRONTLINE_BREACH": {"endWallAtLast": 2176.6, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 2176.6, "firstBurial": null, "lastMisses": 8},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 1509.2, "firstBurial": null, "lastMisses": 8}
+      }
+    },
+    "Mage": {
+      "BALANCED": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 2320.0, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 2115.4, "firstBurial": null, "lastMisses": 8},
+        "FRONTLINE_BREACH": {"endWallAtLast": 2320.0, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 2320.0, "firstBurial": null, "lastMisses": 8},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 1966.6, "firstBurial": null, "lastMisses": 8}
+      },
+      "ROLE_AWARE": {
+        "CLUSTER_RECOVERY": {"endWallAtLast": 2280.0, "firstBurial": null, "lastMisses": 8},
+        "DURABLE_SCATTER": {"endWallAtLast": 2176.6, "firstBurial": null, "lastMisses": 8},
+        "FRONTLINE_BREACH": {"endWallAtLast": 2280.0, "firstBurial": null, "lastMisses": 8},
+        "LINE_ESCORT": {"endWallAtLast": 2280.0, "firstBurial": null, "lastMisses": 8},
+        "TIME_BUDGET_SIEGER": {"endWallAtLast": 2280.0, "firstBurial": null, "lastMisses": 8}
+      }
+    }
+  }
+}
