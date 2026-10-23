@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_overtake_handoff_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_single_role_pulse_feasibility_temp.py
 
 permissions:
   contents: read
@@ -20,29 +20,15 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage48 real-monster overtake-handoff diagnostic
+      - name: Run Stage48 single real-monster role-pulse feasibility diagnostic
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_overtake_handoff_temp.py > /tmp/handoff.json
+          python3 tools/run_p5_stage48_single_role_pulse_feasibility_temp.py > /tmp/single.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_overtake_handoff_temp.json').read_text())
-          slim=[]
-          for name,v in d['variants'].items():
-              for r in v['rows']:
-                  slim.append({
-                      'variant':name,'class':r['class'],
-                      'windups':r['windups'],'shots':r['shots'],'repositions':r['repositions'],
-                      'damagedBeforePrimary':r['damagedBeforePrimary'],
-                      'diedBeforePrimary':r['diedBeforePrimary'],
-                      'everPrimary':r['everPrimary'],
-                      'maxSecondsToPrimary':r['maxSecondsToPrimary'],
-                      'minDeathX':r['minDeathX'],
-                      'wallHits':r['wallHits'],'endWall':r['endWall'],
-                  })
-          print('P5_STAGE48_OVERTAKE_HANDOFF_SUMMARY='+json.dumps(slim,sort_keys=True))
-          print('P5_STAGE48_OVERTAKE_HANDOFF_AGG='+json.dumps({k:v['aggregate'] for k,v in d['variants'].items()},sort_keys=True))
+          d=json.loads(Path('p5_stage48_single_role_pulse_feasibility_temp.json').read_text())
+          print('P5_STAGE48_SINGLE_ROLE_PULSE='+json.dumps(d['rows'],sort_keys=True))
           PY
