@@ -5,12 +5,12 @@ Updated: 2026-10-23 KST
 ## Production executable checkpoint
 - v0.45 SIEGER FULL PASS
 - production branch `timing-defense-cloudflare-do-poc`
-- production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- last verified production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - production gameplay/numerical implementation remains frozen/unauthorized during planning and calibration
 
 ## Operating / recovery authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_9.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_10.yaml`
 
 Live remote and latest approved/superseding authority always win. Closed PASS/APPROVED work is not repeated without a concrete revalidation trigger.
 
@@ -18,7 +18,7 @@ Live remote and latest approved/superseding authority always win. Closed PASS/AP
 
 # Current phase
 
-**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-D1 USER APPROVED WITH MODIFICATION / P4-D2 ACTIVE**
+**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-D2 ACTIVE / ARCHER LV31 GAMEPLAY-WIDTH USER DECISION PENDING**
 
 Current chain:
 
@@ -28,25 +28,25 @@ P0 Foundation / role expression PASS_WITH_WATCHES
  -> P2 Modifier Pipeline / Power Attribution STRUCTURAL COMPLETE
  -> P3 Ten-Stage Persistent Run Kernel STRUCTURAL PASS
  -> P4 methodology USER APPROVED
- -> P4-A Marker-Only Inverse Design PASS
- -> P4-B Lv6→Lv21 feedback + multiplayer/timebase precheck COMPLETE
+ -> P4-A Marker inverse design PASS
+ -> P4-B feedback/multiplayer precheck COMPLETE
  -> R2 routing USER APPROVED
  -> P4-C1 Lv26 STRUCTURAL USER APPROVED
- -> P4-C2 Lv26 bounded feedback COMPLETE / PASS_WITH_WATCHES
- -> P4-D1 Lv31 power-fantasy + Stage46 mastery-gate direction USER APPROVED WITH MODIFICATION
- -> P4-D2 current-roster package/pressure-response probe COMPLETE / temporal feedback NEXT
+ -> P4-C2 Lv26 bounded feedback PASS_WITH_WATCHES
+ -> P4-D1 Lv31 power-fantasy + Stage46 mastery-gate USER APPROVED_WITH_MODIFICATION
+ -> P4-D2 current-roster static response COMPLETE
+ -> P4-D2 Stage46 stateful temporal stress COMPLETE / CANDIDATE PRESSURE ENVELOPE FOUND
+ -> Archer Lv31 gameplay-width principle USER DECISION PENDING
 ```
 
 P4-D1 authority:
 - `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 
-P4-D2 evidence stack:
-- `legacy-game-structure/92_P4D2_LV31_MASTERY_POWER_AND_STAGE46_PRESSURE_PREFLIGHT_V0_1.md`
-- `legacy-game-structure/93_P4D2_FIRST_PASS_LV31_POWER_ENVELOPE_AND_PRESSURE_TARGETS_V0_1.md`
+Latest P4-D2 evidence:
 - `legacy-game-structure/94_P4D2_LV31_CURRENT_ROSTER_PRESSURE_RESPONSE_PROBE_V0_1.md`
-- `legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json`
-- `legacy-game-structure/data/p4d2_lv31_pressure_probe_summary_v0_1.json`
-- `tools/run_p4d2_lv31_pressure_probe_v0_1.py`
+- `legacy-game-structure/95_P4D2_STAGE46_STATEFUL_TEMPORAL_PRESSURE_PROBE_V0_1.md`
+- `legacy-game-structure/data/p4d2_stage46_temporal_pressure_summary_v0_1.json`
+- `tools/run_p4d2_stage46_temporal_pressure_probe_v0_1.py`
 
 ---
 
@@ -61,40 +61,28 @@ P4-D2 evidence stack:
 - recoverable soft walls intended; hard class lockout forbidden.
 - current 9 monsters are V1 foundation, not lifetime roster cap.
 - combo40 belongs inside ordinary skilled play.
-- Lv31 acquisition transition target remains Stage41–45.
-- Stage46+ is an approved Lv31 mastery-gate pressure-regime direction.
+- Lv31 acquisition transition target = Stage41–45.
+- Stage46+ = approved Lv31 mastery-gate pressure regime direction.
 - Stage50 = final application, not first Lv31 tutorial.
 - material unresolved design choices require explicit user approval.
 
-Model-A bounded roster ladder remains:
-
-```text
-T1 G/R/B
-T2 +SH/F
-T3 +C/SP
-T4 +SUP/SI
-T5+ future
-```
-
 ---
 
-# R2 / EXP state
+# R2 / EXP remains open
 
-Authority:
-- `legacy-game-structure/79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
+Pure per-valid-turn EXP remains a provisional diagnostic baseline only.
+Mandatory P10R remains the future EXP/multiplayer-timebase reconvergence gate.
 
-Pure per-valid-turn EXP remains a **provisional diagnostic baseline only**.
-Still not final/frozen:
-- pure per-turn launch semantics;
+Still not frozen:
+- final EXP semantics;
+- exact XP_CREDIT/A6..A31;
 - Stage Quality Budget / Option D;
-- exact XP_CREDIT vector / A6..A31;
-- player-visible EXP scale;
-- hidden class/Tier/player-count correction.
+- hidden class/Tier/player-count corrections;
+- exact Stage46-entry Lv31 possession threshold.
 
-Mandatory P10R remains the future EXP / multiplayer-timebase reconvergence gate.
+Candidate Stage46 possession checkpoints remain `97/98/99%` only.
 
-Core watches remain:
+Core watches:
 
 ```text
 SOLO_PROGRESSION_DIVERGENCE_WATCH
@@ -105,29 +93,7 @@ MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
 
 ---
 
-# P4-C1 / C2 state
-
-P4-C1 authority:
-- `legacy-game-structure/88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md`
-
-P4-C2 evidence:
-- `legacy-game-structure/89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md`
-- `legacy-game-structure/data/p4c2_lv26_bounded_feedback_v0_1.json`
-
-Verdict:
-`PASS_WITH_WATCHES`.
-
-Carried findings:
-- offensive Lv26 power can reduce later timing/EXP opportunities through faster kills;
-- Tank can move the opposite way through control/extended lifetime;
-- Mage/SPLITTER child ordering and T4 SUPPORTER/SIEGER role expression remain watches;
-- no reason currently exists to reopen P4-C1.
-
----
-
 # P4-D1 approved late-run philosophy
-
-The user explicitly rejected pre-emptively shrinking Lv31 to fit the old late-game pressure envelope.
 
 Approved direction:
 
@@ -141,214 +107,204 @@ Stage46+ pressure redesigned to require and absorb that power
 
 Consequences:
 1. Do not pre-emptively nerf Lv31.
-2. `bounded graph` means finite and deterministic, not low event count.
-3. Stage46+ may bury a Lv31-less intended-skilled player through actual combat pressure.
-4. No code-level `Lv31 required` entry gate.
+2. `bounded graph` does not mean low event count.
+3. Lv31-less intended-skilled players may be buried by actual combat pressure.
+4. No code-level Lv31 requirement gate.
 5. Timing/combo/P×P maintenance is part of late-run mastery.
-6. A large Lv31 power cliff is intentional unless fair authoring/runtime/class identity cannot absorb it.
-7. Performance concerns are measured and engineered before being used as a design-nerf reason.
+6. Large Lv31 power cliff is intentional if fair late-run authoring can absorb it.
+7. Performance concerns are measured/engineered before being used as a design-nerf reason.
 
 Stage structure:
 
 ```text
-Stage41..45 = Lv31 acquisition / transition
-Stage46     = major pressure-regime jump
+Stage41..45 = acquisition / transition
+Stage46     = major pressure jump
 Stage46..47 = power revelation
 Stage48..49 = mastery pressure / combo-P×P maintenance
 Stage50     = full-kit final application
 ```
 
-Acquisition fairness remains mandatory. P4-D2/P4-E may test 97/98/99% Stage46-entry possession checkpoints, but no exact threshold is frozen.
-
 ---
 
-# P4-D2 current-roster pressure-response result
+# P4-D2 stateful temporal result
 
-Document 94 uses the **current nine-monster provisional roster**. The historical five-monster `PRESSURE_RECIPES_V1.md` is not admitted as current Stage46 evidence.
-
-The P4-D2 probe is deterministic and replayable:
+Replay package:
 
 ```text
-runner  = tools/run_p4d2_lv31_pressure_probe_v0_1.py
-fixture = legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json
-summary = legacy-game-structure/data/p4d2_lv31_pressure_probe_summary_v0_1.json
+runner  = tools/run_p4d2_stage46_temporal_pressure_probe_v0_1.py
+fixture = legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json
+summary = legacy-game-structure/data/p4d2_stage46_temporal_pressure_summary_v0_1.json
 RNG     = NONE
 ```
 
 Expected full-output SHA-256:
-`efdb369a6053bb83fcecb057ea733f4bdcabb56a333575dddf2dd4b87913e27d`
+`110ea2beb87dabb41b4d8dd48af61bbe97e21666413481a9f19df95507c75e75`
 
-This fixes the replayability weakness noted in P4-C2 for this new P4-D2 evidence lane. It does not freeze balance values.
+Runner Git blob SHA exactly matches the locally validated runner:
+`5965833f80422bd6cae94fea738706baf99a06e8`
 
-## Rogue
-P4-D2 count bracket remains:
+## Gate separation — FOUND
 
-```text
-12 / 16 / 20 real Dagger Storm projectiles
-working center = 16
-```
+Same 60s diagnostic current-nine-roster pressure envelope:
 
-More relevant Lv26→Lv31 comparison:
+### Lv26 + every input PERFECT
+All five buried:
 
 ```text
-Lv26 P×P package = 3.25 root-basis units
-12 daggers        = 5.40 = 1.66× Lv26
-16 daggers        = 7.20 = 2.22× Lv26
-20 daggers        = 9.00 = 2.77× Lv26
+Rogue   28.65s
+Tank    33.25s
+Knight  35.80s
+Archer  52.65s
+Mage    56.25s
 ```
 
-16 remains a strong but non-maximum center. No evidence supports reducing projectile count for performance reasons now.
-
-## Knight
-Second-wave `1.00` center yields an ideal two-pass corridor package about 2× the Lv26 one-wave corridor package before geometry/death effects.
-Static snapshots support continuing the strong two-pass candidate. `1.25` often saturates current provisional ordinary HP, so a stateful replenishment probe is more useful than static coefficient escalation.
-
-## Tank
-Center `.75 damage / ×2.5 knockback` creates substantial HP reduction plus roughly 1.2–1.3s mean base-translation time on survivors in current snapshots, before accounting for CHARGER windup cancellation, SIEGER reposition, or the 250/6s barrier candidate.
-Tank must not be judged by kill count alone; stateful control evidence is next.
-
-## Archer — magnitude correction required
-The one-unlimited-arrow structure remains valid, but the first-pass `1.00` per-target magnitude is too conservative.
-
-Lv26 aligned durable-target Triple Shot package:
+### Lv31 + every Heavy P×P successful
+All five survived:
 
 ```text
-1.00 + 0.65 + 0.65 = 2.30 root-basis units per target
+Knight wall 1175
+Rogue  wall 1330
+Tank   wall 2000
+Archer wall 2000
+Mage   wall 2000
 ```
-
-Therefore Lv31 at 1.00 provides only 43.5% of the Lv26 durable-target burst on a target struck by all three arrows and needs about 12 aligned targets merely to match the ideal five-target Lv26 total package.
 
 Classification:
-`STRUCTURE_PASS / MAGNITUDE_1.00_REVISE`.
+`CANDIDATE_PRESSURE_ENVELOPE_FOUND`.
 
-Next non-frozen continuity center:
+This is direct evidence that the user-approved design can be realized as real combat pressure rather than a code-level level lock.
+
+The 60s duration, 4.6s pressure cycle, 1.125s root cadence and five diagnostic bands are stress inputs only, not exact Stage46 authoring.
+
+---
+
+# Current provisional Lv31 centers
+
+## Knight
+`second wave 1.00` remains working center.
+Temporal sensitivity: .75 nearly collapses; 1.00 stabilizes; 1.25 largely saturates current fixture.
+
+## Rogue
 
 ```text
-Lv31 Sky-Piercing Arrow = 2.30 root basis per intersected target
-+ unlimited strict-line depth
-+ armor ignore
+12 daggers -> buried 41.90s
+16 daggers -> survives, wall 1330
+20 daggers -> wall 2000 / largely dominates fixture
 ```
 
-Why 2.30:
-- exactly compresses the existing `1.00+0.65+0.65` Triple Shot per-target package into one huge final arrow;
-- depth5 = Lv26 ideal five-target package parity;
-- depth8 ≈ 1.60× that package;
-- depth12 ≈ 2.40×;
-- off-line threats remain untouched, preserving class geometry.
+16 receives strong support as a working center. Still not frozen.
 
-2.30 is a **P4-D2 working center only**, not production freeze.
+## Tank
+Working center remains:
+
+```text
+shockwave .75 root basis
+knockback ×2.5
+barrier 250 / 6s candidate
+```
+
+1.00/stronger KB largely saturate this fixture. Targeted CHARGER/SIEGER alignment still required before final judgment.
 
 ## Mage
-Three-stage collapse center `.75` produces the intended spectacular density reset while remaining weak on strict-line geometry outside the circle.
-The static current-HP fixture often saturates at `.55/.75/1.00`, so static kill count cannot identify the final coefficient. The next discriminator must use replenishment, harder bodies, radius/geometry, and SPLITTER chronology rather than silently choosing the smallest value.
-
----
-
-# Cross-class reset differentiation
-
-At current centers in diagnostic pressure snapshots:
-- Archer dominates deep aligned lines.
-- Mage dominates dense clusters.
-- Rogue gives geometry-agnostic sequential cleanup.
-- Knight breaks a bounded frontline corridor.
-- Tank turns pressure into time + wall safety.
-
-This is the desired result: Lv31 does not collapse into five versions of a generic global nuke.
-
-Stage46+ therefore needs **mixed sequential pressure geometry**, not a single permanent formation that validates only one class.
-
----
-
-# High-mastery cadence implication
-
-Observed high-mastery device traces provide an upper-tail stress reference:
+Working center remains:
 
 ```text
-H0: 16 P×P / ~71.8s   -> ~4.49s per P×P
-H3: 14 P×P / ~65.649s -> ~4.69s per P×P
+three-stage .75
+radius sensitivity center 1.25
 ```
 
-These are not ordinary-skilled population fits.
+1.00 largely saturates. Radius is non-monotonic because chronology/target order changes.
 
-They do support the next P4-D2 temporal starting envelope:
-- after a successful final reset, dangerous pressure should plausibly reaccumulate on roughly a **4–5s non-frozen probe scale**;
-- otherwise a 100%-P×P high-mastery player may permanently trivialize the late band;
-- one missed P×P should create serious backlog;
-- repeated misses should create burial cascade by Stage48–49.
+## Archer — MATERIAL DECISION OPEN
+Document 94 found that the first 1.00 coefficient was too weak relative to Lv26 Triple Shot and moved the provisional per-target continuity center to `2.30`.
 
-Do not freeze a 4–5s spawn timer from this evidence. It is the next diagnostic envelope.
+The temporal probe found a separate geometry issue:
+- ordinary/narrow strict width: coefficients 1.00 / 1.50 / 2.00 / 2.30 all buried at 52.65s;
+- modestly wider **straight** final-arrow corridor: survives, while still remaining one locked non-homing shot.
 
----
+Therefore raw damage is not the missing variable in dispersed late pressure. Gameplay width is.
 
-# Current exact next boundary
+Candidate principle:
+- only Lv31 Sky-Piercing Arrow gets a gameplay collision corridor wider than ordinary/Lv26 arrows;
+- still one straight locked shot;
+- no homing/bending/off-line retarget;
+- unlimited depth inside the corridor;
+- exact width remains later P4-D2 calibration.
 
-**P4-D2 stateful temporal pressure probe**.
-
-Must test:
-1. 4–5s pressure-reaccumulation candidate envelope;
-2. Lv26-only backlog slope vs Lv31-center backlog slope;
-3. successful P×P vs one missed vs two consecutive missed P×P opportunities;
-4. CHARGER WINDUP cancellation/re-arm under Knight/Tank control;
-5. SIEGER standoff/first-shot/reposition opportunity;
-6. SPLITTER parent→child chronology during Mage collapse;
-7. SUPPORTER movement composition;
-8. Archer 2.30 as non-frozen continuity center;
-9. Rogue 12/16/20 with 16 center;
-10. no exact Stage46 authoring or production patch.
-
-P4-E remains blocked until P4-D2 closes.
+This principle is **not approved/frozen yet** because it changes proposal-90's earlier visual-only-width assumption.
 
 ---
 
-# Active watches
+# Miss-severity watch
+
+One missed P×P:
 
 ```text
-SOLO_PROGRESSION_DIVERGENCE_WATCH
-TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
-PLAYER_COUNT_SCALING_XP_DEPENDENCY
-MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
-LV26_T4_ROLE_EXPRESSION_WATCH
-LV26_MAGE_SPLITTER_ORDERING_WATCH
-LV26_TANK_MOVEMENT_COMPOSITION_WATCH
-LV31_CLASS_CLEAR_RATE_DIVERGENCE
-LV31_ROLE_EXPRESSION_ERASURE
-LV31_POWER_FANTASY_UNDERSHOOT
-LV31_ARCHER_MAGNITUDE_CONTINUITY_WATCH
-STAGE46_LV31_ACQUISITION_FAIRNESS
-STAGE46_LV31_ABSENCE_BURIAL_BEHAVIOR
-STAGE46_PRESSURE_INSUFFICIENT_FOR_LV31
-PXP_COMBO_MAINTENANCE_MASTERY_PRESSURE
-ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
+Knight wall 900
+Rogue  wall 175
+Tank   wall 1981
+Archer wall 2000
+Mage   wall 2000
 ```
+
+Two consecutive misses:
+
+```text
+Knight wall 255
+Rogue  buried 49.70s
+Tank   wall 1837
+Archer wall 1940
+Mage   wall 2000
+```
+
+This is significant class divergence.
+First repair layer is Stage48–49 encounter grammar/geometry, not hidden class-specific buffs or silent final-skill nerfs.
 
 ---
 
-# Route after P4-D2
+# Monster-role watch
+
+All-success Lv31 temporal stress showed:
+- Knight/Rogue still allow substantial CHARGER/SIEGER expression;
+- Tank/Mage and partly Archer often remove threats before role expression.
+
+This is not an automatic failure in Stage46+ mastery, but exact late-band authoring must run targeted role-alignment probes before freeze.
+
+Do not patch monster HP first.
+
+---
+
+# Current user decision gate
+
+**P4-D2 Archer Lv31 gameplay-width principle**
+
+Options:
 
 ```text
-P4-D2 bounded mastery/power/pressure feedback
- -> P4-E provisional player-power-spine closure WITH EXP WATCHES
- -> P5/P6/P7/P8
- -> P10 current-roster multiplayer scaling baseline
- -> P10R mandatory EXP / multiplayer-timebase reconvergence
- -> P11+ only after converged EXP dependency is available
+A — approve a wider straight gameplay collision corridor for Sky-Piercing Arrow; exact width remains provisional
+B — keep gameplay width identical to ordinary/Lv26 arrows; solve Stage46 dispersed pressure another way
+C — request more geometry analysis before deciding
 ```
+
+Until decision:
+- Archer wider geometry remains candidate only;
+- P4-D2 remains active;
+- P4-E remains blocked;
+- production remains unchanged.
 
 ---
 
 # Still not frozen
 
-- Lv26 production numbers/implementation
-- Lv31 exact production values
+- exact Lv31 production numbers
 - Archer 2.30 production coefficient
-- Rogue final dagger count (16 is working center only)
-- Stage46 exact possession threshold
-- exact Stage46–50 encounter numbers/compositions/cadence
-- final EXP semantics/values
-- shop/economy / Base HP
-- stars/achievements numerical power
-- boss values
-- multiplayer combat/progression scaling
-- production numerical implementation
-
-No production gameplay source was changed by P4-C/D planning work.
+- Archer gameplay width
+- Rogue final 16 count
+- exact Stage46–50 compositions/cadence
+- 4.6s pressure cycle / 1.125s root cadence
+- exact Stage46 possession threshold
+- final EXP semantics
+- shop/economy/Base HP
+- permanent progression
+- boss/multiplayer scaling
+- production implementation
