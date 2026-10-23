@@ -190,8 +190,9 @@ The legacy prototype values are not carried over as production authority.
 
 Known reason:
 - Stage1..49 common clear reward under the old formula ~= 17,395;
-- six legacy Rank10 tracks cost ~= 16,350 total;
-- therefore clear reward alone could approximately full-max the entire shop by Stage48;
+- six legacy Rank10 tracks cost **16,360** total under the prototype's positive-value JavaScript `Math.round` cost semantics;
+- an earlier 16,350 precheck figure used banker-rounding on some `.5` category costs and is superseded by the exact 16,360 reference;
+- clear reward alone could therefore approximately full-max the entire shop by Stage48;
 - individual tracks saturated around Stage16–18.
 
 This violates the new late-run choice constraint.
