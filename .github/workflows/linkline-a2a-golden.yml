@@ -89,7 +89,7 @@ jobs:
           test "$(git hash-object linkline/tests/oracles/a3_calibration_selection_oracle.py)" = "edbe248b19fc48683f1a0b19ca989f5f91e2c317"
           test "$(git hash-object linkline/tests/fixtures/a3_calibration_selection_golden_v1.json)" = "bd328d78e661d29b43af91bc60279084f7bd42b0"
           test "$(git hash-object linkline/tests/test_a3_calibration_selection_oracle.py)" = "0483fa1c01e862649211ccb84c215536ac705eb6"
-          test "$(git hash-object linkline/tests/test_a3_calibration_set.py)" = "d6cca953fa3e1d6b42cfd5c2bc036d0b965c8f34"
+          test "$(git hash-object linkline/tests/test_a3_calibration_set.py)" = "542d2aaf5cd0f27782b61f64d8b4e24ae258de10"
 
       - name: Verify frozen dependencies
         shell: bash
