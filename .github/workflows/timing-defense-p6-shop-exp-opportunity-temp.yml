@@ -1,0 +1,42 @@
+name: Timing Defense P6 Shop EXP Opportunity temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p6-shop-exp-opportunity
+    paths:
+      - timing-defense-workspace/tools/run_p6_shop_exp_opportunity_attribution_temp.py
+      - .github/workflows/timing-defense-p6-shop-exp-opportunity-temp.yml
+
+permissions:
+  contents: read
+
+jobs:
+  p6-shop-exp-opportunity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p6-shop-exp-opportunity
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run twice and verify deterministic bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_shop_exp_opportunity_attribution_temp.py > /tmp/run1.txt
+          cp p6_shop_exp_opportunity_attribution_temp.json /tmp/result1.json
+          python3 tools/run_p6_shop_exp_opportunity_attribution_temp.py > /tmp/run2.txt
+          cmp /tmp/result1.json p6_shop_exp_opportunity_attribution_temp.json
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p=Path('p6_shop_exp_opportunity_attribution_temp.json')
+          d=json.loads(p.read_text())
+          print('SHA256='+hashlib.sha256(p.read_bytes()).hexdigest())
+          print('P6_SHOP_EXP_SKILLED='+json.dumps(d['aggregate']['skilled'],sort_keys=True))
+          print('P6_SHOP_EXP_ALL_PERFECT='+json.dumps(d['aggregate']['allPerfect'],sort_keys=True))
+          PY
