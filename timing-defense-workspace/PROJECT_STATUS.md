@@ -10,7 +10,7 @@ Updated: 2026-10-23 KST
 
 ## Operating / recovery authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_14.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_15.yaml`
 
 Live remote and latest approved/superseding authority always win.
 Closed PASS/APPROVED work is not repeated without a concrete revalidation trigger.
@@ -19,7 +19,7 @@ Closed PASS/APPROVED work is not repeated without a concrete revalidation trigge
 
 # Current phase
 
-**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-D2 ACTIVE / DURABLE TEMPORAL DIRECTION SUPPORTED / TANK BARRIER FIDELITY CORRECTED / V0.3 EXACT REPLAY + ROLE-PULSE REFINEMENT NEXT**
+**P4 — FULL PLAYER POWER SPINE CANDIDATE / P4-D2 ACTIVE / DURABLE TEMPORAL DIRECTION SUPPORTED / TANK BARRIER FIDELITY CORRECTED / STAGE49 TIME-BUDGET ROLE MODULE PROMISING / V0.3 EXACT REPLAY + FULL ROTATION CHECK NEXT**
 
 Current chain:
 
@@ -36,7 +36,8 @@ P0..P3 structural foundation complete
  -> armored durable static pressure axis SUPPORTED
  -> durable temporal pressure direction SUPPORTED
  -> Tank barrier-family simulator defect CONFIRMED / v0.3 correction prepared
- -> exact v0.3 replay + Tank time-budget / Mage margin refinement = NEXT
+ -> Stage49 Tank time-budget role module PROMISING
+ -> exact v0.3 replay + full complementary grammar integration = NEXT
 ```
 
 Latest authority/evidence:
@@ -47,6 +48,7 @@ Latest authority/evidence:
 - `legacy-game-structure/101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md`
 - `legacy-game-structure/102_P4D2_DURABLE_TEMPORAL_PRESSURE_DIRECTIONAL_PROBE_V0_1.md`
 - `legacy-game-structure/103_P4D2_TANK_BARRIER_FIDELITY_CORRECTION_V0_1.md`
+- `legacy-game-structure/104_P4D2_STAGE49_TANK_TIME_BUDGET_ROLE_PULSE_PREFLIGHT_V0_1.md`
 - `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_3.py`
 
 ---
@@ -96,73 +98,42 @@ Consequences:
 
 ---
 
-# Cadence / no-target fidelity
+# Methodology fidelity
 
-Recovered Rogue Lv16 authority:
+Rogue Lv16 recovery authority:
 
 ```text
-Assassin Rhythm recovery390ms ->312ms
-exact recovery delta=-78ms
+390ms ->312ms
+exact delta=-78ms
 ```
 
 Class-fairness diagnostics preserve:
 
 ```text
 COMMON_1P125_NO_BANK
-ROGUE_RECOVERY_DELTA_78MS_NO_BANK = 1.047s sensitivity
+ROGUE_RECOVERY_DELTA_78MS_NO_BANK =1.047s sensitivity
 NO_TARGET_OPPORTUNITIES_DO_NOT_BANK
 ```
 
-`1.047s` is not a production whole-cycle freeze.
-
-Rogue conclusion remains:
-- one isolated missed final is recoverable in the corrected sensitivity lane;
-- two consecutive missed finals can produce burial;
-- no Rogue nerf/hidden compensation is justified from the old common-cadence result.
-
----
-
-# Tank barrier-family fidelity correction
-
-Tank T-B contract requires one shared non-additive barrier family:
+Tank T-B barrier family additionally requires:
 
 ```text
-Lv31 Absolute Barrier -> 250 / 6s candidate
-Lv16 Perfect Guard    -> 80 / 3s
+Lv31 Absolute Barrier ->250 /6s candidate
+Lv16 Perfect Guard ->80 /3s
 weaker Lv16 guard may NOT downgrade an active Lv31 barrier
 ```
 
-The old Stage46/v0.2 temporal implementation overwrote active `250` with `80` on the next ordinary PERFECT.
+The old Stage46/v0.2 runner violated this and is pre-correction Tank evidence only.
+Future Tank class-fairness replay authority is v0.3.
+Exact v0.3 repository-checkout execution/hash remains pending.
 
-Classification:
-
-```text
-TANK_BARRIER_FAMILY_FIDELITY_DEFECT = CONFIRMED
-v0.2 Tank miss-severity = PRE-CORRECTION ONLY
-v0.3 = required future class-fairness runner
-```
-
-Bounded corrected directional examples:
+Corrected directional Tank examples:
 
 ```text
-Distributed durable, two misses:
-  old Tank wall1584 -> corrected1924
-
-Strong durable role pulse:
-  one miss 1301 ->1661
-  two miss 1073 ->1497
-
-Durable + SUPPORTER/SIEGER:
-  one miss 1226 ->1661
-  two miss 1092 ->1480
+Distributed durable / two misses: 1584 ->1924
+Strong durable role pulse: one1301->1661 / two1073->1497
+Durable+SUPPORTER/SIEGER: one1226->1661 / two1092->1480
 ```
-
-Interpretation:
-- Tank is even more clearly a time-budget/control class;
-- do not nerf Absolute Barrier or invalidate knockback;
-- late authoring should consume the time Tank buys via staggered second/third pulses.
-
-Exact v0.3 repository-checkout replay is still pending.
 
 ---
 
@@ -190,7 +161,7 @@ armor multiplier.55
 knock resistance.65
 ```
 
-Static class separation remains useful:
+Static class separation:
 
 ```text
 Knight removes ~65.4%
@@ -200,23 +171,21 @@ Archer removes ~94.9% via armor ignore
 Mage primary removes ~24.8%
 ```
 
-Distributed vs clustered durable pressure remains the key Mage authoring lever:
+Mage positional contrast:
 
 ```text
-Mage distributed 60s stress wall trajectory:
+Distributed durable 60s stress:
 30s2000 ->40s1360 ->45s1040 ->50s720 ->55s400 ->60s80
 
-Mage clustered durable stress:
+Clustered durable stress:
 60s wall2000
 ```
 
-Thus Mage has both a weakness and a positional answer.
-
-Tank control ablation remains decisive:
+Tank control ablation:
 
 ```text
-repeated distributed durable, control present -> wall2000 / no durable wall contacts
-same directional stress without Tank push      -> wall816 / 16 durable wall contacts
+control present -> wall2000 / no durable wall contacts
+push removed -> wall816 /16 durable wall contacts
 ```
 
 Therefore:
@@ -230,11 +199,56 @@ NEW_MONSTER_APPROVED = NO
 NUMERICAL_FREEZE = NO
 ```
 
+The user's BRUTE carrying/using SHIELD-like protection idea is parked for later monster identity/design work only.
+
+---
+
+# Stage49 Tank time-budget role module — promising
+
+A lighter role-specific module was directionally checked:
+
+```text
+one durable threat every second pressure cycle
++
+three readable SIEGER threats every second cycle
++
+role pulse arrives after the initial reset window
+```
+
+This is **one rotating grammar candidate**, not a full Stage49 recipe.
+
+All-success directional wall:
+
+```text
+Knight 2000
+Rogue  2000
+Tank   2000
+Archer 1325
+Mage   1850
+```
+
+Tank consecutive missed-final sensitivity under barrier-corrected semantics:
+
+```text
+2 misses ->1855
+3 ->1785
+4 ->1370
+5 ->831
+6 ->121
+```
+
+Interpretation:
+- Tank may legitimately have a larger mistake budget because control/protection is its identity;
+- sustained failure still exhausts the time budget;
+- Mage all-success margin is much healthier than the previous over-aggressive role pulse;
+- Knight/Rogue are not the first casualties in this module;
+- Archer off-corridor SIEGER exposure is the principal geometry watch.
+
+Do **not** make this module the whole late stage. It must rotate with complementary line/frontline/cluster/scatter grammars that pressure other class vulnerabilities.
+
 ---
 
 # Stage48 / Stage49 authoring direction
-
-Current best direction is staged rather than one universal recipe.
 
 ```text
 Stage48-like
@@ -244,21 +258,26 @@ Stage48-like
   all-success clearly recoverable
 
 Stage49-like
-  durable backlog persists
-  protected role second/third pulse
-  Mage receives distributed pressure but still gets cluster-recovery windows
-  Tank succeeds by repeatedly buying time; missed windows consume that time budget
+  rotate complementary grammars
+  include the Tank time-budget durable/SIEGER module
+  keep Mage distributed-pressure and cluster-recovery windows
+  alternate Archer-aligned and off-axis role threats
+  use other grammars to pressure Knight/Rogue
 ```
 
-A universal every-cycle `durable + SIEGER + CHARGER` pattern was directionally too harsh, especially for Mage, and is rejected as the default recipe.
+Rejected as default:
 
-The user's visual idea such as a BRUTE carrying/using SHIELD-like protection is parked for future monster identity/design work only. It is not current roster authority.
+```text
+every-cycle durable + SIEGER + CHARGER
+```
+
+because it can overpressure Mage even on successful-final play.
 
 ---
 
-# Archer chronology watch
+# Active Archer watch
 
-`LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH = HIGH` remains active.
+`LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH = HIGH`
 
 Inspect before changing Archer power/width:
 1. SPLITTER death/child spawn chronology;
@@ -266,7 +285,7 @@ Inspect before changing Archer power/width:
 3. CHARGER/SIEGER exposure;
 4. encounter ordering.
 
-Do not reverse the user-approved wider Archer corridor from current evidence.
+Also keep `P4D2_ARCHER_ROLE_PULSE_GEOMETRY_WATCH` active: rotate aligned and off-axis SIEGER pulses rather than making off-corridor punishment constant.
 
 ---
 
@@ -280,17 +299,18 @@ Candidate Stage46 possession checkpoints remain `97/98/99%`; no exact threshold 
 
 # Exact next boundary
 
-**P4-D2 — V0.3 EXACT REPLAY + TANK TIME-BUDGET ROLE PRESSURE / MAGE MARGIN REFINEMENT**
+**P4-D2 — V0.3 EXACT REPLAY + FULL ROTATING GRAMMAR INTEGRATION**
 
 Next:
 1. execute `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_3.py` in repo checkout;
-2. establish exact v0.3 replay hash and supersede v0.2 for Tank class-fairness use;
-3. refine Stage49 second/third pulse timing around true Tank barrier uptime;
-4. preserve Tank push/slow as a valid answer;
-5. increase Mage all-success margin relative to the strongest durable role-pulse candidate while keeping distributed pressure meaningful;
-6. keep Knight/Rogue from becoming the first casualties of generic pressure inflation;
-7. trace Archer chronology separately;
-8. reassess P4-D2 provisional closure with explicit watches.
+2. establish exact v0.3 replay hash;
+3. supersede v0.2 Tank class-fairness numbers;
+4. integrate the light Tank time-budget role module into a full rotating Stage49 diagnostic grammar;
+5. alternate Archer-aligned/off-axis SIEGER geometry;
+6. preserve Mage cluster-recovery windows;
+7. verify complementary grammars still pressure Knight/Rogue;
+8. continue Archer chronology investigation;
+9. reassess P4-D2 provisional closure with explicit watches.
 
 No user decision is currently pending.
 P4-E remains blocked until P4-D2 closes.
