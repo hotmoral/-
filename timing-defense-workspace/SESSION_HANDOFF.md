@@ -3,38 +3,27 @@
 Updated: 2026-10-23 KST
 
 ## Recovery rule
-Never reconstruct current state from chat, memory or copied SHAs alone. Always fetch live remote first.
+Always fetch live remote first. Do not reconstruct current state from chat/memory/copied SHA alone.
 
 Read/check in this order:
-1. live branch `timing-defense-workspace` HEAD
+1. live `timing-defense-workspace` HEAD
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
 4. `CHARACTER_PROFILE_RADAR_V1.md`
 5. `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-6. `legacy-game-structure/data/system_dependency_calibration_order_v0_26.yaml`
+6. `legacy-game-structure/data/system_dependency_calibration_order_v0_27.yaml`
 7. `legacy-game-structure/129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md`
 8. `legacy-game-structure/130_P5_CLASS_IDENTITY_FINITE_PACKET_PROBE_PREFLIGHT_V0_1.md`
-9. `legacy-game-structure/data/p5_class_identity_radar_invariants_v0_1.yaml`
-10. `legacy-game-structure/data/p5_class_identity_radar_probe_fixture_v0_1.json`
-11. `tools/run_p5_class_identity_radar_probe_v0_1.py`
-12. `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
-13. `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
-14. `legacy-game-structure/128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md`
-15. `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
-16. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py`
-17. `tools/run_p4d2_stage49_full_rotation_probe_v0_3.py`
-18. current production/harness heads
+9. `legacy-game-structure/131_P5_CLASS_IDENTITY_FIRST_DIRECTIONAL_RESULT_V0_1.md`
+10. `legacy-game-structure/data/p5_class_identity_radar_invariants_v0_1.yaml`
+11. `legacy-game-structure/data/p5_class_identity_radar_probe_fixture_v0_1.json`
+12. `tools/run_p5_class_identity_radar_probe_v0_1.py`
+13. `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
+14. `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
+15. `legacy-game-structure/128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md`
+16. current production/harness heads
 
-Historical/supersession notes:
-- doc113 is superseded where conflicting with docs115/116;
-- doc114's `16350` full-shop figure is superseded by exact positive-JS-rounding `16360`;
-- any old Fortification wording implying prior absolute damage is healed is superseded by doc125;
-- doc126's mid-field `spawnX` is spatial-pressure proof only, not implementation direction;
-- all actual enemies must continue to enter from the normal right edge;
-- character radar values are now an active balance-identity guard through doc129;
-- wall survival alone must not be interpreted as Tank solo-clear quality.
-
-Do not rerun closed P1/P2/P3/P4 wholesale solely because a new session starts.
+Do not rerun closed P1/P2/P3/P4 wholesale because of session restart.
 
 ---
 
@@ -42,22 +31,22 @@ Do not rerun closed P1/P2/P3/P4 wholesale solely because a new session starts.
 
 Planning:
 - `timing-defense-workspace`
-- fetch exact live HEAD after recovery.
+- fetch live HEAD on recovery.
 
 Production:
 - `timing-defense-cloudflare-do-poc`
-- last verified HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- last verified `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - v0.45 SIEGER FULL PASS
 - gameplay/numerical changes unauthorized.
 
-Calibration harness:
+Harness:
 - `timing-defense-skilled-v2-harness-v01`
-- last verified HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
-- current P5 work did not change it.
+- last verified `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
+- unchanged by P5 work.
 
 ---
 
-# Current exact phase
+# Current phase
 
 ```text
 P0 = PASS_WITH_WATCHES
@@ -65,160 +54,156 @@ P1 = USER_APPROVED_STRUCTURAL_COMPLETE
 P2 = USER_APPROVED_STRUCTURAL_COMPLETE
 P3 = STRUCTURAL_PASS_COMPLETE
 P4 = PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
-P5 A2 structural contract = USER_APPROVED
-P5 five-class fixed-rank shop combat = DIRECTIONAL COMPLETE
-P5 KNOCK cross-class = DEFERRED_KERNEL_COVERAGE_GAP
-P5 Fortification deficit invariant = CONFIRMED
-P5 right-edge escorted Stage46-49 search = PROMISING DIRECTIONAL
-P5 class identity radar gate = USER-DIRECTED ACTIVE
-P5 finite-packet identity runner + fixture = AUTHORED / EXECUTION PENDING
-P5 = ACTIVE / COMMITTED IDENTITY PROBE EXECUTION NEXT
+P5 A2 = USER_APPROVED
+P5 right-edge Stage46-49 direction = PROMISING DIRECTIONAL
+P5 radar identity gate = ACTIVE
+P5 finite-packet identity runner/fixture = AUTHORED
+P5 first identity result = DIRECTIONAL RECONSTRUCTION COMPLETE / EXACT COMMITTED EXECUTION PENDING
+P5 = CLASS_IDENTITY_RECONVERGENCE_ACTIVE
 P6 = BLOCKED_PENDING_P5
 production = UNCHANGED / UNAUTHORIZED
 ```
 
-No user decision is currently pending.
+No user decision is pending.
 
 ---
 
-# Radar identity authority
+# Class identity rule
 
-Approved character radar:
+Radar remains:
 
 ```text
-Knight  ATK4 CRIT2 AGI3 KNOCK3 PEN4 AOE2
-Rogue   ATK2 CRIT5 AGI5 KNOCK1 PEN1 AOE1
-Tank    ATK2 CRIT1 AGI1 KNOCK5 PEN1 AOE3
-Archer  ATK3 CRIT2 AGI4 KNOCK1 PEN5 AOE2
-Mage    ATK4 CRIT2 AGI2 KNOCK1 PEN1 AOE5
+Knight  4/2/3/3/4/2
+Rogue   2/5/5/1/1/1
+Tank    2/1/1/5/1/3
+Archer  3/2/4/1/5/2
+Mage    4/2/2/1/1/5
 ```
 
-Interpretation:
-- these are not literal hidden coefficient levels;
-- high axes must remain causally visible strengths;
-- low axes must remain materially visible weaknesses after skills/shop growth.
+Axes: ATK / CRIT / AGILITY / KNOCK / PEN / AOE.
+These are identity/readability levels, not literal coefficients.
 
-Current class status:
+Critical governance:
 
 ```text
-Knight = STRUCTURALLY_ALIGNED_WITH_WATCH
-Rogue  = STRUCTURALLY_ALIGNED_WITH_LV31_WAVE_CLEANUP_WATCH
-Tank   = POSITIVE_CONTROL_IDENTITY_CONFIRMED / NEGATIVE_SOLO_THROUGHPUT_VALIDATION_GAP
-Archer = CORE_LINE_IDENTITY_PRESENT / POST_SHOP_GENERALIST_CREEP_HIGH_WATCH
-Mage   = STRONGLY_ALIGNED / LATE_PRESSURE_MARGIN_WATCH
+high axes must cause visible success
+low axes must remain real limitations
+SURVIVAL != CLEAR
 ```
 
-User Tank clarification:
+Tank user direction:
+- solo parity is not required;
+- survival/control should be excellent;
+- enemy-removal throughput should be poor;
+- late solo may be near-impractical or materially slower/frustrating;
+- no absolute hard class lockout.
+
+---
+
+# First directional identity findings
+
+Authority:
+- independent deterministic reconstruction of current semantics;
+- exact committed one-command runner execution still pending;
+- no numerical freeze.
+
+## Tank
+Same mixed finite packet:
 
 ```text
-Tank solo parity is not a target.
-Tank should be excellent at survival/control but poor at enemy removal.
-Late solo clear should be near-impractical under ordinary tempo or materially slower/frustrating than damage classes.
-No absolute hard lockout is required.
+Knight 8.079s
+Rogue 7.581s
+Tank 8.079s
+Archer 6.953s
+Mage 8.079s
+non-Tank median ~7.830s
+Tank ratio ~1.03x
 ```
 
-Critical rule:
+This directionally confirms a negative-identity defect: Tank currently kills too quickly.
+
+Likely root axis is current provisional Lv31 battlefield-wide damage contribution.
+Approved contract requires Absolute Barrier to reset pressure through control/wall protection without becoming generic Mage-style damage.
+
+Damage-only sensitivity while preserving control/barrier:
 
 ```text
-TANK SURVIVAL != TANK CLEAR
-WALL PRESERVATION != DAMAGE THROUGHPUT
+.75 -> 8.079s
+.50 -> 10.333s
+.40 -> 12.575s
+.35 -> 13.702s
+.30 -> 14.829s
+.25 -> 18.209s
+.20 -> 21.578s
+.15 -> 23.832s
+.10 -> 29.454s
+```
+
+No value is approved. Very low damage can break current late-pressure survival, so next is a control-vs-clear Pareto search.
+
+## Archer
+Aligned line `~3.58s`; scatter `~8.08s`.
+Line dependence remains strong even in ATTACK_HEAVY direction.
+Old Stage49 Archer issue is localized mainly to packet/frontmost chronology.
+
+## Mage
+Cluster `~3.78s`; distributed `~8.08s`.
+Density identity strongly preserved.
+
+## Rogue
+Shop ATK creates a distinct Lv31 dagger breakpoint.
+At roughly 30%-legacy diagnostic scale, provisional dagger damage crosses GRUNT HP:
+
+```text
+600*.45 = 270
+270*(1+.192) ~= 321.84
+GRUNT HP = 320
+```
+
+Approved retargeting then lets remaining daggers serially clean weak bodies.
+New HIGH watch:
+`P5_ROGUE_DAGGER_GRUNT_ONESHOT_BREAKPOINT_WATCH`.
+Do not remove retargeting yet.
+
+## Knight
+First pair is not robust enough because target-death/second-wave chronology becomes non-monotonic across ATK scales.
+Do not change Knight yet; refine the probe.
+
+---
+
+# Current classifications
+
+```text
+Knight = STRUCTURALLY PLAUSIBLE / PROBE REFINEMENT REQUIRED
+Rogue = CORE IDENTITY PRESENT / SHOP-DRIVEN BROAD-CLEANUP BREAKPOINT HIGH WATCH
+Tank = CONTROL IDENTITY PRESENT / NEGATIVE SOLO-THROUGHPUT DEFECT DIRECTIONALLY CONFIRMED
+Archer = LINE DEPENDENCE STRONGLY CONFIRMED / STAGE49 CHRONOLOGY WATCH LOCALIZED
+Mage = DENSITY DEPENDENCE STRONGLY CONFIRMED
 ```
 
 ---
 
-# Finite-packet identity probe
+# Fixed encounter/shop boundaries
 
-Runner:
-`tools/run_p5_class_identity_radar_probe_v0_1.py`
-
-Fixture:
-`legacy-game-structure/data/p5_class_identity_radar_probe_fixture_v0_1.json`
-
-The runner reuses the existing P5 v0.2 shop-combat kernel.
-It does not create a new combat model.
-
-Current cross-class shop scope:
-
-```text
-ATK
-FORTIFICATION
-DEFENSE
-```
-
-KNOCK / CRIT / CRITDMG remain deferred.
-
-Direct-clear predicate:
-
-```text
-all expected enemies killed by player
-AND wallHits == 0
-AND endActive == 0
-AND wall survives
-```
-
-If false at maximum scan horizon, mark unfinished.
-
-First interpretation order:
-
-1. Tank mixed-solo direct clear time / unfinished rate / 30-60-90s backlog.
-2. Archer ATTACK_HEAVY aligned line vs scatter.
-3. Mage cluster vs distributed.
-4. Rogue durable execution vs broad-wave cleanup leakage.
-5. Knight aligned/frontline vs dispersed/off-axis and defense-heavy viability.
-
-No exact pass threshold is frozen before first committed output.
-
----
-
-# Current right-edge direction
-
-```text
-NO MID-FIELD POP-IN.
-All enemies physically enter from normal right edge.
-```
-
-Best current gameplay direction:
-
-```text
-Stage46 = power revelation / relatively forgiving
-Stage47 = transition / recovery room
-Stage48 = first protected role pulse
-Stage49 = stronger escorted second pulse
-```
-
-Do not resume Stage49 packet tuning until class-identity evidence exists.
-
----
-
-# Existing + new watches
-
-```text
-P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH
-P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH
-P5_RIGHT_EDGE_ESCORT_PACKET_CHRONOLOGY_WATCH
-P5_TANK_SURVIVAL_NOT_CLEAR_WATCH
-P5_TANK_SOLO_CLEAR_THROUGHPUT_WATCH
-P5_ROGUE_WAVE_CLEANUP_LEAKAGE_WATCH
-P5_ARCHER_LINE_DEPENDENCE_WATCH
-P5_MAGE_DENSITY_DEPENDENCE_WATCH
-P5_KNIGHT_PENETRATION_CAUSALITY_WATCH
-```
+- A2 shop semantics remain approved; exact values open.
+- Working diagnostics only: full-shop16360, spend50%, income70/30, effect40%.
+- Cross-class shop lane = ATK/FORT/DEF.
+- KNOCK and CRIT/CRITDMG deferred.
+- all enemies enter normal right edge; no mid-field pop-in.
+- Stage46 power revelation -> Stage47 transition -> Stage48 protected role pulse -> Stage49 escorted second pulse.
+- do not resume exact Stage49 packet tuning before identity reconvergence.
 
 ---
 
 # Exact next boundary
 
-1. execute committed `run_p5_class_identity_radar_probe_v0_1.py`;
-2. persist raw JSON output and verify deterministic/direct-clear behavior;
-3. classify Tank throughput first;
-4. classify Archer/Mage/Rogue/Knight paired identity results;
-5. integrate the useful metrics into a source-patched Stage46–49 right-edge runner with carried wall deficit;
-6. only then return to Stage49 packet chronology tuning;
-7. exact-admit pending P4/P5 fidelity runners when an execution lane is available;
-8. then KNOCK parity/inheritance;
-9. then CRIT/CRITDMG policy;
-10. then purchase-policy combat feedback and P4 EXP/Lv reach feedback;
-11. final multiplayer P10; final EXP P10R.
+1. Tank control-vs-clear Pareto search preserving knock/slow/barrier while scanning lower Lv31 damage contribution;
+2. measure Tank wall survival + backlog + direct clear time together;
+3. Rogue distinct-target-per-storm and one-shot breakpoint scan;
+4. Knight robust penetration-causality fixture refinement;
+5. exact committed identity runner execution when a byte-equivalent execution lane is available;
+6. integrate identity metrics into Stage46–49 source-patched right-edge runner;
+7. then resume Stage49 chronology refinement;
+8. later KNOCK parity, CRIT/CRITDMG, EXP/Lv feedback, P10/P10R.
 
-No user decision is currently pending.
 No production change is authorized.
