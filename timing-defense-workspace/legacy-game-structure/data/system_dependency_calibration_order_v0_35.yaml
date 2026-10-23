@@ -1,0 +1,154 @@
+version: system-dependency-calibration-order-v0.35
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_34.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_34.yaml
+
+canonicalUpdates:
+  - 149_P6_FORMAL_ENTRY_AND_FIRST_CAUSAL_SLICE_AUTHORIZATION_V0_1.md
+  - 150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md
+  - 147_ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX_V0_1.md
+  - 148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - encounter_composition_before_intrinsic_class_balance_claim
+  - bounded_probe_before_broad_reaudit
+  - do_not_repeat_closed_work_without_concrete_trigger
+  - important_design_numerical_or_phase_adoption_requires_user_approval
+  - preserve_class_specialties_and_real_weaknesses
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+  P5:
+    status: ENCOUNTER_COMPOSITION_RESPONSE_DIAGNOSTIC_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+    entryChargePrimaryCause: CLOSED_NEGATIVE
+    entryComboPrimaryCause: CLOSED_NEGATIVE
+    armoredCountChronologyBandDiagnostic: COMPLETE_NO_ADOPTION
+    exactArmoredCoordinateMicrotuning: STOPPED
+    stage48LocalPacketTuning: PAUSED
+    productionAuthority: false
+  P6:
+    status: FORMALLY_ENTERED_USER_APPROVED
+    purpose: JOINT_RUN_POWER_CONVERGENCE
+    S1:
+      status: DIAGNOSTIC_COMPLETE_DECISION_GATE
+      source: 150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md
+      tempBranch: timing-defense-workspace-temp-p6-stage46-47-causal
+      runId: 39983816058
+      tempHead: 8cfcd43ad8e7565d359903d76fea629e9ab1959f
+      sha256: 9564363cee66e4f6a3fc2ea42329cd7f47c08050e2ae09366c48b3f616054cce
+      deterministicRepeat: PASS_EXACT_BYTES
+      scope:
+        stages: [46, 47]
+        skilledSeeds: 20
+        classes: [Knight, Rogue, Tank, Archer, Mage]
+        shopProfiles: [BALANCED, ATTACK_HEAVY, DEFENSE_HEAVY, ROLE_AWARE]
+        entryCharge: 0
+        entryComboBoundary: 0
+      allPerfect:
+        cases: 20
+        through47: 20
+      skilledThrough47ByProfile:
+        BALANCED: 56
+        ATTACK_HEAVY: 56
+        DEFENSE_HEAVY: 53
+        ROLE_AWARE: 57
+      classThrough47AcrossFourProfiles:
+        Archer: 75
+        Mage: 75
+        Rogue: 36
+        Knight: 28
+        Tank: 8
+        casesPerClass: 80
+      balancedPxpBands:
+        HIGH_GT_0P65:
+          cases: 29
+          through47: 23
+        MID_0P40_0P65:
+          cases: 34
+          through47: 21
+        LOW_LE_0P40:
+          cases: 37
+          through47: 12
+      causalClassification:
+        - PXP_EXPOSURE_STRONG_GLOBAL_MASTERY_SENSITIVITY
+        - PXP_ALONE_NOT_CLASS_SPLIT_EXPLANATION
+        - ENCOUNTER_COMPOSITION_X_CLASS_PACKAGE_STRONG_CLASS_SPLIT_CAUSE
+        - FIXED_LATE_SHOP_PROFILE_NOT_PRIMARY_CURRENT_CLASS_SPLIT_CAUSE
+        - CURRENT_STAGE46_PRESSURE_REMOVAL_HEAVY_DENSITY_LINE_FAVORING
+        - TANK_CONTROL_PRESENT_BUT_NOT_FULL_SUBSTITUTE_FOR_REMOVAL_IN_CURRENT_PRESSURE
+        - TIMING_EVENT_OPPORTUNITY_DIVERGENCE_OBSERVED_EXACT_EXP_IMPACT_OPEN
+      numericalAdoption: false
+      productionAuthority: false
+    nextDecision:
+      recommended: P6_ENCOUNTER_OPPORTUNITY_CONVERGENCE_THEN_EXP_SHOP_FEEDBACK
+      options:
+        A: PAIRED_PRESSURE_FAMILY_CONVERGENCE
+        B: SHOP_EXP_FEEDBACK_SLICE
+        C: NUMERIC_TUNE_CURRENT_STAGE46_47_NOT_RECOMMENDED
+      awaitingUserDecision: true
+
+campaignAuthoring:
+  exactTierCount: OPEN
+  exactMonsterUnlockLadder: OPEN
+  exactTier1Roster: OPEN
+  exactTier1Stage1To50: NOT_STARTED
+  orderingApprovedByUser:
+    - P6_CONVERGENCE_FIRST
+    - THEN_CONSTRAIN_TIER_MONSTER_AVAILABILITY_AND_UNLOCK_ORDER
+    - THEN_AUTHOR_EXACT_TIER1_STAGE1_TO50
+  stableDirection:
+    - T1_LIMITED_MONSTER_SUBSET
+    - HIGHER_TIERS_ADD_NEW_MONSTER_ROLES
+    - RETURNING_MONSTERS_GAIN_NEW_COMPOSITION_FORMATION_CADENCE_MEANING
+    - CURRENT_NINE_PLUS_ARMORED_PROXY_NOT_FINAL_T1_ROSTER
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  skilledV2CentralFixedForCurrentP6Diagnostics: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  currentClassBuffNerfAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  currentStage46_47NumericRepairAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  tierUnlockFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: P6_S1_RESULT_DECISION_GATE
+  P6FormalEntry: USER_APPROVED
+  P6S1: COMPLETE
+  nextRecommended: P6_PAIRED_PRESSURE_FAMILY_CONVERGENCE
+  then: P6_SHOP_EXP_FEEDBACK
+  afterP6Convergence: TIER_COUNT_AND_MONSTER_UNLOCK_LADDER_CANDIDATE
+  awaitingUserDecision: true
