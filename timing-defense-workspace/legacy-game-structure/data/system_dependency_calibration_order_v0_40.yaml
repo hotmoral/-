@@ -1,0 +1,176 @@
+version: system-dependency-calibration-order-v0.40
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_39.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_39.yaml
+
+canonicalUpdates:
+  - 155_P6_B2_FRESH_FORWARD_P6_PROGRESSION_FEEDBACK_RESULT_V0_1.md
+  - 154_P6_B2_FRESH_FORWARD_P6_AUTHORITY_AND_FIDELITY_CONTRACT_V0_1.md
+  - 153_P6_B2_P4B_RECONSTRUCTION_FIDELITY_BOUNDARY_RESULT_V0_1.md
+  - 152_P6_SHOP_ATK_EXP_OPPORTUNITY_BIDIRECTIONAL_FEEDBACK_RESULT_V0_1.md
+  - 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+  - CHARACTER_PROFILE_RADAR_V1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - encounter_composition_before_intrinsic_class_balance_claim
+  - bounded_probe_before_broad_reaudit
+  - do_not_relax_predeclared_fidelity_gate_after_results
+  - report_legitimate_discrete_chronology_exceptions_instead_of_hiding_them
+  - do_not_reverse_fit_missing_historical_runner_to_archived_targets
+  - separate_conditional_stage_access_from_survival_extension
+  - actual_root_timing_actions_drive_provisional_exp
+  - preserve_class_specialties_and_real_weaknesses
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - important_phase_or_design_adoption_requires_user_approval
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    expBaseline:
+      purePerValidTimingTurn: PROVISIONAL_DIAGNOSTIC_BASELINE
+      heavyXYOneExpAward: true
+      generatedHitsIndependentExp: false
+      finalExpRuleDeferredTo: P10R
+    historicalP4B:
+      resultDataAvailable: true
+      dedicatedRunnerRecovered: false
+      exactPerRecipeResponseMapRecovered: false
+      archivedResponseEnvelopeStillEvidence: true
+      reverseFitAuthorized: false
+  P5:
+    status: ENCOUNTER_COMPOSITION_RESPONSE_DIAGNOSTIC_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+    shopTrajectoryForFreshForward:
+      economyMix: CLEAR_KILL_70_30_WORKING_CENTER_NOT_FROZEN
+      spendCapacity: CENTER50_DIAGNOSTIC
+      policy: BALANCED_DIAGNOSTIC
+      primaryCrossClassEffectLane: ATK
+      atkPerRankAnchor: PLUS_8_PERCENT_DIAGNOSTIC_ONLY
+      fortDefense: SURVIVAL_PATH_NOT_FOLDED_INTO_OFFENSE
+    productionAuthority: false
+  P6:
+    status: CLOSURE_SYNTHESIS_USER_DECISION_PENDING
+    S1:
+      status: DIAGNOSTIC_COMPLETE
+      source: 150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md
+    A_encounterOpportunityConvergence:
+      status: DIAGNOSTIC_COMPLETE
+      source: 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+    B_shopExpFeedback:
+      status: B1_COMPLETE_B2_COMPLETE
+      B1:
+        status: DIAGNOSTIC_COMPLETE
+        source: 152_P6_SHOP_ATK_EXP_OPPORTUNITY_BIDIRECTIONAL_FEEDBACK_RESULT_V0_1.md
+        causalClassification:
+          - SHOP_ATK_WITHIN_SURVIVED_STAGE_REDUCES_TIMING_ACTION_OPPORTUNITY
+          - SHOP_ATK_CAN_PREVENT_FAILURE_AND_CREATE_LATER_STAGE_OPPORTUNITY
+          - SHOP_ATK_TO_EXP_FEEDBACK_IS_BIDIRECTIONAL_AND_OUTCOME_CONDITIONED
+      B2HistoricalReconstruction:
+        status: COMPLETE_FIDELITY_GATE_NOT_MET
+        source: 153_P6_B2_P4B_RECONSTRUCTION_FIDELITY_BOUNDARY_RESULT_V0_1.md
+        gatePass: false
+        conclusion: DO_NOT_REVERSE_FIT_OR_INJECT_SHOP_INTO_FAILED_APPROXIMATION
+      B2FreshForward:
+        status: DIAGNOSTIC_COMPLETE_PASS_WITH_ABSOLUTE_MAGNITUDE_WATCH
+        authorityContract: 154_P6_B2_FRESH_FORWARD_P6_AUTHORITY_AND_FIDELITY_CONTRACT_V0_1.md
+        result: 155_P6_B2_FRESH_FORWARD_P6_PROGRESSION_FEEDBACK_RESULT_V0_1.md
+        tempBranch: timing-defense-workspace-temp-p6-b2-fresh-forward
+        finalTempHead: 5093a151142090d58c0e1d26f52cdbee43653542
+        finalRunId: 40039163053
+        finalJobId: 120705885236
+        resultSha256: 80c920d4e2c3982b6a5562768ed4b37f87e2f41703077e46ae8e3cf9d411c6d4
+        deterministicRepeat: PASS_EXACT_BYTES
+        survivalClaim: false
+        isolatedSameStageAtk:
+          pairCount: 240
+          offRootActions: 1982
+          onRootActions: 1750
+          deltaPct: -11.7053
+          reportedChronologyExceptions: 1
+        earlyLv6DirectionalGate: PASS_ALL_FIVE
+        causalClassification:
+          - PURE_PER_ROOT_ACTION_EXP_CLASS_PROGRESSION_DIVERGENCE_RECONFIRMED
+          - SHOP_ATK_SAME_STAGE_SELF_DAMPING_RECONFIRMED
+          - GLOBAL_SHOP_EXP_RELATION_REMAINS_BIDIRECTIONAL
+          - TANK_FAST_PROGRESSION_SIGNAL_IS_OPPORTUNITY_RETENTION_NOT_DAMAGE_DEFECT
+        watches:
+          - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+
+classIdentity:
+  radarAuthority: CHARACTER_PROFILE_RADAR_V1.md
+  Tank:
+    interpretation: CONTROL_DEFENSE_WALL_PROTECTION_SPECIALIST_LOW_REMOVAL_INTENTIONAL
+    lowRemovalByItselfIsDefect: false
+    killParityRequired: false
+    activeWatch: TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+    currentDamageBuffAuthorized: false
+
+campaignAuthoring:
+  exactTierCount: OPEN
+  exactMonsterUnlockLadder: OPEN
+  exactTier1Roster: OPEN
+  exactTier1Stage1To50: NOT_STARTED
+  orderingApprovedByUser:
+    - P6_CONVERGENCE_FIRST
+    - THEN_CONSTRAIN_TIER_MONSTER_AVAILABILITY_AND_UNLOCK_ORDER
+    - THEN_AUTHOR_EXACT_TIER1_STAGE1_TO50
+
+operationalWatches:
+  - id: TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+    successfulDeploymentObserved: false
+    gitHarnessBranchChanged: false
+    rule: MINIMIZE_TEMP_PUSHES_AND_RECHECK_HARNESS_PRODUCTION_HEADS_AT_BOUNDARIES
+  - id: FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+    evidence: early offensive-class root-action compression direction matches P3 but magnitude is materially stronger
+    rule: USE_FRESH_FORWARD_FOR_CAUSAL_DIRECTION_NOT_EXACT_PRODUCTION_STAGE_REACH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  currentClassBuffNerfAuthorized: false
+  tankDamageBuffAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  finalExpRouting: P10R_PER_USER_APPROVED_R2
+  tierUnlockFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: P6_CLOSURE_SYNTHESIS
+  P6FormalEntry: USER_APPROVED
+  P6S1: COMPLETE
+  P6A: COMPLETE
+  P6B1: COMPLETE
+  P6B2HistoricalReconstruction: COMPLETE_GATE_FAIL
+  P6B2FreshForward: DIAGNOSTIC_COMPLETE_PASS_WITH_ABSOLUTE_MAGNITUDE_WATCH
+  recommendedNext: USER_REVIEW_P6_CLOSURE_SYNTHESIS
+  afterApprovedP6Closure: TIER_COUNT_AND_MONSTER_UNLOCK_LADDER_CANDIDATE_REVIEW
+  awaitingUserDecision: true
