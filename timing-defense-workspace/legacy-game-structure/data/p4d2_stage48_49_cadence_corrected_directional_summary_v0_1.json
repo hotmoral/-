@@ -1,0 +1,73 @@
+{
+  "version": "p4d2-stage48-49-cadence-corrected-directional-summary-v0.1",
+  "status": "FIDELITY_CHECKED_LOCAL_RECONSTRUCTION_DIRECTIONAL_ONLY_EXACT_COMMITTED_RUNNER_REPLAY_PENDING",
+  "expectedCommittedRunnerV02FullOutputSha256": "63da011ac97fd809168d8ffc9c3a9721c9962a2ae3c3496aa91e0d2de0b592f8",
+  "methodValidation": {
+    "stage46AcceptedAllSuccessBaselineReproducedExactly": true,
+    "matchedMetrics": ["endWall", "endActive", "maxActive", "kills"],
+    "classesMatched": 5,
+    "stage46Reference": {
+      "Knight": {"endWall": 1175, "endActive": 19, "maxActive": 24, "kills": 152},
+      "Rogue": {"endWall": 1330, "endActive": 24, "maxActive": 28, "kills": 153},
+      "Tank": {"endWall": 2000, "endActive": 9, "maxActive": 16, "kills": 174},
+      "Archer": {"endWall": 2000, "endActive": 9, "maxActive": 16, "kills": 172},
+      "Mage": {"endWall": 2000, "endActive": 4, "maxActive": 13, "kills": 179}
+    }
+  },
+  "allSuccess": {
+    "COMMON_1P125_NO_BANK": {
+      "Knight": {"endWall": 895, "endActive": 24},
+      "Rogue": {"endWall": 520, "endActive": 24},
+      "Tank": {"endWall": 2000, "endActive": 9},
+      "Archer": {"endWall": 1575, "endActive": 13},
+      "Mage": {"endWall": 2000, "endActive": 1, "noTargetDrops": 1}
+    },
+    "ROGUE_RECOVERY_DELTA_78MS_NO_BANK": {
+      "Rogue": {"rootIntervalSeconds": 1.047, "endWall": 1850, "endActive": 20}
+    }
+  },
+  "oneMissRange": {
+    "Knight_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 385, "endWallMax": 1100},
+    "Rogue_COMMON": {"burialCountAcrossFourStartGrammars": 4},
+    "Rogue_RECOVERY_DELTA_78MS": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 995, "endWallMax": 1180},
+    "Tank_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 2000, "endWallMax": 2000},
+    "Archer_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 1575, "endWallMax": 1925, "successMonotonicityWatch": true},
+    "Mage_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 2000, "endWallMax": 2000}
+  },
+  "twoConsecutiveMissRange": {
+    "Knight_COMMON": {"burialCountAcrossFourStartGrammars": 2, "survivorEndWallMin": 380, "survivorEndWallMax": 505},
+    "Rogue_RECOVERY_DELTA_78MS": {"burialCountAcrossFourStartGrammars": 4, "burialTimeSecondsRange": [53.1, 56.375]},
+    "Tank_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 1833, "endWallMax": 1981},
+    "Archer_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 1775, "endWallMax": 2000, "successMonotonicityWatch": true},
+    "Mage_COMMON": {"burialCountAcrossFourStartGrammars": 0, "endWallMin": 2000, "endWallMax": 2000}
+  },
+  "consecutiveMissDirectionalSweep": {
+    "Knight": {"firstBurialMissCountByStartGrammar": [2, 2, 3, 3]},
+    "Rogue_RECOVERY_DELTA_78MS": {"firstBurialMissCountByStartGrammar": [2, 2, 2, 2]},
+    "Tank": {"firstBurialMissCountByStartGrammar": [4, 5, 5, 4]},
+    "Archer": {"firstBurialWithinEightMissesObservedForOneStartGrammar": 7, "otherStartGrammarsSurvivedEight": true},
+    "Mage": {"firstBurialWithinEightMissesObserved": [7, 8], "otherStartGrammarsSurvivedEight": true}
+  },
+  "allFinalsMissedStress": {
+    "Knight": {"burialTimeSeconds": 28.875},
+    "Rogue_RECOVERY_DELTA_78MS": {"burialTimeSeconds": 26.7},
+    "Tank": {"burialTimeSeconds": 31.2},
+    "Archer": {"burialTimeSeconds": 47.525},
+    "Mage": {"burialTimeSeconds": 59.8}
+  },
+  "classification": {
+    "RogueCadenceOmissionWasMaterial": true,
+    "Rogue16NerfJustified": false,
+    "allClassesCanIgnorePxpIndefinitely": false,
+    "currentRotationProducesEqualMasteryPressure": false,
+    "TankMageTooTolerantForCurrentStage48_49Candidate": true,
+    "ArcherSuccessMonotonicityWatch": true,
+    "naiveBlanketPressureIncreaseRecommended": false
+  },
+  "next": [
+    "execute committed v0.2 runner and compare full JSON SHA to expected reconstruction hash",
+    "trace Archer nonmonotonic outcomes through SPLITTER chronology and target-order changes",
+    "add role/timing pressure that challenges Tank/Mage without simply increasing global spawn density or monster HP",
+    "keep Rogue16 and Archer wider-corridor principle unchanged pending new evidence"
+  ]
+}
