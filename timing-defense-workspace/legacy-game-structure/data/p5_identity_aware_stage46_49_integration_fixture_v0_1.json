@@ -1,0 +1,70 @@
+{
+  "version": "p5-identity-aware-stage46-49-integration-fixture-v0.1",
+  "status": "BOUND_DIAGNOSTIC_INTEGRATION_NO_PRODUCTION_AUTHORITY",
+  "normalRightEdgeRequired": true,
+  "startingBaseWallHp": 2000.0,
+  "stageWindowSeconds": 60.0,
+  "referenceWarmupSeconds": 12.0,
+  "shopEffectScale": 0.4,
+  "representativeShopProfiles": [
+    "BALANCED",
+    "ATTACK_HEAVY",
+    "DEFENSE_HEAVY",
+    "ROLE_AWARE"
+  ],
+  "shopTemporalAcquisitionMode": "FIXED_LATE_SEGMENT_POWER_ISOLATION",
+  "shopTemporalBoundary": {
+    "meaning": "Use one fixed representative Stage49-rank snapshot across Stage46-49 to isolate class identity, right-edge chronology, and carried wall deficit.",
+    "notModeledHere": [
+      "actual per-stage purchase timing",
+      "ATK acquisition-time feedback",
+      "DEF acquisition-time feedback",
+      "wallet path optimization"
+    ],
+    "reason": "No canonical Stage46-49 purchase history is frozen. Inventing one here would mix economy-path assumptions into the identity/chronology diagnostic."
+  },
+  "tankShockwaveDamageSensitivity": [
+    0.2,
+    0.25,
+    0.3
+  ],
+  "tankControlContract": {
+    "knockbackChanged": false,
+    "slowChanged": false,
+    "barrierChanged": false,
+    "ironWallChanged": false
+  },
+  "rogueTelemetry": {
+    "deterministicRetargetChanged": false,
+    "recordDistinctTargetsHitPerStorm": true,
+    "recordDistinctTargetsKilledPerStorm": true,
+    "ordinaryFreshOneDaggerWatchTypes": [
+      "GRUNT",
+      "RUNNER",
+      "SHIELD"
+    ],
+    "guard": "ROGUE_STORM_SINGLE_DAGGER_ORDINARY_ONESHOT_NOT_ROUTINE"
+  },
+  "identityRegression": {
+    "Knight": "refined durable aligned-vs-dispersed pair",
+    "Archer": "aligned-line vs scatter, BALANCED and ATTACK_HEAVY",
+    "Mage": "cluster vs distributed, BALANCED",
+    "Tank": "mixed finite clear at 0.20/0.25/0.30",
+    "thresholdsFrozen": false
+  },
+  "wallContinuityContract": {
+    "carryCurrentHp": true,
+    "carryMaxHp": true,
+    "carryAbsoluteDamageDeficit": true,
+    "fortificationSemantic": "max += delta; current += delta; absolute deficit invariant",
+    "stageResetToFullForbidden": true
+  },
+  "authorityBoundary": [
+    "0.40 is a diagnostic center only.",
+    "Tank 0.20/0.25/0.30 are sensitivity values only.",
+    "60s stage windows are inherited bounded stress windows, not launch stage duration authoring.",
+    "Stage46-49 cadence and packet timing remain directional candidates.",
+    "No class coefficient, shop coefficient, monster stat, or production gameplay value is frozen.",
+    "KNOCK and CRIT/CRITDMG remain outside cross-class authority in this slice."
+  ]
+}
