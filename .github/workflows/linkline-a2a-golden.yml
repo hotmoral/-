@@ -1,18 +1,13 @@
-name: Linkline A3 Structural Feature Validation
+name: Linkline A2 Cognitive Validation
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - linkline/a3-structural-validation
-    paths:
-      - ".github/workflows/linkline-a2a-golden.yml"
 
 permissions:
   contents: read
 
 jobs:
-  structural:
+  cognitive:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch exact public commit
@@ -41,20 +36,17 @@ jobs:
           test "$(git hash-object linkline/analysis/a2_e2_exact.py)" = "6f9026bd271dc083e9802dbf6c3af2e18962c8d3"
           test "$(git hash-object linkline/tests/fixtures/a2_e2_exact_summary_v1.json)" = "41124e3b40c315490959bf479700614b53577d28"
           test "$(git hash-object linkline/tests/test_a2_e2_exact.py)" = "7bbb7f7dec152464d562b3ca220435cc59014469"
-          test "$(git hash-object linkline/tests/oracles/a3_structural_feature_oracle.py)" = "ef14b633d68d0452445818065267a25b0712b392"
-          test "$(git hash-object linkline/tests/fixtures/a3_structural_feature_golden_v1.json)" = "327e389b8f3fc9056f374eb9021a8fc19c811642"
-          test "$(git hash-object linkline/tests/test_a3_structural_feature_oracle.py)" = "d6340af49fbce1bc41535f1c8069f991097511a1"
-          test "$(git hash-object linkline/analysis/a3_structural_features.py)" = "35a6b997816ee3608d4d8064febd059159030796"
-          test "$(git hash-object linkline/tests/test_a3_structural_features.py)" = "f4181a9174c85374946f9f2eee6174d51378fd0c"
           sha256sum \
             linkline/reference/m2_state_model.py \
             linkline/reference/m3_solver.py \
+            linkline/tests/oracles/a2_cognitive_oracle.py \
+            linkline/tests/fixtures/a2_cognitive_golden_v1.json \
+            linkline/tests/test_a2_cognitive_oracle.py \
             linkline/analysis/a2_cognitive.py \
-            linkline/tests/oracles/a3_structural_feature_oracle.py \
-            linkline/tests/fixtures/a3_structural_feature_golden_v1.json \
-            linkline/tests/test_a3_structural_feature_oracle.py \
-            linkline/analysis/a3_structural_features.py \
-            linkline/tests/test_a3_structural_features.py
+            linkline/tests/test_a2_cognitive.py \
+            linkline/analysis/a2_e2_exact.py \
+            linkline/tests/fixtures/a2_e2_exact_summary_v1.json \
+            linkline/tests/test_a2_e2_exact.py
 
       - name: Validate seed 1
         shell: bash
@@ -65,12 +57,7 @@ jobs:
         run: |
           set -euo pipefail
           python --version
-          python -m unittest \
-            tests.test_a2_cognitive_oracle \
-            tests.test_a2_cognitive \
-            tests.test_a2_e2_exact \
-            tests.test_a3_structural_feature_oracle \
-            tests.test_a3_structural_features -v
+          python -m unittest tests.test_a2_cognitive_oracle tests.test_a2_cognitive tests.test_a2_e2_exact -v
 
       - name: Validate seed 777
         shell: bash
@@ -80,12 +67,7 @@ jobs:
           PYTHONHASHSEED: "777"
         run: |
           set -euo pipefail
-          python -m unittest \
-            tests.test_a2_cognitive_oracle \
-            tests.test_a2_cognitive \
-            tests.test_a2_e2_exact \
-            tests.test_a3_structural_feature_oracle \
-            tests.test_a3_structural_features -v
+          python -m unittest tests.test_a2_cognitive_oracle tests.test_a2_cognitive tests.test_a2_e2_exact -v
 
       - name: Report fingerprints and versions
         shell: bash
@@ -95,42 +77,18 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json
-          from pathlib import Path
-          from analysis.a2_cognitive import ANALYZER_VERSION as A2_ANALYZER_VERSION
+          from analysis.a2_cognitive import ANALYZER_VERSION
           from analysis.a2_e2_exact import E2_VERSION
-          from analysis.a3_structural_features import (
-              ANALYZER_VERSION as A3_ANALYZER_VERSION,
-              FEATURE_SCHEMA_VERSION,
-              MECHANIC_BASELINE,
-          )
           from tests.oracles.a2_cognitive_oracle import fingerprint, golden_payload
-          from tests.oracles.a3_structural_feature_oracle import normalized_fingerprint
-
-          a2_value = fingerprint(golden_payload())
-          a2_expected = "198e1418691e29b8560c0b38270c69c8226034ae439fc6d66d6e02b866772d18"
-          fixture = json.loads(Path("tests/fixtures/a3_structural_feature_golden_v1.json").read_text(encoding="utf-8"))
-          a3_value = normalized_fingerprint(fixture)
-          a3_expected = "9c2f51f76a5e604cc1d8134496eb40208caf88ba7ae1a121467208305318abc0"
-
-          print(f"a2_payload_fingerprint={a2_value}")
-          print(f"a3_golden_fingerprint={a3_value}")
-          print(f"a2_analyzer_version={A2_ANALYZER_VERSION}")
+          value = fingerprint(golden_payload())
+          expected = "198e1418691e29b8560c0b38270c69c8226034ae439fc6d66d6e02b866772d18"
+          print(f"payload_fingerprint={value}")
+          print(f"analyzer_version={ANALYZER_VERSION}")
           print(f"e2_version={E2_VERSION}")
-          print(f"a3_analyzer_version={A3_ANALYZER_VERSION}")
-          print(f"a3_feature_schema_version={FEATURE_SCHEMA_VERSION}")
-          print(f"a3_mechanic_baseline={MECHANIC_BASELINE}")
-
-          if a2_value != a2_expected:
-              raise SystemExit("A2 payload fingerprint mismatch")
-          if a3_value != a3_expected:
-              raise SystemExit("A3 Golden fingerprint mismatch")
-          if A2_ANALYZER_VERSION != "1.0.0" or E2_VERSION != "1.0.0":
-              raise SystemExit("A2 version mismatch")
-          if A3_ANALYZER_VERSION != "1.0.0":
-              raise SystemExit("A3 analyzer version mismatch")
-          if FEATURE_SCHEMA_VERSION != "0.1":
-              raise SystemExit("A3 feature schema mismatch")
-          if MECHANIC_BASELINE != "a2-v1.0.0":
-              raise SystemExit("A3 mechanic baseline mismatch")
+          if value != expected:
+              raise SystemExit("payload fingerprint mismatch")
+          if ANALYZER_VERSION != "1.0.0":
+              raise SystemExit("analyzer version mismatch")
+          if E2_VERSION != "1.0.0":
+              raise SystemExit("E2 version mismatch")
           PY
