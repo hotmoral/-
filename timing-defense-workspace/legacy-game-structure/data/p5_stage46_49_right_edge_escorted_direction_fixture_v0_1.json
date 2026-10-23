@@ -1,0 +1,69 @@
+{
+  "version": "p5-stage46-49-right-edge-escorted-direction-fixture-v0.1",
+  "status": "DIRECTIONAL_AUTHORING_SEARCH_NO_PRODUCTION_AUTHORITY",
+  "globalRules": {
+    "normalRightEdgeSpawnX": 0.92,
+    "midFieldPopInAllowed": false,
+    "shopDiagnosticScale": 0.4,
+    "crossClassShopFamilies": ["ATK", "FORTIFICATION", "DEFENSE"],
+    "knockCritCritDamageDeferred": true
+  },
+  "stageDirection": {
+    "46": {
+      "pressureCycleSecondsCandidate": 5.8,
+      "intent": "POWER_REVELATION",
+      "extraTravelLead": "NONE_IN_CURRENT_DIRECTIONAL_CENTER",
+      "reason": "Do not punish immediately after Lv31 acquisition; naked early SIEGER was counterproductive."
+    },
+    "47": {
+      "pressureCycleSecondsCandidate": 5.3,
+      "intent": "POWER_REVELATION_TO_MASTERY_TRANSITION",
+      "extraTravelLead": "NONE_OR_LIGHT_ONLY",
+      "reason": "Keep recovery room before protected role pulses begin."
+    },
+    "48": {
+      "pressureCycleSecondsCandidate": 4.9,
+      "intent": "FIRST_PROTECTED_ROLE_PULSE",
+      "diagnosticPacket": [
+        {"type": "ARMORED_DURABLE_PROXY", "band": -2, "referenceOffset": 0.0, "spawnLeadSeconds": 7.0},
+        {"type": "ARMORED_DURABLE_PROXY", "band": 2, "referenceOffset": 1.0, "spawnLeadSeconds": 5.0},
+        {"type": "SIEGER", "band": 0, "referenceOffset": 2.0, "spawnLeadSeconds": 6.0},
+        {"type": "RUNNER", "band": -1, "referenceOffset": 2.8, "spawnLeadSeconds": 0.0},
+        {"type": "CHARGER", "band": 1, "referenceOffset": 3.4, "spawnLeadSeconds": 0.0}
+      ],
+      "note": "Diagnostic proxy only; ARMORED_DURABLE_PROXY is not a new-monster approval."
+    },
+    "49": {
+      "pressureCycleSecondsCandidate": 4.6,
+      "intent": "ESCORTED_TIME_BUDGET_SECOND_PULSE",
+      "diagnosticPacket": [
+        {"type": "BRUTE", "band": -2, "referenceOffset": 0.0, "spawnLeadSeconds": 11.0},
+        {"type": "BRUTE", "band": 0, "referenceOffset": 0.35, "spawnLeadSeconds": 11.0},
+        {"type": "BRUTE", "band": 2, "referenceOffset": 0.70, "spawnLeadSeconds": 11.0},
+        {"type": "SIEGER", "band": -2, "referenceOffset": 1.50, "spawnLeadSeconds": 9.75},
+        {"type": "SIEGER", "band": 2, "referenceOffset": 1.78, "spawnLeadSeconds": 9.75},
+        {"type": "SIEGER", "band": -1, "referenceOffset": 2.06, "spawnLeadSeconds": 9.75},
+        {"type": "SIEGER", "band": 1, "referenceOffset": 2.34, "spawnLeadSeconds": 9.75},
+        {"type": "CHARGER", "band": 0, "referenceOffset": 3.30, "spawnLeadSeconds": 0.0}
+      ]
+    }
+  },
+  "directionalAdmission": {
+    "allSuccess": "all classes and representative shop policies survive Stage46-49 with usable reserve",
+    "isolatedMistake": "recoverable",
+    "twoMistakesWithinOneStage": "survive in current directional candidates",
+    "repeatedFailure": "must accumulate severe reserve loss or burial by late mastery",
+    "identicalClassMistakeBudgetRequired": false
+  },
+  "activeWatches": [
+    "P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH",
+    "P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH",
+    "P5_RIGHT_EDGE_ESCORT_PACKET_CHRONOLOGY_WATCH"
+  ],
+  "authorityBoundary": [
+    "All packet coordinates are timing/geometry diagnostics only.",
+    "Every monster still physically starts at the normal right edge; spawnLeadSeconds changes schedule time only.",
+    "The Stage46-49 candidate cycles are not launch authoring values.",
+    "No monster stat, class coefficient, shop coefficient or new-monster identity is frozen."
+  ]
+}
