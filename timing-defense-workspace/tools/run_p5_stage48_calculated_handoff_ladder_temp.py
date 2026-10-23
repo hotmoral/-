@@ -50,6 +50,9 @@ def main():
     variants={
         'HANDOFF_3_SHIELDS_CATCH_4_8_11':make(direction,'HANDOFF_3_SHIELDS_CATCH_4_8_11',[4.0,8.0,11.0]),
         'HANDOFF_4_SHIELDS_CATCH_3_6_9_11':make(direction,'HANDOFF_4_SHIELDS_CATCH_3_6_9_11',[3.0,6.0,9.0,11.0]),
+        # Boundary stress: first takeover before the observed Knight/Rogue ~2 s exposure point,
+        # then a dense physically-derived ladder through the 12 s SIEGER travel budget.
+        'HANDOFF_6_SHIELDS_CATCH_1_3_5_7_9_11':make(direction,'HANDOFF_6_SHIELDS_CATCH_1_3_5_7_9_11',[1.0,3.0,5.0,7.0,9.0,11.0]),
     }
     scale=float(integration['shopEffectScale']); profile='BALANCED'; starts=v2.pre_stage48_states(base,temporal,direction,shop,integration,[profile],scale)
     glb=integ.SIMULATE.__globals__; oh,on,om=glb['hit'],glb['nearest'],glb['make_mob']; trace=None
@@ -68,7 +71,7 @@ def main():
         if iss and trace is not None and trace.get('s') and alive and not bool(getattr(target,'alive',False)) and trace['s']['deathAt'] is None: trace['s']['deathAt']=t; trace['s']['deathX']=round(bx,4)
         return res
     glb['hit'],glb['nearest'],glb['make_mob']=hw,nw,mw
-    out={'version':'p5-stage48-calculated-handoff-ladder-temp-v0.1','authority':'TEMP_DIAGNOSTIC_ONLY_NO_ADOPTION_NO_FREEZE_NO_PRODUCTION_AUTHORITY','rows':[],'schedules':{}}
+    out={'version':'p5-stage48-calculated-handoff-ladder-temp-v0.2','authority':'TEMP_DIAGNOSTIC_ONLY_NO_ADOPTION_NO_FREEZE_NO_PRODUCTION_AUTHORITY','rows':[],'schedules':{}}
     try:
         for name,d in variants.items():
             cfg=integ.stage_temporal(temporal,d,integration,48,'Knight'); sched=integ.build_integrated_schedule(cfg)
