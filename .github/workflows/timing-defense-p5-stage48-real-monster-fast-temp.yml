@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_single_role_pulse_feasibility_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_calculated_handoff_ladder_temp.py
 
 permissions:
   contents: read
@@ -20,15 +20,16 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage48 single real-monster role-pulse feasibility diagnostic
+      - name: Run calculated Stage48 escort-handoff ladder diagnostic
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_single_role_pulse_feasibility_temp.py > /tmp/single.json
+          python3 tools/run_p5_stage48_calculated_handoff_ladder_temp.py > /tmp/ladder.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_single_role_pulse_feasibility_temp.json').read_text())
-          print('P5_STAGE48_SINGLE_ROLE_PULSE='+json.dumps(d['rows'],sort_keys=True))
+          d=json.loads(Path('p5_stage48_calculated_handoff_ladder_temp.json').read_text())
+          print('P5_STAGE48_CALCULATED_HANDOFF='+json.dumps(d['rows'],sort_keys=True))
+          print('P5_STAGE48_CALCULATED_SCHEDULES='+json.dumps(d['schedules'],sort_keys=True))
           PY
