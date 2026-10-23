@@ -9,6 +9,7 @@ on:
       - 'timing-defense-workspace/tools/run_p6_b2_p4b_existing_layera_lv6_fidelity_temp.py'
       - 'timing-defense-workspace/tools/run_p6_b2_p4b_materialized_all20_lv6_fidelity_temp.py'
       - 'timing-defense-workspace/tools/run_p6_b2_p4b_skilledv2_lv6_aggregation_fidelity_temp.py'
+      - 'timing-defense-workspace/tools/run_p6_b2_p4b_response_envelope_equivalence_temp.py'
       - '.github/workflows/timing-defense-p6-b2-p4b-reconstruction-temp.yml'
   workflow_dispatch:
 
@@ -57,4 +58,13 @@ jobs:
           python3 tools/run_p6_b2_p4b_skilledv2_lv6_aggregation_fidelity_temp.py > /tmp/p6b2-skilledv2-b.json
           cmp /tmp/p6b2-skilledv2-a.json /tmp/p6b2-skilledv2-b.json
           sha256sum /tmp/p6b2-skilledv2-a.json
-          cat /tmp/p6b2-skilledv2-a.json
+      - name: Run response-envelope recovered-equivalence gate twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_b2_p4b_response_envelope_equivalence_temp.py > /tmp/p6b2-envelope-a.json
+          python3 tools/run_p6_b2_p4b_response_envelope_equivalence_temp.py > /tmp/p6b2-envelope-b.json
+          cmp /tmp/p6b2-envelope-a.json /tmp/p6b2-envelope-b.json
+          sha256sum /tmp/p6b2-envelope-a.json
+          cat /tmp/p6b2-envelope-a.json
