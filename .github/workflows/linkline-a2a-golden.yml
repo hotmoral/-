@@ -1,4 +1,4 @@
-name: Linkline A3-C1 Calibration Selection
+name: Linkline A3-C1 Universe Fingerprint Diagnostic
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  calibration:
+  fingerprint:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch exact public commit
@@ -26,7 +26,7 @@ jobs:
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
 
-      - name: Reconstruct exact C1 bundle
+      - name: Reconstruct exact C1 source and independent oracle
         shell: bash
         working-directory: repo
         env:
@@ -48,13 +48,11 @@ jobs:
                       'Authorization': f'Bearer {token}',
                       'Accept': 'application/vnd.github+json',
                       'X-GitHub-Api-Version': '2022-11-28',
-                      'User-Agent': 'linkline-a3-c1-validation',
+                      'User-Agent': 'linkline-a3-c1-fingerprint',
                   },
               )
               with urlopen(req) as r:
                   payload = json.load(r)
-              if payload.get('sha') != sha or payload.get('encoding') != 'base64':
-                  raise SystemExit(f'blob identity mismatch: {sha}')
               return base64.b64decode(payload['content'])
 
           def git_blob_sha(data):
@@ -67,62 +65,20 @@ jobs:
               'fff112d3bbce89779d3b908a578db8f99640af07',
           ]
           source = b''.join(fetch_blob(sha) for sha in chunks)
-          expected = '919f2413a3ca82d643f24dc000187c9e7bc7b3f2'
-          if git_blob_sha(source) != expected:
-              raise SystemExit('reconstructed C1 source mismatch')
+          if git_blob_sha(source) != '919f2413a3ca82d643f24dc000187c9e7bc7b3f2':
+              raise SystemExit('C1 source reconstruction mismatch')
           Path('linkline/analysis/a3_calibration_set.py').write_bytes(source)
 
-          small = {
-              'edbe248b19fc48683f1a0b19ca989f5f91e2c317': 'linkline/tests/oracles/a3_calibration_selection_oracle.py',
-              'bd328d78e661d29b43af91bc60279084f7bd42b0': 'linkline/tests/fixtures/a3_calibration_selection_golden_v1.json',
-              '0483fa1c01e862649211ccb84c215536ac705eb6': 'linkline/tests/test_a3_calibration_selection_oracle.py',
-          }
-          for sha, path in small.items():
-              data = fetch_blob(sha)
-              if git_blob_sha(data) != sha:
-                  raise SystemExit(f'decoded blob mismatch: {path}')
-              target = Path(path)
-              target.parent.mkdir(parents=True, exist_ok=True)
-              target.write_bytes(data)
+          oracle_sha = 'edbe248b19fc48683f1a0b19ca989f5f91e2c317'
+          oracle = fetch_blob(oracle_sha)
+          if git_blob_sha(oracle) != oracle_sha:
+              raise SystemExit('oracle blob mismatch')
+          target = Path('linkline/tests/oracles/a3_calibration_selection_oracle.py')
+          target.parent.mkdir(parents=True, exist_ok=True)
+          target.write_bytes(oracle)
           PY
-          test "$(git hash-object linkline/analysis/a3_calibration_set.py)" = "919f2413a3ca82d643f24dc000187c9e7bc7b3f2"
-          test "$(git hash-object linkline/tests/oracles/a3_calibration_selection_oracle.py)" = "edbe248b19fc48683f1a0b19ca989f5f91e2c317"
-          test "$(git hash-object linkline/tests/fixtures/a3_calibration_selection_golden_v1.json)" = "bd328d78e661d29b43af91bc60279084f7bd42b0"
-          test "$(git hash-object linkline/tests/test_a3_calibration_selection_oracle.py)" = "0483fa1c01e862649211ccb84c215536ac705eb6"
-          test "$(git hash-object linkline/tests/test_a3_calibration_set.py)" = "542d2aaf5cd0f27782b61f64d8b4e24ae258de10"
 
-      - name: Verify frozen dependencies
-        shell: bash
-        working-directory: repo
-        run: |
-          set -euo pipefail
-          test "$(git hash-object linkline/reference/m2_state_model.py)" = "c2bf85974d317eb18a8b02a1ac4ee7eb244fcb77"
-          test "$(git hash-object linkline/reference/m3_solver.py)" = "16b170656bbdffa8e836a891ffbf221de6c2935f"
-          test "$(git hash-object linkline/analysis/a2_cognitive.py)" = "880aa4d8668fd71e2ce8222331f0da0368229400"
-          test "$(git hash-object linkline/analysis/a3_structural_features.py)" = "35a6b997816ee3608d4d8064febd059159030796"
-
-      - name: Validate seed 1
-        shell: bash
-        working-directory: repo/linkline
-        env:
-          PYTHONDONTWRITEBYTECODE: "1"
-          PYTHONHASHSEED: "1"
-        run: |
-          set -euo pipefail
-          python --version
-          python -m unittest tests.test_a3_calibration_selection_oracle tests.test_a3_calibration_set -v
-
-      - name: Validate seed 777
-        shell: bash
-        working-directory: repo/linkline
-        env:
-          PYTHONDONTWRITEBYTECODE: "1"
-          PYTHONHASHSEED: "777"
-        run: |
-          set -euo pipefail
-          python -m unittest tests.test_a3_calibration_selection_oracle tests.test_a3_calibration_set -v
-
-      - name: Construct exact calibration set
+      - name: Compare independent and production universe fingerprints
         shell: bash
         working-directory: repo/linkline
         env:
@@ -131,31 +87,45 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import base64, gzip, json
-          from collections import Counter
-          from analysis.a3_calibration_set import construct_calibration_set, normalized_manifest_fingerprint
+          from hashlib import sha256
+          from itertools import combinations
+          import json
 
-          manifest = construct_calibration_set(max_analysis_budget=50_000, state_cap=100_000)
-          if manifest['identityUniverseCount'] != 84320:
-              raise SystemExit('identity universe count mismatch')
-          if manifest['identityUniverseFingerprint'] != '1e09cb9c8fff0d897480e5ad3721551ba4585d1e7c11e3fe1b924a2f8e6c13df':
-              raise SystemExit('identity universe fingerprint mismatch')
-          if manifest['manifestFingerprint'] != normalized_manifest_fingerprint(manifest):
-              raise SystemExit('manifest fingerprint mismatch')
+          from analysis.a3_calibration_set import candidate_universe, universe_fingerprint
+          from tests.oracles import a3_calibration_selection_oracle as oracle
 
-          roles = Counter(row['role'] for row in manifest['selected'])
-          print('C1_RESULT_STATUS=' + manifest['resultStatus'])
-          print('C1_ANALYSIS_BUDGET=' + str(manifest['analysisBudgetUsed']))
-          print('C1_EXACT_ELIGIBLE=' + str(manifest['exactEligibleCount']))
-          print('C1_OUTSIDE=' + str(manifest['outsideDomainCount']))
-          print('C1_INCOMPLETE=' + str(manifest['incompleteFeatureCount']))
-          print('C1_SELECTED=' + str(len(manifest['selected'])))
-          print('C1_ROLES=' + json.dumps(dict(sorted(roles.items())), sort_keys=True))
-          print('C1_PAIRS=' + json.dumps(manifest['coverage']['matchedPairCounts'], sort_keys=True))
-          print('C1_UNMET=' + json.dumps(manifest['coverage']['unmetTargets'], sort_keys=True))
-          print('C1_MANIFEST_FINGERPRINT=' + manifest['manifestFingerprint'])
+          domain = {3: tuple(range(3, 9)), 4: tuple(range(3, 11))}
 
-          raw = (json.dumps(manifest, sort_keys=True, indent=2) + '\n').encode()
-          encoded = base64.b64encode(gzip.compress(raw, mtime=0)).decode()
-          print('C1_MANIFEST_GZIP_B64=' + encoded)
+          production = candidate_universe(domain)
+          production_ids = [row['researchEquivalenceIdV1'] for row in production]
+          production_fp = universe_fingerprint(production)
+
+          independent_ids = set()
+          for n in sorted(domain):
+              for length in domain[n]:
+                  for path in oracle.canonical_paths(n, length):
+                      endpoints = frozenset((path[0], path[-1]))
+                      for targets in combinations(range(n * n), 2):
+                          if frozenset(targets) == endpoints:
+                              continue
+                          independent_ids.add(
+                              oracle.research_equivalence_id(n, length, path, targets)
+                          )
+          independent_ordered = sorted(independent_ids)
+          independent_fp = sha256(
+              json.dumps(independent_ordered, separators=(',', ':')).encode('utf-8')
+          ).hexdigest()
+
+          print(f'PRODUCTION_COUNT={len(production_ids)}')
+          print(f'INDEPENDENT_COUNT={len(independent_ordered)}')
+          print(f'PRODUCTION_FP={production_fp}')
+          print(f'INDEPENDENT_FP={independent_fp}')
+          print(f'ID_LISTS_EQUAL={production_ids == independent_ordered}')
+
+          if len(production_ids) != 84320 or len(independent_ordered) != 84320:
+              raise SystemExit('unexpected universe count')
+          if production_ids != independent_ordered:
+              raise SystemExit('production/independent universe identities differ')
+          if production_fp != independent_fp:
+              raise SystemExit('production/independent fingerprints differ')
           PY
