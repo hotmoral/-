@@ -1,0 +1,180 @@
+version: system-dependency-calibration-order-v0.13
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_12.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md
+  - 85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md
+  - 88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md
+  - 89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md
+  - 91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md
+  - 96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md
+  - 99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md
+  - 100_P4D2_STAGE48_49_CADENCE_CORRECTED_DIRECTIONAL_FEEDBACK_V0_1.md
+  - 101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md
+
+principles:
+  - freeze_semantics_before_values
+  - isolate_then_integrate
+  - exact_content_authoring_late
+  - production_changes_require_explicit_freeze
+  - material_decisions_require_user_approval
+  - repair_encounter_grammar_before_hidden_class_corrections
+  - preserve_recovered_lower_skill_cadence_effects_in_temporal_comparisons
+  - no_target_opportunities_do_not_bank_in_class_fairness_diagnostics
+  - final_skill_power_fantasy_must_not_be_preemptively_nerfed_without_evidence
+  - archer_lv31_huge_arrow_has_wider_real_gameplay_corridor
+  - durable_pressure_may_be_used_before_class_nerfs_when_it_preserves_role_answers
+  - durable_proxy_is_not_new_monster_authority
+  - do_not_build_hard_counter_by_stacking_hp_armor_and_extreme_knock_resistance
+
+workPackages:
+  P0: {name: CURRENT_FOUNDATION_CLOSURE, status: PASS_WITH_WATCHES}
+  P1: {name: RUN_STATE_LIFECYCLE_CONTRACT, status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {name: MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION, status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {name: TEN_STAGE_PERSISTENT_RUN_KERNEL, status: P3_STRUCTURAL_PASS_COMPLETE}
+
+  P4:
+    name: FULL_PLAYER_POWER_SPINE_CANDIDATE
+    status: P4D2_DURABLE_PRESSURE_AXIS_SUPPORTED_TEMPORAL_ROLE_PROBE_NEXT_EXP_FINALIZATION_DEFERRED
+    dependsOn: [P3]
+    internalGates:
+      P4A: {status: PASS_COMPLETE_MARKER_ONLY}
+      P4B: {status: DIAGNOSTIC_COMPLETE_WITH_ACTIVE_WATCHES}
+      P4B_DECISION: {status: USER_APPROVED_R2}
+      P4C1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+      P4C2: {status: COMPLETE_PASS_WITH_WATCHES, finalExpClaimAllowed: false, productionAuthority: false}
+      P4D1:
+        status: USER_APPROVED_WITH_MODIFICATION
+        structuralDirection:
+          finalTemplateGraph: FINITE_DETERMINISTIC_ATTRIBUTABLE
+          powerFantasy: STRONG_NOT_PREEMPTIVELY_NERFED
+          stage46Plus: LV31_MASTERY_GATE_PRESSURE_REGIME
+          lv31AbsentOutcome: MAY_BE_BURIED_BY_REAL_COMBAT_PRESSURE
+          codeLevelRequirementGate: false
+          comboPxpMasteryPressure: true
+      P4D2:
+        name: LV31_BOUNDED_MASTERY_POWER_AND_PRESSURE_FEEDBACK
+        status: ACTIVE_DURABLE_TEMPORAL_ROLE_PRESSURE_FOLLOWUP
+        established:
+          candidatePressureEnvelopeFound: true
+          stage46ExistenceClaimStillAdmitted: true
+          rogueWorkingCenterDaggers: 16
+          archerWiderGameplayCorridorPrinciple: USER_APPROVED
+          cadenceCorrectedDirectionalFeedbackComplete: true
+          naiveGlobalPressureScalarRejectedAsNextRepairLayer: true
+          armoredDurablePressureAxis: SUPPORTED
+          armoredDurableProxyIsNewMonsterAuthority: false
+          armoredDurableWorkingCenterIsFrozen: false
+          durableAxisPreservesRogueExecutionIdentity: true
+          durableAxisPreservesArcherArmorIgnoreIdentity: true
+          durableAxisPreservesTankControlAtModerateKnockResistance: true
+          durableAxisPreservesMageClusterVsDistributedSensitivity: true
+        durableProxyDiagnosticCenter:
+          hp: 1600
+          armorMultiplier: 0.55
+          knockResistance: 0.65
+          status: DIAGNOSTIC_ONLY_NOT_FROZEN
+        methodology:
+          commonCadenceLaneSeconds: 1.125
+          rogueRecoveryDeltaSeconds: 0.078
+          rogueSensitivityIntervalSeconds: 1.047
+          noTargetBanking: FORBIDDEN_IN_CLASS_FAIRNESS_DIAGNOSTICS
+          exactCommittedV02ReplayStillRequired: true
+        mustStillMeasure:
+          - exact_committed_v02_replay
+          - archer_splitter_target_order_chronology
+          - temporal_isolated_durable_post_reset_arrival
+          - temporal_distributed_durable_successive_reset_windows
+          - durable_frontline_with_timed_supporter_sieger_second_pulse
+          - durable_frontline_with_charger_window
+          - tank_time_bought_by_knockback_and_barrier
+          - mage_clustered_vs_distributed_durable_recovery
+          - knight_rogue_unfair_early_collapse_guard
+          - stage46_lv31_acquisition_distribution
+          - rogue_multiplayer_event_volume_performance
+        candidateStage46PossessionCheckpointsPct: [97, 98, 99]
+        finalExpClaimAllowed: false
+        productionAuthority: false
+      P4E:
+        status: BLOCKED_PENDING_P4D2
+        finalExpConvergenceAllowed: false
+
+    activeWatches:
+      - SOLO_PROGRESSION_DIVERGENCE_WATCH
+      - TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+      - PLAYER_COUNT_SCALING_XP_DEPENDENCY
+      - MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+      - LV26_T4_ROLE_EXPRESSION_WATCH
+      - LV26_MAGE_SPLITTER_ORDERING_WATCH
+      - LV26_TANK_MOVEMENT_COMPOSITION_WATCH
+      - LV31_CLASS_CLEAR_RATE_DIVERGENCE
+      - LV31_ROLE_EXPRESSION_ERASURE
+      - LV31_POWER_FANTASY_UNDERSHOOT
+      - LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH
+      - STAGE46_LV31_ACQUISITION_FAIRNESS
+      - STAGE46_LV31_ABSENCE_BURIAL_BEHAVIOR
+      - PXP_COMBO_MAINTENANCE_MASTERY_PRESSURE
+      - STAGE48_49_MISS_SEVERITY_CLASS_DIVERGENCE
+      - P4D2_ROGUE_CADENCE_FIDELITY_WATCH
+      - P4D2_DURABLE_PROXY_HARD_COUNTER_WATCH
+      - P4D2_TANK_MAGE_DURABLE_PRESSURE_WATCH
+      - ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
+
+    candidateOnlyNotFrozen:
+      stage46Lv31PossessionPct: [97, 98, 99]
+      rogueLv31Daggers: [12, 16, 20]
+      rogueLv31WorkingCenter: 16
+      knightSecondWaveCenter: 1.00
+      tankShockwaveDamageCenter: 0.75
+      tankKnockbackCenter: 2.5
+      archerPerTargetCoefficientCenter: 2.30
+      archerWidthDiagnosticCenter: MID_ADJACENT
+      mageStageCoefficientCenter: 0.75
+      mageRadiusCenter: 1.25
+      durableProxyHpSensitivity: [1400, 1600, 1800]
+      durableProxyArmorMultiplierSensitivity: [0.65, 0.55, 0.50]
+      durableProxyWorkingCenter: {hp: 1600, armorMultiplier: 0.55, knockResistance: 0.65}
+
+    constraints:
+      - lv31_stage41_45_acquisition_transition_band
+      - stage46_plus_is_lv31_mastery_gate_pressure_regime
+      - no_code_level_lv31_entry_lock
+      - archer_lv31_corridor_wider_than_ordinary_lv26_but_still_straight_nonhoming
+      - rogue_lv16_recovery_delta_must_not_be_silently_omitted_from_class_fairness_temporal_analysis
+      - durable_pressure_must_preserve_tank_control_answer
+      - durable_pressure_must_preserve_mage_cluster_payoff
+      - durable_proxy_cannot_be_promoted_to_new_monster_without_separate_identity_decision
+      - no_global_hp_spawn_inflation_as_first_repair_layer
+      - pure_per_turn_is_provisional_diagnostic_baseline_only
+      - no_hidden_class_specific_balance_patch_before_encounter_grammar_review
+      - no_final_exp_claim_before_P10R
+      - production_gameplay_changes_unauthorized
+
+  P5: {status: BLOCKED, dependsOn: [P4]}
+  P6: {status: BLOCKED, dependsOn: [P4, P5]}
+  P7: {status: BLOCKED, dependsOn: [P6]}
+  P8: {status: BLOCKED, dependsOn: [P7]}
+  P9: {status: BLOCKED, dependsOn: [P8]}
+  P10: {status: BLOCKED, dependsOn: [P8]}
+  P10R: {status: BLOCKED_PENDING_P10, dependsOn: [P10], requiresUserDecision: true}
+  P11: {status: BLOCKED_PENDING_P9_P10R}
+  P12: {status: BLOCKED_PENDING_P9_P10R_P11}
+  P13: {status: BLOCKED}
+  P14: {status: BLOCKED}
+  P15: {status: BLOCKED}
+  P16: {status: BLOCKED}
+  P17: {status: BLOCKED}
+  P18: {status: BLOCKED}
+
+freezePolicy:
+  numericalContentFreeze: {onlyAfter: P17}
+
+currentBoundary:
+  completedThrough: P3
+  activePackage: P4
+  activeInternal: P4D2
+  next: P4D2_TEMPORAL_DURABLE_ROLE_PRESSURE_PROBE
+  nextMode: BOUNDED_TEMPORAL_PRESSURE_FOLLOWUP
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
