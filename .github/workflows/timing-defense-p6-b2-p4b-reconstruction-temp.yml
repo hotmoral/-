@@ -1,0 +1,30 @@
+name: Timing Defense P6-B2 P4-B reconstruction temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p6-b2-p4b-reconstruction
+    paths:
+      - 'timing-defense-workspace/tools/run_p6_b2_p4b_reconstruction_preflight_temp.py'
+      - '.github/workflows/timing-defense-p6-b2-p4b-reconstruction-temp.yml'
+  workflow_dispatch:
+
+jobs:
+  reconstruction-preflight:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p6-b2-p4b-reconstruction
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run reconstruction preflight twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_b2_p4b_reconstruction_preflight_temp.py > /tmp/p6b2-a.json
+          python3 tools/run_p6_b2_p4b_reconstruction_preflight_temp.py > /tmp/p6b2-b.json
+          cmp /tmp/p6b2-a.json /tmp/p6b2-b.json
+          sha256sum /tmp/p6b2-a.json
+          cat /tmp/p6b2-a.json
