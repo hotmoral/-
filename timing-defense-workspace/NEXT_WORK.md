@@ -10,12 +10,14 @@ Updated: 2026-10-23 KST
 
 ## Mandatory authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_20.yaml`
+- active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_22.yaml`
 - A2 contract `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
-- spend envelope `legacy-game-structure/117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md`
+- economy envelope `legacy-game-structure/117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md`
 - economy preflight `legacy-game-structure/118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md`
-- fixture `legacy-game-structure/data/p5_shop_economy_spend_capacity_fixture_v0_1.json`
-- runner `tools/run_p5_shop_economy_spend_capacity_probe_v0_1.py`
+- income mix `legacy-game-structure/119_P5_CLEAR_KILL_INCOME_MIX_SENSITIVITY_V0_1.md`
+- defense upper bound `legacy-game-structure/120_P5_FORTIFICATION_DEFENSE_LEVERAGE_UPPER_BOUND_V0_1.md`
+- Tank fidelity correction `legacy-game-structure/121_P4D2_TANK_IRON_WALL_SIEGER_FIDELITY_CORRECTION_V0_1.md`
+- Tank shop combat `legacy-game-structure/122_P5_TANK_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
 
 Live remote wins.
 
@@ -23,105 +25,136 @@ Live remote wins.
 
 # ACTIVE PACKAGE — P5
 
-**A2 STRUCTURAL APPROVED / ECONOMY PREFLIGHT ACTIVE**
+**A2 APPROVED / FIVE-CLASS FIXED-RANK SHOP+COMBAT PROBE NEXT**
 
 No user decision is pending.
 
-Approved semantics:
+Working analysis centers only:
 
 ```text
-EVERY_STAGE_AVAILABLE_BUT_NONBLOCKING
-PERSONAL WALLETS
-KILLER_ONLY PERSONAL ORDINARY-MONSTER COIN BASELINE
-ALL-HUMAN STAGE-CLEAR FLOOR CANDIDATE
-FORTIFICATION = MAX + MATCHED CURRENT REPAIR
-PERSONAL OFFENSE/CONTROL
-PERSONAL PURCHASES -> SHARED FORTIFICATION/DEF
-SIX SHOP CATEGORIES
+Stage49 spend capacity = 50% full-shop reference
+sensitivity = 45% / 50% / 55%
+
+CLEAR/KILL income = 70/30
+sensitivity = 80/20 / 70/30 / 60/40
+
+first combat effect magnitude center = 40% of legacy per-rank effects
+sensitivity = 30% / 40% / 50%
+```
+
+None are production freezes.
+
+---
+
+# Approved A2 semantics
+
+```text
+shop every cleared Stage except Tier final, nonblocking
+personal wallets
+killer-only ordinary-monster coin baseline
+all-human Stage-clear income-floor candidate
+Fortification = max HP + matched current repair
+personal ATK/CRIT/CRITDMG/KNOCK
+personal FORT/DEF purchases contribute to shared wall
+six categories
 NO ROUTINE FULL-SHOP MAXOUT BY STAGE49
 ```
 
 ---
 
-# Current working economy envelope
+# Tank fidelity rule required by all next probes
 
-Correct legacy sensitivity reference uses JavaScript Math.round:
-
-```text
-full Rank10 six-track cost = 16,360 nominal units
-```
-
-Candidate Stage49 spend capacity:
+Tank Lv11 Iron Wall applies to **all shared wall incoming**, including SIEGER shots:
 
 ```text
-45% = 7,362
-50% = 8,180 <- working center
-55% = 8,998
+raw wall event
+-> monster capability modifier
+-> generic shop DEF
+-> Tank Iron Wall x0.90
+-> shield
+-> BaseHP
 ```
 
-Economy-only preflight:
-- all-six maxout = false in every tested policy;
-- CENTER balanced ends around Rank7–8;
-- selected specialization can max one late track around Stage45–49;
-- broad tradeoffs remain.
-
-No values frozen.
+Do not use old v0.5/v0.2 Tank SIEGER-specific numbers as current fidelity truth.
+Committed v0.6 / Stage49 v0.3 exact replay remains pending; targeted reconstruction reproduced the old exact baseline before applying the correction.
 
 ---
 
 # Exact next analysis
 
-## A. Income-source mix
-Test at fixed total capacity first:
+## 1. Five-class fixed-rank Stage49 combat
 
-```text
-CLEAR/KILL = 80/20, 70/30, 60/40
-working center candidate = 70/30
-```
+Classes:
+- Knight
+- Rogue
+- Tank
+- Archer
+- Mage
 
-Apply kill-share perturbations:
-- moderate ±20% relative to equal-share expectation;
-- stress ±40% where useful;
-- solo / 2P / 4P interpretation only as sensitivity until P10.
-
-Reject if class/player kill-share produces persistent multi-rank divergence large enough to dominate purchase strategy.
-
-## B. Fortification / DEF wall-pressure integration
-Use representative persistent-wall pressure including late Stage49-like reserve concerns.
-
-Measure:
-- current/max wall HP trajectory;
-- repair purchased vs damage taken;
-- generic DEF prevented damage;
-- Stage49->50 reserve;
-- whether DEFENSE_HEAVY trivially dominates;
-- whether Fortification erases attrition.
-
-Do not fix this by hidden per-class prices.
-
-## C. Purchase-policy combat feedback
-Compare:
+Policies:
 - ATTACK_HEAVY
-- CRIT_HEAVY
 - DEFENSE_HEAVY
 - BALANCED
-- SAVE_DELAY
 - ROLE_AWARE
 
-Then measure valid timing-action count, EXP opportunity, skill-reach drift and clear/fail behavior.
+First scalar families:
+- ATK
+- KNOCKBACK
+- FORTIFICATION
+- DEFENSE
+
+Magnitude sensitivity:
+
+```text
+30% / 40% / 50% of legacy per-rank reference
+```
+
+CRIT / CRITDMG remain separate until attack-template crit inheritance is respected.
+
+Required outputs:
+- wall max/current reserve;
+- burial time;
+- kills / active backlog;
+- ordinary wall hits;
+- SIEGER shots;
+- class mistake-budget behavior;
+- comparison with corrected/no-shop same-class baseline.
+
+Reject curves that:
+- erase persistent attrition;
+- allow repeated mastery failure without meaningful reserve loss;
+- make DEFENSE_HEAVY universally dominant;
+- destroy the approved Lv31 power/pressure relationship.
+
+## 2. Purchase-time Fortification history
+
+After the fixed-rank screen:
+- buy Fortification at actual Stage/shop times;
+- apply matched repair only when bought;
+- carry current/max wall HP continuously;
+- measure wasted repair at/near full HP;
+- measure Stage49->50 reserve.
+
+## 3. Shop-power feedback into P4 progression
+
+Then re-measure:
+- enemy kill timing;
+- valid timing-action count;
+- EXP opportunity;
+- Lv6/11/16/21/26/31 reach drift.
 
 ---
 
 # Do not yet
 
-- freeze exact coin values;
-- freeze exact Stage-clear reward;
-- freeze 70/30;
-- freeze price/rank/effect values;
+- freeze 50% spend capacity;
+- freeze 70/30 income mix;
+- freeze 40% shop effect scale;
+- freeze exact coin/reward/price/rank/effect values;
 - freeze generic wall-DR cap;
-- solve final multiplayer scaling before P10;
+- assign fake universal CRIT value to multihit/final skills;
+- solve final 2/3/4P scaling before P10;
 - freeze final EXP before P10R;
-- modify/deploy production gameplay;
-- reopen P4 without a concrete P5 feedback trigger.
+- modify/deploy production gameplay.
 
 P6 remains blocked pending P5 closure.
