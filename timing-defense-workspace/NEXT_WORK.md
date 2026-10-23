@@ -7,13 +7,13 @@ Before work:
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_35.yaml`;
-5. read `149_P6_FORMAL_ENTRY_AND_FIRST_CAUSAL_SLICE_AUTHORIZATION_V0_1.md`;
-6. read **latest** `150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md`;
-7. read `147_ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX_V0_1.md` and `148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md` when the next option needs encounter-authoring context;
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_37.yaml`;
+5. read `151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md`;
+6. read **latest** `152_P6_SHOP_ATK_EXP_OPPORTUNITY_BIDIRECTIONAL_FEEDBACK_RESULT_V0_1.md`;
+7. for P6-B2, read P4 `79`, `81`, `85`, `111` and P5 shop `116`, `118`, `119`, `123`, `124` before touching a progression model;
 8. only then open exact source/evidence for the approved next unit.
 
-Do not rerun closed fidelity, entry charge/combo, armored count/chronology/band or P6-S1 work without a concrete trigger.
+Do not rerun closed fidelity, entry charge/combo, P6-S1, P6-A encounter-family, Tank scalar bracket, or P6-B1 shop-ATK attribution without a concrete trigger.
 
 ---
 
@@ -21,144 +21,183 @@ Do not rerun closed fidelity, entry charge/combo, armored count/chronology/band 
 
 ```text
 P6 = FORMALLY ENTERED / USER APPROVED
-P6-S1 Stage46-47 causal convergence = COMPLETE
+P6-S1 = COMPLETE
+P6-A encounter-family convergence = COMPLETE
+P6-B1 shop ATK -> EXP-opportunity attribution = COMPLETE
+CURRENT = P6-B2 METHOD DECISION GATE
 Tier count / monster unlock ladder / exact T1 roster = DEFERRED UNTIL P6 CONVERGENCE
 production = UNCHANGED / UNAUTHORIZED
 ```
 
-P6-S1 exact execution:
+---
+
+# Tank identity guard — important
+
+The class-selection radar is player-facing identity authority:
+
 ```text
-run 39983816058
-SHA256 9564363cee66e4f6a3fc2ea42329cd7f47c08050e2ae09366c48b3f616054cce
+Tank ATK2 CRIT1 AGI1 KNOCK5 PEN1 AOE3
+```
+
+User clarification:
+
+```text
+Tank is not a monster-killing class.
+Low removal by itself is not a defect.
+Its job is control / defense / wall protection.
+```
+
+Therefore current Tank watch is only:
+
+```text
+TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+```
+
+P6-A already showed push/barriers/Aftershock slow/Iron Wall materially reduce wall pressure.
+Do not tune Tank ATK or seek clear-rate parity merely because dense removal-heavy packets produce low Tank completion.
+
+---
+
+# Closed P6-A result
+
+Class ranking rotates by encounter family.
+
+```text
+BASELINE dense/aligned:
+Mage19 Archer19 Rogue9 Knight7 Tank2
+
+durable/distributed:
+Knight20 Mage20 Archer20 Rogue17 Tank3
+
+screened CHARGER:
+Knight20 Archer20 Rogue18 Mage18 Tank3
+```
+
+This closes the question that the current Stage46/47 ordering might be a universal class-power ranking.
+It is not.
+
+Do not equalize one diagnostic packet numerically.
+
+---
+
+# Closed P6-B1 result
+
+Exact run:
+```text
+40029402035
+SHA256 83b5e1630231fb38426ae878cd3f2b6e7f3cd99894a44bac8416d0f23d614788
 exact-byte repeat PASS
 ```
 
----
-
-# Closed P6-S1 causal result
-
-Four explicit fixed late-segment shop profiles barely changed total skilled Stage47 completion:
-
+Cumulative summary:
 ```text
-BALANCED       56/100
-ATTACK_HEAVY   56/100
-DEFENSE_HEAVY  53/100
-ROLE_AWARE     57/100
+40029618307 PASS
 ```
 
-Across all profiles:
+Temp lane:
 ```text
-Archer 75/80
-Mage   75/80
-Rogue  36/80
-Knight 28/80
-Tank    8/80
+timing-defense-workspace-temp-p6-shop-exp-opportunity
+HEAD 7d83360da97cf0add2256c0b391d1dac7e9cd9a6
 ```
 
-So:
+Paired skilled through49:
 ```text
-FIXED_LATE_SHOP_PROFILE != PRIMARY_CURRENT_CLASS_SPLIT_CAUSE
+ATK_OFF 17/100
+ATK_ON  48/100
+31 survival promotions
+0 regressions
 ```
 
-All-PERFECT controls:
+Same-path clean cumulative cohort (both variants through49):
 ```text
-20/20 through Stage47
+17 pairs
+root actions ~-4.19%
+provisional XP_CREDIT ~-3.89%
 ```
 
-BALANCED P×P bins:
+Survival-promotion cohort:
 ```text
-HIGH: 23/29
-MID:  21/34
-LOW:  12/37
+31 pairs
+root actions ~+68.66%
+provisional XP_CREDIT ~+70.38%
 ```
 
-Thus P×P exposure strongly affects overall difficulty, but class spread remains inside comparable P×P bands.
+Therefore:
 
-Refined cause:
 ```text
-class outcome
-= mastery/P×P
-× class package
-× encounter composition/geometry
+SHOP_ATK_TO_EXP_FEEDBACK = BIDIRECTIONAL / OUTCOME-CONDITIONED
 ```
 
-Stage46 BALANCED also shows Tank has by far the largest displacement telemetry but the largest backlog/wall loss. Control is present; the current pressure is removal-heavy enough that it does not substitute for removal quickly enough.
+Two simultaneous paths:
+1. faster removal -> fewer valid timing turns -> EXP self-damping;
+2. better survival -> later Stages become available -> more total timing turns/EXP opportunity.
 
-Do not convert this into a Tank buff or Mage/Archer nerf.
+Do not use a flat negative shop->EXP multiplier.
+Do not project the late ~4% clean compression across Stage1-45.
 
 ---
 
-# EXP / event-count watch
+# Historical P4-B reproducibility boundary
 
-BALANCED mean judgments consumed across attempted Stage46–47:
-```text
-Archer ~152.65
-Mage   ~149.95
-Rogue  ~123.15
-Knight ~121.05
-Tank    ~77.05
-```
+The old P4-B evidence remains useful but its dedicated propagation runner was not retained in the historical canonical tree.
+Available:
+- P4-B result JSON;
+- P4-B report;
+- P4-A runner/validator;
+- P3 and older combat/role simulators.
 
-This proves event-opportunity divergence exists, but does not calibrate Lv6–31 reach because:
-- early failure truncates events;
-- this slice begins with Lv31 already available.
+Not available:
+- a dedicated reproducible P4-B full propagation runner.
 
-Progression-relevant EXP/shop convergence remains required before exact Tier unlock authoring.
+So exact skill-reach drift cannot be reconstructed by silently inventing a linear formula.
 
 ---
 
-# Tier authoring boundary
+# CURRENT USER DECISION REQUIRED — P6-B2 METHOD
 
-The user approved:
+Goal:
 ```text
-P6 convergence first
--> then constrain Tier count / monster availability / unlock order
--> then exact Tier1 Stage1-50 authoring
+Estimate Stage1-45
+shop history
+× skill power
+× combat opportunity
+× EXP
+× skill-reach timing
+```
+without prematurely freezing exact Tier1 content.
+
+## A — recommended: rebuild a bounded P4-B-style synthetic combat-feedback runner
+Then inject P5 stage-by-stage shop trajectories.
+
+Why preferred:
+- preserves approved dependency order;
+- closest continuity with prior P4-B evidence;
+- lets P6 converge before exact Tier1 Stage1-50 authoring;
+- can be fidelity-checked against P3/P4-B historical anchors and P6-B1 shop response.
+
+Required safeguards:
+- explicit reconstruction contract before treating results as authority;
+- reproduce old P4-B known anchors first;
+- use current class/skill semantics where authoritative;
+- use actual simulated timing-action counts, not a flat reduction multiplier;
+- preserve SKILLED_V2 / Heavy one-award EXP semantics;
+- inject actual P5 diagnostic stage-by-stage shop trajectories;
+- no final EXP/shop numeric freeze.
+
+## B — provisional full Stage1-50 combat fixture first
+More direct, but risks violating the approved order by effectively authoring Tier1 before P6 has converged.
+Not recommended now.
+
+## C — defer exact skill-reach propagation
+Safest from synthetic assumptions but leaves P6 progression convergence unresolved before Tier/unlock work.
+Not recommended unless the user wants to postpone the question.
+
+Recommended choice:
+```text
+A
 ```
 
-Current 9 ordinary monsters + temporary armored proxy remain diagnostic vocabulary only.
-Do not silently author a T1 all-nine roster.
-
----
-
-# CURRENT USER DECISION REQUIRED
-
-## A — recommended first: P6 paired pressure-family convergence
-Keep current player-power/shop/mastery semantics fixed.
-Compare a small paired set of pressure families at the same run-power surface, for example:
-- dense/aligned/high-volume;
-- durable/distributed;
-- control/objective-value pressure.
-
-Purpose:
-- verify that class advantage rotates with encounter family;
-- separate legitimate specialty from intrinsic power defect;
-- build the evidence needed for future Tier opportunity distribution.
-
-This is diagnostic only; no exact T1 Stage is authored.
-
-## B — required after/alongside A: P6 shop/EXP feedback
-Use an earlier progression-relevant bounded window or synthetic run with explicit shop policies.
-Measure:
-- timing-event count;
-- EXP gain/reach;
-- skill milestone timing;
-- shop leverage;
-- feedback into subsequent pressure.
-
-Purpose:
-- make exact monster unlock timing safe later.
-
-## C — tune current Stage46/47 numbers now
-Not recommended.
-The current packet is demonstrably specialty-biased; numerical parity tuning risks erasing class identities and fitting diagnostic content rather than the campaign.
-
-Recommended order:
-```text
-A -> B -> Tier/unlock candidate -> exact T1 Stage1-50
-```
-
-No option after P6-S1 is adopted until user approval.
+**Do not implement/adopt A until user approval, because rebuilding the missing P4-B propagation model is a new methodology contract.**
 
 ---
 
@@ -166,16 +205,17 @@ No option after P6-S1 is adopted until user approval.
 
 ```text
 LIVE REMOTE WINS
-P6 FORMAL ENTRY IS APPROVED
-SKILLED_V2_CENTRAL STAYS FIXED FOR CURRENT DIAGNOSTICS
+SKILLED_V2_CENTRAL STAYS FIXED FOR CURRENT CAUSAL COMPARISONS
+HEAVY X+Y = ONE EXP AWARD
 STAGE_SETTLED REQUIRED
 WALL DEFICIT / COMBO / CHARGE PERSIST
-NO MID-FIELD POP-IN
 SURVIVAL != CLEAR
 NO HARD CLASS LOCKOUT
-NO AUTOMATIC CLASS BUFF/NERF FROM ONE ENCOUNTER FAMILY
+TANK LOW REMOVAL IS INTENTIONAL
+NO TANK DAMAGE BUFF FROM CLEAR-RATE EQUALITY PRESSURE
+NO FLAT SHOP->EXP MULTIPLIER
+NO LINEAR STAGE1-45 PROJECTION FROM LATE-RUN 4% RESULT
 NO P×P PROBABILITY PATCH TO FIT CONTENT
-NO CURRENT STAGE46/47 NUMERIC REPAIR WITHOUT APPROVAL
 NO ARMORED PROXY ADOPTION
 NO EXACT TIER1 ROSTER/UNLOCK ASSUMPTION
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
