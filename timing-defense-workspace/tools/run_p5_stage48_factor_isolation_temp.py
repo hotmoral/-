@@ -2,7 +2,8 @@
 """TEMP Stage48 factor-isolation probe.
 
 Purpose: determine whether the current Stage48 all-class failure asymmetry comes mainly
-from the analysis-only ARMORED_DURABLE_PROXY, packet repetition, or proxy count.
+from the analysis-only ARMORED_DURABLE_PROXY, packet repetition, proxy count, or whether
+existing real escort bodies can preserve a SIEGER role pulse.
 No candidate is approved or frozen by this script.
 """
 from __future__ import annotations
@@ -51,6 +52,21 @@ def variant_cfg(temporal, direction, integration, cls, variant):
         for row in packet:
             if row["type"] == "ARMORED_DURABLE_PROXY":
                 row["type"] = "BRUTE"
+    elif variant == "REAL_SHIELD_SAME_PACKET":
+        for row in packet:
+            if row["type"] == "ARMORED_DURABLE_PROXY":
+                row["type"] = "SHIELD"
+    elif variant == "REAL_BRUTE_SHIELD_MIX":
+        seen = 0
+        for row in packet:
+            if row["type"] == "ARMORED_DURABLE_PROXY":
+                row["type"] = "BRUTE" if seen == 0 else "SHIELD"
+                seen += 1
+    elif variant == "REAL_SHIELD_CYCLE_6P5":
+        for row in packet:
+            if row["type"] == "ARMORED_DURABLE_PROXY":
+                row["type"] = "SHIELD"
+        cycle = 6.5
     elif variant == "HALF_REPEAT_PROXY":
         cycle *= 2.0
     elif variant == "ONE_PROXY_ROW":
@@ -70,7 +86,6 @@ def variant_cfg(temporal, direction, integration, cls, variant):
     authored["simulation"]["pressureCycleSeconds"] = cycle
     authored["integratedSchedule"]["packet"] = packet
     authored["integratedSchedule"]["maxLeadSeconds"] = max(float(x["spawnLeadSeconds"]) for x in packet)
-    # Generate only the existing 60s authored stress window.
     authored["simulation"]["durationSeconds"] = float(integration["stageWindowSeconds"])
     schedule = integ.build_integrated_schedule(authored)
 
@@ -115,17 +130,24 @@ def run_one(base, temporal, direction, shop, integration, cls, profile_name, var
 def main():
     base, temporal, direction, shop, integration = load_inputs()
     install_fixed_schedule_hook()
-    variants = ["CURRENT", "REAL_BRUTE_SAME_PACKET", "HALF_REPEAT_PROXY", "ONE_PROXY_ROW"]
+    variants = [
+        "CURRENT",
+        "REAL_BRUTE_SAME_PACKET",
+        "REAL_SHIELD_SAME_PACKET",
+        "REAL_BRUTE_SHIELD_MIX",
+        "REAL_SHIELD_CYCLE_6P5",
+        "HALF_REPEAT_PROXY",
+        "ONE_PROXY_ROW",
+    ]
     profiles = list(integration["representativeShopProfiles"])
     rows = []
     for variant in variants:
         for profile in profiles:
             for cls in integ.CLASSES:
-                # Factor isolation uses the existing Tank working center only; Tank coefficient selection is not the question here.
                 coeff = 0.25 if cls == "Tank" else None
                 rows.append(run_one(base, temporal, direction, shop, integration, cls, profile, variant, coeff))
     output = {
-        "version": "p5-stage48-factor-isolation-temp-v0.1",
+        "version": "p5-stage48-factor-isolation-temp-v0.2",
         "status": "TEMP_DIAGNOSTIC_NO_CANDIDATE_APPROVAL_NO_PRODUCTION_AUTHORITY",
         "variants": variants,
         "rows": rows,
