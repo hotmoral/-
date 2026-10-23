@@ -1,0 +1,139 @@
+{
+  "schema": "A3_STRUCTURAL_FEATURE_GOLDEN",
+  "version": "1.0.0",
+  "featureSchemaVersion": "0.1",
+  "cases": [
+    {
+      "id": "A3G01",
+      "n": 2,
+      "length": 2,
+      "initial": [0, 1],
+      "targets": [0, 2],
+      "note": "one-step mixed regret",
+      "expected": {
+        "shortestDistance": 1,
+        "shortestActionSequenceCount": 1,
+        "shortestDagStateCount": 2,
+        "mandatoryInternalStateCount": 0,
+        "initialLegalActionCount": 2,
+        "initialShortestActionCount": 1,
+        "initialPositiveRegretActionCount": 1,
+        "initialMeanRegret": {"numerator": 1, "denominator": 1},
+        "initialMaxRegret": 2,
+        "shortestMinProximityUpSteps": 0,
+        "shortestMinProximityUpMagnitude": 0,
+        "shortestMinRelationalSideSwitches": 0
+      }
+    },
+    {
+      "id": "A3G02",
+      "n": 3,
+      "length": 3,
+      "initial": [0, 1, 2],
+      "targets": [0, 4],
+      "note": "multiple shortest paths with mandatory setup",
+      "expected": {
+        "shortestDistance": 2,
+        "shortestActionSequenceCount": 2,
+        "shortestDagStateCount": 4,
+        "mandatoryInternalStateCount": 1,
+        "initialLegalActionCount": 2,
+        "initialShortestActionCount": 1,
+        "initialPositiveRegretActionCount": 1,
+        "initialMeanRegret": {"numerator": 1, "denominator": 1},
+        "initialMaxRegret": 2,
+        "shortestMinProximityUpSteps": 0,
+        "shortestMinProximityUpMagnitude": 0,
+        "shortestMinRelationalSideSwitches": 0
+      }
+    },
+    {
+      "id": "A3G03",
+      "n": 3,
+      "length": 4,
+      "initial": [0, 1, 2, 5],
+      "targets": [0, 1],
+      "note": "forced shortest proximity detour",
+      "expected": {
+        "shortestDistance": 4,
+        "shortestActionSequenceCount": 1,
+        "shortestDagStateCount": 5,
+        "mandatoryInternalStateCount": 3,
+        "initialLegalActionCount": 3,
+        "initialShortestActionCount": 1,
+        "initialPositiveRegretActionCount": 2,
+        "initialMeanRegret": {"numerator": 4, "denominator": 3},
+        "initialMaxRegret": 2,
+        "shortestMinProximityUpSteps": 1,
+        "shortestMinProximityUpMagnitude": 2,
+        "shortestMinRelationalSideSwitches": 1
+      }
+    },
+    {
+      "id": "A3G04",
+      "n": 4,
+      "length": 10,
+      "initial": [0, 4, 5, 6, 7, 11, 15, 14, 13, 9],
+      "targets": [0, 14],
+      "note": "relational side-switch witness",
+      "expected": {
+        "shortestDistance": 10,
+        "shortestActionSequenceCount": 2,
+        "shortestDagStateCount": 19,
+        "mandatoryInternalStateCount": 1,
+        "initialLegalActionCount": 3,
+        "initialShortestActionCount": 2,
+        "initialPositiveRegretActionCount": 1,
+        "initialMeanRegret": {"numerator": 2, "denominator": 3},
+        "initialMaxRegret": 2,
+        "shortestMinProximityUpSteps": 1,
+        "shortestMinProximityUpMagnitude": 2,
+        "shortestMinRelationalSideSwitches": 2
+      }
+    },
+    {
+      "id": "A3G05",
+      "n": 2,
+      "length": 2,
+      "initial": [0, 1],
+      "targets": [2, 3],
+      "note": "all initial actions shortest",
+      "expected": {
+        "shortestDistance": 2,
+        "shortestActionSequenceCount": 2,
+        "shortestDagStateCount": 4,
+        "mandatoryInternalStateCount": 0,
+        "initialLegalActionCount": 2,
+        "initialShortestActionCount": 2,
+        "initialPositiveRegretActionCount": 0,
+        "initialMeanRegret": {"numerator": 0, "denominator": 1},
+        "initialMaxRegret": 0,
+        "shortestMinProximityUpSteps": 0,
+        "shortestMinProximityUpMagnitude": 0,
+        "shortestMinRelationalSideSwitches": 0
+      }
+    },
+    {
+      "id": "A3G06",
+      "n": 3,
+      "length": 3,
+      "initial": [2, 1, 0],
+      "targets": [4, 0],
+      "note": "orientation-canonicalization pair of A3G02",
+      "expected": {
+        "shortestDistance": 2,
+        "shortestActionSequenceCount": 2,
+        "shortestDagStateCount": 4,
+        "mandatoryInternalStateCount": 1,
+        "initialLegalActionCount": 2,
+        "initialShortestActionCount": 1,
+        "initialPositiveRegretActionCount": 1,
+        "initialMeanRegret": {"numerator": 1, "denominator": 1},
+        "initialMaxRegret": 2,
+        "shortestMinProximityUpSteps": 0,
+        "shortestMinProximityUpMagnitude": 0,
+        "shortestMinRelationalSideSwitches": 0
+      }
+    }
+  ]
+}
