@@ -10,168 +10,195 @@ Updated: 2026-10-23 KST
 
 ## Mandatory operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_8.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_9.yaml`
 
-Live remote wins. Do not treat historical `NEXT` text or older dependency-plan versions as current authority.
+Live remote wins.
 
 ---
 
-# ACTIVE PHASE — P4-D1 LV31 STRUCTURAL SKILL-CONTRACT DECISION
+# ACTIVE PHASE — P4-D2 LV31 MASTERY POWER / STAGE46 PRESSURE FEEDBACK
 
-Completed immediately before this gate:
+Completed immediately before this phase:
 
 ```text
 P4-C1 Lv26 structural contract = USER APPROVED
 P4-C2 Lv26 bounded feedback = COMPLETE / PASS_WITH_WATCHES
+P4-D1 Lv31 power-fantasy + Stage46 mastery-gate direction = USER APPROVED WITH MODIFICATION
 ```
 
 Authorities:
-- `legacy-game-structure/88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md`
-- `legacy-game-structure/data/p4c2_lv26_bounded_feedback_v0_1.json`
+- `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/92_P4D2_LV31_MASTERY_POWER_AND_STAGE46_PRESSURE_PREFLIGHT_V0_1.md`
 
-Current decision proposal:
-- `legacy-game-structure/90_P4D1_LV31_STRUCTURAL_SKILL_CONTRACT_PROPOSAL_V0_1.md`
-- status: `PROPOSED / AWAITING USER APPROVAL`
-
-P4-D2 is blocked until this proposal is approved or revised.
+P4-D2 is authorized now.
 
 ---
 
-# What P4-C2 established
+# Approved late-run direction
 
-Bounded paired Lv21→Lv26 sensitivity shows:
-- Knight/Rogue/Archer/Mage offensive power generally reduces later local timing-action opportunities;
-- Tank control can slightly increase target lifetime/action opportunity;
-- therefore Lv26 does not resolve P4-B EXP divergence and P10R remains mandatory.
+Do **not** pre-emptively shrink Lv31 to fit the old pressure envelope.
 
-Important watches:
-- `LV26_T4_ROLE_EXPRESSION_WATCH`
-- `LV26_MAGE_SPLITTER_ORDERING_WATCH`
-- `LV26_TANK_MOVEMENT_COMPOSITION_WATCH`
-
-Highest concrete watch:
-- Mage Lv26 chain may target newly spawned SPLITTER children after root death/spawn ordering; strong Heavy chain can erase provisional child test anchors quickly.
-- this is bounded one-generation behavior, not a recursion bug, and is not an automatic reason to nerf Mage or inflate SPLITTER HP.
-
-No P4-C1 reopen is currently required.
-
----
-
-# CURRENT USER DECISION — P4-D1 OPTION A
-
-Proposal 90 recommends one global composition rule plus five class templates.
-
-## Global recommendation
-**P×P final-template replacement with lower-kit continuity.**
-
-Meaning:
-- P×P at Lv31 builds the final class attack template instead of stacking every Lv21/Lv26 same-action generator on top;
-- lower passive/scalar effects still apply where relevant;
-- duplicate lower hit generators are suppressed unless explicitly incorporated into the final template;
-- one root action owns the entire final package;
-- generated final hits add no EXP/charge/combo and do not independently trigger N3;
-- deterministic attribution and per-target mitigation remain P2-governed.
-
-Why:
-- fully additive Lv31 would explode Rogue/Archer/Mage event budgets and create a large opaque power cliff;
-- fully replacing all lower-kit effects would break progression continuity.
-
-## Knight — recommended K-B
-- P×P becomes two sequential broad crescent waves.
-- bounded Knight Heavy corridor, not Archer unlimited ray.
-- each wave remains primary + up to 3 additional penetrations.
-- second wave stays in the same authoritative corridor rather than freely homing to another backline target.
-- Lv16/Lv26 damage/knockback/penetration semantics remain part of the final template.
-- second-wave coefficient, inter-wave delay and final knockback scalar remain P4-D2 sensitivity inputs.
-
-## Rogue — recommended R-B
-- P×P replaces Double Dagger / Blade Barrage / Chain Throw generators for that root action.
-- exactly 8 Dagger Storm daggers over roughly 0.5s.
-- target stays locked while alive; after death remaining daggers deterministically retarget.
-- same-target cap remains absent; boss dagger scalar 0.70 remains.
-- candidate starting point: ~70ms intervals, 0.45 per dagger; provisional only.
-
-## Tank — recommended T-B
-- P×P creates one battlefield-wide control-first shockwave.
-- reduced damage + strong knockback rather than full-damage global AoE.
-- retains one normal local Lv26 Aftershock at primary location; slow does not become battlefield-wide.
-- shared wall barrier is non-additive; Lv31 barrier supersedes the same root's weaker Lv16 guard.
-- roadmap 250 shield / 6s remains provisional.
-- shockwave damage/knockback tested through bounded P4-D2 sensitivity ranges.
-
-## Archer — recommended A-B
-- P×P replaces Triple Shot with exactly one Sky-Piercing Arrow.
-- strict locked ray, no homing/bending/off-line retarget.
-- every intersected enemy can be hit once with no target-count cap.
-- armor ignore + 100% penetration preservation.
-- do not widen gameplay collision solely because visual arrow is “huge”.
-
-## Mage — recommended M-B
-- P×P replaces ordinary Greater Orb/Burst/Resonance/Chain generators for that root action.
-- primary receives one normal root direct impact.
-- fixed magic circle creates three scheduled AoE stages; original primary excluded from the three AoE stages to preserve crowd-specialist identity.
-- after stage 3 only, allow one bounded Lv26-style chain generation.
-- no recursive collapse/burst/resonance/chain tree.
-- timing/radius/stage-damage values remain P4-D2 sensitivity inputs.
-
----
-
-# Approval scope
-
-Approving Option A would approve **structure only**.
-It would NOT freeze production numbers.
-
-Provisional P4-D2 candidate values/ranges in proposal 90 may be tested and changed based on evidence.
-
-Approval would NOT authorize:
-- production gameplay changes;
-- final EXP semantics;
-- Stage Quality Budget;
-- exact A31;
-- shop/BaseHP/stars/achievements/boss/multiplayer values;
-- exact Stage46–50 authoring.
-
----
-
-# Required user action
-
-Choose one:
+Instead jointly calibrate:
 
 ```text
-A — approve proposal 90 Option A package
-B — modify one or more global/class clauses
-C — request more analysis before decision
-D — reject/reopen one or more Lv31 identities
+strong Lv31 class fantasy
+<->
+Stage46+ pressure capable of requiring and absorbing it
 ```
 
-Until that decision:
+Approved experiential structure:
 
 ```text
-P4-D1 structural freeze = NO
-P4-D2 execution = BLOCKED
-production changes = UNAUTHORIZED
+Stage41..45 = Lv31 acquisition / transition
+Stage46     = sharp pressure jump
+Stage46..47 = power-revelation band
+Stage48..49 = mastery-pressure band
+Stage50     = final application
+```
+
+A Lv31-less intended-skilled player may be buried because monster inflow/pressure exceeds Lv26 clearing capacity.
+That is allowed as an authored combat result.
+
+Do not add a code-level `Lv31 required` gate.
+
+Combo/timing/P×P maintenance is part of the intended Stage46+ difficulty.
+
+---
+
+# Rogue Lv31 — corrected working direction
+
+Rogue's final skill must culminate the thrown-projectile/multihit fantasy.
+
+Do not use proposal-90's conservative `8 daggers` as the working center.
+
+P4-D2 sensitivity:
+
+```text
+12 / 16 / 20 real Dagger Storm projectiles
+working center = 16
+```
+
+Structural rules:
+- one finite deterministic storm package per P×P root;
+- real visible/simulated projectiles/hits;
+- keep attacking current target while alive;
+- deterministic retarget after death/removal;
+- same-target cap absent;
+- boss scalar applies per realized hit;
+- no recursive projectile-generator tree;
+- performance is a watch/engineering problem, not an automatic design-nerf reason.
+
+---
+
+# Other Lv31 working interpretation
+
+- Knight: strong two-pass broad frontline break; bounded corridor identity, but not timid magnitude.
+- Tank: dramatic battlefield pressure reset through control + wall protection.
+- Archer: one strict-line unlimited-depth deletion; unlimited target count is part of the final fantasy.
+- Mage: bounded but spectacular three-stage density collapse + final chain; cluster deletion is allowed/desired.
+
+Finite/deterministic effect graphs remain mandatory.
+
+---
+
+# P4-D2 required lanes
+
+## A. Acquisition fairness
+Measure Stage46-entry Lv31 possession distribution.
+
+Candidate checkpoints only:
+
+```text
+97% / 98% / 99%
+```
+
+User direction considers `90%` too lenient as an intended-skilled target.
+No exact percentage freezes in P4-D2.
+
+If skilled players miss Lv31 because class kill-speed, EXP opportunity, team composition or player count distorted acquisition, classify the cause before freezing the gate.
+
+## B. Power expression
+Test whether each Lv31 creates a clear, satisfying class-specific pressure reset.
+
+Do not interpret a large power cliff as an automatic defect.
+
+## C. Stage46+ pressure absorption
+Vary pressure mainly through encounter grammar:
+- density;
+- spawn cadence;
+- formation depth;
+- SUPPORTER/SIEGER protection;
+- CHARGER timing;
+- SPLITTER rebound/population;
+- mixed-pressure composition.
+
+Do not solve the whole band by only multiplying HP.
+
+## D. Combo/P×P mastery
+Measure:
+- P×P frequency;
+- combo survival;
+- time between successful pressure resets;
+- monster accumulation before reset;
+- failure cascade after missed P×P;
+- recovery after isolated vs repeated mistakes.
+
+## E. Role / performance watches
+Keep class identity and monster decision readability where appropriate.
+For Rogue, test 12/16/20 event volume and later multiplayer worst-case stress separately from balance.
+
+---
+
+# Active watches
+
+```text
+SOLO_PROGRESSION_DIVERGENCE_WATCH
+TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+PLAYER_COUNT_SCALING_XP_DEPENDENCY
+MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+LV26_T4_ROLE_EXPRESSION_WATCH
+LV26_MAGE_SPLITTER_ORDERING_WATCH
+LV26_TANK_MOVEMENT_COMPOSITION_WATCH
+LV31_CLASS_CLEAR_RATE_DIVERGENCE
+LV31_ROLE_EXPRESSION_ERASURE
+LV31_POWER_FANTASY_UNDERSHOOT
+STAGE46_LV31_ACQUISITION_FAIRNESS
+STAGE46_LV31_ABSENCE_BURIAL_BEHAVIOR
+STAGE46_PRESSURE_INSUFFICIENT_FOR_LV31
+PXP_COMBO_MAINTENANCE_MASTERY_PRESSURE
+ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
 ```
 
 ---
 
-# R2 / future route remains
+# Stop / decision conditions
+
+P4-D2 can iterate provisional values/pressure candidates without repeated user approval.
+
+Stop for user decision only if work requires:
+- changing a class's Lv31 identity;
+- adding a code-level Lv31 gate;
+- hidden class/player-count EXP compensation;
+- freezing exact Stage46 Lv31 possession threshold;
+- changing final EXP semantics;
+- production implementation/numerical freeze.
+
+---
+
+# After P4-D2
 
 ```text
-P4-D1 user decision
- -> P4-D2 Lv31 bounded mastery/power feedback
+P4-D2 feedback
  -> P4-E provisional player-power-spine closure WITH EXP WATCHES
  -> P5/P6/P7/P8
  -> P10 current-roster multiplayer scaling
  -> P10R mandatory EXP/timebase reconvergence
- -> P11+ permanent progression work after converged EXP dependency
 ```
 
 Do not yet:
-- start P4-D2;
-- silently treat proposal 90 as approved;
-- freeze Lv31 numerical coefficients;
-- change/deploy production v0.45 gameplay;
-- freeze pure per-turn EXP or activate Option D;
-- add hidden class/Tier XP corrections;
-- author exact launch Stages.
+- freeze Rogue at 16 projectiles;
+- freeze Stage46 possession at 97/98/99%;
+- freeze exact Stage46–50 content;
+- change production gameplay;
+- freeze final EXP;
+- begin P5 before P4-E.
