@@ -1,0 +1,81 @@
+version: system-dependency-calibration-order-v0.27
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_26.yaml
+authorityDocs:
+  - 86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md
+  - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+  - 124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md
+  - 128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md
+  - 129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md
+  - 130_P5_CLASS_IDENTITY_FINITE_PACKET_PROBE_PREFLIGHT_V0_1.md
+  - 131_P5_CLASS_IDENTITY_FIRST_DIRECTIONAL_RESULT_V0_1.md
+  - ../CHARACTER_PROFILE_RADAR_V1.md
+
+principles:
+  - live_remote_wins
+  - radar_high_axes_must_remain_causally_visible
+  - radar_low_axes_must_remain_real_limitations_after_growth
+  - survival_is_not_clear
+  - tank_solo_parity_not_required
+  - preserve_tank_control_and_wall_fantasy
+  - do_not_turn_tank_into_generic_aoe_damage_class
+  - normal_right_edge_entry_required
+  - encounter_geometry_before_scalar_patch_except_when_class_identity_itself_is_the_root_cause
+  - exact_scalar_freeze_last
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {status: STRUCTURAL_PASS_COMPLETE}
+  P4: {status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES}
+  P5:
+    status: CLASS_IDENTITY_RECONVERGENCE_ACTIVE
+    structuralContract: USER_APPROVED_A2
+    classIdentityFirstDirectionalResult:
+      source: 131_P5_CLASS_IDENTITY_FIRST_DIRECTIONAL_RESULT_V0_1.md
+      authority: DIRECTIONAL_RECONSTRUCTION_EXACT_COMMITTED_EXECUTION_PENDING
+      Tank:
+        classification: NEGATIVE_SOLO_THROUGHPUT_IDENTITY_DEFECT_DIRECTIONALLY_CONFIRMED
+        currentMixedPacketClearSeconds: 8.079
+        nonTankMedianSeconds: 7.830
+        currentRatio: 1.03
+        rootAxis: LV31_BATTLEFIELD_WIDE_DAMAGE_CONTRIBUTION
+        next: TANK_CONTROL_VS_CLEAR_PARETO_SEARCH
+      Archer:
+        classification: LINE_DEPENDENCE_STRONGLY_PRESENT
+        balancedAlignedSeconds: 3.58
+        balancedScatterSeconds: 8.08
+        interpretation: PRIOR_STAGE49_PROBLEM_LOCALIZED_TO_PACKET_CHRONOLOGY
+      Mage:
+        classification: DENSITY_DEPENDENCE_STRONGLY_PRESENT
+        clusterSeconds: 3.78
+        distributedSeconds: 8.08
+      Rogue:
+        classification: SHOP_DRIVEN_BROAD_CLEANUP_BREAKPOINT_HIGH_WATCH
+        newWatch: P5_ROGUE_DAGGER_GRUNT_ONESHOT_BREAKPOINT_WATCH
+        rootAxis: DAGGER_ONE_SHOT_THRESHOLD_PLUS_APPROVED_RETARGET
+      Knight:
+        classification: PAIRED_PROBE_REFINEMENT_REQUIRED
+        reason: NON_MONOTONIC_TARGET_DEATH_SECOND_WAVE_CHRONOLOGY
+    nextSlices:
+      - TANK_CONTROL_VS_CLEAR_PARETO_SEARCH_KEEPING_KNOCK_BARRIER_CONTROL
+      - ROGUE_DAGGER_DISTINCT_TARGET_AND_ONE_SHOT_BREAKPOINT_SCAN
+      - KNIGHT_ROBUST_PENETRATION_CAUSALITY_FIXTURE_REFINEMENT
+      - EXACT_COMMITTED_IDENTITY_RUNNER_EXECUTION_WHEN_BYTE_EQUIVALENT_LANE_AVAILABLE
+      - INTEGRATE_IDENTITY_METRICS_INTO_STAGE46_49_SOURCE_PATCHED_RIGHT_EDGE_RUNNER
+      - RESUME_STAGE49_PACKET_CHRONOLOGY_ONLY_AFTER_IDENTITY_RECONVERGENCE
+      - KNOCKBACK_CROSS_CLASS_POLICY_LANE
+      - CRIT_CRITDMG_POLICY_LANE
+      - P4_EXP_SKILL_REACH_FEEDBACK
+    productionAuthority: false
+  P6: {status: BLOCKED_PENDING_P5}
+  P10R: {status: BLOCKED_PENDING_P10}
+
+currentBoundary:
+  activePackage: P5
+  next: TANK_CONTROL_VS_CLEAR_PARETO_SEARCH
+  nextMode: BOUNDED_DIRECTIONAL_SIMULATION_NO_NUMERICAL_FREEZE
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
