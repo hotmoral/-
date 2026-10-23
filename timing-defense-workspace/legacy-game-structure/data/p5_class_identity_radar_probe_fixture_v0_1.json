@@ -1,0 +1,203 @@
+{
+  "version": "p5-class-identity-radar-probe-fixture-v0.1",
+  "status": "BOUNDED_DIRECTIONAL_IDENTITY_PROBE_NO_PRODUCTION_AUTHORITY",
+  "shopEffectScale": 0.4,
+  "snapshotHorizonsSeconds": [30, 60, 90],
+  "extraProfilesByClass": {
+    "Knight": ["DEFENSE_HEAVY"],
+    "Tank": ["ROLE_AWARE"],
+    "Archer": ["ATTACK_HEAVY"]
+  },
+  "rules": {
+    "normalRightEdgeSpawnX": 0.92,
+    "finitePacketOnly": true,
+    "crossClassShopFamilies": ["ATK", "FORTIFICATION", "DEFENSE"],
+    "knockCritCritDamageDeferred": true,
+    "directClearRequires": [
+      "all_expected_enemies_killed",
+      "zero_wall_contacts",
+      "wall_survives",
+      "zero_active_backlog"
+    ],
+    "thresholdsFrozen": false
+  },
+  "scenarios": [
+    {
+      "id": "KNIGHT_ALIGNED_FRONT",
+      "formationTag": "FRONTLINE",
+      "alignmentTag": "ALIGNED",
+      "densityTag": "MEDIUM",
+      "expectedDirectKills": 8,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": 0},
+        {"offset": 0.2, "type": "SHIELD", "band": 0},
+        {"offset": 0.4, "type": "GRUNT", "band": 0},
+        {"offset": 0.6, "type": "BRUTE", "band": 0},
+        {"offset": 0.8, "type": "CHARGER", "band": 0},
+        {"offset": 1.0, "type": "SHIELD", "band": 0},
+        {"offset": 1.2, "type": "GRUNT", "band": 0},
+        {"offset": 1.4, "type": "SIEGER", "band": 0}
+      ]
+    },
+    {
+      "id": "KNIGHT_DISPERSED_FRONT",
+      "formationTag": "DISPERSED",
+      "alignmentTag": "OFF_AXIS",
+      "densityTag": "LOW",
+      "expectedDirectKills": 8,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": -2},
+        {"offset": 0.2, "type": "SHIELD", "band": 2},
+        {"offset": 0.4, "type": "GRUNT", "band": -1},
+        {"offset": 0.6, "type": "BRUTE", "band": 1},
+        {"offset": 0.8, "type": "CHARGER", "band": -2},
+        {"offset": 1.0, "type": "SHIELD", "band": 2},
+        {"offset": 1.2, "type": "GRUNT", "band": 0},
+        {"offset": 1.4, "type": "SIEGER", "band": 1}
+      ]
+    },
+    {
+      "id": "ROGUE_DURABLE_SINGLE",
+      "formationTag": "DURABLE_EXECUTION",
+      "alignmentTag": "SINGLE_AXIS",
+      "densityTag": "LOW",
+      "expectedDirectKills": 2,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "ARMORED_DURABLE_PROXY", "band": 0},
+        {"offset": 1.8, "type": "BRUTE", "band": 0}
+      ]
+    },
+    {
+      "id": "ROGUE_BROAD_WAVE",
+      "formationTag": "MULTI_DIRECTION_SWARM",
+      "alignmentTag": "SCATTERED",
+      "densityTag": "MEDIUM",
+      "expectedDirectKills": 12,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "GRUNT", "band": -2},
+        {"offset": 0.12, "type": "RUNNER", "band": 2},
+        {"offset": 0.24, "type": "GRUNT", "band": -1},
+        {"offset": 0.36, "type": "RUNNER", "band": 1},
+        {"offset": 0.48, "type": "GRUNT", "band": 0},
+        {"offset": 0.6, "type": "RUNNER", "band": -2},
+        {"offset": 0.72, "type": "GRUNT", "band": 2},
+        {"offset": 0.84, "type": "RUNNER", "band": -1},
+        {"offset": 0.96, "type": "GRUNT", "band": 1},
+        {"offset": 1.08, "type": "RUNNER", "band": 0},
+        {"offset": 1.2, "type": "GRUNT", "band": -2},
+        {"offset": 1.32, "type": "RUNNER", "band": 2}
+      ]
+    },
+    {
+      "id": "TANK_MIXED_SOLO",
+      "formationTag": "MIXED_DURABLE_ROLE",
+      "alignmentTag": "MIXED",
+      "densityTag": "MEDIUM",
+      "expectedDirectKills": 10,
+      "maxClearScanSeconds": 180,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": -2},
+        {"offset": 0.25, "type": "SHIELD", "band": 2},
+        {"offset": 0.5, "type": "BRUTE", "band": 0},
+        {"offset": 0.75, "type": "CHARGER", "band": -1},
+        {"offset": 1.0, "type": "SHIELD", "band": 1},
+        {"offset": 1.25, "type": "SIEGER", "band": -2},
+        {"offset": 1.5, "type": "CHARGER", "band": 2},
+        {"offset": 1.75, "type": "BRUTE", "band": -1},
+        {"offset": 2.0, "type": "SHIELD", "band": 1},
+        {"offset": 2.25, "type": "SIEGER", "band": 0}
+      ]
+    },
+    {
+      "id": "ARCHER_ALIGNED_LINE",
+      "formationTag": "LINE",
+      "alignmentTag": "ALIGNED",
+      "densityTag": "MEDIUM",
+      "expectedDirectKills": 10,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": 0},
+        {"offset": 0.15, "type": "SHIELD", "band": 0},
+        {"offset": 0.3, "type": "GRUNT", "band": 0},
+        {"offset": 0.45, "type": "RUNNER", "band": 0},
+        {"offset": 0.6, "type": "BRUTE", "band": 0},
+        {"offset": 0.75, "type": "CHARGER", "band": 0},
+        {"offset": 0.9, "type": "SHIELD", "band": 0},
+        {"offset": 1.05, "type": "SIEGER", "band": 0},
+        {"offset": 1.2, "type": "GRUNT", "band": 0},
+        {"offset": 1.35, "type": "RUNNER", "band": 0}
+      ]
+    },
+    {
+      "id": "ARCHER_SCATTER",
+      "formationTag": "SCATTER",
+      "alignmentTag": "OFF_CORRIDOR",
+      "densityTag": "LOW",
+      "expectedDirectKills": 10,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": -2},
+        {"offset": 0.15, "type": "SHIELD", "band": 2},
+        {"offset": 0.3, "type": "GRUNT", "band": -1},
+        {"offset": 0.45, "type": "RUNNER", "band": 1},
+        {"offset": 0.6, "type": "BRUTE", "band": 0},
+        {"offset": 0.75, "type": "CHARGER", "band": -2},
+        {"offset": 0.9, "type": "SHIELD", "band": 2},
+        {"offset": 1.05, "type": "SIEGER", "band": -1},
+        {"offset": 1.2, "type": "GRUNT", "band": 1},
+        {"offset": 1.35, "type": "RUNNER", "band": 0}
+      ]
+    },
+    {
+      "id": "MAGE_CLUSTER",
+      "formationTag": "CLUSTER",
+      "alignmentTag": "NEAR_CENTER",
+      "densityTag": "HIGH",
+      "expectedDirectKills": 10,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": 0},
+        {"offset": 0.05, "type": "SHIELD", "band": -1},
+        {"offset": 0.1, "type": "GRUNT", "band": 1},
+        {"offset": 0.15, "type": "RUNNER", "band": 0},
+        {"offset": 0.2, "type": "BRUTE", "band": 1},
+        {"offset": 0.25, "type": "SHIELD", "band": -1},
+        {"offset": 0.3, "type": "GRUNT", "band": 0},
+        {"offset": 0.35, "type": "CHARGER", "band": 1},
+        {"offset": 0.4, "type": "RUNNER", "band": -1},
+        {"offset": 0.45, "type": "SIEGER", "band": 0}
+      ]
+    },
+    {
+      "id": "MAGE_DISTRIBUTED",
+      "formationTag": "DISTRIBUTED",
+      "alignmentTag": "WIDE",
+      "densityTag": "LOW",
+      "expectedDirectKills": 10,
+      "maxClearScanSeconds": 120,
+      "rows": [
+        {"offset": 0.0, "type": "BRUTE", "band": -2},
+        {"offset": 0.7, "type": "SHIELD", "band": 2},
+        {"offset": 1.4, "type": "GRUNT", "band": -1},
+        {"offset": 2.1, "type": "RUNNER", "band": 1},
+        {"offset": 2.8, "type": "BRUTE", "band": 0},
+        {"offset": 3.5, "type": "SHIELD", "band": -2},
+        {"offset": 4.2, "type": "GRUNT", "band": 2},
+        {"offset": 4.9, "type": "CHARGER", "band": -1},
+        {"offset": 5.6, "type": "RUNNER", "band": 1},
+        {"offset": 6.3, "type": "SIEGER", "band": 0}
+      ]
+    }
+  ],
+  "interpretationBoundary": [
+    "These finite packets are identity diagnostics, not launch encounters.",
+    "No clear-time ratio or class ranking is frozen as a pass threshold in V0.1.",
+    "Tank survival alone is not a clear result; direct-clear requires actual kills and zero wall contacts.",
+    "Archer and Mage paired scenarios intentionally hold broad threat content similar while changing line/density geometry.",
+    "Rogue broad-wave behavior is a leakage watch; the test does not demand identical total HP between durable and swarm packets."
+  ]
+}
