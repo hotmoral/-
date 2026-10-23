@@ -1,0 +1,26 @@
+name: Timing Defense P6 causal schema inspect temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p6-stage46-47-causal
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p6-stage46-47-causal
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Inspect one bridge row
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p6_stage46_47_schema_inspect_temp.py
