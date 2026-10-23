@@ -43,7 +43,7 @@ def rank_calibrate(raw_by_id,target_min,target_med,target_max):
     return out
 
 def build_recipe_maps(hist):
-    base=load_yaml(BASE); kin=load_yaml(KIN); combat=load_yaml(COMBAT)
+    base=load_yaml(BASE); kin=load_yaml(KIN); combat=load_yaml(COMBAT)['monsters']
     recipes=materializer.materialize_all20(base,kin,[load_yaml(p) for p in OVERLAYS])
     maps={c:{} for c in CLASSES}
     for cls in CLASSES:
