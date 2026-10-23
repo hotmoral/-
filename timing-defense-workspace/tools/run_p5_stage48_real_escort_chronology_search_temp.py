@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""TEMP bounded Stage48 dense-overlap / lane-separation search.
+"""TEMP bounded Stage48 BRUTE-relay escort chronology search.
 
-Question:
-Can existing real monsters, at roughly the current Stage48 density, screen a right-edge SIEGER
-long enough for actual role uptime if pulses overlap more and SIEGER is protected from incidental
-same-band AOE? No stats are changed and no candidate is adopted by this search.
+Causal question:
+The simulator has no physical body-blocking. Escorting works only while another living enemy stays
+frontmost. Because BRUTE is slower than SIEGER, a small lead lets SIEGER overtake its own escort.
+Can a larger BRUTE lead plus overlapping next-pulse BRUTEs preserve frontmost screening long enough
+for real SIEGER role uptime?
+
+No monster/class/shop stat changes. Normal physical spawnX only. No candidate adoption authority.
 """
 from __future__ import annotations
 
@@ -18,10 +21,9 @@ import run_p5_identity_aware_stage46_49_integrated_probe_v0_1 as integ
 AUTHORED_WINDOW = 60.0
 DRAIN_CAP = 240.0
 COARSE_PROFILES = ("BALANCED", "DEFENSE_HEAVY")
-FAMILIES = ("BRUTE_SHIELD", "DOUBLE_BRUTE")
-CYCLES = (4.9, 5.7, 6.5)
+CYCLES = (4.9, 5.3)
+SIEGER_GAPS = (4.0, 5.0, 6.0)
 SIEGER_BANDS = (0, 2)
-SIEGER_OFFSET = 2.5
 
 
 def load_inputs():
@@ -46,28 +48,19 @@ def install_schedule_hook():
     glb["build_integrated_schedule"] = hooked
 
 
-def make_candidate(family, cycle, sieger_band):
-    if sieger_band == 0:
-        front_bands = (-1, 1)
-    else:
-        # Keep both front bodies at least two bands away from the protected SIEGER when possible,
-        # so line/AOE spill from the frontmost target is less likely to erase the role enemy for free.
-        front_bands = (-1, 0)
-    front_types = ("BRUTE", "SHIELD") if family == "BRUTE_SHIELD" else ("BRUTE", "BRUTE")
+def make_candidate(cycle, gap, sieger_band):
+    # No SUPPORTER here: this probe isolates frontmost relay timing rather than travel acceleration.
+    front_bands = (-1, 0) if sieger_band == 2 else (-1, 1)
     rows = [
-        (front_types[0], front_bands[0], 0.0),
-        (front_types[1], front_bands[1], 0.6),
-        ("SUPPORTER", sieger_band, SIEGER_OFFSET - 0.30),
-        ("SIEGER", sieger_band, SIEGER_OFFSET),
-        ("RUNNER", -2 if sieger_band == 2 else -1, SIEGER_OFFSET + 2.80),
-        ("CHARGER", 1, SIEGER_OFFSET + 3.40),
+        ("BRUTE", front_bands[0], 0.0),
+        ("BRUTE", front_bands[1], 0.6),
+        ("SIEGER", sieger_band, gap),
+        ("RUNNER", -2 if sieger_band == 2 else -1, gap + 2.8),
+        ("CHARGER", 1, gap + 3.4),
     ]
     return {
-        "id": f"{family}_C{cycle:.1f}_SB{sieger_band}",
-        "family": family,
-        "cycle": float(cycle),
-        "siegerBand": int(sieger_band),
-        "rows": rows,
+        "id": f"DOUBLE_BRUTE_RELAY_C{cycle:.1f}_G{gap:.1f}_SB{sieger_band}",
+        "cycle": float(cycle), "siegerGap": float(gap), "siegerBand": int(sieger_band), "rows": rows,
     }
 
 
@@ -81,13 +74,13 @@ def build_schedule(candidate):
             if st < AUTHORED_WINDOW:
                 out.append((round(st, 6), typ, int(band)))
         pulse += 1
-        ref = 8.0 + pulse * float(candidate["cycle"])
+        ref = 8.0 + pulse * candidate["cycle"]
     return sorted(out, key=lambda x: (x[0], x[1], x[2]))
 
 
 def stage_cfg(temporal, direction, cls, schedule):
     cfg = copy.deepcopy(temporal)
-    cfg["version"] = "p5-stage48-dense-real-escort-chronology-temp"
+    cfg["version"] = "p5-stage48-brute-relay-chronology-temp"
     cfg["simulation"]["durationSeconds"] = DRAIN_CAP
     cfg["simulation"]["spawnX"] = float(direction["globalRules"]["normalRightEdgeSpawnX"])
     cfg["simulation"]["rootAttackIntervalSeconds"] = 1.047 if cls == "Rogue" else 1.125
@@ -104,8 +97,7 @@ def run_case(base, temporal, direction, shop, integration, candidate, profile_na
     overrides = {"shockwaveCoefficient": 0.25} if cls == "Tank" else None
     row = integ.SIMULATE(
         base, stage_cfg(temporal, direction, cls, schedule), cls, True, (),
-        overrides=overrides, shop_profile=profile, effect_scale=scale,
-        start_wall_current=wall_max,
+        overrides=overrides, shop_profile=profile, effect_scale=scale, start_wall_current=wall_max,
     )
     return {
         "candidate": candidate["id"], "profile": profile_name, "class": cls,
@@ -127,18 +119,22 @@ def summarize(candidate, schedule, rows):
             "burials": sum(r["burialTime"] is not None for r in cr),
             "settled": sum(r["settledBy240"] for r in cr),
             "minWallRatio": min(r["wallRatio"] for r in cr),
+            "totalSiegerWindups": sum(r["siegerWindups"] for r in cr),
             "totalSiegerShots": sum(r["siegerShots"] for r in cr),
+            "casesWithSiegerWindup": sum(r["siegerWindups"] > 0 for r in cr),
             "casesWithSiegerShot": sum(r["siegerShots"] > 0 for r in cr),
             "wallHits": sum(r["wallHits"] for r in cr),
         }
     return {
-        "id": candidate["id"], "family": candidate["family"], "cycle": candidate["cycle"],
+        "id": candidate["id"], "cycle": candidate["cycle"], "siegerGap": candidate["siegerGap"],
         "siegerBand": candidate["siegerBand"], "spawnCount": len(schedule),
         "siegerSpawnCount": sum(t == "SIEGER" for _, t, _ in schedule),
         "burials": sum(r["burialTime"] is not None for r in rows),
         "unsettledBy240": sum((not r["settledBy240"] and r["burialTime"] is None) for r in rows),
         "minWallRatio": min(r["wallRatio"] for r in rows),
+        "totalSiegerWindups": sum(r["siegerWindups"] for r in rows),
         "totalSiegerShots": sum(r["siegerShots"] for r in rows),
+        "casesWithSiegerWindup": sum(r["siegerWindups"] > 0 for r in rows),
         "casesWithSiegerShot": sum(r["siegerShots"] > 0 for r in rows),
         "totalWallHits": sum(r["wallHits"] for r in rows), "byClass": by_class,
     }
@@ -147,7 +143,7 @@ def summarize(candidate, schedule, rows):
 def main():
     base, temporal, direction, shop, integration = load_inputs()
     install_schedule_hook()
-    candidates = [make_candidate(f, c, b) for f, c, b in itertools.product(FAMILIES, CYCLES, SIEGER_BANDS)]
+    candidates = [make_candidate(c, g, b) for c, g, b in itertools.product(CYCLES, SIEGER_GAPS, SIEGER_BANDS)]
     summaries, all_rows = [], []
     for candidate in candidates:
         schedule = build_schedule(candidate)
@@ -157,10 +153,13 @@ def main():
                 row = run_case(base, temporal, direction, shop, integration, candidate, profile_name, cls)
                 rows.append(row); all_rows.append(row)
         summaries.append(summarize(candidate, schedule, rows))
-    summaries.sort(key=lambda s: (s["burials"], -s["casesWithSiegerShot"], -s["totalSiegerShots"], -s["minWallRatio"], s["spawnCount"]))
+    summaries.sort(key=lambda s: (
+        s["burials"], -s["casesWithSiegerShot"], -s["totalSiegerShots"],
+        -s["casesWithSiegerWindup"], -s["totalSiegerWindups"], -s["minWallRatio"], s["spawnCount"]
+    ))
     output = {
-        "version": "p5-stage48-dense-real-escort-chronology-search-temp-v0.2",
-        "status": "TEMP_BOUNDED_SEARCH_NO_CANDIDATE_ADOPTION_NO_PRODUCTION_AUTHORITY",
+        "version": "p5-stage48-brute-relay-chronology-search-temp-v0.3",
+        "status": "TEMP_BOUNDED_CAUSAL_SEARCH_NO_CANDIDATE_ADOPTION_NO_PRODUCTION_AUTHORITY",
         "profiles": list(COARSE_PROFILES),
         "normalRightEdgeSpawnX": direction["globalRules"]["normalRightEdgeSpawnX"],
         "midFieldPopInAllowed": direction["globalRules"]["midFieldPopInAllowed"],
