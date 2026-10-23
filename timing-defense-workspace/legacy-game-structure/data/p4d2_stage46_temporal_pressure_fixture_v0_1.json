@@ -1,0 +1,111 @@
+{
+  "authorityBoundary": [
+    "Current nine-monster provisional anchors are loaded from p4d2_lv31_pressure_probe_fixture_v0_1.json.",
+    "The 60s duration, spawnX=0.92, 12 bodies per 4.6s pressure cycle, five probe bands, and root cadence are diagnostic stress inputs only.",
+    "The root cadence 1.125s approximates the observed high-mastery H0/H3 root-action cadence and is not an ordinary-skilled population fit.",
+    "No exact Stage46 composition, duration, spawn cadence, geometry, or balance coefficient is frozen."
+  ],
+  "geometryAbstraction": {
+    "archerLv26BandRadius": 0,
+    "archerLv31WidthSensitivity": [0, 1],
+    "archerLv31WorkingBandRadius": 1,
+    "bands": [-2, -1, 0, 1, 2],
+    "knightHeavyBandRadius": 1,
+    "mageHeavyFinalBandRadius": 2,
+    "mageNormalBandRadius": 1,
+    "note": "Probe bands are only a bounded geometry abstraction; they are not production lanes or frozen collision widths."
+  },
+  "lv31TemporalCenters": {
+    "Archer": {
+      "coefficientSensitivity": [1.0, 1.5, 2.0, 2.3],
+      "perTargetCoefficient": 2.3,
+      "widthSensitivity": [0, 1],
+      "workingBandRadius": 1
+    },
+    "Knight": {
+      "secondWaveCoefficient": 1.0,
+      "secondWaveDelaySeconds": 0.14
+    },
+    "Mage": {
+      "radiusMultiplier": 1.25,
+      "radiusSensitivity": [1.0, 1.25, 1.5],
+      "stageCoefficient": 0.75,
+      "stageDelaysSeconds": [0.0, 0.18, 0.36],
+      "stageSensitivity": [0.55, 0.75, 1.0]
+    },
+    "Rogue": {
+      "countSensitivity": [12, 16, 20],
+      "daggers": 16,
+      "perDaggerCoefficient": 0.45,
+      "stormDurationSeconds": 0.7
+    },
+    "Tank": {
+      "barrier": 250,
+      "barrierSeconds": 6.0,
+      "damageSensitivity": [0.5, 0.75, 1.0],
+      "knockbackMultiplier": 2.5,
+      "knockbackSensitivity": [2.0, 2.5, 3.0],
+      "shockwaveCoefficient": 0.75
+    }
+  },
+  "pressurePatterns": [
+    [
+      {"band": -2, "offset": 0.0, "type": "RUNNER"},
+      {"band": 0, "offset": 0.32, "type": "GRUNT"},
+      {"band": 2, "offset": 0.64, "type": "SHIELD"},
+      {"band": -1, "offset": 0.98, "type": "CHARGER"},
+      {"band": 1, "offset": 1.34, "type": "BRUTE"},
+      {"band": -2, "offset": 1.72, "type": "SPLITTER"},
+      {"band": 2, "offset": 2.1, "type": "RUNNER"},
+      {"band": 0, "offset": 2.48, "type": "SUPPORTER"},
+      {"band": 1, "offset": 2.88, "type": "SIEGER"},
+      {"band": -1, "offset": 3.28, "type": "GRUNT"},
+      {"band": 2, "offset": 3.72, "type": "FLYER"},
+      {"band": -2, "offset": 4.12, "type": "RUNNER"}
+    ],
+    [
+      {"band": -2, "offset": 0.0, "type": "GRUNT"},
+      {"band": 2, "offset": 0.35, "type": "SPLITTER"},
+      {"band": -1, "offset": 0.7, "type": "RUNNER"},
+      {"band": 1, "offset": 1.05, "type": "FLYER"},
+      {"band": 0, "offset": 1.4, "type": "SHIELD"},
+      {"band": 2, "offset": 1.78, "type": "CHARGER"},
+      {"band": -2, "offset": 2.16, "type": "GRUNT"},
+      {"band": 0, "offset": 2.54, "type": "SUPPORTER"},
+      {"band": -1, "offset": 2.94, "type": "BRUTE"},
+      {"band": 1, "offset": 3.34, "type": "SIEGER"},
+      {"band": 2, "offset": 3.74, "type": "RUNNER"},
+      {"band": -2, "offset": 4.14, "type": "FLYER"}
+    ],
+    [
+      {"band": -2, "offset": 0.0, "type": "SHIELD"},
+      {"band": 2, "offset": 0.35, "type": "BRUTE"},
+      {"band": 0, "offset": 0.7, "type": "SHIELD"},
+      {"band": -1, "offset": 1.05, "type": "RUNNER"},
+      {"band": 1, "offset": 1.4, "type": "CHARGER"},
+      {"band": -2, "offset": 1.78, "type": "SPLITTER"},
+      {"band": 2, "offset": 2.16, "type": "FLYER"},
+      {"band": 0, "offset": 2.54, "type": "SUPPORTER"},
+      {"band": -1, "offset": 2.94, "type": "SIEGER"},
+      {"band": 1, "offset": 3.34, "type": "RUNNER"},
+      {"band": 2, "offset": 3.74, "type": "GRUNT"},
+      {"band": -2, "offset": 4.14, "type": "CHARGER"}
+    ]
+  ],
+  "simulation": {
+    "dtSeconds": 0.025,
+    "durationSeconds": 60.0,
+    "firstRootAttackSeconds": 0.2,
+    "heavyEveryRootActions": 4,
+    "missHeavyIndices": {
+      "oneMiss": [4],
+      "twoConsecutiveMisses": [4, 5]
+    },
+    "pressureCycleSeconds": 4.6,
+    "rootAttackIntervalSeconds": 1.125,
+    "spawnX": 0.92,
+    "wallHp": 2000.0
+  },
+  "status": "BOUNDED_STRESS_FIXTURE_NOT_EXACT_STAGE_AUTHORING",
+  "version": "p4d2-stage46-temporal-pressure-fixture-v0.1"
+}
