@@ -1,0 +1,60 @@
+name: Timing Defense P5 Stage48 real-monster fast temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-check
+    paths:
+      - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fast-screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-check
+          fetch-depth: 1
+      - name: Run fast screen twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p5_stage48_real_monster_chronology_fast_temp.py > /tmp/fast1.json
+          cp p5_stage48_real_monster_chronology_fast_temp.json /tmp/result1.json
+          python3 tools/run_p5_stage48_real_monster_chronology_fast_temp.py > /tmp/fast2.json
+          cmp /tmp/result1.json p5_stage48_real_monster_chronology_fast_temp.json
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('p5_stage48_real_monster_chronology_fast_temp.json')
+          d=json.loads(p.read_text())
+          compact={
+            'version':d['version'],'sourceCanonicalHead':d['sourceCanonicalHead'],
+            'spawnWindowSeconds':d['spawnWindowSeconds'],'drainTailSeconds':d['drainTailSeconds'],
+            'physicalSpawnX':d['physicalSpawnX'],'stage48CycleSecondsHeldFixed':d['stage48CycleSecondsHeldFixed'],
+            'tankCoefficientForCrossClassSearch':d['tankCoefficientForCrossClassSearch'],
+            'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'variants':{}
+          }
+          for name,v in d['variants'].items():
+            compact['variants'][name]={
+              'stage48Packet':v['stage48Packet'],
+              'aggregate':v['aggregate'],
+              'stage48Rows':[
+                {'class':r['class'],'profile':r['profile'],'settledThroughStage49':r['settledThroughStage49'],
+                 'finalWall':r['finalWall'],'stage48':next((s for s in r['stages'] if s['stage']==48),None)}
+                for r in v['rows']
+              ]
+            }
+          Path('p5_stage48_real_monster_chronology_fast_temp_compact.json').write_text(json.dumps(compact,indent=2,sort_keys=True)+'\n')
+          PY
+          sha256sum /tmp/result1.json p5_stage48_real_monster_chronology_fast_temp.json
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add p5_stage48_real_monster_chronology_fast_temp_compact.json
+          git commit -m "[skip ci] Temp Stage48 real-monster fast result"
+          git push origin HEAD:timing-defense-workspace-temp-check
