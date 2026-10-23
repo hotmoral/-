@@ -10,18 +10,15 @@ Updated: 2026-10-23 KST
 
 ## Mandatory authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_23.yaml`
+- active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_24.yaml`
 - A2 contract `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
-- economy envelope `legacy-game-structure/117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md`
-- income mix `legacy-game-structure/119_P5_CLEAR_KILL_INCOME_MIX_SENSITIVITY_V0_1.md`
-- Tank fidelity correction `legacy-game-structure/121_P4D2_TANK_IRON_WALL_SIEGER_FIDELITY_CORRECTION_V0_1.md`
-- cross-class method review `legacy-game-structure/123_P5_ALL_CLASS_SHOP_COMBAT_METHOD_FIDELITY_REVIEW_V0_1.md`
-- all-class fixed-rank result `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
-- Fortification invariant correction `legacy-game-structure/125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md`
-- post-shop entry-depth result `legacy-game-structure/126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md`
-- entry-depth fixture `legacy-game-structure/data/p5_post_shop_stage49_entry_depth_fixture_v0_1.json`
-- entry-depth summary `legacy-game-structure/data/p5_post_shop_stage49_entry_depth_directional_summary_v0_1.json`
-- P5 all-class runner `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
+- all-class shop result `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
+- Fortification correction `legacy-game-structure/125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md`
+- old spatial proof `legacy-game-structure/126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md`
+- right-edge travel preflight `legacy-game-structure/127_P5_STAGE46_49_RIGHT_EDGE_TRAVEL_LEAD_PREFLIGHT_V0_1.md`
+- escorted combat search `legacy-game-structure/128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md`
+- right-edge lead fixture `legacy-game-structure/data/p5_stage46_49_right_edge_lead_fixture_v0_1.json`
+- escorted direction fixture `legacy-game-structure/data/p5_stage46_49_right_edge_escorted_direction_fixture_v0_1.json`
 
 Live remote wins.
 
@@ -29,7 +26,7 @@ Live remote wins.
 
 # ACTIVE PACKAGE — P5
 
-**A2 APPROVED / FIVE-CLASS FIXED-RANK DIRECTIONAL COMPLETE / POST-SHOP STAGE49 AUTHORING RECONVERGENCE PROMISING**
+**A2 APPROVED / RIGHT-EDGE ESCORTED LATE-PRESSURE DIRECTION PROMISING / PACKET CHRONOLOGY REFINEMENT NEXT**
 
 No user decision is pending.
 
@@ -37,152 +34,121 @@ Working analysis centers only:
 
 ```text
 Stage49 spend capacity = 50% full-shop reference
-sensitivity = 45% / 50% / 55%
-
 CLEAR/KILL income = 70/30
-sensitivity = 80/20 / 70/30 / 60/40
-
-legacy-relative effect-scale diagnostic center = 40%
-sensitivity = 30% / 40% / 50%
+cross-class effect diagnostic center = 40% legacy-relative
 ```
 
 None are production freezes.
 
 ---
 
-# Current structural corrections
+# Fixed implementation-facing rule
 
-## Fortification
+The prior Stage49 `spawnX=.48/.65` work was a spatial diagnostic only.
 
-Approved semantic:
-
-```text
-max += delta
-current += delta
-```
-
-Existing absolute deficit is preserved:
+Actual game direction:
 
 ```text
-(max+delta) - (current+delta) = max-current
+ALL ENEMIES APPEAR FROM THE NORMAL RIGHT EDGE.
+NO MID-FIELD POP-IN.
 ```
 
-Therefore do not build a Fortification `repair wastage` model or claim that Fortification erases prior damage.
-The late-run temporal question is inherited wall deficit plus ATK/DEF timing, not Fort healing chronology.
+Difficulty may use:
+- earlier schedule time;
+- frontmost escort/protection;
+- band/line relationship;
+- overlapping first/second role pulses.
 
-## Cross-class KNOCK
-
-Current P4 late diagnostic kernel does not model ordinary push symmetrically for all five classes.
-Therefore:
-
-```text
-first cross-class shop lane = ATK / FORT / DEF
-KNOCK = deferred dedicated parity/inheritance lane
-CRIT / CRITDMG = deferred attack-template policy lane
-```
+Do not implement the old spatial proxy as teleporting/mid-field spawn.
 
 ---
 
-# Completed five-class fixed-rank finding
+# Current Stage46–49 direction
 
-In the original P4 Stage49 fixture, after ordinary shop ATK/FORT/DEF is introduced:
-- Knight/Rogue/Tank retain sustained-failure danger;
-- Archer/Mage become too forgiving under all-finals-missed;
-- DEFENSE_HEAVY is not universally dominant;
-- Archer/Mage shift is primarily ATK-driven kill/frontmost/SIEGER chronology.
+```text
+Stage46: power revelation; keep recovery room
+Stage47: transition; still relatively forgiving
+Stage48: first protected role pulse
+Stage49: stronger escorted second pulse
+```
 
-Do not repair via:
-- global shop nerf first;
-- hidden per-class shop prices/corrections;
-- Lv31 nerfs;
-- blanket HP/spawn inflation.
+First directional cadence search:
+
+```text
+46 ~5.8s
+47 ~5.3s
+48 ~4.9s
+49 ~4.6s
+```
+
+These are not launch values.
+
+Travel-lead kinematic reference only:
+
+```text
+old SIEGER x.48 ~= 9.78s travel from x.92
+old durable x.65 = 6.75s travel from x.92
+```
+
+But a naked SIEGER must NOT simply be spawned 9–10s early; it gets extra ordinary attacks and often becomes easier.
 
 ---
 
-# Promising Stage49 reconvergence direction
+# Exact next analysis
 
-Bounded diagnostic entry-depth sensitivity:
+## 1. Source-patched normal-right-edge runner
 
-```text
-TIME_BUDGET_SIEGER SIEGER x ~= 0.45..0.55
-DURABLE/TIME_BUDGET durable x ~= 0.60..0.70
-```
+Build a runner that:
+- creates every mob at the normal `spawnX=0.92`;
+- represents earlier role entry using `spawnLeadSeconds` / schedule time only;
+- uses a warmup/reference offset rather than negative-time fake spawns;
+- carries current wall HP across Stage46→49;
+- preserves no-target/no-bank, Rogue cadence sensitivity, Tank barrier non-downgrade and Tank Iron Wall on SIEGER;
+- keeps ATK/FORT/DEF as the current cross-class shop lane.
 
-Current useful center for directional testing:
+## 2. Refine Stage49 packet chronology
 
-```text
-SIEGER x ~= 0.48
-durable x ~= 0.65
-```
-
-**Not production coordinates.**
-
-At 40% ATK/FORT/DEF across all 20 class/policy combinations:
+Current HIGH watches:
 
 ```text
-all success survives = 20/20
-one miss burials = 0
-two consecutive miss burials = 0
+P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH
+P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH
+P5_RIGHT_EDGE_ESCORT_PACKET_CHRONOLOGY_WATCH
 ```
 
-All-finals-missed:
-- Knight/Rogue/Tank bury;
-- Archer/Mage do not enter Stage50 healthy; they bury or carry severe reserve loss.
+Goal:
+- attack-heavy Archer must not repeatedly miss finals and still enter Stage50 healthy;
+- fixing Archer must not make defense-heavy Knight a trap build during successful mastery.
 
-This supports:
+Repair order:
+1. relative timing;
+2. frontmost escort composition;
+3. band/line alignment;
+4. second-pulse spacing;
+5. durability sensitivity;
+6. player/shop coefficient changes last.
+
+## 3. Admission behavior
+
+Target shape:
 
 ```text
-AUTHORING ENTRY DEPTH / ROLE TIMING BEFORE PLAYER-POWER NERF
+all-success -> all classes/build directions survive and feel powerful
+one miss -> recoverable
+two misses -> recoverable in Stage46-47; Stage48-49 may be harsher but readable
+repeated failure -> severe carried wall loss or burial before/at Stage50
 ```
 
----
+Identical mistake budgets are not required.
 
-# Exact next execution order
+## 4. After right-edge pressure reconverges
 
-## 1. Exact replay admission when checkout execution is available
-
-Run and compare committed assets:
-- `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py`
-- `tools/run_p4d2_stage49_full_rotation_probe_v0_3.py`
-- `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_1.py`
-- `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
-
-Do not claim exact new-runner authority until this happens.
-
-## 2. Stage46–48 post-shop reconvergence
-
-Do not tune only Stage49.
-Carry the shop layer backward through:
-- Stage46–47 power revelation;
-- Stage48 mastery;
-- Stage49 mastery.
-
-Test whether role-entry depth/timing remains a valid repair language without making first successful Lv31 use feel weak.
-
-## 3. Temporal shop feedback
-
-Model:
-- ATK acquisition timing;
-- DEF acquisition timing;
-- inherited wall damage deficit;
-- death before later shop opportunities;
-- shop-rank trajectories from the current economy envelope.
-
-Fortification itself uses deficit invariance; no fake repair-wastage model.
-
-## 4. Deferred stat-family lanes
-
-After the above structural pass:
-- KNOCK cross-class inheritance/parity;
-- CRIT/CRITDMG explicit attack-template policies.
-
-## 5. Progression feedback
-
-Then re-measure:
-- kill timing;
-- valid timing-action count;
-- EXP opportunity;
-- Lv6/11/16/21/26/31 reach drift.
+Then:
+- exact committed replay of current pending P4/P5 runners;
+- ATK/DEF acquisition timing + inherited wall deficit;
+- KNOCK cross-class parity/inheritance lane;
+- CRIT/CRITDMG attack-template policy lane;
+- shop feedback into timing action count / EXP / Lv milestone reach.
 
 Final multiplayer normalization remains P10; final EXP convergence remains P10R.
 
@@ -190,15 +156,15 @@ Final multiplayer normalization remains P10; final EXP convergence remains P10R.
 
 # Do not yet
 
-- freeze 50% spend capacity;
-- freeze 70/30 income mix;
-- freeze 40% common effect scale;
-- freeze x=.48/.65 authoring coordinates;
+- implement mid-field monster spawning;
+- freeze current `spawnLeadSeconds`, pressure cycles or packet compositions;
+- globally nerf shop ATK;
+- add hidden Archer shop penalties;
+- nerf Lv31 power to solve this stress case;
+- blanket-inflate SIEGER/FLYER HP;
+- freeze 50% spend capacity, 70/30 income or 40% effect scale;
 - freeze exact coin/reward/price/rank/effect values;
-- freeze generic wall-DR cap;
-- assign universal KNOCK behavior before inheritance/parity review;
-- assign fake universal CRIT policy;
-- solve final 2/3/4P scaling before P10;
+- solve final multiplayer before P10;
 - freeze final EXP before P10R;
 - modify/deploy production gameplay.
 
