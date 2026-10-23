@@ -1,198 +1,197 @@
 # Timing Defense — Session Handoff
 
-Updated: 2026-10-22 KST
+Updated: 2026-10-23 KST
 
 ## Recovery rule
-Always fetch live heads before any state claim:
-1. `timing-defense-workspace`
-2. `timing-defense-skilled-v2-harness-v01`
-3. `timing-defense-cloudflare-do-poc`
+Never reconstruct current state from chat, memory, or this file alone.
+Always fetch live remote first.
 
-Live remote wins over memory/chat/handoff.
+Read/check in this order:
+1. branch `timing-defense-workspace` HEAD
+2. `PROJECT_STATUS.md`
+3. `NEXT_WORK.md`
+4. `legacy-game-structure/data/system_dependency_calibration_order_v0_6.yaml`
+5. `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
+6. `legacy-game-structure/84_P4B_EXP_DECISION_REASSESSMENT_PROPOSAL_V0_1.md`
+7. `legacy-game-structure/83_P4B_MULTIPLAYER_TIMEBASE_PRECHECK_V0_1.md`
+8. `legacy-game-structure/81_P4B_LV6_LV21_COMBAT_FEEDBACK_EXECUTION_REPORT_V0_1.md`
+9. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
+10. production and calibration-harness branch heads
+
+Live remote always wins.
 
 ---
 
-# Production checkpoint
+# Branch checkpoints at handoff creation
 
+Planning branch:
+- `timing-defense-workspace`
+- exact final handoff HEAD must be re-fetched after all handoff-sync commits; do not trust a copied SHA without live verification.
+
+Production branch:
+- `timing-defense-cloudflare-do-poc`
+- verified before handoff sync: `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - v0.45 SIEGER FULL PASS
-- branch `timing-defense-cloudflare-do-poc`
-- HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-- do not patch/deploy production during calibration
+- production gameplay/numerical changes remain unauthorized.
+
+Calibration harness branch:
+- `timing-defense-skilled-v2-harness-v01`
+- verified before handoff sync: `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
 
 ---
 
 # Current phase
 
-**SEPARATE CALIBRATION DEPLOYMENT -> DEVICE SMOKE -> SMALL PILOT**
+**P4 — FULL PLAYER POWER SPINE CANDIDATE**
 
-Campaign structure and representative role-expression are not the blocker.
-The isolated H0–H5 harness source is implemented and source-isolated.
-Separate calibration deployment is authorized.
+R2 routing is USER APPROVED.
 
-Current external blocker:
-**Cloudflare account-side creation/connection of the separate Workers Builds project.**
+Completed chain:
 
-The current chat environment has no Cloudflare connector, so that account-side step cannot be executed directly here.
-
----
-
-# Read first
-
-1. `PROJECT_STATUS.md`
-2. `NEXT_WORK.md`
-3. `legacy-game-structure/62_SKILLED_V2_CALIBRATION_DEPLOYMENT_READINESS_V0_1.md`
-4. `legacy-game-structure/61_HIGH_MASTERY_PLAYER_ANCHOR_AMENDMENT_V0_1.md`
-5. `legacy-game-structure/60_SKILLED_V2_HARNESS_IMPLEMENTATION_STATUS_V0_1.md`
-6. `legacy-game-structure/55_SKILLED_V2_CONTROLLED_HARNESS_AND_FIT_SCHEMA_V0_1.md`
-7. `legacy-game-structure/54_ALL20_ROLE_EXPRESSION_AUDIT_V0_1.md`
-8. `legacy-game-structure/31_MASTER_CAMPAIGN_MATRIX_V0_2.md`
-
-Harness branch deployment guide:
-`timing-defense-skilled-v2-harness/DEPLOY_WORKERS_BUILDS.md`
-
----
-
-# User-confirmed structural truth
-
-- 5 classes; independent class Tier progression.
-- same Tier/Stage combat content across classes.
-- Tier = 50 Stages.
-- fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / clear50=3★.
-- stars = broad account permanent growth.
-- achievements = targeted cross-class growth.
-- recoverable soft walls intended; hard class lockout forbidden.
-- current 9 monsters are V1 foundation, not lifetime final roster.
-- T1 does not expose all 9; higher Tiers introduce species.
-- future T5/T6/T7+ and new monsters remain open.
-- fitted non-T1 `SKILLED_V2_CENTRAL` full-Tier clear should normally be <60%.
-- combo40 belongs inside ordinary skilled play.
-- Lv31 target unlock window = Stage41–45.
-- Stage46–49 = post-Lv31 mastery.
-- Stage50 = final application.
-- intended monster roles must become perceivable before deletion.
-
----
-
-# Player calibration classification
-
-The primary user explicitly states that they should not be treated as ordinary skilled and considers their play above that band.
-
-Canonical interpretation before observed review:
-
-`HIGH_MASTERY_STRESS_CANDIDATE`
-
-This is provisional and self-reported, not an objective rank certification.
-
-Rules:
-- do not fit their traces directly into `SKILLED_V2_CENTRAL`;
-- use them as an upper-tail stress anchor;
-- do not tune Tier difficulty until their own clear rate is <60%;
-- the `<60%` gate applies to future fitted `SKILLED_V2_CENTRAL` only;
-- later ordinary-skilled evidence must be acquired/derived separately.
-
----
-
-# Role-expression state
-
-Critical 10: `PASS_WITH_WATCHES`.
-Full 20 representative recipes: `PASS_WITH_WATCHES`.
-
-Evidence:
 ```text
-20 recipes × 3 deterministic brackets × 5 classes = 300 rows
-36 role pairs × 15 rows = 540 structural checks
-540 / 540 PASS
+P0 Foundation / role expression PASS_WITH_WATCHES
+ -> SKILLED_V2_CENTRAL all-20 closure
+ -> P1 Run-State Lifecycle COMPLETE
+ -> P2 Modifier Pipeline / Power Attribution COMPLETE
+ -> P3 Ten-Stage Persistent Run Kernel PASS
+ -> P4 methodology USER APPROVED
+ -> P4-A Marker-Only Inverse Design PASS
+ -> P4-B Solo Lv6→Lv21 feedback diagnostic COMPLETE
+ -> P4-B Multiplayer / Timebase bounded precheck COMPLETE
+ -> R2 routing USER APPROVED
 ```
 
-Historical 600/750/900ms brackets are probes only, not fitted skilled distributions.
+Exact next package:
+
+```text
+P4-C1 — LV26 STRUCTURAL SKILL-CONTRACT DECISION
+```
+
+Do not start P4-C2 before P4-C1 user approval.
 
 ---
 
-# Harness implementation
+# R2 meaning
 
-Branch:
-`timing-defense-skilled-v2-harness-v01`
+Current pure per-valid-turn EXP remains a **provisional diagnostic baseline only**.
 
-Deployment-ready reviewed HEAD:
-`85396e7da53eee1d64769d76b2a0e9700577aa34`
+Still provisionally true for measurement:
+- valid completed local timing turn gives EXP;
+- Heavy X+Y gives one combined-tier award;
+- timing quality matters;
+- `XP_CREDIT` is dimensionless calibration space;
+- one universal EXP curve remains preferred;
+- no hidden class/Tier XP multipliers.
 
-Root:
-`timing-defense-skilled-v2-harness/`
+Not approved/frozen:
+- pure per-turn as final launch EXP semantics;
+- Stage Quality Budget / prior Option D;
+- exact XP values or milestone thresholds;
+- player-visible EXP scale;
+- player-count EXP correction.
 
-Worker:
-`timing-defense-skilled-v2-harness`
+Mandatory active watches:
 
-H0–H5 implemented.
-Trace includes timing, combo, charge, heavy/P×P, turnover, and stateful response evidence.
-Raw traces are copied/downloaded explicitly; no automatic external telemetry exists.
+```text
+SOLO_PROGRESSION_DIVERGENCE_WATCH
+TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+PLAYER_COUNT_SCALING_XP_DEPENDENCY
+MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+```
 
-Isolation:
-- no production gameplay file modified
-- no production room/WebSocket integration
-- no campaign persistence
-- no external telemetry backend
-
-Source checks PASS:
-- JS syntax
-- source contract selftest
-- production isolation compare
-
-Pending:
-- Cloudflare separate project connection
-- browser/device smoke
-- sample JSONL validator
-- observed pilot
-- numeric fitting
-
----
-
-# Cloudflare calibration deployment
-
-Use Workers Builds + GitHub integration.
-
-Settings:
-- repository `hotmoral/-`
-- branch `timing-defense-skilled-v2-harness-v01`
-- root `timing-defense-skilled-v2-harness`
-- Worker/project `timing-defense-skilled-v2-harness`
-- build command empty unless required
-- deploy command `npx wrangler deploy`
-
-Must be a new/separate project from `timing-defense-do-poc`.
-Do not paste API credentials into repository files.
+Future progression analysis must consider multiple views rather than one metric:
+- Stage reach;
+- wall-clock reach;
+- clear/fail probability;
+- retry cost;
+- wall attrition;
+- homogeneous vs mixed teams;
+- same-class teammate sensitivity;
+- player-count scaling sensitivity.
 
 ---
 
-# Exact next boundary
+# Required future reconvergence
 
-After account-side project connection:
-1. verify calibration `/health`.
-2. H0 mobile smoke: >=40 ACTION, combo/heavy/P×P coherence.
-3. H3 smoke: no-target/reorder/reacquisition truth; inspect convenience wait field.
-4. H4 smoke: readable WINDUP_START + response linkage.
-5. export/copy JSONL.
-6. canonical dataset validation.
-7. confirm production state unchanged.
-8. patch only smoke-demonstrated defects.
-9. small H0–H5 pilot from user as `HIGH_MASTERY_STRESS_CANDIDATE`.
-10. data-quality review.
-11. ordinary-skilled evidence separately.
-12. fit `SKILLED_V2_CONSERVATIVE/CENTRAL/STRONG`; keep `HIGH_MASTERY_STRESS` separate.
-13. rerun All-20 role-expression candidates.
-14. build 10-Stage synthetic Tier slice.
+Active dependency plan:
+`legacy-game-structure/data/system_dependency_calibration_order_v0_6.yaml`
+
+Approved route:
+
+```text
+P4-C1 Lv26 structural decision
+ -> P4-C2 Lv26 provisional feedback
+ -> P4-D1 Lv31 structural decision
+ -> P4-D2 Lv31 provisional mastery feedback
+ -> P4-E provisional power-spine closure WITH EXP WATCHES
+ -> P5/P6/P7/P8
+ -> P10 current-roster multiplayer scaling baseline
+ -> P10R mandatory EXP / multiplayer-timebase reconvergence
+ -> only then may permanent progression rely on converged EXP behavior
+```
+
+No final EXP convergence claim before P10R.
+
+---
+
+# P4-C1 instructions
+
+Goal: resolve exact structural contracts for all five Lv26 skills.
+
+First recover live evidence. Known historical retrieval leads only:
+- Knight: penetration-decay removal candidate;
+- Rogue: secondary tracking dagger candidate;
+- Tank: temporary slow-zone candidate;
+- Archer: PERFECT penetration extension/full rear damage candidate;
+- Mage: conditional chain candidate.
+
+Do not assume those descriptions are canonical until revalidated.
+
+For each class:
+1. recover exact documented behavior;
+2. classify mechanic/value authority;
+3. audit interaction with Lv6/11/16/21;
+4. audit P2 modifier/effect-pipeline compatibility;
+5. audit monster-role interaction / novelty collision;
+6. isolate unresolved targeting/proc/duration/geometry/crit/penetration/knockback/ownership semantics;
+7. compare bounded alternatives where needed;
+8. give recommendation + risks + reversibility;
+9. STOP for USER APPROVAL before structural freeze or P4-C2.
+
+Never invent a generic Lv26 power proxy just to keep simulation moving.
+
+---
+
+# Stable game truths
+
+- 5 classes: Knight/Rogue/Tank/Archer/Mage.
+- independent class Tier progression.
+- same Tier/Stage combat content across classes.
+- 1 Tier = 50 Stages.
+- fail1–19=0★ / fail20–39=1★ / fail40–49=2★ / clear50=3★.
+- stars = broad permanent account growth.
+- achievements = targeted/cross-class permanent progression.
+- recoverable soft walls intended; hard class lockout forbidden.
+- Model A roster ladder: T1 G/R/B; T2 +SH/F; T3 +C/SP; T4 +SUP/SI; T5+ future.
+- current 9 monsters are foundation, not lifetime roster.
+- combo40 belongs inside ordinary skilled play.
+- Lv31 target unlock window = Stage41–45 direction.
+- Stage46–49 post-Lv31 mastery; Stage50 final application.
+- actual timing input is constant-speed line sweep across Timing Square; player taps to register coordinate. Do not describe it as cursor/finger movement.
+- ordinary difficulty should come mainly from encounter complexity, not simply shrinking PERFECT zone or increasing sweep speed.
 
 ---
 
 # Do not yet
 
-- modify/deploy production v0.45
-- use user's traces as ordinary-skilled center
-- invent missing observations
-- freeze production coefficients/coordinates
-- author exact 200 launch Stages
-- freeze final Tier count
-- freeze exact EXP/star/achievement values
-- freeze boss/shop cadence
-- begin detailed 3P/4P production balance
+- change/deploy production v0.45 gameplay;
+- activate Stage Quality Budget;
+- freeze pure per-turn EXP as final;
+- add hidden class/Tier EXP multipliers;
+- freeze exact EXP anchors;
+- invent Lv26/Lv31 proxies;
+- freeze exact shop/BaseHP/permanent-progression/boss/multiplayer numbers;
+- author exact 200 launch Stages;
+- begin P4-C2 before P4-C1 approval.
 
-No production gameplay source or production balance value was changed by this tranche.
+This handoff boundary intentionally stops **before starting P4-C1 substantive design work**.
