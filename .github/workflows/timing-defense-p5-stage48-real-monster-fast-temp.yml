@@ -19,30 +19,31 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run and print aggregate
+      - name: Run Stage48 frontline v2 twice and print aggregate
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_real_monster_chronology_fast_temp.py > /tmp/full.json
-          cp p5_stage48_real_monster_chronology_fast_temp.json /tmp/result1.json
-          python3 tools/run_p5_stage48_real_monster_chronology_fast_temp.py > /tmp/full2.json
-          cmp /tmp/result1.json p5_stage48_real_monster_chronology_fast_temp.json
+          python3 tools/run_p5_stage48_real_monster_frontline_search_temp_v2.py > /tmp/v2a.json
+          cp p5_stage48_real_monster_frontline_search_temp_v2.json /tmp/result1.json
+          python3 tools/run_p5_stage48_real_monster_frontline_search_temp_v2.py > /tmp/v2b.json
+          cmp /tmp/result1.json p5_stage48_real_monster_frontline_search_temp_v2.json
           python3 - <<'PY'
           import hashlib,json
           from pathlib import Path
-          p=Path('p5_stage48_real_monster_chronology_fast_temp.json')
+          p=Path('p5_stage48_real_monster_frontline_search_temp_v2.json')
           d=json.loads(p.read_text())
           out={'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'variants':{}}
           for name,v in d['variants'].items():
             a=v['aggregate']
             out['variants'][name]={
-              'settled':f"{a['settledThroughStage49Count']}/{a['totalRows']}",
-              'failures':a['failures'],
-              'stage48SiegerShotCases':a['stage48SiegerShotCases'],
-              'stage48TotalSiegerShots':a['stage48TotalSiegerShots'],
-              'stage48MaxSiegerShotsOneRow':a['stage48MaxSiegerShotsOneRow'],
+              'settled':f"{a['settledRows']}/{a['validRows']}",
+              'buriedOrUnsettledRows':a['buriedOrUnsettledRows'],
+              'siegerShotCases':a['siegerShotCases'],
+              'totalSiegerShots':a['totalSiegerShots'],
+              'maxSiegerShotsOneRow':a['maxSiegerShotsOneRow'],
+              'minEndReserveRatio':a['minEndReserveRatio'],
               'perClass':a['perClass']
             }
-          print('P5_STAGE48_REAL_MONSTER_AGGREGATE='+json.dumps(out,sort_keys=True))
+          print('P5_STAGE48_FRONTLINE_V2_AGGREGATE='+json.dumps(out,sort_keys=True))
           PY
