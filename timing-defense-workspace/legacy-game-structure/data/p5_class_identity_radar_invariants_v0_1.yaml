@@ -1,0 +1,145 @@
+version: p5-class-identity-radar-invariants-v0.1
+status: USER_DIRECTED_STRUCTURAL_IDENTITY_GATE_NO_NUMERICAL_FREEZE
+sourceRadar: ../../CHARACTER_PROFILE_RADAR_V1.md
+sourceGate: ../129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md
+
+interpretation:
+  radarIsLiteralCoefficientTable: false
+  highAxisMeaning: defining_specialty_must_remain_causally_visible
+  lowAxisMeaning: intended_weakness_must_remain_material_after_growth
+  equalValuesAllowed: true
+
+classes:
+  KNIGHT:
+    radar: {attack: 4, crit: 2, agility: 3, knockback: 3, penetration: 4, aoe: 2}
+    identity: FRONTLINE_PENETRATION_GENERALIST
+    positiveChecks:
+      - penetration_contribution_material
+      - frontline_break_value_material
+      - stable_across_formations_without_best_at_everything
+    negativeChecks:
+      - not_mage_like_radial_aoe
+      - not_rogue_like_single_durable_execution_specialist
+    requiredPairedProbes:
+      - aligned_frontline_vs_dispersed_off_axis
+      - offense_heavy_vs_defense_heavy_shop
+    status: STRUCTURALLY_ALIGNED_WITH_WATCH
+    watches:
+      - P5_KNIGHT_PENETRATION_CAUSALITY_WATCH
+      - P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH
+
+  ROGUE:
+    radar: {attack: 2, crit: 5, agility: 5, knockback: 1, penetration: 1, aoe: 1}
+    identity: FAST_CRIT_MULTIHIT_DURABLE_NORMAL_EXECUTION
+    positiveChecks:
+      - repeated_hit_value_material
+      - crit_and_cadence_value_material_when_policy_lane_exists
+      - primary_or_durable_target_damage_concentration_high
+    negativeChecks:
+      - broad_wave_cleanup_not_generalized
+      - low_penetration_remains_material
+      - low_knockback_remains_material
+    requiredPairedProbes:
+      - one_durable_normal_vs_dense_weak_cluster
+      - single_lane_vs_multi_direction_swarm
+    status: STRUCTURALLY_ALIGNED_WITH_WATCH
+    watches:
+      - P5_ROGUE_WAVE_CLEANUP_LEAKAGE_WATCH
+
+  TANK:
+    radar: {attack: 2, crit: 1, agility: 1, knockback: 5, penetration: 1, aoe: 3}
+    identity: TEAM_SPECIALIST_TIME_BUYER_WALL_PROTECTOR
+    positiveChecks:
+      - displacement_slow_barrier_wall_mitigation_cause_survival
+      - wall_contacts_prevented_material
+      - wall_reserve_high_when_mastery_successful
+    negativeChecks:
+      - enemy_removal_throughput_poor_relative_to_damage_classes
+      - solo_clear_time_materially_longer_or_unfinished_under_ordinary_late_tempo
+      - penetration_and_crit_not_accidental_strengths
+    hardLockoutAuthorized: false
+    soloParityRequired: false
+    criticalInterpretation:
+      survivalEqualsClear: false
+      wallPreservationEqualsDamageThroughput: false
+    requiredMetrics:
+      - stageClearTime
+      - unfinishedAtHorizon
+      - totalKills
+      - totalDamage
+      - endActiveBacklog
+      - controlDisplacementOrSlowTime
+      - wallContactsPrevented
+      - wallReserve
+    status: POSITIVE_IDENTITY_CONFIRMED_NEGATIVE_IDENTITY_VALIDATION_GAP
+    watches:
+      - P5_TANK_SURVIVAL_NOT_CLEAR_WATCH
+      - P5_TANK_SOLO_CLEAR_THROUGHPUT_WATCH
+
+  ARCHER:
+    radar: {attack: 3, crit: 2, agility: 4, knockback: 1, penetration: 5, aoe: 2}
+    identity: STRICT_LINE_PENETRATION_SPECIALIST
+    positiveChecks:
+      - aligned_line_rear_target_access_material
+      - penetration_target_count_and_damage_share_material
+      - straight_line_semantics_preserved
+    negativeChecks:
+      - scattered_off_corridor_threats_reduce_efficiency
+      - attack_growth_does_not_make_geometry_irrelevant
+      - low_knockback_remains_material
+    requiredPairedProbes:
+      - aligned_line_vs_staggered_scatter
+      - on_corridor_vs_off_corridor_role_threat
+    status: CORE_IDENTITY_PRESENT_POST_SHOP_GENERALIST_CREEP_HIGH_WATCH
+    watches:
+      - P5_ARCHER_LINE_DEPENDENCE_WATCH
+      - P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH
+      - P5_ARCHER_ATK_BREAKPOINT_CHRONOLOGY_WATCH
+
+  MAGE:
+    radar: {attack: 4, crit: 2, agility: 2, knockback: 1, penetration: 1, aoe: 5}
+    identity: DENSITY_AOE_CASCADE_SPECIALIST
+    positiveChecks:
+      - clustered_density_payoff_high
+      - aoe_secondary_chain_contribution_material
+    negativeChecks:
+      - distributed_durable_pressure_materially_harder
+      - single_durable_target_not_best_in_class
+      - low_penetration_and_knockback_remain_material
+    requiredPairedProbes:
+      - clustered_durable_vs_distributed_durable
+      - dense_cluster_vs_scatter
+    status: STRONGLY_ALIGNED_WITH_WATCH
+    watches:
+      - P5_MAGE_DENSITY_DEPENDENCE_WATCH
+
+minimumOutputs:
+  - stageClearTime
+  - unfinishedAtHorizon
+  - totalKills
+  - totalDamage
+  - endActiveBacklog
+  - uniqueTargetsPerRootPackage
+  - secondaryDamageShare
+  - penetrationHitCount
+  - penetrationDamageShare
+  - controlDisplacementOrSlowTime
+  - wallContactsPrevented
+  - formationTag
+  - alignmentTag
+  - densityTag
+
+stopConditions:
+  - TANK_HIGH_SURVIVAL_AND_DAMAGE_CLASS_LIKE_SOLO_CLEAR_TIME
+  - ARCHER_ALIGNED_AND_SCATTERED_PERFORMANCE_TOO_SIMILAR
+  - MAGE_DENSE_AND_DISTRIBUTED_DURABLE_PERFORMANCE_TOO_SIMILAR
+  - ROGUE_LV31_ROUTINELY_CLEARS_BROAD_MULTI_DIRECTION_WAVES
+  - KNIGHT_BECOMES_BEST_AT_BOTH_DENSE_AOE_AND_SINGLE_DURABLE_EXECUTION
+  - STAGE49_REPAIR_FIXES_ONE_CLASS_BY_DESTROYING_ANOTHERS_IDENTITY
+
+repairOrder:
+  - simulator_fidelity
+  - encounter_geometry_and_timing
+  - package_semantics
+  - shop_interaction
+  - scalar_values_last
