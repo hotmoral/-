@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_calculated_handoff_ladder_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_sieger_standoff_sensitivity_temp.py
 
 permissions:
   contents: read
@@ -20,16 +20,15 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run calculated Stage48 escort-handoff ladder diagnostic
+      - name: Run Stage48 SIEGER standoff sensitivity diagnostic
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_calculated_handoff_ladder_temp.py > /tmp/ladder.json
+          python3 tools/run_p5_stage48_sieger_standoff_sensitivity_temp.py > /tmp/standoff.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_calculated_handoff_ladder_temp.json').read_text())
-          print('P5_STAGE48_CALCULATED_HANDOFF='+json.dumps(d['rows'],sort_keys=True))
-          print('P5_STAGE48_CALCULATED_SCHEDULES='+json.dumps(d['schedules'],sort_keys=True))
+          d=json.loads(Path('p5_stage48_sieger_standoff_sensitivity_temp.json').read_text())
+          print('P5_STAGE48_STANDOFF_SENSITIVITY='+json.dumps(d['rows'],sort_keys=True))
           PY
