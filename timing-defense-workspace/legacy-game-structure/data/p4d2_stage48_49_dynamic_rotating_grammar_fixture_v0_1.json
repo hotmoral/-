@@ -1,0 +1,92 @@
+{
+  "version": "p4d2-stage48-49-dynamic-rotating-grammar-fixture-v0.1",
+  "status": "DESIGNED_FOR_DETERMINISTIC_EXECUTION_NOT_PRODUCTION_AUTHORING",
+  "authorityBoundary": [
+    "Reuses the same current-nine-roster provisional anchors and combat semantics as the accepted Stage46 temporal runner.",
+    "Four rotating pressure grammars are diagnostic mastery-pressure candidates, not exact Stage48/49 campaign recipes.",
+    "The five bands remain a geometry abstraction only.",
+    "Miss probes are aligned to grammar families so one arbitrary miss timestamp cannot define class fairness.",
+    "No exact Stage48/49 duration, cadence, composition, or class coefficient is frozen."
+  ],
+  "geometryAbstraction": {
+    "bands": [-2, -1, 0, 1, 2],
+    "archerLv26BandRadius": 0,
+    "archerLv31WorkingBandRadius": 1,
+    "knightHeavyBandRadius": 1,
+    "mageNormalBandRadius": 1,
+    "mageHeavyFinalBandRadius": 2,
+    "note": "MID_ADJACENT-style Archer width is the current diagnostic center under the user-approved wider-corridor principle."
+  },
+  "lv31TemporalCenters": {
+    "Knight": {"secondWaveCoefficient": 1.0, "secondWaveDelaySeconds": 0.14},
+    "Rogue": {"daggers": 16, "perDaggerCoefficient": 0.45, "stormDurationSeconds": 0.7, "countSensitivity": [12,16,20]},
+    "Tank": {"barrier": 250, "barrierSeconds": 6.0, "shockwaveCoefficient": 0.75, "knockbackMultiplier": 2.5, "damageSensitivity": [0.5,0.75,1.0], "knockbackSensitivity": [2.0,2.5,3.0]},
+    "Archer": {"perTargetCoefficient": 2.3, "workingBandRadius": 1, "coefficientSensitivity": [1.0,1.5,2.0,2.3], "widthSensitivity": [0,1]},
+    "Mage": {"stageCoefficient": 0.75, "radiusMultiplier": 1.25, "stageDelaysSeconds": [0.0,0.18,0.36], "stageSensitivity": [0.55,0.75,1.0], "radiusSensitivity": [1.0,1.25,1.5]}
+  },
+  "pressurePatternLabels": ["LINE_ESCORT","CLUSTER_CASCADE","FRONTLINE_BREACH","DURABLE_SCATTER"],
+  "pressurePatterns": [
+    [
+      {"offset":0.00,"type":"RUNNER","band":0}, {"offset":0.32,"type":"GRUNT","band":0},
+      {"offset":0.64,"type":"SHIELD","band":0}, {"offset":0.96,"type":"BRUTE","band":0},
+      {"offset":1.28,"type":"RUNNER","band":0}, {"offset":1.60,"type":"SUPPORTER","band":0},
+      {"offset":1.92,"type":"GRUNT","band":0}, {"offset":2.24,"type":"SIEGER","band":0},
+      {"offset":2.58,"type":"CHARGER","band":0}, {"offset":2.94,"type":"GRUNT","band":0},
+      {"offset":3.34,"type":"RUNNER","band":0}, {"offset":3.82,"type":"FLYER","band":0}
+    ],
+    [
+      {"offset":0.00,"type":"GRUNT","band":-1}, {"offset":0.28,"type":"SPLITTER","band":0},
+      {"offset":0.56,"type":"GRUNT","band":1}, {"offset":0.84,"type":"RUNNER","band":-1},
+      {"offset":1.12,"type":"SPLITTER","band":1}, {"offset":1.40,"type":"SUPPORTER","band":0},
+      {"offset":1.68,"type":"FLYER","band":-1}, {"offset":1.96,"type":"GRUNT","band":1},
+      {"offset":2.24,"type":"RUNNER","band":0}, {"offset":2.60,"type":"CHARGER","band":-1},
+      {"offset":3.02,"type":"SIEGER","band":1}, {"offset":3.48,"type":"GRUNT","band":0}
+    ],
+    [
+      {"offset":0.00,"type":"BRUTE","band":-1}, {"offset":0.30,"type":"SHIELD","band":0},
+      {"offset":0.60,"type":"CHARGER","band":1}, {"offset":0.90,"type":"BRUTE","band":1},
+      {"offset":1.20,"type":"SHIELD","band":-1}, {"offset":1.50,"type":"CHARGER","band":0},
+      {"offset":1.80,"type":"GRUNT","band":1}, {"offset":2.10,"type":"GRUNT","band":-1},
+      {"offset":2.45,"type":"SUPPORTER","band":0}, {"offset":2.80,"type":"SIEGER","band":1},
+      {"offset":3.20,"type":"RUNNER","band":-1}, {"offset":3.60,"type":"FLYER","band":1}
+    ],
+    [
+      {"offset":0.00,"type":"BRUTE","band":-2}, {"offset":0.32,"type":"SHIELD","band":2},
+      {"offset":0.64,"type":"RUNNER","band":-1}, {"offset":0.96,"type":"SIEGER","band":1},
+      {"offset":1.28,"type":"BRUTE","band":0}, {"offset":1.60,"type":"FLYER","band":2},
+      {"offset":1.92,"type":"SHIELD","band":-2}, {"offset":2.24,"type":"SUPPORTER","band":1},
+      {"offset":2.58,"type":"CHARGER","band":-1}, {"offset":2.94,"type":"SPLITTER","band":2},
+      {"offset":3.34,"type":"SIEGER","band":2}, {"offset":3.82,"type":"GRUNT","band":0}
+    ]
+  ],
+  "simulation": {
+    "dtSeconds": 0.025,
+    "durationSeconds": 60.0,
+    "firstRootAttackSeconds": 0.2,
+    "rootAttackIntervalSeconds": 1.125,
+    "heavyEveryRootActions": 4,
+    "pressureCycleSeconds": 4.6,
+    "spawnX": 0.92,
+    "wallHp": 2000.0,
+    "missHeavyIndices": {
+      "oneMiss": [4],
+      "twoConsecutiveMisses": [4,5]
+    }
+  },
+  "grammarAlignedMissSuites": {
+    "ONE_MISS_SCATTER": [4],
+    "ONE_MISS_LINE": [5],
+    "ONE_MISS_CLUSTER": [6],
+    "ONE_MISS_FRONTLINE": [7],
+    "TWO_MISS_SCATTER_LINE": [4,5],
+    "TWO_MISS_LINE_CLUSTER": [5,6],
+    "TWO_MISS_CLUSTER_FRONTLINE": [6,7],
+    "TWO_MISS_FRONTLINE_SCATTER": [7,8]
+  },
+  "admissionTargets": {
+    "allSuccess": "all classes should survive but not necessarily with equal residual wall/backlog",
+    "oneMiss": "isolated miss should usually remain recoverable in Stage46-47-like pressure; Stage48-49 may be harsher but should expose grammar-specific vulnerability rather than arbitrary class tax",
+    "twoConsecutiveMisses": "should materially threaten every class across at least one grammar-aligned suite; burial is allowed and desired in the mastery band",
+    "successMonotonicityWatch": "a successful P×P should not systematically produce a worse outcome than an otherwise identical missed P×P solely because target/geometry path changed"
+  }
+}
