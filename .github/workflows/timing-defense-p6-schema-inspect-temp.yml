@@ -19,8 +19,9 @@ jobs:
           fetch-depth: 1
       - name: Install YAML dependency
         run: python3 -m pip install --quiet pyyaml
-      - name: Inspect one bridge row
+      - name: Inspect bridge and raw stage rows
         run: |
           set -euo pipefail
           cd timing-defense-workspace
           python3 tools/run_p6_stage46_47_schema_inspect_temp.py
+          python3 tools/run_p6_stage46_raw_schema_inspect_temp.py
