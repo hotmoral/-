@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-"""TEMP Stage48 one-pulse real-body screening threshold probe.
+"""TEMP SIEGER hit-position telemetry behind a favorable eight-BRUTE screen.
 
-Question only:
-With current class/shop/monster numbers unchanged, how many existing BRUTEs are required in a
-favorable multi-band screen for one right-edge SIEGER to reach windup/shot uptime?
-
-This is a feasibility threshold, not a Stage48 candidate and not an authoring recommendation.
+No combat logic is changed. The already-corrected P5 hit function is wrapped only to record
+SIEGER pre-hit x/HP, actual damage, post-hit HP, and kill outcome.
 """
 from __future__ import annotations
 
@@ -16,13 +13,14 @@ from pathlib import Path
 import run_p5_identity_aware_stage46_49_integrated_probe_v0_1 as integ
 
 DURATION = 120.0
-COARSE_PROFILES = ("BALANCED", "DEFENSE_HEAVY")
-BRUTE_COUNTS = (2, 4, 6, 8)
+PROFILES = ("BALANCED", "DEFENSE_HEAVY")
+BRUTE_COUNT = 8
 BRUTE_BANDS = (-2, -1, 0, 1, -2, -1, 0, 1)
 BRUTE_START = 8.0
 BRUTE_STAGGER = 0.15
 SIEGER_TIME = 13.0
 SIEGER_BAND = 2
+SIEGER_EVENTS = []
 
 
 def load_inputs():
@@ -47,10 +45,34 @@ def install_schedule_hook():
     glb["build_integrated_schedule"] = hooked
 
 
-def build_schedule(n):
+def install_hit_telemetry():
+    glb = integ.SIMULATE.__globals__
+    original = glb["hit"]
+    def traced(mon, cfg, mobs, m, raw, stats, counter, armor_ignore=False):
+        pre_hp = float(m.hp) if m is not None else None
+        pre_x = float(m.x) if m is not None else None
+        typ = m.typ if m is not None else None
+        target_id = m.id if m is not None else None
+        actual, killed = original(mon, cfg, mobs, m, raw, stats, counter, armor_ignore=armor_ignore)
+        if typ == "SIEGER":
+            SIEGER_EVENTS.append({
+                "targetId": target_id,
+                "x": round(pre_x, 6),
+                "preHp": round(pre_hp, 6),
+                "rawBeforeShopWrapper": round(float(raw), 6),
+                "actualDamage": round(float(actual), 6),
+                "postHp": round(float(m.hp), 6),
+                "killed": bool(killed),
+                "armorIgnore": bool(armor_ignore),
+            })
+        return actual, killed
+    glb["hit"] = traced
+
+
+def build_schedule():
     out = [
         (round(BRUTE_START + i * BRUTE_STAGGER, 6), "BRUTE", int(BRUTE_BANDS[i]))
-        for i in range(n)
+        for i in range(BRUTE_COUNT)
     ]
     out.append((SIEGER_TIME, "SIEGER", SIEGER_BAND))
     return sorted(out, key=lambda x: (x[0], x[1], x[2]))
@@ -58,7 +80,7 @@ def build_schedule(n):
 
 def stage_cfg(temporal, direction, cls, schedule):
     cfg = copy.deepcopy(temporal)
-    cfg["version"] = "p5-stage48-real-body-screen-threshold-temp"
+    cfg["version"] = "p5-stage48-sieger-hit-position-telemetry-temp"
     cfg["simulation"]["durationSeconds"] = DURATION
     cfg["simulation"]["spawnX"] = float(direction["globalRules"]["normalRightEdgeSpawnX"])
     cfg["simulation"]["rootAttackIntervalSeconds"] = 1.047 if cls == "Rogue" else 1.125
@@ -67,56 +89,41 @@ def stage_cfg(temporal, direction, cls, schedule):
     return cfg
 
 
-def run_case(base, temporal, direction, shop, integration, n, profile_name, cls):
-    schedule = build_schedule(n)
+def run_case(base, temporal, direction, shop, integration, profile_name, cls):
+    schedule = build_schedule()
     profile = integ.profile_for(shop, cls, profile_name)
     scale = float(integration["shopEffectScale"])
     wall_max = float(integration["startingBaseWallHp"]) + float(profile["fort"]) * 100.0 * scale
     overrides = {"shockwaveCoefficient": 0.25} if cls == "Tank" else None
+    SIEGER_EVENTS.clear()
     row = integ.SIMULATE(
         base, stage_cfg(temporal, direction, cls, schedule), cls, True, (),
         overrides=overrides, shop_profile=profile, effect_scale=scale, start_wall_current=wall_max,
     )
+    events = list(SIEGER_EVENTS)
     return {
-        "bruteCount": n, "profile": profile_name, "class": cls,
-        "endWall": row["endWall"], "wallRatio": round(float(row["endWall"]) / wall_max, 6),
-        "burialTime": row.get("burialTime"), "endActive": row["endActive"], "kills": row["kills"],
-        "wallHits": row["wallHits"], "siegerWindups": row["siegerWindups"],
-        "siegerShots": row["siegerShots"], "siegerRepositions": row["siegerRepositions"],
+        "profile": profile_name, "class": cls,
+        "siegerWindups": row["siegerWindups"], "siegerShots": row["siegerShots"],
+        "wallHits": row["wallHits"], "endWall": row["endWall"],
+        "siegerHitCount": len(events),
+        "firstHitX": events[0]["x"] if events else None,
+        "deathX": next((e["x"] for e in events if e["killed"]), None),
+        "events": events,
     }
 
 
 def main():
     base, temporal, direction, shop, integration = load_inputs()
     install_schedule_hook()
-    rows = []
-    for n in BRUTE_COUNTS:
-        for profile in COARSE_PROFILES:
-            for cls in integ.CLASSES:
-                rows.append(run_case(base, temporal, direction, shop, integration, n, profile, cls))
-    threshold = {}
-    for cls in integ.CLASSES:
-        threshold[cls] = {}
-        for profile in COARSE_PROFILES:
-            rr = [r for r in rows if r["class"] == cls and r["profile"] == profile]
-            wind = [r["bruteCount"] for r in rr if r["siegerWindups"] > 0]
-            shot = [r["bruteCount"] for r in rr if r["siegerShots"] > 0]
-            threshold[cls][profile] = {
-                "firstWindupBruteCount": min(wind) if wind else None,
-                "firstShotBruteCount": min(shot) if shot else None,
-                "rows": [{"bruteCount": r["bruteCount"], "windups": r["siegerWindups"], "shots": r["siegerShots"], "wallHits": r["wallHits"], "endWall": r["endWall"]} for r in rr],
-            }
+    install_hit_telemetry()
+    rows = [run_case(base, temporal, direction, shop, integration, p, c) for p in PROFILES for c in integ.CLASSES]
     output = {
-        "version": "p5-stage48-real-body-screen-threshold-temp-v0.4",
-        "status": "TEMP_FEASIBILITY_THRESHOLD_NO_CANDIDATE_ADOPTION_NO_PRODUCTION_AUTHORITY",
+        "version": "p5-stage48-sieger-hit-position-telemetry-temp-v0.5",
+        "status": "TEMP_TELEMETRY_NO_LOGIC_CHANGE_NO_CANDIDATE_ADOPTION_NO_PRODUCTION_AUTHORITY",
         "normalRightEdgeSpawnX": direction["globalRules"]["normalRightEdgeSpawnX"],
-        "midFieldPopInAllowed": direction["globalRules"]["midFieldPopInAllowed"],
-        "setup": {
-            "bruteCounts": list(BRUTE_COUNTS), "bruteStart": BRUTE_START, "bruteStagger": BRUTE_STAGGER,
-            "siegerTime": SIEGER_TIME, "siegerBand": SIEGER_BAND,
-            "note": "favorable spread-screen feasibility test; not Stage48 authoring",
-        },
-        "threshold": threshold, "rows": rows,
+        "siegeWindupThresholdX": 0.38,
+        "setup": {"bruteCount": BRUTE_COUNT, "bruteStart": BRUTE_START, "siegerTime": SIEGER_TIME, "siegerBand": SIEGER_BAND},
+        "rows": rows,
     }
     text = json.dumps(output, indent=2, sort_keys=True)
     Path("/tmp/p5-stage48-chronology-search.json").write_text(text + "\n", encoding="utf-8")
