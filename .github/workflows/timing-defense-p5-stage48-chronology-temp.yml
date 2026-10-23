@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile bounded threshold diagnostic
+      - name: Compile bounded telemetry diagnostic
         working-directory: timing-defense-workspace
         run: |
           git rev-parse HEAD
@@ -35,24 +35,25 @@ jobs:
           cmp /tmp/search1.json /tmp/search2.json
           sha256sum /tmp/search1.json /tmp/search2.json
 
-      - name: Print threshold results
+      - name: Print SIEGER telemetry
         working-directory: timing-defense-workspace
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           p=json.loads(Path('/tmp/search1.json').read_text())
-          print('spawnX=',p['normalRightEdgeSpawnX'],'midField=',p['midFieldPopInAllowed'])
-          print('setup=',p['setup'])
-          for cls,profiles in p['threshold'].items():
-              for profile,v in profiles.items():
-                  print('THRESHOLD',cls,profile,
-                        'firstWindup=',v['firstWindupBruteCount'],
-                        'firstShot=',v['firstShotBruteCount'],
-                        'rows=',v['rows'])
+          print('spawnX=',p['normalRightEdgeSpawnX'],'windupX=',p['siegeWindupThresholdX'],'setup=',p['setup'])
+          for r in p['rows']:
+              print('SIEGER',r['class'],r['profile'],
+                    'hits=',r['siegerHitCount'],
+                    'firstHitX=',r['firstHitX'],
+                    'deathX=',r['deathX'],
+                    'windups=',r['siegerWindups'],
+                    'shots=',r['siegerShots'],
+                    'events=',r['events'])
           PY
 
-      - name: Upload search output
+      - name: Upload telemetry output
         uses: actions/upload-artifact@v4
         with:
           name: timing-defense-p5-stage48-chronology-temp
