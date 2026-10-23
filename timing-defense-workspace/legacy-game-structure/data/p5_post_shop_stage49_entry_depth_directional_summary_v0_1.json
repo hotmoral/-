@@ -1,0 +1,87 @@
+{
+  "version": "p5-post-shop-stage49-entry-depth-directional-summary-v0.1",
+  "status": "DIRECTIONAL_RECONSTRUCTION_COMMITTED_V02_REPLAY_PENDING",
+  "rng": "NONE",
+  "shopEffectScale": 0.4,
+  "crossClassFamiliesApplied": ["ATK", "FORTIFICATION", "DEFENSE"],
+  "deferredFamilies": ["KNOCKBACK", "CRIT", "CRITDMG"],
+  "diagnosticEntryDepthCenter": {
+    "timeBudgetSiegerSpawnX": 0.48,
+    "durableScatterProxySpawnX": 0.65,
+    "timeBudgetProxySpawnX": 0.65,
+    "defaultSpawnX": 0.92,
+    "productionFreeze": false
+  },
+  "allSuccess": {
+    "all20ClassPolicyCombinationsSurvive": true,
+    "remainingWallFractionRangeByClass": {
+      "Knight": [0.786, 0.864],
+      "Rogue": [1.0, 1.0],
+      "Tank": [1.0, 1.0],
+      "Archer": [0.766, 0.790],
+      "Mage": [0.938, 0.943]
+    }
+  },
+  "shortMistakeRecovery": {
+    "oneMissBurialCountAcross20ClassPolicyCombinations": 0,
+    "twoConsecutiveMissBurialCountAcross20ClassPolicyCombinations": 0
+  },
+  "allFinalsMissed": {
+    "ATTACK_HEAVY": {
+      "Knight": {"burialTime": 32.275},
+      "Rogue": {"burialTime": 32.05},
+      "Tank": {"burialTime": 32.65},
+      "Archer": {"endWall": 306.0, "startWall": 2280.0, "endWallFraction": 0.1342},
+      "Mage": {"endWall": 282.5, "startWall": 2280.0, "endWallFraction": 0.1239}
+    },
+    "DEFENSE_HEAVY": {
+      "Knight": {"burialTime": 29.75},
+      "Rogue": {"burialTime": 32.025},
+      "Tank": {"burialTime": 33.85},
+      "Archer": {"endWall": 872.8, "startWall": 2400.0, "endWallFraction": 0.3637},
+      "Mage": {"burialTime": 55.275}
+    },
+    "BALANCED": {
+      "Knight": {"burialTime": 32.525},
+      "Rogue": {"burialTime": 32.15},
+      "Tank": {"burialTime": 33.625},
+      "Archer": {"endWall": 171.7, "startWall": 2320.0, "endWallFraction": 0.0740},
+      "Mage": {"endWall": 343.75, "startWall": 2320.0, "endWallFraction": 0.1482}
+    },
+    "ROLE_AWARE": {
+      "Knight": {"burialTime": 32.275},
+      "Rogue": {"burialTime": 32.05},
+      "Tank": {"burialTime": 33.85},
+      "Archer": {"endWall": 306.0, "startWall": 2280.0, "endWallFraction": 0.1342},
+      "Mage": {"endWall": 432.9, "startWall": 2280.0, "endWallFraction": 0.1899}
+    }
+  },
+  "balancedConsecutiveMissFirstBurialWithinEight": {
+    "Knight": {"LINE_ESCORT": 4, "CLUSTER_RECOVERY": 5, "FRONTLINE_BREACH": 6, "DURABLE_SCATTER": 5, "TIME_BUDGET_SIEGER": 5},
+    "Rogue": {"LINE_ESCORT": 6, "CLUSTER_RECOVERY": 6, "FRONTLINE_BREACH": 5, "DURABLE_SCATTER": 6, "TIME_BUDGET_SIEGER": 6},
+    "Tank": {"LINE_ESCORT": 6, "CLUSTER_RECOVERY": 6, "FRONTLINE_BREACH": 5, "DURABLE_SCATTER": 6, "TIME_BUDGET_SIEGER": 6},
+    "Archer": {"LINE_ESCORT": null, "CLUSTER_RECOVERY": null, "FRONTLINE_BREACH": null, "DURABLE_SCATTER": null, "TIME_BUDGET_SIEGER": null},
+    "Mage": {"LINE_ESCORT": null, "CLUSTER_RECOVERY": null, "FRONTLINE_BREACH": null, "DURABLE_SCATTER": 8, "TIME_BUDGET_SIEGER": null}
+  },
+  "structuralChecks": {
+    "allSuccessSurvivalAll20": true,
+    "isolatedMissRecoverableAll20": true,
+    "twoConsecutiveMissRecoverableAll20": true,
+    "allFinalsMissedHealthyStage50Entry": false,
+    "identicalClassMistakeBudgetRequired": false,
+    "globalShopNerfRequiredByEvidence": false,
+    "hiddenClassShopCompensationAuthorized": false,
+    "entryDepthRoleTimingRepairPromising": true,
+    "exactAuthoringCoordinatesFrozen": false,
+    "productionAuthority": false
+  },
+  "watches": [
+    "P5_STAGE49_POST_SHOP_PRESSURE_MARGIN_WATCH",
+    "P5_ARCHER_ATK_BREAKPOINT_CHRONOLOGY_WATCH",
+    "P5_KNOCKBACK_KERNEL_COVERAGE_GAP",
+    "PRE_STAGE49_DAMAGE_DEFICIT_CONTINUITY",
+    "FORTIFICATION_TOTAL_RESERVE_LEVERAGE",
+    "SHOP_POWER_EXP_FEEDBACK_DISTORTION",
+    "STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH"
+  ]
+}
