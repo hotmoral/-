@@ -10,7 +10,7 @@ Updated: 2026-10-23 KST
 
 ## Operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_22.yaml`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_23.yaml`
 - live remote always wins
 - do not rerun closed PASS/APPROVED work without a concrete trigger
 
@@ -18,33 +18,42 @@ Updated: 2026-10-23 KST
 
 # Current phase
 
-**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 A2 USER_APPROVED — FIVE-CLASS FIXED-RANK SHOP+COMBAT PROBE NEXT**
+**P4 PROVISIONAL STRUCTURAL COMPLETE_WITH_WATCHES / P5 A2 USER_APPROVED — FIVE-CLASS SHOP INTEGRATION DIRECTIONALLY COMPLETE / POST-SHOP LATE-PRESSURE RECONVERGENCE PROMISING**
 
 ```text
 P0..P3 structural foundation complete
 -> P4 player-power spine provisional structural complete with watches
 -> P5 authority recovery complete
 -> A2 USER APPROVED
--> spend-capacity preflight PASS directionally
+-> spend-capacity preflight complete directionally
 -> clear/kill income-mix sensitivity complete
--> defensive upper-bound screen complete
 -> Tank Iron Wall/SIEGER fidelity defect corrected directionally
 -> Tank fixed-rank shop+combat preflight complete
--> five-class fixed-rank Stage49 shop+combat probe NEXT
+-> five-class fixed-rank Stage49 shop+combat complete directionally
+-> cross-class KNOCK fidelity gap isolated; KNOCK deferred
+-> Fortification damage-deficit invariant corrected/canonicalized
+-> post-shop Stage49 entry-depth/role-timing reconvergence PROMISING
+-> exact committed replay + Stage46–48 post-shop reconvergence NEXT
 ```
 
-Latest authority/evidence:
+No user decision is currently pending.
+
+Latest P5 authority/evidence:
 - `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
 - `legacy-game-structure/117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md`
 - `legacy-game-structure/118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md`
 - `legacy-game-structure/119_P5_CLEAR_KILL_INCOME_MIX_SENSITIVITY_V0_1.md`
-- `legacy-game-structure/120_P5_FORTIFICATION_DEFENSE_LEVERAGE_UPPER_BOUND_V0_1.md`
 - `legacy-game-structure/121_P4D2_TANK_IRON_WALL_SIEGER_FIDELITY_CORRECTION_V0_1.md`
 - `legacy-game-structure/122_P5_TANK_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
-- `legacy-game-structure/data/p5_shop_economy_spend_capacity_fixture_v0_1.json`
-- `legacy-game-structure/data/p5_tank_fixed_rank_shop_stage49_fixture_v0_1.json`
-- `tools/run_p5_shop_economy_spend_capacity_probe_v0_1.py`
-- `tools/run_p5_tank_fixed_rank_shop_stage49_probe_v0_1.py`
+- `legacy-game-structure/123_P5_ALL_CLASS_SHOP_COMBAT_METHOD_FIDELITY_REVIEW_V0_1.md`
+- `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
+- `legacy-game-structure/125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md`
+- `legacy-game-structure/126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md`
+- `legacy-game-structure/data/p5_all_class_fixed_rank_shop_stage49_directional_summary_v0_1.json`
+- `legacy-game-structure/data/p5_post_shop_stage49_entry_depth_directional_summary_v0_1.json`
+- `legacy-game-structure/data/p5_post_shop_stage49_entry_depth_fixture_v0_1.json`
+- `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_1.py`
+- `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
 
 ---
 
@@ -55,6 +64,7 @@ Latest authority/evidence:
 - BaseHP persists across Stages; no automatic Stage heal.
 - Lv31 acquisition direction = Stage41–45; Stage46+ mastery pressure.
 - strong class-defining Lv31 finals remain bounded/deterministic/attributable.
+- Archer wider straight gameplay corridor remains USER APPROVED.
 - final EXP remains OPEN / P10R mandatory.
 - production remains unchanged.
 
@@ -67,149 +77,228 @@ EVERY_STAGE_AVAILABLE_BUT_NONBLOCKING
 PERSONAL WALLETS
 KILLER_ONLY PERSONAL ordinary-monster coin baseline
 ALL-HUMAN Stage-clear income-floor candidate
-FORTIFICATION = max HP increase + matched current repair
+FORTIFICATION = max HP increase + matched current increase
 ATK/CRIT/CRITDMG/KNOCK = personal
 FORTIFICATION/DEF = personal purchases contributing to shared wall
 six shop categories
 NO_ROUTINE_FULL_SHOP_MAXOUT_BY_STAGE49
 ```
 
-Specialization may max/near-max selected tracks late if meaningful sacrifices remain elsewhere.
 No exact coin/reward/price/rank-effect/cap is frozen.
 
 ---
 
-# Exact legacy shop sensitivity reference
+# Economy working centers — NOT FROZEN
 
-Prototype positive-value JavaScript `Math.round` cost semantics:
+Correct full-shop Rank10 legacy sensitivity cost:
 
 ```text
-ATK 2725
-CRIT 3000
-CRITDMG 2725
-FORT 2455
-DEF 3000
-KNOCK 2455
-TOTAL 16360
+16360 nominal units
 ```
 
-Earlier `16350` text used banker-rounding on some `.5` values and is numerically superseded.
-
----
-
-# Working 50-Stage economy envelope — NOT FROZEN
+Spend capacity:
 
 ```text
-LOW45    = 7362 nominal units
-CENTER50 = 8180 <- working center
-HIGH55   = 8998
+45% = 7362
+50% = 8180 <- working center
+55% = 8998
 ```
 
-Economy-only results:
-- no tested policy maxed all six tracks;
-- CENTER balanced Stage49 ≈ `ATK8 / CRIT7 / CRITDMG7 / FORT8 / DEF7 / KNOCK8`;
-- selected specialization can max one favored late track around Stage45–49;
-- broad allocation tradeoffs remain.
-
----
-
-# Clear / kill income source sensitivity — NOT FROZEN
-
-Candidates:
+Income source:
 
 ```text
-80/20
-70/30 <- working center supported
+80/20 clear/kill
+70/30 <- working center
 60/40
 ```
 
-At total CENTER50 with ±20% relative kill-share deviation:
-
-```text
-80/20 -> ~48%..52% total capacity
-70/30 -> ~47%..53%
-60/40 -> ~46%..54%
-```
-
-For 70/30, moderate kill-share divergence changes the Stage49 balanced total rank count only modestly in the first arithmetic preflight.
-Killer-only coin remains a valid baseline candidate; class/team kill-share remains an active combat-integrated watch.
+CENTER50 + 70/30 keeps moderate ±20% relative kill-share variation around ~47%..53% full-shop capacity.
+No tested 45/50/55 economy-only policy maxed all six tracks.
 
 ---
 
-# Tank Iron Wall / SIEGER fidelity correction
+# Cross-class shop-combat method correction
 
-Recovered Lv11 contract:
+The current P4 late diagnostic kernel does not model ordinary push symmetrically across all five classes:
+- Knight/Tank explicitly execute push paths;
+- Rogue/Archer/Mage ordinary push behavior exists in the exact legacy reference but is not represented symmetrically in the simplified late kernel.
 
-```text
-Tank Iron Wall = shared wall incoming x0.90 / multiple Tanks nonstack
-```
-
-Historical P4 kernel applied this to ordinary wall contact but omitted it from SIEGER wall shots. No contract authorizes that exception.
-
-Targeted independent revalidation first reproduced the old admitted Tank baseline, then corrected the SIEGER path:
+Therefore the first authoritative cross-class P5 lane is restricted to:
 
 ```text
-no-shop all success: wall2000 unchanged
-one miss: wall2000 unchanged
-two-miss min: 1725 -> 1732.5
-all-finals-missed burial: 34.575s -> 34.700s
-TIME_BUDGET_SIEGER first burial: 4 misses -> 5 misses
+ATK
+FORTIFICATION
+DEFENSE
 ```
 
-Other grammar first-burial counts remain structurally unchanged.
+Deferred:
+
+```text
+KNOCKBACK -> P5_KNOCKBACK_KERNEL_COVERAGE_GAP
+CRIT / CRITDMG -> explicit attack-template policy lane required
+```
+
+Tank-only KNOCK sensitivity remains useful internally but is not cross-class evidence.
+
+---
+
+# Fortification semantic correction
+
+Approved formula:
+
+```text
+wallMaxHp += delta
+wallCurrentHp += delta
+```
+
+Therefore existing absolute damage deficit is invariant:
+
+```text
+D = max - current
+D' = (max + delta) - (current + delta) = D
+```
+
+Canonical consequence:
+
+```text
+FORTIFICATION_ERASES_PRIOR_ATTRITION = FALSE
+FORTIFICATION_ADDS_USABLE_RESERVE = TRUE
+```
+
+The fixed-rank Stage49 probe is optimistic because it starts with **pre-Stage49 damage deficit = 0**, not because Fortification healed prior damage.
+
+Old language implying purchase-time repair wastage / old-damage erasure is superseded by doc125.
+
+Active replacement watches:
+- `FORTIFICATION_TOTAL_RESERVE_LEVERAGE`
+- `PRE_STAGE49_DAMAGE_DEFICIT_CONTINUITY`
+- `FORTIFICATION_DEATH_CHECK_TIMING`
+- `SHARED_FORTIFICATION_PLAYER_COUNT_LEVERAGE`
+
+---
+
+# Five-class fixed-rank Stage49 result
+
+At legacy-relative `30% / 40% / 50%`, four CENTER50 policy rank profiles were tested with ATK/FORT/DEF.
+
+No-shop directional reconstruction first reproduced:
+
+```text
+Knight  success1705 / all-final-miss burial34.025s
+Rogue   success2000 / burial29.100s
+Tank    success2000 / corrected burial34.700s
+Archer  success2000 / burial57.025s
+Mage    success2000 / burial52.225s
+```
+
+Key result:
+- Knight/Rogue/Tank remain mastery-sensitive at all 30/40/50 screens;
+- Archer/Mage survive 60s all-finals-missed in the original Stage49 fixture after shop power;
+- DEFENSE_HEAVY is not universally dominant;
+- the Archer/Mage survival shift is driven primarily by **ATK changing kill/frontmost/SIEGER chronology**, not by generic DEF alone.
+
+Thus:
+
+```text
+COMMON_40_PERCENT = useful diagnostic center
+COMMON_40_PERCENT = NOT production recommendation
+GLOBAL_SHOP_NERF = REJECT AS NEXT REPAIR LAYER
+HIDDEN_CLASS_SHOP_COMPENSATION = REJECT AS NEXT REPAIR LAYER
+```
+
+---
+
+# Archer low-order ATK breakpoint
+
+A targeted trace found a brittle threshold in the old Stage49 diagnostic:
+
+```text
+Archer ordinary PERFECT before shop = 200 * 1.10 = 220
+FLYER diagnostic HP = 225
+```
+
+With rank8 ATK:
+- legacy-scale 0.03 -> total ATK +1.92% -> still buries at57.025s;
+- legacy-scale 0.04 -> total ATK +2.56% -> crosses one-hit FLYER threshold and survives with wall765 in ATK-only stress.
+
+First chronology divergence appears when the +2.56% path kills a FLYER one action earlier, freeing subsequent frontmost/penetration order and reducing later SIEGER/wall exposure.
+
+Interpretation:
+- do not simply raise FLYER HP;
+- the late encounter recipe must be reconverged with shop power present.
+
+Watch:
+`P5_ARCHER_ATK_BREAKPOINT_CHRONOLOGY_WATCH = HIGH`
+
+---
+
+# Post-shop Stage49 authoring-first reconvergence
+
+Repair order followed the existing principle: role timing / entry depth before blanket durability inflation.
+
+Promising diagnostic family:
+
+```text
+TIME_BUDGET_SIEGER SIEGER entry x ~= 0.45..0.55
+DURABLE_SCATTER/TIME_BUDGET durable entry x ~= 0.60..0.70
+```
+
+Useful directional center:
+
+```text
+TIME_BUDGET SIEGER x ~= 0.48
+DURABLE/TIME_BUDGET durable x ~= 0.65
+```
+
+These are normalized diagnostic coordinates only — **not production authoring values**.
+No monster HP/speed/wall damage, class coefficient or shop coefficient was changed.
+
+At 40% ATK/FORT/DEF across 5 classes × 4 policies:
+
+```text
+all-success survival = 20/20
+one-miss burials = 0
+2-consecutive-miss burials = 0
+```
+
+All-finals-missed:
+- Knight/Rogue/Tank bury in all policies;
+- Archer/Mage either bury or enter Stage50 with severe reserve loss rather than healthy reserve;
+- identical mistake budgets are not required.
 
 Classification:
 
 ```text
-P4 structural closure reopen = NO
-old Tank SIEGER-specific numerics = superseded
-v0.6 / Stage49 v0.3 committed exact replay = PENDING
-```
-
-P5 must use the corrected semantic:
-
-```text
-generic shop DEF
--> Tank Iron Wall x0.90
--> shield
--> BaseHP
+POST_SHOP_PRESSURE_REPAIR_LAYER = AUTHORING ENTRY DEPTH / ROLE TIMING FIRST
+ENTRY_DEPTH_ROLE_TIMING_DIRECTION = PROMISING
+LV31_POWER_NERF_REQUIRED = NO
 ```
 
 ---
 
-# Tank fixed-rank shop+combat preflight
+# Replay authority boundary
 
-CENTER50 Stage49 rank profiles were combined with ATK/KNOCK/FORT/DEF while CRIT/CRITDMG were deliberately excluded from the first scalar lane.
-Fortification was modeled as fully retained Stage49 reserve, making this an intentionally defense-favorable upper bound.
+Current directional results are high-confidence reconstruction evidence, but new committed runners are not yet exact-admitted.
 
-Legacy per-rank effect magnitudes were scaled together at `40 / 60 / 80 / 100%` only as a diagnostic.
+Pending exact checkout replay:
+- `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py`
+- `tools/run_p4d2_stage49_full_rotation_probe_v0_3.py`
+- `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_1.py`
+- `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
 
-Key finding:
-- corrected no-shop Tank all-finals-missed burial = 34.700s;
-- at 40% shop-effect magnitude, tested profiles still bury around 38.25–38.75s if every final is missed from the beginning;
-- at 80–100%, collapse can move near the end of the 60s fixture and many late-start failure streaks survive 16 missed finals;
-- legacy 80–100% magnitude is therefore high-risk as a first 50-Stage shop center.
-
-Next common search range:
-
-```text
-30% / 40% / 50% of legacy per-rank magnitudes
-working diagnostic center = 40%
-```
-
-This is not a production numerical freeze and final stat families need not share one scale.
+Do not promote current diagnostic entry depths or 40% shop magnitude to production/freeze authority from directional evidence alone.
 
 ---
 
 # Exact next boundary
 
-1. run fixed-rank Stage49 shop+combat across all five classes at 30/40/50%;
-2. compare ATTACK_HEAVY / DEFENSE_HEAVY / BALANCED / ROLE_AWARE;
-3. keep CRIT/CRITDMG in a separate policy-correct lane rather than assigning fake universal value;
-4. measure wall reserve, backlog, kills, SIEGER shots, wall hits and failure budget;
-5. then model Fortification purchase timing across multiple Stages rather than granting all repair at Stage49;
-6. then recheck shop feedback on valid timing-event count / EXP / P4 skill reach;
-7. keep final multiplayer normalization at P10 and final EXP convergence at P10R.
+1. exact committed replay of current Tank/P5 all-class/entry-depth runners when a valid checkout execution lane is available;
+2. carry shop power into Stage46–48 and test whether the same authoring-language direction holds before final Stage49 authoring;
+3. model ATK/DEF acquisition timing + inherited pre-Stage49 damage deficit; Fort purchase-time repair-wastage simulation is not needed;
+4. create a policy-correct cross-class KNOCK inheritance lane;
+5. create explicit CRIT/CRITDMG attack-template policy lane;
+6. then re-measure purchase-policy combat feedback, valid timing-event count, EXP opportunity and Lv milestone reach;
+7. final multiplayer normalization remains P10; final EXP convergence remains P10R.
 
 P6 remains blocked pending P5 closure.
 No user decision is currently pending.
