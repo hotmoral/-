@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage46_49_moderate_standoff_grunt_screen_temp.py
+      - timing-defense-workspace/tools/run_p5_stage46_49_standoff_boundary_grunt_temp.py
 
 permissions:
   contents: read
@@ -20,17 +20,17 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run moderate SIEGER standoff screen
+      - name: Run SIEGER standoff boundary screen
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage46_49_moderate_standoff_grunt_screen_temp.py > /tmp/moderate-standoff.json
+          python3 tools/run_p5_stage46_49_standoff_boundary_grunt_temp.py > /tmp/standoff-boundary.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage46_49_moderate_standoff_grunt_screen_temp.json').read_text())
-          print('P5_MODERATE_STANDOFF_AGG='+json.dumps(d['aggregate'],sort_keys=True))
+          d=json.loads(Path('p5_stage46_49_standoff_boundary_grunt_temp.json').read_text())
+          print('P5_STANDOFF_BOUNDARY_AGG='+json.dumps(d['aggregate'],sort_keys=True))
           for r in d['rows']:
-              print('P5_MODERATE_STANDOFF_ROW='+json.dumps(r,sort_keys=True))
+              print('P5_STANDOFF_BOUNDARY_ROW='+json.dumps(r,sort_keys=True))
           PY
