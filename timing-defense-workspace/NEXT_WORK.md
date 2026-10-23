@@ -8,6 +8,14 @@ Updated: 2026-10-23 KST
 - production/source HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - production gameplay/numerical changes remain unauthorized during planning/calibration
 
+## Mandatory operating protocol
+Before substantive work, recover the project and apply the cross-stage review rules in:
+- `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
+
+This protocol is mandatory for session recovery, authority/supersession handling, upstream/downstream consistency review, revalidation triggers, and handoff synchronization.
+
+Do not treat older `README.md` / historical document `NEXT` text as current authority when it conflicts with live status, latest approved routing, or the active dependency YAML.
+
 ---
 
 # ACTIVE PHASE — P4-C1 LV26 STRUCTURAL SKILL-CONTRACT DECISION
@@ -67,8 +75,9 @@ Required sequence:
 5. audit monster-role interactions and any skill-vs-monster novelty collision;
 6. identify ambiguities that materially affect power, targeting, proc, duration, geometry, crit, penetration, knockback or ownership;
 7. for each material ambiguity, compare bounded alternatives and recommend one;
-8. present risks and reversibility;
-9. stop for USER APPROVAL before structural freeze or P4-C2 execution.
+8. run the document-86 cross-stage review lenses: authority, upstream invariants, downstream consumers, feedback loops, player experience, class asymmetry, determinism/attribution, scope/cost, production boundary and handoff impact;
+9. present risks and reversibility;
+10. stop for USER APPROVAL before structural freeze or P4-C2 execution.
 
 Known legacy Lv26 direction to verify against live authority, not assume canonical:
 - Knight: penetration-decay removal candidate;
