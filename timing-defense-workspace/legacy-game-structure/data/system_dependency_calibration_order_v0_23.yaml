@@ -1,0 +1,159 @@
+version: system-dependency-calibration-order-v0.23
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_22.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+  - 111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md
+  - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+  - 117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md
+  - 118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md
+  - 119_P5_CLEAR_KILL_INCOME_MIX_SENSITIVITY_V0_1.md
+  - 121_P4D2_TANK_IRON_WALL_SIEGER_FIDELITY_CORRECTION_V0_1.md
+  - 122_P5_TANK_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md
+  - 123_P5_ALL_CLASS_SHOP_COMBAT_METHOD_FIDELITY_REVIEW_V0_1.md
+  - 124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md
+  - 125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md
+  - 126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md
+
+principles:
+  - freeze_semantics_before_values
+  - no_routine_full_shop_maxout_by_stage49
+  - specialization_may_cap_selected_tracks_if_tradeoffs_remain
+  - personal_killer_only_coin_is_baseline_until_measured_defect
+  - common_stage_clear_floor_dampens_wallet_variance
+  - total_economy_scale_is_primary_first_order_saturation_control
+  - shared_wall_stats_use_p2_modifier_pipeline
+  - fortification_preserves_existing_absolute_damage_deficit
+  - fortification_adds_usable_reserve_not_old_damage_healing
+  - cross_class_shop_comparison_requires_symmetric_kernel_coverage
+  - do_not_infer_cross_class_knock_value_from_tank_only_kernel
+  - crit_and_crit_damage_require_attack_template_policy_correct_lane
+  - late_pressure_must_be_reconverged_after_shop_power_is_integrated
+  - authoring_entry_depth_and_role_timing_precede_blanket_scalar_inflation
+  - hidden_per_class_shop_prices_or_corrections_are_not_default_repair
+  - shop_feedback_must_recheck_exp_and_skill_reach
+  - production_changes_require_explicit_freeze
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {status: P3_STRUCTURAL_PASS_COMPLETE}
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    tankIronWallSiegerCorrection:
+      status: DIRECTIONAL_REVALIDATION_PASS_EXACT_V06_V03_REPLAY_PENDING
+      source: 121_P4D2_TANK_IRON_WALL_SIEGER_FIDELITY_CORRECTION_V0_1.md
+      structuralClosureReopenRequired: false
+    finalExpClaimAllowed: false
+    productionAuthority: false
+
+  P5:
+    name: RUN_COIN_SHOP_CANDIDATE
+    status: ALL_CLASS_FIXED_RANK_DIRECTIONAL_COMPLETE_POST_SHOP_STAGE49_RECONVERGENCE_PROMISING_EXACT_REPLAY_AND_STAGE46_48_FOLLOWUP_NEXT
+    structuralContract:
+      source: 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+      status: USER_APPROVED
+      noRoutineFullShopMaxoutByStage49: true
+    economyEnvelope:
+      fullShopReferenceCost: 16360
+      workingCenterSpendRatio: 0.50
+      sensitivity: [0.45, 0.50, 0.55]
+      status: CANDIDATE_NOT_FROZEN
+    incomeMix:
+      source: 119_P5_CLEAR_KILL_INCOME_MIX_SENSITIVITY_V0_1.md
+      candidates: [80_20, 70_30, 60_40]
+      workingCenterCandidate: 70_30
+      status: WORKING_CENTER_SUPPORTED_NOT_FROZEN
+    shopFamilyMethod:
+      source: 123_P5_ALL_CLASS_SHOP_COMBAT_METHOD_FIDELITY_REVIEW_V0_1.md
+      firstCrossClassFamilies: [ATK, FORTIFICATION, DEFENSE]
+      knockback: DEFERRED_KERNEL_COVERAGE_GAP
+      crit: DEFERRED_ATTACK_TEMPLATE_POLICY
+      critDamage: DEFERRED_ATTACK_TEMPLATE_POLICY
+    fortificationSemanticCorrection:
+      source: 125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md
+      existingAbsoluteDamageDeficitPreserved: true
+      oldAttritionHealingInterpretation: SUPERSEDED
+      purchaseTimeRepairWastageModelRequired: false
+      temporalAtkDefFeedbackStillRequired: true
+    allClassFixedRankCombat:
+      source: 124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md
+      machineSummary: data/p5_all_class_fixed_rank_shop_stage49_directional_summary_v0_1.json
+      status: DIRECTIONAL_COMPLETE_COMMITTED_RUNNER_REPLAY_PENDING
+      legacyRelativeMagnitudeSensitivity: [0.30, 0.40, 0.50]
+      workingDiagnosticCenter: 0.40
+      commonScaleProductionRecommendation: false
+      findings:
+        KnightRogueTankSustainedFailureDangerPreserved: true
+        ArcherMageOriginalStage49PostShopMarginTooForgiving: true
+        primaryArcherMageDriver: ATK_KILL_ORDER_CHRONOLOGY
+        defenseHeavyUniversallyDominant: false
+    postShopStage49Reconvergence:
+      source: 126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md
+      fixture: data/p5_post_shop_stage49_entry_depth_fixture_v0_1.json
+      machineSummary: data/p5_post_shop_stage49_entry_depth_directional_summary_v0_1.json
+      runner: tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py
+      status: PROMISING_DIRECTIONAL_EXACT_COMMITTED_REPLAY_PENDING
+      diagnosticOnlyEntryDepthCenter:
+        timeBudgetSiegerSpawnX: 0.48
+        durableRoleSpawnX: 0.65
+        productionFreeze: false
+      checks:
+        allSuccessSurviveAll20ClassPolicyCombos: true
+        oneMissBurialCount: 0
+        twoMissBurialCount: 0
+        allFinalsMissedHealthyStage50Entry: false
+        identicalMistakeBudgetRequired: false
+      repairLayer: AUTHORING_ENTRY_DEPTH_ROLE_TIMING_FIRST
+    exactReplayPending:
+      - tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py
+      - tools/run_p4d2_stage49_full_rotation_probe_v0_3.py
+      - tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_1.py
+      - tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py
+    nextSlices:
+      - EXACT_COMMITTED_REPLAY_FOR_CURRENT_FIDELITY_AND_ENTRY_DEPTH_ASSETS
+      - STAGE46_48_POST_SHOP_PRESSURE_RECONVERGENCE
+      - ATK_DEF_ACQUISITION_TIMING_AND_PRE_STAGE49_DAMAGE_DEFICIT_CONTINUITY
+      - KNOCKBACK_POLICY_CORRECT_CROSS_CLASS_LANE
+      - CRIT_CRITDMG_ATTACK_TEMPLATE_POLICY_LANE
+      - PURCHASE_POLICY_COMBAT_FEEDBACK
+      - RECHECK_P4_EXP_SKILL_REACH
+    mandatoryFeedback:
+      - SHOP_SATURATION_TOO_EARLY
+      - FULL_SHOP_MAXOUT_ROUTINE
+      - DOMINANT_PURCHASE_POLICY
+      - FORTIFICATION_TOTAL_RESERVE_LEVERAGE
+      - PRE_STAGE49_DAMAGE_DEFICIT_CONTINUITY
+      - FORTIFICATION_DEATH_CHECK_TIMING
+      - SHARED_FORTIFICATION_PLAYER_COUNT_LEVERAGE
+      - SHARED_DEF_PLAYER_COUNT_LEVERAGE
+      - COIN_INCOME_CLASS_DIVERGENCE
+      - P5_KNOCKBACK_KERNEL_COVERAGE_GAP
+      - P5_STAGE49_POST_SHOP_PRESSURE_MARGIN_WATCH
+      - P5_ARCHER_ATK_BREAKPOINT_CHRONOLOGY_WATCH
+      - SHOP_POWER_EXP_FEEDBACK_DISTORTION
+      - STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH
+    productionAuthority: false
+
+  P6: {status: BLOCKED_PENDING_P5, dependsOn: [P5]}
+  P7: {status: BLOCKED, dependsOn: [P6]}
+  P8: {status: BLOCKED, dependsOn: [P7]}
+  P9: {status: BLOCKED, dependsOn: [P8]}
+  P10: {status: BLOCKED, dependsOn: [P8]}
+  P10R:
+    status: BLOCKED_PENDING_P10
+    mandatoryPurpose: FINAL_EXP_AND_MULTIPLAYER_TIMEBASE_RECONVERGENCE
+
+freezePolicy:
+  numericalContentFreeze: {onlyAfter: P17}
+
+currentBoundary:
+  completedThrough: P4
+  activePackage: P5
+  next: P5_EXACT_REPLAY_THEN_STAGE46_48_POST_SHOP_RECONVERGENCE
+  nextMode: BOUNDED_SIMULATION_NO_NUMERICAL_FREEZE
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
