@@ -1,0 +1,133 @@
+version: system-dependency-calibration-order-v0.26
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_25.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+  - 111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md
+  - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+  - 124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md
+  - 125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md
+  - 127_P5_STAGE46_49_RIGHT_EDGE_TRAVEL_LEAD_PREFLIGHT_V0_1.md
+  - 128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md
+  - 129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md
+  - 130_P5_CLASS_IDENTITY_FINITE_PACKET_PROBE_PREFLIGHT_V0_1.md
+  - ../CHARACTER_PROFILE_RADAR_V1.md
+
+principles:
+  - freeze_semantics_before_values
+  - live_remote_wins
+  - normal_right_edge_enemy_entry_is_required
+  - midfield_pop_in_is_not_the_authoring_solution
+  - radar_high_axes_must_remain_causally_visible
+  - radar_low_axes_must_remain_real_limitations_after_growth
+  - survival_is_not_equivalent_to_clear
+  - tank_solo_parity_is_not_required
+  - tank_absolute_hard_lockout_is_not_required
+  - class_identity_must_be_measured_before_stage49_packet_freeze
+  - exact_scalar_values_change_last
+  - production_changes_require_explicit_freeze
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {status: P3_STRUCTURAL_PASS_COMPLETE}
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    finalExpClaimAllowed: false
+    productionAuthority: false
+
+  P5:
+    name: RUN_COIN_SHOP_CANDIDATE
+    status: CLASS_IDENTITY_FINITE_PACKET_RUNNER_AUTHORED_EXECUTION_NEXT
+    structuralContract:
+      source: 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
+      status: USER_APPROVED
+    workingEconomyCenters:
+      fullShopReferenceCost: 16360
+      spendRatio: 0.50
+      incomeMix: 70_30
+      shopEffectScale: 0.40
+      status: DIAGNOSTIC_ONLY_NOT_FROZEN
+    crossClassShopFamilies:
+      active: [ATK, FORTIFICATION, DEFENSE]
+      knockback: DEFERRED_KERNEL_COVERAGE_GAP
+      crit: DEFERRED_ATTACK_TEMPLATE_POLICY
+      critDamage: DEFERRED_ATTACK_TEMPLATE_POLICY
+    rightEdgeDirection:
+      source: 128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md
+      status: PROMISING_DIRECTIONAL_NOT_EXACT_ADMITTED
+      normalRightEdgeEntry: true
+      midfieldPopIn: false
+      stage46: POWER_REVELATION_ROOM
+      stage47: TRANSITION_RECOVERY_ROOM
+      stage48: FIRST_PROTECTED_ROLE_PULSE
+      stage49: ESCORTED_SECOND_PULSE
+    classIdentityRadarGate:
+      source: 129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md
+      machineContract: data/p5_class_identity_radar_invariants_v0_1.yaml
+      status: ACTIVE
+      classStatus:
+        Knight: STRUCTURALLY_ALIGNED_WITH_WATCH
+        Rogue: STRUCTURALLY_ALIGNED_WITH_LV31_WAVE_CLEANUP_WATCH
+        Tank: POSITIVE_IDENTITY_CONFIRMED_NEGATIVE_SOLO_THROUGHPUT_VALIDATION_GAP
+        Archer: CORE_LINE_IDENTITY_PRESENT_POST_SHOP_GENERALIST_CREEP_HIGH_WATCH
+        Mage: STRONGLY_ALIGNED_WITH_WATCH
+    classIdentityFinitePacketProbe:
+      source: 130_P5_CLASS_IDENTITY_FINITE_PACKET_PROBE_PREFLIGHT_V0_1.md
+      fixture: data/p5_class_identity_radar_probe_fixture_v0_1.json
+      runner: tools/run_p5_class_identity_radar_probe_v0_1.py
+      status: AUTHORED_EXECUTION_PENDING
+      directClearRequires:
+        - all_expected_enemies_killed
+        - zero_wall_contacts
+        - wall_survives
+        - zero_active_backlog
+      firstInterpretationPriority:
+        - TANK_SOLO_CLEAR_TIME_AND_UNFINISHED_RATE
+        - ARCHER_ATTACK_HEAVY_LINE_VS_SCATTER
+        - MAGE_CLUSTER_VS_DISTRIBUTED
+        - ROGUE_DURABLE_VS_BROAD_WAVE_LEAKAGE
+        - KNIGHT_ALIGNED_VS_DISPERSED
+      thresholdsFrozen: false
+    highWatches:
+      - P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH
+      - P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH
+      - P5_RIGHT_EDGE_ESCORT_PACKET_CHRONOLOGY_WATCH
+      - P5_TANK_SURVIVAL_NOT_CLEAR_WATCH
+      - P5_TANK_SOLO_CLEAR_THROUGHPUT_WATCH
+      - P5_ROGUE_WAVE_CLEANUP_LEAKAGE_WATCH
+      - P5_ARCHER_LINE_DEPENDENCE_WATCH
+      - P5_MAGE_DENSITY_DEPENDENCE_WATCH
+      - P5_KNIGHT_PENETRATION_CAUSALITY_WATCH
+    nextSlices:
+      - EXECUTE_COMMITTED_CLASS_IDENTITY_FINITE_PACKET_RUNNER
+      - PERSIST_RAW_IDENTITY_RESULT_AND_CLASSIFY_WITHOUT_THRESHOLD_FREEZE
+      - INTEGRATE_USEFUL_IDENTITY_METRICS_INTO_SOURCE_PATCHED_RIGHT_EDGE_STAGE46_49_RUNNER
+      - REFINE_STAGE49_PACKET_ONLY_AFTER_IDENTITY_OUTPUT_EXISTS
+      - EXACT_COMMITTED_REPLAY_FOR_PENDING_P4_P5_FIDELITY_ASSETS
+      - KNOCKBACK_POLICY_CORRECT_CROSS_CLASS_LANE
+      - CRIT_CRITDMG_ATTACK_TEMPLATE_POLICY_LANE
+      - PURCHASE_POLICY_COMBAT_FEEDBACK
+      - RECHECK_P4_EXP_SKILL_REACH
+    productionAuthority: false
+
+  P6: {status: BLOCKED_PENDING_P5, dependsOn: [P5]}
+  P7: {status: BLOCKED, dependsOn: [P6]}
+  P8: {status: BLOCKED, dependsOn: [P7]}
+  P9: {status: BLOCKED, dependsOn: [P8]}
+  P10: {status: BLOCKED, dependsOn: [P8]}
+  P10R: {status: BLOCKED_PENDING_P10, mandatoryPurpose: FINAL_EXP_AND_MULTIPLAYER_TIMEBASE_RECONVERGENCE}
+
+freezePolicy:
+  numericalContentFreeze: {onlyAfter: P17}
+
+currentBoundary:
+  completedThrough: P4
+  activePackage: P5
+  next: EXECUTE_P5_CLASS_IDENTITY_FINITE_PACKET_PROBE_V0_1
+  nextMode: BOUNDED_SIMULATION_NO_NUMERICAL_FREEZE
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
