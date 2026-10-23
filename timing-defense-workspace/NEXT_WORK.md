@@ -14,8 +14,9 @@ Before local work, fetch live `timing-defense-workspace` HEAD and read:
 2. `SESSION_HANDOFF.md`
 3. `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md`
 4. `legacy-game-structure/141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md`
-5. active dependency YAML
-6. only then the exact source/runner files needed for the next bounded unit.
+5. **latest:** `legacy-game-structure/142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
+6. active dependency YAML
+7. only then the exact source/runner files needed for the next bounded unit.
 
 Do not rerun closed P1/P2/P3/P4 or the whole class-identity group merely because the chat is new.
 
@@ -29,9 +30,12 @@ class identity group = DIRECTIONALLY CLOSED
 STAGE_SETTLED = REQUIRED
 old repeated Stage48 proxy packet = REJECTED
 simple BRUTE/SHIELD replacement = INSUFFICIENT
-real-monster layered screen handoff alone = INSUFFICIENT
-limited armored low-spatial-density axis = PROMISING
-large global SIEGER standoff shift 0.78/0.82 = CROSS-STAGE FAIL
+real-monster layered handoff alone = INSUFFICIENT
+limited armored/hardened frontline exploration axis = USER APPROVED
+GRUNT-like fodder / cheap-target chronology axis = DIAGNOSTICALLY VALID
+real BRUTE+GRUNT only = INSUFFICIENT CURRENT REPLACEMENT
+SUPPORTER = SECONDARY TRAVEL AID / PHASE RISK WATCH
+global SIEGER standoff movement = NO OBSERVED SAFE ALL-CLASS REPAIR WINDOW
 current state = USER DECISION GATE
 P6 = BLOCKED_PENDING_P5
 ```
@@ -42,114 +46,88 @@ No Stage48 packet, armored monster, elite system, standoff value, class coeffici
 
 # What was just learned
 
-## Armored density
-The user proposed using only 2–3 armored-durable bodies in front and lowering density.
-Evidence supports a precise version of that idea:
+## 1. Fodder hypothesis works, but only as chronology design
+The user proposed adding cheap bodies so Mage follow-up targeting is less likely to reach SIEGER immediately.
+
+Evidence:
+- late `GRUNT2` consistently delayed first Mage damage to SIEGER and extended life;
+- `GRUNT3` did not materially beat `GRUNT2`;
+- fast fragile bodies first were usually consumed too early;
+- one durable first body + one trailing GRUNT could approximate two durable bodies for Mage protection;
+- sending fodder too early can shift Mage heavy timing and make SIEGER exposure worse.
+
+Therefore:
 
 ```text
-lower SPATIAL density = useful
-excessive TEMPORAL lead = harmful
+EXTRA_MOB_COUNT != SOLUTION
+TYPE + ORDER + ARRIVAL_PHASE + SPATIAL DENSITY = CAUSAL
 ```
 
-Best clear example:
+## 2. Cleanest current Stage48 diagnostic center
+Current bounded center:
 
 ```text
-Archer SIEGER life ~6.825 s -> ~9.075 s
-Archer death X ~0.613 -> ~0.512
-Knight life ~2.325 s -> ~4.575 s
+3 spatial armored diagnostic bodies
++ 2 late GRUNT
++ 1 SIEGER
 ```
 
-Mage did not gain the same benefit because approved Mage Lv31 chain semantics can still reach later live/unhit targets.
+It improved cross-class protection balance but still produced no SIEGER firing at global standoff `0.38`.
+This packet is **not approved**.
 
-## Hybrid and simulator fidelity
-A first armored+standoff hybrid result was invalid because rebuilding `SIMULATE` dropped the STAGE_SETTLED fixed schedule hook.
-That instrumentation defect was fixed; corrected actual schedules were asserted equal to expected schedules.
+Real BRUTE+GRUNT only did not reproduce the same Mage/Rogue protection envelope.
 
-Corrected bounded Stage48 result:
+## 3. SUPPORTER is secondary only
+Existing SUPPORTER speed aura moved SIEGER slightly farther, but did not solve firing uptime and can alter Mage phase chronology adversely.
+
+## 4. Global standoff search has no observed useful window
+BALANCED cross-stage evidence:
 
 ```text
-3 spatially separated armored diagnostic bodies
-+ one SIEGER
-+ standoff 0.82
-=> at least one SIEGER shot in all five classes
+0.50/0.55 -> all survive, Stage48 all 0 shots
+0.60/0.65 -> all survive, Archer only 1 shot
+0.70      -> all survive, Knight+Archer only; Archer/Tank reserves already severe
+0.72      -> Archer dies Stage49; Mage/Tank Stage48 still 0
+0.74      -> Archer dies Stage49; Mage/Tank Stage48 still 0
+0.76      -> first all-five Stage48 firing, but Archer dies Stage49 and Tank reserve is severe
+0.78/0.82 -> broader cross-stage failure confirmed earlier
 ```
 
-This proves causal leverage only; it is not an adoption.
+Hence there is currently no observed global threshold that both:
+- gives all-class Stage48 SIEGER role expression; and
+- preserves the current Stage46→49 survival/reserve shape.
 
-## Cross-stage standoff consequence
-Full Stage46→49 STAGE_SETTLED replay, 20 representative cases per threshold:
-
-```text
-x=0.38 : 20/20 through Stage49, 0 buried
-x=0.78 : 13/20 through Stage49, 7 buried
-x=0.82 :  8/20 through Stage49, 12 buried
-```
-
-Therefore moving global SIEGER standoff far forward is **not** the current repair direction.
+`0.38` is still not frozen; global standoff movement is simply strongly disfavored as the primary repair.
 
 ---
 
 # CURRENT USER DECISION REQUIRED
 
-Decision question:
+Choose the next **direction**, not an exact number:
 
-> Should the next P5 exploration adopt **limited armored/hardened frontline** as the primary working axis, while keeping global SIEGER standoff unchanged for now and deferring buff/resistance/skill-like monster mechanics until this simpler axis is exhausted?
+A. **Recommended:** keep global SIEGER behavior unchanged for now and continue Stage48 through limited armored/hardened frontline + GRUNT-like cheap target layer + order/timing/spatial-density chronology.
 
-Recommended direction from current evidence: **YES**.
+B. Introduce a Stage48-specific SIEGER setup/mechanic. This is a semantic exception.
 
-This recommendation means only:
-- keep exploring a limited armored/hardened frontline concept;
-- preserve 2–3-body / low-density thinking as a search region;
-- jointly judge late Mage/Archer wave deletion and SIEGER protection.
+C. Change Stage48 intent: protected travel/threat introduction at Stage48, guaranteed meaningful firing deferred to Stage49.
 
-It does **not** mean:
-- approve `ARMORED_DURABLE_PROXY` as a real monster;
-- approve HP1600/armor0.55;
-- approve exact counts/timings;
-- create a tenth ordinary archetype;
-- create an elite system;
-- change production.
+D. Escalate to explicit resistance / protective aura / elite-hardened state / another skill-like protective mechanic.
 
-Do not begin those adoption steps until the user approves the direction.
+No option is adopted until the user approves it.
 
 ---
 
-# If the user approves the armored/hardened exploration axis
+# If user approves A
 
 Proceed in this order:
-
-1. **Define diagnostic envelope, not production monster**
-   - 2–3 bodies only;
-   - low spatial density;
-   - arrival near enough to SIEGER that protection is not consumed early;
-   - no global SIEGER standoff shift.
-
-2. **Search smallest durability/mitigation envelope**
-   - do not start from indiscriminate HP inflation;
-   - test a narrow range around a less extreme hardened body;
-   - measure SIEGER protected time, death X, Mage/Archer clear time, wall pressure, class-specific breakpoints.
-
-3. **Keep the broader purpose visible**
-   - prevent late Mage/Archer from erasing every volume wave too quickly;
-   - create readable protected SIEGER pressure;
-   - do not make Knight an automatic hard counter or Mage a hard fail.
-
-4. **Recheck all five class identities**
-   - Knight PEN advantage visible but not universal dominance;
-   - Rogue low-AOE limitation remains real;
-   - Tank survival/control remains strong but clear remains slow;
-   - Archer line dependence remains causal;
-   - Mage density strength remains causal without universal screen erasure.
-
-5. **Replay Stage46→49 with STAGE_SETTLED** once a promising Stage48 packet exists.
-
-6. **Only if armored/hardened stats + placement remain insufficient**, stop and prepare a new user decision packet for one of:
-   - explicit resistance;
-   - protective buff/aura;
-   - elite/hardened state;
-   - another skill-like monster mechanic.
-
-Those mechanics are more coupled and must not be smuggled in as a small numeric tweak.
+1. keep physical spawn `x=0.92`, STAGE_SETTLED and current global SIEGER semantics unchanged;
+2. use the validated cheap-target/fodder principle, not indiscriminate extra bodies;
+3. reduce reliance on the extreme proxy by searching the **smallest** hardened durability/mitigation envelope;
+4. jointly vary body order, arrival phase, spatial density and relative travel speed;
+5. measure Mage/Archer volume-erasure time, SIEGER protected time/death X, and all-class wall pressure;
+6. preserve Knight/Rogue/Tank identities and avoid hard class lockout;
+7. replay Stage46→49 once a promising Stage48 packet exists;
+8. stop again for approval before adopting an exact monster identity, packet or numerical value.
 
 ---
 
@@ -166,7 +144,7 @@ NO GLOBAL ARCHER NERF
 NO MAGE BUFF TO FIX BAD AUTHORING
 NO TANK CONTROL NERF AS FIRST REPAIR
 NO ROGUE RETARGET REMOVAL AS FIRST REPAIR
-NO GLOBAL SIEGER STANDOFF SHIFT AS CURRENT REPAIR
+NO GLOBAL SIEGER STANDOFF SHIFT AS CURRENT PRIMARY REPAIR
 IMPORTANT ADOPTION REQUIRES USER APPROVAL
 PRODUCTION UNCHANGED UNLESS EXPLICITLY AUTHORIZED
 ```
