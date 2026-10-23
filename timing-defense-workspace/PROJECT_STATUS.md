@@ -1,6 +1,6 @@
 # Timing Defense — Project Status
 
-Updated: 2026-10-23 KST
+Updated: 2026-10-24 KST
 
 ## Production checkpoint
 - branch `timing-defense-cloudflare-do-poc`
@@ -11,10 +11,13 @@ Updated: 2026-10-23 KST
 ## Calibration harness checkpoint
 - branch `timing-defense-skilled-v2-harness-v01`
 - last verified HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
-- unchanged by current planning/fidelity work
+- unchanged by current planning/diagnostic work
 
 ## Canonical operating authority
 Always fetch live remote first. Current key documents:
+- `legacy-game-structure/02_TIER_SYSTEM.md`
+- `legacy-game-structure/04_MONSTER_ENCOUNTER_MODEL.md`
+- `legacy-game-structure/16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
 - `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md`
 - `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
@@ -26,8 +29,10 @@ Always fetch live remote first. Current key documents:
 - `legacy-game-structure/137_P5_STAGE46_49_EXACT_EXECUTION_STAGE_SETTLED_BOUNDARY_RESULT_V0_1.md`
 - `legacy-game-structure/142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
 - `legacy-game-structure/143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md`
-- **latest:** `legacy-game-structure/144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md`
-- active dependency plan `legacy-game-structure/data/system_dependency_calibration_order_v0_32.yaml`
+- `legacy-game-structure/144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md`
+- `legacy-game-structure/145_P5_P6_STAGE46_47_ARMORED_MIDWAVE_REPLACEMENT_DIAGNOSTIC_V0_1.md`
+- **latest:** `legacy-game-structure/146_P5_P6_ARMORED_PLACEMENT_AND_TIER_AUTHORING_BOUNDARY_V0_1.md`
+- active dependency plan `legacy-game-structure/data/system_dependency_calibration_order_v0_33.yaml`
 
 Live remote always wins over copied SHA, memory or chat.
 
@@ -43,58 +48,63 @@ P3 = STRUCTURAL_PASS_COMPLETE / STAGE_SETTLED + persistent run-state authority
 P4 = PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
 P5 A2 shop = USER APPROVED
 P5 class identity group = DIRECTIONALLY CLOSED
-P5 armored/hardened Stage48 exploration = USER APPROVED DIRECTION ONLY
-P5 GRUNT-like cheap-target chronology = DIAGNOSTICALLY VALID
-P5 global SIEGER standoff shift = STRONGLY DISFAVORED AS PRIMARY REPAIR
-P5 mastery reinterpretation = old late-run results are ALL-PERFECT / effectively all-P×P upper bound
+P5 mastery reinterpretation = COMPLETE
 P5→P6 persistent-state fidelity bridge = EXACT TEMP EXECUTION PASS
 P5 entry charge/combo cause checks = CLOSED AS PRIMARY EXPLANATION
-Stage48 local tuning = PAUSED
-CURRENT = USER DECISION GATE: ENTER P6 JOINT RUN-POWER CONVERGENCE OR NOT
-P6 = NOT FORMALLY STARTED
+P5 Stage46/47 sparse-armored count/chronology/band diagnostics = COMPLETE
+P5 armored coordinate micro-tuning = STOPPED TO AVOID PRE-AUTHORING OVERFIT
+Stage48 local SIEGER packet tuning = PAUSED
+CURRENT = ENCOUNTER-COMPOSITION CLASS-RESPONSE MATRIX DIAGNOSTIC
+P6 = NOT FORMALLY STARTED / FORMAL START STILL REQUIRES USER APPROVAL
+Tier1 exact 50-Stage authoring = NOT STARTED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
+No Stage46/47 armored packet is approved.
 No Stage48 packet is approved.
 No armored/elite/new-monster identity is approved.
 No SIEGER standoff value is frozen.
 No Tank scalar is selected.
 No class/monster/shop/EXP/P×P numerical value is frozen.
+No exact Tier1 roster/unlock ladder is frozen.
 
 ---
 
 # Mandatory operating method
 
-Every session must reconstruct the reasoning chain before local tuning:
+Every material step checks:
 
 ```text
 Tier/Stage purpose
--> monster/content role
+-> monster availability / content role
+-> encounter family / formation / chronology
 -> class identity / skill behavior
 -> run-state persistence
 -> player mastery / judgment model
 -> shop/economy
 -> attack count / EXP / skill-reach feedback
--> encounter geometry / chronology / frontmost ordering
--> SIEGER/wall pressure
+-> target order / geometry
+-> wall pressure / SIEGER exposure
 -> STAGE_SETTLED
 -> carried wall deficit
 -> later-Stage consequences
 -> downstream P6/meta/multiplayer impact
 ```
 
-Repair order:
+Repair/analysis order:
 
 ```text
 source/simulator fidelity
 -> lifecycle/state semantics
--> geometry/chronology
+-> encounter composition / geometry / chronology
 -> class/package semantics
 -> shop/feedback
 -> exact scalar tuning last
 ```
 
-Important design/content/numerical/work-boundary decisions require user approval before adoption. Diagnostic/instrumentation work may proceed independently if gameplay semantics remain unchanged.
+Important design/content/numerical/work-boundary decisions require user approval before adoption. Diagnostic/instrumentation work may proceed independently when gameplay semantics remain unchanged.
+
+Do not rerun closed work without a concrete trigger.
 
 ---
 
@@ -134,105 +144,80 @@ Mage    ATK4 CRIT2 AGI2 KNOCK1 PEN1 AOE5
 
 Keep:
 - `SURVIVAL != CLEAR`;
-- Tank solo parity not required;
+- class clear rates need not be identical;
+- Tank solo parity is not required;
 - no hard class lockout;
-- no class buff/nerf from a partial causal slice;
-- no Stage46 nerf just to hide a P×P/Lv31 coupling defect;
-- no P×P probability manipulation to make the current pressure fit;
+- do not convert encounter-composition skew directly into class buff/nerf;
+- no Stage46 nerf just to hide a P×P/Lv31 coupling effect;
+- no P×P probability manipulation to make content fit;
 - Rogue deterministic retarget is not the first repair axis.
 
 ---
 
-# Stage48 evidence — parked, not discarded
+# Tier availability / 50-Stage authoring authority
 
-The user-approved exploration direction remains:
-- limited armored/hardened frontline;
-- GRUNT-like cheap-target/fodder chronology;
-- exact type/order/arrival phase/spatial density matters more than raw extra count.
-
-Current diagnostic center only:
+Active direction from `02_TIER_SYSTEM.md` and `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`:
 
 ```text
-3 spatial armored diagnostic bodies
-+ 2 late GRUNT
-+ 1 SIEGER
+T1 = limited monster subset
+higher Tier(s) = new monster archetype introductions
+returning monsters = new formation/cadence/composition reinterpretation
+current 9 ordinary monsters = foundation roster, not lifetime final roster
 ```
 
-This packet is not adopted.
+`09_TIER_LADDER_CANDIDATE_V0_1.md` contains an older proposal that T1 teaches all nine ordinary monsters by Stage29. That portion is now explicitly treated as:
 
-Other stable findings:
-- real BRUTE/SHIELD-only screens did not buy enough SIEGER role time;
-- spatial separation helps; excessive temporal lead can hurt;
-- Mage chain chronology can reach later targets;
-- `GRUNT2` helped delay Mage access; `GRUNT3` added little in the tested band;
-- SUPPORTER is a secondary travel aid with phase-risk;
-- no tested global SIEGER standoff threshold simultaneously produced all-class Stage48 firing and preserved the current Stage46→49 reserve shape.
+```text
+SUPERSEDED_LEGACY_CANDIDATE
+NOT_ACTIVE_TIER_AVAILABILITY_AUTHORITY
+```
 
-Do not resume Stage48 micro-tuning until the common late-run skilled power/pressure surface is credible.
+Exact Tier count and exact unlock ladder remain open.
+
+Current Stage46→49 diagnostics use the foundation 9-monster roster plus temporary proxy to learn mechanics. They are **not** final Tier1 authoring.
+
+When exact Tier1 Stage1→50 authoring begins, order is:
+
+```text
+active monster availability ladder
+-> T1 introduced/available/returning set
+-> Tier novelty/identity
+-> 50-Stage macro flow
+-> exact frequency/count/composition/formation/cadence
+```
 
 ---
 
-# Mastery reinterpretation
+# Mastery reinterpretation and fidelity bridge
 
-The old P5 Stage46→49 runner used effectively:
+Old P5 late-run runner effectively used ordinary PERFECT + successful Heavy P×P/CRITICAL, so old late-run survival is upper-tail evidence.
 
-```text
-ordinary attack = PERFECT
-successful Heavy = P×P / CRITICAL
-```
-
-So the old survival/reserve results are upper-tail diagnostics, not `SKILLED_V2_CENTRAL` baseline balance evidence.
-
-Expanded central-skilled run `39968100989`:
-- 100 cases;
-- through Stage49 `45/100`;
-- failures: Stage46 `26`, Stage47 `21`, Stage48 `0`, Stage49 `8`;
-- per class: Knight `3/20`, Rogue `4/20`, Tank `2/20`, Archer `18/20`, Mage `18/20`.
-
-Factor isolation run `39968400953` showed:
+Central-skilled run `39968100989`:
 
 ```text
-ordinary central + Heavy forced P×P = 100/100 through Stage47
-ordinary PERFECT + Heavy central     = 63/100
-full central skilled                 = 58/100
+through Stage49 = 45/100
+fail Stage46 = 26
+fail Stage47 = 21
+fail Stage48 = 0
+fail Stage49 = 8
+Knight 3 / Rogue 4 / Tank 2 / Archer 18 / Mage 18
 ```
 
-Therefore:
+Factor isolation `39968400953`:
 
 ```text
-REDUCED_PXP_LV31_FINAL_FREQUENCY = DOMINANT CURRENT SENSITIVITY
+ordinary central + Heavy forced P×P -> 100/100 through47
+ordinary PERFECT + Heavy central     -> 63/100
+full central                         -> 58/100
 ```
 
-This did not authorize any balance change.
-
----
-
-# P5→P6 persistent-state fidelity bridge — COMPLETE
-
-User approved the bounded bridge. It was executed on isolated temp branch `timing-defense-workspace-temp-p5p6-fidelity`.
-
-Exact run:
+Dominant sensitivity remains:
 
 ```text
-run id: 39971985538
-repeat deterministic bytes: PASS
-SHA256: 0e74da5456cf9ef8fe011bddfec98e6c8656f43789794fad35e5434508ef4333
+REDUCED_PXP_LV31_FINAL_FREQUENCY
 ```
 
-The bridge combined:
-- one persistent SKILLED_V2 RNG/state across Stage46→49;
-- persistent combo;
-- persistent charge / charge-driven Heavy;
-- P3 combo damage scalar;
-- P3 N3 milestones/budgets;
-- P4-D2 Lv31 P×P packages;
-- P5 shop snapshot/effects;
-- right-edge Stage46→49 combat;
-- STAGE_SETTLED and carried wall deficit.
-
-Expanded screen:
-- 400 skilled chains: 20 seeds × 5 classes × entry charge 0/1/2/3;
-- 20 all-PERFECT controls.
+The fidelity bridge run `39971985538` combined persistent SKILLED_V2 state, combo, charge, combo damage, N3, Lv31 packages, P5 shop, right-edge combat, STAGE_SETTLED and carried wall deficit.
 
 All-PERFECT:
 
@@ -240,7 +225,7 @@ All-PERFECT:
 20/20 through Stage49
 ```
 
-Central skilled by entry charge:
+Central-skilled by entry charge:
 
 ```text
 charge 0 -> 48/100
@@ -249,91 +234,160 @@ charge 2 -> 42/100
 charge 3 -> 44/100
 ```
 
-Stage46 failures were exactly `23/100` for every entry charge.
+Stage46 failures were `23/100` for every entry charge.
 
-Across all charge states:
+Entry combo upper-bound run `39972649909`:
 
 ```text
-Mage   72/80
-Archer 61/80
-Rogue  25/80
-Knight 20/80
-Tank    1/80
+combo 0  -> 48/100
+combo 40 -> 48/100
 ```
 
-Therefore:
+Therefore entry charge/combo boundaries are not the primary explanation.
+
+---
+
+# User difficulty interpretation — current guidance, not freeze
+
+The user judged the current central-skilled late-segment completion around the mid-40% range as plausibly appropriate because all-PERFECT retains a 100% path in the tested controls.
+
+This means:
 
 ```text
-STAGE46_ENTRY_CHARGE_PHASE != PRIMARY_FAILURE_CAUSE
-PERSISTENT_COMBO_CHARGE_REPAIR != RESOLUTION
+DO NOT assume the global skilled clear rate must be raised.
+FIRST ask whether class differences are caused by encounter composition.
+```
+
+`45%` is not an exact target or production freeze.
+
+---
+
+# Stage46/47 sparse armored diagnostic — COMPLETE
+
+The existing `ARMORED_DURABLE_PROXY` was reused unchanged. It is still a diagnostic body, not an approved new monster.
+
+## Count sensitivity — run `39976475153`
+
+```text
+BASELINE       A18 M18 R6 K5 T1 = 48/100
+1 per Stage    A17 M17 R6 K5 T1 = 46/100
+2 per Stage    A13 M15 R4 K5 T1 = 38/100
+```
+
+All-PERFECT: 5/5 classes through Stage49 for every variant.
+
+Finding:
+- one sparse body selectively trims the two strongest high-volume-clearing classes in this sample;
+- two bodies become broad pressure and also hurt Rogue.
+
+## Chronology sensitivity — run `39978274698`
+
+```text
+BASELINE  A18 M18 R6 K5 T1 = 48
+EARLY     A16 M16 R6 K4 T1 = 43
+MID       A17 M17 R6 K5 T1 = 46
+LATE      A18 M16 R7 K5 T1 = 47
+```
+
+EARLY and MID both used band +2, so their difference is a chronology signal. Early insertion is too broad; midpoint is the cleanest directional center.
+
+## Band sensitivity at MID — run `39978899281`
+
+```text
+BASELINE  A18 M18 R6 K5 T1 = 48
+band -2   A16 M17 R6 K4 T1 = 44
+band  0   A18 M17 R6 K5 T1 = 47
+band +2   A17 M17 R6 K5 T1 = 46
+```
+
+All-PERFECT remained 5/5 in every variant.
+
+Current reference only:
+
+```text
+one armored proxy
++ MID chronology
++ band +2
+= cleanest tested selective diagnostic center
+```
+
+It is **not adopted content**.
+
+Stop rule:
+
+```text
+DO NOT search finer proxy seconds/bands now.
+Exact-coordinate search before real Tier authoring would overfit a temporary fixture.
 ```
 
 ---
 
-# Entry-combo upper-bound check — COMPLETE
+# Stage48 evidence — parked, not discarded
 
-Run `39972649909`, repeat deterministic PASS, SHA256:
-`9f12213fca7c3ef963a82fbc267b5a2830a8f789d9c5a1a1eb7264dd00a832f1`
+User-approved exploration direction remains limited armored/hardened frontline + GRUNT-like cheap-target/fodder chronology.
 
-Central-skilled, entry charge 0:
+Stable findings:
+- real BRUTE/SHIELD-only screens did not buy enough SIEGER role time;
+- spatial separation helps;
+- excessive temporal lead can hurt;
+- Mage chain chronology can reach later live targets;
+- late GRUNT2 helps delay Mage access; GRUNT3 added little in tested band;
+- SUPPORTER is secondary with phase risk;
+- global SIEGER standoff movement is strongly disfavored as the primary repair.
 
-```text
-entry combo 0  -> 48/100 through Stage49
-entry combo 40 -> 48/100 through Stage49
-```
-
-Failure histogram and every class completion count were identical.
-
-Therefore:
-
-```text
-STAGE46_ENTRY_COMBO_BOUNDARY != PRIMARY_FAILURE_CAUSE
-```
-
-A future Stage1→45 full-run distribution is still required for exact progression/skill-reach authority, but it is not needed to explain away the current late-run class split.
+No Stage48 packet is adopted.
 
 ---
 
 # Current interpretation
 
-The main issue is now a genuine coupled-system problem:
+The current evidence supports a broader causal model:
 
 ```text
 SKILLED_V2 P×P frequency
--> Lv31 final-package frequency
--> class-specific damage/control/wall-protection response
--> Stage46/47 pressure outcome
--> attack/event count and EXP feedback
--> shop leverage
--> carried wall state
+× Lv31 package
+× encounter family/composition
+× formation/chronology/geometry
+-> class-specific throughput/control/wall response
+-> Stage outcome
 ```
 
-That is the exact class of problem assigned to P6 Joint Run-Power Convergence in the dependency plan.
+High-volume clustered/aligned pressure naturally favors Mage/Archer identities. Sparse hardened bodies alter that response without requiring a class scalar change.
 
-The bridge did not prove that Tank/Knight/Rogue are intrinsically underpowered, nor that Mage/Archer are intrinsically overpowered. It proved that current Stage46–47 pressure and the five Lv31 packages do not converge plausibly under central-skilled timing without further coupled analysis.
+Therefore the next question is not “which class should be buffed?” but:
+
+```text
+which encounter families advantage/disadvantage each class,
+and are those opportunities distributed intentionally across a Tier?
+```
 
 ---
 
-# Current decision gate
+# Current work boundary
 
-### A — Recommended
-Formally enter **P6 Joint Run-Power Convergence**, beginning with a bounded Stage46–47 causal slice.
+Active diagnostic:
 
-First slice:
-1. keep SKILLED_V2_CENTRAL fixed;
-2. keep P3 persistent-state semantics fixed;
-3. use paired deterministic seeds;
-4. keep shop as explicit profiles rather than one hidden balance constant;
-5. decompose class pressure response by realized P×P/Lv31-final frequency;
-6. separate damage throughput, control, wall protection and geometry causes;
-7. measure timing-event count / EXP / skill-reach feedback before exact numeric changes;
-8. keep Stage48 armored/fodder/SIEGER evidence parked;
-9. stop again before adopting exact class/monster/shop/EXP/Stage values.
+**Encounter-composition class-response matrix**
 
-### B
-Continue Stage48 local tuning first. Not recommended because Stage46–47 is already the larger skilled-play blocker.
+Use existing evidence first for:
+- FLOOD / high density;
+- LINE / penetration;
+- BULWARK / durable targets;
+- control-sensitive pressure;
+- protected SIEGE;
+- chronology-sensitive Mage chain cases.
 
-### C
-Build a full Stage1→45 entry-state distribution before opening P6. Higher scope; useful later for exact progression authority, but current charge/combo sensitivity shows it is not necessary to classify the present late-run cause.
+Goal:
 
-No option is adopted until user approval.
+```text
+CLASS_NUMERIC_PROBLEM
+vs
+ENCOUNTER_COMPOSITION_ADVANTAGE
+```
+
+Only missing matrix cells should receive a new bounded simulation.
+
+This diagnostic does not formally start P6.
+Formal P6 Joint Run-Power Convergence still requires explicit user approval.
+
+Do not begin exact Tier1 Stage1→50 authoring until the Tier availability/unlock ladder is explicitly selected.
