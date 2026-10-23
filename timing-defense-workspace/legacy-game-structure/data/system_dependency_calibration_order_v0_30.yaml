@@ -16,6 +16,7 @@ authorityDocs:
   - 139_P5_STAGE48_SIEGER_PROTECTION_TIME_DIAGNOSTIC_V0_1.md
   - 140_P5_STAGE48_THREE_AXIS_COMPARISON_DECISION_GATE_V0_1.md
   - 141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md
+  - 142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md
   - ../CHARACTER_PROFILE_RADAR_V1.md
 
 principles:
@@ -57,7 +58,7 @@ workPackages:
   P4:
     status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
   P5:
-    status: ARMORED_HARDENED_FRONTLINE_AXIS_USER_DECISION_GATE
+    status: NEXT_STAGE48_REPAIR_DIRECTION_USER_DECISION_GATE
     structuralContract: USER_APPROVED_A2
     classIdentityGroup: DIRECTIONALLY_CLOSED
     productionAuthority: false
@@ -101,10 +102,12 @@ workPackages:
           - proxy originally isolated Knight penetration
           - repeated proxy created Mage/Tank threshold pressure
           - pressure source was proxy durability rather than clean SIEGER role uptime
+
       simpleRealMonsterSubstitution:
         brute: INSUFFICIENT
         shield: INSUFFICIENT
         bruteShieldMix: INSUFFICIENT
+
       realMonsterProtectionTime:
         source: 139_P5_STAGE48_SIEGER_PROTECTION_TIME_DIAGNOSTIC_V0_1.md
         spawnX: 0.92
@@ -112,12 +115,17 @@ workPackages:
         diagnosticSiegeThresholdX: 0.38
         derivedStraightTravelSeconds: 12.0
         finding: INSUFFICIENT_PROTECTED_TRAVEL_TIME
+
       armoredDesignIntent:
+        explorationDirectionApprovedByUser: true
         purposes:
           - reduce late Mage/Archer ordinary-volume instant erasure
           - buy meaningful protected SIEGER role time
         productionMonsterApproved: false
         eliteSystemApproved: false
+        exactStatsApproved: false
+        exactPacketApproved: false
+
       lowDensityResult:
         source: 141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md
         temporalOverSeparation: COUNTERPRODUCTIVE
@@ -130,16 +138,41 @@ workPackages:
         knightLifetimeSpatialSeconds: 4.575
         mageTwoBodySpatialLifetimeSeconds: 7.2
         mageChainChronologyRelevant: true
+
       hybridFidelity:
         invalidRunId: 39960854218
         defect: REBUILT_SIMULATE_DROPPED_FIXED_STAGE_SCHEDULE_HOOK
         fixedRunId: 39961261476
         expectedActualScheduleMatch: PASS
-      correctedStage48Hybrid:
-        armored3SpatialPlusStandoff082AllFiveFire: true
+
+      userFodderHypothesis:
+        source: 142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md
+        status: DIAGNOSTICALLY_VALID_CHRONOLOGY_AXIS
+        chronologyRunId: 39963808641
+        phaseRobustnessRunId: 39964004587
+        findings:
+          - late_grunt2_delays_mage_first_damage_and_extends_sieger_life
+          - grunt3_not_materially_better_than_grunt2_in_tested_band
+          - fast_fragile_body_first_often_consumed_too_early
+          - durable_first_plus_trailing_grunt_can_approximate_two_durable_bodies
+          - early_fodder_can_shift_mage_heavy_phase_and_regress
+        invariant: FODDER_TYPE_ORDER_ARRIVAL_PHASE_AND_SPATIAL_DENSITY_ARE_CAUSAL
+
+      reducedArmoredCrossClass:
+        runId: 39964154140
+        currentCleanDiagnosticCenter: THREE_SPATIAL_ARMORED_DIAGNOSTIC_BODIES_PLUS_TWO_GRUNT_PLUS_SIEGER
         adopted: false
+        twoArmoredFinding: ROGUE_ARCHER_PROTECTION_DEGRADES
+        oneArmoredFinding: CLASS_SKEW_TOO_HIGH
+        realBruteGruntOnly: INSUFFICIENT_CURRENT_REPLACEMENT
+
+      supporterMix:
+        runId: 39964353573
+        classification: SECONDARY_TRAVEL_AID_NOT_PRIMARY_SOLUTION
+        phaseInteractionWatch: true
+
       globalStandoffReplay:
-        runId: 39961496878
+        largeReplayRunId: 39961496878
         x038:
           settledThrough49: 20
           caseCount: 20
@@ -155,44 +188,47 @@ workPackages:
           caseCount: 20
           buried: 12
           classification: CROSS_STAGE_FAIL
-        primaryConclusion: GLOBAL_STANDOFF_ADVANCEMENT_REJECTED_AS_CURRENT_REPAIR
+
+      moderateStandoffScreen:
+        runId: 39964650488
+        profile: BALANCED
+        x050: ALL_SURVIVE_ALL_ZERO_STAGE48_SHOTS
+        x055: ALL_SURVIVE_ALL_ZERO_STAGE48_SHOTS
+        x060: ALL_SURVIVE_ARCHER_ONLY_STAGE48_SHOT
+        x065: ALL_SURVIVE_ARCHER_ONLY_STAGE48_SHOT
+        x070: ALL_SURVIVE_KNIGHT_ARCHER_STAGE48_SHOT_ONLY_RESERVE_SEVERE
+
+      standoffBoundaryScreen:
+        runId: 39964922669
+        profile: BALANCED
+        x072: ARCHER_STAGE49_BURIED_MAGE_TANK_STAGE48_ZERO
+        x074: ARCHER_STAGE49_BURIED_MAGE_TANK_STAGE48_ZERO
+        x076: ALL_FIVE_STAGE48_FIRE_BUT_ARCHER_STAGE49_BURIED_TANK_RESERVE_SEVERE
+        primaryConclusion: NO_OBSERVED_GLOBAL_THRESHOLD_SATISFIES_ALL_CLASS_STAGE48_ROLE_AND_CURRENT_STAGE46_49_SURVIVAL_RESERVE
         current038Frozen: false
+        globalStandoffPrimaryRepairStatus: STRONGLY_DISFAVORED_CURRENT_EVIDENCE
 
-    currentRecommendedAxis:
-      name: LIMITED_ARMORED_HARDENED_FRONTLINE
-      status: RECOMMENDED_FOR_EXPLORATION_AWAITING_USER_APPROVAL
-      means:
-        - explore limited hardened frontline envelope
-        - use 2_to_3_body_low_spatial_density_as_search_region
-        - jointly_measure_late_volume_erasure_and_sieger_protection
-      doesNotMean:
-        - approve_old_proxy_as_monster
-        - approve_hp1600_armor055
-        - approve_exact_count_or_timing
-        - approve_tenth_ordinary_monster
-        - approve_elite_system
-        - freeze_sieger_standoff
-        - authorize_production
-
-    deferredMechanicGate:
-      status: NOT_OPENED_YET
+    currentDecisionGate:
+      source: 142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md
+      awaitingUserDecision: true
+      recommendedOption: A
       options:
-        - resistance
-        - protective_buff_or_aura
-        - elite_or_hardened_state
-        - other_skill_like_monster_mechanic
-      openOnlyIf: SIMPLE_ARMORED_FRONTLINE_AXIS_REMAINS_INSUFFICIENT_AND_USER_APPROVES
+        A: KEEP_GLOBAL_SIEGER_UNCHANGED_FOR_NOW_CONTINUE_ARMORED_PLUS_GRUNT_CHRONOLOGY
+        B: STAGE48_SPECIFIC_SIEGER_SETUP_OR_MECHANIC
+        C: RELAX_STAGE48_INTENT_DEFER_GUARANTEED_SIEGER_FIRE_TO_STAGE49
+        D: ESCALATE_TO_RESISTANCE_AURA_ELITE_OR_OTHER_PROTECTIVE_MECHANIC
+      adoptedOption: null
 
-    nextSlicesIfUserApproves:
-      - DEFINE_DIAGNOSTIC_HARDENED_FRONTLINE_ENVELOPE_NOT_PRODUCTION_MONSTER
-      - KEEP_GLOBAL_SIEGER_BEHAVIOR_UNCHANGED_FOR_NOW
-      - TEST_NARROW_LESS_EXTREME_DURABILITY_MITIGATION_RANGE
-      - TEST_2_TO_3_BODY_LOW_SPATIAL_DENSITY_PLACEMENTS_NEAR_SIEGER_ARRIVAL
-      - MEASURE_MAGE_ARCHER_VOLUME_ERASURE_TIME
-      - MEASURE_SIEGER_PROTECTED_TIME_DEATH_X_ROLE_UPTIME
-      - CHECK_KNIGHT_ROGUE_TANK_IDENTITY_BREAKPOINTS
-      - REPLAY_STAGE46_49_STAGE_SETTLED_AFTER_PROMISING_STAGE48_PACKET
-      - PREPARE_NEW_USER_GATE_BEFORE_ANY_BUFF_RESISTANCE_OR_ELITE_MECHANIC
+    recommendedOptionAIfApproved:
+      - keep_global_sieger_behavior_unchanged_for_now
+      - preserve_right_edge_spawn_and_stage_settled
+      - continue_limited_armored_hardened_frontline_axis
+      - use_grunt_like_cheap_target_layer_as_chronology_axis
+      - jointly_search_order_arrival_phase_spatial_density_and_travel_budget
+      - reduce_dependence_on_extreme_proxy_before_exact_stat_selection
+      - preserve_all_class_identity_guards
+      - replay_stage46_49_after_promising_stage48_packet
+      - stop_for_user_approval_before_exact_packet_monster_or_numeric_adoption
 
   P6:
     status: BLOCKED_PENDING_P5
@@ -201,15 +237,16 @@ workPackages:
 
 currentBoundary:
   activePackage: P5
-  next: USER_DECISION_ON_LIMITED_ARMORED_HARDENED_FRONTLINE_EXPLORATION_AXIS
+  next: USER_DECISION_ON_NEXT_STAGE48_REPAIR_DIRECTION_A_B_C_D
   nextMode: DECISION_GATE_NO_ADOPTION_BEFORE_APPROVAL
   awaitingUserDecision: true
   userApprovalRequiredBefore:
-    - ADOPTING_ARMORED_HARDENED_FRONTLINE_AS_WORKING_EXPLORATION_DIRECTION
+    - SELECTING_NEXT_STAGE48_REPAIR_DIRECTION
     - ADOPTING_NEW_STAGE48_PACKET
     - APPROVING_NEW_MONSTER_OR_ELITE_OR_HARDENED_STATE
     - OPENING_BUFF_RESISTANCE_SKILL_LIKE_MONSTER_MECHANIC_AS_DESIGN_DIRECTION
     - CHANGING_SIEGER_STANDOFF_OR_WINDUP_AS_WORKING_VALUE
+    - CHANGING_STAGE48_INTENT_TO_DEFER_SIEGER_FIRE
     - FREEZING_TANK_DAMAGE_COEFFICIENT
     - CHANGING_CLASS_MONSTER_SHOP_EXP_NUMERICS
     - CHANGING_APPROVED_STRUCTURAL_CONTRACT
