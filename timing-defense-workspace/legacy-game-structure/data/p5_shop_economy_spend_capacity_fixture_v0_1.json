@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "p5-shop-economy-spend-capacity-v0.1",
+  "status": "ECONOMY_ONLY_PREFLIGHT_NO_PRODUCTION_AUTHORITY",
+  "fullShopReferenceCost": 16350,
+  "rankBaseCosts": [40, 65, 100, 145, 200, 265, 340, 425, 520, 625],
+  "categoryMultipliers": {
+    "atk": 1.0,
+    "crit": 1.1,
+    "critdmg": 1.0,
+    "fort": 0.9,
+    "def": 1.1,
+    "knock": 0.9
+  },
+  "spendCapacityRatios": [0.45, 0.50, 0.55],
+  "centerKillShareWalletPerturbationRatios": [0.47, 0.50, 0.53],
+  "stageIncomeWeight": {
+    "kind": "linear-relative-shape-only",
+    "formula": "55 + 12 * stage",
+    "firstStage": 1,
+    "lastShopStage": 49
+  },
+  "snapshotStages": [10, 20, 30, 40, 45, 49],
+  "policies": {
+    "ATTACK_HEAVY": ["atk", "critdmg", "crit", "knock", "fort", "def"],
+    "CRIT_HEAVY": ["crit", "critdmg", "atk", "knock", "fort", "def"],
+    "DEFENSE_HEAVY": ["fort", "def", "knock", "atk", "crit", "critdmg"],
+    "BALANCED": "lowest-current-rank-then-lowest-next-cost",
+    "SAVE_DELAY": {
+      "spendStartStage": 20,
+      "then": "BALANCED"
+    },
+    "ROLE_AWARE": {
+      "knight": ["knock", "atk", "fort", "def", "crit", "critdmg"],
+      "rogue": ["atk", "crit", "critdmg", "knock", "fort", "def"],
+      "tank": ["knock", "def", "fort", "atk", "crit", "critdmg"],
+      "archer": ["atk", "critdmg", "crit", "knock", "fort", "def"],
+      "mage": ["atk", "crit", "critdmg", "fort", "knock", "def"]
+    }
+  },
+  "notes": [
+    "Legacy costs are normalized sensitivity units only.",
+    "No coin denomination, reward amount, rank cap, stat effect or player-count scaling is production-frozen.",
+    "ROLE_AWARE priorities are diagnostic heuristics, not recommended player builds.",
+    "CRIT combat value cannot be inferred from rank arithmetic alone because attack-template crit policies remain effect-specific."
+  ]
+}
