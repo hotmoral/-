@@ -1,0 +1,56 @@
+{
+  "version": "p4d2-stage48-49-grammar-reset-proxy-v0.1",
+  "status": "STATIC_RESET_PROXY_NOT_DYNAMIC_STAGE_SIMULATION_NOT_PRODUCTION_FROZEN",
+  "purpose": "Cheap structural check that rotating late-band encounter grammars can expose different Lv31 class strengths/weaknesses before a dynamic repeated-miss probe.",
+  "boundary": [
+    "One successful Lv31 P×P final is applied to a representative pressure snapshot.",
+    "This is not exact Stage48/49 authoring, not a clear-rate model, and not a replacement for the temporal probe.",
+    "Tank control value is underrepresented because the proxy reports immediate kill/remnant state rather than future time gained by knockback/barrier.",
+    "SPLITTER child chronology is not expanded here; it remains a targeted dynamic watch."
+  ],
+  "workingCenters": {
+    "Knight": {"secondWaveCoefficient": 1.0},
+    "Rogue": {"daggers": 16, "perDaggerCoefficient": 0.45},
+    "Tank": {"shockwaveCoefficient": 0.75, "knockbackMultiplier": 2.5},
+    "Archer": {"perTargetCoefficient": 2.3, "width": "MID_ADJACENT_DIAGNOSTIC"},
+    "Mage": {"stageCoefficient": 0.75, "radiusMultiplier": 1.25}
+  },
+  "results": {
+    "LINE_ESCORT": {
+      "Knight": {"kills": 8, "survivors": 0},
+      "Rogue": {"kills": 7, "survivors": 1},
+      "Tank": {"kills": 5, "survivors": 3},
+      "Archer": {"kills": 8, "survivors": 0},
+      "Mage": {"kills": 4, "survivors": 4}
+    },
+    "CLUSTER_CASCADE": {
+      "Knight": {"kills": 8, "survivors": 1},
+      "Rogue": {"kills": 9, "survivors": 0},
+      "Tank": {"kills": 9, "survivors": 0},
+      "Archer": {"kills": 6, "survivors": 3},
+      "Mage": {"kills": 9, "survivors": 0}
+    },
+    "FRONTLINE_BREACH": {
+      "Knight": {"kills": 7, "survivors": 1},
+      "Rogue": {"kills": 5, "survivors": 3},
+      "Tank": {"kills": 4, "survivors": 4, "note": "control/knockback value not represented by kill count"},
+      "Archer": {"kills": 5, "survivors": 3},
+      "Mage": {"kills": 7, "survivors": 1}
+    },
+    "DURABLE_SCATTER": {
+      "Knight": {"kills": 7, "survivors": 1},
+      "Rogue": {"kills": 6, "survivors": 2},
+      "Tank": {"kills": 3, "survivors": 5, "note": "survivors are displaced/controlled in real temporal model"},
+      "Archer": {"kills": 3, "survivors": 5},
+      "Mage": {"kills": 2, "survivors": 6}
+    }
+  },
+  "interpretation": {
+    "LINE_ESCORT": "Archer/Knight premium reset; Mage must rely on placement/timing rather than generic full-screen clear.",
+    "CLUSTER_CASCADE": "Mage premium reset; Rogue projectile storm and Tank global control also perform strongly; Archer leaves off-line bodies.",
+    "FRONTLINE_BREACH": "Knight/Mage immediate damage performs strongly; Tank value is primarily future control; Rogue/Archer do not erase all durable bodies.",
+    "DURABLE_SCATTER": "All classes retain pressure; Archer/Mage cannot solve wide scatter through their preferred geometry, while Rogue/Knight remove more but not necessarily all future pressure."
+  },
+  "conclusion": "ROTATING_GRAMMAR_CAN_DISTRIBUTE_CLASS_VULNERABILITY",
+  "next": "dynamic repeated-miss rotation probe before any Stage48-49 numeric freeze"
+}
