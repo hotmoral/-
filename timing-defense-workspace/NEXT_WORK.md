@@ -1,6 +1,6 @@
 # Timing Defense — Next Work Boundary
 
-Updated: 2026-10-23 KST
+Updated: 2026-10-24 KST
 
 ## Production checkpoint
 - branch `timing-defense-cloudflare-do-poc`
@@ -15,163 +15,158 @@ Before local work:
 3. read `SESSION_HANDOFF.md`;
 4. read `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md`;
 5. read `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`;
-6. read `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`;
-7. read `legacy-game-structure/143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md`;
-8. read **latest** `legacy-game-structure/144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md`;
-9. read active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_32.yaml`;
-10. only then open exact runner/source files required for the next bounded unit.
+6. read `legacy-game-structure/02_TIER_SYSTEM.md` and `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md` when Tier availability/authoring matters;
+7. read `legacy-game-structure/144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md`;
+8. read `legacy-game-structure/145_P5_P6_STAGE46_47_ARMORED_MIDWAVE_REPLACEMENT_DIAGNOSTIC_V0_1.md`;
+9. read **latest** `legacy-game-structure/146_P5_P6_ARMORED_PLACEMENT_AND_TIER_AUTHORING_BOUNDARY_V0_1.md`;
+10. read active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_33.yaml`;
+11. only then open exact evidence/source required for a missing matrix cell.
 
-Do not rerun closed P1/P2/P3/P4 or the full class-identity group merely because the chat restarted.
-Do not resume Stage48 micro-tuning before the current P6 transition decision is resolved.
+Do not rerun closed P1/P2/P3/P4, fidelity bridge, charge/combo sensitivity, or armored count/placement/band sweeps merely because the chat restarted.
 
 ---
 
-# ACTIVE BOUNDARY — P5→P6 TRANSITION GATE
+# ACTIVE BOUNDARY — ENCOUNTER-COMPOSITION CLASS-RESPONSE MATRIX
 
 ```text
-P5 A2 shop = USER APPROVED
-P5 class identity group = DIRECTIONALLY CLOSED
-P5 Stage48 armored/hardened exploration = USER APPROVED DIRECTION ONLY
-P5 cheap-target/fodder chronology = DIAGNOSTICALLY VALID
-P5 mastery reinterpretation = COMPLETE
-P5→P6 persistent-state fidelity bridge = EXACT PASS
-entry charge sensitivity = CLOSED AS PRIMARY CAUSE
-entry combo40 sensitivity = CLOSED AS PRIMARY CAUSE
-Stage48 local tuning = PAUSED
-P6 = USER DECISION GATE TO OPEN
+P5 fidelity bridge = COMPLETE
+entry charge/combo cause checks = CLOSED
+Stage46/47 armored count sensitivity = COMPLETE
+armored chronology sensitivity = COMPLETE
+armored band sensitivity = COMPLETE
+armored exact-coordinate microtuning = STOPPED
+Stage48 SIEGER local packet tuning = PAUSED
+CURRENT = build encounter-composition class-response matrix from existing evidence first
+P6 = NOT FORMALLY STARTED
+Tier1 exact 50-Stage authoring = NOT STARTED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
-No exact class, monster, shop, EXP, P×P, SIEGER, Stage46/47 or Stage48 value is approved here.
+No exact class, monster, shop, EXP, P×P, SIEGER, Stage46/47, Stage48, Tier1 roster or Tier unlock value is approved.
 
 ---
 
-# What was just closed
+# User guidance that must shape interpretation
 
-## 1. Persistent run-state fidelity no longer explains the skilled regression
-Bridge run `39971985538`, SHA256:
-`0e74da5456cf9ef8fe011bddfec98e6c8656f43789794fad35e5434508ef4333`
+The user considers the current late-segment central-skilled completion around the mid-40% range plausibly acceptable because the tested all-PERFECT path remains 100%.
 
-Included persistent SKILLED_V2 state, combo, charge, combo damage, N3, Lv31 packages, P5 shop, right-edge combat, STAGE_SETTLED and wall carry.
-
-All-PERFECT controls:
+Therefore:
 
 ```text
-20/20 through Stage49
+GLOBAL_SKILLED_CLEAR_RATE_INCREASE != CURRENT_DEFAULT_GOAL
 ```
 
-Central skilled:
+The current class split should first be interpreted through encounter composition/distribution.
 
-```text
-entry charge 0 -> 48/100
-entry charge 1 -> 45/100
-entry charge 2 -> 42/100
-entry charge 3 -> 44/100
-```
-
-Stage46 failure count = `23/100` for every entry charge.
-
-Across all charge states:
-
-```text
-Mage   72/80
-Archer 61/80
-Rogue  25/80
-Knight 20/80
-Tank    1/80
-```
-
-Conclusion:
-
-```text
-PERSISTENT_COMBO_CHARGE_REPAIR != RESOLUTION
-STAGE46_ENTRY_CHARGE_PHASE != PRIMARY_FAILURE_CAUSE
-```
-
-## 2. Stage46 entry combo does not explain it either
-Run `39972649909`, SHA256:
-`9f12213fca7c3ef963a82fbc267b5a2830a8f789d9c5a1a1eb7264dd00a832f1`
-
-```text
-entry combo 0  -> 48/100
-entry combo 40 -> 48/100
-```
-
-Failure histogram and class counts were identical.
-
-Conclusion:
-
-```text
-STAGE46_ENTRY_COMBO_BOUNDARY != PRIMARY_FAILURE_CAUSE
-```
-
-Therefore full Stage1→45 entry-state reconstruction is not required merely to explain away this current late-run class split. It remains later necessary for exact full-run progression/skill-reach authority.
+`45%` is not an exact target/freeze.
 
 ---
 
-# Current causal picture
+# Closed sparse-armored evidence
 
-The problem is now above Stage48 local authoring:
+Existing `ARMORED_DURABLE_PROXY` only; no new monster identity or scalar.
+
+## Count — run `39976475153`
 
 ```text
-SKILLED_V2 timing
--> realized P×P frequency
--> Lv31 final frequency
--> class-specific damage/control/wall protection
--> Stage46/47 pressure response
--> timing-event count / EXP feedback
--> shop leverage
--> carried wall state
+BASELINE       A18 M18 R6 K5 T1 = 48/100
+1 per Stage    A17 M17 R6 K5 T1 = 46/100
+2 per Stage    A13 M15 R4 K5 T1 = 38/100
 ```
 
-Previous factor isolation already showed reduced P×P/Lv31-final frequency is the dominant sensitivity. The persistent-state bridge confirmed this was not a Stage-boundary reset artifact.
+## Chronology — run `39978274698`
 
-Do not interpret this as authority to buff Tank/Knight/Rogue, nerf Mage/Archer, weaken Stage46, or increase P×P probability.
+```text
+EARLY  A16 M16 R6 K4 T1 = 43
+MID    A17 M17 R6 K5 T1 = 46
+LATE   A18 M16 R7 K5 T1 = 47
+```
 
----
+EARLY and MID both used band +2, so the difference is genuinely chronology-sensitive.
 
-# CURRENT USER DECISION REQUIRED
+## Band at MID — run `39978899281`
 
-## A — RECOMMENDED: formally enter P6
-Open **P6 Joint Run-Power Convergence** with a bounded Stage46–47 causal slice.
+```text
+band -2  A16 M17 R6 K4 T1 = 44
+band  0  A18 M17 R6 K5 T1 = 47
+band +2  A17 M17 R6 K5 T1 = 46
+```
 
-First slice must:
-1. preserve SKILLED_V2_CENTRAL;
-2. preserve P3 persistent state and STAGE_SETTLED;
-3. use paired deterministic seeds;
-4. compare explicit shop profiles rather than hide one shop assumption;
-5. bin/condition outcomes by realized P×P/Lv31-final frequency;
-6. separate four cause families: removal throughput, control, wall protection, encounter geometry;
-7. record timing-event count / EXP opportunity / skill-reach feedback;
-8. preserve class identity guards;
-9. keep Stage48 armored/fodder/SIEGER work parked until common late-run convergence improves;
-10. stop for user approval before changing exact numbers.
+All-PERFECT remained 5/5 classes through Stage49 in all tested variants.
 
-This is the recommended next package because P6 was explicitly designed for this coupled loop.
+Current diagnostic reference only:
 
-## B — continue Stage48 local tuning
-Not recommended. Stage46–47 already dominates skilled failure for several classes, so Stage48 optimization risks fitting a downstream packet to the wrong upstream power surface.
+```text
+one armored proxy + MID + band +2
+```
 
-## C — build full Stage1→45 first
-Higher scope. Needed later for exact entry-state/skill-reach distribution, but the charge0–3 and combo0/40 probes show it is not required to classify the immediate late-run failure cause.
-
-No option is adopted until the user explicitly approves the phase/work-boundary decision.
+Do not adopt it as Stage content and do not refine exact seconds/bands now.
 
 ---
 
-# If user approves A
+# Tier authoring guard — mandatory
 
-Proceed without another broad re-audit:
-1. recover live canonical state;
-2. use the admitted fidelity bridge as the late-run base;
-3. restrict first P6 execution to Stage46–47;
-4. create a causal decomposition matrix, not a wide numerical search;
-5. use current diagnostic values as references only;
-6. compare class × shop profile × paired seed × realized P×P band;
-7. attribute failure to throughput/control/wall/geometry before proposing any scalar;
-8. check event-count/EXP feedback;
-9. present a simple decision packet;
-10. obtain approval before exact balance changes.
+Current 9 ordinary monsters + proxy are a **mechanical diagnostic vocabulary**, not the final Tier1 roster.
+
+Active authority:
+- `02_TIER_SYSTEM.md`
+- `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`
+
+Direction:
+
+```text
+T1 starts with a limited subset
+-> higher Tier(s) introduce new monster archetypes
+-> returning monsters gain new formation/cadence/composition roles
+```
+
+The `09_TIER_LADDER_CANDIDATE_V0_1.md` all-nine-in-T1 proposal is a superseded legacy candidate.
+
+Exact Tier count and exact monster unlock ladder are still open.
+
+When real Tier1 Stage1→50 authoring starts:
+
+```text
+availability ladder first
+-> Tier identity/novelty
+-> 50-Stage macro flow
+-> exact encounter frequencies/compositions
+```
+
+Never copy the current Stage46→49 diagnostic fixture wholesale into Tier1.
+
+---
+
+# Next bounded unit
+
+Build an **encounter-composition class-response matrix** using existing accepted/diagnostic evidence before any new run.
+
+Rows / pressure families to cover first:
+1. FLOOD / high-density volume
+2. LINE / aligned penetration opportunity
+3. BULWARK / durable-frontline pressure
+4. CONTROL-SENSITIVE pressure (CHARGER / knock / wall management)
+5. PROTECTED SIEGE / backline screening
+6. chronology-sensitive Mage chain / late-live-target exposure
+
+Columns:
+- Knight
+- Rogue
+- Tank
+- Archer
+- Mage
+
+For each cell classify:
+- advantage / neutral / disadvantage;
+- causal mechanic;
+- evidence source;
+- confidence / missing evidence;
+- whether the effect is class identity or possible numerical mismatch.
+
+Then:
+- identify only genuinely missing cells;
+- run the smallest deterministic probe needed for those cells;
+- do **not** alter class/monster values during matrix construction.
 
 ---
 
@@ -188,10 +183,13 @@ SKILLED_V2_CENTRAL IS NOT TO BE SILENTLY WEAKENED
 SURVIVAL != CLEAR
 NO HARD CLASS LOCKOUT
 NO AUTOMATIC TANK BUFF
+NO AUTOMATIC MAGE/ARCHER NERF
 NO AUTOMATIC STAGE46 NERF
-NO MAGE/ARCHER NERF FROM THIS SLICE
-NO P×P PROBABILITY CHANGE TO MAKE CURRENT CONTENT FIT
-NO STAGE48 PACKET ADOPTION
-IMPORTANT NUMERIC/PHASE DECISIONS REQUIRE USER APPROVAL
+NO P×P PROBABILITY CHANGE TO MAKE CONTENT FIT
+NO ARMORED PROXY ADOPTION
+NO EXACT TIER1 ROSTER ASSUMPTION
+IMPORTANT NUMERIC/PHASE/CONTENT DECISIONS REQUIRE USER APPROVAL
 PRODUCTION UNCHANGED UNLESS EXPLICITLY AUTHORIZED
 ```
+
+Formal P6 entry still requires explicit user approval.
