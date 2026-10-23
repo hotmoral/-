@@ -1,0 +1,47 @@
+name: Timing Defense P5-P6 Fidelity Bridge temp
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace-temp-p5p6-fidelity
+    paths:
+      - timing-defense-workspace/tools/run_p5_p6_fidelity_bridge_stage46_49_temp_v0_1.py
+      - .github/workflows/timing-defense-p5p6-fidelity-bridge-temp.yml
+
+permissions:
+  contents: read
+
+jobs:
+  p5p6-fidelity-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: timing-defense-workspace-temp-p5p6-fidelity
+          fetch-depth: 1
+      - name: Install YAML dependency
+        run: python3 -m pip install --quiet pyyaml
+      - name: Run twice and verify deterministic bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd timing-defense-workspace
+          python3 tools/run_p5_p6_fidelity_bridge_stage46_49_temp_v0_1.py > /tmp/run1.txt
+          cp p5_p6_fidelity_bridge_stage46_49_temp_v0_1.json /tmp/result1.json
+          python3 tools/run_p5_p6_fidelity_bridge_stage46_49_temp_v0_1.py > /tmp/run2.txt
+          cmp /tmp/result1.json p5_p6_fidelity_bridge_stage46_49_temp_v0_1.json
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          p=Path('p5_p6_fidelity_bridge_stage46_49_temp_v0_1.json')
+          d=json.loads(p.read_text())
+          a=d['aggregate']
+          compact={
+            'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
+            'byEntryCharge': a['byEntryCharge'],
+            'skilledOverall': a['skilledOverall'],
+            'allPerfect': a['allPerfect'],
+          }
+          print('P5P6_FIDELITY_BRIDGE='+json.dumps(compact,sort_keys=True))
+          PY
