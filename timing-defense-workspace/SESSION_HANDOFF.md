@@ -10,34 +10,30 @@ Read/check in this order:
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
 4. `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-5. `legacy-game-structure/data/system_dependency_calibration_order_v0_23.yaml`
+5. `legacy-game-structure/data/system_dependency_calibration_order_v0_24.yaml`
 6. `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
-7. `legacy-game-structure/117_P5_SPEND_CAPACITY_ENVELOPE_V0_1.md`
-8. `legacy-game-structure/118_P5_ECONOMY_ONLY_POLICY_PREFLIGHT_V0_1.md`
-9. `legacy-game-structure/119_P5_CLEAR_KILL_INCOME_MIX_SENSITIVITY_V0_1.md`
-10. `legacy-game-structure/121_P4D2_TANK_IRON_WALL_SIEGER_FIDELITY_CORRECTION_V0_1.md`
-11. `legacy-game-structure/122_P5_TANK_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
-12. `legacy-game-structure/123_P5_ALL_CLASS_SHOP_COMBAT_METHOD_FIDELITY_REVIEW_V0_1.md`
-13. `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
-14. `legacy-game-structure/125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md`
-15. `legacy-game-structure/126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md`
-16. `legacy-game-structure/data/p5_all_class_fixed_rank_shop_stage49_directional_summary_v0_1.json`
-17. `legacy-game-structure/data/p5_post_shop_stage49_entry_depth_fixture_v0_1.json`
-18. `legacy-game-structure/data/p5_post_shop_stage49_entry_depth_directional_summary_v0_1.json`
-19. `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_1.py`
-20. `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
-21. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py`
-22. `tools/run_p4d2_stage49_full_rotation_probe_v0_3.py`
-23. `legacy-game-structure/111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md`
-24. prior P4 exact admission docs109–110 only when replay provenance is needed
-25. current production/harness heads
+7. `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
+8. `legacy-game-structure/125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md`
+9. `legacy-game-structure/126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md` — spatial proof only
+10. `legacy-game-structure/127_P5_STAGE46_49_RIGHT_EDGE_TRAVEL_LEAD_PREFLIGHT_V0_1.md`
+11. `legacy-game-structure/128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md`
+12. `legacy-game-structure/data/p5_stage46_49_right_edge_lead_fixture_v0_1.json`
+13. `legacy-game-structure/data/p5_stage46_49_right_edge_lead_preflight_summary_v0_1.json`
+14. `legacy-game-structure/data/p5_stage46_49_right_edge_escorted_direction_fixture_v0_1.json`
+15. `tools/run_p5_stage46_49_right_edge_lead_preflight_v0_1.py`
+16. `tools/run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
+17. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py`
+18. `tools/run_p4d2_stage49_full_rotation_probe_v0_3.py`
+19. `legacy-game-structure/111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md`
+20. current production/harness heads
 
 Historical/supersession notes:
 - doc113 is superseded where conflicting with docs115/116;
 - doc114's `16350` full-shop figure is superseded by exact positive-JS-rounding `16360`;
-- v0.5 / Stage49 v0.2 remain historical exact replay evidence, but Tank SIEGER-specific numerics are superseded directionally by doc121 pending v0.6/v0.3 exact replay;
-- any text in docs120/122/earlier handoff implying approved Fortification reduces existing absolute damage deficit or has purchase-time repair wastage is superseded by doc125;
-- all-class KNOCK conclusions must respect doc123's kernel-coverage gap.
+- old Tank SIEGER-specific v0.5/v0.2 numerics are superseded directionally by doc121 pending v0.6/v0.3 exact replay;
+- any old Fortification wording implying prior absolute damage is healed is superseded by doc125;
+- doc126's row-level mid-field `spawnX` is a spatial-pressure proof only, not an implementation direction;
+- user clarified all actual enemies should continue to enter from the right side; no mid-field pop-in.
 
 Do not rerun closed P1/P2/P3/P4 wholesale solely because a new session starts.
 
@@ -73,12 +69,14 @@ P4 = PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
 P4 Tank Iron Wall/SIEGER correction = DIRECTIONAL PASS / EXACT V0.6/V0.3 PENDING
 P5 A2 structural contract = USER_APPROVED
 P5 economy-only preflight = DIRECTIONAL PASS
-P5 clear/kill source mix = 70/30 WORKING CENTER SUPPORTED / NOT FROZEN
+P5 clear/kill source mix = 70/30 WORKING CENTER / NOT FROZEN
 P5 five-class fixed-rank shop combat = DIRECTIONAL COMPLETE
-P5 cross-class KNOCK = DEFERRED_KERNEL_COVERAGE_GAP
+P5 KNOCK cross-class = DEFERRED_KERNEL_COVERAGE_GAP
 P5 Fortification deficit invariant = CONFIRMED
-P5 post-shop Stage49 entry-depth reconvergence = PROMISING DIRECTIONAL
-P5 = ACTIVE / EXACT REPLAY + STAGE46–48 POST-SHOP RECONVERGENCE NEXT
+P5 old Stage49 spawnX experiment = SPATIAL PRESSURE PROOF ONLY
+P5 right-edge travel lead preflight = COMPLETE DIRECTIONALLY
+P5 right-edge escorted Stage46-49 search = PROMISING DIRECTIONAL
+P5 = ACTIVE / PACKET CHRONOLOGY + SOURCE-PATCHED RIGHT-EDGE RUNNER NEXT
 P6 = BLOCKED_PENDING_P5
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -98,50 +96,25 @@ FORTIFICATION = max HP + matched current increase
 ATK/CRIT/CRITDMG/KNOCK personal
 FORTIFICATION/DEF purchases contribute to shared wall
 six categories retained
-NO_ROUTINE_FULL_SHOP_MAXOUT_BY_STAGE49
+NO_ROUTINE FULL-SHOP MAXOUT BY STAGE49
 ```
 
 No exact numerical value is frozen.
 
----
-
-# Economy working centers — NOT FROZEN
+Working centers remain analysis-only:
 
 ```text
 full-shop Rank10 reference = 16360
-spend capacity: 45% / 50% working center / 55%
-income source: 80/20 / 70/30 working center / 60/40
+spend capacity = 45% / 50% center / 55%
+income source = 80/20 / 70/30 center / 60/40
+cross-class ATK/FORT/DEF diagnostic magnitude = 30/40/50%, center40
 ```
-
-CENTER50 + 70/30 keeps moderate ±20% relative kill-share wallet variation around ~47%..53% full-shop capacity.
-No tested economy-only policy maxed all six tracks.
-
----
-
-# Tank fidelity correction
-
-Tank Lv11 Iron Wall is shared-wall incoming ×0.90 and has no SIEGER exception.
-
-Corrected directional no-shop Stage49 Tank:
-
-```text
-all success wall2000
-one miss wall2000
-two-miss minimum1732.5
-all-finals-missed burial34.700s
-first burial LINE6 / CLUSTER6 / FRONTLINE5 / DURABLE5 / TIME_BUDGET5
-```
-
-P4 structural closure remains intact.
-Exact committed v0.6 / Stage49 v0.3 replay is pending.
 
 ---
 
 # Cross-class shop-method boundary
 
-Legacy exact formulas show ordinary push behavior for all classes, but the current simplified P4 late kernel models explicit `push()` only in Knight/Tank paths.
-
-Therefore first five-class P5 shop authority uses:
+First current cross-class lane:
 
 ```text
 ATK
@@ -156,136 +129,144 @@ KNOCKBACK -> dedicated parity/inheritance lane
 CRIT / CRITDMG -> attack-template policy-correct lane
 ```
 
-Do not interpret zero modeled KNOCK value for Rogue/Archer/Mage as product truth.
+Do not interpret missing Rogue/Archer/Mage push in the simplified P4 late kernel as product truth.
 
 ---
 
-# Fortification invariant — important correction
-
-Approved formula:
+# Fortification invariant
 
 ```text
 max += delta
 current += delta
 ```
 
-For absolute damage deficit `D=max-current`:
+Existing absolute damage deficit remains unchanged.
+Fortification adds usable reserve but does not heal old attrition.
+
+---
+
+# User clarification: actual spawn behavior
+
+The user asked whether the previous `closer placement` meant earlier right-edge appearance or sudden mid-field spawn.
+
+Canonical answer:
 
 ```text
-D'=(max+delta)-(current+delta)=D
+NO MID-FIELD POP-IN.
+Enemies continue to appear from the normal right edge.
 ```
+
+Earlier pressure must be authored through schedule timing and escort relationships.
+
+Doc126 is retained only because it proved that deeper role pressure could repair the post-shop Stage49 margin.
+
+---
+
+# Right-edge travel preflight
+
+Equivalent untouched travel from normal x=.92:
+
+```text
+old SIEGER x=.48 -> ~9.78s lead
+old durable x=.65 -> 6.75s lead
+```
+
+But a naked SIEGER cannot simply be moved 8–10s earlier.
+At current shop diagnostic power it often dies in 2–3 ordinary roots, while those lead windows expose it to many more roots.
 
 Therefore:
-- Fortification adds immediately usable durability;
-- it does not heal old accumulated absolute damage;
-- Fort purchase timing alone does not create `repair wastage` if incoming-damage history is otherwise identical;
-- order still matters if the wall dies before a later purchase;
-- ATK/DEF timing matters because it changes future incoming damage history.
 
-The fixed-rank Stage49 lane is optimistic because it starts with pre-Stage49 deficit0.
+```text
+MIDFIELD_POP_IN = REJECTED
+NAKED_EARLY_SIEGER = REJECTED
+ESCORT_OR_FRONTMOST_PROTECTION = REQUIRED
+```
 
 ---
 
-# Five-class fixed-rank result
+# Escorted Stage46–49 search
 
-No-shop reconstruction reproduced current class baselines before shop effects.
-
-At 30/40/50 legacy-relative ATK/FORT/DEF screens:
-- Knight/Rogue/Tank remain mastery-sensitive;
-- Archer/Mage become too forgiving in the original Stage49 fixture;
-- Defense-heavy is not universally dominant;
-- the major Archer/Mage driver is ATK changing kill/frontmost/SIEGER chronology.
-
-Archer low-order breakpoint watch:
+Best current gameplay direction:
 
 ```text
-ordinary PERFECT before shop = 220
-FLYER diagnostic HP = 225
-rank8 ATK at legacy-scale .03 -> +1.92% -> burial57.025s
-rank8 ATK at legacy-scale .04 -> +2.56% -> one-hit threshold crossed -> survives wall765 in ATK-only stress
+Stage46 = power revelation / relatively forgiving
+Stage47 = transition / recovery room
+Stage48 = first protected role pulse
+Stage49 = stronger escorted second pulse
 ```
 
-This is encounter brittleness, not an instruction to raise FLYER HP.
-
----
-
-# Post-shop Stage49 reconvergence
-
-Authoring-first role-entry timing/depth was tested before scalar inflation.
-
-Diagnostic search:
+First diagnostic cadence family:
 
 ```text
-TIME_BUDGET SIEGER x ~= .45..55
-DURABLE/TIME_BUDGET durable x ~= .60..70
+46 ~5.8s
+47 ~5.3s
+48 ~4.9s
+49 ~4.6s
 ```
 
-Promising center:
+Not production values.
+
+Directional search lessons:
+
+1. Too many durable front bodies protect SIEGER but can make defense-heavy Knight unfairly weak.
+2. Weak escort trains alone can be cleared too quickly by attack-heavy Archer.
+3. The remaining problem is relative packet chronology: which body is frontmost when the SIEGER reaches its role window.
+4. Successful mastery does not require shop/Lv31 nerfs to remain survivable.
+5. Repeated final failure can accumulate severe damage across Stage48–49, but attack-heavy Archer still has some overly safe chronology paths.
+
+High watches:
 
 ```text
-SIEGER x ~= .48
-durable x ~= .65
+P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH
+P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH
+P5_RIGHT_EDGE_ESCORT_PACKET_CHRONOLOGY_WATCH
 ```
 
-These are **not production coordinates**.
-
-At 40% ATK/FORT/DEF across ATTACK_HEAVY / DEFENSE_HEAVY / BALANCED / ROLE_AWARE and all five classes:
+Repair order:
 
 ```text
-all-success: 20/20 survive
-one missed final: 0 burials
-two consecutive missed finals: 0 burials
+relative spawn timing
+-> frontmost escort composition
+-> band/line alignment
+-> first/second pulse spacing
+-> durability sensitivity
+-> class/shop coefficients last
 ```
 
-All-finals-missed:
-- Knight/Rogue/Tank bury across policies;
-- Archer/Mage bury or carry severe/non-healthy Stage50 reserve;
-- class mistake budgets remain asymmetric.
-
-Thus the current repair direction is:
-
-```text
-AUTHORING ENTRY DEPTH / ROLE TIMING FIRST
-NOT global shop nerf
-NOT hidden per-class shop compensation
-NOT Lv31 power nerf
-```
+Do NOT jump to:
+- hidden Archer penalty;
+- global shop nerf;
+- Lv31 nerf;
+- blanket monster HP inflation.
 
 ---
 
 # Exact replay authority boundary
 
-Directional reconstruction is strong but current committed runners have not yet received exact checkout execution/admission.
+Current right-edge combat work is directional evidence only.
 
-Pending:
+Pending exact/source-patched authority:
 - `run_p4d2_stage48_49_dynamic_grammar_probe_v0_6.py`
 - `run_p4d2_stage49_full_rotation_probe_v0_3.py`
 - `run_p5_all_class_fixed_rank_shop_stage49_probe_v0_1.py`
 - `run_p5_all_class_fixed_rank_shop_stage49_probe_v0_2.py`
+- future Stage46–49 source-patched `spawnLeadSeconds` runner
 
-Do not promote x=.48/.65 or common40% to freeze/production authority.
+Do not freeze current cadence, lead seconds, packet composition or shop scale.
 
 ---
 
 # Exact next boundary
 
-1. exact committed replay when a valid checkout execution lane exists;
-2. carry shop power backward into Stage46–48 and test authoring reconvergence across the full Lv31 mastery window;
-3. model ATK/DEF acquisition timing and inherited wall deficit; do not build a fake Fort repair-wastage model;
-4. resolve KNOCK cross-class inheritance/parity;
-5. resolve CRIT/CRITDMG template policies;
-6. re-run purchase-policy combat feedback and P4 EXP/skill-reach feedback;
-7. final multiplayer normalization at P10;
-8. final EXP convergence at P10R.
+1. create source-patched Stage46–49 runner with normal right-edge spawn and schedule-only `spawnLeadSeconds`;
+2. carry wall HP/deficit through Stage46→49;
+3. refine Stage49 packet specifically against attack-heavy Archer while preserving defense-heavy Knight successful viability;
+4. preserve one/two-miss recovery checks;
+5. exact-admit pending runners when a valid checkout execution lane exists;
+6. then KNOCK parity/inheritance;
+7. then CRIT/CRITDMG policy;
+8. then purchase-policy combat feedback and P4 EXP/Lv reach feedback;
+9. final multiplayer P10; final EXP P10R.
 
-Do not yet freeze:
-- 50% spend capacity;
-- 70/30 source mix;
-- 40% common shop scale;
-- x=.48/.65 entry depths;
-- exact coin/reward/price/rank/effect values;
-- generic DR cap;
-- KNOCK inheritance;
-- universal CRIT policy;
-- final EXP;
-- production implementation.
+No user decision is currently pending.
+No production change is authorized.
