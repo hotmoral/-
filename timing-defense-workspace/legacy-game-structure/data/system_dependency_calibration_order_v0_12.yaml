@@ -23,6 +23,7 @@ principles:
   - material_decisions_require_user_approval
   - repair_encounter_grammar_before_hidden_class_corrections
   - preserve_recovered_lower_skill_cadence_effects_in_temporal_comparisons
+  - no_target_opportunities_do_not_bank_in_class_fairness_diagnostics
   - do_not_invent_symmetric_cadence_modifiers_for_other_classes
   - final_skill_power_fantasy_must_not_be_preemptively_nerfed_without_evidence
   - archer_lv31_huge_arrow_has_wider_real_gameplay_corridor
@@ -34,7 +35,7 @@ workPackages:
   P3: {name: TEN_STAGE_PERSISTENT_RUN_KERNEL, status: P3_STRUCTURAL_PASS_COMPLETE}
   P4:
     name: FULL_PLAYER_POWER_SPINE_CANDIDATE
-    status: P4D2_TEMPORAL_CADENCE_FIDELITY_CORRECTION_ACTIVE_EXP_FINALIZATION_DEFERRED
+    status: P4D2_CADENCE_AWARE_DYNAMIC_RUNNER_READY_EXECUTION_PENDING_EXP_FINALIZATION_DEFERRED
     dependsOn: [P3]
     internalGates:
       P4A: {status: PASS_COMPLETE_MARKER_ONLY}
@@ -53,7 +54,7 @@ workPackages:
           comboPxpMasteryPressure: true
       P4D2:
         name: LV31_BOUNDED_MASTERY_POWER_AND_PRESSURE_FEEDBACK
-        status: ACTIVE_TEMPORAL_CADENCE_FIDELITY_CORRECTION_BEFORE_DYNAMIC_GRAMMAR_ADMISSION
+        status: ACTIVE_CADENCE_AWARE_DYNAMIC_GRAMMAR_EXECUTION_PENDING
         established:
           candidatePressureEnvelopeFound: true
           stage46ExistenceClaimStillAdmitted: true
@@ -69,12 +70,16 @@ workPackages:
           rogueSensitivityIntervalSeconds: 1.047
           rogueSensitivityIsProductionFreeze: false
           cadenceRule: LEGACY_RECOVERY_DELTA_SENSITIVITY_NOT_BLANKET_20_PERCENT_WHOLE_CYCLE
+          noTargetClockRule: NO_TARGET_OPPORTUNITIES_DO_NOT_BANK
+          reacquisitionDelayFrozen: false
           grammarMissSelection: MAP_BY_HEAVY_TIMESTAMP_TO_ACTIVE_GRAMMAR
           hardcodedHeavyIndexToGrammarMappingAllowed: false
-          dynamicFixtureStatus: PREFLIGHT_INPUT_NOT_CLASS_FAIRNESS_ADMITTED
-          dynamicRunnerV01Status: COMMON_CADENCE_PREFLIGHT_ONLY
+          dynamicFixture: data/p4d2_stage48_49_dynamic_rotating_grammar_fixture_v0_1.json
+          dynamicRunnerV01Status: COMMON_CADENCE_PREFLIGHT_ONLY_NOT_ADMITTED
+          dynamicRunnerV02: ../../tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_2.py
+          dynamicRunnerV02Status: READY_FOR_DETERMINISTIC_EXECUTION
         mustStillMeasure:
-          - cadence_corrected_stage48_49_dynamic_rotating_grammar
+          - execute_cadence_corrected_stage48_49_dynamic_rotating_grammar_v02
           - grammar_aligned_one_miss_and_two_consecutive_miss
           - targeted_charger_windup_alignment
           - targeted_sieger_standoff_windup_reposition_alignment
@@ -104,6 +109,7 @@ workPackages:
       - PXP_COMBO_MAINTENANCE_MASTERY_PRESSURE
       - STAGE48_49_MISS_SEVERITY_CLASS_DIVERGENCE
       - P4D2_ROGUE_CADENCE_FIDELITY_WATCH
+      - P4D2_NO_TARGET_BANKING_ARTIFACT_WATCH
       - ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
     candidateOnlyNotFrozen:
       stage46Lv31PossessionPct: [97, 98, 99]
@@ -124,6 +130,7 @@ workPackages:
       - no_code_level_lv31_entry_lock
       - archer_lv31_corridor_wider_than_ordinary_lv26_but_still_straight_nonhoming
       - rogue_lv16_recovery_delta_must_not_be_silently_omitted_from_class_fairness_temporal_analysis
+      - no_target_action_opportunities_must_not_be_silently_banked
       - pure_per_turn_is_provisional_diagnostic_baseline_only
       - no_hidden_class_specific_balance_patch_before_encounter_grammar_review
       - no_final_exp_claim_before_P10R
@@ -152,7 +159,7 @@ currentBoundary:
   completedThrough: P3
   activePackage: P4
   activeInternal: P4D2
-  next: P4D2_TEMPORAL_CADENCE_FIDELITY_CORRECTION
-  nextMode: METHODOLOGY_FIDELITY_REPLAY_PRECHECK
+  next: P4D2_EXECUTE_CADENCE_AWARE_DYNAMIC_GRAMMAR_V02
+  nextMode: DETERMINISTIC_REPLAY_AND_CLASSIFICATION
   awaitingUserDecision: false
   productionChangesAuthorized: false
