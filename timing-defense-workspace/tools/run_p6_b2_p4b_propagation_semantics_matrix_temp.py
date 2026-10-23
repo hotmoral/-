@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, math, sys
+import json, sys
 from pathlib import Path
 import yaml
 
@@ -47,9 +47,9 @@ def build_recipe_maps(hist):
     recipes=materializer.materialize_all20(base,kin,[load_yaml(p) for p in OVERLAYS])
     maps={c:{} for c in CLASSES}
     for cls in CLASSES:
-        baseline={r['id']:static_probe.simulate(r,combat,cls,1) for r in recipes}
+        baseline={r['archetype']:static_probe.simulate(r,combat,cls,1) for r in recipes}
         for lv in ACTIVE:
-            raw={r['id']:static_probe.simulate(r,combat,cls,lv)/baseline[r['id']] for r in recipes}
+            raw={r['archetype']:static_probe.simulate(r,combat,cls,lv)/baseline[r['archetype']] for r in recipes}
             tr=hist['all20ActionRatioRanges'][cls][f'Lv{lv}']; med=float(hist['all20ActionRatioVsLv1Median'][cls][f'Lv{lv}'])
             maps[cls][lv]=rank_calibrate(raw,float(tr[0]),med,float(tr[1]))
     return maps
