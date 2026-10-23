@@ -1,0 +1,125 @@
+version: system-dependency-calibration-order-v0.18
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_17.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
+  - 85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md
+  - 110_P4D2_PROVISIONAL_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+  - 111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md
+  - 112_P5_RUN_COIN_SHOP_AUTHORITY_RECOVERY_V0_1.md
+  - 113_P5_RUN_COIN_SHOP_STRUCTURAL_PROPOSAL_V0_1.md
+
+principles:
+  - freeze_semantics_before_values
+  - isolate_then_integrate
+  - production_changes_require_explicit_freeze
+  - material_decisions_require_user_approval
+  - shop_feedback_must_recheck_exp_and_skill_reach
+  - final_exp_convergence_requires_p10r
+  - do_not_promote_legacy_shop_values_by_inertia
+  - avoid_last_hit_coin_class_snowball
+  - shared_wall_stats_must_use_p2_modifier_pipeline
+  - explicit_shop_repair_must_not_be_confused_with_stage_auto_heal
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {status: P3_STRUCTURAL_PASS_COMPLETE}
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    finalExpClaimAllowed: false
+    productionAuthority: false
+
+  P5:
+    name: RUN_COIN_SHOP_CANDIDATE
+    status: USER_DECISION_PENDING_STRUCTURAL_PACKAGE
+    dependsOn: [P4]
+    authorityRecovery:
+      status: COMPLETE
+      source: 112_P5_RUN_COIN_SHOP_AUTHORITY_RECOVERY_V0_1.md
+      stable:
+        runCoinExists: true
+        personalHumanWalletCandidateStrong: true
+        shopRanksPersistWithinAttempt: true
+        shopRanksResetNewAttempt: true
+        stageAutoHeal: false
+        sixCategoryPrototypeCoherent: true
+      legacyImplementedButNotFrozen:
+        - every_stage_shop_in_stage1_3_prototype
+        - killer_only_monster_coin
+        - all_human_stage_clear_bonus
+        - hp_purchase_max_plus_current
+        - summed_human_defense_ranks
+        - rank_cap_10
+        - legacy_cost_curve
+    decisionProposal:
+      source: 113_P5_RUN_COIN_SHOP_STRUCTURAL_PROPOSAL_V0_1.md
+      recommendedPackage: A
+      options:
+        A:
+          shopCadence: EVERY_STAGE_AVAILABLE_BUT_FAST_CONTINUE
+          coinOwnership: TEAM_DEATH_CREDIT_TO_EACH_ACTIVE_HUMAN_PERSONAL_WALLET
+          stageClearBonus: RETAIN_AS_CANDIDATE_SOURCE_VALUES_OPEN
+          wallHpSemantic: FORTIFICATION_MAX_PLUS_MATCHED_CURRENT_REPAIR
+          offenseControlOwnership: PERSONAL
+          wallHpDefenseOwnership: PERSONAL_PURCHASE_CONTRIBUTES_TO_SHARED_WALL
+        B:
+          description: LEGACY_KILLER_ONLY_BASELINE_NOT_RECOMMENDED
+        C:
+          description: CHECKPOINT_ONLY_SHOP_WITH_RECOMMENDED_ECONOMY_HP_SEMANTICS
+        D:
+          description: REQUEST_ALTERNATIVE
+      requiresUserDecision: true
+    unresolvedUntilDecision:
+      - shop_cadence_semantic
+      - monster_death_coin_ownership
+      - wall_hp_purchase_repair_semantic
+    valuesStillOpen:
+      - exact_coin_rewards
+      - exact_stage_clear_bonus
+      - exact_shop_cost_curve
+      - exact_rank_caps
+      - exact_stat_values_per_rank
+      - exact_generic_wall_dr_cap
+      - exact_shop_intermission_timer_ui
+    postApprovalAgents:
+      - ATTACK_HEAVY
+      - CRIT_HEAVY
+      - DEFENSE_HEAVY
+      - BALANCED
+      - SAVE_DELAY
+      - ROLE_AWARE
+    mandatoryFeedback:
+      - SHOP_SNOWBALL
+      - SHOP_TRIVIAL_DOMINANT_STRATEGY
+      - FORTIFICATION_ATTRITION_ERASURE
+      - DEFENSE_SHARED_SCALING_RUNAWAY
+      - COIN_INCOME_CLASS_DIVERGENCE
+      - SHOP_SKILL_REACH_DISTORTION
+      - recheck_p4_skill_reach
+    productionAuthority: false
+
+  P6: {status: BLOCKED_PENDING_P5, dependsOn: [P5]}
+  P7: {status: BLOCKED, dependsOn: [P6]}
+  P8: {status: BLOCKED, dependsOn: [P7]}
+  P9: {status: BLOCKED, dependsOn: [P8]}
+  P10: {status: BLOCKED, dependsOn: [P8]}
+  P10R:
+    status: BLOCKED_PENDING_P10
+    dependsOn: [P10]
+    requiresUserDecision: true
+    mandatoryPurpose: FINAL_EXP_AND_MULTIPLAYER_TIMEBASE_RECONVERGENCE
+
+freezePolicy:
+  numericalContentFreeze: {onlyAfter: P17}
+
+currentBoundary:
+  completedThrough: P4
+  activePackage: P5
+  next: P5_USER_DECISION_ON_PACKAGE_A_B_C_D
+  nextMode: MATERIAL_STRUCTURAL_DECISION_GATE
+  awaitingUserDecision: true
+  productionChangesAuthorized: false
