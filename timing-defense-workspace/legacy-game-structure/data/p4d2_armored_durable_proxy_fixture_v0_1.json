@@ -1,0 +1,235 @@
+{
+  "authorityBoundary": [
+    "ARMORED_DURABLE_PROXY is a diagnostic pressure proxy only; it is not an approved new monster.",
+    "Current Lv31 centers remain provisional and no production numbers freeze here.",
+    "The proxy combines the existing BRUTE high-HP axis with the SHIELD mitigation axis to test late durable pressure.",
+    "Knock resistance remains moderate so Tank control is still meaningful rather than hard-countered."
+  ],
+  "existingMonsterAnchors": {
+    "CHARGER": {
+      "armorMultiplier": 1.0,
+      "hp": 380,
+      "knockResist": 0.8
+    },
+    "RUNNER": {
+      "armorMultiplier": 1.0,
+      "hp": 165,
+      "knockResist": 1.0
+    },
+    "SHIELD": {
+      "armorMultiplier": 0.72,
+      "hp": 540,
+      "knockResist": 0.62
+    },
+    "SIEGER": {
+      "armorMultiplier": 1.0,
+      "hp": 520,
+      "knockResist": 0.55
+    },
+    "SUPPORTER": {
+      "armorMultiplier": 1.0,
+      "hp": 280,
+      "knockResist": 0.9
+    }
+  },
+  "formulas": {
+    "Archer": {
+      "armorIgnore": true,
+      "bandRadius": 1,
+      "perTargetRaw": 1518.0
+    },
+    "Knight": {
+      "corridorBandRadius": 1,
+      "maxTargetsPerWave": 4,
+      "root": 951.552,
+      "waves": [
+        1.0,
+        1.0
+      ]
+    },
+    "Mage": {
+      "bandRadius": 2,
+      "chainMax": 2,
+      "chainRaw": 251.99999999999997,
+      "directRaw": 720,
+      "stageRaw": 540.0,
+      "stages": 3,
+      "xRadius": 0.28350000000000003
+    },
+    "Rogue": {
+      "daggers": 16,
+      "perDaggerRaw": 270.0
+    },
+    "Tank": {
+      "criticalKnockDistance": 0.047,
+      "knockbackMultiplier": 2.5,
+      "shockwaveRaw": 450.0
+    }
+  },
+  "proxySensitivity": {
+    "armorMultiplier": [
+      0.65,
+      0.55,
+      0.5
+    ],
+    "hp": [
+      1400,
+      1600,
+      1800
+    ],
+    "knockResist": 0.65,
+    "speed": 0.04,
+    "wallDamage": 160
+  },
+  "scenarios": [
+    {
+      "id": "S1_SINGLE_DURABLE",
+      "mobs": [
+        {
+          "band": 0,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.28
+        }
+      ]
+    },
+    {
+      "id": "S2_CLUSTERED_3",
+      "mobs": [
+        {
+          "band": -1,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.25
+        },
+        {
+          "band": 0,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.31
+        },
+        {
+          "band": 1,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.37
+        }
+      ]
+    },
+    {
+      "id": "S3_DISTRIBUTED_3",
+      "mobs": [
+        {
+          "band": -2,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.25
+        },
+        {
+          "band": 0,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.35
+        },
+        {
+          "band": 2,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.58
+        }
+      ]
+    },
+    {
+      "id": "S4_SUPPORT_ESCORT",
+      "mobs": [
+        {
+          "band": -1,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.25
+        },
+        {
+          "band": 1,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.3
+        },
+        {
+          "band": 0,
+          "type": "SUPPORTER",
+          "x": 0.5
+        },
+        {
+          "band": -2,
+          "type": "RUNNER",
+          "x": 0.57
+        }
+      ]
+    },
+    {
+      "id": "S5_SIEGER_FORT",
+      "mobs": [
+        {
+          "band": -1,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.24
+        },
+        {
+          "band": 1,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.3
+        },
+        {
+          "band": 0,
+          "type": "SIEGER",
+          "x": 0.56
+        },
+        {
+          "band": 2,
+          "type": "SHIELD",
+          "x": 0.48
+        }
+      ]
+    },
+    {
+      "id": "S6_MIXED_DURABLE_ROLE",
+      "mobs": [
+        {
+          "band": -2,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.22
+        },
+        {
+          "band": 0,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.34
+        },
+        {
+          "band": 2,
+          "type": "ARMORED_DURABLE_PROXY",
+          "x": 0.56
+        },
+        {
+          "band": -1,
+          "type": "CHARGER",
+          "x": 0.4
+        },
+        {
+          "band": 1,
+          "type": "SUPPORTER",
+          "x": 0.5
+        },
+        {
+          "band": 0,
+          "type": "SIEGER",
+          "x": 0.68
+        },
+        {
+          "band": 2,
+          "type": "RUNNER",
+          "x": 0.28
+        }
+      ]
+    }
+  ],
+  "status": "BOUNDED_DIAGNOSTIC_PROXY_NOT_MONSTER_ROSTER_AUTHORITY",
+  "version": "p4d2-armored-durable-proxy-fixture-v0.1",
+  "workingCenter": {
+    "armorMultiplier": 0.55,
+    "hp": 1600,
+    "knockResist": 0.65,
+    "speed": 0.04,
+    "wallDamage": 160
+  }
+}
