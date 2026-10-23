@@ -85,10 +85,12 @@ def main():
     profile_name = "BALANCED"
     starts = v2.pre_stage48_states(base, temporal, direction, shop, integration, [profile_name], scale)
 
-    thresholds = [0.38, 0.50, 0.60, 0.70, 0.78]
+    # 0.38 is current diagnostic anchor; 0.78 was the prior broad-boundary point.
+    # 0.84/0.88/0.90 deliberately test whether all-class role uptime requires near-entry siege behavior.
+    thresholds = [0.38, 0.78, 0.84, 0.88, 0.90]
     original_sim = integ.SIMULATE
     out = {
-        "version": "p5-stage48-sieger-standoff-sensitivity-temp-v0.1",
+        "version": "p5-stage48-sieger-standoff-sensitivity-temp-v0.2",
         "authority": "TEMP_DIAGNOSTIC_ONLY_NO_ADOPTION_NO_FREEZE_NO_PRODUCTION_AUTHORITY",
         "fixed": {
             "spawnX": float(direction["globalRules"]["normalRightEdgeSpawnX"]),
