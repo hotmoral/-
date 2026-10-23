@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_band_geometry_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_overtake_handoff_temp.py
 
 permissions:
   contents: read
@@ -20,29 +20,29 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage48 SIEGER band-geometry diagnostic
+      - name: Run Stage48 real-monster overtake-handoff diagnostic
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_band_geometry_temp.py > /tmp/geometry.json
+          python3 tools/run_p5_stage48_overtake_handoff_temp.py > /tmp/handoff.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_band_geometry_temp.json').read_text())
+          d=json.loads(Path('p5_stage48_overtake_handoff_temp.json').read_text())
           slim=[]
-          for r in d['rows']:
-              slim.append({
-                  'variant':r['variant'],'class':r['class'],
-                  'escortBands':r['escortBands'],'siegerBand':r['siegerBand'],
-                  'windups':r['windups'],'shots':r['shots'],
-                  'damagedBeforePrimary':r['damagedBeforePrimary'],
-                  'diedBeforePrimary':r['diedBeforePrimary'],
-                  'everPrimary':r['everPrimary'],
-                  'minDeathX':r['minDeathX'],'maxDeathX':r['maxDeathX'],
-                  'maxSecondsToFirstDamage':r['maxSecondsToFirstDamage'],
-                  'maxAheadAtDamage':r['maxBodiesAheadAtFirstDamage'],
-                  'wallHits':r['wallHits'],'endWall':r['endWall'],
-              })
-          print('P5_STAGE48_BAND_GEOMETRY_SUMMARY='+json.dumps(slim,sort_keys=True))
+          for name,v in d['variants'].items():
+              for r in v['rows']:
+                  slim.append({
+                      'variant':name,'class':r['class'],
+                      'windups':r['windups'],'shots':r['shots'],'repositions':r['repositions'],
+                      'damagedBeforePrimary':r['damagedBeforePrimary'],
+                      'diedBeforePrimary':r['diedBeforePrimary'],
+                      'everPrimary':r['everPrimary'],
+                      'maxSecondsToPrimary':r['maxSecondsToPrimary'],
+                      'minDeathX':r['minDeathX'],
+                      'wallHits':r['wallHits'],'endWall':r['endWall'],
+                  })
+          print('P5_STAGE48_OVERTAKE_HANDOFF_SUMMARY='+json.dumps(slim,sort_keys=True))
+          print('P5_STAGE48_OVERTAKE_HANDOFF_AGG='+json.dumps({k:v['aggregate'] for k,v in d['variants'].items()},sort_keys=True))
           PY
