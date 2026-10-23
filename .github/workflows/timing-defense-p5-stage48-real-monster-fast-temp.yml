@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_mage_fodder_phase_screen_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_reduced_armored_fodder_crossclass_temp.py
 
 permissions:
   contents: read
@@ -20,17 +20,16 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage48 Mage fodder phase robustness screen
+      - name: Run reduced armored plus fodder cross-class screen
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_mage_fodder_phase_screen_temp.py > /tmp/mage-fodder-phase.json
+          python3 tools/run_p5_stage48_reduced_armored_fodder_crossclass_temp.py > /tmp/reduced-armored-fodder.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_mage_fodder_phase_screen_temp.json').read_text())
-          print('P5_MAGE_FODDER_PHASE_SUMMARY='+json.dumps(d['summary'],sort_keys=True))
+          d=json.loads(Path('p5_stage48_reduced_armored_fodder_crossclass_temp.json').read_text())
           for r in d['rows']:
-              print('P5_MAGE_FODDER_PHASE_ROW='+json.dumps({k:r[k] for k in ['composition','siegerTime','firstDamageAfterSpawn','firstDamageRaw','deathAfterSpawn','deathX','siegerShots','wallLoss','burialTime']},sort_keys=True))
+              print('P5_REDUCED_ARMORED_FODDER_ROW='+json.dumps(r,sort_keys=True))
           PY
