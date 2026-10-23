@@ -1,0 +1,126 @@
+{
+  "version": "p4d2-stage49-full-rotation-directional-summary-v0.1",
+  "status": "FIDELITY_CHECKED_LOCAL_RECONSTRUCTION_DIRECTIONAL_ONLY_EXACT_V04_COMMITTED_REPLAY_PENDING",
+  "sourceEquivalentLocalExpectedFullOutputSha256WithTrailingNewline": "e73939bcb2ba2a1d3b70c692e8014dd2c52aa8d2b93e2efe534444230f0fc49d",
+  "fixture": "p4d2_stage49_full_rotation_fixture_v0_1.json",
+  "runner": "run_p4d2_stage49_full_rotation_probe_v0_1.py",
+  "fidelityRunner": "run_p4d2_stage48_49_dynamic_grammar_probe_v0_4.py",
+  "primaryLaneByClass": {
+    "Knight": "COMMON_1P125_NO_BANK",
+    "Rogue": "ROGUE_RECOVERY_DELTA_78MS_NO_BANK",
+    "Tank": "COMMON_1P125_NO_BANK",
+    "Archer": "COMMON_1P125_NO_BANK",
+    "Mage": "COMMON_1P125_NO_BANK"
+  },
+  "allSuccess": {
+    "Knight": {"endWall": 1705, "endActive": 21},
+    "Rogue": {"endWall": 2000, "endActive": 16},
+    "Tank": {"endWall": 2000, "endActive": 11},
+    "Archer": {"endWall": 2000, "endActive": 6},
+    "Mage": {"endWall": 2000, "endActive": 3}
+  },
+  "oneMiss": {
+    "Knight": {"burialCount": 0, "endWallRange": [970, 1595]},
+    "Rogue": {"burialCount": 0, "endWallRange": [1385, 1705]},
+    "Tank": {"burialCount": 0, "endWallRange": [2000, 2000]},
+    "Archer": {"burialCount": 0, "endWallRange": [1740, 2000]},
+    "Mage": {"burialCount": 0, "endWallRange": [1890, 2000]}
+  },
+  "twoConsecutiveMisses": {
+    "Knight": {"burialCount": 0, "endWallRange": [820, 1045]},
+    "Rogue": {"burialCount": 0, "endWallRange": [340, 1050]},
+    "Tank": {"burialCount": 0, "endWallRange": [1725, 2000]},
+    "Archer": {"burialCount": 0, "endWallRange": [1700, 2000]},
+    "Mage": {"burialCount": 0, "endWallRange": [1890, 2000]}
+  },
+  "firstBurialConsecutiveMissCountByStartGrammar": {
+    "Knight": {
+      "LINE_ESCORT": 4,
+      "CLUSTER_RECOVERY": 4,
+      "FRONTLINE_BREACH": 3,
+      "DURABLE_SCATTER": 6,
+      "TIME_BUDGET_SIEGER": 4
+    },
+    "Rogue": {
+      "LINE_ESCORT": 3,
+      "CLUSTER_RECOVERY": 4,
+      "FRONTLINE_BREACH": 4,
+      "DURABLE_SCATTER": 3,
+      "TIME_BUDGET_SIEGER": 3
+    },
+    "Tank": {
+      "LINE_ESCORT": 6,
+      "CLUSTER_RECOVERY": 6,
+      "FRONTLINE_BREACH": 5,
+      "DURABLE_SCATTER": 5,
+      "TIME_BUDGET_SIEGER": 4
+    },
+    "Archer": {
+      "LINE_ESCORT": null,
+      "CLUSTER_RECOVERY": null,
+      "FRONTLINE_BREACH": null,
+      "DURABLE_SCATTER": null,
+      "TIME_BUDGET_SIEGER": null,
+      "note": "no burial within the bounded eight-consecutive-miss sweep; Stage50 wall reserve becomes the more informative severity signal"
+    },
+    "Mage": {
+      "LINE_ESCORT": null,
+      "CLUSTER_RECOVERY": null,
+      "FRONTLINE_BREACH": null,
+      "DURABLE_SCATTER": null,
+      "TIME_BUDGET_SIEGER": 8
+    }
+  },
+  "eightMissStage50ReserveWatch": {
+    "Archer": {
+      "LINE_ESCORT": 1195,
+      "CLUSTER_RECOVERY": 960,
+      "FRONTLINE_BREACH": 1650,
+      "DURABLE_SCATTER": 345,
+      "TIME_BUDGET_SIEGER": 785
+    },
+    "Mage": {
+      "LINE_ESCORT": 355,
+      "CLUSTER_RECOVERY": 575,
+      "FRONTLINE_BREACH": 975,
+      "DURABLE_SCATTER": 940,
+      "TIME_BUDGET_SIEGER": 0
+    }
+  },
+  "allFinalsMissedBurialTimeSeconds": {
+    "Knight": 34.025,
+    "Rogue": 29.1,
+    "Tank": 34.575,
+    "Archer": 57.025,
+    "Mage": 52.225
+  },
+  "successMonotonicityWatchCountForOneTwoMissSuites": {
+    "Knight": 0,
+    "Rogue": 0,
+    "Tank": 0,
+    "Archer": 0,
+    "Mage": 0
+  },
+  "stageContinuity": {
+    "baseHpPersistsAcrossStages": true,
+    "automaticStageHeal": false,
+    "maxAllSuccessWallLoss": 295,
+    "maxAllSuccessWallLossClass": "Knight",
+    "exactStage50ReserveFloorFrozen": false
+  },
+  "classification": {
+    "fullRotationCandidatePromising": true,
+    "allFiveAllSuccessSurvive": true,
+    "allFiveAllFinalsMissedBuryWithin60s": true,
+    "isolatedMissRecoverableAllClasses": true,
+    "twoMissBurialRequiredAllClasses": false,
+    "identicalMistakeBudgetRequired": false,
+    "TankTimeBudgetIdentityPreserved": true,
+    "MageClusterRecoveryWindowPreserved": true,
+    "RogueRecoveryCadencePreserved": true,
+    "ArcherOneTwoMissSuccessMonotonicityIssueObserved": false,
+    "newMonsterApproved": false,
+    "productionAuthority": false,
+    "numericalFreeze": false
+  }
+}
