@@ -14,96 +14,82 @@ Depends on:
 
 Translate the approved constraint `NO_ROUTINE_FULL_SHOP_MAXOUT_BY_STAGE49` into a bounded first-pass search space before selecting actual coin prices/rewards.
 
-This document works in **normalized spend-capacity ratio space**.
-It does not approve production coin denominations or shop costs.
+This document works in **normalized spend-capacity ratio space**. It does not approve production coin denominations or shop costs.
 
 ---
 
 # 1. Reference cost shape only
 
-For sensitivity only, retain the legacy relative rank-cost shape:
+Sensitivity seed:
 
 ```text
 base next-rank costs:
 40, 65, 100, 145, 200, 265, 340, 425, 520, 625
 
 legacy category multipliers:
-ATK      1.0
-CRIT     1.1
-CRITDMG  1.0
-FORT     0.9
-DEF      1.1
-KNOCK    0.9
+ATK 1.0 / CRIT 1.1 / CRITDMG 1.0 / FORT 0.9 / DEF 1.1 / KNOCK 0.9
 ```
 
-Nominal full Rank10 reference cost:
+The live prototype uses positive-value JavaScript `Math.round`. Under that exact rounding contract:
 
 ```text
 ATK       2,725
 CRIT      3,000
 CRITDMG   2,725
-FORT      2,450
+FORT      2,455
 DEF       3,000
-KNOCK     2,450
-TOTAL    16,350 nominal units
+KNOCK     2,455
+TOTAL    16,360 nominal units
 ```
 
-These are comparison units only.
+Earlier `16,350` precheck text came from Python banker-rounding on some `.5` values and is corrected here. This 10-unit correction does not change the structural conclusion.
 
 ---
 
 # 2. First-pass full-run spend-capacity brackets
 
-Test three successful-run nominal total spend capacities by Stage49:
-
 ```text
-LOW     = 45% of full-shop nominal max cost = 7,357.5
-CENTER  = 50%                              = 8,175.0
-HIGH    = 55%                              = 8,992.5
+LOW     = 45% of full-shop nominal max cost = 7,362
+CENTER  = 50%                              = 8,180
+HIGH    = 55%                              = 8,998
 ```
 
 Why this bracket:
 - all three are materially below six-track full-max cost;
 - a player can still specialize strongly;
-- CENTER permits one favored track to reach Rank10 under some policies while leaving other tracks materially incomplete;
-- balanced allocation remains around Rank7–8 at Stage49 in the first preflight;
-- the bracket is wide enough to expose whether the economy is too restrictive or too generous.
+- CENTER permits one favored track to reach Rank10 under some policies while leaving other tracks incomplete;
+- balanced allocation remains around Rank7–8 at Stage49;
+- the bracket is wide enough to expose too-restrictive vs too-generous behavior.
 
-These percentages are **calibration candidates, not approved final values**.
+These are calibration candidates, not approved final values.
 
 ---
 
 # 3. Stage-distribution sensitivity shape
 
-For the first economy-only preflight, use the old Stage-clear formula only for its **relative backloaded distribution shape**:
+Use the legacy Stage-clear formula only for its **relative backloaded shape**:
 
 ```text
 weight(stage) = 55 + 12 * stage
-for Stage1..49
+Stage1..49
 ```
 
-Then normalize the weights so total income equals LOW/CENTER/HIGH spend capacity.
+Normalize the weights to the selected total spend capacity. This does not retain the old absolute reward.
 
-This does not retain the old absolute clear reward.
-
-CENTER cumulative nominal budget under this relative shape:
+CENTER cumulative nominal budget:
 
 ```text
-through Stage10  ~568.7  ( 6.96% of final budget)
-through Stage20 ~1701.3  (20.81%)
-through Stage30 ~3397.8  (41.56%)
-through Stage40 ~5658.4  (69.22%)
-through Stage45 ~7000.1  (85.63%)
-through Stage49  8175.0 (100.00%)
+through Stage10  ~569.0  ( 6.96%)
+through Stage20 ~1702.3  (20.81%)
+through Stage30 ~3399.9  (41.56%)
+through Stage40 ~5661.8  (69.22%)
+through Stage45 ~7004.4  (85.63%)
+through Stage49  8180.0 (100.00%)
 ```
-
-This shape is only a distribution sensitivity seed. Actual kill-coin + clear-coin composition is a later P5 layer.
 
 ---
 
-# 4. CENTER balanced trajectory — first sanity check
-
-Using the reference costs and CENTER normalized budget, a deterministic balanced policy produces approximately:
+# 4. CENTER balanced trajectory — sanity check
 
 ```text
 Stage10: ATK2 / CRIT2 / CRITDMG2 / FORT2 / DEF1 / KNOCK2
@@ -114,16 +100,11 @@ Stage45: all six around Rank7
 Stage49: ATK8 / CRIT7 / CRITDMG7 / FORT8 / DEF7 / KNOCK8
 ```
 
-This is directionally desirable because:
-- the run still contains shop decisions after Stage40;
-- balanced play does not saturate the shop;
-- specialization remains possible.
+The run still contains meaningful late purchases and balanced play does not saturate the shop.
 
 ---
 
 # 5. Stage49 policy snapshots — CENTER sensitivity
-
-Economy-only deterministic priority policies give these provisional Stage49 rank shapes:
 
 ```text
 ATTACK_HEAVY
@@ -142,7 +123,7 @@ SAVE_DELAY (no spending before Stage20, then balanced)
 ATK8 / CRIT7 / CRITDMG7 / FORT8 / DEF7 / KNOCK8
 ```
 
-Role-aware examples at CENTER:
+Role-aware diagnostic examples:
 
 ```text
 Knight: ATK8 / CRIT6 / CRITDMG6 / FORT8 / DEF6 / KNOCK10
@@ -152,57 +133,49 @@ Archer: ATK9 / CRIT6 / CRITDMG9 / FORT7 / DEF6 / KNOCK7
 Mage:   ATK10 / CRIT7 / CRITDMG7 / FORT7 / DEF6 / KNOCK7
 ```
 
-Important:
-- these are rank-allocation shapes only;
-- they are not proof that the named policy is combat-optimal;
-- CRIT value depends on final attack-template crit policies;
-- ROLE_AWARE priorities are diagnostic heuristics, not recommended player builds.
+These are rank-allocation shapes only, not combat-optimal build claims.
 
 ---
 
-# 6. LOW/HIGH boundary observation
+# 6. LOW/HIGH observation
 
-At LOW=45%, balanced Stage49 remains roughly:
-
-```text
-ATK7 / CRIT7 / CRITDMG7 / FORT8 / DEF7 / KNOCK7
-```
-
-At HIGH=55%, balanced Stage49 remains roughly:
+Balanced Stage49:
 
 ```text
-ATK8 / CRIT7 / CRITDMG8 / FORT8 / DEF7 / KNOCK8
+LOW45%:  ATK7 / CRIT7 / CRITDMG7 / FORT8 / DEF7 / KNOCK7
+HIGH55%: ATK8 / CRIT7 / CRITDMG8 / FORT8 / DEF7 / KNOCK8
 ```
 
-Even HIGH does not approach all-six maxout under balanced allocation.
-Specialist policies may max one selected track, which is intentional if meaningful sacrifices remain elsewhere.
+Specialist policies may max one selected track; that is allowed if meaningful sacrifices remain elsewhere.
 
 ---
 
-# 7. First-pass acceptance criteria
+# 7. Killer-only income perturbation
 
-A candidate economy should satisfy all of the following before combat integration:
+A first sensitivity around the CENTER wallet uses `47% / 50% / 53%` full-shop spend capacity to approximate modest last-hit wallet divergence around the center.
+
+Balanced Stage49 remains around Rank7–8 across that range. Therefore the current first-order saturation risk remains total economy scale, not modest killer-only variation.
+
+This is not a final multiplayer kill-share model.
+
+---
+
+# 8. First-pass acceptance criteria
 
 1. `FULL_SHOP_MAXOUT_ROUTINE = false` by Stage49.
-2. Balanced intended-entry trajectories retain meaningful late purchases at Stage40/45/49.
-3. Specialization can produce a visibly stronger selected track without also completing all other tracks.
-4. At least two materially different purchase policies remain affordable/viable in rank space.
-5. SAVE_DELAY is not automatically punished purely by price arithmetic; combat risk may still make it inferior contextually.
-6. Fortification/DEF cannot be declared balanced from rank arithmetic alone; wall combat integration is mandatory.
-7. Killer-only coin variation is applied as a later income-source perturbation around the spend-capacity envelope, not used to set hidden class prices.
+2. Balanced intended-entry trajectories retain meaningful purchases at Stage40/45/49.
+3. Specialization may produce a selected maxed track without completing all other tracks.
+4. Multiple materially different policies remain viable in rank space.
+5. SAVE_DELAY is not arithmetically invalid by price structure alone.
+6. Fortification/DEF require combat integration before balance claims.
+7. Killer-only variation must be measured, not hidden with class-specific prices.
 
 ---
 
-# 8. Next work
+# 9. Next work
 
-Create a deterministic economy-only runner/fixture for:
+Create and run a deterministic economy-only fixture/runner for ratios `0.45 / 0.50 / 0.55`, CENTER perturbations `0.47 / 0.50 / 0.53`, policies `ATTACK_HEAVY / CRIT_HEAVY / DEFENSE_HEAVY / BALANCED / SAVE_DELAY / ROLE_AWARE`, snapshots `10 / 20 / 30 / 40 / 45 / 49`.
 
-```text
-ratios: 0.45 / 0.50 / 0.55
-policies: ATTACK_HEAVY / CRIT_HEAVY / DEFENSE_HEAVY / BALANCED / SAVE_DELAY / ROLE_AWARE
-snapshots: Stage10 / 20 / 30 / 40 / 45 / 49
-```
-
-Then test kill-share income perturbations and candidate clear-vs-kill income mixes before integrating combat power.
+Then test actual clear-vs-kill income mixes before combat-power integration.
 
 No production values or code are authorized.
