@@ -16,130 +16,188 @@ Live remote wins.
 
 ---
 
-# ACTIVE PHASE — P4-D2 LV31 MASTERY POWER / STAGE46 PRESSURE FEEDBACK
+# ACTIVE PHASE — P4-D2 STATEFUL TEMPORAL LV31 / STAGE46 PRESSURE FEEDBACK
 
-Completed immediately before this phase:
+Completed inside P4-D2:
 
 ```text
-P4-C1 Lv26 structural contract = USER APPROVED
-P4-C2 Lv26 bounded feedback = COMPLETE / PASS_WITH_WATCHES
-P4-D1 Lv31 power-fantasy + Stage46 mastery-gate direction = USER APPROVED WITH MODIFICATION
+P4-D1 power-fantasy + mastery-gate direction = USER APPROVED WITH MODIFICATION
+P4-D2 preflight = COMPLETE
+P4-D2 first power envelope = COMPLETE
+P4-D2 current-nine-roster deterministic snapshot probe = COMPLETE / PASS_WITH_CORRECTION
 ```
 
-Authorities:
+Current authorities/evidence:
 - `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/92_P4D2_LV31_MASTERY_POWER_AND_STAGE46_PRESSURE_PREFLIGHT_V0_1.md`
-
-First-pass analytic evidence:
 - `legacy-game-structure/93_P4D2_FIRST_PASS_LV31_POWER_ENVELOPE_AND_PRESSURE_TARGETS_V0_1.md`
+- `legacy-game-structure/94_P4D2_LV31_CURRENT_ROSTER_PRESSURE_RESPONSE_PROBE_V0_1.md`
+- `legacy-game-structure/data/p4d2_lv31_pressure_probe_summary_v0_1.json`
 
-P4-D2 is authorized and active.
+Replay runner:
+- `tools/run_p4d2_lv31_pressure_probe_v0_1.py`
+- expected full JSON SHA-256: `efdb369a6053bb83fcecb057ea733f4bdcabb56a333575dddf2dd4b87913e27d`
 
----
-
-# Approved late-run direction
-
-Do **not** pre-emptively shrink Lv31 to fit the old pressure envelope.
-
-Instead jointly calibrate:
-
-```text
-strong Lv31 class fantasy
-<->
-Stage46+ pressure capable of requiring and absorbing it
-```
-
-Approved experiential structure:
-
-```text
-Stage41..45 = Lv31 acquisition / transition
-Stage46     = sharp pressure jump
-Stage46..47 = power-revelation band
-Stage48..49 = mastery-pressure band
-Stage50     = final application
-```
-
-A Lv31-less intended-skilled player may be buried because monster inflow/pressure exceeds Lv26 clearing capacity.
-That is allowed as an authored combat result.
-
-Do not add a code-level `Lv31 required` gate.
-
-Combo/timing/P×P maintenance is part of the intended Stage46+ difficulty.
+No user decision is currently required.
 
 ---
 
-# Rogue Lv31 — current first-pass result
+# Current working Lv31 centers — NOT FROZEN
 
-Rogue's final skill must culminate the thrown-projectile/multihit fantasy.
+These are the next temporal-probe centers, not production values.
 
-P4-D2 sensitivity:
+## Knight
+- two broad bounded waves;
+- second-wave coefficient center `1.00`;
+- preserve strong frontline/knockback identity.
 
-```text
-12 / 16 / 20 real Dagger Storm projectiles
-working center = 16
-```
-
-Using the provisional per-projectile continuity coefficient `0.45`:
+## Rogue
 
 ```text
-Lv21 Blade Barrage package = 2.80 root basis
-12 daggers = 5.40 = 1.93× Lv21 package
-16 daggers = 7.20 = 2.57× Lv21 package
-20 daggers = 9.00 = 3.21× Lv21 package
+count sensitivity = 12 / 16 / 20
+working center = 16 real daggers
+per-dagger continuity anchor = 0.45
 ```
 
-This makes 16 a useful center: clearly final-skill scale but still below the aggressive 20-projectile bracket.
+Relevant Lv26→Lv31 package ratio at current anchor:
+- 12 = 1.66× Lv26 P×P package
+- 16 = 2.22×
+- 20 = 2.77×
 
-Future same-time all-Rogue stress target implied by the candidate range:
+Do not reduce count for hypothetical performance reasons before 2P/3P/4P stress evidence exists.
+
+## Tank
+- global control-first shockwave center `.75 root basis`;
+- knockback center `×2.5`;
+- wall barrier candidate `250 / 6s`;
+- one local Lv26 Aftershock retained.
+
+Stateful CHARGER/SIEGER interaction is required before judging magnitude.
+
+## Archer — corrected temporal center
+Keep the approved identity:
+- one huge strict-line arrow;
+- unlimited target count;
+- armor ignore;
+- no homing/bending/off-line retarget.
+
+Do **not** carry proposal-93's `1.00` forward as the center.
+
+Next center:
 
 ```text
-4P × 12 = 48 projectiles
-4P × 16 = 64 projectiles
-4P × 20 = 80 projectiles
+2.30 root basis per intersected target
 ```
 
-These counts are explicit performance-test targets, not automatic reasons to reduce projectile count.
+Reason:
+- Lv26 Triple Shot durable aligned-target package = `1.00 + .65 + .65 = 2.30`;
+- 1.00 would reduce durable-target burst to 43.5% of that package;
+- 2.30 preserves per-target continuity and lets unlimited depth create the final escalation.
 
-Structural rules remain:
-- one finite deterministic storm package per P×P root;
-- real visible/simulated projectiles/hits;
-- keep attacking current target while alive;
-- deterministic retarget after death/removal;
-- same-target cap absent;
-- boss scalar applies per realized hit;
-- no recursive projectile-generator tree.
+2.30 remains provisional.
 
-16 and 0.45 are not numerically frozen.
+## Mage
+- direct root impact;
+- fixed three-stage density collapse;
+- stage coefficient center `.75`;
+- radius remains independent sensitivity axis;
+- one bounded final chain generation;
+- SPLITTER chronology remains explicit.
+
+Static `.55/.75/1.00` often saturates the provisional HP anchors, so temporal replenishment/geometry must discriminate the coefficient.
 
 ---
 
-# Other Lv31 first-pass power envelope
+# Current Stage46+ target
 
-P4-D2 may test a stronger envelope than proposal 90's conservative ranges.
+Do not start by multiplying all monster HP.
 
-- Knight: second wave `0.75 / 1.00 / 1.25` root-basis sensitivity, while preserving bounded Knight corridor identity.
-- Tank: battlefield shockwave `0.50 / 0.75 / 1.00` root-basis sensitivity plus strong control/wall protection.
-- Archer: start at `1.00` root basis per intersected target with unlimited strict-line depth; raise only if line geometry, not damage, proves insufficient.
-- Mage: three-stage collapse `0.55 / 0.75 / 1.00` root basis per stage, with radius tuned independently and recursion still bounded.
+Target behavior:
 
-All remain P4-D2 provisional inputs only.
+```text
+Lv26-only clearing < sustained late-band pressure
+successful Lv31 P×P -> unmistakable pressure reset
+pressure rebuilds before the next mastery decision becomes trivial
+one missed P×P -> serious backlog
+repeated missed P×P -> burial cascade
+```
+
+User-approved principle:
+- Lv31-less intended-skilled players may be buried by actual wave pressure;
+- no code-level level gate.
 
 ---
 
-# P4-D2 pressure target before exact numbers
+# Temporal starting envelope
 
-Stage46+ should be calibrated by backlog/reset behavior before freezing raw monster multipliers.
-
-Desired shape:
+Observed high-mastery stress traces:
 
 ```text
-Lv26-only sustained clearing < Stage46+ inflow/pressure
-successful Lv31 P×P = unmistakable pressure reset
-one missed reset = serious but potentially recoverable pressure
-repeated missed resets = burial cascade
+H0: 16 P×P / ~71.8s   ~= 4.49s per P×P
+H3: 14 P×P / ~65.649s ~= 4.69s per P×P
 ```
 
-Later simulation should record at minimum:
+These traces are upper-tail stress anchors, not ordinary-skilled population fits.
+
+Use a **non-frozen 4–5s dangerous-pressure reaccumulation envelope** as the first temporal probe scale.
+
+Purpose:
+- test whether even near-perfect play must continue making P×P correctly;
+- avoid a final skill that permanently trivializes the rest of the Stage after one use;
+- quantify what happens when one or two P×P opportunities are missed.
+
+Do not convert `4–5s` into final spawn cadence without further evidence.
+
+---
+
+# Required next temporal probe lanes
+
+## 1. Lv26-only baseline
+Measure per class:
+- backlog slope;
+- wall attrition;
+- max active bodies;
+- role-expression counts;
+- whether pressure naturally trends toward burial.
+
+The intended late-band direction is that Lv26-only cannot indefinitely stabilize Stage46+ pressure.
+
+## 2. Lv31 all-successful P×P
+Measure:
+- backlog immediately before/after each final;
+- reaccumulation time;
+- pressure reset fraction;
+- wall-space recovery;
+- role-expression before deletion.
+
+## 3. One missed P×P
+A single failed final opportunity should create a visible dangerous backlog.
+It may remain recoverable in Stage46–47.
+
+## 4. Two consecutive missed P×P
+By Stage48–49 philosophy this should usually create a burial cascade or near-terminal pressure state.
+
+## 5. Stateful monster interactions
+Explicitly preserve:
+- CHARGER `ADVANCE -> WINDUP -> CHARGE`, including positive-KB cancellation/re-arm;
+- SPLITTER parent death -> immediate children -> chronological later hits;
+- SUPPORTER movement ×1.18 nonstacking composition;
+- SIEGER standoff -> windup -> wall shot -> repeat / KB reposition.
+
+## 6. Class geometry
+Same encounter content across classes, but rotate sequential geometry so one class is not permanently privileged:
+- line depth;
+- density cluster;
+- broad frontline;
+- dispersed pressure;
+- protected SUPPORTER/SIEGER;
+- CHARGER/SPLITTER rebound.
+
+---
+
+# Required metrics
+
+At minimum:
 
 ```text
 backlog_before_final
@@ -152,55 +210,36 @@ missed_pxp_recovery_probability
 consecutive_missed_pxp_to_burial
 wall_hp_delta_between_resets
 role_expression_count_before_death
+charger_windup_count
+charger_interrupt_count
+sieger_first_shot_count
+sieger_reposition_count
+splitter_child_population_delta
 ```
 
-Do not reduce this to HP-only scaling.
+Do not judge Tank solely by kill count.
+Do not judge Mage solely by one static cluster.
+Do not judge Archer solely by aligned showcase deletion.
 
 ---
 
-# P4-D2 required lanes
+# Acquisition fairness remains separate but coupled
 
-## A. Acquisition fairness
-Measure Stage46-entry Lv31 possession distribution.
-
-Candidate checkpoints only:
+P4-D2/P4-E may inspect Stage46-entry possession checkpoints:
 
 ```text
 97% / 98% / 99%
 ```
 
-User direction considers `90%` too lenient as an intended-skilled target.
-No exact percentage freezes in P4-D2.
+None is frozen.
 
-If skilled players miss Lv31 because class kill-speed, EXP opportunity, team composition or player count distorted acquisition, classify the cause before freezing the gate.
+Before a hard combat-pressure regime can be numerically frozen, skilled failure to possess Lv31 must not be primarily caused by:
+- class kill-speed self-damping;
+- EXP opportunity divergence;
+- team composition;
+- player count.
 
-## B. Power expression
-Test whether each Lv31 creates a clear, satisfying class-specific pressure reset.
-
-Do not interpret a large power cliff as an automatic defect.
-
-## C. Stage46+ pressure absorption
-Vary pressure mainly through encounter grammar:
-- density;
-- spawn cadence;
-- formation depth;
-- SUPPORTER/SIEGER protection;
-- CHARGER timing;
-- SPLITTER rebound/population;
-- mixed-pressure composition.
-
-## D. Combo/P×P mastery
-Measure:
-- P×P frequency;
-- combo survival;
-- time between successful pressure resets;
-- monster accumulation before reset;
-- failure cascade after missed P×P;
-- recovery after isolated vs repeated mistakes.
-
-## E. Role / performance watches
-Keep class identity and monster decision readability where appropriate.
-For Rogue, test 12/16/20 event volume and later multiplayer worst-case stress separately from balance.
+Those systemic issues remain under R2/P10R authority.
 
 ---
 
@@ -217,6 +256,7 @@ LV26_TANK_MOVEMENT_COMPOSITION_WATCH
 LV31_CLASS_CLEAR_RATE_DIVERGENCE
 LV31_ROLE_EXPRESSION_ERASURE
 LV31_POWER_FANTASY_UNDERSHOOT
+LV31_ARCHER_MAGNITUDE_CONTINUITY_WATCH
 STAGE46_LV31_ACQUISITION_FAIRNESS
 STAGE46_LV31_ABSENCE_BURIAL_BEHAVIOR
 STAGE46_PRESSURE_INSUFFICIENT_FOR_LV31
@@ -228,22 +268,22 @@ ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
 
 # Stop / decision conditions
 
-P4-D2 can iterate provisional values/pressure candidates without repeated user approval.
-
-Stop for user decision only if work requires:
-- changing a class's Lv31 identity;
+Continue P4-D2 autonomously unless the evidence requires:
+- changing a class's Lv31 identity or effect topology;
 - adding a code-level Lv31 gate;
 - hidden class/player-count EXP compensation;
 - freezing exact Stage46 Lv31 possession threshold;
 - changing final EXP semantics;
-- production implementation/numerical freeze.
+- production implementation or numerical freeze.
+
+A provisional coefficient change inside the already-approved identity may continue through P4-D2 without a new gate, but must remain explicitly unfrozen.
 
 ---
 
 # After P4-D2
 
 ```text
-P4-D2 feedback
+P4-D2 stateful temporal feedback
  -> P4-E provisional player-power-spine closure WITH EXP WATCHES
  -> P5/P6/P7/P8
  -> P10 current-roster multiplayer scaling
@@ -251,8 +291,10 @@ P4-D2 feedback
 ```
 
 Do not yet:
-- freeze Rogue at 16 projectiles;
+- freeze Archer at 2.30;
+- freeze Rogue at 16 daggers;
 - freeze Stage46 possession at 97/98/99%;
+- freeze 4–5s as exact spawn cadence;
 - freeze exact Stage46–50 content;
 - change production gameplay;
 - freeze final EXP;
