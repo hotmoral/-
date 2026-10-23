@@ -14,22 +14,18 @@ Updated: 2026-10-23 KST
 - unchanged by current P5 planning work
 
 ## Canonical operating authority
-Read live remote first. Current key documents:
+Always read live remote first. Current key documents:
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
 - `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md`
+- `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 - `legacy-game-structure/72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md`
-- `legacy-game-structure/79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
+- `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 - `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
-- `legacy-game-structure/129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md`
 - `legacy-game-structure/135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md`
 - `legacy-game-structure/137_P5_STAGE46_49_EXACT_EXECUTION_STAGE_SETTLED_BOUNDARY_RESULT_V0_1.md`
-- `legacy-game-structure/139_P5_STAGE48_SIEGER_PROTECTION_TIME_DIAGNOSTIC_V0_1.md`
-- `legacy-game-structure/140_P5_STAGE48_THREE_AXIS_COMPARISON_DECISION_GATE_V0_1.md`
-- `legacy-game-structure/141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md`
-- **latest:** `legacy-game-structure/142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
-- active dependency plan `legacy-game-structure/data/system_dependency_calibration_order_v0_30.yaml`
+- `legacy-game-structure/142_P5_STAGE48_FODDER_CHAIN_AND_GLOBAL_STANDOFF_BOUNDARY_RESULT_V0_1.md`
+- **latest:** `legacy-game-structure/143_P5_SKILLED_V2_LATE_RUN_REINTERPRETATION_AND_P5_P6_FIDELITY_GATE_V0_1.md`
+- active dependency plan `legacy-game-structure/data/system_dependency_calibration_order_v0_31.yaml`
 
 Live remote always wins over copied SHA, memory or chat.
 
@@ -41,21 +37,19 @@ Live remote always wins over copied SHA, memory or chat.
 P0 = PASS_WITH_WATCHES
 P1 = USER_APPROVED_STRUCTURAL_COMPLETE
 P2 = USER_APPROVED_STRUCTURAL_COMPLETE
-P3 = STRUCTURAL_PASS_COMPLETE / STAGE_SETTLED authority
+P3 = STRUCTURAL_PASS_COMPLETE / STAGE_SETTLED + persistent run-state authority
 P4 = PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
-P5 A2 = USER_APPROVED
+P5 A2 shop = USER APPROVED
 P5 class identity group = DIRECTIONALLY CLOSED
-P5 integrated runner = CHECKOUT-EXACT PASS / DETERMINISTIC
-P5 old repeated Stage48 proxy packet = REJECTED / NOT ADMISSION READY
-P5 simple BRUTE/SHIELD replacement = INSUFFICIENT
-P5 real-monster layered handoff alone = INSUFFICIENT
-P5 limited armored/hardened frontline exploration axis = USER APPROVED
-P5 GRUNT-like fodder/cheap-target chronology axis = DIAGNOSTICALLY VALID
-P5 real BRUTE+GRUNT only = INSUFFICIENT CURRENT REPLACEMENT
-P5 SUPPORTER speed aura = SECONDARY TRAVEL AID / PHASE RISK WATCH
-P5 global SIEGER standoff advancement = NO OBSERVED SAFE ALL-CLASS REPAIR WINDOW
-P5 current = USER DECISION GATE ON NEXT STAGE48 REPAIR DIRECTION
-P6 = BLOCKED_PENDING_P5
+P5 limited armored/hardened frontline exploration = USER APPROVED
+P5 GRUNT-like cheap-target chronology = DIAGNOSTICALLY VALID
+P5 global SIEGER standoff movement = STRONGLY DISFAVORED AS PRIMARY REPAIR
+P5 prior Stage46->49 survival numbers = ALL-PERFECT / effectively all-P×P upper-bound evidence
+P5 SKILLED_V2 central screen = material Stage46/47 class-skew exposed
+P5 factor isolation = reduced P×P / Lv31-final frequency is dominant sensitivity
+P5 current runner = insufficient as final skilled-balance authority because full persistent combo/charge pipeline is not integrated
+CURRENT = USER DECISION GATE: bounded P5→P6 fidelity bridge
+P6 full convergence = NOT STARTED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
@@ -76,7 +70,8 @@ Every new session must recover the whole reasoning frame before local tuning:
 Tier/Stage purpose
 -> monster/content role
 -> class identity / skill behavior
--> run state
+-> run-state persistence
+-> player timing/mastery model
 -> shop/economy
 -> attack count / EXP / skill-reach feedback
 -> encounter geometry / chronology / frontmost ordering
@@ -87,7 +82,7 @@ Tier/Stage purpose
 -> downstream P6/meta/multiplayer impact
 ```
 
-Repair order where applicable:
+Repair order:
 
 ```text
 source/simulator fidelity
@@ -98,12 +93,21 @@ source/simulator fidelity
 -> exact scalar tuning last
 ```
 
-Important design/content/numerical decisions must be explained simply and approved by the user before adoption.
+Important design/content/numerical/work-boundary decisions must be explained simply and approved by the user before adoption.
 Diagnostic/instrumentation work may proceed without separate approval if gameplay semantics are unchanged.
 
 ---
 
 # Stable truths not to reopen casually
+
+## P1/P3 run continuity
+Within one Tier attempt:
+- Base HP/max HP persist;
+- combo persists across Stage/shop/target-wait downtime unless timing judgment breaks it;
+- charge persists across Stage/shop;
+- unresolved Heavy must resolve before transition;
+- wall absolute deficit persists;
+- Stage-local enemy instances do not persist after STAGE_SETTLED.
 
 ## P3 Stage transition
 
@@ -118,21 +122,20 @@ last authored spawn
 -> next Stage
 ```
 
-Wall current/max/absolute damage deficit persists across Stages; Stage-local enemy instances do not.
-
 ## P5 A2 shop
-- every cleared non-final Stage: shop available but nonblocking
-- personal wallets
-- ordinary kill coin baseline to killing human
-- all-human Stage-clear income floor remains candidate
-- ATK/CRIT/CRITDMG/KNOCK personal
-- FORTIFICATION/DEF contribute to shared wall
-- Fortification preserves absolute damage deficit
-- no routine full-shop maxout by Stage49
+- shop after every cleared non-final Stage, nonblocking;
+- personal wallets;
+- ordinary kill coin baseline to killing human;
+- all-human Stage-clear income floor remains candidate;
+- ATK/CRIT/CRITDMG/KNOCK personal;
+- FORTIFICATION/DEF shared-wall contribution;
+- Fortification preserves absolute deficit;
+- no routine full-shop maxout by Stage49.
 
-Current 40% shop effect and other economy centers remain diagnostic only.
+40% effect scale and economy centers remain diagnostics only.
 
 ## Class identity guards
+
 ```text
 Knight  ATK4 CRIT2 AGI3 KNOCK3 PEN4 AOE2
 Rogue   ATK2 CRIT5 AGI5 KNOCK1 PEN1 AOE1
@@ -141,151 +144,158 @@ Archer  ATK3 CRIT2 AGI4 KNOCK1 PEN5 AOE2
 Mage    ATK4 CRIT2 AGI2 KNOCK1 PEN1 AOE5
 ```
 
-Guards:
-- `SURVIVAL != CLEAR`
-- Tank solo parity not required
-- no hard class lockout
-- no global Archer nerf / Mage buff to repair a bad encounter
-- Rogue deterministic retarget is not first repair axis
-- Tank control fantasy must remain visible
+Keep:
+- `SURVIVAL != CLEAR`;
+- Tank solo parity not required;
+- no hard class lockout;
+- no global Archer nerf / Mage buff for bad authoring;
+- no Tank buff/nerf from a partial-fidelity late-run result;
+- Rogue deterministic retarget not first repair axis.
 
 ---
 
-# Stage48 evidence lineage
+# Stage48 findings that remain valid
 
-## 1. Prior SIEGER protection problem
-At physical spawn `x=0.92`, provisional speed `0.045`, siege threshold `0.38`, straight travel budget is about 12 s.
-Real BRUTE/SHIELD screen families gave zero SIEGER windups/shots and usually exposed SIEGER too early.
+The armored/hardened concept has two user-confirmed purposes:
+1. slow late Mage/Archer ordinary-volume erasure;
+2. buy protected SIEGER role time.
 
-## 2. User-approved armored/hardened exploration axis
-The user approved continuing with a limited armored/hardened frontline concept as the primary exploration axis.
-This approval is directional only; no exact monster, HP, armor, count, timing or production value was approved.
+User approved this as an exploration axis only.
 
-The earlier low-spatial-density result remains valid:
+Causal findings:
+- lower **spatial** density of armored escorts helps, especially against Archer;
+- excessive early temporal separation is counterproductive;
+- Mage chain semantics can reach later live/unhit targets, so line separation alone is insufficient;
+- GRUNT-like cheap bodies can delay Mage access to SIEGER when type/order/arrival phase are chosen well;
+- `GRUNT3` did not materially beat `GRUNT2` in the tested band;
+- real BRUTE+GRUNT alone did not reproduce the cross-class protection envelope;
+- SUPPORTER is only a secondary travel aid and can create phase regressions;
+- large/moderate global SIEGER standoff advancement showed no safe all-class window.
 
-```text
-Archer SIEGER lifetime ~6.825 s -> ~9.075 s
-Archer death X ~0.613 -> ~0.512
-Knight lifetime ~2.325 s -> ~4.575 s
-Mage remained ~7.2 s in the tested two-body spatial case
-```
-
-Interpretation:
-- lower spatial density is useful, especially against Archer;
-- sending armored bodies too early is counterproductive;
-- Mage remains coupled to approved delayed/bounded chain semantics.
-
-## 3. Diagnostic fidelity defect already closed
-The first armored+standoff hybrid run was invalid because dynamically rebuilding `SIMULATE` dropped the STAGE_SETTLED fixed-schedule hook.
-The hook was reinstalled on the exact rebuilt function and actual schedule equality was asserted.
-Corrected run `39961261476` passed schedule fidelity.
-Only corrected results are authoritative diagnostics.
-
-## 4. User fodder hypothesis — VALID AS CHRONOLOGY AXIS
-The user proposed adding cheap ordinary bodies so Mage's follow-up chain is more likely to spend target opportunities before reaching SIEGER.
-
-Runs `39963808641` and `39964004587` show:
-- no fodder: Mage can hit SIEGER almost immediately after spawn in the reference phase;
-- late `GRUNT2`: first damage is delayed and SIEGER lifetime improves consistently across small spawn-time shifts;
-- `GRUNT3` gives little additional benefit over `GRUNT2` in the tested band;
-- fast fragile bodies first (RUNNER/FLYER) are often consumed too early;
-- one durable first body + one trailing GRUNT can approximate two durable bodies for Mage protection;
-- sending fodder too early can shift Mage's attack/heavy phase and make SIEGER exposure worse.
-
-Therefore:
+Current clean diagnostic center remains only a **probe**, not an approved packet:
 
 ```text
-FODDER_COUNT_ALONE != SOLUTION
-TYPE + ORDER + ARRIVAL_PHASE + SPATIAL DENSITY = CAUSAL
+3 spatial armored diagnostic bodies
++ 2 GRUNT
++ 1 SIEGER
 ```
 
-Do not change Mage skill semantics to manufacture this effect.
+See doc142 for exact chronology/standoff evidence.
 
-## 5. Reduced-armored cross-class screen
-Run `39964154140`, BALANCED, global standoff `0.38`.
+---
 
-Current cleanest diagnostic center was:
+# New mastery reinterpretation — critical
+
+## Previous P5 late-run input was idealized
+Source review proved ordinary attacks were always PERFECT and successful Heavy attacks effectively always CRITICAL/P×P in the current chain.
+Therefore previous Stage46→49 reserve/survival numbers are **upper-bound diagnostics**, not `SKILLED_V2_CENTRAL` baseline results.
+
+## Expanded central-skilled screen
+Run `39968100989`, repeat deterministic PASS.
+SHA256:
+`ec4ed61d8288b9a2bb2e1575bf5f8d4e1191fdbabcae9a5d11cae9b7cde8d6c9`
+
+20 seeds × five classes = 100 cases.
+Realized mix:
 
 ```text
-3 spatial armored proxy bodies + 2 GRUNT + 1 SIEGER
+PERFECT ~72.37%
+GOOD    ~18.45%
+NORMAL   ~9.19%
+P×P Heavy / CRITICAL ~58.06%
 ```
 
-Approximate SIEGER death results:
-- Knight `5.7 s`, `x≈0.673`
-- Rogue `5.1 s`, `x≈0.691`
-- Tank `6.825 s`, `x≈0.742`
-- Archer `7.95 s`, `x≈0.562`
-- Mage `4.575 s`, `x≈0.714`
-
-This packet still produced zero SIEGER firing at old standoff, but was the cleanest balanced protection screen in this slice.
-Reducing proxy bodies to two degraded Rogue/Archer protection; one proxy became highly class-skewed.
-Real BRUTE+GRUNT only did not reproduce the cross-class envelope.
-
-This is a diagnostic center, not an approved packet.
-
-## 6. SUPPORTER speed-aura result
-Run `39964353573`.
-
-SUPPORTER modestly improved SIEGER travel/death position for several classes but did not materially solve firing uptime.
-It can also change Mage phase chronology in harmful ways.
+Outcome:
 
 ```text
-SUPPORTER = SECONDARY_TRAVEL_AID
-SUPPORTER_PHASE_INTERACTION = ACTIVE_WATCH
+through Stage49 = 45/100
+Stage46 failures = 26
+Stage47 failures = 21
+Stage48 failures = 0
+Stage49 failures = 8
 ```
 
-## 7. Global standoff boundary
-Earlier corrected replay:
+Per-class through49:
 
 ```text
-x=0.38 : 20/20 through Stage49, 0 buried
-x=0.78 : 13/20 through Stage49, 7 buried
-x=0.82 :  8/20 through Stage49, 12 buried
+Knight 3/20
+Rogue  4/20
+Tank   2/20
+Archer 18/20
+Mage   18/20
 ```
 
-Moderate BALANCED scan with the clean Stage48 diagnostic center:
+This shows Stage48 is not currently the main late-run failure source under central skilled timing.
+
+## Factor isolation
+Run `39968400953`, repeat deterministic PASS.
+SHA256:
+`1ae220cb0bbebd388f9c014a9208335c4b8eeb895b4163109e78895f95b4a420`
+
+Stage46→47:
 
 ```text
-x=0.50 : 5/5 survive, Stage48 all 0 shots
-x=0.55 : 5/5 survive, Stage48 all 0 shots
-x=0.60 : 5/5 survive, Archer 1 shot only
-x=0.65 : 5/5 survive, Archer 1 shot only
-x=0.70 : 5/5 survive, Knight+Archer only; Archer final wall ~74, Tank ~763
+ordinary central + Heavy forced P×P = 100/100 through47
+ordinary PERFECT + Heavy central     = 63/100 through47
+full central skilled                 = 58/100 through47
 ```
 
-Boundary scan:
+Tank with PERFECT ordinary attacks but realistic Heavy/P×P frequency:
 
 ```text
-x=0.72 : Archer dies Stage49; Mage/Tank still 0 Stage48 shots
-x=0.74 : Archer dies Stage49; Mage/Tank still 0 Stage48 shots
-x=0.76 : first all-five Stage48 firing point, but Archer dies Stage49 and Tank final wall ~476
+0/20 through47
 ```
 
-Structural conclusion:
+Causal classification:
 
 ```text
-NO_OBSERVED_GLOBAL_STANDOFF_THRESHOLD
-SIMULTANEOUSLY:
-  ALL_CLASS_STAGE48_SIEGER_ROLE_EXPRESSION
-  + CURRENT_STAGE46_49_SURVIVAL/RESERVE_SHAPE
+REDUCED_PXP_LV31_FINAL_FREQUENCY = DOMINANT CURRENT SENSITIVITY
 ```
 
-This does not freeze `0.38`; it strongly disfavors global standoff movement as the primary current repair.
+Do not infer an immediate Tank buff or Stage46 nerf.
+
+---
+
+# Simulator fidelity gap
+
+The exact central-skilled survival percentages are not yet final balance authority because the current P5 late-run runner does not combine all approved state/power layers.
+
+P1/P3 require persistent combo/charge. The P3 kernel already models:
+- persistent combo;
+- persistent charge;
+- SKILLED_V2 judgment RNG/state;
+- charge-driven Heavy;
+- combo damage bonus;
+- N3 milestones.
+
+The current P5 runner models newer:
+- P4-D2 Lv31 packages;
+- shop effects/attribution;
+- Stage46→49 right-edge chronology;
+- STAGE_SETTLED/wall carry.
+
+No single runner yet combines both faithfully.
+
+Therefore the next trustworthy step is a **fidelity integration**, not a balance scalar change.
 
 ---
 
 # Current decision gate
 
-Evidence now supports four real directions:
+### A — Recommended
+Open a bounded **P5→P6 fidelity bridge** before further Stage48 micro-tuning.
+Integrate the minimum canonical state/power layers into one deterministic late-run runner, compare ALL_PERFECT vs SKILLED_V2 on paired seeds, then resume Stage48 armored+fodder analysis.
 
-A. **Recommended:** keep global SIEGER standoff unchanged for now; continue through limited armored/hardened frontline + GRUNT-like cheap target layer + exact order/timing/spatial density/travel chronology.
+This bridge does **not** automatically close P5 or formally start full P6.
 
-B. Introduce a Stage48-specific SIEGER setup/mechanic. This is a semantic exception and needs explicit approval.
+### B
+Continue Stage48 micro-tuning on the current partial runner.
+High rework risk.
 
-C. Change Stage48 intent so it teaches protected travel/threat and defer guaranteed meaningful SIEGER firing to Stage49. This changes content intent and needs explicit approval.
+### C
+Close P5 and enter full P6 immediately.
+Larger, less reversible phase jump.
 
-D. Escalate to explicit hardened/elite/protective mechanics such as resistance/aura/protection state. Higher scope and coupling.
+Recommendation: **A**.
 
-Recommendation: **A** because it preserves the approved armored axis, uses the user's validated fodder idea, preserves Mage semantics, and avoids the demonstrated cross-stage cost of global standoff movement.
-
-No option is adopted by this status update. Await user decision.
+No option is adopted until the user explicitly approves it.
