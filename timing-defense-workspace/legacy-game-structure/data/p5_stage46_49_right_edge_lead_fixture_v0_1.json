@@ -1,0 +1,39 @@
+{
+  "version": "p5-stage46-49-right-edge-lead-fixture-v0.1",
+  "status": "BOUNDED_KINEMATIC_PREFLIGHT_NO_PRODUCTION_AUTHORITY",
+  "baseSpawnX": 0.92,
+  "wallX": 0.155,
+  "siegeTriggerX": 0.38,
+  "siegeWindupSeconds": 0.8,
+  "rootAttackIntervalSeconds": 1.125,
+  "monsterSpeeds": {
+    "SIEGER": 0.045,
+    "ARMORED_DURABLE_PROXY": 0.04
+  },
+  "stageLeadCandidates": {
+    "46": {"siegerLeadSeconds": 4.0, "durableLeadSeconds": 3.0, "intent": "POWER_REVELATION_LIGHT_ESCORT"},
+    "47": {"siegerLeadSeconds": 6.0, "durableLeadSeconds": 4.5, "intent": "ESCORTED_SECOND_PULSE"},
+    "48": {"siegerLeadSeconds": 8.0, "durableLeadSeconds": 6.0, "intent": "PROTECTED_ROLE_PULSE"},
+    "49": {"siegerLeadSeconds": 9.75, "durableLeadSeconds": 6.75, "intent": "DURABLE_PLUS_SIEGER_TIME_BUDGET"}
+  },
+  "shopDiagnostic": {
+    "effectScale": 0.4,
+    "balancedAtkRank": 8,
+    "legacyAtkPctPerRank": 0.08
+  },
+  "nakedSiegerHp": 520,
+  "ordinaryPerfectRawByClassBeforeShop": {
+    "Knight": 264.32,
+    "RoguePrimaryPackage": 310.0,
+    "Tank": 200.0,
+    "Archer": 220.0,
+    "Mage": 200.0
+  },
+  "authorityBoundary": [
+    "Enemies still enter from the normal right-edge diagnostic spawnX; no mid-field pop-in is allowed.",
+    "Lead seconds mean earlier spawn relative to a later pressure-reference moment.",
+    "This preflight checks travel timing and naked exposure only; it is not full combat balance authority.",
+    "Stage49 leads are chosen to approximate the previously promising spawnX proxy center without using mid-field spawning.",
+    "Protected/escorted authoring is required if naked exposure would make the role threat trivial before its pressure window."
+  ]
+}
