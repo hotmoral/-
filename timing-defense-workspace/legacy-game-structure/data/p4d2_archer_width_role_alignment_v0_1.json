@@ -1,0 +1,49 @@
+{
+  "version": "p4d2-archer-width-role-alignment-v0.1",
+  "status": "DETERMINISTIC_GEOMETRY_DIAGNOSTIC_NOT_PRODUCTION_FROZEN",
+  "purpose": "Test whether a middle wide-corridor candidate preserves Archer line identity and protected specialist positioning better than either ordinary narrow width or near-screen-wide coverage.",
+  "geometry": {
+    "diagnosticBands": [-2, -1, 0, 1, 2],
+    "aimBand": 0,
+    "candidates": {
+      "NARROW": {"bandRadius": 0, "meaning": "ordinary-arrow-like diagnostic width"},
+      "MID_ADJACENT": {"bandRadius": 1, "meaning": "hits aim band plus immediately adjacent diagnostic bands"},
+      "FULL5": {"bandRadius": 2, "meaning": "covers all five diagnostic bands; overbroad comparison endpoint only"}
+    }
+  },
+  "formations": {
+    "ALIGNED_DEPTH": {
+      "bands": [0, 0, 0, 0, 0],
+      "expectedHitCount": {"NARROW": 5, "MID_ADJACENT": 5, "FULL5": 5}
+    },
+    "NEAR_LINE": {
+      "bands": [0, 0, 0, -1, 1],
+      "expectedHitCount": {"NARROW": 3, "MID_ADJACENT": 5, "FULL5": 5}
+    },
+    "SCATTER": {
+      "bands": [-2, -1, 0, 1, 2],
+      "expectedHitCount": {"NARROW": 1, "MID_ADJACENT": 3, "FULL5": 5}
+    },
+    "PROTECTED_BACKLINE": {
+      "bands": [0, 0, 0, -2, 2],
+      "roles": ["front", "front", "front", "SUPPORTER", "SIEGER"],
+      "expectedHitCount": {"NARROW": 3, "MID_ADJACENT": 3, "FULL5": 5},
+      "specialistsSurvive": {"NARROW": true, "MID_ADJACENT": true, "FULL5": false}
+    }
+  },
+  "interpretation": {
+    "preferredDiagnosticCenter": "MID_ADJACENT",
+    "reason": [
+      "Preserves unlimited depth when enemies are actually aligned.",
+      "Expands the huge-arrow fantasy into nearby geometry.",
+      "Does not automatically erase deliberately off-corridor SUPPORTER/SIEGER protection.",
+      "Avoids converting Archer into a screen-wide AoE class."
+    ]
+  },
+  "freezeBoundary": {
+    "productionWidthFrozen": false,
+    "normalizedWorldWidthFrozen": false,
+    "spriteColliderRatioFrozen": false,
+    "damageCoefficientFrozen": false
+  }
+}
