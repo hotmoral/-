@@ -11,18 +11,18 @@ Read/check in this order:
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
 4. `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-5. `legacy-game-structure/data/system_dependency_calibration_order_v0_12.yaml`
+5. `legacy-game-structure/data/system_dependency_calibration_order_v0_13.yaml`
 6. `legacy-game-structure/85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
 7. `legacy-game-structure/88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md`
 8. `legacy-game-structure/89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md`
 9. `legacy-game-structure/91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md`
 10. `legacy-game-structure/95_P4D2_STAGE46_STATEFUL_TEMPORAL_PRESSURE_PROBE_V0_1.md`
 11. `legacy-game-structure/96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md`
-12. `legacy-game-structure/97_P4D2_ROLE_ALIGNMENT_AND_ARCHER_WIDTH_PROBE_V0_1.md`
-13. `legacy-game-structure/98_P4D2_STAGE48_49_GRAMMAR_RESET_PROXY_V0_1.md`
-14. `legacy-game-structure/99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md`
-15. `legacy-game-structure/100_P4D2_STAGE48_49_CADENCE_CORRECTED_DIRECTIONAL_FEEDBACK_V0_1.md`
-16. `legacy-game-structure/data/p4d2_stage48_49_cadence_corrected_directional_summary_v0_1.json`
+12. `legacy-game-structure/99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md`
+13. `legacy-game-structure/100_P4D2_STAGE48_49_CADENCE_CORRECTED_DIRECTIONAL_FEEDBACK_V0_1.md`
+14. `legacy-game-structure/101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md`
+15. `legacy-game-structure/data/p4d2_armored_durable_proxy_fixture_v0_1.json`
+16. `tools/run_p4d2_armored_durable_proxy_probe_v0_1.py`
 17. `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_2.py`
 18. `legacy-game-structure/data/p4d2_stage48_49_dynamic_rotating_grammar_fixture_v0_1.json`
 19. `PLAYER_SKILL_AUTHORITY_REVIEW_2026-10-22.md`
@@ -33,8 +33,9 @@ Read/check in this order:
 24. current production/harness heads
 25. older P4-A/P4-B/P3 evidence only as needed for causal context/revalidation triggers
 
-Historical proposal 90 is superseded where it conflicts with approved docs 91/96.
+Historical proposal90 is superseded where it conflicts with approved docs91/96.
 The old Stage48 dynamic runner v0.1 is common-cadence preflight only and is not class-fairness authority.
+The armored durable proxy is diagnostic only and is not an approved new monster.
 Do not rerun closed P1/P2/P3/P4-C1/C2 solely because a session restarted.
 
 Live remote always wins.
@@ -68,10 +69,9 @@ P4-C2 = COMPLETE / PASS_WITH_WATCHES
 P4-D1 = USER_APPROVED_WITH_MODIFICATION
 P4-D2 Stage46 pressure existence = CANDIDATE ENVELOPE FOUND
 P4-D2 Archer wider gameplay corridor = USER APPROVED
-P4-D2 Stage48–49 static grammar direction = SUPPORTED
-P4-D2 cadence/no-target fidelity correction = COMPLETE METHOD DEFINITION
-P4-D2 cadence-corrected directional feedback = COMPLETE / EXACT V0.2 REPLAY PENDING
-P4-D2 targeted Archer chronology + Tank/Mage role-pressure follow-up = NEXT
+P4-D2 Stage48–49 cadence-corrected directional feedback = COMPLETE / EXACT V0.2 REPLAY PENDING
+P4-D2 armored durable pressure axis = SUPPORTED STATIC DIAGNOSTIC
+P4-D2 temporal durable role-pressure probe = NEXT
 P4-E = BLOCKED_PENDING_P4D2
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -118,19 +118,6 @@ Do not silently freeze these.
 
 ---
 
-# Archer structural amendment — approved
-
-`Sky-Piercing Arrow`:
-- one straight locked final shot;
-- no homing/bending/off-line retarget;
-- unlimited depth inside actual corridor;
-- gameplay corridor wider than ordinary/Lv26 arrows.
-
-Exact width remains provisional.
-Do not reopen without material evidence/user gate.
-
----
-
 # Cadence/no-target fidelity correction
 
 Recovered Rogue Lv16:
@@ -144,113 +131,115 @@ Diagnostic lanes:
 
 ```text
 COMMON_1P125_NO_BANK
-ROGUE_RECOVERY_DELTA_78MS_NO_BANK -> 1.047s sensitivity
-```
-
-`1.047s` is not production cadence authority.
-Do not treat Assassin Rhythm as blanket 20% whole-cycle speed.
-
-Corrected structural simulator rule:
-
-```text
+ROGUE_RECOVERY_DELTA_78MS_NO_BANK ->1.047s sensitivity
 NO_TARGET_OPPORTUNITIES_DO_NOT_BANK
 ```
 
-Do not freeze H3 reacquisition median as a universal numeric delay.
+`1.047s` is not production cadence authority.
+Do not treat Assassin Rhythm as blanket20% whole-cycle speed.
 
-Heavy/P×P misses must be chosen from actual cadence-specific timestamps mapped to active grammar.
+Cadence-corrected directional feedback:
+- Rogue one isolated missed final becomes recoverable;
+- two consecutive misses bury across all four tested starts;
+- Tank/Mage remain much more tolerant in the current rotation;
+- naive universal pressure increase is rejected as the first repair layer.
 
----
-
-# Cadence-corrected directional feedback
-
-Method validation:
-- independent reconstruction reproduced accepted Stage46 all-success `endWall/endActive/maxActive/kills` exactly for all five classes.
-
-Expected exact v0.2 full-output SHA:
+Expected exact v0.2 full-output SHA remains:
 
 ```text
 63da011ac97fd809168d8ffc9c3a9721c9962a2ae3c3496aa91e0d2de0b592f8
 ```
 
-This is not exact replay authority until the committed v0.2 runner itself is executed in repo checkout.
-
-## Rogue correction
-
-With 78ms recovery sensitivity:
-
-```text
-all-success wall1850
-one missed final -> survives all four grammar starts / wall995..1180
-two consecutive missed finals -> buried all four / ~53.1..56.375s
-```
-
-Therefore the old one-miss fragility was materially contaminated by cadence omission.
-
-Do not nerf Rogue16 or the 16-dagger center.
-
-## Knight
-- one miss recoverable;
-- two misses can become terminal depending on active grammar.
-
-## Tank
-- current rotation is forgiving;
-- roughly 4–5 consecutive misses required for burial in directional sweep.
-
-## Archer
-- current rotation forgiving;
-- some missed-final paths outperform all-success;
-- `LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH = HIGH`.
-
-Directional evidence points to SPLITTER chronology / target-band ordering / capability exposure rather than a width-power defect.
-
-## Mage
-- current rotation very forgiving for one/two misses;
-- some paths need 7–8+ missed finals for burial;
-- all-final-missed stress still buries near 60s.
-
-Global structural statement:
-
-```text
-NO_CLASS_CAN_IGNORE_LV31_PXP_INDEFINITELY = TRUE
-CURRENT_ROTATING_GRAMMAR_EQUAL_MASTERY_PRESSURE = FALSE
-```
-
-Identical mistake budgets are not required.
+Do not promote it to exact replay authority until committed-runner checkout execution matches.
 
 ---
 
-# Pressure repair rule
+# Armored durable pressure probe
 
-Naive global pressure increase is not the next repair layer.
-Directional checks showed shortened universal cadence / generic extra bodies can kill Knight/Rogue first while Tank/Mage remain comfortable.
+User hypothesis: late high-HP/high-armor threats may pressure Tank/Mage without nerfing their final skills.
 
-Next pressure language:
-- SIEGER timing/standoff pressure;
-- CHARGER readable windows;
-- delayed/distributed durable pressure;
-- SPLITTER rebound outside successful collapse package;
-- role-aligned second pulses.
+`ARMORED_DURABLE_PROXY` is diagnostic only.
+It combines BRUTE-like HP + SHIELD-like mitigation with moderate knock resistance.
 
-Do not patch global HP/spawn count first.
+Diagnostic center:
+
+```text
+HP1600
+armor multiplier.55
+knock resistance.65
+```
+
+Sensitivity:
+
+```text
+HP1400/1600/1800
+armor.65/.55/.50
+```
+
+Single durable, one Lv31 final:
+
+```text
+Knight removes65.4% / leaves~553
+Rogue kills with16 daggers
+Tank removes15.5% / leaves~1353 + pushes~.0764
+Archer removes94.9% / leaves~82 due armor ignore
+Mage primary removes24.8% / leaves~1204
+```
+
+Three clustered vs distributed durable reset fraction:
+
+```text
+clustered:
+Knight43.6 Rogue48.8 Tank15.5 Archer63.3 Mage45.4%
+
+distributed:
+Knight21.8 Rogue48.8 Tank15.5 Archer31.6 Mage29.7%
+```
+
+Interpretation:
+- durable pressure is a promising Tank/Mage late-pressure lever;
+- Rogue execution identity remains strong;
+- Archer armor-ignore identity remains strong while corridor geometry matters;
+- Tank still has a control answer because knock resistance is not extreme;
+- Mage retains clustering payoff and loses efficiency when the durable pressure is intentionally separated.
+
+Classification:
+
+```text
+DURABLE_PRESSURE_AXIS=SUPPORTED
+NEW_MONSTER_APPROVED=NO
+NUMERICAL_FREEZE=NO
+```
+
+Hard-counter safeguard:
+- do not stack extreme HP+armor+knock resistance;
+- Tank displacement must remain valid;
+- Mage needs clusterable windows;
+- future actual monster/variant identity requires a separate decision/telegraph gate.
 
 ---
 
 # Exact next work
 
-1. execute committed `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_2.py` in repo checkout;
-2. compare full JSON SHA against expected hash;
-3. if match, promote corrected directional result to exact replay evidence;
-4. trace Archer success/miss chronology and wall-hit sources;
-5. build targeted Tank/Mage role/timing-pressure probe without generic scalar inflation;
-6. reassess P4-D2 provisional closure with watches.
+1. build temporal durable-pressure fixture while preserving cadence/no-target corrections;
+2. isolated durable after successful reset;
+3. distributed durable arrivals across successive reset windows;
+4. durable frontline + timed SUPPORTER/SIEGER second pulse;
+5. durable frontline + CHARGER window;
+6. measure Tank time bought by knockback/barrier;
+7. measure Mage clustered vs separated recovery;
+8. verify Knight/Rogue are not unfairly killed before Tank/Mage receive pressure;
+9. keep exact Stage48 v0.2 replay and Archer chronology follow-up active;
+10. reassess P4-D2 provisional closure.
 
-No user decision is pending unless this exposes a material class-identity change.
+No user decision is pending unless temporal durable pressure requires a material new-monster or class-identity choice.
 
 ---
 
 # Do not yet
 
+- promote armored durable proxy to an actual monster;
+- freeze proxy HP/armor/knock values;
 - freeze Rogue16 daggers;
 - freeze Archer2.30 or exact corridor width;
 - freeze Stage48–49 mistake budgets;
