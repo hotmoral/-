@@ -19,31 +19,18 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage48 frontline v2 twice and print aggregate
+      - name: Run SIEGER windup diagnostic and print aggregate
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_real_monster_frontline_search_temp_v2.py > /tmp/v2a.json
-          cp p5_stage48_real_monster_frontline_search_temp_v2.json /tmp/result1.json
-          python3 tools/run_p5_stage48_real_monster_frontline_search_temp_v2.py > /tmp/v2b.json
-          cmp /tmp/result1.json p5_stage48_real_monster_frontline_search_temp_v2.json
+          python3 tools/run_p5_stage48_sieger_windup_diagnostic_temp.py > /tmp/windup.json
           python3 - <<'PY'
-          import hashlib,json
+          import json
           from pathlib import Path
-          p=Path('p5_stage48_real_monster_frontline_search_temp_v2.json')
-          d=json.loads(p.read_text())
-          out={'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'variants':{}}
+          d=json.loads(Path('p5_stage48_sieger_windup_diagnostic_temp.json').read_text())
+          out={}
           for name,v in d['variants'].items():
-            a=v['aggregate']
-            out['variants'][name]={
-              'settled':f"{a['settledRows']}/{a['validRows']}",
-              'buriedOrUnsettledRows':a['buriedOrUnsettledRows'],
-              'siegerShotCases':a['siegerShotCases'],
-              'totalSiegerShots':a['totalSiegerShots'],
-              'maxSiegerShotsOneRow':a['maxSiegerShotsOneRow'],
-              'minEndReserveRatio':a['minEndReserveRatio'],
-              'perClass':a['perClass']
-            }
-          print('P5_STAGE48_FRONTLINE_V2_AGGREGATE='+json.dumps(out,sort_keys=True))
+            out[name]={k:v[k] for k in ('windupCases','totalWindups','shotCases','totalShots','repositionCases','totalRepositions','perClass')}
+          print('P5_STAGE48_SIEGER_WINDUP='+json.dumps(out,sort_keys=True))
           PY
