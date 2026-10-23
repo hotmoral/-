@@ -6,7 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
-      - timing-defense-workspace/tools/run_p5_stage48_armored_low_density_front_temp.py
+      - timing-defense-workspace/tools/run_p5_stage48_armored_standoff_hybrid_temp.py
 
 permissions:
   contents: read
@@ -20,16 +20,16 @@ jobs:
         with:
           ref: timing-defense-workspace-temp-check
           fetch-depth: 1
-      - name: Run Stage48 armored low-density front diagnostic
+      - name: Run Stage48 armored-standoff hybrid diagnostic
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage48_armored_low_density_front_temp.py > /tmp/armored_low_density.json
+          python3 tools/run_p5_stage48_armored_standoff_hybrid_temp.py > /tmp/hybrid.json
           python3 - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('p5_stage48_armored_low_density_front_temp.json').read_text())
-          print('P5_STAGE48_ARMORED_LOW_DENSITY='+json.dumps(d['rows'],sort_keys=True))
-          print('P5_STAGE48_ARMORED_LOW_DENSITY_SCHEDULES='+json.dumps(d['schedules'],sort_keys=True))
+          d=json.loads(Path('p5_stage48_armored_standoff_hybrid_temp.json').read_text())
+          print('P5_STAGE48_ARMORED_STANDOFF_HYBRID='+json.dumps(d['rows'],sort_keys=True))
+          print('P5_STAGE48_ARMORED_STANDOFF_HYBRID_SCHEDULES='+json.dumps(d['schedules'],sort_keys=True))
           PY
