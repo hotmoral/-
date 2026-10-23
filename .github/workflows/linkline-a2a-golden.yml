@@ -1,19 +1,13 @@
-name: Linkline A3-C1 Persist Calibration Manifest
+name: Linkline A2 Cognitive Validation
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - linkline/a3-calibration-set-validation
-    paths:
-      - .github/workflows/linkline-a2a-golden.yml
 
 permissions:
-  actions: read
-  contents: write
+  contents: read
 
 jobs:
-  persist:
+  cognitive:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch exact public commit
@@ -27,97 +21,74 @@ jobs:
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
 
-      - name: Recover and validate manifest from successful C1 run
+      - name: Verify bundle identity
         shell: bash
         working-directory: repo
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          curl -fsSL \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/jobs/120708030036/logs" \
-            -o /tmp/c1-job.log
+          test "$(git hash-object linkline/reference/m2_state_model.py)" = "c2bf85974d317eb18a8b02a1ac4ee7eb244fcb77"
+          test "$(git hash-object linkline/reference/m3_solver.py)" = "16b170656bbdffa8e836a891ffbf221de6c2935f"
+          test "$(git hash-object linkline/tests/oracles/a2_cognitive_oracle.py)" = "ce809e893543fc7dc47ee729e81699dc81a77624"
+          test "$(git hash-object linkline/tests/fixtures/a2_cognitive_golden_v1.json)" = "b9b739bbea6d79ad34def4b0806a8fbfa1f6e872"
+          test "$(git hash-object linkline/tests/test_a2_cognitive_oracle.py)" = "f9720adfc3dc3015e8a904d84779e36e006d344d"
+          test "$(git hash-object linkline/analysis/a2_cognitive.py)" = "880aa4d8668fd71e2ce8222331f0da0368229400"
+          test "$(git hash-object linkline/tests/test_a2_cognitive.py)" = "df7e1bae12d48307dc4acb043d8960d7a9fbf62a"
+          test "$(git hash-object linkline/analysis/a2_e2_exact.py)" = "6f9026bd271dc083e9802dbf6c3af2e18962c8d3"
+          test "$(git hash-object linkline/tests/fixtures/a2_e2_exact_summary_v1.json)" = "41124e3b40c315490959bf479700614b53577d28"
+          test "$(git hash-object linkline/tests/test_a2_e2_exact.py)" = "7bbb7f7dec152464d562b3ca220435cc59014469"
+          sha256sum \
+            linkline/reference/m2_state_model.py \
+            linkline/reference/m3_solver.py \
+            linkline/tests/oracles/a2_cognitive_oracle.py \
+            linkline/tests/fixtures/a2_cognitive_golden_v1.json \
+            linkline/tests/test_a2_cognitive_oracle.py \
+            linkline/analysis/a2_cognitive.py \
+            linkline/tests/test_a2_cognitive.py \
+            linkline/analysis/a2_e2_exact.py \
+            linkline/tests/fixtures/a2_e2_exact_summary_v1.json \
+            linkline/tests/test_a2_e2_exact.py
 
+      - name: Validate seed 1
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+        run: |
+          set -euo pipefail
+          python --version
+          python -m unittest tests.test_a2_cognitive_oracle tests.test_a2_cognitive tests.test_a2_e2_exact -v
+
+      - name: Validate seed 777
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "777"
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_a2_cognitive_oracle tests.test_a2_cognitive tests.test_a2_e2_exact -v
+
+      - name: Report fingerprints and versions
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          set -euo pipefail
           python - <<'PY'
-          import base64, gzip, hashlib, json, re
-          from collections import Counter
-          from pathlib import Path
-
-          text = Path('/tmp/c1-job.log').read_text(encoding='utf-8-sig', errors='strict')
-          found = {}
-          for line in text.splitlines():
-              match = re.search(r'C1_MANIFEST_B64_(\d{4})=([A-Za-z0-9+/=]+)', line)
-              if match:
-                  found[int(match.group(1))] = match.group(2)
-          if not found:
-              raise SystemExit('manifest chunks not found in source job log')
-          expected_indexes = list(range(max(found) + 1))
-          if sorted(found) != expected_indexes:
-              raise SystemExit('manifest chunk sequence incomplete')
-
-          encoded = ''.join(found[index] for index in expected_indexes)
-          raw = gzip.decompress(base64.b64decode(encoded))
-          manifest = json.loads(raw)
-
-          def fingerprint(payload):
-              clean = dict(payload)
-              clean.pop('manifestFingerprint', None)
-              data = json.dumps(clean, sort_keys=True, separators=(',', ':')).encode('utf-8')
-              return hashlib.sha256(data).hexdigest()
-
-          expected_manifest = '2c3615516ad5caea431ec98bc1ec985a1dd6996d17c013c8e0fabe047932c2b1'
-          expected_universe = 'ce78c38e4110a7bd21ba5413677bdfcb3e8e764002db7fd35bb7aa1c110e1ca0'
-          if manifest.get('manifestFingerprint') != expected_manifest:
-              raise SystemExit('manifest fingerprint differs from successful run summary')
-          if fingerprint(manifest) != expected_manifest:
-              raise SystemExit('manifest self-fingerprint mismatch')
-          if manifest.get('identityUniverseCount') != 84320:
-              raise SystemExit('identity universe count mismatch')
-          if manifest.get('identityUniverseFingerprint') != expected_universe:
-              raise SystemExit('identity universe fingerprint mismatch')
-          if manifest.get('resultStatus') != 'CALIBRATION_SET_COMPLETE':
-              raise SystemExit('calibration set is not complete')
-          if manifest.get('analysisBudgetUsed') != 20000:
-              raise SystemExit('unexpected analysis budget')
-          if manifest.get('exactEligibleCount') != 9218:
-              raise SystemExit('unexpected exact eligible count')
-          if manifest.get('incompleteFeatureCount') != 0:
-              raise SystemExit('unexpected incomplete feature count')
-          if manifest.get('coverage', {}).get('unmetTargets') != []:
-              raise SystemExit('coverage target is unmet')
-
-          roles = Counter(row['role'] for row in manifest.get('selected', []))
-          if roles != Counter({'PILOT_ELIGIBLE': 24, 'RESERVE_HOLDOUT': 12}):
-              raise SystemExit(f'unexpected role counts: {roles}')
-          if manifest.get('coverage', {}).get('matchedPairCounts') != {
-              'MP1': 3, 'MP2': 3, 'MP3': 3, 'MP4': 3, 'MP5': 2
-          }:
-              raise SystemExit('matched pair target mismatch')
-
-          target = Path('linkline/evidence/a3_c1_calibration_set_manifest_v1.json')
-          target.parent.mkdir(parents=True, exist_ok=True)
-          target.write_text(json.dumps(manifest, sort_keys=True, indent=2) + '\n', encoding='utf-8')
-          print(f'manifestFingerprint={expected_manifest}')
-          print(f'manifestChunks={len(found)}')
-          print(f'manifestBytes={target.stat().st_size}')
+          from analysis.a2_cognitive import ANALYZER_VERSION
+          from analysis.a2_e2_exact import E2_VERSION
+          from tests.oracles.a2_cognitive_oracle import fingerprint, golden_payload
+          value = fingerprint(golden_payload())
+          expected = "198e1418691e29b8560c0b38270c69c8226034ae439fc6d66d6e02b866772d18"
+          print(f"payload_fingerprint={value}")
+          print(f"analyzer_version={ANALYZER_VERSION}")
+          print(f"e2_version={E2_VERSION}")
+          if value != expected:
+              raise SystemExit("payload fingerprint mismatch")
+          if ANALYZER_VERSION != "1.0.0":
+              raise SystemExit("analyzer version mismatch")
+          if E2_VERSION != "1.0.0":
+              raise SystemExit("E2 version mismatch")
           PY
-
-      - name: Commit manifest only
-        shell: bash
-        working-directory: repo
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          target="linkline/evidence/a3_c1_calibration_set_manifest_v1.json"
-          test -f "$target"
-          git add "$target"
-          test "$(git diff --cached --name-only)" = "$target"
-          git config user.name "linkline-validation"
-          git config user.email "linkline-validation@users.noreply.github.com"
-          git commit -m "Linkline A3-C1: record calibration-set manifest"
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push origin HEAD:refs/heads/linkline/a3-calibration-set-validation
