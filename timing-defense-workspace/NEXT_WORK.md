@@ -10,225 +10,176 @@ Updated: 2026-10-23 KST
 
 ## Mandatory operating authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_16.yaml`
-- runner correction: `legacy-game-structure/105_P4D2_V03_REPLAY_FAILURE_AND_V04_RUNNER_CORRECTION_V0_1.md`
-- full rotation result: `legacy-game-structure/106_P4D2_STAGE49_FULL_ROTATION_DIRECTIONAL_PROBE_V0_1.md`
-- machine summary: `legacy-game-structure/data/p4d2_stage49_full_rotation_directional_summary_v0_1.json`
+- active dependency plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_17.yaml`
+- P4-D2 closure: `legacy-game-structure/110_P4D2_PROVISIONAL_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
+- P4-E closure: `legacy-game-structure/111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md`
+- exact replay: `legacy-game-structure/109_P4D2_EXACT_V05_AND_STAGE49_V02_REPLAY_ADMISSION_V0_1.md`
 
 Live remote wins.
 
 ---
 
-# ACTIVE PHASE — P4-D2
+# ACTIVE/NEXT PACKAGE — P5
 
 Current boundary:
 
-**V0.4 EXACT ADMISSION + ARCHER CHRONOLOGY + STAGE46 LV31 ACQUISITION FAIRNESS**
+**RUN COIN / SHOP CANDIDATE — STRUCTURAL REVIEW BEFORE VALUES**
 
-No user decision is pending.
-P4-E remains blocked pending P4-D2.
+P4 is provisionally structurally complete with watches.
+No user decision is currently pending before P5 structural recovery/review.
 
 ---
 
-# Stable current direction
+# P4 inputs P5 must treat correctly
 
-User-approved:
-- Lv31 finals stay spectacular/class-defining;
-- Stage46+ real combat pressure may bury players without Lv31;
-- no code-level Lv31 gate;
-- combo/P×P maintenance is late mastery;
-- Archer Lv31 has a wider real straight corridor while remaining non-homing/non-bending.
+P5 inherits a provisional skill-power spine, not frozen balance numbers.
 
-Current provisional centers remain unfrozen:
+Current Lv31 working centers remain unfrozen:
 
 ```text
 Knight  second wave1.00
 Rogue   16 daggers × .45
 Tank    shockwave.75 / KB×2.5 / barrier250-for-6s candidate
-Archer  2.30 / wider straight corridor / MID_ADJACENT diagnostic center
+Archer  per-target2.30 / wider straight MID_ADJACENT diagnostic corridor
 Mage    stages.75 / radius1.25
 ```
 
----
+P5 must consume skill effects through the P2 modifier/effect pipeline rather than inventing generic class-power scalars.
 
-# Mandatory simulator fidelity
-
-```text
-NO_TARGET opportunities do not bank
-Rogue recovery sensitivity =1.125-.078 =1.047s
-active Lv31 Tank barrier cannot be downgraded by Lv16 guard
-```
-
-Runner state:
+EXP status:
 
 ```text
-v0.2 = historical pre-barrier-correction
-v0.3 = FAIL_SOURCE_PATCH_GUARD / do not admit
-v0.4 = current prepared fidelity runner
+pure per-valid-turn EXP = provisional diagnostic baseline
+final EXP = OPEN / P10R mandatory
+97/98/99 Stage46 possession = sensitivity only
+hidden class/Tier XP correction = unauthorized
 ```
 
-v0.3 failed because its source patch assumed both shield-consumption sites had identical indentation. v0.4 patches SIEGER-shot and wall-contact absorption independently.
-
-Use:
-- `tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_4.py`
-- `tools/run_p4d2_stage49_full_rotation_probe_v0_1.py`
-
-Exact committed checkout execution remains pending.
+Skill reach is a feedback invariant, not an immutable P4 output.
 
 ---
 
-# Stage49 full rotation — current best directional candidate
+# P5 structural questions — first work
 
-Rotation:
-
-```text
-LINE_ESCORT
-CLUSTER_RECOVERY
-FRONTLINE_BREACH
-DURABLE_SCATTER
-TIME_BUDGET_SIEGER
-```
-
-The diagnostic durable proxy is still not a new monster.
-
-## All-success wall
+Before any price/rank/coin tuning, recover current legacy/shop authority and classify each item as:
 
 ```text
-Knight1705
-Rogue2000
-Tank2000
-Archer2000
-Mage2000
+CONFIRMED
+LEGACY_IMPLEMENTED
+PROVISIONAL_CANDIDATE
+UNRESOLVED
+SUPERSEDED
 ```
 
-## One missed final
+Then decide only the structural gaps that actually remain.
 
-```text
-Knight970..1595
-Rogue1385..1705
-Tank2000
-Archer1740..2000
-Mage1890..2000
-```
+Required structural questions from dependency authority:
 
-## Two consecutive missed finals
+1. **Shop cadence**
+   - every Stage?
+   - checkpoint/intermission only?
+   - selected-stage / fast-continue hybrid?
+   - preserve mobile pacing and avoid forced menu fatigue.
 
-```text
-Knight820..1045
-Rogue340..1050
-Tank1725..2000
-Archer1700..2000
-Mage1890..2000
-```
+2. **Coin award source/timing**
+   - when the run-local coin is credited;
+   - what combat event(s) may contribute;
+   - whether reward timing can be replayed/reconnected deterministically;
+   - no permanent/account currency conflation.
 
-## All finals missed
+3. **Upgrade categories**
+   - recover existing intended categories first;
+   - examples already known at concept level include base attack, crit chance, crit damage, BaseHP, defense;
+   - do not assume exact list/values until live legacy/canonical evidence is read.
 
-```text
-Knight buried34.025s
-Rogue  buried29.100s
-Tank   buried34.575s
-Archer buried57.025s
-Mage   buried52.225s
-```
+4. **Purchase caps / ranks**
+   - schema before values;
+   - no infinite compounding or hidden multiplicative family.
 
-Structural interpretation:
-- all-success survives all five;
-- one isolated mistake is recoverable all five;
-- repeated failure consumes different class-specific error budgets;
-- sustained total failure buries all five;
-- Tank keeps the largest defensive budget by design;
-- no hidden class compensation required.
+5. **Wall/BaseHP and defense semantics**
+   - must compose through P1/P2 incoming-wall pipeline;
+   - purchase must not silently heal unless healing is separately defined;
+   - distinguish max-HP increase, current-HP change, generic DR and unique defense.
+
+6. **Ownership / multiplayer boundary**
+   - only decide AI/human/team ownership where P5 semantics require it;
+   - do not prematurely solve P10 multiplayer scaling.
 
 ---
 
-# Stage49 -> Stage50 continuity watch
+# P5 simulation strategy set
 
-BaseHP persists across stages and there is no automatic heal.
-Therefore `not buried` is not enough.
-
-Keep active:
-
-`STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH`
-
-Examples after eight consecutive misses:
+After structural contract is clear, compare at least:
 
 ```text
-Archer DURABLE_SCATTER 345
-Archer TIME_BUDGET_SIEGER 785
-Mage LINE_ESCORT 355
-Mage CLUSTER_RECOVERY 575
-Mage TIME_BUDGET_SIEGER buried
+ATTACK_HEAVY
+CRIT_HEAVY
+DEFENSE_HEAVY
+BALANCED
+SAVE_DELAY
+ROLE_AWARE candidate
 ```
 
-Do not freeze an exact Stage50 reserve floor yet.
+Do not tune the shop around one hand-picked optimal policy.
+
+Exit signal later must show:
+- no trivial universal dominant strategy under the bounded test set;
+- no immediate power runaway;
+- shop choices create meaningful but recoverable tradeoffs;
+- shop does not collapse class identity;
+- P4 skill reach remains interpretable after shop feedback.
 
 ---
 
-# Archer chronology
+# Mandatory feedback recheck
 
-The new full rotation showed **zero one/two-miss success-monotonicity reversals** across all five classes.
+P5 must explicitly measure:
 
-This is encouraging but does not close the historical Archer watch.
+```text
+shop damage/control/defense
+-> kill speed / wall survival
+-> number and timing of valid local timing turns
+-> EXP opportunity
+-> Lv6/11/16/21/26/31 reach
+```
 
-Next direct trace order:
-1. SPLITTER parent death / child spawn timing;
-2. target/band order;
-3. CHARGER/SIEGER exposure;
-4. later encounter ordering.
-
-Do not change Archer width/power before that trace.
+If shop causes skill reach to drift:
+1. identify whether cause is shop leverage, encounter opportunity or provisional EXP semantics;
+2. do not patch with hidden class XP;
+3. keep final reconvergence routed to P10R.
 
 ---
 
-# Stage46 acquisition fairness remains open
-
-A strong Stage46 Lv31 mastery gate is only fair if intended skilled players normally own Lv31 by entry.
-
-Candidate possession checkpoints remain:
+# P4 watches that remain active during P5
 
 ```text
-97 / 98 / 99%
+SOLO_PROGRESSION_DIVERGENCE_WATCH
+TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+PLAYER_COUNT_SCALING_XP_DEPENDENCY
+MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+STAGE46_LV31_ACQUISITION_FAIRNESS
+STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH
+LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH_ROOT_CAUSE_EXPLAINED
+ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
 ```
 
-None is frozen.
-
-The next acquisition work must distinguish:
-- actual timing/combo performance;
-- class kill-speed self-damping of EXP opportunity;
-- encounter opportunity;
-- retry/failure effects;
-- later player-count/team-composition effects.
-
-No hidden class XP correction is allowed during this check.
-P10R remains mandatory after credible multiplayer scaling.
+Do not reopen P4 solely because P5 starts. Reopen only the smallest relevant P4 candidate if P5 produces an actual feedback violation.
 
 ---
 
-# Exact next work
+# Exact next actions
 
-1. exact-execute committed v0.4 + Stage49 wrapper when repository-checkout execution is available;
-2. compare exact JSON to the fidelity-checked directional reconstruction;
-3. direct-trace the historical Archer SPLITTER/target-order nonmonotonic path;
-4. keep `STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH` active;
-5. resume Stage46 Lv31 acquisition-distribution fairness around97/98/99;
-6. keep Rogue Dagger Storm multiplayer event-volume watch active;
-7. reassess P4-D2 provisional closure after these remaining classifications.
+1. inspect live legacy/canonical shop/coin documents and production implementation without changing production;
+2. recover current shop cadence, coin sources, categories, ranks/caps and HP/DEF semantics;
+3. build a P5 authority matrix and contradiction report;
+4. identify only genuinely unresolved structural decisions;
+5. if a material choice remains, present recommendation and user decision gate;
+6. otherwise draft the bounded P5 structural contract and then prepare simulation agents.
 
-Repair/order rule:
-
-```text
-method fidelity
--> chronology / acquisition fairness
--> encounter authoring
--> only then class coefficients if still necessary
-```
-
-Do not yet:
-- promote durable proxy or BRUTE+SHIELD concept to an actual monster;
-- freeze proxy stats or full-rotation content;
-- freeze Stage49->50 reserve floor;
-- freeze Rogue16 or Archer2.30/exact width;
-- freeze Stage46 possession at97/98/99%;
-- change production gameplay;
+Do **not** yet:
+- tune prices or coin income before structural semantics;
 - freeze final EXP;
-- start P5 before P4-E closure.
+- modify production gameplay;
+- infer multiplayer ownership rules beyond P5 necessity;
+- promote the armored durable proxy/BRUTE+SHIELD idea into a monster;
+- rerun closed P4 work without a concrete P5 feedback trigger.
