@@ -1,37 +1,36 @@
 version: system-dependency-calibration-order-v0.30
 status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
 supersedes: data/system_dependency_calibration_order_v0_29.yaml
+
 authorityDocs:
   - 86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md
   - 138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md
   - 72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+  - 74_MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION_APPROVED_CONTRACT_V0_1.md
   - 76_TEN_STAGE_PERSISTENT_RUN_KERNEL_APPROVED_CONTRACT_V0_1.md
+  - 79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md
   - 116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md
-  - 128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md
   - 129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md
-  - 131_P5_CLASS_IDENTITY_FIRST_DIRECTIONAL_RESULT_V0_1.md
-  - 132_P5_TANK_CONTROL_CLEAR_PARETO_DIRECTION_V0_1.md
-  - 133_P5_ROGUE_DAGGER_STORM_BROAD_CLEANUP_BREAKPOINT_V0_1.md
-  - 134_P5_KNIGHT_PENETRATION_ROBUST_IDENTITY_PROBE_V0_1.md
   - 135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md
-  - 136_P5_IDENTITY_AWARE_STAGE46_49_INTEGRATED_RUNNER_PREFLIGHT_V0_1.md
   - 137_P5_STAGE46_49_EXACT_EXECUTION_STAGE_SETTLED_BOUNDARY_RESULT_V0_1.md
   - 139_P5_STAGE48_SIEGER_PROTECTION_TIME_DIAGNOSTIC_V0_1.md
+  - 140_P5_STAGE48_THREE_AXIS_COMPARISON_DECISION_GATE_V0_1.md
+  - 141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md
   - ../CHARACTER_PROFILE_RADAR_V1.md
 
 principles:
   - live_remote_wins
   - recover_whole_structure_reasoning_frame_before_local_tuning
-  - understand_full_structure_flow_before_local_tuning
   - check_upstream_downstream_feedback_and_contradictions_each_slice
-  - do_not_repeat_closed_work_without_concrete_trigger
   - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
   - bounded_probe_before_broad_reaudit
+  - do_not_repeat_closed_work_without_concrete_trigger
   - plain_language_causal_explanation_first
   - important_design_or_numerical_adoption_requires_user_approval
   - stage_advance_requires_stage_settled
-  - stage_local_enemy_instances_do_not_leak_to_next_stage
   - carry_wall_current_max_and_absolute_deficit_across_stages
+  - stage_local_enemy_instances_do_not_leak_to_next_stage
   - normal_right_edge_entry_required
   - midfield_pop_in_forbidden
   - radar_high_axes_must_remain_causally_visible
@@ -46,123 +45,173 @@ principles:
   - keep_session_handoff_current_at_group_boundaries
 
 workPackages:
-  P0: {status: PASS_WITH_WATCHES}
-  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
-  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
   P3:
     status: STRUCTURAL_PASS_COMPLETE
     stageAdvanceBarrier: STAGE_SETTLED
-  P4: {status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES}
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
   P5:
-    status: STAGE48_REAL_MONSTER_PROTECTED_TRAVEL_TIME_SHORTFALL_DIAGNOSED
+    status: ARMORED_HARDENED_FRONTLINE_AXIS_USER_DECISION_GATE
     structuralContract: USER_APPROVED_A2
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    productionAuthority: false
+
+    fixedGuards:
+      physicalSpawnX: 0.92
+      midfieldPopIn: false
+      stageBoundary: STAGE_SETTLED
+      survivalIsClear: false
+      noHardClassLockout: true
+      globalArcherNerfAuthorized: false
+      mageBuffToFixBadEncounterAuthorized: false
+      tankControlNerfAsFirstRepairAuthorized: false
+      rogueRetargetRemovalAsFirstRepairAuthorized: false
+
     workingEconomyCenters:
       fullShopReferenceCost: 16360
       spendRatio: 0.50
       incomeMix: 70_30
       shopEffectScale: 0.40
       status: DIAGNOSTIC_ONLY_NOT_FROZEN
+
     exactIntegratedRunner:
-      runner: ../../tools/run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py
-      preflight: 136_P5_IDENTITY_AWARE_STAGE46_49_INTEGRATED_RUNNER_PREFLIGHT_V0_1.md
       checkoutExactExecution: PASS
       deterministicRepeat: PASS
       outputSha256: 0d08f52ad5a25049e3379831bb4a41e7dc63256d7675d3743a1891dfba35a45b
       runId: 39949346908
-      physicalSpawnX: 0.92
-      midfieldPopIn: false
       productionAuthority: false
+
     stageBoundary:
-      resetAt60ReserveInterpretation: REJECTED
-      continuousEnemyCarryIntoNextStage: REJECTED
+      deleteRemainingAt60: REJECTED
+      carryEnemyInstancesAcrossStage: REJECTED
       requiredModel: STAGE_SETTLED_THEN_RESET_STAGE_LOCAL_ENEMIES
-      backlogDiscardWatch: TRIGGERED_MATERIAL
-      canonicalProbe: ../../tools/run_p5_identity_aware_stage46_49_stage_settled_probe_v0_1.py
       exactEvidenceRunId: 39950165809
       exactEvidenceSha256: 2680ec99b9aecbc27eca9c647b6c95057780306eab2acf884b511581d3a95e0d
-    classIdentityClosure:
-      source: 135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md
-      authority: DIRECTIONAL_GROUP_CLOSURE_EXACT_TARGETED_REGRESSIONS_PASSED
-      reopenWholesale: false
-      Tank:
-        classification: CONTROL_ALIGNED_NEGATIVE_SOLO_THROUGHPUT_DEFECT_CONFIRMED_DIRECTIONALLY
-        nextDamageCandidates: [0.20, 0.25, 0.30]
-        workingCenter: 0.25
-        selected: false
-        controlPackageChangeAuthorized: false
-        frozen: false
-      Rogue:
-        classification: CORE_MULTIHIT_ALIGNED_BROAD_CLEANUP_HIGH_WATCH_EXACTLY_CONFIRMED
-        guard: ROGUE_STORM_SINGLE_DAGGER_ORDINARY_ONESHOT_NOT_ROUTINE
-        retargetChangeAuthorized: false
-      Knight:
-        classification: EXACT_TARGETED_REGRESSION_ALIGNED
-      Archer:
-        classification: EXACT_TARGETED_LINE_REGRESSION_ALIGNED
-      Mage:
-        classification: EXACT_TARGETED_DENSITY_REGRESSION_ALIGNED_STAGE48_PACKET_FAILURE_NOT_CLASS_DEFECT
-    stage48CurrentDiagnostic:
-      status: NOT_ADMISSION_READY
-      reason:
-        - KNIGHT_ONLY_ARMORED_DURABLE_PROXY_REPEATED_AS_GENERIC_ESCORT
-        - MAGE_REPRESENTATIVE_SUCCESS_FAILURE_UNDER_STAGE_SETTLED
-        - PRESSURE_COMES_FROM_PROXY_THRESHOLD_NOT_SIEGER_ROLE_UPTIME
-      simpleSubstitutionSearch:
-        brute: NO_MEANINGFUL_PRESSURE_SIEGER_ZERO_SHOTS
-        shield: NO_MEANINGFUL_PRESSURE_SIEGER_ZERO_SHOTS
-        bruteShieldMix: NO_MEANINGFUL_PRESSURE_SIEGER_ZERO_SHOTS
-        slowerShieldCycle: NO_MEANINGFUL_PRESSURE_SIEGER_ZERO_SHOTS
-      deathPositionDiagnostic:
+
+    stage48Evidence:
+      oldRepeatedProxyPacket:
+        status: REJECTED_NOT_ADMISSION_READY
+        reason:
+          - proxy originally isolated Knight penetration
+          - repeated proxy created Mage/Tank threshold pressure
+          - pressure source was proxy durability rather than clean SIEGER role uptime
+      simpleRealMonsterSubstitution:
+        brute: INSUFFICIENT
+        shield: INSUFFICIENT
+        bruteShieldMix: INSUFFICIENT
+      realMonsterProtectionTime:
         source: 139_P5_STAGE48_SIEGER_PROTECTION_TIME_DIAGNOSTIC_V0_1.md
-        tempRunId: 39954298666
-        siegerSpawnX: 0.92
-        siegeThresholdX: 0.38
-        provisionalSpeed: 0.045
-        derivedTravelSecondsToThreshold: 12.0
-        realMonsterWindupCases: 0
-        realMonsterShotCases: 0
-        bestObservedRealMonsterDeathX:
-          Knight: 0.7389
-          Rogue: 0.7287
-          Tank: 0.4451
-          Archer: 0.7209
-          Mage: 0.7929
-        proxyMageWindups: 3
-        proxyMageShots: 1
-        primaryFinding: INSUFFICIENT_PROTECTED_TRAVEL_TIME_BEFORE_EXPOSURE
-        windupChangeJustified: false
-        globalDurabilityInflationJustified: false
-      nextRepairAxis: SEQUENTIAL_FRONTMOST_HANDOFF_LAYERED_PULSE_CHRONOLOGY
-      candidateAdoptionAuthorized: false
-    nextSlices:
-      - BOUNDED_STAGE48_LAYERED_SCREEN_HANDOFF_TIMELINE_DIAGNOSTIC
-      - MEASURE_FRONTMOST_OWNER_AND_SCREEN_HANDOFF_GAPS
-      - REQUIRE_MEANINGFUL_SIEGER_ROLE_UPTIME_WITHOUT_PROXY_DURABILITY_CRUTCH
-      - CHECK_ALL_CLASS_REPRESENTATIVE_SUCCESS_USABLE_RESERVE
-      - CHECK_DEFENSE_HEAVY_KNIGHT_AND_MAGE_IDENTITY_NONREGRESSION
-      - CHECK_TANK_SLOW_CLEAR_AND_ROGUE_LOW_AOE_WATCHES
-      - REPLAY_STAGE46_49_WITH_STAGE_SETTLED_ONLY_AFTER_PROMISING_STAGE48_DIAGNOSTIC_CANDIDATE
-      - PRESENT_STAGE48_CANDIDATE_AND_TRADEOFFS_TO_USER_BEFORE_ADOPTION
-      - STAGE49_CHRONOLOGY_ONLY_AFTER_STAGE48_DIRECTION_APPROVED
-      - EXACT_COMMITTED_REPLAY_FOR_OTHER_PENDING_P4_P5_FIDELITY_ASSETS
-      - KNOCKBACK_CROSS_CLASS_POLICY_LANE
-      - CRIT_CRITDMG_POLICY_LANE
-      - P4_EXP_SKILL_REACH_FEEDBACK
-    productionAuthority: false
-  P6: {status: BLOCKED_PENDING_P5}
-  P10R: {status: BLOCKED_PENDING_P10}
+        spawnX: 0.92
+        provisionalSiegerSpeed: 0.045
+        diagnosticSiegeThresholdX: 0.38
+        derivedStraightTravelSeconds: 12.0
+        finding: INSUFFICIENT_PROTECTED_TRAVEL_TIME
+      armoredDesignIntent:
+        purposes:
+          - reduce late Mage/Archer ordinary-volume instant erasure
+          - buy meaningful protected SIEGER role time
+        productionMonsterApproved: false
+        eliteSystemApproved: false
+      lowDensityResult:
+        source: 141_P5_STAGE48_ARMORED_LOW_DENSITY_AND_GLOBAL_STANDOFF_RESULT_V0_1.md
+        temporalOverSeparation: COUNTERPRODUCTIVE
+        spatialLowDensity: CAUSAL_PROMISING
+        archerLifetimeReferenceSeconds: 6.825
+        archerLifetimeSpatialSeconds: 9.075
+        archerDeathXReference: 0.6129
+        archerDeathXSpatial: 0.5116
+        knightLifetimeReferenceSeconds: 2.325
+        knightLifetimeSpatialSeconds: 4.575
+        mageTwoBodySpatialLifetimeSeconds: 7.2
+        mageChainChronologyRelevant: true
+      hybridFidelity:
+        invalidRunId: 39960854218
+        defect: REBUILT_SIMULATE_DROPPED_FIXED_STAGE_SCHEDULE_HOOK
+        fixedRunId: 39961261476
+        expectedActualScheduleMatch: PASS
+      correctedStage48Hybrid:
+        armored3SpatialPlusStandoff082AllFiveFire: true
+        adopted: false
+      globalStandoffReplay:
+        runId: 39961496878
+        x038:
+          settledThrough49: 20
+          caseCount: 20
+          buried: 0
+          classification: CHAIN_SAFE_STAGE48_ROLE_TOO_WEAK
+        x078:
+          settledThrough49: 13
+          caseCount: 20
+          buried: 7
+          classification: CROSS_STAGE_FAIL
+        x082:
+          settledThrough49: 8
+          caseCount: 20
+          buried: 12
+          classification: CROSS_STAGE_FAIL
+        primaryConclusion: GLOBAL_STANDOFF_ADVANCEMENT_REJECTED_AS_CURRENT_REPAIR
+        current038Frozen: false
+
+    currentRecommendedAxis:
+      name: LIMITED_ARMORED_HARDENED_FRONTLINE
+      status: RECOMMENDED_FOR_EXPLORATION_AWAITING_USER_APPROVAL
+      means:
+        - explore limited hardened frontline envelope
+        - use 2_to_3_body_low_spatial_density_as_search_region
+        - jointly_measure_late_volume_erasure_and_sieger_protection
+      doesNotMean:
+        - approve_old_proxy_as_monster
+        - approve_hp1600_armor055
+        - approve_exact_count_or_timing
+        - approve_tenth_ordinary_monster
+        - approve_elite_system
+        - freeze_sieger_standoff
+        - authorize_production
+
+    deferredMechanicGate:
+      status: NOT_OPENED_YET
+      options:
+        - resistance
+        - protective_buff_or_aura
+        - elite_or_hardened_state
+        - other_skill_like_monster_mechanic
+      openOnlyIf: SIMPLE_ARMORED_FRONTLINE_AXIS_REMAINS_INSUFFICIENT_AND_USER_APPROVES
+
+    nextSlicesIfUserApproves:
+      - DEFINE_DIAGNOSTIC_HARDENED_FRONTLINE_ENVELOPE_NOT_PRODUCTION_MONSTER
+      - KEEP_GLOBAL_SIEGER_BEHAVIOR_UNCHANGED_FOR_NOW
+      - TEST_NARROW_LESS_EXTREME_DURABILITY_MITIGATION_RANGE
+      - TEST_2_TO_3_BODY_LOW_SPATIAL_DENSITY_PLACEMENTS_NEAR_SIEGER_ARRIVAL
+      - MEASURE_MAGE_ARCHER_VOLUME_ERASURE_TIME
+      - MEASURE_SIEGER_PROTECTED_TIME_DEATH_X_ROLE_UPTIME
+      - CHECK_KNIGHT_ROGUE_TANK_IDENTITY_BREAKPOINTS
+      - REPLAY_STAGE46_49_STAGE_SETTLED_AFTER_PROMISING_STAGE48_PACKET
+      - PREPARE_NEW_USER_GATE_BEFORE_ANY_BUFF_RESISTANCE_OR_ELITE_MECHANIC
+
+  P6:
+    status: BLOCKED_PENDING_P5
+  P10R:
+    status: BLOCKED_PENDING_P10
 
 currentBoundary:
   activePackage: P5
-  next: P5_STAGE48_LAYERED_SCREEN_HANDOFF_TIMELINE_BOUNDED_DIAGNOSTIC
-  nextMode: DIAGNOSTIC_ONLY_NO_CANDIDATE_ADOPTION_NO_NUMERICAL_FREEZE
-  awaitingUserDecision: false
+  next: USER_DECISION_ON_LIMITED_ARMORED_HARDENED_FRONTLINE_EXPLORATION_AXIS
+  nextMode: DECISION_GATE_NO_ADOPTION_BEFORE_APPROVAL
+  awaitingUserDecision: true
   userApprovalRequiredBefore:
-    - ADOPTING_NEW_STAGE48_WORKING_PACKET
-    - CHANGING_STAGE48_CADENCE_AS_WORKING_DIRECTION
-    - CHANGING_SIEGER_OR_ESCORT_STATS
+    - ADOPTING_ARMORED_HARDENED_FRONTLINE_AS_WORKING_EXPLORATION_DIRECTION
+    - ADOPTING_NEW_STAGE48_PACKET
+    - APPROVING_NEW_MONSTER_OR_ELITE_OR_HARDENED_STATE
+    - OPENING_BUFF_RESISTANCE_SKILL_LIKE_MONSTER_MECHANIC_AS_DESIGN_DIRECTION
+    - CHANGING_SIEGER_STANDOFF_OR_WINDUP_AS_WORKING_VALUE
     - FREEZING_TANK_DAMAGE_COEFFICIENT
-    - CHANGING_CLASS_OR_MONSTER_OR_SHOP_NUMERICS
+    - CHANGING_CLASS_MONSTER_SHOP_EXP_NUMERICS
     - CHANGING_APPROVED_STRUCTURAL_CONTRACT
     - PRODUCTION_GAMEPLAY_CHANGE
   productionChangesAuthorized: false
