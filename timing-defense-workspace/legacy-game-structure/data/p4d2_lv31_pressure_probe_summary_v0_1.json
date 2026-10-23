@@ -1,0 +1,79 @@
+{
+  "centerSnapshotMetrics": {
+    "S46_DENSITY_CLUSTER_12": {
+      "Archer_1.0": {"hpResetFraction": 0.47259, "killCount": 5, "populationResetFraction": 0.25, "wallBudgetResetFractionProxy": 0.303644},
+      "Archer_2.3": {"hpResetFraction": 0.517958, "killCount": 6, "populationResetFraction": 0.333333, "wallBudgetResetFractionProxy": 0.449393},
+      "Knight_secondWave1.0": {"hpResetFraction": 0.376181, "killCount": 8, "populationResetFraction": 0.5, "wallBudgetResetFractionProxy": 0.42915},
+      "Mage_stage0.75": {"hpResetFraction": 0.826843, "killCount": 12, "populationResetFraction": 0.833333, "wallBudgetResetFractionProxy": 0.793522},
+      "Rogue_16": {"hpResetFraction": 0.499055, "killCount": 9, "populationResetFraction": 0.583333, "wallBudgetResetFractionProxy": 0.518219},
+      "Tank_damage0.75_knock2.5": {"hpResetFraction": 0.730435, "killCount": 8, "meanBaseTranslationSecondsBought": 1.236, "populationResetFraction": 0.5, "wallBudgetResetFractionProxy": 0.48583},
+      "initial": {"liveCount": 12, "remainingHp": 5290.0, "remainingOneEventWallBudgetProxy": 1235.0}
+    },
+    "S46_FORTRESS_OVERLAP_14": {
+      "Archer_1.0": {"hpResetFraction": 0.390638, "killCount": 6, "populationResetFraction": 0.285714, "wallBudgetResetFractionProxy": 0.335714},
+      "Archer_2.3": {"hpResetFraction": 0.390638, "killCount": 6, "populationResetFraction": 0.285714, "wallBudgetResetFractionProxy": 0.335714},
+      "Knight_secondWave1.0": {"hpResetFraction": 0.539952, "killCount": 8, "populationResetFraction": 0.428571, "wallBudgetResetFractionProxy": 0.564286},
+      "Mage_stage0.75": {"hpResetFraction": 0.738079, "killCount": 11, "populationResetFraction": 0.642857, "wallBudgetResetFractionProxy": 0.635714},
+      "Rogue_16": {"hpResetFraction": 0.484262, "killCount": 6, "populationResetFraction": 0.428571, "wallBudgetResetFractionProxy": 0.507143},
+      "Tank_damage0.75_knock2.5": {"hpResetFraction": 0.723648, "killCount": 8, "meanBaseTranslationSecondsBought": 1.277, "populationResetFraction": 0.428571, "wallBudgetResetFractionProxy": 0.407143},
+      "initial": {"liveCount": 14, "remainingHp": 6195.0, "remainingOneEventWallBudgetProxy": 1400.0}
+    },
+    "S46_LINE_DEPTH_12": {
+      "Archer_1.0": {"hpResetFraction": 0.869328, "killCount": 10, "populationResetFraction": 0.666667, "wallBudgetResetFractionProxy": 0.652174},
+      "Archer_2.3": {"hpResetFraction": 0.956443, "killCount": 12, "populationResetFraction": 0.833333, "wallBudgetResetFractionProxy": 0.936759},
+      "Knight_secondWave1.0": {"hpResetFraction": 0.549909, "killCount": 8, "populationResetFraction": 0.5, "wallBudgetResetFractionProxy": 0.58498},
+      "Mage_stage0.75": {"hpResetFraction": 0.10861, "killCount": 1, "populationResetFraction": 0.083333, "wallBudgetResetFractionProxy": 0.047431},
+      "Rogue_16": {"hpResetFraction": 0.494555, "killCount": 8, "populationResetFraction": 0.5, "wallBudgetResetFractionProxy": 0.521739},
+      "Tank_damage0.75_knock2.5": {"hpResetFraction": 0.701996, "killCount": 7, "meanBaseTranslationSecondsBought": 1.245, "populationResetFraction": 0.416667, "wallBudgetResetFractionProxy": 0.403162},
+      "initial": {"liveCount": 12, "remainingHp": 5510.0, "remainingOneEventWallBudgetProxy": 1265.0}
+    }
+  },
+  "expectedFullJsonSha256": "efdb369a6053bb83fcecb057ea733f4bdcabb56a333575dddf2dd4b87913e27d",
+  "fixture": "legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json",
+  "limitations": [
+    "Snapshot response only; no sustained spawn cadence or full Stage46 temporal loop yet.",
+    "No shop, BaseHP attrition loop, N3, ordinary proc-crit, EXP, multiplayer scaling, boss, or exact campaign authoring.",
+    "Tank base-translation time proxy does not replace CHARGER/SIEGER stateful simulation.",
+    "Snapshot geometry flags are diagnostic intersection sets, not frozen collision radii."
+  ],
+  "packageContinuity": {
+    "Archer": {
+      "candidates": [
+        {"depth12PackageRatio": 1.043478, "depth5PackageRatio": 0.434783, "depth8PackageRatio": 0.695652, "depthToMatchLv26FiveTargetIdealPackage": 12, "durableTargetDamageVsLv26TriplePerTargetRatio": 0.434783, "lv31Coefficient": 1.0},
+        {"depth12PackageRatio": 1.565217, "depth5PackageRatio": 0.652174, "depth8PackageRatio": 1.043478, "depthToMatchLv26FiveTargetIdealPackage": 8, "durableTargetDamageVsLv26TriplePerTargetRatio": 0.652174, "lv31Coefficient": 1.5},
+        {"depth12PackageRatio": 2.086957, "depth5PackageRatio": 0.869565, "depth8PackageRatio": 1.391304, "depthToMatchLv26FiveTargetIdealPackage": 6, "durableTargetDamageVsLv26TriplePerTargetRatio": 0.869565, "lv31Coefficient": 2.0},
+        {"depth12PackageRatio": 2.4, "depth5PackageRatio": 1.0, "depth8PackageRatio": 1.6, "depthToMatchLv26FiveTargetIdealPackage": 5, "durableTargetDamageVsLv26TriplePerTargetRatio": 1.0, "lv31Coefficient": 2.3}
+      ],
+      "classificationAt1_00": "REVISE_POWER_MAGNITUDE",
+      "lv26IdealFiveTargetPackageCoefficientUnits": 11.5,
+      "lv26IdealFiveTargetRaw": 7590.0,
+      "lv26TripleAggregateCoefficientPerDurableAlignedTarget": 2.3,
+      "reason": "2.30 = 1.00 + 0.65 + 0.65; compresses Lv21 Triple Shot per-target package into one final arrow before unlimited-depth escalation.",
+      "rootRaw": 660.0,
+      "workingContinuityCenter": 2.3
+    },
+    "Knight": {"centerRatioVsLv26IdealOneWave": 2.0, "lv26IdealOneWaveFourTargetRaw": 3806.208, "lv31TwoWaveCenterIdealFourTargetEachRaw": 7612.416, "rootRaw": 951.552},
+    "Mage": {"note": "Density value is fixture-dependent; final chain may be zero when all survivors were already hit.", "rootRaw": 720.0},
+    "Rogue": {
+      "lv26PxpCoefficientUnitsNoProcCrit": 3.25,
+      "lv26PxpRawNoProcCrit": 1950.0,
+      "lv31Candidates": [
+        {"daggers": 12, "lv31CoefficientUnits": 5.4, "ratioVsLv26PxpPackage": 1.661538, "rawNoProcCrit": 3240.0},
+        {"daggers": 16, "lv31CoefficientUnits": 7.2, "ratioVsLv26PxpPackage": 2.215385, "rawNoProcCrit": 4320.0},
+        {"daggers": 20, "lv31CoefficientUnits": 9.0, "ratioVsLv26PxpPackage": 2.769231, "rawNoProcCrit": 5400.0}
+      ]
+    }
+  },
+  "rng": "NONE",
+  "runner": "tools/run_p4d2_lv31_pressure_probe_v0_1.py",
+  "status": "BOUNDED_DETERMINISTIC_DIAGNOSTIC_NO_NUMERICAL_FREEZE",
+  "verdict": {
+    "Archer": "STRUCTURE_PASS_MAGNITUDE_1_00_REVISE; 2_30_CONTINUITY_CENTER_FOR_NEXT_PROBE",
+    "Knight": "CENTER_STRONG_CANDIDATE_CONTINUE_STATEFUL_PRESSURE_TEST",
+    "Mage": "0_75_CENTER_STRONG_DENSITY_CANDIDATE_CONTINUE_SPLITTER_ORDER_WATCH",
+    "Rogue": "16_DAGGER_CENTER_STRONG_CANDIDATE_CONTINUE",
+    "Tank": "CONTROL_MAGNITUDE_REQUIRES_STATEFUL_CHARGER_SIEGER_TEST",
+    "overall": "P4D2_CONTINUES_NO_FREEZE"
+  },
+  "version": "p4d2-lv31-pressure-probe-summary-v0.1"
+}
