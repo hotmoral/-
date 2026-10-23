@@ -1,0 +1,142 @@
+version: system-dependency-calibration-order-v0.36
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_35.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_35.yaml
+
+canonicalUpdates:
+  - 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+  - 150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md
+  - 147_ENCOUNTER_COMPOSITION_CLASS_RESPONSE_MATRIX_V0_1.md
+  - 148_ENCOUNTER_OPPORTUNITY_DISTRIBUTION_FRAMEWORK_PROPOSAL_V0_1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - encounter_composition_before_intrinsic_class_balance_claim
+  - bounded_probe_before_broad_reaudit
+  - do_not_repeat_closed_work_without_concrete_trigger
+  - important_design_numerical_or_phase_adoption_requires_user_approval
+  - preserve_class_specialties_and_real_weaknesses
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+  P5:
+    status: ENCOUNTER_COMPOSITION_RESPONSE_DIAGNOSTIC_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+    entryChargePrimaryCause: CLOSED_NEGATIVE
+    entryComboPrimaryCause: CLOSED_NEGATIVE
+    armoredCountChronologyBandDiagnostic: COMPLETE_NO_ADOPTION
+    exactArmoredCoordinateMicrotuning: STOPPED
+    stage48LocalPacketTuning: PAUSED
+    productionAuthority: false
+  P6:
+    status: FORMALLY_ENTERED_USER_APPROVED
+    purpose: JOINT_RUN_POWER_CONVERGENCE
+    S1:
+      status: DIAGNOSTIC_COMPLETE
+      source: 150_P6_STAGE46_47_FIRST_CAUSAL_CONVERGENCE_RESULT_V0_1.md
+      runId: 39983816058
+      deterministicRepeat: PASS_EXACT_BYTES
+      causalClassification:
+        - PXP_EXPOSURE_STRONG_GLOBAL_MASTERY_SENSITIVITY
+        - PXP_ALONE_NOT_CLASS_SPLIT_EXPLANATION
+        - ENCOUNTER_COMPOSITION_X_CLASS_PACKAGE_STRONG_CLASS_SPLIT_CAUSE
+        - FIXED_LATE_SHOP_PROFILE_NOT_PRIMARY_CURRENT_CLASS_SPLIT_CAUSE
+        - TIMING_EVENT_OPPORTUNITY_DIVERGENCE_OBSERVED_EXACT_EXP_IMPACT_OPEN
+    A_encounterOpportunityConvergence:
+      status: DIAGNOSTIC_COMPLETE
+      source: 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+      tempBranch: timing-defense-workspace-temp-p6-pressure-family
+      pressureFamilyRunId: 40023996992
+      pressureFamilySha256: cfc653db6a8a033e625b8222c45b5d5332a72ade26540e4879e71fce57851e85
+      tankAttributionRunId: 40024651146
+      tankAttributionSha256: fd0a2be4880fd76f00b7db44af5d9ae450bd9b78db0aae6c6362f1188c72603c
+      tankBracketRunId: 40024845146
+      tankBracketSha256: b0b36d4e2a1e1471ba0601bcf526e675a563c3f5efb22e78b8863a479a3a709f
+      deterministicRepeat: PASS_EXACT_BYTES
+      conclusions:
+        - CLASS_RANKING_IS_ENCOUNTER_FAMILY_DEPENDENT
+        - DENSE_ALIGNED_BASELINE_NOT_NEUTRAL_CLASS_POWER_ORDER
+        - CLASS_EQUALIZATION_FROM_ONE_PACKET_REJECTED
+        - TANK_CONTROL_DEFENSE_COMPONENTS_FUNCTIONAL
+        - AFTERSHOCK_CENTER_DIAGNOSTIC_MISMATCH_REAL_BUT_NONPRIMARY
+        - TANK_0P20_0P30_SHOCKWAVE_SCALAR_NOT_PRIMARY_COMPLETION_BOUNDARY
+      openWatches:
+        - TANK_MASTERY_PACKAGE_TO_OBJECTIVE_CONVERSION_WATCH
+      numericalAdoption: false
+      productionAuthority: false
+    B_shopExpFeedback:
+      status: USER_APPROVED_NEXT_WORK_ACTIVE
+      goal: TEST_PROGRESSION_RELEVANT_SHOP_TO_EVENT_COUNT_TO_EXP_TO_SKILL_REACH_FEEDBACK
+      constraints:
+        - DO_NOT_CHANGE_TANK_NUMBERS
+        - KEEP_SKILLED_V2_CENTRAL_FIXED_FOR_CAUSAL_COMPARISON
+        - PAIRED_DETERMINISTIC_SEEDS
+        - USE_ACTUAL_TIMING_EVENT_COUNTS_NOT_FLAT_CLEAR_EXP
+        - EXPOSE_SKILL_REACH_SHIFT_BY_CLASS_AND_SHOP_POLICY
+        - NO_FINAL_EXP_OR_SHOP_NUMERIC_FREEZE
+
+campaignAuthoring:
+  exactTierCount: OPEN
+  exactMonsterUnlockLadder: OPEN
+  exactTier1Roster: OPEN
+  exactTier1Stage1To50: NOT_STARTED
+  orderingApprovedByUser:
+    - P6_CONVERGENCE_FIRST
+    - THEN_CONSTRAIN_TIER_MONSTER_AVAILABILITY_AND_UNLOCK_ORDER
+    - THEN_AUTHOR_EXACT_TIER1_STAGE1_TO50
+  stableDirection:
+    - T1_LIMITED_MONSTER_SUBSET
+    - HIGHER_TIERS_ADD_NEW_MONSTER_ROLES
+    - RETURNING_MONSTERS_GAIN_NEW_COMPOSITION_FORMATION_CADENCE_MEANING
+    - CURRENT_NINE_PLUS_ARMORED_PROXY_NOT_FINAL_T1_ROSTER
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  skilledV2CentralFixedForCurrentP6Diagnostics: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  currentClassBuffNerfAuthorized: false
+  tankScalarFreezeAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  currentStage46_47NumericRepairAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  tierUnlockFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: P6_B_SHOP_EXP_FEEDBACK
+  P6FormalEntry: USER_APPROVED
+  P6S1: COMPLETE
+  P6A: COMPLETE
+  tankWatch: TANK_MASTERY_PACKAGE_TO_OBJECTIVE_CONVERSION_WATCH
+  next: P6_B_PROGRESSION_RELEVANT_SHOP_EXP_FEEDBACK
+  afterP6Convergence: TIER_COUNT_AND_MONSTER_UNLOCK_LADDER_CANDIDATE
+  awaitingUserDecision: false
