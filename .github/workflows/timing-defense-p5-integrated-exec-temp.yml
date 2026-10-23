@@ -1,0 +1,74 @@
+name: timing-defense-p5-integrated-exec-temp
+
+on:
+  push:
+    branches:
+      - timing-defense-p5-integrated-exec-temp-20261023
+    paths:
+      - '.github/workflows/timing-defense-p5-integrated-exec-temp.yml'
+      - 'timing-defense-workspace/**'
+
+permissions:
+  contents: read
+
+jobs:
+  integrated-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact temp branch
+        uses: actions/checkout@v4
+
+      - name: Show checkout identity
+        run: |
+          git rev-parse HEAD
+          python --version
+
+      - name: Compile exact committed runner and base kernel
+        working-directory: timing-defense-workspace
+        run: |
+          python -m py_compile tools/run_p4d2_stage46_temporal_pressure_probe_v0_1.py
+          python -m py_compile tools/run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py
+
+      - name: Run integrated probe twice and require deterministic bytes
+        working-directory: timing-defense-workspace
+        run: |
+          python tools/run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py --json-out /tmp/p5-run1.json > /tmp/p5-run1.stdout
+          python tools/run_p5_identity_aware_stage46_49_integrated_probe_v0_1.py --json-out /tmp/p5-run2.json > /tmp/p5-run2.stdout
+          cmp /tmp/p5-run1.json /tmp/p5-run2.json
+          sha256sum /tmp/p5-run1.json /tmp/p5-run2.json
+
+      - name: Print bounded interpretation summary
+        working-directory: timing-defense-workspace
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('/tmp/p5-run1.json').read_text())
+          print('normalRightEdgeSpawnX=', p['normalRightEdgeSpawnX'])
+          print('midFieldPopInAllowed=', p['midFieldPopInAllowed'])
+          print('stageWindowSeconds=', p['stageWindowSeconds'])
+          print('chains=', len(p['chains']))
+          for row in p['chains']:
+              if row['class'] in ('Tank','Rogue'):
+                  ends = [s['result']['endActive'] for s in row['stages']]
+                  walls = [s['endCurrentWall'] for s in row['stages']]
+                  print('CHAIN', row['class'], row['profile'], row['tankShockwaveCoefficient'], 'survive49=', row['survivedThroughStage49'], 'walls=', walls, 'endActive=', ends)
+                  if row['class'] == 'Rogue':
+                      counts = [(x['stage'], x['distinctTargetsHit'], x['distinctTargetsKilled'], x['targetTypesKilled']) for x in row['rogueStorms']]
+                      print('ROGUE_STORMS', row['profile'], counts)
+                      print('ROGUE_BREAKPOINTS', row['profile'], row['rogueOrdinaryOneShotAnalytic'])
+          print('IDENTITY', json.dumps(p['identityRegressions'], sort_keys=True))
+          PY
+
+      - name: Upload exact outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-p5-integrated-exec-temp
+          path: |
+            /tmp/p5-run1.json
+            /tmp/p5-run2.json
+            /tmp/p5-run1.stdout
+            /tmp/p5-run2.stdout
+          if-no-files-found: error
+          retention-days: 1
