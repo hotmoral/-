@@ -1,0 +1,107 @@
+{
+  "version": "p4d2-stage49-full-rotation-fixture-v0.1",
+  "status": "DETERMINISTIC_DIAGNOSTIC_CANDIDATE_NOT_PRODUCTION_AUTHORING",
+  "authorityBoundary": [
+    "Uses the current P4-D2 Lv31 provisional centers and v0.4 cadence/no-bank/Tank-barrier fidelity semantics.",
+    "ARMORED_DURABLE_PROXY remains diagnostic pressure only and is not a tenth-monster approval.",
+    "The five bands remain a geometry abstraction only.",
+    "This fixture tests a full complementary Stage49-like rotation, not exact launch content.",
+    "No exact Stage49 duration, spawn count, proxy stat, wall-reserve floor, class coefficient or mistake budget is frozen."
+  ],
+  "diagnosticMonsterAnchors": {
+    "ARMORED_DURABLE_PROXY": {
+      "hp": 1600,
+      "armor": 0.55,
+      "knockResist": 0.65,
+      "speed": 0.04,
+      "wall": 160
+    }
+  },
+  "geometryAbstraction": {
+    "bands": [-2, -1, 0, 1, 2],
+    "archerLv26BandRadius": 0,
+    "archerLv31WorkingBandRadius": 1,
+    "knightHeavyBandRadius": 1,
+    "mageNormalBandRadius": 1,
+    "mageHeavyFinalBandRadius": 2,
+    "note": "MID_ADJACENT-style Archer width remains the diagnostic center."
+  },
+  "lv31TemporalCenters": {
+    "Knight": {"secondWaveCoefficient": 1.0, "secondWaveDelaySeconds": 0.14},
+    "Rogue": {"daggers": 16, "perDaggerCoefficient": 0.45, "stormDurationSeconds": 0.7, "countSensitivity": [12,16,20]},
+    "Tank": {"barrier": 250, "barrierSeconds": 6.0, "shockwaveCoefficient": 0.75, "knockbackMultiplier": 2.5, "damageSensitivity": [0.5,0.75,1.0], "knockbackSensitivity": [2.0,2.5,3.0]},
+    "Archer": {"perTargetCoefficient": 2.3, "workingBandRadius": 1, "coefficientSensitivity": [1.0,1.5,2.0,2.3], "widthSensitivity": [0,1]},
+    "Mage": {"stageCoefficient": 0.75, "radiusMultiplier": 1.25, "stageDelaysSeconds": [0.0,0.18,0.36], "stageSensitivity": [0.55,0.75,1.0], "radiusSensitivity": [1.0,1.25,1.5]}
+  },
+  "pressurePatternLabels": [
+    "LINE_ESCORT",
+    "CLUSTER_RECOVERY",
+    "FRONTLINE_BREACH",
+    "DURABLE_SCATTER",
+    "TIME_BUDGET_SIEGER"
+  ],
+  "pressurePatterns": [
+    [
+      {"offset":0.00,"type":"RUNNER","band":0}, {"offset":0.32,"type":"GRUNT","band":0},
+      {"offset":0.64,"type":"SHIELD","band":0}, {"offset":0.96,"type":"BRUTE","band":0},
+      {"offset":1.28,"type":"RUNNER","band":0}, {"offset":1.60,"type":"SUPPORTER","band":0},
+      {"offset":1.92,"type":"GRUNT","band":0}, {"offset":2.24,"type":"SIEGER","band":0},
+      {"offset":2.58,"type":"CHARGER","band":0}, {"offset":2.94,"type":"GRUNT","band":0},
+      {"offset":3.34,"type":"RUNNER","band":0}, {"offset":3.82,"type":"FLYER","band":0}
+    ],
+    [
+      {"offset":0.00,"type":"GRUNT","band":-1}, {"offset":0.28,"type":"SPLITTER","band":0},
+      {"offset":0.56,"type":"GRUNT","band":1}, {"offset":0.84,"type":"RUNNER","band":-1},
+      {"offset":1.12,"type":"SPLITTER","band":1}, {"offset":1.40,"type":"SUPPORTER","band":0},
+      {"offset":1.68,"type":"FLYER","band":-1}, {"offset":1.96,"type":"GRUNT","band":1},
+      {"offset":2.24,"type":"RUNNER","band":0}, {"offset":2.60,"type":"CHARGER","band":-1},
+      {"offset":3.02,"type":"SIEGER","band":1}, {"offset":3.48,"type":"GRUNT","band":0}
+    ],
+    [
+      {"offset":0.00,"type":"BRUTE","band":-1}, {"offset":0.30,"type":"SHIELD","band":0},
+      {"offset":0.60,"type":"CHARGER","band":1}, {"offset":0.90,"type":"BRUTE","band":1},
+      {"offset":1.20,"type":"SHIELD","band":-1}, {"offset":1.50,"type":"CHARGER","band":0},
+      {"offset":1.80,"type":"GRUNT","band":1}, {"offset":2.10,"type":"GRUNT","band":-1},
+      {"offset":2.45,"type":"SUPPORTER","band":0}, {"offset":2.80,"type":"SIEGER","band":1},
+      {"offset":3.20,"type":"RUNNER","band":-1}, {"offset":3.60,"type":"FLYER","band":1}
+    ],
+    [
+      {"offset":0.00,"type":"ARMORED_DURABLE_PROXY","band":-2},
+      {"offset":0.50,"type":"RUNNER","band":-1},
+      {"offset":1.10,"type":"SIEGER","band":1},
+      {"offset":1.70,"type":"SHIELD","band":2},
+      {"offset":2.30,"type":"BRUTE","band":2},
+      {"offset":2.90,"type":"SUPPORTER","band":1},
+      {"offset":3.45,"type":"GRUNT","band":0}
+    ],
+    [
+      {"offset":0.00,"type":"ARMORED_DURABLE_PROXY","band":0},
+      {"offset":0.55,"type":"GRUNT","band":0},
+      {"offset":1.45,"type":"SIEGER","band":-2},
+      {"offset":1.75,"type":"SIEGER","band":0},
+      {"offset":2.05,"type":"SIEGER","band":2},
+      {"offset":2.35,"type":"SIEGER","band":1},
+      {"offset":2.65,"type":"RUNNER","band":-1},
+      {"offset":3.15,"type":"CHARGER","band":1}
+    ]
+  ],
+  "simulation": {
+    "dtSeconds": 0.025,
+    "durationSeconds": 60.0,
+    "firstRootAttackSeconds": 0.2,
+    "rootAttackIntervalSeconds": 1.125,
+    "heavyEveryRootActions": 4,
+    "pressureCycleSeconds": 4.6,
+    "spawnX": 0.92,
+    "wallHp": 2000.0,
+    "missHeavyIndices": {"oneMiss": [4], "twoConsecutiveMisses": [4,5]}
+  },
+  "admissionTargets": {
+    "allSuccess": "all five classes survive with a meaningful Stage50 wall reserve; exact reserve floor is not frozen",
+    "isolatedMiss": "one missed final remains recoverable for intended skilled play",
+    "repeatedMiss": "repeated failed finals consume each class's distinct error budget and produce severe Stage50 reserve loss or burial",
+    "allFinalsMissed": "all five classes should fail the 60s stress or reach a clearly non-viable reserve; preferred candidate buries all five",
+    "classAsymmetry": "identical miss counts are not required; pressure must arise from role/geometry interaction rather than hidden class compensation",
+    "stageContinuity": "because BaseHP persists and there is no automatic stage heal, low surviving wall HP is a material failure signal even without burial"
+  }
+}
