@@ -6,6 +6,7 @@ on:
       - timing-defense-workspace-temp-check
     paths:
       - .github/workflows/timing-defense-p5-stage48-real-monster-fast-temp.yml
+      - timing-defense-workspace/tools/run_p5_stage48_sieger_death_position_temp.py
 
 permissions:
   contents: read
