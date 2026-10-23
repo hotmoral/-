@@ -1,0 +1,198 @@
+version: system-dependency-calibration-order-v0.17
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_16.yaml
+authorityDocs:
+  - 70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md
+  - 71_USER_APPROVAL_DECISION_GATE_GOVERNANCE_V0_1.md
+  - 79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md
+  - 85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md
+  - 88_P4C1_LV26_STRUCTURAL_SKILL_APPROVED_CONTRACT_V0_1.md
+  - 89_P4C2_LV26_BOUNDED_PROVISIONAL_POWER_FEEDBACK_V0_1.md
+  - 91_P4D1_LV31_POWER_FANTASY_AND_STAGE46_MASTERY_GATE_APPROVED_CONTRACT_V0_1.md
+  - 96_P4D2_ARCHER_LV31_WIDE_CORRIDOR_APPROVED_AMENDMENT_V0_1.md
+  - 99_P4D2_TEMPORAL_CADENCE_FIDELITY_REVIEW_V0_1.md
+  - 101_P4D2_ARMORED_DURABLE_PROXY_PRESSURE_PROBE_V0_1.md
+  - 103_P4D2_TANK_BARRIER_FIDELITY_CORRECTION_V0_1.md
+  - 107_P4D2_ARCHER_SPLITTER_CHRONOLOGY_ROOT_CAUSE_V0_1.md
+  - 108_P4D2_STAGE46_LV31_ACQUISITION_FAIRNESS_PRECHECK_V0_1.md
+  - 109_P4D2_EXACT_V05_AND_STAGE49_V02_REPLAY_ADMISSION_V0_1.md
+  - 110_P4D2_PROVISIONAL_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+  - 111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md
+
+principles:
+  - freeze_semantics_before_values
+  - isolate_then_integrate
+  - exact_content_authoring_late
+  - production_changes_require_explicit_freeze
+  - material_decisions_require_user_approval
+  - repair_encounter_grammar_before_hidden_class_corrections
+  - preserve_recovered_lower_skill_cadence_effects_in_temporal_comparisons
+  - no_target_opportunities_do_not_bank_in_class_fairness_diagnostics
+  - weaker_lv16_barrier_must_not_downgrade_active_lv31_barrier
+  - final_skill_power_fantasy_must_not_be_preemptively_nerfed_without_evidence
+  - durable_proxy_is_not_new_monster_authority
+  - do_not_build_hard_counter_by_stacking_hp_armor_and_extreme_knock_resistance
+  - tank_is_time_budget_control_class_not_damage_parity_target
+  - one_grammar_need_not_equalize_all_class_mistake_budgets
+  - late_stage_fairness_comes_from_rotating_complementary_pressure_grammars
+  - stage49_survival_must_be_interpreted_with_stage50_wall_reserve_because_base_hp_persists
+  - p4_skill_reach_is_provisional_input_to_shop_not_immutable_truth
+  - shop_feedback_must_recheck_exp_and_skill_reach
+  - final_exp_convergence_requires_p10r
+
+workPackages:
+  P0: {name: CURRENT_FOUNDATION_CLOSURE, status: PASS_WITH_WATCHES}
+  P1: {name: RUN_STATE_LIFECYCLE_CONTRACT, status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {name: MODIFIER_PIPELINE_AND_POWER_ATTRIBUTION, status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3: {name: TEN_STAGE_PERSISTENT_RUN_KERNEL, status: P3_STRUCTURAL_PASS_COMPLETE}
+
+  P4:
+    name: FULL_PLAYER_POWER_SPINE_CANDIDATE
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    dependsOn: [P3]
+    internalGates:
+      P4A: {status: PASS_COMPLETE_MARKER_ONLY}
+      P4B: {status: COMPLETE_WITH_ACTIVE_EXP_WATCHES_R2_ROUTED}
+      P4B_DECISION: {status: USER_APPROVED_R2}
+      P4C1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+      P4C2: {status: COMPLETE_PASS_WITH_WATCHES, finalExpClaimAllowed: false, productionAuthority: false}
+      P4D1:
+        status: USER_APPROVED_WITH_MODIFICATION
+        structuralDirection:
+          powerFantasy: STRONG_NOT_PREEMPTIVELY_NERFED
+          stage46Plus: LV31_MASTERY_GATE_PRESSURE_REGIME
+          comboPxpMasteryPressure: true
+      P4D2:
+        status: PROVISIONAL_STRUCTURAL_COMPLETE_PASS_WITH_WATCHES
+        exactReplayAdmission: PASS_V05_AND_STAGE49_V02
+        established:
+          stage46PressureEnvelopeFound: true
+          stage49FullComplementaryRotation: EXACT_REPLAY_ADMITTED_PROMISING
+          fullRotationAllFiveAllSuccessSurvive: true
+          fullRotationAllFiveAllFinalsMissedBuryWithin60s: true
+          isolatedMissRecoverableAllFive: true
+          armoredDurablePressureAxis: SUPPORTED_DIAGNOSTIC_ONLY
+          tankControlTimeBudgetIdentity: PRESERVED
+          mageClusterRecoveryAnswer: PRESERVED
+          archerWiderGameplayCorridorPrinciple: USER_APPROVED
+          archerHistoricalChronologyRootCause: EXPLAINED_AUTHORING_WATCH
+          stage46AcquisitionFairnessFreeze: DEFERRED_TO_P10R
+          stage49To50WallReserveFloor: UNFROZEN_DOWNSTREAM_WATCH
+          newMonsterApproved: false
+        methodology:
+          commonCadenceLaneSeconds: 1.125
+          rogueRecoveryDeltaSeconds: 0.078
+          rogueSensitivityIntervalSeconds: 1.047
+          noTargetBanking: FORBIDDEN_IN_CLASS_FAIRNESS_DIAGNOSTICS
+          tankBarrierFamily: SHARED_NON_ADDITIVE
+          activeLv31BarrierMayBeDowngradedByLv16: false
+          v02Status: HISTORICAL_PRE_BARRIER_CORRECTION_ONLY
+          v03Status: FAILED_SOURCE_PATCH_GUARD_DO_NOT_ADMIT
+          v04Status: FAILED_SUBSTRING_PATCH_GUARD_DO_NOT_ADMIT
+          v05Runner: ../../tools/run_p4d2_stage48_49_dynamic_grammar_probe_v0_5.py
+          v05RunnerBlob: 8a548184272a71f3b17650f77e6d366533409e0c
+          v05FullOutputSha256: 29c5c7dc5a6c74f1e67f07d7eb0d8a3235e860817d7559227da26da192e2dae1
+          stage49Runner: ../../tools/run_p4d2_stage49_full_rotation_probe_v0_2.py
+          stage49RunnerBlob: 1eb644766133d0a4e84130ab4d7be4c727cbee12
+          stage49FullOutputSha256: c033d7fea455476ae2c4b9c0ffe4f770885d135533fd899a04709eb7cd0d6e02
+        finalExpClaimAllowed: false
+        productionAuthority: false
+      P4E:
+        status: COMPLETE_PROVISIONAL_PLAYER_POWER_SPINE_WITH_EXP_WATCHES
+        tailAcceptanceRecommendation: DEFER_NUMERICAL_PERCENTILE_FREEZE_TO_P10R
+        stage46PossessionSensitivityPct: [97, 98, 99]
+        stage46PossessionFreezeAuthorized: false
+        finalExpConvergenceAllowed: false
+        nextPackageAuthorized: P5
+
+    candidateOnlyNotFrozen:
+      stageReachWindows:
+        lv6: [5, 7]
+        lv11: [11, 14]
+        lv16: [18, 21]
+        lv21: [25, 28]
+        lv26: [32, 36]
+        lv31: [41, 45]
+      stage46Lv31PossessionPct: [97, 98, 99]
+      rogueLv31WorkingCenter: 16
+      knightSecondWaveCenter: 1.00
+      tankShockwaveDamageCenter: 0.75
+      tankKnockbackCenter: 2.5
+      tankBarrierCandidate: {value: 250, seconds: 6}
+      archerPerTargetCoefficientCenter: 2.30
+      archerWidthDiagnosticCenter: MID_ADJACENT
+      mageStageCoefficientCenter: 0.75
+      mageRadiusCenter: 1.25
+      durableProxyWorkingCenter: {hp: 1600, armorMultiplier: 0.55, knockResistance: 0.65}
+      stage49FullRotation: [LINE_ESCORT, CLUSTER_RECOVERY, FRONTLINE_BREACH, DURABLE_SCATTER, TIME_BUDGET_SIEGER]
+
+    carriedWatches:
+      - SOLO_PROGRESSION_DIVERGENCE_WATCH
+      - TEAM_COMPOSITION_XP_OPPORTUNITY_WATCH
+      - PLAYER_COUNT_SCALING_XP_DEPENDENCY
+      - MULTIPLAYER_TIMEBASE_COMPRESSION_PARTIAL_NOT_COMPLETE
+      - STAGE46_LV31_ACQUISITION_FAIRNESS
+      - STAGE49_TO_50_WALL_RESERVE_CONTINUITY_WATCH
+      - LV31_ARCHER_SUCCESS_MONOTONICITY_CHRONOLOGY_WATCH_ROOT_CAUSE_EXPLAINED
+      - P4D2_ARCHER_ROLE_PULSE_GEOMETRY_WATCH
+      - ROGUE_DAGGER_STORM_EVENT_VOLUME_PERFORMANCE_WATCH
+
+    constraints:
+      - no_final_exp_claim_before_P10R
+      - no_hidden_class_or_tier_xp_multiplier_without_new_user_decision
+      - no_code_level_lv31_entry_lock
+      - no_numerical_production_freeze
+      - production_gameplay_changes_unauthorized
+
+  P5:
+    name: RUN_COIN_SHOP_CANDIDATE
+    status: READY_NEXT_STRUCTURAL_REVIEW
+    dependsOn: [P4]
+    firstStructuralQuestions:
+      - shop_cadence_candidates
+      - coin_award_sources_and_timing
+      - upgrade_categories
+      - purchase_caps_and_ranks
+      - wall_hp_and_defense_semantics
+      - multiplayer_specific_ownership_only_where_required
+    requiredAgents:
+      - ATTACK_HEAVY
+      - CRIT_HEAVY
+      - DEFENSE_HEAVY
+      - BALANCED
+      - SAVE_DELAY
+      - ROLE_AWARE_CANDIDATE
+    mandatoryFeedback:
+      - recheck_skill_reach_after_shop_power
+      - compare_wall_survival_and_timing_event_opportunity
+      - do_not_tune_against_one_shop_strategy_only
+
+  P6: {status: BLOCKED, dependsOn: [P5]}
+  P7: {status: BLOCKED, dependsOn: [P6]}
+  P8: {status: BLOCKED, dependsOn: [P7]}
+  P9: {status: BLOCKED, dependsOn: [P8]}
+  P10: {status: BLOCKED, dependsOn: [P8]}
+  P10R:
+    status: BLOCKED_PENDING_P10
+    dependsOn: [P10]
+    requiresUserDecision: true
+    mandatoryPurpose: FINAL_EXP_AND_MULTIPLAYER_TIMEBASE_RECONVERGENCE
+  P11: {status: BLOCKED_PENDING_P9_P10R}
+  P12: {status: BLOCKED_PENDING_P9_P10R_P11}
+  P13: {status: BLOCKED}
+  P14: {status: BLOCKED}
+  P15: {status: BLOCKED}
+  P16: {status: BLOCKED}
+  P17: {status: BLOCKED}
+  P18: {status: BLOCKED}
+
+freezePolicy:
+  numericalContentFreeze: {onlyAfter: P17}
+
+currentBoundary:
+  completedThrough: P4
+  activePackage: P5
+  next: P5_RUN_COIN_SHOP_STRUCTURAL_REVIEW
+  nextMode: STRUCTURE_BEFORE_VALUES_WITH_P4_FEEDBACK_RECHECK
+  awaitingUserDecision: false
+  productionChangesAuthorized: false
