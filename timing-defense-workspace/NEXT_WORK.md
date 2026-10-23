@@ -10,15 +10,15 @@ Updated: 2026-10-23 KST
 
 ## Mandatory authority
 - `legacy-game-structure/86_SESSION_RECOVERY_AND_CROSS_STAGE_REVIEW_PROTOCOL_V0_1.md`
-- active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_24.yaml`
+- active plan `legacy-game-structure/data/system_dependency_calibration_order_v0_25.yaml`
+- radar identity source `CHARACTER_PROFILE_RADAR_V1.md`
+- class identity gate `legacy-game-structure/129_P5_CLASS_IDENTITY_RADAR_INVARIANT_GATE_V0_1.md`
+- machine identity contract `legacy-game-structure/data/p5_class_identity_radar_invariants_v0_1.yaml`
 - A2 contract `legacy-game-structure/116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
 - all-class shop result `legacy-game-structure/124_P5_ALL_CLASS_FIXED_RANK_SHOP_COMBAT_PREFLIGHT_V0_1.md`
 - Fortification correction `legacy-game-structure/125_P5_FORTIFICATION_DAMAGE_DEFICIT_INVARIANCE_CORRECTION_V0_1.md`
-- old spatial proof `legacy-game-structure/126_P5_POST_SHOP_STAGE49_ENTRY_DEPTH_RECONVERGENCE_V0_1.md`
 - right-edge travel preflight `legacy-game-structure/127_P5_STAGE46_49_RIGHT_EDGE_TRAVEL_LEAD_PREFLIGHT_V0_1.md`
 - escorted combat search `legacy-game-structure/128_P5_STAGE46_49_RIGHT_EDGE_ESCORTED_TRAVEL_COMBAT_SEARCH_V0_1.md`
-- right-edge lead fixture `legacy-game-structure/data/p5_stage46_49_right_edge_lead_fixture_v0_1.json`
-- escorted direction fixture `legacy-game-structure/data/p5_stage46_49_right_edge_escorted_direction_fixture_v0_1.json`
 
 Live remote wins.
 
@@ -26,7 +26,7 @@ Live remote wins.
 
 # ACTIVE PACKAGE — P5
 
-**A2 APPROVED / RIGHT-EDGE ESCORTED LATE-PRESSURE DIRECTION PROMISING / PACKET CHRONOLOGY REFINEMENT NEXT**
+**A2 APPROVED / CLASS IDENTITY RADAR GATE ACTIVE / SOURCE-PATCHED RIGHT-EDGE RUNNER WITH IDENTITY METRICS NEXT**
 
 No user decision is pending.
 
@@ -42,71 +42,117 @@ None are production freezes.
 
 ---
 
-# Fixed implementation-facing rule
+# Fixed class-identity rule
 
-The prior Stage49 `spawnX=.48/.65` work was a spatial diagnostic only.
+The character-selection radar is now a balance guard, not just presentation.
 
-Actual game direction:
+```text
+5-axis specialty -> must remain a real reason the class succeeds
+1-axis weakness  -> must remain a real limitation after skill/shop growth
+```
+
+Do not turn the radar values into literal combat coefficients.
+
+Current identity status:
+
+```text
+Knight = mostly aligned; verify penetration causality and defense-heavy viability
+Rogue  = mostly aligned; verify Lv31 does not become broad wave cleanup
+Tank   = control identity confirmed; solo-clear weakness not yet measured correctly
+Archer = line identity present; post-shop generalist creep HIGH watch
+Mage   = density identity strongly present; late-pressure margin still watched
+```
+
+Tank-specific rule from user direction:
+
+```text
+Tank solo parity is not required.
+Tank should be excellent at keeping the wall alive but poor at actually finishing enemies alone.
+A high-mastery Tank may eventually clear, but late solo should be near-impractical under normal tempo or materially slower/frustrating than damage classes.
+No absolute hard class lockout is required.
+```
+
+Therefore `survived 60s` is not a Tank clear-pass condition.
+
+---
+
+# Fixed encounter-entry rule
 
 ```text
 ALL ENEMIES APPEAR FROM THE NORMAL RIGHT EDGE.
 NO MID-FIELD POP-IN.
 ```
 
-Difficulty may use:
-- earlier schedule time;
-- frontmost escort/protection;
-- band/line relationship;
-- overlapping first/second role pulses.
-
-Do not implement the old spatial proxy as teleporting/mid-field spawn.
-
----
-
-# Current Stage46–49 direction
+Current Stage46–49 direction remains:
 
 ```text
-Stage46: power revelation; keep recovery room
-Stage47: transition; still relatively forgiving
+Stage46: power revelation / recovery room
+Stage47: transition
 Stage48: first protected role pulse
 Stage49: stronger escorted second pulse
 ```
 
-First directional cadence search:
-
-```text
-46 ~5.8s
-47 ~5.3s
-48 ~4.9s
-49 ~4.6s
-```
-
-These are not launch values.
-
-Travel-lead kinematic reference only:
-
-```text
-old SIEGER x.48 ~= 9.78s travel from x.92
-old durable x.65 = 6.75s travel from x.92
-```
-
-But a naked SIEGER must NOT simply be spawned 9–10s early; it gets extra ordinary attacks and often becomes easier.
+Do not simply spawn SIEGER much earlier without escort; extra exposure can make it easier.
 
 ---
 
 # Exact next analysis
 
-## 1. Source-patched normal-right-edge runner
+## 1. Integrate identity metrics into the source-patched Stage46–49 runner
 
-Build a runner that:
-- creates every mob at the normal `spawnX=0.92`;
-- represents earlier role entry using `spawnLeadSeconds` / schedule time only;
-- uses a warmup/reference offset rather than negative-time fake spawns;
-- carries current wall HP across Stage46→49;
-- preserves no-target/no-bank, Rogue cadence sensitivity, Tank barrier non-downgrade and Tank Iron Wall on SIEGER;
-- keeps ATK/FORT/DEF as the current cross-class shop lane.
+Runner requirements:
+- every mob physically starts at normal `spawnX=0.92`;
+- earlier role pressure uses schedule-only `spawnLeadSeconds`;
+- wall current/max HP and damage deficit carry Stage46→49;
+- preserve no-target/no-bank, Rogue cadence sensitivity, Tank barrier non-downgrade and Tank Iron Wall on SIEGER;
+- current cross-class shop families remain ATK/FORT/DEF until KNOCK/CRIT policy lanes are ready.
 
-## 2. Refine Stage49 packet chronology
+Add outputs:
+
+```text
+stageClearTime
+unfinishedAtHorizon
+totalKills
+totalDamage
+endActiveBacklog
+uniqueTargetsPerRootPackage
+secondaryDamageShare
+penetrationHitCount
+penetrationDamageShare
+controlDisplacementOrSlowTime
+wallContactsPrevented
+formationTag / alignmentTag / densityTag
+```
+
+## 2. Run class-identity paired probes before further Stage49 tuning
+
+### Knight
+`aligned/frontline vs dispersed/off-axis`
+- confirm penetration/frontline breaking is a major reason for success;
+- ensure defense-heavy Knight remains viable under successful mastery.
+
+### Rogue
+`one durable normal vs broad weak/multi-direction wave`
+- confirm fast multihit/durable execution;
+- detect if Lv31 retargeting turns AOE1/PEN1 into broad cleanup.
+
+### Tank
+`wall survival vs actual solo completion`
+- measure clear time, unfinished rate and backlog;
+- do not count survival alone as success;
+- expect materially worse enemy-removal throughput than damage classes.
+
+### Archer
+`aligned line vs staggered/scatter/off-corridor`
+- line alignment must materially change performance;
+- attack-heavy shop must not erase geometry dependence.
+
+### Mage
+`clustered durable vs distributed durable`
+- cluster payoff must remain much better;
+- distributed durable must remain a real weakness.
+
+## 3. Only after identity outputs exist, refine Stage49 packet chronology
 
 Current HIGH watches:
 
@@ -114,58 +160,47 @@ Current HIGH watches:
 P5_ATK_HEAVY_ARCHER_REPEATED_FAILURE_MARGIN_WATCH
 P5_DEFENSE_HEAVY_KNIGHT_OVERPRESSURE_WATCH
 P5_RIGHT_EDGE_ESCORT_PACKET_CHRONOLOGY_WATCH
+P5_TANK_SURVIVAL_NOT_CLEAR_WATCH
+P5_TANK_SOLO_CLEAR_THROUGHPUT_WATCH
+P5_ROGUE_WAVE_CLEANUP_LEAKAGE_WATCH
+P5_ARCHER_LINE_DEPENDENCE_WATCH
+P5_MAGE_DENSITY_DEPENDENCE_WATCH
+P5_KNIGHT_PENETRATION_CAUSALITY_WATCH
 ```
 
-Goal:
-- attack-heavy Archer must not repeatedly miss finals and still enter Stage50 healthy;
-- fixing Archer must not make defense-heavy Knight a trap build during successful mastery.
+Repair order remains:
+1. simulator fidelity;
+2. encounter timing/geometry;
+3. package semantics;
+4. shop interaction;
+5. scalar values last.
 
-Repair order:
-1. relative timing;
-2. frontmost escort composition;
-3. band/line alignment;
-4. second-pulse spacing;
-5. durability sensitivity;
-6. player/shop coefficient changes last.
-
-## 3. Admission behavior
-
-Target shape:
-
-```text
-all-success -> all classes/build directions survive and feel powerful
-one miss -> recoverable
-two misses -> recoverable in Stage46-47; Stage48-49 may be harsher but readable
-repeated failure -> severe carried wall loss or burial before/at Stage50
-```
-
-Identical mistake budgets are not required.
-
-## 4. After right-edge pressure reconverges
+## 4. After class identity + right-edge pressure reconverge
 
 Then:
-- exact committed replay of current pending P4/P5 runners;
-- ATK/DEF acquisition timing + inherited wall deficit;
+- exact committed replay of pending P4/P5 runners;
 - KNOCK cross-class parity/inheritance lane;
 - CRIT/CRITDMG attack-template policy lane;
-- shop feedback into timing action count / EXP / Lv milestone reach.
-
-Final multiplayer normalization remains P10; final EXP convergence remains P10R.
+- purchase-policy combat feedback;
+- timing-event count / EXP / Lv milestone reach feedback;
+- final multiplayer normalization at P10;
+- final EXP convergence at P10R.
 
 ---
 
 # Do not yet
 
+- treat Tank wall survival as solo-clear success;
+- force all classes to equal clear time or DPS;
 - implement mid-field monster spawning;
 - freeze current `spawnLeadSeconds`, pressure cycles or packet compositions;
 - globally nerf shop ATK;
 - add hidden Archer shop penalties;
-- nerf Lv31 power to solve this stress case;
-- blanket-inflate SIEGER/FLYER HP;
-- freeze 50% spend capacity, 70/30 income or 40% effect scale;
+- nerf Lv31 power to solve one stress case;
+- turn Rogue into a broad AoE clearer;
+- remove Mage cluster/distribution asymmetry;
+- make Archer formation-agnostic;
 - freeze exact coin/reward/price/rank/effect values;
-- solve final multiplayer before P10;
-- freeze final EXP before P10R;
 - modify/deploy production gameplay.
 
 P6 remains blocked pending P5 closure.
