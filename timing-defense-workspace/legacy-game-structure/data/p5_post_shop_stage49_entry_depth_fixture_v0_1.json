@@ -1,0 +1,90 @@
+{
+  "admissionIntent": {
+    "allFinalsMissed": "burial or clearly non-viable Stage50 reserve",
+    "allSuccess": "all classes/policies survive with material Stage50 reserve",
+    "identicalMistakeBudgetRequired": false,
+    "oneMiss": "recoverable all classes/policies",
+    "twoMiss": "recoverable all classes/policies"
+  },
+  "authorityBoundary": [
+    "Extends the existing Stage49 complementary rotation only with row-level spawnX diagnostic overrides.",
+    "SIEGER/durable HP, speed, wall damage and class/shop coefficients remain unchanged.",
+    "spawnX 0.48/0.65 are directional centers only, not production authoring coordinates.",
+    "Uses P5 all-class cross-class-authoritative ATK/FORT/DEF lane; KNOCK/CRIT/CRITDMG remain deferred.",
+    "No new monster is approved by this fixture."
+  ],
+  "diagnosticMonsterAnchors": {
+    "ARMORED_DURABLE_PROXY": {"armor": 0.55, "hp": 1600, "knockResist": 0.65, "speed": 0.04, "wall": 160}
+  },
+  "geometryAbstraction": {
+    "archerLv26BandRadius": 0,
+    "archerLv31WorkingBandRadius": 1,
+    "bands": [-2, -1, 0, 1, 2],
+    "knightHeavyBandRadius": 1,
+    "mageHeavyFinalBandRadius": 2,
+    "mageNormalBandRadius": 1,
+    "note": "MID_ADJACENT-style Archer width remains the diagnostic center."
+  },
+  "lv31TemporalCenters": {
+    "Archer": {"coefficientSensitivity": [1.0, 1.5, 2.0, 2.3], "perTargetCoefficient": 2.3, "widthSensitivity": [0, 1], "workingBandRadius": 1},
+    "Knight": {"secondWaveCoefficient": 1.0, "secondWaveDelaySeconds": 0.14},
+    "Mage": {"radiusMultiplier": 1.25, "radiusSensitivity": [1.0, 1.25, 1.5], "stageCoefficient": 0.75, "stageDelaysSeconds": [0.0, 0.18, 0.36], "stageSensitivity": [0.55, 0.75, 1.0]},
+    "Rogue": {"countSensitivity": [12, 16, 20], "daggers": 16, "perDaggerCoefficient": 0.45, "stormDurationSeconds": 0.7},
+    "Tank": {"barrier": 250, "barrierSeconds": 6.0, "damageSensitivity": [0.5, 0.75, 1.0], "knockbackMultiplier": 2.5, "knockbackSensitivity": [2.0, 2.5, 3.0], "shockwaveCoefficient": 0.75}
+  },
+  "postShopEntryDepthSensitivity": {
+    "directionalCenter": {"durableRoleSpawnX": 0.65, "siegerTimeBudgetSpawnX": 0.48},
+    "durableRoleSpawnXRange": [0.6, 0.7],
+    "productionFreeze": false,
+    "siegerTimeBudgetSpawnXRange": [0.45, 0.55]
+  },
+  "pressurePatternLabels": ["LINE_ESCORT", "CLUSTER_RECOVERY", "FRONTLINE_BREACH", "DURABLE_SCATTER", "TIME_BUDGET_SIEGER"],
+  "pressurePatterns": [
+    [
+      {"band": 0, "offset": 0.0, "type": "RUNNER"}, {"band": 0, "offset": 0.32, "type": "GRUNT"},
+      {"band": 0, "offset": 0.64, "type": "SHIELD"}, {"band": 0, "offset": 0.96, "type": "BRUTE"},
+      {"band": 0, "offset": 1.28, "type": "RUNNER"}, {"band": 0, "offset": 1.6, "type": "SUPPORTER"},
+      {"band": 0, "offset": 1.92, "type": "GRUNT"}, {"band": 0, "offset": 2.24, "type": "SIEGER"},
+      {"band": 0, "offset": 2.58, "type": "CHARGER"}, {"band": 0, "offset": 2.94, "type": "GRUNT"},
+      {"band": 0, "offset": 3.34, "type": "RUNNER"}, {"band": 0, "offset": 3.82, "type": "FLYER"}
+    ],
+    [
+      {"band": -1, "offset": 0.0, "type": "GRUNT"}, {"band": 0, "offset": 0.28, "type": "SPLITTER"},
+      {"band": 1, "offset": 0.56, "type": "GRUNT"}, {"band": -1, "offset": 0.84, "type": "RUNNER"},
+      {"band": 1, "offset": 1.12, "type": "SPLITTER"}, {"band": 0, "offset": 1.4, "type": "SUPPORTER"},
+      {"band": -1, "offset": 1.68, "type": "FLYER"}, {"band": 1, "offset": 1.96, "type": "GRUNT"},
+      {"band": 0, "offset": 2.24, "type": "RUNNER"}, {"band": -1, "offset": 2.6, "type": "CHARGER"},
+      {"band": 1, "offset": 3.02, "type": "SIEGER"}, {"band": 0, "offset": 3.48, "type": "GRUNT"}
+    ],
+    [
+      {"band": -1, "offset": 0.0, "type": "BRUTE"}, {"band": 0, "offset": 0.3, "type": "SHIELD"},
+      {"band": 1, "offset": 0.6, "type": "CHARGER"}, {"band": 1, "offset": 0.9, "type": "BRUTE"},
+      {"band": -1, "offset": 1.2, "type": "SHIELD"}, {"band": 0, "offset": 1.5, "type": "CHARGER"},
+      {"band": 1, "offset": 1.8, "type": "GRUNT"}, {"band": -1, "offset": 2.1, "type": "GRUNT"},
+      {"band": 0, "offset": 2.45, "type": "SUPPORTER"}, {"band": 1, "offset": 2.8, "type": "SIEGER"},
+      {"band": -1, "offset": 3.2, "type": "RUNNER"}, {"band": 1, "offset": 3.6, "type": "FLYER"}
+    ],
+    [
+      {"band": -2, "offset": 0.0, "spawnX": 0.65, "type": "ARMORED_DURABLE_PROXY"},
+      {"band": -1, "offset": 0.5, "type": "RUNNER"}, {"band": 1, "offset": 1.1, "type": "SIEGER"},
+      {"band": 2, "offset": 1.7, "type": "SHIELD"}, {"band": 2, "offset": 2.3, "type": "BRUTE"},
+      {"band": 1, "offset": 2.9, "type": "SUPPORTER"}, {"band": 0, "offset": 3.45, "type": "GRUNT"}
+    ],
+    [
+      {"band": 0, "offset": 0.0, "spawnX": 0.65, "type": "ARMORED_DURABLE_PROXY"},
+      {"band": 0, "offset": 0.55, "type": "GRUNT"},
+      {"band": -2, "offset": 1.45, "spawnX": 0.48, "type": "SIEGER"},
+      {"band": 0, "offset": 1.75, "spawnX": 0.48, "type": "SIEGER"},
+      {"band": 2, "offset": 2.05, "spawnX": 0.48, "type": "SIEGER"},
+      {"band": 1, "offset": 2.35, "spawnX": 0.48, "type": "SIEGER"},
+      {"band": -1, "offset": 2.65, "type": "RUNNER"}, {"band": 1, "offset": 3.15, "type": "CHARGER"}
+    ]
+  ],
+  "simulation": {
+    "dtSeconds": 0.025, "durationSeconds": 60.0, "firstRootAttackSeconds": 0.2,
+    "heavyEveryRootActions": 4, "missHeavyIndices": {"oneMiss": [4], "twoConsecutiveMisses": [4, 5]},
+    "pressureCycleSeconds": 4.6, "rootAttackIntervalSeconds": 1.125, "spawnX": 0.92, "wallHp": 2000.0
+  },
+  "status": "BOUNDED_POST_SHOP_ENTRY_DEPTH_DIAGNOSTIC_NO_PRODUCTION_AUTHORITY",
+  "version": "p5-post-shop-stage49-entry-depth-fixture-v0.1"
+}
