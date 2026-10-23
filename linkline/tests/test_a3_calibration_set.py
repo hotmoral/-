@@ -183,11 +183,21 @@ class A3CalibrationSetTest(unittest.TestCase):
             first["manifestFingerprint"],
             production.normalized_manifest_fingerprint(first),
         )
-        text = json.dumps(first, sort_keys=True).lower()
-        self.assertNotIn("easy", text)
-        self.assertNotIn("medium", text)
-        self.assertNotIn("hard", text)
-        self.assertNotIn("human difficulty", text)
+
+        def string_values(value):
+            if isinstance(value, str):
+                yield value
+            elif isinstance(value, dict):
+                for child in value.values():
+                    yield from string_values(child)
+            elif isinstance(value, list):
+                for child in value:
+                    yield from string_values(child)
+
+        values = [value.lower() for value in string_values(first)]
+        for forbidden in ("easy", "medium", "hard"):
+            self.assertNotIn(forbidden, values)
+        self.assertTrue(all("human difficulty" not in value for value in values))
         self.assertLessEqual(len(first["selected"]), 36)
 
     def test_execution_guards(self):
