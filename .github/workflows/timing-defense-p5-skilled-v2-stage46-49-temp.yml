@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  skilled-v2-compare:
+  skilled-v2-factor-isolation:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -21,25 +21,19 @@ jobs:
           fetch-depth: 1
       - name: Install YAML dependency
         run: python3 -m pip install --quiet pyyaml
-      - name: Run twice, verify determinism, print compact comparison
+      - name: Run twice, verify determinism, print compact factor result
         shell: bash
         run: |
           set -euo pipefail
           cd timing-defense-workspace
-          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.py > /tmp/run1.txt
-          cp p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.json /tmp/result1.json
-          python3 tools/run_p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.py > /tmp/run2.txt
-          cmp /tmp/result1.json p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.json
+          python3 tools/run_p5_stage46_47_skilled_factor_isolation_temp.py > /tmp/run1.txt
+          cp p5_stage46_47_skilled_factor_isolation_temp.json /tmp/result1.json
+          python3 tools/run_p5_stage46_47_skilled_factor_isolation_temp.py > /tmp/run2.txt
+          cmp /tmp/result1.json p5_stage46_47_skilled_factor_isolation_temp.json
           python3 - <<'PY'
           import hashlib, json
           from pathlib import Path
-          p=Path('p5_stage46_49_skilled_v2_vs_allperfect_grunt_temp_v2.json')
+          p=Path('p5_stage46_47_skilled_factor_isolation_temp.json')
           d=json.loads(p.read_text())
-          print('P5_SKILLED_V2_COMPARE_V2='+json.dumps({
-            'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
-            'aggregate': d['aggregate'],
-            'skilledModel': d['skilledModel'],
-            'seeds': d['skilledSeeds'],
-            'fidelityFixes': d.get('fidelityFixes'),
-          }, sort_keys=True))
+          print('P5_SKILLED_FACTOR='+json.dumps({'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'aggregate':d['aggregate'],'seeds':d['seeds']},sort_keys=True))
           PY
