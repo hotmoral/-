@@ -7,153 +7,126 @@ Before work:
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_40.yaml`;
-5. read `154_P6_B2_FRESH_FORWARD_P6_AUTHORITY_AND_FIDELITY_CONTRACT_V0_1.md`;
-6. read **latest** `155_P6_B2_FRESH_FORWARD_P6_PROGRESSION_FEEDBACK_RESULT_V0_1.md`;
-7. read P6 chain `150`, `151`, `152`, `153` as needed for closure synthesis;
-8. read P4 R2 chain `79`, `81`, `85`, `111` before making any EXP claim;
-9. verify current production/harness heads;
-10. only then open exact source/evidence for a user-approved next unit.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_41.yaml`;
+5. read `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
+6. read `157_TIER_STRUCTURE_AND_MONSTER_AVAILABILITY_CANDIDATE_REVIEW_V0_1.md`;
+7. read `02_TIER_SYSTEM.md`, `16_MASTER_CAMPAIGN_PROGRESSION_SPINE_V0_1.md`, `19_MODEL_A_B_CLASS_ROLE_AND_VOLUME_AUDIT_V0_1.md`, `31_MASTER_CAMPAIGN_MATRIX_V0_2.md` as needed;
+8. verify production/harness heads;
+9. only then open exact source/evidence for the user-approved next unit.
 
-Do not rerun closed P6-A/B1/B2 work without a concrete new-source or contradiction trigger.
+Do not rerun closed P6 work without a concrete contradiction/new-source trigger.
 
 ---
 
 # Current phase
 
 ```text
-P6 = FORMALLY ENTERED / USER APPROVED
-P6-S1 = COMPLETE
-P6-A = COMPLETE
-P6-B1 = COMPLETE
-P6-B2 historical reconstruction = COMPLETE / FIDELITY GATE FAIL
-P6-B2 FRESH_FORWARD_P6 = DIAGNOSTIC COMPLETE / PASS WITH ABSOLUTE MAGNITUDE WATCH
-CURRENT = P6 CLOSURE SYNTHESIS / USER DECISION PENDING
-Tier count / monster unlock ladder / exact Tier1 roster = DEFERRED
+P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
+Tier structure / monster availability candidate review = COMPLETE
+CURRENT = USER DECISION ON TIER PACKAGE
+exact Tier count = OPEN
+exact monster availability/unlock ladder = OPEN
+exact Tier1 roster = OPEN
+Tier1 exact Stage1-50 authoring = NOT STARTED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Fresh-forward result to preserve
+# P6 result to preserve
 
-Final execution:
+P6 closure source:
+`156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
+
+Preserve:
+- encounter-family rotation is a material cause of class-result differences;
+- Tank low removal is intentional when control/defense/objective protection works;
+- shop ATK -> EXP feedback is bidirectional/outcome-conditioned;
+- fresh-forward reconfirms per-root-action EXP divergence direction;
+- fresh-forward exact magnitude is not production authority;
+- final EXP semantics remain P10R work.
+
+Active watches:
 ```text
-branch timing-defense-workspace-temp-p6-b2-fresh-forward
-head 5093a151142090d58c0e1d26f52cdbee43653542
-run 40039163053
-job 120705885236
-SHA256 80c920d4e2c3982b6a5562768ed4b37f87e2f41703077e46ae8e3cf9d411c6d4
-exact-byte repeat PASS
+FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 ```
-
-Primary causal result:
-```text
-offensive class skill / shop ATK
--> generally faster removal
--> fewer future root timing actions
--> fewer provisional EXP awards
--> later milestone reach
-```
-
-This reconfirms historical P4-B's structural divergence without fitting to its outputs.
-
-Isolated same-entered-Stage ATK matrix:
-```text
-240 pairs
-1982 -> 1750 root actions
--11.7053%
-1 legitimate discrete chronology exception reported
-```
-
-Exception:
-```text
-Archer / T3_CENTRAL / Stage30 / Lv21 / seed307
-5 -> 6 root actions
-```
-Reason: early SPLITTER death exposes children to the same root package's later penetration target selection.
-Do not erase this exception.
 
 ---
 
-# Magnitude boundary
+# Candidate review result — NOT ADOPTED
 
-Fresh-forward early-Lv6 **direction** matches independent P3 for all five classes, but Rogue/Archer/Mage opportunity compression is materially stronger in magnitude.
+Source:
+`157_TIER_STRUCTURE_AND_MONSTER_AVAILABILITY_CANDIDATE_REVIEW_V0_1.md`
 
-Therefore:
+## Recommended Candidate A — Compact 4 Tier
 ```text
-FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH = ACTIVE
+T1: GRUNT / RUNNER / BRUTE
+T2: + SHIELD / FLYER
+T3: + CHARGER / SPLITTER
+T4: + SUPPORTER / SIEGER
+T5+: future expansion
 ```
 
-Use the fresh model for:
-- causal direction;
-- feedback topology;
-- accumulation/nonlinearity;
-- relative opportunity-retention diagnosis.
+Why:
+- strong novelty density `3/2/2/2`;
+- existing class-role coverage audit passed structurally;
+- four Tiers already create substantial campaign/retry/meta volume;
+- P6 exposes no requirement to split T4;
+- T4 combined SUPPORTER/SIEGER risk is WATCH, not FAIL.
 
-Do not use it as exact authority for:
-- production Stage reach;
-- final milestone thresholds;
-- launch EXP values;
-- exact campaign survival.
+T4 guardrail:
+```text
+SUPPORTER isolated teach/mix
+-> SIEGER isolated teach/mix
+-> combined support/siege later
+-> no first teach Stage41-50
+```
+
+## Candidate B — Split 5 Tier
+```text
+T1 G/R/B
+T2 +SH/F
+T3 +C/SP
+T4 +SUP
+T5 +SI
+```
+Use only if combined T4 readability/role-expression fails.
+
+## Candidate C — Extended 6 Tier
+Structurally possible but not recommended under current content evidence due campaign volume and thin late novelty.
 
 ---
 
-# EXP routing is not the current decision
+# CURRENT USER DECISION REQUIRED
 
-Per user-approved R2:
-```text
-pure per-root-action EXP = provisional diagnostic baseline
-final EXP semantics = OPEN
-P10 multiplayer scaling first
--> P10R mandatory EXP/timebase reconvergence
-```
-
-Do not silently introduce:
-- hidden class EXP multipliers;
-- hidden Tier EXP multipliers;
-- flat shop->EXP correction;
-- final Stage Quality Budget / normalization;
-- exact EXP threshold changes.
-
-Fresh-forward strengthens the existing EXP watch; it does not authorize changing the approved R2 routing now.
-
----
-
-# CURRENT USER DECISION REQUIRED — P6 closure
-
-Current evidence set:
-```text
-P6-S1: late Stage46-47 first causal convergence
-P6-A: encounter-family rotation + Tank objective-role attribution
-P6-B1: shop ATK / EXP bidirectional outcome-conditioned feedback
-P6-B2: failed historical reconstruction correctly rejected
-P6-B2 fresh-forward: current-authority structural progression feedback complete
-```
-
-Recommended decision:
-
-## Close P6 structurally with watches
-Meaning:
-- current causal convergence is sufficient for the next authoring constraint layer;
-- no claim that EXP is numerically solved;
-- `FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH` remains active;
-- final EXP convergence remains P10R;
-- no class scalar is changed.
-
-If user approves P6 closure, next package is **candidate review only**:
+Decision package:
 
 ```text
-Tier count
-+ per-Tier monster availability
-+ monster unlock order
-+ exact Tier1 roster constraint
+Initial campaign Tier count = 4
+T1 exact roster constraint = GRUNT / RUNNER / BRUTE
+T2 availability adds SHIELD / FLYER
+T3 availability adds CHARGER / SPLITTER
+T4 availability adds SUPPORTER / SIEGER
+T5+ = future monster expansion
 ```
 
-That package must present alternatives and effects before adoption.
-Do not immediately author exact Tier1 Stage1-50.
+This is the recommended package, but it has **not** been adopted.
 
-If user does not approve closure, ask/identify the exact remaining P6 causal blocker and probe only that bounded blocker.
+If approved, next package is:
+
+```text
+Tier identity + novelty budget
++ encounter-family/archetype availability by Tier
++ monster introduction windows
++ class-opportunity guardrails
++ role-expression guardrails
+```
+
+Only after that package is aligned should exact Tier1 Stage1-50 authoring begin.
+
+If not approved, compare only the rejected dimension against Candidate B/C or a bounded alternative.
 
 ---
 
@@ -161,19 +134,16 @@ If user does not approve closure, ask/identify the exact remaining P6 causal blo
 
 ```text
 LIVE REMOTE WINS
-SOURCE/SIMULATOR FIDELITY BEFORE BALANCE INTERPRETATION
 NO REPEAT OF CLOSED PROBES WITHOUT TRIGGER
-NO RELAXATION OF PREDECLARED GATES AFTER RESULTS
-REPORT REAL CHRONOLOGY EXCEPTIONS
-NO REVERSE-FITTING LOST HISTORICAL MODEL
-SKILLED_V2_CENTRAL FIXED FOR CURRENT CAUSAL COMPARISONS
-HEAVY X+Y = ONE EXP AWARD
-STAGE_SETTLED REQUIRED
-WALL DEFICIT / COMBO / CHARGE PERSIST
+P6 CLOSED WITH WATCHES; DO NOT REOPEN FOR EXACT SCALAR CHASING
+MONSTER AVAILABILITY BEFORE EXACT STAGE COMPOSITION
+NO EXACT TIER/ROSTER ADOPTION WITHOUT USER APPROVAL
+NO EXACT STAGE1-50 AUTHORING YET
+NO NEW MONSTER ADOPTION WITHOUT USER APPROVAL
+NO CLASS BUFF/NERF FROM ONE ENCOUNTER FAMILY
 SURVIVAL != CLEAR
 TANK LOW REMOVAL IS INTENTIONAL
 NO FLAT SHOP->EXP MULTIPLIER
-NO P×P PATCH TO FIT CONTENT
-NO EXACT TIER1 ROSTER/UNLOCK ASSUMPTION
+FINAL EXP ROUTING = P10R
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
 ```
