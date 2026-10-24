@@ -6,16 +6,18 @@ Updated: 2026-10-24 KST
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_43.yaml`;
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_44.yaml`;
 5. read `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
 6. read `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
-7. read `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
-8. read `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
-9. preserve P6 closure `156` and active watches;
-10. verify production/harness heads;
-11. open older supporting docs only when the current slice actually needs them.
+7. read `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
+8. read `164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+9. read `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
+10. inspect exact recipe data `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
+11. preserve P6 closure `156` and active watches;
+12. verify production/harness heads;
+13. open older implementation evidence only when needed for the adapter.
 
-Do not rerun closed P6, Model A Layer-A0, or the full static T1 audit without a trigger.
+Do not rerun closed P6, Model A Layer-A0, or the full static T1 audit without a concrete trigger.
 
 ---
 
@@ -29,130 +31,126 @@ T1 roster = G/R/B / USER APPROVED
 Lower-layer authoring constraints = USER APPROVED WITH T1 BASELINE CORRECTION
 T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
 Representative slice preflight = COMPLETE
-CURRENT = MATERIALIZE DETERMINISTIC CANDIDATE RECIPES FOR REPRESENTATIVE T1 SLICES ONLY
+Representative recipe materialization = STATIC PASS
+Micro-sim contract = COMPLETE
+CURRENT = IMPLEMENT DEDICATED T1 TRANSITION SLICE MICROSIM ADAPTER
 full 50-Stage exact recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Important correction already closed
+# Static evidence already established
 
-Do not reintroduce the old contradictory pair:
+Recipe source:
+`legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`
+
+Result:
 ```text
-GRUNT first mixed 4-6
-RUNNER first mixed 8-12
+PASS errors=0 warnings=0
+max authored 4s density = 8
+Stage40 max4s = 6
+Stage41 max4s = 3
 ```
 
-Canonical correction:
-```text
-GRUNT first mixed = 8-12
-```
-Skeleton chooses Stage8.
-
-Stage1-4 archetype repetition is an explicit onboarding exception because only GRUNT is taught/readable; exact signatures still vary.
+Do not reinterpret this static PASS as dynamic clearability or balance proof.
 
 ---
 
-# T1 skeleton result to preserve
+# Next bounded implementation
 
-Pressure presence:
+Implement a dedicated adapter/runner for exactly these groups:
+
 ```text
-BASELINE 22
-FLOOD 8
-RUSH 16
-BULWARK 16
+A. Stage5 RUNNER teach × Lv6 OFF/ON
+B. Stage18 BRUTE first mixed × Lv16 OFF/ON
+C. Stage20->23 sequential Star Gate A + first high-pressure ramp
+D. Stage39->45 sequential 2★ gate + Lv31 activation before Stage41/43/45
+E. Stage46->50 sequential post-Lv31 mastery/final with Lv31 active
 ```
 
-Complexity:
-```text
-C0 8 / C1 25 / C2 15 / C3 2 / C4 0
-```
-
-Rolling class-opportunity guard:
-```text
-41/41 rolling 10-Stage windows PASS
-```
-
-Known watches:
-```text
-Stage5 RUNNER first teach × Lv6 candidate
-Stage18 BRUTE first mixed × Lv16 candidate
-Stage21 RUNNER first high-pressure × Lv16 tail
-```
-
-No new ordinary teaching occurs in Stage41-50.
+The adapter must read the exact current recipe YAML. Do not reconstruct recipes in code and do not substitute old late-stage fixtures.
 
 ---
 
-# Next bounded diagnostic set
+# Runner admission gates
 
-Source: `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`
+Before interpreting any balance result, prove:
 
-## A — RUNNER teach × Lv6
-Stage5 paired state:
 ```text
-Lv6 OFF vs Lv6 ON
+exact recipe identity
+STAGE_SETTLED boundary
+no timer deletion
+no enemy carry
+no transient leakage
+wall deficit persists
+combo persists
+charge persists
+deterministic RNG/player-model substreams
+explicit per-Stage skill-state trace
+paired OFF/ON differs only in tested skill state
 ```
-Do not fit EXP to pick a preferred side.
 
-## B — BRUTE first mixed × Lv16
-Stage18 paired state:
-```text
-Lv16 OFF vs Lv16 ON
-```
-
-## C — Stage20-23 gate/high-pressure ramp
-Sequential persistent-state slice:
-```text
-20 -> 21 -> 22 -> 23
-```
-Preserve wall/combo/charge and STAGE_SETTLED.
-
-## D — Stage39-45 2★ / Lv31 ascension
-Sequential structure with reach-position diagnostics:
-```text
-Lv31 around 41 / 43 / 45
-```
-This is not an EXP formula freeze.
-
-## E — Stage46-50 mastery/final
-Sequential known-vocabulary mastery with Lv31 active.
+If a gate fails, classify the result as runner/lifecycle fidelity failure and stop balance interpretation.
 
 ---
 
-# Required measurements
+# Implementation reuse rule
+
+Do not use `simulate_class_aware_layer_a.py` as-is for sequential slices; it resets state and lacks the required Lv16/Lv31 surface.
+
+Later P5/P6 runners are reference implementations for:
+- persistent lifecycle semantics;
+- `STAGE_SETTLED`;
+- class packages;
+- deterministic traces;
+- wall/objective attribution.
+
+They may be adapted, but historical encounter fixtures must not leak into the T1 recipe set.
+
+Reuse existing approved class/skill semantics; do not independently recreate them with changed behavior.
+
+---
+
+# Required output metrics
 
 At minimum:
 ```text
-authored/effective entity count
-peak active
-4s/6s density
-frontline block time
-target reorder
-wall damage/reserve
-root timing actions
-stage settled time
-failure classification
-per-class removal/control/opportunity observations
+authoredSpawnCount
+effectiveEntityCount
+peakActive
+max4sDensity
+max6sDensity
+frontlineBlockTime
+targetReorderCount
+backlineExposure where relevant
+spawnToFirstContact
+removalThroughput
+controlValue
+wallDamage
+wallReserve
+rootTimingActionCount
+stageSettledTime
+failureClassification
+per-class directional opportunity/weakness observations
 ```
 
-Keep dimensions separate; do not collapse to one fairness score.
+For Tank, separately attribute objective-protection value from control/defense. Do not use kill parity as the success criterion.
 
 ---
 
-# Root-cause order if a slice fails
+# Result interpretation order
 
 ```text
-source/simulator fidelity
+runner/source fidelity
 -> lifecycle/state
 -> composition / geometry / chronology
--> class/package semantics
--> shop/EXP feedback
+-> skill/class-package interaction
+-> shop/EXP only if actually coupled
 -> exact scalar last
 ```
 
-Repair only the affected slice/neighborhood unless evidence shows a broader dependency problem.
+Do not collapse results to one fairness score.
 
 ---
 
@@ -169,3 +167,5 @@ NO FLAT SHOP->EXP MULTIPLIER
 FINAL EXP ROUTING = P10R
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
 ```
+
+The adapter itself is diagnostic instrumentation and may be implemented autonomously under doc165. Any resulting gameplay/content authority change still requires the appropriate user decision gate.
