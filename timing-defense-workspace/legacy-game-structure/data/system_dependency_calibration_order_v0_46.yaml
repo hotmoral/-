@@ -1,0 +1,156 @@
+version: system-dependency-calibration-order-v0.46
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_45.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_45.yaml
+
+canonicalUpdates:
+  - 168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md
+  - data/t1_pressure_shape_v0_2_and_duration_sensitivity_summary_v0_1.json
+  - data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  - 167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md
+  - 166_T1_TRANSITION_SLICE_MICROSIM_ADAPTER_IMPLEMENTATION_AND_ADMISSION_PREFLIGHT_V0_1.md
+  - 165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md
+  - 164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - 163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md
+  - 162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md
+  - 161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  - 160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md
+  - 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+
+principles:
+  - live_remote_wins
+  - progressive_deepening_iterative_convergence
+  - cross_stage_consistency_review_at_each_boundary
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - encounter_shape_before_scalar
+  - class_opportunity_rotation_not_equal_parity
+  - preserve_class_specialties_and_real_weaknesses
+  - tank_objective_protection_not_kill_parity
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - avoid_unnecessary_repeat_or_scope_expansion
+  - important_design_or_numerical_adoption_requires_user_approval
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    finalExpRuleDeferredTo: P10R
+  P5:
+    status: STRUCTURAL_AND_DIAGNOSTIC_HANDOFF_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+  P6:
+    status: USER_APPROVED_STRUCTURAL_CLOSED_WITH_WATCHES
+    closureSource: 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+    numericalFreeze: false
+
+campaignAuthoring:
+  initialCampaign:
+    tierCount: 4
+    status: USER_APPROVED
+  monsterAvailability:
+    status: USER_APPROVED
+    T1: [GRUNT, RUNNER, BRUTE]
+    T2_add: [SHIELD, FLYER]
+    T3_add: [CHARGER, SPLITTER]
+    T4_add: [SUPPORTER, SIEGER]
+    T5_plus: FUTURE_EXPANSION
+  T1SignatureSkeleton:
+    source: 161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+    status: STATIC_PASS_WITH_WATCHES
+    exactProductionRecipe: false
+    rolling10StageOpportunityWindows: {checked: 41, pass: 41}
+  representativeTransitionSlices:
+    sourcePreflight: 163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md
+    baselineRecipeData: data/t1_representative_transition_slice_recipes_v0_1.yaml
+    baselineExactResult: 167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md
+    pressureShapeCandidate: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+    pressureShapeResult: 168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md
+    pressureSummary: data/t1_pressure_shape_v0_2_and_duration_sensitivity_summary_v0_1.json
+    runnerContract: 165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md
+    runnerImplementation: IMPLEMENTED_WITH_SETTLEMENT_FIDELITY_CORRECTION
+    exactSourceAdmission: PASS
+    v02StaticGate: PASS
+    v02Stage5Unchanged: true
+    v02Stage18Unchanged: true
+    v02Stage41Unchanged: true
+    v02MaxAuthored4sDensity: 8
+    v02Lv31Absence:
+      cases: 15
+      offWallPositiveCases: 0
+      onWallPositiveCases: 0
+      offFailures: 0
+      onFailures: 0
+      conclusion: V02_BASE_NOT_YET_MASTERY_GATE
+    durationSensitivity:
+      densityRejectedSpacingMs: [6000, 8000, 10000]
+      legalSpacingMs: [11000, 12000, 14000, 16000]
+      extraCopySensitivity: [1, 2, 3]
+      durationLever: SUPPORTED
+      uniformRepetition: CLASS_SKEWED_NOT_ADOPTED
+      exampleTwoCopies11s:
+        offWallPositiveCases: 5
+        onWallPositiveCases: 4
+        offFailures: 1
+        onFailures: 0
+        offTotalWallDamage: 6184
+        onTotalWallDamage: 777
+      nextAction: BUILD_STAGE49_50_DISTRIBUTED_DURABLE_SPLIT_AXIS_CANDIDATE
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  authored4sNormalMax: 8
+  currentClassBuffNerfAuthorized: false
+  tankDamageBuffAuthorized: false
+  monsterScalarChangeAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  finalExpRouting: P10R_PER_USER_APPROVED_R2
+  fullT1ExactRecipeFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: T1_STAGE49_50_CLASS_ROTATION_PRESSURE_SHAPE_DIAGNOSTIC
+  exactSourceRunnerAdmission: PASS
+  pressureShapeV02: DIAGNOSTIC_ONLY_BASE_UNDERSHOOT
+  durationLever: SUPPORTED
+  uniformDurationRepetition: CLASS_SKEWED_NOT_ADOPTED
+  recommendedNext: BUILD_STAGE49_50_DISTRIBUTED_DURABLE_SPLIT_AXIS_CANDIDATE
+  preserveStage5: true
+  preserveStage18: true
+  preserveStage41: true
+  full50ExactRecipeAuthoring: DEFERRED
+  exactProductionScalarFreeze: DEFERRED
+  productionGameplayChange: UNAUTHORIZED
+  awaitingUserDecision: false
