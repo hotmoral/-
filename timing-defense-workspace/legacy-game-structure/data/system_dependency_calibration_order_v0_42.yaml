@@ -1,0 +1,152 @@
+version: system-dependency-calibration-order-v0.42
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_41.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_41.yaml
+
+canonicalUpdates:
+  - 159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md
+  - 158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md
+  - 157_TIER_STRUCTURE_AND_MONSTER_AVAILABILITY_CANDIDATE_REVIEW_V0_1.md
+  - 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+  - 155_P6_B2_FRESH_FORWARD_P6_PROGRESSION_FEEDBACK_RESULT_V0_1.md
+  - 152_P6_SHOP_ATK_EXP_OPPORTUNITY_BIDIRECTIONAL_FEEDBACK_RESULT_V0_1.md
+  - 151_P6_ENCOUNTER_FAMILY_ROTATION_AND_TANK_OBJECTIVE_ATTRIBUTION_RESULT_V0_1.md
+  - CHARACTER_PROFILE_RADAR_V1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - monster_availability_before_exact_stage_composition
+  - encounter_composition_before_intrinsic_class_balance_claim
+  - derived_legality_is_not_exact_stage_authoring
+  - role_expression_opportunity_before_scalar_inflation
+  - class_opportunity_rotation_not_equal_per_stage_parity
+  - bounded_probe_before_broad_reaudit
+  - do_not_relax_predeclared_fidelity_gate_after_results
+  - report_legitimate_discrete_chronology_exceptions_instead_of_hiding_them
+  - preserve_class_specialties_and_real_weaknesses
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - important_phase_or_design_adoption_requires_user_approval
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0:
+    status: PASS_WITH_WATCHES
+  P1:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P2:
+    status: USER_APPROVED_STRUCTURAL_COMPLETE
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    expBaseline:
+      purePerValidTimingTurn: PROVISIONAL_DIAGNOSTIC_BASELINE
+      heavyXYOneExpAward: true
+      generatedHitsIndependentExp: false
+      finalExpRuleDeferredTo: P10R
+  P5:
+    status: STRUCTURAL_AND_DIAGNOSTIC_HANDOFF_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+    productionAuthority: false
+  P6:
+    status: USER_APPROVED_STRUCTURAL_CLOSED_WITH_WATCHES
+    closureSource: 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+    finalExpSemanticsSolved: false
+    numericalFreeze: false
+
+classIdentity:
+  radarAuthority: CHARACTER_PROFILE_RADAR_V1.md
+  Tank:
+    interpretation: CONTROL_DEFENSE_WALL_PROTECTION_SPECIALIST_LOW_REMOVAL_INTENTIONAL
+    lowRemovalByItselfIsDefect: false
+    killParityRequired: false
+    activeWatch: TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+    currentDamageBuffAuthorized: false
+
+campaignAuthoring:
+  adoptionSource: 158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md
+  initialTierCount:
+    value: 4
+    status: USER_APPROVED
+  monsterAvailability:
+    status: USER_APPROVED
+    T1: [GRUNT, RUNNER, BRUTE]
+    T2_add: [SHIELD, FLYER]
+    T3_add: [CHARGER, SPLITTER]
+    T4_add: [SUPPORTER, SIEGER]
+    T5_plus: FUTURE_EXPANSION
+  exactTier1Roster:
+    value: [GRUNT, RUNNER, BRUTE]
+    status: USER_APPROVED
+  splitFiveTierFallback:
+    status: INACTIVE_EVIDENCE_TRIGGERED_FALLBACK
+    trigger: COMBINED_T4_READABILITY_ROLE_EXPRESSION_OR_LEARNING_DENSITY_FAIL
+  exactTier1Stage1To50: NOT_STARTED
+  exactStageAuthoringAuthorized: false
+  authoringConstraintReview:
+    source: 159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md
+    status: USER_DECISION_PENDING
+    derivedLegalArchetypeCounts:
+      T1: 3
+      T2: 7
+      T3: 13
+      T4: 20
+    proposedTierIdentity:
+      T1: FOUNDATION_TIMING_FRONTLINE
+      T2: MITIGATION_GEOMETRY
+      T3: BURST_TRANSFORMATION
+      T4: FORMATION_SIEGE
+    proposedIntroductionWindowsStatus: RANGE_BASED_USER_DECISION_PENDING
+    pressureFrequencyRangesStatus: CANDIDATE_GENERATION_BOUNDS_NOT_PRODUCTION_FREEZE
+    formationCadenceProgressionStatus: USER_DECISION_PENDING
+    classOpportunityGuardStatus: USER_DECISION_PENDING
+    roleExpressionGuardStatus: USER_DECISION_PENDING
+
+operationalWatches:
+  - id: TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+    rule: MINIMIZE_TEMP_PUSHES_AND_RECHECK_HARNESS_PRODUCTION_HEADS_AT_BOUNDARIES
+  - id: FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+    rule: USE_FRESH_FORWARD_FOR_CAUSAL_DIRECTION_NOT_EXACT_PRODUCTION_STAGE_REACH
+  - id: TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+    rule: PRESERVE_OBJECTIVE_PROTECTION_VALUE_WITHOUT_KILL_PARITY_REQUIREMENT
+  - id: T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+    rule: IF_COMBINED_T4_READABILITY_OR_ROLE_EXPRESSION_FAILS_REOPEN_SPLIT_5_TIER_FALLBACK
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  currentClassBuffNerfAuthorized: false
+  tankDamageBuffAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  finalExpRouting: P10R_PER_USER_APPROVED_R2
+  exactStageAuthoringAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW
+  P6: USER_APPROVED_STRUCTURAL_CLOSED_WITH_WATCHES
+  initialFourTierPackage: USER_APPROVED
+  lowerLayerConstraintReview: COMPLETE_USER_DECISION_PENDING
+  recommendedNext: USER_DECISION_ON_FOUR_TIER_AUTHORING_CONSTRAINT_PACKAGE
+  afterApproval: T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE
+  exactProductionStageFreezeAfterThat: false
+  awaitingUserDecision: true
