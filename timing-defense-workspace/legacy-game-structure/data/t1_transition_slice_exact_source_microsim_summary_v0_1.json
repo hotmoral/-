@@ -1,0 +1,99 @@
+{
+  "version": "t1-transition-slice-exact-source-microsim-summary-v0.1",
+  "status": "DYNAMIC_DIAGNOSTIC_PASS_WITH_AUTHORING_PRESSURE_UNDERSHOOT",
+  "finalRun": {
+    "workflowRunId": 40074583842,
+    "jobId": 120815112194,
+    "artifactId": 12552383686,
+    "headSha": "61a4dc2fbef1bcf9bf6c48bee857bdbf2304d0d3",
+    "artifactZipSha256": "368d51ae76a45fd4b2fcbfb9e794246ace508e6a975b54a9f286a05e5fb36227",
+    "recipeSourceSha256": "afd4c57e94ea797ab14954f67ecc576b202eeed4ca953162e0080892db1083a7",
+    "seeds": [101, 211, 307],
+    "admission": {
+      "deterministicReplay": true,
+      "exactRecipeIdentity": true,
+      "explicitSkillStateTrace": true,
+      "lifecycleFailures": [],
+      "noEnemyCarryAtSettledBoundary": true,
+      "noTransientLeakageAtSettledBoundary": true,
+      "pairFailures": [],
+      "pairedIsolation": true,
+      "pass": true,
+      "persistentStateContinuity": true,
+      "replayFailures": [],
+      "stageSettledOrTerminalFailure": true
+    }
+  },
+  "supersededInitialRun": {
+    "workflowRunId": 40074386004,
+    "jobId": 120814524129,
+    "artifactId": 12552428254,
+    "headSha": "999b9a08110b002ce9618e2fed299a525d2a20dd",
+    "classification": "FALSE_PASS_SETTLEMENT_ORDERING",
+    "reason": "stage_settled waited for Stage-local wallShield/Aftershock expiration instead of clearing them at STAGE_SETTLED"
+  },
+  "settlementFidelityCorrection": {
+    "bridgeFile": "tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py",
+    "bridgeSha256": "1926ee88bed061bca76840446c73d0b33710915aaf9d19b238d9fd0c09505e4f",
+    "preCleanupResidueRows": {"A": 0, "B": 3, "C": 12, "D": 63, "E": 15},
+    "interpretation": "all pre-cleanup residue rows are Tank rows carrying Stage-local shield and/or Aftershock state; delayed event queues and live enemies still must drain before settlement"
+  },
+  "groupA": {
+    "archer": {"OFF": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanPeakActive": 1.333, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 4.367, "meanRootActions": 4.667, "meanRemovalThroughput": 0.923, "meanPeakActive": 1.333, "meanWallDamage": 0.0}},
+    "knight": {"OFF": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanWallDamage": 0.0}},
+    "mage": {"OFF": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanWallDamage": 0.0}},
+    "rogue": {"OFF": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 4.188, "meanRootActions": 4.333, "meanRemovalThroughput": 0.961, "meanWallDamage": 0.0}},
+    "tank": {"OFF": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanKnockbackDistance": 0.111, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 5.1, "meanRootActions": 5.333, "meanRemovalThroughput": 0.822, "meanKnockbackDistance": 0.145, "meanWallDamage": 0.0}}
+  },
+  "groupB": {
+    "archer": {"OFF": {"meanSettledSeconds": 10.633, "meanRootActions": 10.667, "meanFrontlineBlockSeconds": 6.378, "meanBacklineExposureSeconds": 2.095, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 8.433, "meanRootActions": 8.667, "meanFrontlineBlockSeconds": 3.717, "meanBacklineExposureSeconds": 0.833, "meanWallDamage": 0.0}},
+    "knight": {"OFF": {"meanSettledSeconds": 9.9, "meanRootActions": 10.0, "meanFrontlineBlockSeconds": 4.593, "meanBacklineExposureSeconds": 0.677, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 9.533, "meanRootActions": 9.667, "meanFrontlineBlockSeconds": 3.973, "meanBacklineExposureSeconds": 0.423, "meanWallDamage": 0.0}},
+    "mage": {"OFF": {"meanSettledSeconds": 10.267, "meanRootActions": 10.333, "meanFrontlineBlockSeconds": 5.882, "meanBacklineExposureSeconds": 1.965, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 7.453, "meanRootActions": 7.667, "meanFrontlineBlockSeconds": 4.115, "meanBacklineExposureSeconds": 0.865, "meanWallDamage": 0.0}},
+    "rogue": {"OFF": {"meanSettledSeconds": 11.073, "meanRootActions": 11.0, "meanFrontlineBlockSeconds": 6.082, "meanBacklineExposureSeconds": 2.55, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 10.648, "meanRootActions": 11.0, "meanFrontlineBlockSeconds": 5.17, "meanBacklineExposureSeconds": 2.105, "meanWallDamage": 0.0}},
+    "tank": {"OFF": {"meanSettledSeconds": 17.233, "meanRootActions": 16.667, "meanFrontlineBlockSeconds": 8.475, "meanBacklineExposureSeconds": 4.192, "meanWallDamage": 0.0}, "ON": {"meanSettledSeconds": 17.233, "meanRootActions": 16.667, "meanFrontlineBlockSeconds": 8.475, "meanBacklineExposureSeconds": 4.192, "meanWallDamage": 0.0}}
+  },
+  "groupCStageMeans": {
+    "20": {"archer": 10.267, "knight": 10.633, "mage": 10.42, "rogue": 12.022, "tank": 18.333},
+    "21": {"archer": 4.4, "knight": 4.767, "mage": 3.847, "rogue": 5.522, "tank": 8.433},
+    "22": {"archer": 7.433, "knight": 8.433, "mage": 7.88, "rogue": 9.28, "tank": 16.867},
+    "23": {"archer": 7.333, "knight": 6.967, "mage": 7.88, "rogue": 9.28, "tank": 16.5}
+  },
+  "groupDOverallStageMeans": {
+    "39": {"meanSettledSeconds": 12.506, "meanRootActions": 12.4, "meanPeakActive": 4.267, "meanFrontlineBlockSeconds": 9.121, "meanBacklineExposureSeconds": 6.383, "meanWallDamage": 0.0},
+    "40": {"meanSettledSeconds": 7.114, "meanRootActions": 7.4, "meanPeakActive": 4.067, "meanFrontlineBlockSeconds": 2.531, "meanBacklineExposureSeconds": 0.811, "meanWallDamage": 0.0},
+    "41": {"meanSettledSeconds": 7.608, "meanRootActions": 7.267, "meanPeakActive": 1.733, "meanFrontlineBlockSeconds": 0.0, "meanBacklineExposureSeconds": 0.0, "meanWallDamage": 0.0},
+    "42": {"meanSettledSeconds": 6.09, "meanRootActions": 6.511, "meanPeakActive": 2.222, "meanFrontlineBlockSeconds": 0.0, "meanBacklineExposureSeconds": 0.0, "meanWallDamage": 0.0},
+    "43": {"meanSettledSeconds": 5.702, "meanRootActions": 6.067, "meanPeakActive": 3.133, "meanFrontlineBlockSeconds": 1.922, "meanBacklineExposureSeconds": 0.824, "meanWallDamage": 0.0},
+    "44": {"meanSettledSeconds": 4.945, "meanRootActions": 5.4, "meanPeakActive": 4.4, "meanFrontlineBlockSeconds": 0.0, "meanBacklineExposureSeconds": 0.0, "meanWallDamage": 0.0},
+    "45": {"meanSettledSeconds": 7.436, "meanRootActions": 7.689, "meanPeakActive": 3.289, "meanFrontlineBlockSeconds": 4.881, "meanBacklineExposureSeconds": 2.038, "meanWallDamage": 0.0}
+  },
+  "groupDActivationSensitivity": {
+    "41": {"41": 7.651, "42": 5.985, "43": 5.6, "44": 4.634, "45": 7.544},
+    "43": {"41": 7.587, "42": 6.143, "43": 5.51, "44": 4.634, "45": 7.544},
+    "45": {"41": 7.587, "42": 6.143, "43": 5.996, "44": 5.566, "45": 7.221}
+  },
+  "groupEStageMeans": {
+    "46": {"archer": 7.7, "knight": 9.58, "mage": 8.493, "rogue": 9.508, "tank": 12.467},
+    "47": {"archer": 6.967, "knight": 6.28, "mage": 5.86, "rogue": 5.515, "tank": 6.233},
+    "48": {"archer": 4.033, "knight": 4.54, "mage": 3.66, "rogue": 4.305, "tank": 4.4},
+    "49": {"archer": 7.7, "knight": 7.84, "mage": 8.06, "rogue": 5.0, "tank": 9.9},
+    "50": {"archer": 7.7, "knight": 4.4, "mage": 3.66, "rogue": 3.775, "tank": 9.9}
+  },
+  "globalFindings": {
+    "groupCWallDamageRows": 0,
+    "groupDWallDamageRows": 0,
+    "groupEWallDamageRows": 0,
+    "allSequentialRowsWallDamageZero": true,
+    "groupDStage39MeanPeakActive": 4.267,
+    "groupDStage40MeanPeakActive": 4.067,
+    "groupDStage41MeanPeakActive": 1.733,
+    "classification": "REPRESENTATIVE_RECIPE_PRESSURE_CAPACITY_UNDERSHOOT_CANDIDATE",
+    "repairOrder": ["composition", "chronology", "cadence", "overlap", "geometry", "scalar_last"]
+  },
+  "authorityBoundary": {
+    "productionNumericalFreeze": false,
+    "fullT1ExactRecipeFreeze": false,
+    "classBuffNerfAuthorized": false,
+    "productionGameplayChangeAuthorized": false
+  }
+}
