@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/timing-defense-t1-transition-microsim.yml'
       - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py'
       - 'timing-defense-workspace/tools/t1_transition_microsim_core_v0_1.py'
       - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
       - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
@@ -42,6 +43,7 @@ jobs:
           printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/source-identity.txt
           sha256sum \
             tools/run_t1_transition_slice_microsim_v0_1.py \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
             tools/t1_transition_microsim_core_v0_1.py \
             tools/t1_transition_microsim_skills_v0_1.py \
             tools/t1_transition_microsim_engine_v0_1.py \
@@ -55,7 +57,7 @@ jobs:
       - name: Execute A-E exact-source diagnostic
         working-directory: timing-defense-workspace
         run: |
-          python tools/run_t1_transition_slice_microsim_v0_1.py \
+          python tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
             --seeds 101,211,307 \
             --json-out artifacts/t1-transition-microsim-v0_1.json
 
