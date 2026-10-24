@@ -145,7 +145,9 @@ def main():
 
     candidates = []
     rejected = []
-    search_grid = [(0, 0)] + [(copies, shift) for copies in (1, 2, 3) for shift in (6000, 8000, 10000)]
+    # 6-10s repetition was already proven too dense. Search only wider spacing
+    # so the existing 4s cap stays authoritative while duration grows.
+    search_grid = [(0, 0)] + [(copies, shift) for copies in (1, 2, 3) for shift in (11000, 12000, 14000, 16000)]
 
     for copies, shift in search_grid:
         doc = base_doc if copies == 0 else extend_recipe_doc(base_doc, copies, shift)
