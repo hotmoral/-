@@ -31,6 +31,7 @@ import t1_transition_microsim_engine_v0_1 as engine
 import probe_t1_stage49_50_sustained_split_pressure_v0_1 as sustained
 
 r = bridge.runner
+shape = sustained.shape
 
 WIDTHS = [0.12, 0.20, 0.25, 0.30]
 STAGES = [46, 47, 48, 49, 50]
@@ -107,7 +108,6 @@ def run_chain(runtime, by_stage, cls, seed, active, width):
 
 
 def recipe_variants(source: dict):
-    # Exact v0.2 source plus two already-bounded sustained chronology stress shapes.
     return {
         "BASE_V02": copy.deepcopy(source),
         "SUSTAIN_650_Q": sustained.candidate(source, "SUSTAIN_650_Q", 650, 20, 22, "QUARTER"),
@@ -131,7 +131,6 @@ def main():
     temporal = r.load_json(args.p4d2_temporal)
     seeds = tuple(int(x) for x in args.seeds.split(",") if x.strip())
 
-    # Authority evidence: the source P4-D2 fixture itself must still expose band radius 1.
     geom = temporal["geometryAbstraction"]
     if geom.get("bands") != [-2, -1, 0, 1, 2]:
         raise SystemExit("ARCHER_WIDTH_BRIDGE_AUTHORITY_FAIL_BANDS")
@@ -141,8 +140,6 @@ def main():
     variants = recipe_variants(source)
     output_variants = {}
     fidelity_errors = []
-
-    # Non-Archer digest guard: changing the diagnostic Archer width must not move other classes.
     non_archer_digests = {}
 
     for variant_id, recipe_doc in variants.items():
@@ -181,7 +178,6 @@ def main():
                     "ON": slim(on1),
                 })
 
-            # Check other classes at one seed; outputs must be identical across widths.
             for cls in ("knight", "rogue", "tank", "mage"):
                 case = run_chain(runtime, by_stage, cls, seeds[0], ON, width)
                 key = (variant_id, cls)
@@ -198,7 +194,6 @@ def main():
         }
         for width in WIDTHS:
             wrows = [x for x in rows if abs(x["width"] - width) < 1e-12]
-            # OFF must be byte-semantically width-invariant because Lv31 is absent.
             off_invariant = all(r.sha256_obj(x["OFF"]) == control_off_by_seed[x["seed"]] for x in wrows)
             if not off_invariant:
                 fidelity_errors.append(f"archer-off-width-coupling/{variant_id}/{width}")
