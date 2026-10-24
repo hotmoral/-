@@ -13,14 +13,15 @@ The user must not have to re-explain project state, dependency ordering or reaso
 1. live `timing-defense-workspace` HEAD
 2. `PROJECT_STATUS.md`
 3. `NEXT_WORK.md`
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_41.yaml`
+4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_42.yaml`
 5. `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md`
 6. `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`
 7. `legacy-game-structure/156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
-8. `legacy-game-structure/157_TIER_STRUCTURE_AND_MONSTER_AVAILABILITY_CANDIDATE_REVIEW_V0_1.md`
-9. Tier authority as needed: `02`, `03`, `04`, `16`, `19`, `21`, `22`, `25`, `31`, `45`
-10. current production/harness heads
-11. only then exact evidence for the user-approved next unit
+8. `legacy-game-structure/158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`
+9. **latest:** `legacy-game-structure/159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`
+10. supporting authoring assets as needed: `28`, `29`, `32`, `33`, `34`, `35`, `45`, `148`
+11. current production/harness heads
+12. only then exact evidence for the user-approved next unit
 
 Do not rerun closed work merely because a new session started.
 
@@ -70,11 +71,15 @@ Tier availability
 # 3. Approval rule
 Important design/content/numerical/work-boundary/methodology/phase decisions must not be silently applied.
 
-Approval is required before:
-- adopting exact Tier count;
-- adopting monster availability/unlock ladder;
-- adopting exact Tier1 roster;
-- exact Tier1 Stage1-50 authoring;
+Already user-approved:
+- P6 structural closure with watches;
+- initial campaign Tier count = 4;
+- monster availability ladder `T1 G/R/B -> T2 +SH/F -> T3 +C/SP -> T4 +SUP/SI`;
+- exact T1 ordinary roster constraint = `GRUNT/RUNNER/BRUTE`.
+
+Still requires user approval before adoption:
+- doc159 lower-layer authoring package (Tier identities / formation-cadence progression / concrete teaching windows / new static guards);
+- exact T1 Stage1-50 authoring;
 - class buff/nerf;
 - P×P/judgment probability change;
 - shop numerical freeze;
@@ -82,7 +87,7 @@ Approval is required before:
 - new monster adoption;
 - production gameplay change.
 
-P6 structural closure is already user-approved and must not be reopened without a concrete contradiction/new-source trigger.
+Do not reopen approved four-Tier topology or P6 without a concrete contradictory-evidence trigger.
 
 ---
 
@@ -94,12 +99,12 @@ Planning/canonical:
 
 Production:
 - `timing-defense-cloudflare-do-poc`
-- verified pre-current-work HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- last verified pre-current-planning-work HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - gameplay/numerical changes unauthorized
 
 Calibration harness:
 - `timing-defense-skilled-v2-harness-v01`
-- verified pre-current-work HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
+- last verified pre-current-planning-work HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
 
 P6-B2 fresh-forward temp:
 - `timing-defense-workspace-temp-p6-b2-fresh-forward`
@@ -121,11 +126,10 @@ P5 A2 shop = USER APPROVED
 P5 class identity group = DIRECTIONALLY CLOSED
 P5->P6 fidelity bridge = EXACT TEMP PASS
 P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
-Tier structure / monster availability candidate review = COMPLETE
-CURRENT = USER DECISION ON TIER PACKAGE
-exact Tier count = OPEN
-exact monster availability/unlock ladder = OPEN
-exact Tier1 roster = OPEN
+Initial campaign = FOUR TIER / USER APPROVED
+Monster availability ladder = USER APPROVED
+T1 exact ordinary roster = G/R/B / USER APPROVED
+CURRENT = FOUR-TIER AUTHORING CONSTRAINT PACKAGE / USER DECISION PENDING
 Tier1 Stage1-50 authoring = NOT STARTED
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -134,11 +138,7 @@ production = UNCHANGED / UNAUTHORIZED
 
 # 6. P6 closure — preserve exactly
 
-Source:
-`156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
-
-Closure means causal structure is sufficiently converged for the next campaign constraint layer.
-It does not mean numerical convergence.
+Source: `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
 
 Preserve:
 - encounter-family rotation is material;
@@ -149,110 +149,149 @@ Preserve:
 - fresh-forward magnitude is watched, not production-authoritative;
 - final EXP semantics remain OPEN and route to P10R.
 
-Active watches:
+Fresh-forward same-entered-Stage isolation remains evidence:
 ```text
-FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
-TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
-TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+240 pairs
+root actions 1982 -> 1750
+-11.7053%
 ```
+Do not convert that percentage into a global Stage/EXP correction.
 
 ---
 
-# 7. Tier candidate review — current decision package
+# 7. Approved campaign package
 
-Source:
-`157_TIER_STRUCTURE_AND_MONSTER_AVAILABILITY_CANDIDATE_REVIEW_V0_1.md`
+Source: `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`
 
-## A — Compact 4 Tier — RECOMMENDED / NOT ADOPTED
 ```text
-T1 G/R/B
-T2 +SH/F
-T3 +C/SP
-T4 +SUP/SI
-T5+ future expansion
+T1 = GRUNT / RUNNER / BRUTE
+T2 = T1 + SHIELD / FLYER
+T3 = T2 + CHARGER / SPLITTER
+T4 = T3 + SUPPORTER / SIEGER
+T5+ = future expansion space
 ```
 
-Reasons:
-- novelty density `3/2/2/2` is strong;
-- class-role audit already shows five-class opportunities can be authored;
-- 4 Tiers already create 20 class×Tier records / 1000 successful Stage floor / 60 max stars before retries;
-- P6 found no structural reason requiring a fifth Tier;
-- T4 SUPPORTER+SIEGER risk is a WATCH, not FAIL.
+Meaning:
+- four initial Tiers are canonical;
+- T1 roster is exactly G/R/B at ordinary-monster level;
+- first-available Tier for each current ordinary monster is fixed;
+- earlier monsters remain available later;
+- current nine monsters are not a lifetime cap.
 
-T4 guardrail:
-```text
-SUPPORTER isolated teach/mix
--> SIEGER isolated teach/mix
--> combined support/siege later
--> no first teach in Stage41-50
-```
+Five-Tier split is now inactive fallback only if lower-layer evidence shows T4 cannot preserve SUPPORTER/SIEGER learning separation, readability, role expression or class opportunity.
 
-## B — Split 5 Tier — VALID FALLBACK / NOT ADOPTED
-```text
-T1 G/R/B
-T2 +SH/F
-T3 +C/SP
-T4 +SUP
-T5 +SI
-```
-Use if combined T4 later fails readability/role-expression.
-
-## C — Extended 6 Tier — STRUCTURALLY POSSIBLE / NOT RECOMMENDED CURRENTLY
-Current roster would become `3/2/1/1/1/1`, adding large campaign/meta volume with thin late novelty.
+Active watch:
+`T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH`.
 
 ---
 
-# 8. Tier1 roster candidate
+# 8. Current lower-layer review package — not yet adopted
 
-Preferred, not adopted:
+Source: `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`
+
+Old bounded Model A assets were reconciled with the approved ladder and P6. No material structural contradiction was found.
+
+Derived legal archetype availability from approved monster requirements:
 ```text
-GRUNT / RUNNER / BRUTE
+T1 3 legal archetypes
+T2 7
+T3 13
+T4 full current E01-E20
 ```
 
-Why:
-- baseline + tempo + durability are clean foundational problems;
-- five-class opportunity can be generated by formation/cadence/geometry;
-- avoids advanced stateful/backline mechanics during onboarding;
-- preserves six current monsters as later-Tier novelty.
+This is legality, not frequency or exact Stage placement.
 
-`G/R` alone is too narrow as current default.
-`G/R/B/SH` spends too much onboarding novelty and weakens T2.
+Recommended Tier identities:
+```text
+T1 Foundation / Timing & Frontline
+T2 Mitigation / Geometry
+T3 Burst / Transformation
+T4 Formation / Siege
+```
+
+Recommended first-teach windows:
+```text
+T1: GRUNT 1-2 / RUNNER 5-7 / BRUTE 15-17
+T2: SHIELD 5-7 / FLYER 15-17
+T3: CHARGER 5-7 / SPLITTER 15-17
+T4: SUPPORTER 11-13 / SIEGER 22-24
+```
+Doc159 also contains candidate first-mixed and first-high-pressure windows.
+These ranges are not exact Stage recipes.
+
+Recommended formation/cadence progression:
+- T1 basic line/durable-front/cluster/scatter + basic drip/wave;
+- T2 adds air-offset/spatial transition;
+- T3 adds replication cluster, late insert, bounded overlap;
+- T4 unlocks screen-backline/escort grammar and the full current vocabulary.
+
+Recommended guards:
+- rolling 10-Stage class-opportunity starvation warning;
+- minimum readable role-expression opportunity before skilled counterplay;
+- no new core ordinary first-teach Stage41-50;
+- SUPPORTER and SIEGER isolated teaching before combined high pressure;
+- keep simple/recovery Stages even in later Tiers;
+- do not turn star boundaries 20/40 into arbitrary cliffs.
+
+Only Lv31 Stage41-45 is currently user-confirmed power-window authority. Other skill reach windows remain calibration candidates.
+
+Pressure/frequency/complexity numerical ranges in old Model A remain search/generator bounds only, not production targets.
 
 ---
 
 # 9. Current user decision gate
 
-Ask/resolve only this package:
+Ask/resolve only doc159 package:
 
 ```text
-Initial Tier count = 4
-T1 = GRUNT / RUNNER / BRUTE
-T2 adds SHIELD / FLYER
-T3 adds CHARGER / SPLITTER
-T4 adds SUPPORTER / SIEGER
-T5+ reserved for future monster expansion
+Tier identities
++ formation/cadence progression
++ range-based monster teach/mix/high-pressure windows
++ rolling class-opportunity guard
++ role-expression guard
 ```
 
 If approved:
-next work is **Tier identity / novelty budget / encounter-family availability / introduction-window / class-opportunity / role-expression constraints**.
+next work is **T1 Stage1-50 signature skeleton candidate**.
 
-Do not jump straight to exact Stage1-50.
+The skeleton must be checked for:
+- teaching dependency;
+- repetition and complexity rhythm;
+- five-class opportunity starvation;
+- role-expression opportunity;
+- skill/monster attribution collision;
+- Stage20/40 star-boundary cliffs;
+- Lv31 Stage41-45 runway;
+- Stage46-49 post-Lv31 mastery;
+- Stage50 final readiness.
+
+Still do not freeze exact combat scalars, EXP/shop values or production gameplay.
 
 If rejected:
-identify the rejected dimension and compare only that dimension to B/C or another bounded alternative.
-Do not reopen P6 by default.
+revise only the rejected dimension. Do not reopen P6 or the four-Tier ladder by default.
 
 ---
 
-# 10. Fixed guards
+# 10. Active watches
+
+```text
+TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+```
+
+---
+
+# 11. Fixed guards
 
 ```text
 LIVE REMOTE WINS
 NO REPEAT OF CLOSED PROBES WITHOUT TRIGGER
 P6 CLOSED WITH WATCHES
-NO EXACT TIER/ROSTER ADOPTION WITHOUT USER APPROVAL
+FOUR-TIER CAMPAIGN + MONSTER AVAILABILITY = USER APPROVED
 MONSTER AVAILABILITY BEFORE EXACT STAGE COMPOSITION
-NO EXACT STAGE1-50 AUTHORING YET
+NO EXACT STAGE1-50 AUTHORING BEFORE DOC159 DECISION
 NO HARD CLASS LOCKOUT
 SURVIVAL != CLEAR
 TANK LOW REMOVAL IS INTENTIONAL
@@ -264,11 +303,11 @@ NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
 
 ---
 
-# 11. Session-close quality gate
+# 12. Session-close quality gate
 Before handoff:
 1. re-fetch live canonical HEAD;
 2. verify production/harness unchanged unless explicitly authorized;
 3. separate evidence from adopted semantics/values;
-4. keep active plan/status/next/handoff synchronized;
+4. keep status/next/handoff/active dependency plan synchronized;
 5. explain simply before technical detail;
-6. stop at current user decision gate.
+6. stop at the current user decision gate.
