@@ -2,20 +2,20 @@
 
 Updated: 2026-10-24 KST
 
-## Live recovery
-Before work:
+## Mandatory recovery order
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_42.yaml`;
-5. read `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
-6. read **latest** `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`;
-7. use `28`, `29`, `32`, `33`, `34`, `35`, `45`, `148` only as supporting detail as needed;
-8. preserve P6 closure `156` and active watches;
-9. verify production/harness heads;
-10. only then open exact source/evidence for the user-approved next unit.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_43.yaml`;
+5. read `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
+6. read `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
+7. read `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
+8. read `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
+9. preserve P6 closure `156` and active watches;
+10. verify production/harness heads;
+11. open older supporting docs only when the current slice actually needs them.
 
-Do not rerun closed P6 or old Model A validation merely because the session changed.
+Do not rerun closed P6, Model A Layer-A0, or the full static T1 audit without a trigger.
 
 ---
 
@@ -25,118 +25,134 @@ Do not rerun closed P6 or old Model A validation merely because the session chan
 P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
 Initial campaign = 4 Tier / USER APPROVED
 Monster availability ladder = USER APPROVED
-T1 ordinary roster = GRUNT / RUNNER / BRUTE / USER APPROVED
-CURRENT = FOUR-TIER AUTHORING CONSTRAINT PACKAGE / USER DECISION PENDING
-Tier1 exact Stage1-50 authoring = NOT STARTED
+T1 roster = G/R/B / USER APPROVED
+Lower-layer authoring constraints = USER APPROVED WITH T1 BASELINE CORRECTION
+T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
+Representative slice preflight = COMPLETE
+CURRENT = MATERIALIZE DETERMINISTIC CANDIDATE RECIPES FOR REPRESENTATIVE T1 SLICES ONLY
+full 50-Stage exact recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Approved campaign authority
+# Important correction already closed
 
-Source:
-`158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`
-
+Do not reintroduce the old contradictory pair:
 ```text
-T1 G/R/B
-T2 +SH/F
-T3 +C/SP
-T4 +SUP/SI
-T5+ future expansion
+GRUNT first mixed 4-6
+RUNNER first mixed 8-12
 ```
 
-Do not reopen four-Tier topology merely because the old five-Tier fallback exists.
-Five-Tier is only an evidence-triggered fallback if T4 combined learning/readability/role-expression later fails.
+Canonical correction:
+```text
+GRUNT first mixed = 8-12
+```
+Skeleton chooses Stage8.
+
+Stage1-4 archetype repetition is an explicit onboarding exception because only GRUNT is taught/readable; exact signatures still vary.
 
 ---
 
-# Current review package
+# T1 skeleton result to preserve
 
-Source:
-`159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`
-
-No material contradiction was found between the approved ladder, bounded Model A assets and P6 evidence.
-
-Derived legal encounter counts:
+Pressure presence:
 ```text
-T1 3
-T2 7
-T3 13
-T4 20
-```
-Availability is not frequency and not exact Stage placement.
-
-Recommended Tier identities — pending user adoption:
-```text
-T1 Foundation / Timing & Frontline
-T2 Mitigation / Geometry
-T3 Burst / Transformation
-T4 Formation / Siege
+BASELINE 22
+FLOOD 8
+RUSH 16
+BULWARK 16
 ```
 
-Recommended first-teach windows — pending user adoption:
+Complexity:
 ```text
-T1: G 1-2 / R 5-7 / B 15-17
-T2: SH 5-7 / F 15-17
-T3: C 5-7 / SP 15-17
-T4: SUP 11-13 / SI 22-24
+C0 8 / C1 25 / C2 15 / C3 2 / C4 0
 ```
 
-Doc159 also defines candidate first-mixed and first-high-pressure ranges.
+Rolling class-opportunity guard:
+```text
+41/41 rolling 10-Stage windows PASS
+```
 
-Recommended structural guards — pending package adoption:
-- Tier-progressive formation/cadence vocabulary;
-- rolling 10-Stage class-opportunity starvation warning;
-- readable special-monster role-expression opportunity before counterplay;
-- SUPPORTER teach/mix before SIEGER teach/mix, combined later;
-- no new core ordinary first-teach in Stage41-50.
+Known watches:
+```text
+Stage5 RUNNER first teach × Lv6 candidate
+Stage18 BRUTE first mixed × Lv16 candidate
+Stage21 RUNNER first high-pressure × Lv16 tail
+```
 
-Only Lv31 Stage41-45 is already user-confirmed power-window authority. Do not treat other skill reach bands as frozen.
+No new ordinary teaching occurs in Stage41-50.
 
 ---
 
-# Current user decision required
+# Next bounded diagnostic set
 
-Decision package:
+Source: `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`
 
+## A — RUNNER teach × Lv6
+Stage5 paired state:
 ```text
-Adopt doc159 authoring constraints?
+Lv6 OFF vs Lv6 ON
+```
+Do not fit EXP to pick a preferred side.
 
-Tier identities
-+ formation/cadence progression
-+ range-based monster teach/mix/high-pressure windows
-+ class-opportunity starvation guard
-+ role-expression guard
+## B — BRUTE first mixed × Lv16
+Stage18 paired state:
+```text
+Lv16 OFF vs Lv16 ON
 ```
 
-If approved, next package is **T1 Stage1-50 signature skeleton candidate** only.
+## C — Stage20-23 gate/high-pressure ramp
+Sequential persistent-state slice:
+```text
+20 -> 21 -> 22 -> 23
+```
+Preserve wall/combo/charge and STAGE_SETTLED.
 
-That next package must check:
-- teaching dependency;
-- repetition/complexity rhythm;
-- five-class opportunity starvation;
-- role expression;
-- skill-window collisions;
-- Stage20/40 star-boundary cliffs;
-- Lv31 Stage41-45 acquisition runway;
-- Stage46-49 post-Lv31 mastery;
-- Stage50 final readiness.
+## D — Stage39-45 2★ / Lv31 ascension
+Sequential structure with reach-position diagnostics:
+```text
+Lv31 around 41 / 43 / 45
+```
+This is not an EXP formula freeze.
 
-Do not freeze exact combat scalars or production values while constructing the signature skeleton.
-
-If the package is not approved, revise only the rejected dimension.
+## E — Stage46-50 mastery/final
+Sequential known-vocabulary mastery with Lv31 active.
 
 ---
 
-# Active watches
+# Required measurements
+
+At minimum:
+```text
+authored/effective entity count
+peak active
+4s/6s density
+frontline block time
+target reorder
+wall damage/reserve
+root timing actions
+stage settled time
+failure classification
+per-class removal/control/opportunity observations
+```
+
+Keep dimensions separate; do not collapse to one fairness score.
+
+---
+
+# Root-cause order if a slice fails
 
 ```text
-TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
-FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
-TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
-T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+source/simulator fidelity
+-> lifecycle/state
+-> composition / geometry / chronology
+-> class/package semantics
+-> shop/EXP feedback
+-> exact scalar last
 ```
+
+Repair only the affected slice/neighborhood unless evidence shows a broader dependency problem.
 
 ---
 
@@ -144,14 +160,11 @@ T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
 
 ```text
 LIVE REMOTE WINS
-NO REPEAT OF CLOSED PROBES WITHOUT TRIGGER
-P6 CLOSED WITH WATCHES
-FOUR-TIER CAMPAIGN + MONSTER AVAILABILITY = USER APPROVED
-MONSTER AVAILABILITY BEFORE EXACT STAGE COMPOSITION
-NO EXACT STAGE1-50 AUTHORING BEFORE DOC159 DECISION
-NO CLASS BUFF/NERF FROM ONE ENCOUNTER FAMILY
+NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
+NO FULL-50 EXACT RECIPE AUTHORING BEFORE REPRESENTATIVE SLICE EVIDENCE
+NO CLASS BUFF/NERF FROM ONE SLICE
 SURVIVAL != CLEAR
-TANK LOW REMOVAL IS INTENTIONAL
+TANK KILL PARITY NOT REQUIRED
 NO FLAT SHOP->EXP MULTIPLIER
 FINAL EXP ROUTING = P10R
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
