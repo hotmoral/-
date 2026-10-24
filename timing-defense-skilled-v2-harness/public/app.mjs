@@ -60,7 +60,7 @@ function showInfo(){
     ['조작','줄의 끝을 잡고 드래그하면 지나간 빈칸을 따라 줄이 움직입니다. 끝을 누른 뒤 표시된 칸을 다시 누르는 탭 방식도 사용할 수 있습니다.'],
     ['기록','문제마다 해결 여부, 이동·재시작, 활성 시간, 중단 여부와 선택적 1~5 체감 난이도를 기록합니다. 최단거리나 구조 분석값은 화면과 export에 포함하지 않습니다.']
   ]){const block=el('div','copy-block');block.append(el('h3','',title),el('p','',text));copy.append(block);}
-  const start=button('세션 1 시작');start.onclick=beginSession;
+  const start=button('세션 2 시작');start.onclick=beginSession;
   p.append(notice,copy,start);
 }
 
@@ -136,7 +136,7 @@ function completeSession(){
   emitSession('SESSION_ENDED',{reason:'SELF_CALIBRATION_COMPLETE'});
   const streamErrors=[...validateEventStream(sessionLog.events),...attempts.flatMap((row,index)=>validateEventStream(row.events).map(error=>`attempt${index+1}:${error}`))];
   const payload=makeSelfCalibrationExport({sessionEvents:sessionLog.events,attempts,sessionRunId});const all=[...streamErrors,...validateExportPayload(payload)];
-  clear();const p=el('div','panel');p.append(el('h2','','세션 1 완료'),el('p','','12문제를 모두 마쳤습니다.'));
+  clear();const p=el('div','panel');p.append(el('h2','','세션 2 완료'),el('p','','12문제를 모두 마쳤습니다.'));
   const notice=el('div','notice',all.length?'내보내기 검사에 실패했습니다.':'자가 보정 JSON을 이 기기에 저장할 수 있습니다. 저장 후 이 채팅에 파일을 올려주세요.');p.append(notice);
   const exportButton=button('자가 보정 JSON 내보내기','secondary');exportButton.disabled=all.length>0;exportButton.onclick=()=>downloadJson(payload);p.append(exportButton);
   p.append(el('div','debug',`mode=${RUNTIME_MODE} · session=${SELF_TEST_SESSION_ID} · attempts=${attempts.length} · pool=${POOL_FINGERPRINT.slice(0,10)}…`));screen.append(p);
