@@ -18,11 +18,14 @@ Current key chain:
 - T1 Stage1-50 signature skeleton: `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
 - static skeleton audit: `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
 - representative-slice preflight: `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
-- deterministic recipes/static preflight: `164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+- deterministic recipe/static preflight: `164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
 - micro-sim contract: `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
 - runner implementation preflight: `166_T1_TRANSITION_SLICE_MICROSIM_ADAPTER_IMPLEMENTATION_AND_ADMISSION_PREFLIGHT_V0_1.md`;
-- recipe data: `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_45.yaml`.
+- exact-source baseline result: `167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md`;
+- pressure-shape/Lv31-absence/duration result: `168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md`;
+- baseline recipe: `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
+- v0.2 diagnostic pressure-shape recipe: `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`;
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_46.yaml`.
 
 ---
 
@@ -41,21 +44,23 @@ P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
 Initial campaign = FOUR TIER / USER APPROVED
 Monster availability ladder = USER APPROVED
 T1 roster = GRUNT / RUNNER / BRUTE / USER APPROVED
-Lower-layer authoring constraints = USER APPROVED WITH T1 BASELINE CORRECTION
 T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
-Representative transition recipes = MATERIALIZED / STATIC PASS
-Micro-sim execution contract = COMPLETE
-Dedicated transition-slice runner = IMPLEMENTED
-Local semantic runner smoke = PASS / ENGINEERING ONLY
-Exact canonical-source dynamic execution = PENDING
-CURRENT = T1 TRANSITION SLICE MICROSIM EXACT-SOURCE EXECUTION
+Representative baseline recipe = STATIC PASS / EXACT-SOURCE DYNAMIC EXECUTED
+Dedicated transition runner = IMPLEMENTED / EXACT-SOURCE ADMISSION PASS
+Settlement ordering defect = FOUND / CORRECTED / SUPERSEDED FALSE PASS
+v0.2 pressure-shape candidate = DIAGNOSTIC ONLY / STATIC PASS / EXACT-SOURCE EXECUTED
+Stage41 relief = RECONFIRMED
+v0.2 Stage46-50 Lv31 absence = TOO SAFE
+pressure duration as mastery-gate lever = SUPPORTED
+uniform late-pulse repetition = CLASS-SKEWED / NOT ADOPTED
+CURRENT = STAGE49-50 CLASS-ROTATION PRESSURE-SHAPE DIAGNOSTIC
 Full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Four-Tier authority
+# Fixed campaign authority
 
 ```text
 T1 = GRUNT / RUNNER / BRUTE
@@ -73,17 +78,18 @@ T3 Burst / Transformation
 T4 Formation / Siege
 ```
 
-Historical GRUNT mix contradiction remains closed by the minimal correction:
+Historical GRUNT-mix contradiction remains closed:
 ```text
-GRUNT first mixed = Stage8-12
+obsolete = GRUNT first mixed Stage4-6
+canonical = GRUNT first mixed Stage8-12
 ```
-Skeleton uses Stage8. Do not reintroduce Stage4-6 or pull RUNNER/BRUTE forward to satisfy the obsolete window.
+Skeleton uses Stage8. Do not pull RUNNER or BRUTE earlier to satisfy the obsolete window.
 
 ---
 
-# T1 skeleton / static evidence
+# T1 structural/static evidence
 
-Skeleton/audit result:
+Skeleton/static audit:
 ```text
 structural FAIL = 0
 verdict = PASS_WITH_WATCHES
@@ -92,7 +98,7 @@ complexity = C0 8 / C1 25 / C2 15 / C3 2 / C4 0
 rolling 10-Stage class opportunity = 41/41 PASS
 ```
 
-Representative deterministic recipe static result:
+Baseline representative recipe static result:
 ```text
 Stages = 5, 18, 20-23, 39-45, 46-50
 RESULT = PASS
@@ -103,77 +109,122 @@ Stage40 max4s = 6
 Stage41 max4s = 3
 ```
 
-This is structural/static evidence only, not dynamic clearability or balance proof.
+---
+
+# Exact-source runner result
+
+The first exact-source execution appeared to pass admission but manual causal review found a runner defect:
+- Tank Stage18 Lv16 ON was delayed by ~3 seconds because Stage-local wall shield/Aftershock was incorrectly required to expire before `STAGE_SETTLED`.
+
+Classification:
+```text
+FALSE_PASS_SETTLEMENT_ORDERING
+```
+
+Minimal correction:
+`tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py`
+
+Correct semantics:
+- authored spawns complete;
+- zero live Stage-owned enemy;
+- delayed combat-event queue drained;
+- then Stage-local passive temporary residue clears at the boundary instead of holding an empty Stage open.
+
+Corrected baseline exact run:
+```text
+run 40074583842
+job 120815112194
+artifact 12552383686
+head 61a4dc2fbef1bcf9bf6c48bee857bdbf2304d0d3
+```
+
+Admission PASS:
+```text
+exactRecipeIdentity
+stageSettledOrTerminalFailure
+noEnemyCarryAtSettledBoundary
+noTransientLeakageAtSettledBoundary
+persistentStateContinuity
+deterministicReplay
+pairedIsolation
+explicitSkillStateTrace
+```
+
+Baseline dynamic findings:
+- Stage5 Lv6 collision = WATCH, not fail;
+- Stage18 Lv16 collision = MATERIAL WATCH, especially Archer/Mage compression;
+- Stage41 relief shape = supported;
+- Stage20-23, 39-45, 46-50 objective-pressure capacity = undershoot;
+- baseline Stage46-50 never damaged the wall.
 
 ---
 
-# Dedicated micro-sim runner
+# v0.2 pressure-shape diagnostic
 
-Implemented assets:
+Source:
+`data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`
+
+Boundary:
+- Stage5 unchanged;
+- Stage18 unchanged;
+- Stage41 unchanged;
+- no monster/class/shop/EXP scalar changes;
+- right-edge entry retained;
+- authored 4s density normal cap 8 retained.
+
+Static gate:
 ```text
-tools/run_t1_transition_slice_microsim_v0_1.py
-tools/t1_transition_microsim_core_v0_1.py
-tools/t1_transition_microsim_skills_v0_1.py
-tools/t1_transition_microsim_engine_v0_1.py
+PASS
+max4s <= 8 on every representative Stage
+Stage40 max4s = 6
+Stage41 max4s = 3
 ```
 
-Runner admission covers:
-- exact source identity evidence via source/per-recipe SHA256;
-- exact Stage/group contract;
-- `STAGE_SETTLED` or terminal wall failure;
-- no arbitrary timer deletion;
-- no enemy carry at settled boundary;
-- no Stage-local transient leakage;
-- wall deficit/combo/charge continuity;
-- deterministic judgment/proc state continuity;
-- OFF/ON pair isolation;
-- explicit skill-state tracing;
-- deterministic replay.
-
-Safety timeout is fail-closed: it raises a runner-fidelity error and never deletes enemies or advances Stage.
-
-Skill authority zoning is explicit:
+Final comprehensive exact-source evidence:
 ```text
-Lv6 = current frozen combat authority
-Lv11/Lv16/Lv21 = legacy parity diagnostic inputs
-Lv26 = user-approved structural semantics + provisional diagnostic coefficients
-Lv31 = user-approved structural direction + P4D2 provisional diagnostic centers
+run 40075651830
+job 120818295930
+artifact 12553201879
+head bd1959c73235255e9de8a103295d95aa260d69fd
+artifact SHA256 a60523c6ed34d58e02aafe6fffffb8f997b2d4d28bf03d8b275c3847ae3da008
 ```
-The runner does not convert Lv26/Lv31 diagnostic numbers into production authority.
 
-Local split-runner smoke with seeds `101/211/307` passed syntax, deterministic replay, pair isolation, continuity, no enemy carry and no transient leakage. However the local recipe file was a semantic YAML reconstruction/redump, not the exact canonical bytes, so that run is engineering smoke only and no balance conclusion is adopted from it.
+v0.2 findings:
+- Stage20-23 breaks zero-pressure saturation slightly: 2/60 wall-positive rows, total 246 diagnostic wall damage;
+- Stage39-45 still has zero wall damage but Stage41 relief is stronger/readable;
+- Stage46-50 with Lv31 active has longer interactions but still zero wall damage;
+- paired Lv31 absence probe: OFF 15/15 and ON 15/15 both clear Stage46-50 with zero wall damage.
+
+Therefore:
+```text
+V02_STAGE46_50_MASTERY_GATE = NOT PRESENT
+```
 
 ---
 
-# Exact next execution groups
+# Pressure-duration sensitivity
 
-After exact canonical-source admission passes, inspect in order:
+Naive 6/8/10-second pulse repetition was rejected before dynamic interpretation because it violated the authored 4-second density cap.
+
+Wider 11/12/14/16-second spacing remained within the 4-second cap and showed real Lv31 OFF>ON separation without scalar changes.
+
+Representative point:
 ```text
-A Stage5 Lv6 OFF/ON
-B Stage18 Lv16 OFF/ON
-C Stage20->23 sequential
-D Stage39->45 sequential, Lv31 before 41/43/45
-E Stage46->50 sequential, Lv31 active
+COPY2_SHIFT11000
+Lv31 OFF: wall-positive 5/15 / failures 1 / total wall damage 6184
+Lv31 ON : wall-positive 4/15 / failures 0 / total wall damage 777
 ```
 
-Required output dimensions stay separate:
+Conclusion:
 ```text
-authored/effective entity count
-peak active
-4s/6s density
-frontline block time
-target reorder
-backline exposure
-spawn-to-first-contact
-removal throughput
-control value
-wall damage/reserve
-root timing actions
-stage settled time
-failure classification
+PRESSURE_DURATION_IS_A_REAL_MASTERY_GATE_LEVER = SUPPORTED
+SCALAR_INCREASE_REQUIRED = NOT SHOWN
 ```
 
-Tank objective protection must be interpreted separately from kill output.
+However uniform repetition is not adopted because pressure is class-skewed:
+- Tank and Rogue absorb disproportionate late wall pressure;
+- Archer/Mage often remain almost untouched;
+- this risks becoming a raw-throughput test rather than class-rotating mastery pressure.
 
 ---
 
@@ -205,10 +256,9 @@ runner/source fidelity
 ```
 
 Also preserve:
-- encounter family can rotate class advantage;
-- one late class ranking is not universal balance evidence;
+- one encounter ranking is not universal class balance evidence;
 - `SURVIVAL != CLEAR`;
-- Tank kill parity is not required;
+- Tank objective protection/control is primary; kill parity is not required;
 - no flat shop->EXP correction;
 - final EXP semantics route to P10R.
 
@@ -218,14 +268,27 @@ Also preserve:
 
 Next bounded work:
 ```text
-EXECUTE_DEDICATED_T1_TRANSITION_SLICE_MICROSIM_AGAINST_EXACT_CANONICAL_SOURCE
+BUILD_STAGE49_50_DISTRIBUTED_DURABLE_SPLIT_AXIS_CANDIDATE
 ```
 
-Balance interpretation is forbidden until runner admission passes on the exact canonical inputs.
+Purpose:
+- reduce the Tank/Rogue skew created by uniform pulse repetition;
+- create spatial/distributed pressure that Archer/Mage cannot solve globally by default;
+- preserve Tank control/objective-protection identity;
+- use only GRUNT/RUNNER/BRUTE;
+- keep right-edge entry and authored 4s density <= 8;
+- modify composition/geometry/chronology before any scalar change.
+
+Preserve unchanged during this next slice:
+```text
+Stage5
+Stage18
+Stage41
+```
 
 Still not authorized/frozen:
-- all-50 exact recipe freeze;
-- monster/shop/EXP/P×P numerical freeze;
+- full 50-Stage exact recipe freeze;
+- monster/class/shop/EXP/P×P numerical freeze;
 - class buffs/nerfs;
 - Tank damage normalization;
 - boss adoption;
