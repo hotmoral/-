@@ -18,7 +18,8 @@
   <script type="module" src="./app.mjs"></script>
   <script type="module">
     const CELL='.cell', BOARD='.board-wrap';
-    const FIRST_RETRY_MS=150, RETRY_MS=24, MAX_RETRIES=14;
+    const FIRST_RETRY_MS=144, RETRY_MS=20, MAX_RETRIES=18;
+    const INTENT_THRESHOLD_RATIO=.26, DIRECTION_DEADZONE_PX=3;
     let drag=null, suppressTrustedClickUntil=0;
 
     const style=document.createElement('style');
@@ -33,51 +34,70 @@
       for(const cell of document.querySelectorAll(CELL)) if(cellNumber(cell)===number) return cell;
       return null;
     }
-    function cellAt(clientX,clientY){
-      return document.elementFromPoint(clientX,clientY)?.closest?.(CELL)||null;
+    function legalCells(){return [...document.querySelectorAll(`${CELL}.legal`)];}
+    function centerOf(cell){
+      const r=cell.getBoundingClientRect();
+      return {x:r.left+r.width/2,y:r.top+r.height/2,size:Math.min(r.width,r.height)};
+    }
+    function currentIntentDestination(){
+      if(!drag)return null;
+      const endpoint=currentCell(drag.endpointCell);
+      if(!endpoint)return null;
+      const origin=centerOf(endpoint);
+      const vx=drag.clientX-origin.x,vy=drag.clientY-origin.y;
+      const threshold=origin.size*INTENT_THRESHOLD_RATIO;
+      const directionMagnitude=Math.hypot(drag.dirX,drag.dirY);
+      let best=null,bestScore=-Infinity;
+      for(const cell of legalCells()){
+        const c=centerOf(cell),dx=c.x-origin.x,dy=c.y-origin.y;
+        const distance=Math.hypot(dx,dy)||1;
+        const positionProjection=(vx*dx+vy*dy)/distance;
+        if(positionProjection<=threshold)continue;
+        const directionScore=directionMagnitude>=DIRECTION_DEADZONE_PX
+          ?(drag.dirX*dx+drag.dirY*dy)/(directionMagnitude*distance)
+          :0;
+        const score=directionScore*origin.size+positionProjection*.08;
+        if(score>bestScore){bestScore=score;best=cell;}
+      }
+      return best;
     }
     function reselect(attempt=0){
       if(!drag)return;
       const endpoint=currentCell(drag.endpointCell);
       if(!endpoint){drag.waiting=false;return;}
-      if(endpoint.classList.contains('selected')){drag.waiting=false;pump();return;}
+      if(endpoint.classList.contains('selected')){drag.waiting=false;pumpIntent();return;}
       endpoint.click();
       const fresh=currentCell(drag.endpointCell);
-      if(fresh?.classList.contains('selected')){drag.waiting=false;pump();return;}
+      if(fresh?.classList.contains('selected')){drag.waiting=false;pumpIntent();return;}
       if(attempt<MAX_RETRIES){setTimeout(()=>reselect(attempt+1),RETRY_MS);return;}
       drag.waiting=false;
-      pump();
+      pumpIntent();
     }
-    function pump(){
+    function pumpIntent(){
       if(!drag||drag.waiting)return;
-      while(drag.queue.length){
-        const number=drag.queue.shift();
-        const cell=currentCell(number);
-        if(!cell)continue;
-        if(cell.classList.contains('legal')){
-          drag.waiting=true;
-          drag.moved=true;
-          drag.endpointCell=number;
-          cell.click();
-          setTimeout(()=>reselect(),FIRST_RETRY_MS);
-          return;
-        }
-      }
+      const destination=currentIntentDestination();
+      if(!destination)return;
+      const number=cellNumber(destination);
+      if(number===null||number===drag.endpointCell)return;
+      drag.waiting=true;
+      drag.moved=true;
+      drag.endpointCell=number;
+      destination.click();
+      setTimeout(()=>reselect(),FIRST_RETRY_MS);
     }
-    function enqueueFromPointer(event){
+    function updatePointer(event){
       if(!drag||event.pointerId!==drag.pointerId)return;
       event.preventDefault();
-      const cell=cellAt(event.clientX,event.clientY);
-      const number=cellNumber(cell);
-      if(number===null||number===drag.lastHover)return;
-      drag.lastHover=number;
-      if(drag.queue.at(-1)!==number)drag.queue.push(number);
-      pump();
+      const dx=event.clientX-drag.clientX,dy=event.clientY-drag.clientY;
+      if(Math.hypot(dx,dy)>=DIRECTION_DEADZONE_PX){drag.dirX=dx;drag.dirY=dy;}
+      drag.clientX=event.clientX;drag.clientY=event.clientY;
+      pumpIntent();
     }
     function finishDrag(event){
       if(!drag||event.pointerId!==drag.pointerId)return;
       event.preventDefault();
       suppressTrustedClickUntil=performance.now()+350;
+      try{document.documentElement.releasePointerCapture(event.pointerId);}catch{}
       drag=null;
       document.querySelectorAll(`${BOARD}.dragging`).forEach(node=>node.classList.remove('dragging'));
     }
@@ -89,13 +109,14 @@
       const number=cellNumber(cell);
       if(number===null)return;
       event.preventDefault();
-      drag={pointerId:event.pointerId,endpointCell:number,lastHover:number,queue:[],waiting:false,moved:false};
+      drag={pointerId:event.pointerId,endpointCell:number,clientX:event.clientX,clientY:event.clientY,dirX:0,dirY:0,waiting:false,moved:false};
       suppressTrustedClickUntil=Infinity;
       board.classList.add('dragging');
+      try{document.documentElement.setPointerCapture(event.pointerId);}catch{}
       cell.click();
     },{capture:true,passive:false});
 
-    document.addEventListener('pointermove',enqueueFromPointer,{capture:true,passive:false});
+    document.addEventListener('pointermove',updatePointer,{capture:true,passive:false});
     document.addEventListener('pointerup',finishDrag,{capture:true,passive:false});
     document.addEventListener('pointercancel',finishDrag,{capture:true,passive:false});
 
