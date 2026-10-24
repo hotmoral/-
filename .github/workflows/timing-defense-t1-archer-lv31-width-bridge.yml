@@ -1,0 +1,96 @@
+name: Timing Defense T1 Archer Lv31 Width Bridge
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - '.github/workflows/timing-defense-t1-archer-lv31-width-bridge.yml'
+      - 'timing-defense-workspace/tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage49_50_sustained_split_pressure_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_core_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  T1_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+
+jobs:
+  width-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout exact triggering commit
+      - uses: actions/setup-python@v5
+        name: Set up Python
+        with: {python-version: '3.12'}
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record source identity
+        working-directory: timing-defense-workspace
+        run: |
+          mkdir -p artifacts
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/archer-lv31-width-bridge-source-identity.txt
+          sha256sum \
+            tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            tools/probe_t1_stage49_50_sustained_split_pressure_v0_1.py \
+            tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
+            tools/run_t1_transition_slice_microsim_v0_1.py \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            tools/t1_transition_microsim_core_v0_1.py \
+            tools/t1_transition_microsim_skills_v0_1.py \
+            tools/t1_transition_microsim_engine_v0_1.py \
+            "$T1_RECIPE" \
+            legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
+            >> artifacts/archer-lv31-width-bridge-source-identity.txt
+          cat artifacts/archer-lv31-width-bridge-source-identity.txt
+      - name: Compile probe
+        working-directory: timing-defense-workspace
+        run: |
+          python -m py_compile \
+            tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
+            tools/probe_t1_stage49_50_sustained_split_pressure_v0_1.py \
+            tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py
+      - name: Execute Archer Lv31 width bridge probe
+        working-directory: timing-defense-workspace
+        run: |
+          PYTHONPATH=tools python tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            --recipes "$T1_RECIPE" \
+            --seeds 101,211,307 \
+            --json-out artifacts/t1-archer-lv31-width-bridge-v0_1.json
+      - name: Enforce fidelity gate
+        working-directory: timing-defense-workspace
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('artifacts/t1-archer-lv31-width-bridge-v0_1.json').read_text())
+          assert not d['fidelityErrors'], d['fidelityErrors']
+          assert d['p4d2BandAuthority']['bands']==[-2,-1,0,1,2]
+          assert d['p4d2BandAuthority']['workingBandRadius']==1
+          assert d['continuousSensitivity']['widths']==[0.12,0.2,0.25,0.3]
+          for block in d['variants'].values():
+              for a in block['aggregates']:
+                  assert a['offInvariantVsControl'] is True
+          print('ARCHER_LV31_WIDTH_BRIDGE_FIDELITY=PASS')
+          PY
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-t1-archer-lv31-width-bridge
+          path: |
+            timing-defense-workspace/artifacts/t1-archer-lv31-width-bridge-v0_1.json
+            timing-defense-workspace/artifacts/archer-lv31-width-bridge-source-identity.txt
+          if-no-files-found: error
