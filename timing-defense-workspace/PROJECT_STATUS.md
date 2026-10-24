@@ -12,15 +12,17 @@ Updated: 2026-10-24 KST
 ## Canonical authority chain
 Live remote always wins.
 Current key chain:
-- P1/P2/P3/P4/P5 approved/closed contracts as previously recorded;
 - P6 closure: `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
 - four-Tier adoption: `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
 - lower-layer review: `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`;
-- **approved authoring constraints + T1 baseline correction:** `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
-- **T1 50-Stage signature skeleton:** `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
-- **static audit:** `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
-- **representative-slice preflight:** `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_43.yaml`.
+- approved authoring constraints + T1 baseline correction: `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
+- T1 50-Stage signature skeleton: `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
+- static skeleton audit: `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
+- representative-slice preflight: `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
+- deterministic transition recipes + static preflight: `164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+- micro-sim execution contract: `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
+- recipe data: `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_44.yaml`.
 
 ---
 
@@ -42,7 +44,10 @@ T1 roster = GRUNT / RUNNER / BRUTE / USER APPROVED
 Lower-layer authoring constraints = USER APPROVED WITH ONE MINIMAL T1 BASELINE CORRECTION
 T1 Stage1-50 signature skeleton = STATIC CANDIDATE PASS_WITH_WATCHES
 Representative transition slice preflight = COMPLETE
-CURRENT = T1 REPRESENTATIVE TRANSITION SLICE DIAGNOSTIC
+Representative transition recipes = MATERIALIZED / STATIC PASS
+Micro-sim execution contract = COMPLETE
+Dedicated transition-slice runner = NOT STARTED
+CURRENT = T1 TRANSITION SLICE MICROSIM RUNNER IMPLEMENTATION
 Full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -59,20 +64,12 @@ T4 = + SUPPORTER / SIEGER
 T5+ = future expansion space
 ```
 
-Tier identities now adopted:
+Tier identities:
 ```text
 T1 Foundation / Timing & Frontline
 T2 Mitigation / Geometry
 T3 Burst / Transformation
 T4 Formation / Siege
-```
-
-Derived legal archetype counts:
-```text
-T1 3
-T2 7
-T3 13
-T4 20
 ```
 
 Availability is not frequency and not exact Stage placement.
@@ -81,7 +78,7 @@ Availability is not frequency and not exact Stage placement.
 
 # T1 baseline correction
 
-A concrete lower-layer contradiction was found:
+Historical contradiction:
 ```text
 old GRUNT first mixed = Stage4-6
 RUNNER first mixed = Stage8-12
@@ -94,8 +91,7 @@ GRUNT first mixed = Stage8-12
 ```
 Skeleton uses Stage8.
 
-Early Stage1-4 same-archetype repetition is a bounded onboarding exception because only GRUNT is taught/readable; formation/cadence still vary.
-After RUNNER teach, normal anti-repetition guard applies.
+Stage1-4 same-archetype repetition remains a bounded onboarding exception because only GRUNT is taught/readable; formation/cadence vary. Normal anti-repetition applies after RUNNER teach.
 
 ---
 
@@ -115,7 +111,6 @@ FLOOD 8
 RUSH 16
 BULWARK 16
 ```
-All fit retained T1 candidate search bounds.
 
 Dominant complexity:
 ```text
@@ -125,7 +120,6 @@ C2 15
 C3 2
 C4 0
 ```
-All fit retained T1 candidate search bounds.
 
 Rolling 10-Stage class-opportunity windows:
 ```text
@@ -133,12 +127,66 @@ Rolling 10-Stage class-opportunity windows:
 ```
 This is a starvation guard, not equal-win-rate proof.
 
-Star boundaries:
-- Stage19 C2 -> Stage20 C2: no arbitrary 1★ complexity cliff;
-- Stage39 C3 -> Stage40 C2: no arbitrary 2★ complexity cliff;
+Star boundaries remain structurally controlled:
+- Stage19 C2 -> Stage20 C2;
+- Stage39 C3 -> Stage40 C2;
 - Stage41 C0 begins Lv31 acquisition relief.
 
-Lv31 confirmed window Stage41-45 remains free of new ordinary mechanics.
+---
+
+# Representative transition recipe static result
+
+Source: recipe YAML + `164`.
+
+Materialized only these bounded slices:
+```text
+Stage5
+Stage18
+Stage20-23
+Stage39-45
+Stage46-50
+```
+
+Static result:
+```text
+RESULT=PASS errors=0 warnings=0
+highest authored 4s density = 8
+inherited normal upper bound = 8
+WATCH range entered = no
+Stage40 max4s = 6
+Stage41 max4s = 3
+```
+
+Therefore Stage41 relief is reflected in the authored spawn schedule, not merely in a label. This still does not prove dynamic difficulty, class balance, wall safety, target chronology, actual skill reach or launch tuning.
+
+---
+
+# Micro-sim execution contract
+
+Source: `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`.
+
+Execution groups:
+```text
+A Stage5 Lv6 OFF/ON paired
+B Stage18 Lv16 OFF/ON paired
+C Stage20->23 sequential
+D Stage39->45 sequential with Lv31 activation before 41/43/45
+E Stage46->50 sequential with Lv31 active
+```
+
+Mandatory fidelity before interpreting balance:
+- exact recipe identity;
+- `STAGE_SETTLED` boundaries;
+- no arbitrary timer deletion;
+- no enemy/transient leakage;
+- wall deficit/combo/charge persistence;
+- deterministic paired substreams;
+- explicit skill-state tracing;
+- fail closed on recipe/lifecycle mismatch.
+
+Existing old Layer-A runner is not admissible as-is for sequential slices. Later P5/P6 runners are lifecycle/class-semantic references only; their historical fixtures may not substitute for current T1 recipes.
+
+Next technical work is a dedicated adapter/runner consuming the exact new recipe YAML.
 
 ---
 
@@ -158,48 +206,36 @@ T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
 TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 ```
 
-Do not add new watches without a concrete later-layer failure mode.
+Do not add watches without a concrete failure mode.
 
 ---
 
-# P6 conclusions still binding
+# Binding interpretation rules
 
 - encounter family can materially rotate class advantage;
 - one late class ranking is not universal balance evidence;
 - Tank low removal is intentional when control/defense/objective protection works;
+- `SURVIVAL != CLEAR`;
 - shop ATK -> EXP feedback is bidirectional/outcome-conditioned;
 - no flat shop->EXP correction;
-- fresh-forward exact magnitude is not production authority;
-- final EXP semantics remain P10R work.
+- final EXP semantics remain P10R work;
+- root-cause order is fidelity -> lifecycle -> encounter chronology/geometry -> class/package interaction -> scalar last.
 
 ---
 
 # Current work boundary
 
-Representative transition-slice preflight source:
-`163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`
-
 Next bounded work:
 ```text
-materialize candidate deterministic recipes only for:
-1. RUNNER teach × Lv6
-2. BRUTE first mixed × Lv16
-3. Stage20-23 gate + first high-pressure ramp
-4. Stage39-45 soft-wall -> 2★ -> Lv31 ascension
-5. Stage46-50 post-Lv31 mastery/final
+IMPLEMENT_DEDICATED_T1_TRANSITION_SLICE_MICROSIM_ADAPTER
 ```
 
-Required fidelity:
-- STAGE_SETTLED;
-- wall deficit/combo/charge persistence within sequential slices;
-- right-edge spawn / no midfield pop-in;
-- actual target-order authority;
-- no class parity forcing;
-- exact scalar changes last.
+The adapter must consume the exact recipe YAML and satisfy doc165 admission gates before any combat/balance output is interpreted.
 
 Still not authorized/frozen:
 - all-50 exact recipe freeze;
 - monster/shop/EXP/P×P numerical freeze;
 - class buffs/nerfs;
+- Tank damage normalization;
 - boss adoption;
 - production gameplay changes.
