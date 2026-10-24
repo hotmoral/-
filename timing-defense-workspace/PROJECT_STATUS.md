@@ -14,15 +14,15 @@ Live remote always wins.
 Current key chain:
 - P6 closure: `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
 - four-Tier adoption: `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
-- lower-layer review: `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`;
-- approved authoring constraints + T1 baseline correction: `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
-- T1 50-Stage signature skeleton: `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
+- approved lower-layer constraints/correction: `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
+- T1 Stage1-50 signature skeleton: `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
 - static skeleton audit: `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
 - representative-slice preflight: `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
-- deterministic transition recipes + static preflight: `164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
-- micro-sim execution contract: `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
+- deterministic recipes/static preflight: `164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+- micro-sim contract: `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
+- runner implementation preflight: `166_T1_TRANSITION_SLICE_MICROSIM_ADAPTER_IMPLEMENTATION_AND_ADMISSION_PREFLIGHT_V0_1.md`;
 - recipe data: `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_44.yaml`.
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_45.yaml`.
 
 ---
 
@@ -41,27 +41,28 @@ P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
 Initial campaign = FOUR TIER / USER APPROVED
 Monster availability ladder = USER APPROVED
 T1 roster = GRUNT / RUNNER / BRUTE / USER APPROVED
-Lower-layer authoring constraints = USER APPROVED WITH ONE MINIMAL T1 BASELINE CORRECTION
-T1 Stage1-50 signature skeleton = STATIC CANDIDATE PASS_WITH_WATCHES
-Representative transition slice preflight = COMPLETE
+Lower-layer authoring constraints = USER APPROVED WITH T1 BASELINE CORRECTION
+T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
 Representative transition recipes = MATERIALIZED / STATIC PASS
 Micro-sim execution contract = COMPLETE
-Dedicated transition-slice runner = NOT STARTED
-CURRENT = T1 TRANSITION SLICE MICROSIM RUNNER IMPLEMENTATION
+Dedicated transition-slice runner = IMPLEMENTED
+Local semantic runner smoke = PASS / ENGINEERING ONLY
+Exact canonical-source dynamic execution = PENDING
+CURRENT = T1 TRANSITION SLICE MICROSIM EXACT-SOURCE EXECUTION
 Full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Approved four-Tier structure
+# Four-Tier authority
 
 ```text
 T1 = GRUNT / RUNNER / BRUTE
 T2 = + SHIELD / FLYER
 T3 = + CHARGER / SPLITTER
 T4 = + SUPPORTER / SIEGER
-T5+ = future expansion space
+T5+ = future expansion
 ```
 
 Tier identities:
@@ -72,134 +73,116 @@ T3 Burst / Transformation
 T4 Formation / Siege
 ```
 
-Availability is not frequency and not exact Stage placement.
-
----
-
-# T1 baseline correction
-
-Historical contradiction:
-```text
-old GRUNT first mixed = Stage4-6
-RUNNER first mixed = Stage8-12
-```
-With no other T1 monster available in Stage4-6, those windows conflict.
-
-Canonical minimal correction:
+Historical GRUNT mix contradiction remains closed by the minimal correction:
 ```text
 GRUNT first mixed = Stage8-12
 ```
-Skeleton uses Stage8.
-
-Stage1-4 same-archetype repetition remains a bounded onboarding exception because only GRUNT is taught/readable; formation/cadence vary. Normal anti-repetition applies after RUNNER teach.
+Skeleton uses Stage8. Do not reintroduce Stage4-6 or pull RUNNER/BRUTE forward to satisfy the obsolete window.
 
 ---
 
-# T1 signature skeleton static result
+# T1 skeleton / static evidence
 
-Source: `161` + audit `162`.
-
+Skeleton/audit result:
 ```text
 structural FAIL = 0
 verdict = PASS_WITH_WATCHES
+pressure = BASELINE22 / FLOOD8 / RUSH16 / BULWARK16
+complexity = C0 8 / C1 25 / C2 15 / C3 2 / C4 0
+rolling 10-Stage class opportunity = 41/41 PASS
 ```
 
-Pressure Stage presence:
+Representative deterministic recipe static result:
 ```text
-BASELINE 22
-FLOOD 8
-RUSH 16
-BULWARK 16
-```
-
-Dominant complexity:
-```text
-C0 8
-C1 25
-C2 15
-C3 2
-C4 0
-```
-
-Rolling 10-Stage class-opportunity windows:
-```text
-41 checked / 41 PASS
-```
-This is a starvation guard, not equal-win-rate proof.
-
-Star boundaries remain structurally controlled:
-- Stage19 C2 -> Stage20 C2;
-- Stage39 C3 -> Stage40 C2;
-- Stage41 C0 begins Lv31 acquisition relief.
-
----
-
-# Representative transition recipe static result
-
-Source: recipe YAML + `164`.
-
-Materialized only these bounded slices:
-```text
-Stage5
-Stage18
-Stage20-23
-Stage39-45
-Stage46-50
-```
-
-Static result:
-```text
-RESULT=PASS errors=0 warnings=0
+Stages = 5, 18, 20-23, 39-45, 46-50
+RESULT = PASS
+errors = 0
+warnings = 0
 highest authored 4s density = 8
-inherited normal upper bound = 8
-WATCH range entered = no
 Stage40 max4s = 6
 Stage41 max4s = 3
 ```
 
-Therefore Stage41 relief is reflected in the authored spawn schedule, not merely in a label. This still does not prove dynamic difficulty, class balance, wall safety, target chronology, actual skill reach or launch tuning.
+This is structural/static evidence only, not dynamic clearability or balance proof.
 
 ---
 
-# Micro-sim execution contract
+# Dedicated micro-sim runner
 
-Source: `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`.
-
-Execution groups:
+Implemented assets:
 ```text
-A Stage5 Lv6 OFF/ON paired
-B Stage18 Lv16 OFF/ON paired
-C Stage20->23 sequential
-D Stage39->45 sequential with Lv31 activation before 41/43/45
-E Stage46->50 sequential with Lv31 active
+tools/run_t1_transition_slice_microsim_v0_1.py
+tools/t1_transition_microsim_core_v0_1.py
+tools/t1_transition_microsim_skills_v0_1.py
+tools/t1_transition_microsim_engine_v0_1.py
 ```
 
-Mandatory fidelity before interpreting balance:
-- exact recipe identity;
-- `STAGE_SETTLED` boundaries;
+Runner admission covers:
+- exact source identity evidence via source/per-recipe SHA256;
+- exact Stage/group contract;
+- `STAGE_SETTLED` or terminal wall failure;
 - no arbitrary timer deletion;
-- no enemy/transient leakage;
-- wall deficit/combo/charge persistence;
-- deterministic paired substreams;
+- no enemy carry at settled boundary;
+- no Stage-local transient leakage;
+- wall deficit/combo/charge continuity;
+- deterministic judgment/proc state continuity;
+- OFF/ON pair isolation;
 - explicit skill-state tracing;
-- fail closed on recipe/lifecycle mismatch.
+- deterministic replay.
 
-Existing old Layer-A runner is not admissible as-is for sequential slices. Later P5/P6 runners are lifecycle/class-semantic references only; their historical fixtures may not substitute for current T1 recipes.
+Safety timeout is fail-closed: it raises a runner-fidelity error and never deletes enemies or advances Stage.
 
-Next technical work is a dedicated adapter/runner consuming the exact new recipe YAML.
+Skill authority zoning is explicit:
+```text
+Lv6 = current frozen combat authority
+Lv11/Lv16/Lv21 = legacy parity diagnostic inputs
+Lv26 = user-approved structural semantics + provisional diagnostic coefficients
+Lv31 = user-approved structural direction + P4D2 provisional diagnostic centers
+```
+The runner does not convert Lv26/Lv31 diagnostic numbers into production authority.
+
+Local split-runner smoke with seeds `101/211/307` passed syntax, deterministic replay, pair isolation, continuity, no enemy carry and no transient leakage. However the local recipe file was a semantic YAML reconstruction/redump, not the exact canonical bytes, so that run is engineering smoke only and no balance conclusion is adopted from it.
 
 ---
 
-# Active T1 watches
+# Exact next execution groups
+
+After exact canonical-source admission passes, inspect in order:
+```text
+A Stage5 Lv6 OFF/ON
+B Stage18 Lv16 OFF/ON
+C Stage20->23 sequential
+D Stage39->45 sequential, Lv31 before 41/43/45
+E Stage46->50 sequential, Lv31 active
+```
+
+Required output dimensions stay separate:
+```text
+authored/effective entity count
+peak active
+4s/6s density
+frontline block time
+target reorder
+backline exposure
+spawn-to-first-contact
+removal throughput
+control value
+wall damage/reserve
+root timing actions
+stage settled time
+failure classification
+```
+
+Tank objective protection must be interpreted separately from kill output.
+
+---
+
+# Active watches
 
 ```text
 T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
 T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
 T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
-```
-
-Existing carried watches:
-```text
 FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
 TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
 T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
@@ -212,14 +195,22 @@ Do not add watches without a concrete failure mode.
 
 # Binding interpretation rules
 
-- encounter family can materially rotate class advantage;
+```text
+runner/source fidelity
+-> lifecycle/state
+-> encounter composition / geometry / chronology
+-> class/package interaction
+-> shop/EXP only if actually coupled
+-> exact scalar last
+```
+
+Also preserve:
+- encounter family can rotate class advantage;
 - one late class ranking is not universal balance evidence;
-- Tank low removal is intentional when control/defense/objective protection works;
 - `SURVIVAL != CLEAR`;
-- shop ATK -> EXP feedback is bidirectional/outcome-conditioned;
+- Tank kill parity is not required;
 - no flat shop->EXP correction;
-- final EXP semantics remain P10R work;
-- root-cause order is fidelity -> lifecycle -> encounter chronology/geometry -> class/package interaction -> scalar last.
+- final EXP semantics route to P10R.
 
 ---
 
@@ -227,10 +218,10 @@ Do not add watches without a concrete failure mode.
 
 Next bounded work:
 ```text
-IMPLEMENT_DEDICATED_T1_TRANSITION_SLICE_MICROSIM_ADAPTER
+EXECUTE_DEDICATED_T1_TRANSITION_SLICE_MICROSIM_AGAINST_EXACT_CANONICAL_SOURCE
 ```
 
-The adapter must consume the exact recipe YAML and satisfy doc165 admission gates before any combat/balance output is interpreted.
+Balance interpretation is forbidden until runner admission passes on the exact canonical inputs.
 
 Still not authorized/frozen:
 - all-50 exact recipe freeze;
