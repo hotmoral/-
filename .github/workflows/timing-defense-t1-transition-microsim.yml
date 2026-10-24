@@ -12,6 +12,7 @@ on:
       - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
       - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
       - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
       - 'timing-defense-workspace/legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json'
       - 'timing-defense-workspace/legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json'
       - 'timing-defense-workspace/legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json'
@@ -19,6 +20,9 @@ on:
 
 permissions:
   contents: read
+
+env:
+  T1_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
 
 jobs:
   exact-source-microsim:
@@ -48,18 +52,52 @@ jobs:
             tools/t1_transition_microsim_skills_v0_1.py \
             tools/t1_transition_microsim_engine_v0_1.py \
             legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml \
+            "$T1_RECIPE" \
             legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
             legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
             legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
             >> artifacts/source-identity.txt
           cat artifacts/source-identity.txt
 
+      - name: Enforce bounded pressure-shape static gate
+        working-directory: timing-defense-workspace
+        run: |
+          python - <<'PY'
+          import os, yaml
+          from pathlib import Path
+          old = yaml.safe_load(Path('legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml').read_text())
+          new = yaml.safe_load(Path(os.environ['T1_RECIPE']).read_text())
+          by_old = {int(r['stage']): r for r in old['recipes']}
+          by_new = {int(r['stage']): r for r in new['recipes']}
+          assert by_new[5] == by_old[5], 'Stage5 must remain unchanged'
+          assert by_new[18] == by_old[18], 'Stage18 must remain unchanged'
+          assert by_new[41] == by_old[41], 'Stage41 relief must remain unchanged'
+          assert set(by_new) == {5,18,20,21,22,23,*range(39,51)}
+          normal = int(new['guards']['authored4sNormalMax'])
+          def dens(stage, window=4000):
+              ts=[int(x['tMs']) for x in by_new[stage]['spawns']]
+              return max(sum(1 for o in ts if s <= o < s+window) for s in ts)
+          rows=[]
+          for stage in sorted(by_new):
+              d4=dens(stage)
+              d6=dens(stage,6000)
+              rows.append((stage,len(by_new[stage]['spawns']),d4,d6))
+              if d4 > normal:
+                  raise SystemExit(f'STATIC_DENSITY_FAIL stage={stage} max4={d4} normal={normal}')
+          if not dens(41) < dens(40):
+              raise SystemExit(f'STAGE41_RELIEF_FAIL S40={dens(40)} S41={dens(41)}')
+          print('stage authored max4 max6')
+          for row in rows: print(*row)
+          print('STATIC_PRESSURE_SHAPE_GATE=PASS')
+          PY
+
       - name: Execute A-E exact-source diagnostic
         working-directory: timing-defense-workspace
         run: |
           python tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            --recipes "$T1_RECIPE" \
             --seeds 101,211,307 \
-            --json-out artifacts/t1-transition-microsim-v0_1.json
+            --json-out artifacts/t1-transition-microsim-v0_2.json
 
       - name: Enforce runner admission gate
         working-directory: timing-defense-workspace
@@ -67,7 +105,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('artifacts/t1-transition-microsim-v0_1.json')
+          p = Path('artifacts/t1-transition-microsim-v0_2.json')
           d = json.loads(p.read_text(encoding='utf-8'))
           admission = d.get('admission', {})
           print('status=', d.get('status'))
@@ -93,6 +131,6 @@ jobs:
         with:
           name: timing-defense-t1-transition-microsim
           path: |
-            timing-defense-workspace/artifacts/t1-transition-microsim-v0_1.json
+            timing-defense-workspace/artifacts/t1-transition-microsim-v0_2.json
             timing-defense-workspace/artifacts/source-identity.txt
           if-no-files-found: error
