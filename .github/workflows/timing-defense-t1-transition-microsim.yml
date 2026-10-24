@@ -129,8 +129,9 @@ jobs:
         working-directory: timing-defense-workspace
         run: |
           python - <<'PY'
-          import json, os
+          import json, os, sys
           from pathlib import Path
+          sys.path.insert(0, 'tools')
           import run_t1_transition_slice_microsim_settlement_fix_v0_1 as bridge
           r = bridge.runner
           recipe_doc = r.load_yaml(os.environ['T1_RECIPE'])
