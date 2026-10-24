@@ -1,0 +1,168 @@
+version: system-dependency-calibration-order-v0.45
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_44.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_44.yaml
+
+canonicalUpdates:
+  - 166_T1_TRANSITION_SLICE_MICROSIM_ADAPTER_IMPLEMENTATION_AND_ADMISSION_PREFLIGHT_V0_1.md
+  - ../tools/run_t1_transition_slice_microsim_v0_1.py
+  - ../tools/t1_transition_microsim_core_v0_1.py
+  - ../tools/t1_transition_microsim_skills_v0_1.py
+  - ../tools/t1_transition_microsim_engine_v0_1.py
+  - 165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md
+  - 164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - data/t1_representative_transition_slice_recipes_v0_1.yaml
+  - 163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md
+  - 162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md
+  - 161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  - 160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md
+  - 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+
+principles:
+  - live_remote_wins
+  - progressive_deepening_iterative_convergence
+  - cross_stage_consistency_review_at_each_boundary
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - bounded_representative_slice_before_full_50_exact_recipe_authoring
+  - role_expression_opportunity_before_scalar_inflation
+  - class_opportunity_rotation_not_equal_per_stage_parity
+  - preserve_class_specialties_and_real_weaknesses
+  - survival_is_not_clear
+  - exact_scalar_freeze_last
+  - avoid_unnecessary_repeat_or_scope_expansion
+  - important_design_or_numerical_adoption_requires_user_approval
+  - production_changes_require_explicit_authorization
+
+workPackages:
+  P0: {status: PASS_WITH_WATCHES}
+  P1: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P2: {status: USER_APPROVED_STRUCTURAL_COMPLETE}
+  P3:
+    status: STRUCTURAL_PASS_COMPLETE
+    authority:
+      stageBoundary: STAGE_SETTLED
+      wallDeficitPersists: true
+      comboPersistsAcrossStageShop: true
+      chargePersistsAcrossStageShop: true
+  P4:
+    status: PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
+    finalExpRuleDeferredTo: P10R
+  P5:
+    status: STRUCTURAL_AND_DIAGNOSTIC_HANDOFF_COMPLETE
+    shopA2: USER_APPROVED
+    classIdentityGroup: DIRECTIONALLY_CLOSED
+    fidelityBridge: EXACT_TEMP_PASS
+  P6:
+    status: USER_APPROVED_STRUCTURAL_CLOSED_WITH_WATCHES
+    closureSource: 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+    numericalFreeze: false
+
+campaignAuthoring:
+  initialCampaign:
+    tierCount: 4
+    status: USER_APPROVED
+  monsterAvailability:
+    status: USER_APPROVED
+    T1: [GRUNT, RUNNER, BRUTE]
+    T2_add: [SHIELD, FLYER]
+    T3_add: [CHARGER, SPLITTER]
+    T4_add: [SUPPORTER, SIEGER]
+    T5_plus: FUTURE_EXPANSION
+  lowerLayerAuthoringConstraints:
+    source: 160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md
+    status: USER_APPROVED_WITH_MINIMAL_T1_BASELINE_CORRECTION
+    T1BaselineCorrection:
+      oldGruntFirstMixed: STAGE_4_6
+      correctedGruntFirstMixed: STAGE_8_12
+      reason: RUNNER_FIRST_MIX_DEPENDENCY
+  T1SignatureSkeleton:
+    source: 161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+    status: STATIC_CANDIDATE_PASS_WITH_WATCHES
+    exactProductionRecipe: false
+  T1StaticAudit:
+    source: 162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md
+    status: PASS_WITH_WATCHES
+    structuralFails: 0
+    rolling10StageOpportunityWindows: {checked: 41, pass: 41}
+    noHardLockoutRuntime: OPEN_LATER_DETERMINISTIC_CHECK
+  representativeTransitionSlices:
+    sourcePreflight: 163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md
+    recipeData: data/t1_representative_transition_slice_recipes_v0_1.yaml
+    staticReport: 164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+    microSimContract: 165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md
+    runnerReport: 166_T1_TRANSITION_SLICE_MICROSIM_ADAPTER_IMPLEMENTATION_AND_ADMISSION_PREFLIGHT_V0_1.md
+    runnerEntry: ../../tools/run_t1_transition_slice_microsim_v0_1.py
+    runnerImplementation: COMPLETE
+    localSemanticSmoke: PASS_ENGINEERING_ONLY
+    exactCanonicalSourceDynamicExecution: PENDING
+    dynamicBalanceInterpretation: NOT_STARTED
+    nextAction: EXECUTE_DEDICATED_T1_TRANSITION_SLICE_MICROSIM_AGAINST_EXACT_CANONICAL_SOURCE
+    staticErrors: 0
+    staticWarnings: 0
+    maxAuthored4sDensity: 8
+    stage40Max4sDensity: 6
+    stage41Max4sDensity: 3
+
+runnerAdmission:
+  exactRecipeSourceIdentityEvidence: REQUIRED
+  stageBoundary: STAGE_SETTLED
+  noTimerDeletion: true
+  noEnemyCarry: true
+  noTransientLeakage: true
+  wallDeficitPersistence: REQUIRED
+  comboPersistence: REQUIRED
+  chargePersistence: REQUIRED
+  deterministicReplay: REQUIRED
+  pairedSkillIsolation: REQUIRED
+  explicitSkillStateTrace: REQUIRED
+  failClosedBeforeBalanceInterpretation: true
+  localSemanticSmokeIsCanonicalEvidence: false
+
+skillAuthorityBoundary:
+  Lv6: CURRENT_FROZEN_COMBAT_AUTHORITY
+  Lv11_16_21: LEGACY_PARITY_DIAGNOSTIC_INPUT
+  Lv26: USER_APPROVED_STRUCTURAL_PROVISIONAL_NUMBERS
+  Lv31: USER_APPROVED_STRUCTURAL_DIRECTION_P4D2_PROVISIONAL_CENTERS
+  noProductionRefreezeByRunner: true
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  noHardClassLockout: true
+  survivalIsClear: false
+  currentClassBuffNerfAuthorized: false
+  tankDamageBuffAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  finalExpRouting: P10R_PER_USER_APPROVED_R2
+  fullT1ExactRecipeFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: T1_TRANSITION_SLICE_MICROSIM_EXACT_SOURCE_EXECUTION
+  T1SignatureSkeleton: STATIC_PASS_WITH_WATCHES
+  deterministicRecipeMaterialization: STATIC_PASS
+  microSimContract: COMPLETE
+  runnerImplementation: COMPLETE
+  runnerAdmissionPreflight: LOCAL_SEMANTIC_SMOKE_PASS_EXACT_CANONICAL_RUN_PENDING
+  recommendedNext: EXECUTE_EXACT_CANONICAL_SOURCE_AND_REQUIRE_ADMISSION_PASS_BEFORE_BALANCE_INTERPRETATION
+  full50ExactRecipeAuthoring: DEFERRED
+  exactProductionScalarFreeze: DEFERRED
+  productionGameplayChange: UNAUTHORIZED
+  awaitingUserDecision: false
