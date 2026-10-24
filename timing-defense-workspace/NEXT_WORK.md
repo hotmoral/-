@@ -6,15 +6,15 @@ Updated: 2026-10-24 KST
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_45.yaml`;
-5. read `166_T1_TRANSITION_SLICE_MICROSIM_ADAPTER_IMPLEMENTATION_AND_ADMISSION_PREFLIGHT_V0_1.md`;
-6. read `165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
-7. inspect exact recipe data `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
-8. inspect runner entry `tools/run_t1_transition_slice_microsim_v0_1.py` and its three support modules only as needed;
-9. preserve `164` static recipe PASS, `161/162` T1 skeleton result, P6 closure `156`, and active watches;
-10. verify production/harness heads before/after execution.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_46.yaml`;
+5. read `168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md`;
+6. read compact summary `legacy-game-structure/data/t1_pressure_shape_v0_2_and_duration_sensitivity_summary_v0_1.json`;
+7. inspect v0.2 recipe `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`;
+8. preserve exact-source runner contract/result `165` / `167` and settlement bridge;
+9. preserve T1 skeleton/static authority `160-164` and P6 closure `156`;
+10. verify production/harness heads.
 
-Do not rerun closed P6, Model A Layer-A0, or the full static T1 audit without a concrete trigger.
+Do not rerun closed P6, the full T1 skeleton audit, or baseline exact-source diagnostics without a concrete trigger.
 
 ---
 
@@ -22,152 +22,167 @@ Do not rerun closed P6, Model A Layer-A0, or the full static T1 audit without a 
 
 ```text
 T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
-Representative recipe materialization = STATIC PASS
-Micro-sim contract = COMPLETE
-Dedicated transition runner = IMPLEMENTED
-Local semantic smoke = PASS / ENGINEERING ONLY
-Exact canonical-source dynamic execution = NOT STARTED
-CURRENT = EXECUTE EXACT CANONICAL SOURCE THROUGH RUNNER ADMISSION
+baseline representative recipe = STATIC PASS / EXACT-SOURCE EXECUTED
+micro-sim runner = EXACT-SOURCE ADMISSION PASS AFTER SETTLEMENT CORRECTION
+v0.2 pressure-shape candidate = STATIC PASS / DYNAMIC DIAGNOSTIC ONLY
+Stage41 relief = RECONFIRMED
+v0.2 Stage46-50 Lv31 absence = TOO SAFE
+pressure duration lever = SUPPORTED
+uniform pulse repetition = CLASS-SKEWED / NOT ADOPTED
+CURRENT = STAGE49-50 CLASS-ROTATION PRESSURE-SHAPE DIAGNOSTIC
 full 50-Stage exact recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Exact next action
+# Evidence to preserve
 
-Execute the committed runner against the exact live canonical files:
+## Exact-source runner fidelity
+The original exact run exposed a false PASS: Stage-local wall shield/Aftershock incorrectly delayed `STAGE_SETTLED`.
 
+Minimal settlement bridge corrected the ordering. Corrected runs prove:
 ```text
-python tools/run_t1_transition_slice_microsim_v0_1.py \
-  --recipes legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml \
-  --p3-fixture legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
-  --p4d2-base legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
-  --p4d2-temporal legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
-  --seeds 101,211,307 \
-  --json-out <evidence-path>
+exact recipe identity = PASS
+STAGE_SETTLED/terminal failure = PASS
+no enemy carry = PASS
+no transient leakage = PASS
+persistent state continuity = PASS
+deterministic replay = PASS
+paired isolation = PASS
+explicit skill-state trace = PASS
 ```
 
-The execution environment must use the current canonical checkout/bytes. Do not reconstruct or redump the recipe before execution.
+Do not remove or bypass the settlement bridge unless the core engine is equivalently corrected and revalidated.
 
-Record:
-- live canonical HEAD used;
-- exact recipe source SHA256 emitted by runner;
-- runner code/blob identity;
-- admission result;
-- evidence file digest if an artifact is retained.
+## v0.2 base
+Static:
+```text
+Stage5 unchanged
+Stage18 unchanged
+Stage41 unchanged
+all representative max4s <= 8
+Stage40 max4s 6
+Stage41 max4s 3
+```
+
+Dynamic:
+```text
+Stage20-23: 2/60 wall-positive rows / 246 total diagnostic wall damage
+Stage39-45: zero wall damage / Stage41 relief remains clear
+Stage46-50 Lv31 ON: zero wall damage
+Stage46-50 Lv31 OFF: zero wall damage
+```
+
+Therefore v0.2 alone is not the intended Stage46+ mastery gate.
+
+## Duration sensitivity
+6/8/10-second generic repetition:
+```text
+REJECTED BY 4s DENSITY GUARD
+```
+
+11/12/14/16-second spaced repetition:
+```text
+legal under max4 <= 8
+creates real OFF > ON pressure separation
+```
+
+Example only, not adopted:
+```text
+COPY2_SHIFT11000
+OFF wall-positive 5/15 / failures 1 / wall damage 6184
+ON  wall-positive 4/15 / failures 0 / wall damage 777
+```
+
+This proves duration can matter without scalar inflation, but uniform repetition over-punishes Tank/Rogue while Archer/Mage remain too protected.
 
 ---
 
-# Admission gate — must pass before balance interpretation
+# Exact next bounded task
 
-Require all:
+Build and test **Stage49-50 only** candidate(s) using distributed durability / split-axis pressure.
+
+Goals:
 ```text
-exactRecipeIdentity evidence
-stageSettledOrTerminalFailure
-noEnemyCarryAtSettledBoundary
-noTransientLeakageAtSettledBoundary
-persistentStateContinuity
-deterministicReplay
-pairedIsolation
-explicitSkillStateTrace
+1. reduce the Tank/Rogue skew of uniform repetition;
+2. create real spatial pressure for Archer/Mage rather than a single global line/cluster answer;
+3. preserve Rogue durable-normal execution opportunity;
+4. preserve Tank control/defense/objective-protection value;
+5. keep Knight generalist/frontline usefulness;
+6. preserve right-edge spawning;
+7. keep authored 4-second density <= 8;
+8. use only GRUNT/RUNNER/BRUTE;
+9. change composition / geometry / chronology before scalars.
 ```
 
-Also preserve fail-closed behavior:
-- no timer-based enemy deletion;
-- no forced Stage advance;
-- safety cap raises fidelity failure.
-
-If any gate fails:
+Do not change in this task:
 ```text
-STOP BALANCE INTERPRETATION
--> classify runner/source or lifecycle failure
--> repair runner only as narrowly as necessary
--> rerun exact-source admission
+Stage5
+Stage18
+Stage41
+monster HP/speed/wall damage
+class coefficients
+shop/EXP/P×P probabilities
 ```
+
+Do not simply copy another universal pulse onto every class-facing situation.
 
 ---
 
-# Only after admission PASS
+# Candidate evaluation
 
-Inspect groups in fixed order:
+Compare candidate Stage49-50 against:
+1. v0.2 base;
+2. duration-sensitivity envelope;
+3. Lv31 OFF vs ON paired state.
 
-## A — Stage5 RUNNER teach × Lv6
+At minimum report per class / seed:
 ```text
-Lv6 OFF vs ON
-same recipe / same deterministic state
-```
-Question: does Lv6 erase or distort RUNNER teaching?
-
-## B — Stage18 BRUTE first mix × Lv16
-```text
-Lv16 OFF vs ON
-same recipe / same deterministic state
-```
-Question: does Lv16 prevent BRUTE durability/frontline role from being readable?
-
-## C — Stage20->23
-Sequential persistent-state run. Check Star Gate A and first RUNNER/BRUTE high-pressure ramp.
-
-## D — Stage39->45
-Sequential runs with Lv31 activation before Stage41 / 43 / 45. This is reach-position sensitivity only, not an EXP freeze.
-
-## E — Stage46->50
-Sequential post-Lv31 mastery/final run with Lv31 active throughout.
-
----
-
-# Required interpretation dimensions
-
-Keep separate:
-```text
-authored/effective entity count
+wall damage / wall reserve
+failure or incomplete status
+settled time
+root actions
 peak active
-4s/6s density
 frontline block time
-target reorder
 backline exposure
-spawn-to-first-contact
 removal throughput
-control value
-wall damage/reserve
-root timing actions
-stage settled time
-failure classification
-class opportunity / weakness observation
+control value / Tank objective protection
+Lv31 OFF vs ON delta
 ```
 
-For Tank, objective protection/control is the primary attribution lane; low removal alone is not a defect.
+Also inspect whether pressure rotates across classes rather than merely shifting all damage to a different single class.
 
-Do not collapse results into one fairness score.
+No single fairness score.
 
 ---
 
-# Skill authority boundary
+# Acceptance direction for the next diagnostic
 
-```text
-Lv6 = current frozen combat authority
-Lv11/Lv16/Lv21 = legacy parity diagnostic inputs
-Lv26 = user-approved structural contract + provisional diagnostic coefficients
-Lv31 = user-approved structural direction + P4D2 provisional diagnostic centers
-```
+The next candidate does **not** need equal wall damage across classes.
 
-The runner may use these to diagnose the slices. It may not promote provisional values to production freeze.
+Useful evidence would be:
+- Lv31 OFF is materially more pressured than ON in at least part of the late slice;
+- ON is not universally buried;
+- wall/objective pressure is not concentrated almost entirely in Tank/Rogue;
+- Archer/Mage encounter a real spatial/chronological limitation in some cases;
+- Tank can convert control/defense into measurable wall protection;
+- 4s density and Stage semantics remain legal.
+
+If candidate still cannot create multi-class pressure rotation, continue encounter-shape diagnosis before touching scalars.
 
 ---
 
-# Root-cause order if exact execution reveals a problem
+# Root-cause order
 
 ```text
 source / runner fidelity
 -> lifecycle / state
 -> composition / geometry / chronology
 -> skill / class interaction
--> shop / EXP only if actually coupled
+-> shop / EXP only if coupled
 -> scalar sensitivity last
 ```
-
-Repair only the affected slice/neighborhood unless evidence proves a broader dependency problem.
 
 ---
 
@@ -176,11 +191,14 @@ Repair only the affected slice/neighborhood unless evidence proves a broader dep
 ```text
 LIVE REMOTE WINS
 NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
-LOCAL SEMANTIC SMOKE IS NOT CANONICAL DYNAMIC EVIDENCE
-NO FULL-50 EXACT AUTHORING BEFORE REPRESENTATIVE DYNAMIC EVIDENCE
-NO CLASS BUFF/NERF FROM ONE SLICE
+STAGE49-50 ONLY FOR NEXT PRESSURE-SHAPE ITERATION
+PRESERVE STAGE5 / STAGE18 / STAGE41
+NO FULL-50 EXACT AUTHORING YET
+NO CLASS BUFF/NERF FROM THIS SLICE
 SURVIVAL != CLEAR
 TANK KILL PARITY NOT REQUIRED
+AUTHORED 4s DENSITY <= 8
+NO MONSTER/CLASS SCALAR CHANGE YET
 NO FLAT SHOP->EXP MULTIPLIER
 FINAL EXP ROUTING = P10R
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
