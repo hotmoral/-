@@ -12,15 +12,51 @@
   "pilotBundleFingerprint": "e57112fcf2ebef769883dfa7369862c4d6be8cdba7bf11d30bc5c21dc7da26ec",
   "warmupContract": "LINKLINE_A3_PRE_HUMAN_WARMUP_GOLDEN@0.1.0",
   "deployedFiles": [
-    {"path":"index.html","sha256":"56e3410e264f96d8bc50e8964a6d46fba3f28436c7983a93bb79186a5b0c19ca","bytes":697},
-    {"path":"styles.css","sha256":"9c3e3f53ab58bd5c0658ee96323f9a55970fd8c1c46f5641cd91743d209da910","bytes":4335},
-    {"path":"app.mjs","sha256":"025e8ba93d877665833b3ee4bdafad04c9f930d74c4e5af6ce4a7821d438e991","bytes":15750},
-    {"path":"config.mjs","sha256":"b3cb1ae0bc39c0bec368a5c58ab2029c4e86cdd9f2eaf789c2ad84475129e28e","bytes":2467},
-    {"path":"mechanic.mjs","sha256":"b4498c220a3527873660c7ef0fe57f5aa65e82abbbdbcb170a9d3a7ee8087faf","bytes":2920},
-    {"path":"protocol.mjs","sha256":"4c88e46eb5ae4a93711a98f2224ad5bd9a6c2b455c225091bee25c1a02657f54","bytes":12204},
-    {"path":"flow.mjs","sha256":"3eb7b4214dc75b7ab01bd9f3a9d5686631512b269ade945623341633b9a9c688","bytes":1005},
-    {"path":"data/pilot_bundle_v0_1.json","sha256":"b104609d0d16816556d7ada5a66f91781e0e2683d0c0edd5356cb8ddf8c89a67","bytes":8507},
-    {"path":"data/order_plan_v0_1.json","sha256":"424ae6f3cb3160d40992975b950b3d52b2146663947230a469e7e7feef0f2160","bytes":7044}
+    {
+      "path": "index.html",
+      "sha256": "56e3410e264f96d8bc50e8964a6d46fba3f28436c7983a93bb79186a5b0c19ca",
+      "bytes": 697
+    },
+    {
+      "path": "styles.css",
+      "sha256": "9c3e3f53ab58bd5c0658ee96323f9a55970fd8c1c46f5641cd91743d209da910",
+      "bytes": 4335
+    },
+    {
+      "path": "app.mjs",
+      "sha256": "025e8ba93d877665833b3ee4bdafad04c9f930d74c4e5af6ce4a7821d438e991",
+      "bytes": 15750
+    },
+    {
+      "path": "config.mjs",
+      "sha256": "b3cb1ae0bc39c0bec368a5c58ab2029c4e86cdd9f2eaf789c2ad84475129e28e",
+      "bytes": 2467
+    },
+    {
+      "path": "mechanic.mjs",
+      "sha256": "b4498c220a3527873660c7ef0fe57f5aa65e82abbbdbcb170a9d3a7ee8087faf",
+      "bytes": 2920
+    },
+    {
+      "path": "protocol.mjs",
+      "sha256": "4c88e46eb5ae4a93711a98f2224ad5bd9a6c2b455c225091bee25c1a02657f54",
+      "bytes": 12204
+    },
+    {
+      "path": "flow.mjs",
+      "sha256": "3eb7b4214dc75b7ab01bd9f3a9d5686631512b269ade945623341633b9a9c688",
+      "bytes": 1005
+    },
+    {
+      "path": "data/pilot_bundle_v0_1.json",
+      "sha256": "b104609d0d16816556d7ada5a66f91781e0e2683d0c0edd5356cb8ddf8c89a67",
+      "bytes": 8507
+    },
+    {
+      "path": "data/order_plan_v0_1.json",
+      "sha256": "424ae6f3cb3160d40992975b950b3d52b2146663947230a469e7e7feef0f2160",
+      "bytes": 7044
+    }
   ],
   "semanticFingerprint": "85efda4b6f8e531001df3153c2d0b34b70247743bf4a547ee551f9970dec4226"
 }
