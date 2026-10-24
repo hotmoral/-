@@ -16,5 +16,96 @@
     <section id="screen" class="screen" aria-live="polite"></section>
   </main>
   <script type="module" src="./app.mjs"></script>
+  <script type="module">
+    const CELL='.cell', BOARD='.board-wrap';
+    const FIRST_RETRY_MS=150, RETRY_MS=24, MAX_RETRIES=14;
+    let drag=null, suppressTrustedClickUntil=0;
+
+    const style=document.createElement('style');
+    style.textContent='.board-wrap,.board,.cell{touch-action:none;-webkit-user-select:none;user-select:none}.board-wrap.dragging .cell.endpoint{filter:brightness(.96)}';
+    document.head.append(style);
+
+    function cellNumber(cell){
+      const value=Number(String(cell?.getAttribute('aria-label')||'').replace('칸 ',''));
+      return Number.isInteger(value)?value:null;
+    }
+    function currentCell(number){
+      for(const cell of document.querySelectorAll(CELL)) if(cellNumber(cell)===number) return cell;
+      return null;
+    }
+    function cellAt(clientX,clientY){
+      return document.elementFromPoint(clientX,clientY)?.closest?.(CELL)||null;
+    }
+    function reselect(attempt=0){
+      if(!drag)return;
+      const endpoint=currentCell(drag.endpointCell);
+      if(!endpoint){drag.waiting=false;return;}
+      if(endpoint.classList.contains('selected')){drag.waiting=false;pump();return;}
+      endpoint.click();
+      const fresh=currentCell(drag.endpointCell);
+      if(fresh?.classList.contains('selected')){drag.waiting=false;pump();return;}
+      if(attempt<MAX_RETRIES){setTimeout(()=>reselect(attempt+1),RETRY_MS);return;}
+      drag.waiting=false;
+      pump();
+    }
+    function pump(){
+      if(!drag||drag.waiting)return;
+      while(drag.queue.length){
+        const number=drag.queue.shift();
+        const cell=currentCell(number);
+        if(!cell)continue;
+        if(cell.classList.contains('legal')){
+          drag.waiting=true;
+          drag.moved=true;
+          drag.endpointCell=number;
+          cell.click();
+          setTimeout(()=>reselect(),FIRST_RETRY_MS);
+          return;
+        }
+      }
+    }
+    function enqueueFromPointer(event){
+      if(!drag||event.pointerId!==drag.pointerId)return;
+      event.preventDefault();
+      const cell=cellAt(event.clientX,event.clientY);
+      const number=cellNumber(cell);
+      if(number===null||number===drag.lastHover)return;
+      drag.lastHover=number;
+      if(drag.queue.at(-1)!==number)drag.queue.push(number);
+      pump();
+    }
+    function finishDrag(event){
+      if(!drag||event.pointerId!==drag.pointerId)return;
+      event.preventDefault();
+      suppressTrustedClickUntil=performance.now()+350;
+      drag=null;
+      document.querySelectorAll(`${BOARD}.dragging`).forEach(node=>node.classList.remove('dragging'));
+    }
+
+    document.addEventListener('pointerdown',event=>{
+      const cell=event.target.closest?.(CELL);
+      const board=cell?.closest?.(BOARD);
+      if(!cell?.classList.contains('endpoint')||!board)return;
+      const number=cellNumber(cell);
+      if(number===null)return;
+      event.preventDefault();
+      drag={pointerId:event.pointerId,endpointCell:number,lastHover:number,queue:[],waiting:false,moved:false};
+      suppressTrustedClickUntil=Infinity;
+      board.classList.add('dragging');
+      cell.click();
+    },{capture:true,passive:false});
+
+    document.addEventListener('pointermove',enqueueFromPointer,{capture:true,passive:false});
+    document.addEventListener('pointerup',finishDrag,{capture:true,passive:false});
+    document.addEventListener('pointercancel',finishDrag,{capture:true,passive:false});
+
+    document.addEventListener('click',event=>{
+      if(!event.isTrusted)return;
+      if((drag||performance.now()<suppressTrustedClickUntil)&&event.target.closest?.(BOARD)){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    },true);
+  </script>
 </body>
 </html>
