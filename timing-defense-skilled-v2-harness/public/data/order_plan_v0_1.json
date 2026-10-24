@@ -1,0 +1,86 @@
+{
+  "assignmentOffset": 1,
+  "attemptsPerForm": 12,
+  "balanceWarnings": [
+    "BOARD_SIZE_SINGLE_VALUE:4"
+  ],
+  "blockSize": 6,
+  "calibrationManifestFingerprint": "2c3615516ad5caea431ec98bc1ec985a1dd6996d17c013c8e0fabe047932c2b1",
+  "formCount": 4,
+  "forms": [
+    {
+      "attempts": [
+        {"block":1,"distanceBin":"Q4","id":"2b9ed749c9956b2df1f572eba2fdc70b25b5da4faccf686264810b69095434f0","n":4,"position":0},
+        {"block":1,"distanceBin":"Q2","id":"00109263751b6753e2047c750e86e791a17cbd018fc6adc2c7b3d2adba49682c","n":4,"position":1},
+        {"block":1,"distanceBin":"Q2","id":"076a56b666ea635a70d95cadfaa8632cbb1df29042b899e58f0f477e8633be1f","n":4,"position":2},
+        {"block":1,"distanceBin":"Q1","id":"006c32306e5abf0e9422cad059a515cc4ad528d4cd27bba1d7c1788d7b30a738","n":4,"position":3},
+        {"block":1,"distanceBin":"Q1","id":"002475647969f7f4c75c4723c00458ab0123ef3d0716abeb8f836f7d0ae6c0ae","n":4,"position":4},
+        {"block":1,"distanceBin":"Q1","id":"00156dcae6283b61ecc9696082daca64f9d83908621d495ee71918e44cd06aba","n":4,"position":5},
+        {"block":2,"distanceBin":"Q2","id":"006bcd9cf501005db3ba9f6decb2be17fe0903542a9abea1a842796d01a074f1","n":4,"position":6},
+        {"block":2,"distanceBin":"Q2","id":"00a0e3fcec6ce462a2124b5373c2a3512e89344a881a7255d3273003dc96ae34","n":4,"position":7},
+        {"block":2,"distanceBin":"Q2","id":"0090885bf41e0dd4245be1e9a60b80838ec653948c863bf61ded45b25078fc01","n":4,"position":8},
+        {"block":2,"distanceBin":"Q3","id":"008692f1db4e3d288b10ec3abd396481d6f2089fb6d797a8a417cb9ca15f9cb7","n":4,"position":9},
+        {"block":2,"distanceBin":"Q2","id":"072f55a179959547cb6aade4995f942822663baeab04e958614028a00c061e6c","n":4,"position":10},
+        {"block":2,"distanceBin":"Q2","id":"0002237ad02a3c1c9105de34047597aa0a69b2add5f5436e9605ec1ce15e17a1","n":4,"position":11}
+      ],
+      "formId":"F1"
+    },
+    {
+      "attempts": [
+        {"block":1,"distanceBin":"Q1","id":"006c32306e5abf0e9422cad059a515cc4ad528d4cd27bba1d7c1788d7b30a738","n":4,"position":0},
+        {"block":1,"distanceBin":"Q2","id":"005404a9ca4376263b222a4597cafed8b4fca0db95511a17a6af8cb84feca3ee","n":4,"position":1},
+        {"block":1,"distanceBin":"Q1","id":"001a4cf5b4357557f34cd5390d4573daaf4a50b7c0ab12f65a41e00b2de4fad2","n":4,"position":2},
+        {"block":1,"distanceBin":"Q1","id":"008a1e6fd7d72445316e6ab1d378ecf69ac78fdd21584fa5769b77393e40024d","n":4,"position":3},
+        {"block":1,"distanceBin":"Q2","id":"006bcd9cf501005db3ba9f6decb2be17fe0903542a9abea1a842796d01a074f1","n":4,"position":4},
+        {"block":1,"distanceBin":"Q2","id":"00a0e3fcec6ce462a2124b5373c2a3512e89344a881a7255d3273003dc96ae34","n":4,"position":5},
+        {"block":2,"distanceBin":"Q3","id":"008692f1db4e3d288b10ec3abd396481d6f2089fb6d797a8a417cb9ca15f9cb7","n":4,"position":6},
+        {"block":2,"distanceBin":"Q1","id":"00156dcae6283b61ecc9696082daca64f9d83908621d495ee71918e44cd06aba","n":4,"position":7},
+        {"block":2,"distanceBin":"Q2","id":"03d3c8604bd45bf088850b1ddbd84c0e18f7a35868b6086e25e53bdd0d5211ff","n":4,"position":8},
+        {"block":2,"distanceBin":"Q2","id":"047a3d20c170037743d2fcbdd65d4bfaf71db3298a6caf693b7437179ae5f5d7","n":4,"position":9},
+        {"block":2,"distanceBin":"Q4","id":"000283442d64b3cfa439957aac6e314319006e4f3e4c2d87464aec7bb2fd04c2","n":4,"position":10},
+        {"block":2,"distanceBin":"Q2","id":"076a56b666ea635a70d95cadfaa8632cbb1df29042b899e58f0f477e8633be1f","n":4,"position":11}
+      ],
+      "formId":"F2"
+    },
+    {
+      "attempts": [
+        {"block":1,"distanceBin":"Q3","id":"000a8c613e64269de6d7ab310d9182f0d03c3c1aae30dec071cf3c6b3fec6cad","n":4,"position":0},
+        {"block":1,"distanceBin":"Q2","id":"002989c3ffc130b317f97f122be39e0374d4bf3b574f220ef483ade561421daf","n":4,"position":1},
+        {"block":1,"distanceBin":"Q1","id":"001748066212cbef001eb8b52a5b7b557d54a24ae43d6dda31a27f3984445635","n":4,"position":2},
+        {"block":1,"distanceBin":"Q2","id":"0ff20e0c457eb733464cd6b50ab4f5816d0586bdd17eaa0f44febc4c6b4f59f2","n":4,"position":3},
+        {"block":1,"distanceBin":"Q4","id":"002142f25597eb51c7e0c1abf03665995f66253dbfc108ee5ab280d8bd5a6f05","n":4,"position":4},
+        {"block":1,"distanceBin":"Q2","id":"097e7b7ad8d18abf5d80eb9e25f8ba522ef510a9e25a490501040cd880a51be9","n":4,"position":5},
+        {"block":2,"distanceBin":"Q2","id":"03d3c8604bd45bf088850b1ddbd84c0e18f7a35868b6086e25e53bdd0d5211ff","n":4,"position":6},
+        {"block":2,"distanceBin":"Q1","id":"008a1e6fd7d72445316e6ab1d378ecf69ac78fdd21584fa5769b77393e40024d","n":4,"position":7},
+        {"block":2,"distanceBin":"Q1","id":"001a4cf5b4357557f34cd5390d4573daaf4a50b7c0ab12f65a41e00b2de4fad2","n":4,"position":8},
+        {"block":2,"distanceBin":"Q4","id":"000283442d64b3cfa439957aac6e314319006e4f3e4c2d87464aec7bb2fd04c2","n":4,"position":9},
+        {"block":2,"distanceBin":"Q2","id":"005404a9ca4376263b222a4597cafed8b4fca0db95511a17a6af8cb84feca3ee","n":4,"position":10},
+        {"block":2,"distanceBin":"Q2","id":"047a3d20c170037743d2fcbdd65d4bfaf71db3298a6caf693b7437179ae5f5d7","n":4,"position":11}
+      ],
+      "formId":"F3"
+    },
+    {
+      "attempts": [
+        {"block":1,"distanceBin":"Q1","id":"002475647969f7f4c75c4723c00458ab0123ef3d0716abeb8f836f7d0ae6c0ae","n":4,"position":0},
+        {"block":1,"distanceBin":"Q2","id":"0090885bf41e0dd4245be1e9a60b80838ec653948c863bf61ded45b25078fc01","n":4,"position":1},
+        {"block":1,"distanceBin":"Q4","id":"2b9ed749c9956b2df1f572eba2fdc70b25b5da4faccf686264810b69095434f0","n":4,"position":2},
+        {"block":1,"distanceBin":"Q2","id":"0002237ad02a3c1c9105de34047597aa0a69b2add5f5436e9605ec1ce15e17a1","n":4,"position":3},
+        {"block":1,"distanceBin":"Q2","id":"00109263751b6753e2047c750e86e791a17cbd018fc6adc2c7b3d2adba49682c","n":4,"position":4},
+        {"block":1,"distanceBin":"Q4","id":"002142f25597eb51c7e0c1abf03665995f66253dbfc108ee5ab280d8bd5a6f05","n":4,"position":5},
+        {"block":2,"distanceBin":"Q1","id":"001748066212cbef001eb8b52a5b7b557d54a24ae43d6dda31a27f3984445635","n":4,"position":6},
+        {"block":2,"distanceBin":"Q2","id":"097e7b7ad8d18abf5d80eb9e25f8ba522ef510a9e25a490501040cd880a51be9","n":4,"position":7},
+        {"block":2,"distanceBin":"Q3","id":"000a8c613e64269de6d7ab310d9182f0d03c3c1aae30dec071cf3c6b3fec6cad","n":4,"position":8},
+        {"block":2,"distanceBin":"Q2","id":"072f55a179959547cb6aade4995f942822663baeab04e958614028a00c061e6c","n":4,"position":9},
+        {"block":2,"distanceBin":"Q2","id":"0ff20e0c457eb733464cd6b50ab4f5816d0586bdd17eaa0f44febc4c6b4f59f2","n":4,"position":10},
+        {"block":2,"distanceBin":"Q2","id":"002989c3ffc130b317f97f122be39e0374d4bf3b574f220ef483ade561421daf","n":4,"position":11}
+      ],
+      "formId":"F4"
+    }
+  ],
+  "mechanicBaseline":"a2-v1.0.0",
+  "orderPlanVersion":"0.1.0",
+  "planFingerprint":"d6a47992395e0afb654b1c5d6eaa0a42b1ee52dba46becb5ec35d0c9051f6667",
+  "protocolVersion":"0.1",
+  "schema":"A3_PILOT_ORDER_PLAN",
+  "version":"0.1.0"
+}
