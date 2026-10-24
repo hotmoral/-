@@ -4,10 +4,13 @@
 Measures the full class package against the authored grammar that spawned each target,
 not just Lv31 final damage. For every Stage49/50 phase and class/seed it records:
 - authored targets;
-- targets killed by player/effects;
-- targets that resolve by wall contact (authored minus ledger-killed at settled boundary);
+- targets killed by player/effects, reconstructed from cumulative finalDamage vs target HP;
+- targets that resolve by wall contact (authored minus reconstructed player kills at settled boundary);
 - target-phase total / Lv31 damage;
 - time from phase start until its last player-killed target.
+
+The core damage ledger intentionally stores damage facts rather than a duplicated kill flag,
+so this probe reconstructs target death from cumulative ledger damage and immutable monster HP.
 
 The probe compares Lv31 OFF vs ON using identical deterministic lifecycle conditions.
 Diagnostic only; no recipe or scalar adoption.
@@ -54,9 +57,10 @@ def execute_with_ledger(runtime,by,cls,seed,active):
     return {'blocks':blocks,'continuityErrors':continuity,'status':run['status'],'baseHp':run['baseHp']}
 
 
-def attribute_targets(block,recipe,gap_ms,names):
+def attribute_targets(block,recipe,gap_ms,names,runtime):
     mapping,expected,starts=phase_target_map(recipe,gap_ms,names)
     phases={name:{'authored':len(expected[name]),'killedIds':set(),'totalDamage':0.0,'lv31Damage':0.0,'hitEvents':0,'lv31HitEvents':0,'lastKillMs':None} for name in names}
+    cumulative={tid:0.0 for tid in mapping}
     for e in block['ledger']:
         tid=e['targetId']
         meta=mapping.get(tid)
@@ -64,9 +68,11 @@ def attribute_targets(block,recipe,gap_ms,names):
             continue
         p=phases[meta['phase']]
         dmg=float(e['finalDamage']); p['totalDamage']+=dmg; p['hitEvents']+=1
+        cumulative[tid]+=dmg
         if str(e['effectId']).startswith('LV31_'):
             p['lv31Damage']+=dmg; p['lv31HitEvents']+=1
-        if e.get('killed'):
+        target_hp=float(runtime['monsters'][meta['type']]['hp'])
+        if tid not in p['killedIds'] and cumulative[tid] >= target_hp - 1e-9:
             p['killedIds'].add(tid)
             t=int(e['atMs'])
             p['lastKillMs']=t if p['lastKillMs'] is None else max(p['lastKillMs'],t)
@@ -93,7 +99,7 @@ def run_side(runtime,by,cls,seed,active,gap_ms,order):
     stages={}
     for block in case['blocks']:
         stage=block['result']['stage']
-        if stage in (49,50): stages[str(stage)]=attribute_targets(block,by[stage],gap_ms,order[stage])
+        if stage in (49,50): stages[str(stage)]=attribute_targets(block,by[stage],gap_ms,order[stage],runtime)
     return {'continuityErrors':case['continuityErrors'],'status':case['status'],'baseHp':case['baseHp'],'stages':stages}
 
 
@@ -146,13 +152,17 @@ def main():
                 if r.sha256_obj(on1)!=r.sha256_obj(on2): fidelity.append(f'{cid}/ON/determinism/{cls}/{seed}')
                 fidelity.extend(f'{cid}/OFF/{e}' for e in off1['continuityErrors']); fidelity.extend(f'{cid}/ON/{e}' for e in on1['continuityErrors'])
                 rows.append({'class':cls,'seed':seed,'OFF':off1,'ON':on1})
-        candidates[cid]={'recipeVersion':doc['version'],'order':order_key,'gapMs':gap,'aggregate':aggregate(rows,order),'rows':rows}
+        agg=aggregate(rows,order)
+        total_killed=sum(v['playerKilled'] for cls in agg.values() for side in cls.values() for stage in side.values() for v in stage.values())
+        if total_killed <= 0:
+            fidelity.append(f'{cid}/NO_RECONSTRUCTED_PLAYER_KILLS')
+        candidates[cid]={'recipeVersion':doc['version'],'order':order_key,'gapMs':gap,'aggregate':agg,'rows':rows,'reconstructedPlayerKills':total_killed}
 
-    out={'version':'t1-stage49-50-target-phase-clearance-v0.1','status':'DIAGNOSTIC_FULL_PACKAGE_PHASE_ATTRIBUTION_NO_AUTHORING_ADOPTION','sourceRecipe':str(args.recipes),'sourceRecipeSha256':r.sha256_bytes(Path(args.recipes).read_bytes()),'archerWidthBridge':{'yTolerance':WIDTH,'status':'DIAGNOSTIC_ONLY'},'seeds':list(seeds),'fidelityErrors':fidelity,'candidates':candidates}
+    out={'version':'t1-stage49-50-target-phase-clearance-v0.1','status':'DIAGNOSTIC_FULL_PACKAGE_PHASE_ATTRIBUTION_NO_AUTHORING_ADOPTION','sourceRecipe':str(args.recipes),'sourceRecipeSha256':r.sha256_bytes(Path(args.recipes).read_bytes()),'killReconstructionRule':'cumulative ledger.finalDamage by targetId >= immutable target HP','archerWidthBridge':{'yTolerance':WIDTH,'status':'DIAGNOSTIC_ONLY'},'seeds':list(seeds),'fidelityErrors':fidelity,'candidates':candidates}
     Path(args.json_out).write_text(json.dumps(out,indent=2,sort_keys=True)+'\n',encoding='utf-8')
 
     for cid,c in candidates.items():
-        print('\n',cid)
+        print('\n',cid,'reconstructedKills',c['reconstructedPlayerKills'])
         a=c['aggregate']
         for cls in r.CLASSES:
             print(' ',cls)
