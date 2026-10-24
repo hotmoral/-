@@ -125,6 +125,56 @@ jobs:
               raise SystemExit('RUNNER_FIDELITY_FAIL_NO_BALANCE_INTERPRETATION')
           PY
 
+      - name: Execute paired Stage46-50 Lv31 absence probe
+        working-directory: timing-defense-workspace
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          import run_t1_transition_slice_microsim_settlement_fix_v0_1 as bridge
+          r = bridge.runner
+          recipe_doc = r.load_yaml(os.environ['T1_RECIPE'])
+          p3 = r.load_json('legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json')
+          base = r.load_json('legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json')
+          temporal = r.load_json('legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json')
+          runtime = r.build_runtime(recipe_doc, p3, base, temporal)
+          by_stage = {int(x['stage']): x for x in recipe_doc['recipes']}
+          stages = [46,47,48,49,50]
+          rows=[]
+          failures=[]
+          for cls in r.CLASSES:
+              for seed in (101,211,307):
+                  def run(active):
+                      return r.execute_chain(runtime, by_stage, cls, seed, stages, active)
+                  off1=run([6,11,16,21,26]); off2=run([6,11,16,21,26])
+                  on1=run([6,11,16,21,26,31]); on2=run([6,11,16,21,26,31])
+                  det_off=r.sha256_obj(off1)==r.sha256_obj(off2)
+                  det_on=r.sha256_obj(on1)==r.sha256_obj(on2)
+                  if not (det_off and det_on): failures.append(f'determinism/{cls}/{seed}')
+                  if off1['continuityErrors'] or on1['continuityErrors']: failures.append(f'continuity/{cls}/{seed}')
+                  if not off1['results'] or not on1['results']: failures.append(f'empty/{cls}/{seed}'); continue
+                  eoff=off1['results'][0]['entryState']; eon=on1['results'][0]['entryState']
+                  same_entry=all(eoff[k]==eon[k] for k in ('baseHp','baseMaxHp','wallDeficit','combo','charge','judgmentRng','combatProcRng'))
+                  if not same_entry: failures.append(f'pair-entry/{cls}/{seed}')
+                  def slim(case):
+                      return {
+                          'stagesExecuted': case['stagesExecuted'],
+                          'finalStatus': case['finalRunState']['status'],
+                          'finalBaseHp': case['finalRunState']['baseHp'],
+                          'totalWallDamage': round(sum(x['wallDamage'] for x in case['results']),3),
+                          'totalSettledSeconds': round(sum(x['stageSettledTime'] for x in case['results']),3),
+                          'stageRows': [
+                              {'stage':x['stage'],'outcome':x['combatOutcome'],'wallDamage':x['wallDamage'],'wallReserve':x['wallReserve'],'settled':x['stageSettledTime'],'actions':x['rootTimingActionCount'],'peakActive':x['peakActive']}
+                              for x in case['results']
+                          ],
+                      }
+                  rows.append({'class':cls,'seed':seed,'sameInitialLifecycle':same_entry,'deterministicOFF':det_off,'deterministicON':det_on,'OFF':slim(off1),'ON':slim(on1)})
+          result={'version':'t1-stage46-50-lv31-absence-probe-v0.1','recipeVersion':recipe_doc['version'],'recipeSourceSha256':r.sha256_bytes(Path(os.environ['T1_RECIPE']).read_bytes()),'failures':failures,'pass':not failures,'rows':rows}
+          Path('artifacts/t1-stage46-50-lv31-absence-v0_2.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'pass':result['pass'],'failures':failures,'cases':len(rows)},indent=2))
+          if failures: raise SystemExit('LV31_ABSENCE_PROBE_FIDELITY_FAIL')
+          PY
+
       - name: Upload exact-source evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -132,5 +182,6 @@ jobs:
           name: timing-defense-t1-transition-microsim
           path: |
             timing-defense-workspace/artifacts/t1-transition-microsim-v0_2.json
+            timing-defense-workspace/artifacts/t1-stage46-50-lv31-absence-v0_2.json
             timing-defense-workspace/artifacts/source-identity.txt
           if-no-files-found: error
