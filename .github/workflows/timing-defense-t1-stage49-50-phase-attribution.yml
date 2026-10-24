@@ -1,0 +1,94 @@
+name: Timing Defense T1 Stage49-50 Phase Attribution
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - '.github/workflows/timing-defense-t1-stage49-50-phase-attribution.yml'
+      - 'timing-defense-workspace/tools/probe_t1_stage49_50_rotating_grammar_phase_attribution_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage49_50_rotating_grammar_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_core_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  T1_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+
+jobs:
+  phase-attribution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout exact triggering commit
+      - uses: actions/setup-python@v5
+        name: Set up Python
+        with: {python-version: '3.12'}
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record exact source identity
+        working-directory: timing-defense-workspace
+        run: |
+          mkdir -p artifacts
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/stage49-50-phase-attribution-source-identity.txt
+          sha256sum \
+            tools/probe_t1_stage49_50_rotating_grammar_phase_attribution_v0_1.py \
+            tools/probe_t1_stage49_50_rotating_grammar_v0_1.py \
+            tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
+            tools/run_t1_transition_slice_microsim_v0_1.py \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            tools/t1_transition_microsim_core_v0_1.py \
+            tools/t1_transition_microsim_skills_v0_1.py \
+            tools/t1_transition_microsim_engine_v0_1.py \
+            "$T1_RECIPE" \
+            legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
+            >> artifacts/stage49-50-phase-attribution-source-identity.txt
+          cat artifacts/stage49-50-phase-attribution-source-identity.txt
+      - name: Compile attribution probe
+        working-directory: timing-defense-workspace
+        run: |
+          python -m py_compile \
+            tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
+            tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            tools/probe_t1_stage49_50_rotating_grammar_v0_1.py \
+            tools/probe_t1_stage49_50_rotating_grammar_phase_attribution_v0_1.py
+      - name: Execute phase attribution
+        working-directory: timing-defense-workspace
+        run: |
+          PYTHONPATH=tools python tools/probe_t1_stage49_50_rotating_grammar_phase_attribution_v0_1.py \
+            --recipes "$T1_RECIPE" \
+            --seeds 101,211,307,409,503 \
+            --json-out artifacts/t1-stage49-50-rotating-grammar-phase-attribution-v0_1.json
+      - name: Enforce attribution fidelity gate
+        working-directory: timing-defense-workspace
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('artifacts/t1-stage49-50-rotating-grammar-phase-attribution-v0_1.json').read_text())
+          assert not d['fidelityErrors'], d['fidelityErrors']
+          assert d['archerWidthBridge']['yTolerance']==0.2
+          assert set(d['candidates'])=={'ROT4_G3500','ROT5_G3500'}
+          print('ROTATING_GRAMMAR_PHASE_ATTRIBUTION_FIDELITY=PASS')
+          PY
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-t1-stage49-50-phase-attribution
+          path: |
+            timing-defense-workspace/artifacts/t1-stage49-50-rotating-grammar-phase-attribution-v0_1.json
+            timing-defense-workspace/artifacts/stage49-50-phase-attribution-source-identity.txt
+          if-no-files-found: error
