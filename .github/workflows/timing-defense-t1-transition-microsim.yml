@@ -11,6 +11,7 @@ on:
       - 'timing-defense-workspace/tools/t1_transition_microsim_core_v0_1.py'
       - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
       - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage46_50_pressure_duration_v0_1.py'
       - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml'
       - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
       - 'timing-defense-workspace/legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json'
@@ -51,6 +52,7 @@ jobs:
             tools/t1_transition_microsim_core_v0_1.py \
             tools/t1_transition_microsim_skills_v0_1.py \
             tools/t1_transition_microsim_engine_v0_1.py \
+            tools/probe_t1_stage46_50_pressure_duration_v0_1.py \
             legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml \
             "$T1_RECIPE" \
             legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
@@ -176,6 +178,14 @@ jobs:
           if failures: raise SystemExit('LV31_ABSENCE_PROBE_FIDELITY_FAIL')
           PY
 
+      - name: Search Stage46-50 pressure-duration region
+        working-directory: timing-defense-workspace
+        run: |
+          PYTHONPATH=tools python tools/probe_t1_stage46_50_pressure_duration_v0_1.py \
+            --recipes "$T1_RECIPE" \
+            --seeds 101,211,307 \
+            --json-out artifacts/t1-stage46-50-pressure-duration-v0_1.json
+
       - name: Upload exact-source evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -184,5 +194,6 @@ jobs:
           path: |
             timing-defense-workspace/artifacts/t1-transition-microsim-v0_2.json
             timing-defense-workspace/artifacts/t1-stage46-50-lv31-absence-v0_2.json
+            timing-defense-workspace/artifacts/t1-stage46-50-pressure-duration-v0_1.json
             timing-defense-workspace/artifacts/source-identity.txt
           if-no-files-found: error
