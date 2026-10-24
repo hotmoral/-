@@ -5,23 +5,25 @@ Updated: 2026-10-24 KST
 ## 0. Recovery rule — mandatory
 Always fetch live remote first. Never reconstruct current state from chat, memory or copied SHA. Live GitHub canonical state wins.
 
-Do not make the user re-explain project state, dependency order or the reasoning method.
+Do not make the user re-explain project state, dependency order or reasoning method.
 
 ## 1. Mandatory read/check order
 1. live `timing-defense-workspace` HEAD;
 2. `PROJECT_STATUS.md`;
 3. `NEXT_WORK.md`;
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_43.yaml`;
-5. `legacy-game-structure/138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md` when recovering methodology;
-6. `legacy-game-structure/70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md` when dependency detail is needed;
-7. `legacy-game-structure/156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
-8. `legacy-game-structure/158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
-9. `legacy-game-structure/160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
-10. `legacy-game-structure/161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
-11. `legacy-game-structure/162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
-12. `legacy-game-structure/163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
+4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_44.yaml`;
+5. `legacy-game-structure/156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
+6. `legacy-game-structure/158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
+7. `legacy-game-structure/160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
+8. `legacy-game-structure/161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
+9. `legacy-game-structure/163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
+10. `legacy-game-structure/164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+11. `legacy-game-structure/165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`;
+12. `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`;
 13. current production/harness heads;
-14. only then older supporting evidence required by the active slice.
+14. only then older implementation evidence needed by the adapter.
+
+Methodology detail is in `138_SESSION_BOOTSTRAP_COGNITIVE_REVIEW_AMENDMENT_V0_1.md` and `70_SYSTEM_DEPENDENCY_AND_CALIBRATION_ORDER_REVIEW_V0_1.md`; reopen them only when needed.
 
 Do not reread or rerun everything by default. Reopen closed work only for source change, new contradictory evidence, runtime/source mismatch, exact-byte need, or a watch becoming material.
 
@@ -57,6 +59,7 @@ Tier availability
 -> class-opportunity envelope
 -> Stage signature skeleton
 -> bounded representative recipes
+-> lifecycle-faithful representative execution
 -> wider exact recipe authoring only after evidence
 ```
 
@@ -89,7 +92,10 @@ T1 ordinary roster = GRUNT/RUNNER/BRUTE / USER APPROVED
 Lower-layer Tier/authoring constraints = USER APPROVED WITH MINIMAL T1 BASELINE CORRECTION
 T1 Stage1-50 signature skeleton = STATIC CANDIDATE PASS_WITH_WATCHES
 Representative transition slice preflight = COMPLETE
-CURRENT = T1 REPRESENTATIVE TRANSITION SLICE DIAGNOSTIC
+Representative transition recipes = MATERIALIZED / STATIC PASS
+Micro-sim execution contract = COMPLETE
+Dedicated transition-slice runner = NOT STARTED
+CURRENT = T1 TRANSITION SLICE MICROSIM RUNNER IMPLEMENTATION
 full exact T1 50-Stage recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -135,43 +141,23 @@ Skeleton uses Stage8.
 
 Do not solve by introducing/mixing RUNNER early or pulling BRUTE forward.
 
-Early Stage1-4 E01 repetition is an explicit onboarding exception because only GRUNT is taught/readable; formation/cadence signatures rotate. Normal archetype repetition guard applies after RUNNER teach.
+Stage1-4 E01 repetition is an explicit onboarding exception because only GRUNT is taught/readable; formation/cadence signatures rotate. Normal archetype repetition guard applies after RUNNER teach.
 
 ---
 
-# 6. T1 50-Stage skeleton static result
+# 6. T1 signature skeleton static result
 
 Source `161`, audit `162`.
 
 ```text
 verdict = PASS_WITH_WATCHES
 structural FAIL = 0
+pressure presence = BASELINE22 / FLOOD8 / RUSH16 / BULWARK16
+complexity = C0 8 / C1 25 / C2 15 / C3 2 / C4 0
+rolling 10-Stage class opportunity = 41/41 PASS
 ```
 
-Pressure presence:
-```text
-BASELINE 22
-FLOOD 8
-RUSH 16
-BULWARK 16
-```
-All fit retained T1 search bounds.
-
-Complexity:
-```text
-C0 8
-C1 25
-C2 15
-C3 2
-C4 0
-```
-All fit retained T1 search bounds.
-
-Rolling 10-Stage class opportunity:
-```text
-41 windows checked / 41 PASS
-```
-This is only a role-starvation check, not equal clear-rate evidence.
+This is structural starvation/readability evidence, not equal class clear-rate evidence.
 
 Stage20/40 reward boundaries do not coincide with mandatory complexity spikes.
 Stage41-45 is a controlled Lv31 acquisition runway with no new ordinary mechanic.
@@ -179,7 +165,107 @@ Stage46-49 is post-Lv31 mastery; Stage50 is learned-vocabulary synthesis.
 
 ---
 
-# 7. T1 active watches
+# 7. Representative recipe materialization — new exact handoff point
+
+Data:
+`legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_1.yaml`
+
+Static analyzer:
+`tools/analyze_t1_transition_slice_recipes_v0_1.py`
+
+Static report:
+`164_T1_REPRESENTATIVE_TRANSITION_SLICE_RECIPE_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`
+
+Materialized Stages:
+```text
+5
+18
+20 21 22 23
+39 40 41 42 43 44 45
+46 47 48 49 50
+```
+
+Static result:
+```text
+RESULT=PASS errors=0 warnings=0
+max authored 4-second density = 8
+inherited NORMAL upper bound = 8
+no recipe enters 9-10 WATCH
+Stage40 max4s = 6
+Stage41 max4s = 3
+```
+
+The Stage40->41 drop proves the relief intent is represented in authored spawn density. It does not prove dynamic ease for every class.
+
+No SPLITTER exists in T1, so effective entity count equals authored count for this static density check.
+
+---
+
+# 8. Micro-sim runner fidelity conclusion
+
+Contract:
+`165_T1_REPRESENTATIVE_TRANSITION_SLICE_MICROSIM_CONTRACT_V0_1.md`
+
+Old `simulate_class_aware_layer_a.py` is not admissible as-is for sequential Stage20-23 / 39-45 / 46-50 because it resets isolated recipe state and does not provide the required Lv16/Lv31 execution surface.
+
+Later P5/P6 runners are valid references for lifecycle, `STAGE_SETTLED`, class packages and deterministic tracing, but their historical encounter fixtures cannot substitute for the new T1 YAML.
+
+Therefore the next correct implementation is a small dedicated adapter that consumes the exact new T1 recipe YAML and reuses approved lifecycle/class/skill semantics.
+
+Admission gates before balance interpretation:
+```text
+exact recipe identity
+STAGE_SETTLED
+no arbitrary timer deletion
+no enemy carry
+no transient leakage
+wall deficit persists
+combo persists
+charge persists
+deterministic paired substreams
+explicit skill-state trace
+paired OFF/ON differs only by tested skill
+```
+
+Any failure is a runner/lifecycle fidelity failure first, not a balance failure.
+
+---
+
+# 9. Required execution groups after adapter admission
+
+```text
+A Stage5 RUNNER teach × Lv6 OFF/ON
+B Stage18 BRUTE first mixed × Lv16 OFF/ON
+C Stage20->23 sequential
+D Stage39->45 sequential with Lv31 activation before 41 / 43 / 45
+E Stage46->50 sequential with Lv31 active
+```
+
+Required metrics include:
+```text
+authoredSpawnCount
+effectiveEntityCount
+peakActive
+max4sDensity
+max6sDensity
+frontlineBlockTime
+targetReorderCount
+backlineExposure when relevant
+spawnToFirstContact
+removalThroughput
+controlValue
+wallDamage / wallReserve
+rootTimingActionCount
+stageSettledTime
+failureClassification
+per-class directional opportunity / weakness
+```
+
+For Tank, assess objective protection from control/defense separately from kills.
+
+---
+
+# 10. T1 active watches
 
 ```text
 T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
@@ -199,7 +285,7 @@ Do not proliferate watches without concrete evidence.
 
 ---
 
-# 8. P6 conclusions that must remain intact
+# 11. Binding P6 / interpretation rules
 
 - encounter family can materially rotate class advantage;
 - one late class ranking is not universal balance evidence;
@@ -208,52 +294,25 @@ Do not proliferate watches without concrete evidence.
 - pure per-root-action provisional EXP still creates class progression divergence pressure;
 - fresh-forward exact magnitude is not production authority;
 - final EXP semantics remain OPEN and route to P10R;
-- no flat shop->EXP multiplier.
+- no flat shop->EXP multiplier;
+- `SURVIVAL != CLEAR`.
+
+Failure classification order:
+```text
+runner/source fidelity
+-> lifecycle/state
+-> encounter geometry / chronology
+-> class/skill interaction
+-> shop/EXP if actually coupled
+-> scalar sensitivity last
+```
 
 ---
 
-# 9. Current bounded diagnostic package
-
-Source: `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`.
-
-Only deepen these transitions first:
-```text
-A. Stage5 RUNNER teach × Lv6 OFF/ON
-B. Stage18 BRUTE first mixed × Lv16 OFF/ON
-C. Stage20-23 sequential Star Gate A + first high-pressure ramp
-D. Stage39-45 sequential soft-wall -> 2★ -> Lv31 ascension, reach around 41/43/45
-E. Stage46-50 sequential post-Lv31 mastery/final
-```
-
-For sequential slices preserve:
-- `STAGE_SETTLED`;
-- wall deficit;
-- combo;
-- charge;
-- no enemy/transient leakage.
-
-Required measurements:
-```text
-authored/effective entity count
-peak active
-4s/6s density
-frontline block time
-target reorder
-wall damage/reserve
-root timing action count
-stage settled time
-failure classification
-per-class removal/control/opportunity observations
-```
-
-Do not collapse these to one fairness score.
-
----
-
-# 10. Approval / authority boundary
+# 12. Approval / authority boundary
 
 Autonomous diagnostic work may:
-- materialize representative candidate recipes;
+- implement the dedicated adapter under doc165;
 - add instrumentation/validators;
 - run bounded fidelity/causal checks;
 - classify failures;
@@ -266,13 +325,14 @@ Explicit user approval is still required before adopting:
 - shop numerical freeze;
 - EXP rule change;
 - P×P/judgment probability change;
+- Tank damage normalization;
 - new monster or boss gameplay adoption;
 - production gameplay changes;
-- methodology/phase changes that materially alter scope.
+- material methodology/phase scope changes.
 
 ---
 
-# 11. Branch checkpoints
+# 13. Branch checkpoints
 
 Planning/canonical:
 - `timing-defense-workspace`
@@ -294,7 +354,7 @@ P6-B2 fresh-forward temp:
 
 ---
 
-# 12. Session-close quality gate
+# 14. Session-close quality gate
 Before ending a work group:
 1. fetch live canonical HEAD;
 2. verify production/harness unchanged unless explicitly authorized;
