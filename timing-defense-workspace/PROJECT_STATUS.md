@@ -4,30 +4,23 @@ Updated: 2026-10-24 KST
 
 ## Production / harness
 - production branch `timing-defense-cloudflare-do-poc`
-- last verified production HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-- v0.45 SIEGER FULL PASS
-- production gameplay/numerical changes unauthorized
+- last verified HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - calibration harness `timing-defense-skilled-v2-harness-v01`
-- last verified harness HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
-- neither is authorized to change during this planning package
+- last verified HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
+- production gameplay/numerical changes remain unauthorized.
 
-## Canonical operating authority
-Always fetch live remote first. Current key chain includes:
-- `72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md`
-- `79_P4_EXP_AND_PLAYER_POWER_SPINE_APPROVED_CONTRACT_V0_1.md`
-- `85_P4B_R2_APPROVED_ROUTING_CONTRACT_V0_1.md`
-- `111_P4E_PROVISIONAL_PLAYER_POWER_SPINE_CLOSURE_WITH_EXP_WATCHES_V0_1.md`
-- `116_P5_RUN_COIN_SHOP_A2_APPROVED_STRUCTURAL_CONTRACT_V0_1.md`
-- `135_P5_CLASS_IDENTITY_GROUP_DIRECTIONAL_CLOSURE_V0_1.md`
-- `144_P5_P6_PERSISTENT_STATE_FIDELITY_BRIDGE_RESULT_V0_1.md`
-- P6 chain `150` through `155`
-- `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
-- `157_TIER_STRUCTURE_AND_MONSTER_AVAILABILITY_CANDIDATE_REVIEW_V0_1.md`
-- **campaign adoption:** `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`
-- **latest review:** `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`
-- active plan `data/system_dependency_calibration_order_v0_42.yaml`
-
-Live remote wins over memory/chat/copied SHA.
+## Canonical authority chain
+Live remote always wins.
+Current key chain:
+- P1/P2/P3/P4/P5 approved/closed contracts as previously recorded;
+- P6 closure: `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
+- four-Tier adoption: `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
+- lower-layer review: `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`;
+- **approved authoring constraints + T1 baseline correction:** `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
+- **T1 50-Stage signature skeleton:** `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
+- **static audit:** `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
+- **representative-slice preflight:** `163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`;
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_43.yaml`.
 
 ---
 
@@ -37,164 +30,176 @@ Live remote wins over memory/chat/copied SHA.
 P0 = PASS_WITH_WATCHES
 P1 = USER_APPROVED_STRUCTURAL_COMPLETE
 P2 = USER_APPROVED_STRUCTURAL_COMPLETE
-P3 = STRUCTURAL_PASS_COMPLETE / STAGE_SETTLED + persistent run-state authority
+P3 = STRUCTURAL_PASS_COMPLETE
 P4 = PROVISIONAL_STRUCTURAL_COMPLETE_WITH_WATCHES
 P5 A2 shop = USER APPROVED
 P5 class identity group = DIRECTIONALLY CLOSED
 P5->P6 fidelity bridge = EXACT TEMP PASS
 P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
-Initial campaign Tier count = 4 / USER APPROVED
+Initial campaign = FOUR TIER / USER APPROVED
 Monster availability ladder = USER APPROVED
-T1 exact ordinary roster constraint = GRUNT / RUNNER / BRUTE / USER APPROVED
-CURRENT = FOUR-TIER AUTHORING CONSTRAINT PACKAGE / USER DECISION PENDING
-Tier1 exact Stage1-50 authoring = NOT STARTED
+T1 roster = GRUNT / RUNNER / BRUTE / USER APPROVED
+Lower-layer authoring constraints = USER APPROVED WITH ONE MINIMAL T1 BASELINE CORRECTION
+T1 Stage1-50 signature skeleton = STATIC CANDIDATE PASS_WITH_WATCHES
+Representative transition slice preflight = COMPLETE
+CURRENT = T1 REPRESENTATIVE TRANSITION SLICE DIAGNOSTIC
+Full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
-No class/monster/shop/EXP/P×P/Stage scalar or exact Stage recipe is numerically/content-frozen by this campaign adoption.
+---
+
+# Approved four-Tier structure
+
+```text
+T1 = GRUNT / RUNNER / BRUTE
+T2 = + SHIELD / FLYER
+T3 = + CHARGER / SPLITTER
+T4 = + SUPPORTER / SIEGER
+T5+ = future expansion space
+```
+
+Tier identities now adopted:
+```text
+T1 Foundation / Timing & Frontline
+T2 Mitigation / Geometry
+T3 Burst / Transformation
+T4 Formation / Siege
+```
+
+Derived legal archetype counts:
+```text
+T1 3
+T2 7
+T3 13
+T4 20
+```
+
+Availability is not frequency and not exact Stage placement.
 
 ---
 
-# Stable operating rules
+# T1 baseline correction
 
+A concrete lower-layer contradiction was found:
 ```text
-source/simulator fidelity
--> lifecycle/state
--> encounter composition / geometry / chronology
--> class/package semantics
--> shop/feedback
--> exact scalar last
+old GRUNT first mixed = Stage4-6
+RUNNER first mixed = Stage8-12
 ```
+With no other T1 monster available in Stage4-6, those windows conflict.
 
-Campaign authoring:
-
+Canonical minimal correction:
 ```text
-Tier availability
--> monster vocabulary
--> encounter-family availability
--> class opportunity distribution
--> exact Stage composition
+GRUNT first mixed = Stage8-12
 ```
+Skeleton uses Stage8.
 
-Do not reverse this order.
-Do not relax a predeclared fidelity gate after seeing results.
-Do not repeat closed diagnostics without a concrete trigger.
-Important design/content/numerical/methodology adoption requires user approval.
+Early Stage1-4 same-archetype repetition is a bounded onboarding exception because only GRUNT is taught/readable; formation/cadence still vary.
+After RUNNER teach, normal anti-repetition guard applies.
 
 ---
 
-# P6 closure — USER APPROVED
+# T1 signature skeleton static result
 
-Source: `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`
+Source: `161` + audit `162`.
 
-Preserve:
-- encounter family materially rotates class advantage;
-- Tank objective protection is a real role and low removal is not itself a defect;
-- shop ATK can reduce same-stage timing/EXP opportunity but can also create later-stage opportunity by preventing failure;
-- fresh-forward reconfirms per-root-action EXP divergence and shop-ATK self-damping direction;
-- exact fresh-forward magnitude is not production authority;
+```text
+structural FAIL = 0
+verdict = PASS_WITH_WATCHES
+```
+
+Pressure Stage presence:
+```text
+BASELINE 22
+FLOOD 8
+RUSH 16
+BULWARK 16
+```
+All fit retained T1 candidate search bounds.
+
+Dominant complexity:
+```text
+C0 8
+C1 25
+C2 15
+C3 2
+C4 0
+```
+All fit retained T1 candidate search bounds.
+
+Rolling 10-Stage class-opportunity windows:
+```text
+41 checked / 41 PASS
+```
+This is a starvation guard, not equal-win-rate proof.
+
+Star boundaries:
+- Stage19 C2 -> Stage20 C2: no arbitrary 1★ complexity cliff;
+- Stage39 C3 -> Stage40 C2: no arbitrary 2★ complexity cliff;
+- Stage41 C0 begins Lv31 acquisition relief.
+
+Lv31 confirmed window Stage41-45 remains free of new ordinary mechanics.
+
+---
+
+# Active T1 watches
+
+```text
+T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+```
+
+Existing carried watches:
+```text
+FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+```
+
+Do not add new watches without a concrete later-layer failure mode.
+
+---
+
+# P6 conclusions still binding
+
+- encounter family can materially rotate class advantage;
+- one late class ranking is not universal balance evidence;
+- Tank low removal is intentional when control/defense/objective protection works;
+- shop ATK -> EXP feedback is bidirectional/outcome-conditioned;
+- no flat shop->EXP correction;
+- fresh-forward exact magnitude is not production authority;
 - final EXP semantics remain P10R work.
 
 ---
 
-# Initial campaign structure — USER APPROVED
+# Current work boundary
 
-Source: `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`
+Representative transition-slice preflight source:
+`163_T1_REPRESENTATIVE_TRANSITION_SLICE_PREFLIGHT_V0_1.md`
 
+Next bounded work:
 ```text
-T1 = GRUNT / RUNNER / BRUTE
-T2 = T1 + SHIELD / FLYER
-T3 = T2 + CHARGER / SPLITTER
-T4 = T3 + SUPPORTER / SIEGER
-T5+ = future expansion space
+materialize candidate deterministic recipes only for:
+1. RUNNER teach × Lv6
+2. BRUTE first mixed × Lv16
+3. Stage20-23 gate + first high-pressure ramp
+4. Stage39-45 soft-wall -> 2★ -> Lv31 ascension
+5. Stage46-50 post-Lv31 mastery/final
 ```
 
-This fixes:
-- initial campaign Tier count = 4;
-- monster first-available Tier ladder;
-- exact T1 ordinary roster constraint = G/R/B.
+Required fidelity:
+- STAGE_SETTLED;
+- wall deficit/combo/charge persistence within sequential slices;
+- right-edge spawn / no midfield pop-in;
+- actual target-order authority;
+- no class parity forcing;
+- exact scalar changes last.
 
-It does not fix exact Stage recipes, frequency, spawn timing, monster scalars, boss cadence, EXP/shop values or production gameplay.
-
-Five-Tier split remains an inactive evidence-triggered fallback only if combined T4 later fails learning/readability/role-expression.
-
----
-
-# Four-Tier authoring constraint review — CURRENT
-
-Source: `159_FOUR_TIER_AUTHORING_CONSTRAINT_SYNTHESIS_AND_REVIEW_V0_1.md`
-
-Existing bounded Model A assets were reconciled against the newly approved ladder and P6 results. No material structural contradiction was found.
-
-Derived legal encounter availability from the approved roster:
-```text
-T1 = 3 legal archetypes
-T2 = 7
-T3 = 13
-T4 = full current E01-E20 library
-```
-
-These counts are consequences of monster requirements, not exact frequency or Stage placement.
-
-## Recommended Tier identities — NOT YET ADOPTED
-```text
-T1 = Foundation / Timing & Frontline
-T2 = Mitigation / Geometry
-T3 = Burst / Transformation
-T4 = Formation / Siege
-```
-
-## Recommended teaching windows — NOT YET ADOPTED
-```text
-T1: G teach 1-2, R 5-7, B 15-17
-T2: SHIELD 5-7, FLYER 15-17
-T3: CHARGER 5-7, SPLITTER 15-17
-T4: SUPPORTER 11-13, SIEGER 22-24
-```
-
-Each also carries candidate mixed/high-pressure windows in doc159.
-These are range constraints, not exact Stage recipes.
-
-## Recommended structural guards — NOT YET ADOPTED AS NEW PACKAGE
-- formation/cadence vocabulary expands by Tier rather than exposing all advanced grammar in T1;
-- rolling 10-Stage class-opportunity starvation warning;
-- special-monster minimum role-expression opportunity before skilled counterplay;
-- SUPPORTER and SIEGER isolated teaching before combined high pressure;
-- no new core ordinary first-teach in Stage41-50;
-- only Lv31 Stage41-45 is currently user-confirmed power-window authority; other skill windows remain calibration candidates.
-
-Old pressure/frequency/complexity ranges remain candidate-generator/search bounds only, not production targets.
-
----
-
-# Current exact decision gate
-
-Review/adopt the lower-layer authoring package in doc159:
-
-```text
-Tier identities
-+ formation/cadence progression
-+ range-based monster teach/mix/high-pressure windows
-+ class-opportunity starvation guard
-+ role-expression guard
-```
-
-If approved:
-- next work = T1 Stage1-50 **signature skeleton candidate**;
-- inspect teaching order/repetition/class opportunity/skill-window collisions/star boundaries/Lv31 runway;
-- still no exact production scalar freeze.
-
-If rejected:
-- adjust only the rejected dimension;
-- do not reopen the approved four-Tier ladder or P6 without a concrete contradiction.
-
----
-
-# Operational watches
-
-```text
-TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
-FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
-TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
-T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
-```
+Still not authorized/frozen:
+- all-50 exact recipe freeze;
+- monster/shop/EXP/P×P numerical freeze;
+- class buffs/nerfs;
+- boss adoption;
+- production gameplay changes.
