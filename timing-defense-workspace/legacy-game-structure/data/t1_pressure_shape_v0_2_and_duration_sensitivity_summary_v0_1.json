@@ -1,0 +1,81 @@
+{
+  "version": "t1-pressure-shape-v0.2-and-duration-sensitivity-summary-v0.1",
+  "status": "DIAGNOSTIC_EVIDENCE_NO_AUTHORING_ADOPTION",
+  "exactRun": {
+    "workflowRunId": 40075651830,
+    "jobId": 120818295930,
+    "artifactId": 12553201879,
+    "headSha": "bd1959c73235255e9de8a103295d95aa260d69fd",
+    "artifactZipSha256": "a60523c6ed34d58e02aafe6fffffb8f997b2d4d28bf03d8b275c3847ae3da008",
+    "mainJsonSha256": "a87ad2bf30342ccf18db576b130bf70c6a2504335605a5d425448a6f311e178b",
+    "absenceJsonSha256": "314f3caa53a41cc30e4b463607c932f56ee0b02523c52a12bfb253710138bf79",
+    "durationSearchJsonSha256": "7c9547252160584917694c6bd2b071ef4120d0181c81ea66225d5bd8c530fba9",
+    "recipeSha256": "3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf",
+    "seeds": [101, 211, 307],
+    "admission": {
+      "deterministicReplay": true,
+      "exactRecipeIdentity": true,
+      "explicitSkillStateTrace": true,
+      "lifecycleFailures": [],
+      "noEnemyCarryAtSettledBoundary": true,
+      "noTransientLeakageAtSettledBoundary": true,
+      "pairFailures": [],
+      "pairedIsolation": true,
+      "pass": true,
+      "persistentStateContinuity": true,
+      "replayFailures": [],
+      "stageSettledOrTerminalFailure": true
+    }
+  },
+  "v02Base": {
+    "lv31AbsenceProbe": {
+      "pass": true,
+      "failures": [],
+      "cases": 15,
+      "offWallPositiveCases": 0,
+      "onWallPositiveCases": 0,
+      "offFailures": 0,
+      "onFailures": 0
+    },
+    "interpretation": "Lv31 OFF and ON both remain fully safe in the unextended v0.2 Stage46-50 slice; v0.2 alone is not yet a mastery gate."
+  },
+  "durationSearch": {
+    "normal4sCap": 8,
+    "candidateCount": 13,
+    "rejectedCount": 0,
+    "candidates": [
+      {"id":"BASE_V02","extraCopies":0,"shiftMs":0,"offWallPositiveCases":0,"onWallPositiveCases":0,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":0.0,"onTotalWallDamage":0.0,"offMeanFinalBaseHp":2000.0,"onMeanFinalBaseHp":2000.0,"offMeanSettledSeconds":59.627,"onMeanSettledSeconds":55.334,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY1_SHIFT11000","extraCopies":1,"shiftMs":11000,"offWallPositiveCases":3,"onWallPositiveCases":1,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":1740.0,"onTotalWallDamage":408.0,"offMeanFinalBaseHp":1884.0,"onMeanFinalBaseHp":1972.8,"offMeanSettledSeconds":121.553,"onMeanSettledSeconds":110.229,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY1_SHIFT12000","extraCopies":1,"shiftMs":12000,"offWallPositiveCases":3,"onWallPositiveCases":1,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":1361.0,"onTotalWallDamage":354.0,"offMeanFinalBaseHp":1909.267,"onMeanFinalBaseHp":1976.4,"offMeanSettledSeconds":124.911,"onMeanSettledSeconds":114.651,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY1_SHIFT14000","extraCopies":1,"shiftMs":14000,"offWallPositiveCases":3,"onWallPositiveCases":1,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":1224.0,"onTotalWallDamage":138.0,"offMeanFinalBaseHp":1918.4,"onMeanFinalBaseHp":1990.8,"offMeanSettledSeconds":134.406,"onMeanSettledSeconds":125.256,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY1_SHIFT16000","extraCopies":1,"shiftMs":16000,"offWallPositiveCases":2,"onWallPositiveCases":1,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":489.0,"onTotalWallDamage":84.0,"offMeanFinalBaseHp":1967.4,"onMeanFinalBaseHp":1994.4,"offMeanSettledSeconds":143.49,"onMeanSettledSeconds":135.436,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY2_SHIFT11000","extraCopies":2,"shiftMs":11000,"offWallPositiveCases":5,"onWallPositiveCases":4,"offFailOrIncompleteCases":1,"onFailOrIncompleteCases":0,"offTotalWallDamage":6184.0,"onTotalWallDamage":777.0,"offMeanFinalBaseHp":1590.067,"onMeanFinalBaseHp":1948.2,"offMeanSettledSeconds":180.171,"onMeanSettledSeconds":167.267,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY2_SHIFT12000","extraCopies":2,"shiftMs":12000,"offWallPositiveCases":5,"onWallPositiveCases":3,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":5753.0,"onTotalWallDamage":662.0,"offMeanFinalBaseHp":1616.467,"onMeanFinalBaseHp":1955.867,"offMeanSettledSeconds":189.536,"onMeanSettledSeconds":176.648,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY2_SHIFT14000","extraCopies":2,"shiftMs":14000,"offWallPositiveCases":5,"onWallPositiveCases":3,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":3754.0,"onTotalWallDamage":918.0,"offMeanFinalBaseHp":1749.733,"onMeanFinalBaseHp":1938.8,"offMeanSettledSeconds":208.134,"onMeanSettledSeconds":195.957,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY2_SHIFT16000","extraCopies":2,"shiftMs":16000,"offWallPositiveCases":4,"onWallPositiveCases":3,"offFailOrIncompleteCases":0,"onFailOrIncompleteCases":0,"offTotalWallDamage":2327.0,"onTotalWallDamage":678.0,"offMeanFinalBaseHp":1844.867,"onMeanFinalBaseHp":1954.8,"offMeanSettledSeconds":227.238,"onMeanSettledSeconds":215.678,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY3_SHIFT11000","extraCopies":3,"shiftMs":11000,"offWallPositiveCases":10,"onWallPositiveCases":9,"offFailOrIncompleteCases":3,"onFailOrIncompleteCases":0,"offTotalWallDamage":9556.0,"onTotalWallDamage":4400.0,"offMeanFinalBaseHp":1378.0,"onMeanFinalBaseHp":1706.667,"offMeanSettledSeconds":225.723,"onMeanSettledSeconds":224.71,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY3_SHIFT12000","extraCopies":3,"shiftMs":12000,"offWallPositiveCases":6,"onWallPositiveCases":7,"offFailOrIncompleteCases":2,"onFailOrIncompleteCases":0,"offTotalWallDamage":6738.0,"onTotalWallDamage":1569.0,"offMeanFinalBaseHp":1561.2,"onMeanFinalBaseHp":1895.4,"offMeanSettledSeconds":244.415,"onMeanSettledSeconds":239.101,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY3_SHIFT14000","extraCopies":3,"shiftMs":14000,"offWallPositiveCases":5,"onWallPositiveCases":5,"offFailOrIncompleteCases":2,"onFailOrIncompleteCases":0,"offTotalWallDamage":5661.0,"onTotalWallDamage":937.0,"offMeanFinalBaseHp":1625.867,"onMeanFinalBaseHp":1937.533,"offMeanSettledSeconds":273.596,"onMeanSettledSeconds":265.445,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}},
+      {"id":"COPY3_SHIFT16000","extraCopies":3,"shiftMs":16000,"offWallPositiveCases":4,"onWallPositiveCases":3,"offFailOrIncompleteCases":2,"onFailOrIncompleteCases":0,"offTotalWallDamage":5521.0,"onTotalWallDamage":765.0,"offMeanFinalBaseHp":1642.267,"onMeanFinalBaseHp":1949.0,"offMeanSettledSeconds":303.466,"onMeanSettledSeconds":295.283,"max4sByStage":{"46":7,"47":8,"48":8,"49":8,"50":8}}
+    ],
+    "interpretation": [
+      "6-10s naive repetition was separately rejected by density gate before this widened search.",
+      "11-16s spaced duration extension can create Lv31 OFF>ON objective-pressure separation while keeping authored 4s density <=8.",
+      "Uniform repetition is class-skewed: Tank and Rogue absorb disproportionate late damage; Archer/Mage remain too protected in many candidates.",
+      "No duration candidate is adopted as authoring."
+    ]
+  },
+  "nextBoundary": {
+    "stageScope": [49, 50],
+    "task": "BOUNDED_DISTRIBUTED_DURABLE_SPLIT_AXIS_PRESSURE_SHAPE_CANDIDATE",
+    "goals": [
+      "reduce uniform-repeat Tank/Rogue skew",
+      "make split-axis/distributed durability create real spatial pressure for Archer/Mage",
+      "preserve Tank control/objective-protection identity",
+      "keep 4s authored density <=8",
+      "change composition/geometry/chronology before scalars"
+    ],
+    "scalarChangesAuthorized": false,
+    "productionChangesAuthorized": false
+  }
+}
