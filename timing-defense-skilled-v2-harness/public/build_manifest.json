@@ -4,7 +4,7 @@
   "humanCollectionEnabled": false,
   "runtimeMode": "PRE_HUMAN_VALIDATION",
   "protocolVersion": "0.1",
-  "presentationVersion": "A3P_HUMAN_CANDIDATE_0_2",
+  "presentationVersion": "A3P_HUMAN_CANDIDATE_0_3",
   "eventSchemaVersion": "1.0.0",
   "mechanicBaseline": "a2-v1.0.0",
   "calibrationManifestFingerprint": "2c3615516ad5caea431ec98bc1ec985a1dd6996d17c013c8e0fabe047932c2b1",
@@ -14,8 +14,8 @@
   "deployedFiles": [
     {
       "path": "index.html",
-      "sha256": "26ec26fda84eb7788bf67c634aa4227624b516d503652f486e83704210e7696e",
-      "bytes": 4361
+      "sha256": "3d7b3fd353c92ddbb0e8840ca96b579d366d34f25cb4ba82248b3e7262c84b32",
+      "bytes": 5677
     },
     {
       "path": "styles.css",
@@ -29,8 +29,8 @@
     },
     {
       "path": "config.mjs",
-      "sha256": "7eaa88c5f8fefe1d261de9e242bb24975d22fe79951060f2eb15d64e389e8db3",
-      "bytes": 2531
+      "sha256": "f4f519fac5b9969270e30e1e9bbfa783df9639cb9397b55aa644de2961086ac4",
+      "bytes": 2585
     },
     {
       "path": "mechanic.mjs",
@@ -58,5 +58,5 @@
       "bytes": 7044
     }
   ],
-  "semanticFingerprint": "1af16bd0c02b5c15f603b9a9bfafa633932e5474564dfc45ddecb40e799cc784"
+  "semanticFingerprint": "09df8295a5653cc5b39c20e67d8ed75905e1e7d69d76206bb5bffa20929b4e8f"
 }
