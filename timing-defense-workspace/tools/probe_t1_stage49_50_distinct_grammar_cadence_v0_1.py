@@ -159,7 +159,9 @@ def execute(doc,p3,p4,temporal,seeds,order_key,gap_ms):
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--recipes',required=True); ap.add_argument('--p3',default='legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json'); ap.add_argument('--p4d2-base',default='legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json'); ap.add_argument('--p4d2-temporal',default='legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json'); ap.add_argument('--seeds',default='101,211,307,409,503'); ap.add_argument('--json-out',required=True); args=ap.parse_args()
     source=r.load_yaml(args.recipes); p3=r.load_json(args.p3); p4=r.load_json(args.p4d2_base); temporal=r.load_json(args.p4d2_temporal); seeds=tuple(int(x) for x in args.seeds.split(',') if x.strip()); source_by={int(x['stage']):x for x in source['recipes']}
-    specs=[('CAD_A_G4500','ORDER_A',4500),('CAD_A_G5000','ORDER_A',5000),('CAD_B_G4500','ORDER_B',4500),('CAD_B_G5000','ORDER_B',5000)]
+    # 4.5/5.0s were statically rejected because Stage50 reprise overlap produced max4=9-10.
+    # 5.5s is the minimum calculated legal phase gap for this exact template family.
+    specs=[('CAD_A_G5500','ORDER_A',5500),('CAD_A_G6000','ORDER_A',6000),('CAD_B_G5500','ORDER_B',5500),('CAD_B_G6000','ORDER_B',6000)]
     candidates=[]; rejected=[]; fidelity=[]
     for cid,order,gap in specs:
         doc=candidate(source,cid,order,gap); by={int(x['stage']):x for x in doc['recipes']}; errors=r.static_recipe_gate(doc)
