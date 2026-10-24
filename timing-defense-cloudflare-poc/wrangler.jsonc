@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "timing-defense-do-poc",
+  "compatibility_date": "2026-10-24",
+  "assets": {
+    "directory": "./linkline-preview"
+  }
+}
