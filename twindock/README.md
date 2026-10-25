@@ -27,9 +27,9 @@ P0 modularization passed deterministic and mobile parity checks and is the canon
 A subtle station-relative reference treatment has also been accepted for readability; its modular merge is tracked as the first P1 presentation change so the P0 parity point stays clean.
 
 ## Current phase
-**P2 — World-readable docking feedback: ACCEPTED / CLOSED.**
+**P3 — Game-feel / presentation polish: P3-A candidate implemented; device validation pending.**
 
-The exact next boundary is **P3 — game-feel / presentation polish**: restrained audio, haptics, contact/capture feedback, and stage-transition polish while preserving the frozen V8 control/physics/camera/docking contract, accepted Mission 01, and P2 world-readable feedback mappings.
+P0, P1, and P2 remain accepted. P3-A adds a presentation-only effects layer for restrained RCS/mechanical audio and meaningful event haptics while preserving the frozen V8 control/physics/camera/docking contract, accepted Mission 01, and P2 world-readable feedback mappings.
 
 See `PROJECT_STATUS.md` for the exact current boundary.
 
