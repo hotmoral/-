@@ -1,0 +1,9 @@
+{
+  "name": "twindock",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test": "node tests/smoke.mjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}

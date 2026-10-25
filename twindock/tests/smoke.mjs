@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url));
+const root=path.resolve(here,'..');
+const context={window:{TwinDock:{}},performance:{now:()=>0},console};
+vm.createContext(context);
+for(const file of ['config.js','math.js','state.js','docking.js']){
+  vm.runInContext(fs.readFileSync(path.join(root,'src',file),'utf8'),context,{filename:file});
+}
+const TD=context.window.TwinDock;
+assert.equal(TD.MathUtil.inputCurve(0.05),0);
+assert.ok(TD.MathUtil.inputCurve(0.5)>0 && TD.MathUtil.inputCurve(0.5)<1);
+assert.equal(TD.MathUtil.seeded01(42),TD.MathUtil.seeded01(42));
+const s=TD.createState();
+s.viewport.W=1000;s.viewport.H=600;
+s.station.cx=790;s.station.cy=270;s.station.radius=72;s.station.angle=Math.PI;s.station.omega=TD.Config.STATION_OMEGA;
+const p=TD.Docking.portState(s);
+const targetAngle=p.targetAngle;
+const tx=Math.cos(targetAngle),ty=Math.sin(targetAngle);
+const captureX=p.px+tx*TD.Config.PORT_CAPTURE_INSET,captureY=p.py+ty*TD.Config.PORT_CAPTURE_INSET;
+const rx=captureX-s.station.cx,ry=captureY-s.station.cy;
+s.ship.angle=targetAngle;s.ship.angVel=s.station.omega;
+s.ship.x=captureX-Math.cos(targetAngle)*TD.Config.VISUAL_PROBE_X;
+s.ship.y=captureY-Math.sin(targetAngle)*TD.Config.VISUAL_PROBE_X;
+s.ship.vx=-s.station.omega*ry;s.ship.vy=s.station.omega*rx;
+const m=TD.Docking.metrics(s);
+assert.ok(m.dist<1e-9);assert.ok(m.rel<1e-9);assert.ok(m.dir<1e-9);assert.ok(m.spin<1e-9);assert.equal(TD.Docking.canDock(m),true);
+console.log('Twin Dock smoke tests: PASS');
