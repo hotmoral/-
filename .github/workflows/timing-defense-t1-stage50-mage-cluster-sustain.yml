@@ -5,6 +5,7 @@ on:
     branches: [timing-defense-workspace]
     paths:
       - 'timing-defense-workspace/tools/probe_t1_stage50_mage_cluster_sustain_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage50_mage_cluster_sustain_v0_1_entry.py'
       - '.github/workflows/timing-defense-t1-stage50-mage-cluster-sustain.yml'
   workflow_dispatch:
 
@@ -33,6 +34,8 @@ jobs:
           printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/stage50-mage-cluster-sustain-source-identity.txt
           sha256sum \
             tools/probe_t1_stage50_mage_cluster_sustain_v0_1.py \
+            tools/probe_t1_stage50_mage_cluster_sustain_v0_1_entry.py \
+            tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
             tools/probe_t1_stage49_50_transition_aware_integration_v0_1.py \
             tools/probe_t1_stage49_50_transition_aware_integration_v0_2.py \
             tools/probe_t1_stage49_50_target_phase_clearance_v0_1.py \
@@ -47,10 +50,10 @@ jobs:
             legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
             >> artifacts/stage50-mage-cluster-sustain-source-identity.txt
           cat artifacts/stage50-mage-cluster-sustain-source-identity.txt
-      - run: python -m py_compile tools/probe_t1_stage50_mage_cluster_sustain_v0_1.py
+      - run: python -m py_compile tools/probe_t1_stage50_mage_cluster_sustain_v0_1.py tools/probe_t1_stage50_mage_cluster_sustain_v0_1_entry.py
       - name: Execute Mage sustain chronology probe
         run: |
-          PYTHONPATH=tools python tools/probe_t1_stage50_mage_cluster_sustain_v0_1.py \
+          PYTHONPATH=tools python tools/probe_t1_stage50_mage_cluster_sustain_v0_1_entry.py \
             --recipes "$T1_RECIPE" --seeds 101,211,307,409,503 \
             --json-out artifacts/t1-stage50-mage-cluster-sustain-v0_1.json
       - name: Fidelity gate
