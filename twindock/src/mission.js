@@ -22,7 +22,7 @@
     const lateral=H*profile.lateral;
     station.cx=ship.x + forwardX*ahead + rightX*lateral;
     station.cy=ship.y + forwardY*ahead + rightY*lateral;
-    station.angle=normAngle(ship.angle + Math.PI);
+    station.angle=normAngle(ship.angle + ship.dockAnchor.angle + Math.PI);
     station.omega=profile.omega;
     station.vx=c*profile.bodyVx - s*profile.bodyVy;
     station.vy=s*profile.bodyVx + c*profile.bodyVy;

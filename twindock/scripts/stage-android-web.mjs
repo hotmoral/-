@@ -22,10 +22,14 @@ if (remoteRuntimeRef.test(index)) {
 }
 
 const rendererAt = index.indexOf('./src/renderer.js');
+const craftProbeAt = index.indexOf('./src/craft-probe.js');
 const presentationAt = index.indexOf('./src/presentation.js');
 const mainAt = index.indexOf('./src/main.js');
 if (!(rendererAt >= 0 && presentationAt > rendererAt && mainAt > presentationAt)) {
   throw new Error('Required renderer -> presentation -> main script order is not preserved.');
+}
+if (craftProbeAt >= 0 && !(craftProbeAt > rendererAt && craftProbeAt < presentationAt)) {
+  throw new Error('Craft probe adapter must load between renderer and presentation.');
 }
 
 console.log('Twin Dock Android web staging complete:', out);

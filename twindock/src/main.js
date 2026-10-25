@@ -8,6 +8,11 @@
   const effects = TD.Effects(state);
   const transitions = TD.Transitions(ui);
 
+  const CRAFT_PROBES = Object.freeze({
+    REFERENCE: Object.freeze({ id:'REFERENCE', label:'기준', x:TD.Config.VISUAL_PROBE_X, y:0, angle:0 }),
+    SIDE: Object.freeze({ id:'SIDE', label:'측면', x:2, y:-31, angle:-Math.PI/2 })
+  });
+
   if(new URLSearchParams(location.search).get('debug')==='1') document.body.classList.add('debug');
 
   function clearControls(){ TD.Input.clearAll(state); }
@@ -15,13 +20,19 @@
   function updateChecks(){ const m=TD.Docking.metrics(state); TD.UI.updateDockChecks(ui,m); }
   function progressText(){ const p=TD.Mission.progress(state); return `${Math.min(state.score,p.total)} / ${p.total}`; }
   function targetText(profile){ return `TARGET ${state.mission.index+1} · ${profile.label}`; }
+  function currentCraft(){ return CRAFT_PROBES[state.ship.geometryId] || CRAFT_PROBES.REFERENCE; }
+  function syncCraftButton(){ const c=currentCraft();ui.craft.textContent=`기체 · ${c.label}`;ui.craft.setAttribute('aria-pressed',String(c.id==='SIDE')); }
+  function applyCraft(id){
+    const c=CRAFT_PROBES[id] || CRAFT_PROBES.REFERENCE;
+    state.ship.geometryId=c.id;state.ship.dockAnchor.x=c.x;state.ship.dockAnchor.y=c.y;state.ship.dockAnchor.angle=c.angle;
+  }
 
   function resetAll(){
     state.running=false;state.startedOnce=false;state.score=0;effects.silence();transitions.reset();resetShip();
     const profile=TD.Mission.reset(state);
     ui.score.textContent=progressText();ui.rel.textContent='0.0';ui.mode.textContent='대기';
-    ui.msgT.textContent=targetText(profile);ui.msgS.textContent='도킹 링과 상대 운동을 읽고 접근하세요.';ui.start.textContent='시작';
-    [ui.ckPos,ui.ckVel,ui.ckDir,ui.ckSpin].forEach(x=>TD.UI.setCheck(x,false));renderer.draw();
+    ui.msgT.textContent=targetText(profile);ui.msgS.textContent=state.ship.geometryId==='SIDE'?'상단 측면 포트를 도킹 링에 맞추세요. 기체 자세가 기준형과 달라집니다.':'도킹 링과 상대 운동을 읽고 접근하세요.';ui.start.textContent='시작';syncCraftButton();
+    [ui.ckPos,ui.ckVel,ui.ckDir,ui.ckSpin].forEach(x=>TD.UI.setCheck(x,false));renderer.draw();feedback.draw();
   }
 
   function dockSuccess(m){
@@ -51,11 +62,17 @@
     state.startedOnce=true;
     if(state.running){state.running=false;clearControls();effects.silence();ui.start.textContent='계속';ui.mode.textContent='일시정지';return;}
     state.running=true;ui.start.textContent='정지';ui.mode.textContent='접근';
-    const profile=TD.Mission.current(state);ui.msgT.textContent=targetText(profile);ui.msgS.textContent='가이드 링과 포트의 움직임을 보고 동기화하세요.';state.last=performance.now();
+    const profile=TD.Mission.current(state);ui.msgT.textContent=targetText(profile);ui.msgS.textContent=state.ship.geometryId==='SIDE'?'측면 포트와 목표 포트의 방향·상대운동을 함께 맞추세요.':'가이드 링과 포트의 움직임을 보고 동기화하세요.';state.last=performance.now();
+  }
+
+  function toggleCraft(){
+    applyCraft(state.ship.geometryId==='SIDE'?'REFERENCE':'SIDE');
+    resetAll();
   }
 
   ui.start.addEventListener('click',startStop);
   ui.reset.addEventListener('click',resetAll);
+  ui.craft.addEventListener('click',toggleCraft);
   ui.full.addEventListener('click',async()=>{try{if(!document.fullscreenElement)await ui.app.requestFullscreen({navigationUI:'hide'});else await document.exitFullscreen();}catch(_){ui.msgT.textContent='브라우저에서 전체화면을 허용해주세요';}});
   TD.Input.bind(state,ui);
 
@@ -69,6 +86,6 @@
   }
 
   window.addEventListener('resize',resize);window.addEventListener('orientationchange',()=>setTimeout(resize,120));
-  renderer.resize();feedback.resize();resetAll();renderer.makeStars();state.last=performance.now();requestAnimationFrame(loop);
-  TD.App={state,ui,renderer,feedback,effects,transitions,resetAll,startStop};
+  renderer.resize();feedback.resize();applyCraft('REFERENCE');resetAll();renderer.makeStars();state.last=performance.now();requestAnimationFrame(loop);
+  TD.App={state,ui,renderer,feedback,effects,transitions,resetAll,startStop,toggleCraft,applyCraft};
 })();

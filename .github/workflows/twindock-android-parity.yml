@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - twindock-p3b-transition-v1
+      - twindock-geometry-side-probe-v1
     paths:
       - 'twindock/index.html'
       - 'twindock/styles.css'

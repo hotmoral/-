@@ -22,6 +22,7 @@
       mission: { index: 0, finished: false },
       ship: {
         x: 0, y: 0, vx: 0, vy: 0, angle: 0, angVel: 0, length: C.SHIP_LENGTH, width: C.SHIP_WIDTH,
+        geometryId: 'REFERENCE',
         dockAnchor: { x: C.VISUAL_PROBE_X, y: 0, angle: 0 }
       },
       input: {
