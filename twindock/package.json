@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "test": "node --check src/effects.js && node --check src/main.js && node tests/smoke.mjs && node tests/mission.mjs",
+    "test": "node --check src/effects.js && node --check src/presentation.js && node --check src/main.js && node tests/presentation-angle.mjs && node tests/smoke.mjs && node tests/mission.mjs",
     "serve": "python3 -m http.server 8080"
   }
 }
