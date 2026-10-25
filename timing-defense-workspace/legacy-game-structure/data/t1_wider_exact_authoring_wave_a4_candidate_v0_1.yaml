@@ -1,0 +1,101 @@
+version: t1-wider-exact-authoring-wave-a4-candidate-v0.1
+status: BOUNDED_WAVE_A4_CANDIDATE_NO_ADOPTION_NO_PRODUCTION_OR_NUMERICAL_FREEZE
+
+baseRecipe:
+  path: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  sha256: 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+
+plan:
+  path: data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+  sha256: da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+  slice: WAVE_A4_PRE_GATE_PRESSURE_BRIDGE
+
+priorCandidates:
+  a1:
+    path: data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml
+    sha256: 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
+  a2:
+    path: data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml
+    sha256: 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
+  a3:
+    path: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    sha256: 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
+
+scope:
+  addedStages: [33, 37, 38]
+  contextOnlyStages: [39, 40]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+  candidateAdopted: false
+
+stageAdditions:
+  - id: T1_S33_MAGE_DENSITY_PRESSURE_A4
+    stage: 33
+    archetype: E01
+    componentArchetypes: [E01]
+    formation: F03
+    formationSet: [F03]
+    cadence: CD04
+    complexity: C2
+    pressureTags: [BASELINE, FLOOD]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.42}
+      - {tMs: 150, type: GRUNT, y: 0.45}
+      - {tMs: 300, type: GRUNT, y: 0.48}
+      - {tMs: 450, type: GRUNT, y: 0.46}
+      - {tMs: 2200, type: GRUNT, y: 0.43}
+      - {tMs: 2350, type: GRUNT, y: 0.47}
+      - {tMs: 2500, type: GRUNT, y: 0.44}
+      - {tMs: 2650, type: GRUNT, y: 0.49}
+      - {tMs: 5000, type: GRUNT, y: 0.42}
+      - {tMs: 5150, type: GRUNT, y: 0.46}
+      - {tMs: 5300, type: GRUNT, y: 0.48}
+      - {tMs: 5450, type: GRUNT, y: 0.44}
+
+  - id: T1_S37_SPLIT_AXIS_TEMPO_A4
+    stage: 37
+    archetype: E02
+    componentArchetypes: [E02]
+    formation: F08
+    formationSet: [F08]
+    cadence: CD04
+    complexity: C2
+    pressureTags: [RUSH]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: RUNNER, y: 0.30}
+      - {tMs: 180, type: GRUNT, y: 0.32}
+      - {tMs: 360, type: RUNNER, y: 0.70}
+      - {tMs: 540, type: GRUNT, y: 0.68}
+      - {tMs: 2600, type: RUNNER, y: 0.70}
+      - {tMs: 2780, type: GRUNT, y: 0.68}
+      - {tMs: 2960, type: RUNNER, y: 0.30}
+      - {tMs: 3140, type: GRUNT, y: 0.32}
+
+  - id: T1_S38_DURABLE_PRE_PEAK_BRIDGE_A4
+    stage: 38
+    archetype: E01
+    componentArchetypes: [E01, E03]
+    formation: F02
+    formationSet: [F02]
+    cadence: CD03
+    complexity: C1
+    pressureTags: [BULWARK]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 250, type: GRUNT, y: 0.43}
+      - {tMs: 500, type: GRUNT, y: 0.49}
+      - {tMs: 750, type: GRUNT, y: 0.45}
+      - {tMs: 3300, type: BRUTE, y: 0.46}
+      - {tMs: 3550, type: GRUNT, y: 0.44}
+      - {tMs: 3800, type: GRUNT, y: 0.48}
+      - {tMs: 4050, type: GRUNT, y: 0.45}
