@@ -1,0 +1,76 @@
+{
+  "version": "t1-stage49-50-class-rotation-diagnostic-center-summary-v0.1",
+  "status": "PASS_WITH_WATCH_DIAGNOSTIC_CENTER_NO_AUTHORING_OR_NUMERICAL_FREEZE",
+  "resultDocument": "169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md",
+  "sourceRecipe": "data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml",
+  "sourceRecipeSha256": "3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf",
+  "exactEvidence": {
+    "workflow": ".github/workflows/timing-defense-t1-stage49-50-sustain-integration-compare.yml",
+    "runId": 40153142570,
+    "artifactId": 12583341810,
+    "headSha": "5eb71a861b1226887a8ec09dce98641c0dfff817",
+    "artifactSha256": "ab31640122bd1d00179d5af62104368cb46ad4e5d4137fb8922d561ebbfcacf5",
+    "seeds": [101, 211, 307, 409, 503],
+    "fidelityErrors": []
+  },
+  "diagnosticBridges": {
+    "archerLv31Corridor": {
+      "yTolerance": 0.20,
+      "status": "DIAGNOSTIC_ONLY_NOT_FROZEN"
+    },
+    "mageLv31Fidelity": {
+      "status": "SEMANTIC_FIDELITY_CORRECTION_NO_NUMERICAL_FREEZE",
+      "corrections": [
+        "MAGE_LV31_Y_RADIUS_INHERITS_LV11_AND_LV21_RADIUS",
+        "MAGE_LV31_PRIMARY_EXCLUDED_FROM_ALL_AOE_STAGES",
+        "MAGE_LV31_FINAL_CHAIN_EXCLUDES_FULL_PACKAGE_HIT_SET"
+      ]
+    }
+  },
+  "diagnosticCenter": {
+    "name": "STAGGER_1800",
+    "stage49Order": ["DURABLE_SCATTER", "FRONTLINE", "CLUSTER", "LINE"],
+    "stage50Order": ["DURABLE_SCATTER", "FRONTLINE", "CLUSTER", "LINE", "LINE_REPRISE"],
+    "clusterMorphology": ["BRUTE", "GRUNT", "BRUTE", "GRUNT", "BRUTE", "GRUNT"],
+    "clusterOffsetsMs": [0, 360, 720, 1080, 1440, 1800],
+    "phaseGapMs": 5500,
+    "stage49": {"authored": 24, "max4s": 6, "max6s": 11, "minY": 0.18, "maxY": 0.82, "ySpread": 0.64},
+    "stage50": {"authored": 30, "max4s": 6, "max6s": 9, "minY": 0.18, "maxY": 0.82, "ySpread": 0.64},
+    "roleDirectionOffToOn": {
+      "knight": {"clearLatencyImprovementPct": 0.430303, "direction": "POSITIVE_FASTER_CLEAR"},
+      "rogue": {"clearLatencyImprovementPct": 0.300662, "direction": "POSITIVE_FASTER_CLEAR"},
+      "tank": {"clearLatencyImprovementPct": 0.273684, "unresolvedImprovement": 3, "direction": "POSITIVE_UNRESOLVED_REDUCTION"},
+      "archer": {"clearLatencyImprovementPct": 0.017241, "direction": "POSITIVE_FASTER_CLEAR"},
+      "mage": {"clearLatencyImprovementPct": 0.094216, "direction": "POSITIVE_FASTER_CLEAR"}
+    },
+    "objectivePressure": {
+      "offTotalWallDamage": 1358,
+      "onTotalWallDamage": 164,
+      "wallDamageReduction": 1194,
+      "offWallPositiveCases": 2,
+      "onWallPositiveCases": 1,
+      "offMeanFinalBaseHp": 1945.68,
+      "onMeanFinalBaseHp": 1993.44,
+      "failOrIncompleteCasesOff": 0,
+      "failOrIncompleteCasesOn": 0,
+      "classesWithWallPressureOff": 1,
+      "classesWithWallPressureOn": 1
+    }
+  },
+  "alternative": {
+    "name": "SUSTAIN_3000",
+    "clusterOffsetsMs": [0, 600, 1200, 1800, 2400, 3000],
+    "mageClearLatencyImprovementPct": 0.089618,
+    "status": "LEGAL_BUT_NOT_MINIMAL_CENTER"
+  },
+  "conclusions": {
+    "roleRotationSignal": "IMPROVED",
+    "objectivePressureRotation": "STILL_SKEWED_TOWARD_TANK",
+    "scalarChangeRequired": "NOT_SHOWN",
+    "diagnosticCenter": "STAGGER_1800",
+    "authoringAdoption": false,
+    "numericalFreeze": false,
+    "productionGameplayChange": false
+  },
+  "next": "MATERIALIZE_STAGE49_50_ONLY_AUTHORING_CANDIDATE_AND_RUN_STATIC_PREFLIGHT"
+}
