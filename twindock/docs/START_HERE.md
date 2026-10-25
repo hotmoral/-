@@ -15,12 +15,12 @@ Read these in order before proposing or implementing work:
 6. `twindock/docs/OPERATING_RULES.md`
 7. `twindock/README.md`
 8. `twindock/docs/CONTENT_EXPANSION_MAP.md`
-9. `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` for the current Android lane
-10. exact source/tests relevant to the next bounded slice
+9. exact source/tests relevant to the next bounded slice
 
+Read `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` when Android history/contract is relevant.
 Before proposing/promoting new content, also consult `twindock/docs/IDEA_BANK.md`.
 
-Already ACCEPTED/CLOSED/FROZEN work must not be revalidated from scratch merely because a new session started. Revalidate only for a relevant source change, prospective dependency, platform/package trigger, or concrete mismatch.
+Already ACCEPTED/CLOSED/FROZEN work must not be revalidated from scratch merely because a new session started. Revalidate only for a relevant source change, prospective dependency, platform/package trigger, release requirement, or concrete mismatch.
 
 ## Project identity / frozen core
 Twin Dock is a mobile-first inertial precision-docking game centered on embodied two-hand control.
@@ -49,30 +49,30 @@ V8 remains the immutable fallback/control baseline. See `BASELINE_V8.md` for exa
 - P3-B transition/final polish — ACCEPTED / CLOSED
 - P3 overall — ACCEPTED / CLOSED
 - Android packaging preflight — PASS / CLOSED
-- Android minimal wrapper/build — **BUILD PASS**
-- Android physical-device parity — **PENDING**
+- Android minimal wrapper/build — BUILD PASS
+- Android physical-device parity — **PASS / ACCEPTED**
+- Android wrapper/platform contract — **FROZEN**
+- Android parity lane — **CLOSED**
+- Docking Geometry v2 — **NEXT / not yet implemented**
 
 ## Current exact boundary
-Do **not** begin Geometry v2 or new gameplay work yet.
+Do **not** reopen Android parity or start broad hull/collision work without a concrete trigger.
 
 The next product question is:
-**Does the successfully built minimal Android wrapper preserve the accepted web game on a real Android phone?**
+**Can the hidden fixed-forward-probe assumption be replaced by local player/station docking anchors while the current reference shuttle reproduces Mission 01 with no meaningful feel/readability regression?**
 
 Exact next slice:
-`install debug APK -> physical Android parity matrix -> classify/fix only concrete platform mismatches -> freeze wrapper on PASS`
+`Docking Geometry v2 -> represent current reference shuttle through local anchor frames -> bounded reference-shuttle regression`
 
-On PASS:
-`Docking Geometry v2` in the shared game core.
-
-## Current Android build reference
-Canonical contract: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
+## Android accepted baseline
+Canonical contract/history: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
 
 Successful wrapper implementation/build:
-- head: `596ba9e4e89e4926cd10aad08908694572b0bf4b`
+- implementation head: `596ba9e4e89e4926cd10aad08908694572b0bf4b`
 - workflow run: `40207650795`
 - Capacitor: 8.5.3
 - Node: 22+
-- JDK: **21**
+- JDK: 21
 - minSdk: 24
 - targetSdk/compileSdk: 36
 - AGP: 8.13.0
@@ -80,62 +80,58 @@ Successful wrapper implementation/build:
 - app ID: `com.hotmoral.twindock`
 - version: `0.1.0` / versionCode 1
 
-Important correction: initial preflight JDK 17 was disproven by actual Capacitor compilation. Pinned Capacitor 8.5.3 uses Java 21; canonical is now JDK 21.
-
-Debug APK:
+Debug APK reference:
 - filename `app-debug.apk`
 - SHA-256 `96e29d19f4c1c211ffcc8805e338549cc7ccd13c8f2255df14868afecb4cfcc2`
 
 Wrapper implementation did **not** change gameplay `src/*`.
 
-## Android device checks
-Physical device must verify:
-- install/cold launch
-- landscape + safe areas/system bars
-- two simultaneous pointers retain identity
-- no edge touch loss / `pointercancel` stuck input
-- accepted two-hand feel
-- warm background/resume preserves mission/world and clears stale touches
-- fullscreen does not corrupt layout/state
-- ship-frame camera
-- presentation angle continuity; no fifth-dock background flip
-- Web Audio after real gesture
-- haptics
-- all five Mission 01 docks
-- target translation + rotating-port velocity truth
-- P2 feedback truth alignment
-- P3 effects/transitions readability
-- deterministic reset/background identity
-- Back does not reset/corrupt state
+Physical-device parity was accepted on **2026-10-26 KST** after the user ran the fixed Android matrix on a real phone and reported all checked behavior normal. No Android-specific gameplay tuning or platform workaround was required after the successful build.
 
-A failure must be classified before fixing as wrapper/platform, WebView capability, packaging/build, pre-existing web, or frozen gameplay regression.
-
-Do not tune frozen gameplay to hide a platform defect.
+The accepted Android wrapper/platform contract is now FROZEN. Reopen only for a relevant source/platform/package change, device mismatch, release requirement, or explicit Android productization slice.
 
 ## Android wrapper guards
-- thin Capacitor wrapper only
+- thin Capacitor wrapper
 - local/offline assets
 - generated `www/` is output, not source authority
 - preserve `renderer.js -> presentation.js -> main.js`
 - phone-first `sensorLandscape`
 - app category `game`
 - SystemBars native inset handling + viewport-fit cover
-- do not explicitly force `EdgeToEdge.enable` / `WindowCompat.enableEdgeToEdge` in first probe
-- keep current Web Audio / `navigator.vibrate()` first
+- no explicit forced `EdgeToEdge.enable` / `WindowCompat.enableEdgeToEdge`
+- keep current Web Audio / `navigator.vibrate()` baseline unless concrete evidence requires change
 - no native physics/input/docking/camera rewrite
-- no Mission 01 or P2/P3 redesign
-- no Geometry v2 in Android parity fixes
 
 ## P3 regression guard
 `src/presentation.js` is required. It provides a continuous renderer-facing visual angle across physical `+π/-π` wrap and prevents the accepted fifth-dock distant-background regression without changing physical state.
 
-Do not bypass it during packaging or move the fix into physics casually.
+Do not bypass it during Geometry v2 or move the fix into physics casually.
 
-## Content direction after Android
+## Docking Geometry v2 — immediate scope
+Goal: remove the assumption that the player docking point is always a fixed forward probe.
+
+Target model:
+- player docking anchor: local X, local Y, local angle
+- station docking anchor: local X, local Y, local angle
+- derive world docking pose from local anchors + body transforms
+- evaluate relative velocity at the actual docking anchor, including rotational tangential velocity
+- evaluate orientation from anchor normals/frames rather than body-center direction alone
+- originate P2 feedback from actual anchor frames
+
+Non-goals:
+- no broad hull/collision rewrite yet
+- no control tuning
+- no Android-specific implementation fork
+- no new side/rear craft until the reference shuttle passes regression
+
+Exit condition:
+**the current reference shuttle represented through Geometry v2 reproduces Mission 01 behavior with no meaningful feel/readability regression.**
+
+## Content direction after Geometry v2
 The current front-port shuttle is a reference craft, not the final universal geometry.
 
-Post-Android path:
-`Docking Geometry v2 -> reference regression -> side/mid-body -> rear/asymmetric -> simplified hull clearance -> station geometry -> Mission 02 -> Mission 03 -> content/productization gate`.
+Path:
+`Docking Geometry v2 -> reference-shuttle regression -> side/mid-body -> rear/asymmetric -> simplified hull clearance -> station geometry -> Mission 02 -> Mission 03 -> content/productization gate`.
 
 Ideas follow `BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`.
 `IDEA_BANK.md` is not a roadmap.
