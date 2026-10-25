@@ -6,6 +6,7 @@
   const renderer = TD.Renderer(state, ui);
   const feedback = TD.FeedbackRenderer(state, ui);
   const effects = TD.Effects(state);
+  const transitions = TD.Transitions(ui);
 
   if(new URLSearchParams(location.search).get('debug')==='1') document.body.classList.add('debug');
 
@@ -16,7 +17,7 @@
   function targetText(profile){ return `TARGET ${state.mission.index+1} · ${profile.label}`; }
 
   function resetAll(){
-    state.running=false;state.startedOnce=false;state.score=0;effects.silence();resetShip();
+    state.running=false;state.startedOnce=false;state.score=0;effects.silence();transitions.reset();resetShip();
     const profile=TD.Mission.reset(state);
     ui.score.textContent=progressText();ui.rel.textContent='0.0';ui.mode.textContent='대기';
     ui.msgT.textContent=targetText(profile);ui.msgS.textContent='도킹 링과 상대 운동을 읽고 접근하세요.';ui.start.textContent='시작';
@@ -24,7 +25,7 @@
   }
 
   function dockSuccess(m){
-    state.docked=true;state.dockHold=TD.Config.DOCK_HOLD_SECONDS;state.score++;ui.score.textContent=progressText();clearControls();
+    state.docked=true;state.dockHold=TD.Config.DOCK_HOLD_SECONDS;state.score++;ui.score.textContent=progressText();clearControls();transitions.progress();
     const ship=state.ship;ship.angle=m.p.targetAngle;ship.angVel=state.station.omega;const fx=Math.cos(ship.angle),fy=Math.sin(ship.angle);ship.x=m.captureX-fx*TD.Config.VISUAL_PROBE_X;ship.y=m.captureY-fy*TD.Config.VISUAL_PROBE_X;ship.vx=m.captureVx;ship.vy=m.captureVy;
     ui.mode.textContent='DOCK';ui.msgT.textContent=`DOCK ${state.mission.index+1} COMPLETE`;ui.msgS.textContent='SOFT CAPTURE · 다음 목표로 이어집니다.';ui.pulse.classList.remove('on');void ui.pulse.offsetWidth;ui.pulse.classList.add('on');effects.softCapture();
   }
@@ -36,10 +37,11 @@
   function dockHoldEnd(){
     const next=TD.Mission.advance(state);
     if(!next){
-      state.running=false;state.dockHold=1e9;clearControls();ui.mode.textContent='완료';ui.msgT.textContent='MISSION 01 COMPLETE';ui.msgS.textContent='5 DOCKS COMPLETE · 다시 시작할 수 있습니다.';ui.start.textContent='다시';effects.missionComplete();return;
+      state.running=false;state.dockHold=1e9;clearControls();ui.mode.textContent='완료';ui.msgT.textContent='MISSION 01 COMPLETE';ui.msgS.textContent='5 DOCKS COMPLETE · 다시 시작할 수 있습니다.';ui.start.textContent='다시';effects.missionComplete();transitions.missionComplete(TD.Mission.profiles.length);return;
     }
     state.docked=false;state.dockHold=0;state.angularDrive=0;clearControls();effects.latch();effects.nextTarget();
     ui.mode.textContent='접근';ui.msgT.textContent=targetText(next);ui.msgS.textContent='새 목표의 움직임을 먼저 읽으세요.';
+    transitions.nextTarget(next,state.mission.index+1,TD.Mission.profiles.length);
     [ui.ckPos,ui.ckVel,ui.ckDir,ui.ckSpin].forEach(x=>TD.UI.setCheck(x,false));
   }
 
@@ -68,5 +70,5 @@
 
   window.addEventListener('resize',resize);window.addEventListener('orientationchange',()=>setTimeout(resize,120));
   renderer.resize();feedback.resize();resetAll();renderer.makeStars();state.last=performance.now();requestAnimationFrame(loop);
-  TD.App={state,ui,renderer,feedback,effects,resetAll,startStop};
+  TD.App={state,ui,renderer,feedback,effects,transitions,resetAll,startStop};
 })();
