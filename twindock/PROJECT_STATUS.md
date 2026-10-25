@@ -1,7 +1,10 @@
 # Twin Dock Project Status
 
 ## Current phase
-**P2 — World-readable docking feedback: ACCEPTED / CLOSED**
+**P3 — Game-feel / presentation polish: P3-A CANDIDATE / DEVICE VALIDATION PENDING**
+
+Current P3 working branch: `twindock-p3-gamefeel-v1`.
+P3 branch base: accepted P2 presentation state after README sync, commit `2ee58e5d7808257b12946a2740efa48c19bf32b1`.
 
 ## Accepted foundation
 - P0 modular foundation: ACCEPTED / canonical.
@@ -77,24 +80,80 @@ Core/frozen modules remained unchanged:
 Changed-JS syntax checks: PASS.
 Mobile device readability/presentation check: ACCEPTED.
 
-## Next exact boundary
-**P3 — Game-feel / presentation polish**
-
-Product question:
+## P3 product question
 Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking feel substantially more satisfying without obscuring physical information, increasing fatigue, or changing the accepted control/docking behavior?
 
-Target P3 scope:
-- preserve all frozen control/physics/camera/docking values
-- preserve P1 five-stage Mission 01
-- preserve P2 world-readable feedback mappings
-- add restrained spacecraft-internal/RCS/mechanical audio cues rather than loud arcade effects
-- refine impact / bad-contact / recovery feedback
-- refine soft-capture / latch / release-to-next-target presentation
-- use short, low-fatigue haptic patterns tied to meaningful events only
-- improve final mission-complete presentation without blocking the playfield
-- keep audio/haptic systems separable and easy to disable/test
+## P3-A candidate — event feedback foundation
+Implemented, **not yet accepted**.
 
-Non-goals for P3:
+Purpose:
+Establish a presentation-only event/effects layer before broader transition/final polish.
+
+Current P3-A implementation:
+- new `src/effects.js` presentation layer
+- restrained continuous RCS hiss driven only by existing left/right input magnitude
+- bad-contact mechanical/noise cue + short haptic
+- soft-capture cue + short haptic
+- latch cue after dock hold before the next target
+- delayed next-target cue
+- compact final mission-complete cue + haptic
+- audio context unlock on user gesture for mobile browser compatibility
+- RCS audio silences on pause/reset/backgrounding
+- audio and haptics independently disableable for A/B testing with `?audio=0` and `?haptics=0`
+- RCS gain automation is change-bounded rather than appended every animation frame
+
+P3-A event routing uses the existing orchestration hooks/events only:
+- dock success
+- bad contact / collision
+- dock hold end / stage advance
+- existing RCS input state
+
+P3-A does **not** alter collision response, docking truth, target motion, mission progression logic, camera semantics, or input physics.
+
+## P3-A regression boundary
+Compared against P3 base `2ee58e5d7808257b12946a2740efa48c19bf32b1`.
+
+Implementation changes are limited to:
+- `twindock/index.html`
+- `twindock/package.json`
+- `twindock/src/effects.js` (new)
+- `twindock/src/main.js`
+
+Frozen/core and accepted P2 feedback modules remain unchanged:
+- `config.js`
+- `input.js`
+- `physics.js`
+- `docking.js`
+- `camera.js`
+- `mission.js`
+- `renderer.js`
+- `feedback.js`
+
+Changed-JS syntax check: PASS for exact current `effects.js` and `main.js` sources.
+Existing deterministic smoke/mission test sources and their covered core modules were not changed by P3-A; per operating rules, accepted P0/P1 verification is not being rerun solely because a presentation-only branch was created.
+
+## P3-A device acceptance gate
+Before P3-A can be accepted, validate on the actual mobile device:
+- RCS sound is audible but subordinate to visual/physical information
+- bad contact is immediately distinguishable from successful capture
+- capture/latch sequence feels satisfying rather than arcade-like
+- haptics are noticeable but not fatiguing across a full five-dock run
+- audio does not mask relative-motion judgment
+- no touch/input regression
+- no perceived camera/physics feel regression
+- normal play remains visually sparse and readable
+- compare normal candidate against `?audio=0`, `?haptics=0`, and both disabled when useful
+
+Do not begin P3-B acceptance work until this device gate has been evaluated.
+
+## Remaining P3 scope after P3-A validation
+If P3-A is accepted or adjusted to acceptance, the next bounded slice is P3-B:
+- refine contact/capture visual presentation only where device feedback shows a concrete need
+- improve stage transition presentation
+- improve final mission-complete presentation
+- keep the playfield unobstructed and all effects low-fatigue
+
+P3 non-goals remain:
 - no fuel economy
 - no combat
 - no upgrade/meta progression
@@ -103,12 +162,13 @@ Non-goals for P3:
 - no Android packaging inside the same implementation batch
 
 ## Android gate
-Android packaging is now justified as a near-term platform step because:
+Android packaging remains justified as a near-term platform step because:
 - the core control is accepted
 - the continuous mission loop is fun
 - world-readable UI direction is accepted
 
-However, complete and validate P3 presentation/game-feel first so Android packaging does not immediately require another large UI/feedback rewrite.
+However, complete and device-validate P3 first so Android packaging does not immediately require another large presentation rewrite.
 
 ## Handoff rule
 At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` remains current.
+P3-A is currently a candidate awaiting device validation, so the P2 closure handoff remains the last accepted handoff baseline until P3-A is accepted or otherwise closed.
