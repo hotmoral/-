@@ -1,0 +1,99 @@
+name: Timing Defense T1 Stage49-50 Authoring Dynamic Admission
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - 'timing-defense-workspace/tools/admit_t1_stage49_50_stagger1800_authoring_candidate_dynamic_v0_1.py'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+      - '.github/workflows/timing-defense-t1-stage49-50-authoring-dynamic-admission.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dynamic-admission:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: timing-defense-workspace
+    env:
+      BASE_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+      CANDIDATE: legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+      SEEDS: 101,211,307,409,503
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record exact source identity
+        run: |
+          mkdir -p artifacts
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/stage49-50-authoring-dynamic-source-identity.txt
+          sha256sum \
+            tools/admit_t1_stage49_50_stagger1800_authoring_candidate_dynamic_v0_1.py \
+            tools/preflight_t1_stage49_50_stagger1800_authoring_candidate_v0_1.py \
+            "$CANDIDATE" \
+            "$BASE_RECIPE" \
+            tools/probe_t1_stage49_50_sustain_integration_compare_v0_1.py \
+            tools/probe_t1_stage50_mage_cluster_sustain_v0_1.py \
+            tools/probe_t1_stage49_50_transition_aware_integration_v0_1.py \
+            tools/probe_t1_stage49_50_transition_aware_integration_v0_2.py \
+            tools/probe_t1_stage49_50_order_robustness_v0_1.py \
+            tools/probe_t1_stage49_50_target_phase_clearance_v0_1.py \
+            tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
+            tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            tools/t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1.py \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            tools/t1_transition_microsim_core_v0_1.py \
+            tools/t1_transition_microsim_skills_v0_1.py \
+            tools/t1_transition_microsim_engine_v0_1.py \
+            >> artifacts/stage49-50-authoring-dynamic-source-identity.txt
+          cat artifacts/stage49-50-authoring-dynamic-source-identity.txt
+      - name: Compile admission
+        run: |
+          python -m py_compile \
+            tools/admit_t1_stage49_50_stagger1800_authoring_candidate_dynamic_v0_1.py \
+            tools/preflight_t1_stage49_50_stagger1800_authoring_candidate_v0_1.py
+      - name: Run narrow exact dynamic admission
+        run: |
+          PYTHONPATH=tools python tools/admit_t1_stage49_50_stagger1800_authoring_candidate_dynamic_v0_1.py \
+            --base "$BASE_RECIPE" \
+            --candidate "$CANDIDATE" \
+            --seeds "$SEEDS" \
+            --json-out artifacts/t1-stage49-50-stagger1800-authoring-dynamic-admission-v0_1.json
+      - name: Admission assertions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('artifacts/t1-stage49-50-stagger1800-authoring-dynamic-admission-v0_1.json').read_text())
+          assert d['status']=='PASS', d['errors']
+          assert d['errors']==[], d['errors']
+          assert d['fidelityErrors']==[], d['fidelityErrors']
+          assert d['spawnEquivalentToDiagnosticGenerator']=={'49': True, '50': True}
+          assert d['candidateSha256']=='c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3'
+          assert d['baseRecipeSha256']=='3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf'
+          for cls in ('knight','rogue','tank','archer','mage'):
+              assert d['roles'][cls]['delta']['direction'].startswith('POSITIVE'), (cls,d['roles'][cls]['delta'])
+          assert d['overall']['OFF']['totalWallDamage']==1358.0
+          assert d['overall']['ON']['totalWallDamage']==164.0
+          assert d['authoringAdopted'] is False
+          assert d['productionGameplayChange'] is False
+          assert d['numericalFreeze'] is False
+          assert d['fullT1ExactRecipeFreeze'] is False
+          print('T1_STAGE49_50_AUTHORING_DYNAMIC_ADMISSION=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: timing-defense-t1-stage49-50-authoring-dynamic-admission
+          path: |
+            timing-defense-workspace/artifacts/t1-stage49-50-stagger1800-authoring-dynamic-admission-v0_1.json
+            timing-defense-workspace/artifacts/stage49-50-authoring-dynamic-source-identity.txt
+          if-no-files-found: error
