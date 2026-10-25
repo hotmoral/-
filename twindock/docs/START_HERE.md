@@ -14,10 +14,16 @@ Read these in order before proposing or implementing work:
 4. `twindock/docs/BASELINE_V8.md`
 5. `twindock/docs/FOUNDATION_MANIFEST.md`
 6. `twindock/docs/OPERATING_RULES.md`
-7. `twindock/README.md`
-8. relevant source/tests for the exact next slice
+7. `twindock/docs/CONTENT_EXPANSION_MAP.md`
+8. `twindock/README.md`
+9. relevant source/tests for the exact next slice
 
-Do not start Codex delegation, broad refactors, Android implementation, or expensive CI before this recovery pass is complete.
+Before proposing new missions, craft families, station geometry, scoring/progression, or other content, also consult:
+- `twindock/docs/IDEA_BANK.md`
+
+`IDEA_BANK.md` is deliberately **not** a roadmap. It stores long-horizon possibilities. Promotion rules live in `CONTENT_EXPANSION_MAP.md`.
+
+Do not start Codex delegation, broad refactors, Android implementation, or expensive CI before the core recovery pass is complete.
 
 ## Project identity
 Twin Dock is a mobile-first inertial spacecraft docking game whose core experience is embodied two-hand control rather than conventional virtual-stick steering.
@@ -61,6 +67,31 @@ Preserve these design principles:
 - sparse relative-motion references over busy scenery
 - no fuel economy, combat, upgrades/meta progression, or 3D migration without a later explicit product gate
 
+## Content-expansion direction
+The current Mission 01 shuttle and front-center probe are a **reference implementation**, not a universal final craft layout.
+
+Content is expected to expand primarily through:
+- craft shape/proportions
+- arbitrary craft docking-anchor local position
+- arbitrary craft docking-anchor local orientation
+- station/port geometry
+- target translation/rotation patterns
+- approach clearance and simplified hull collision
+- authored combinations of geometry + motion + space
+
+The near-term post-Android content path is:
+`Docking Geometry v2 -> reference-shuttle regression -> side/mid-body craft -> rear/asymmetric craft -> simplified hull clearance -> station geometry -> Mission 02 -> Mission 03 -> productization/content-expansion gate`.
+
+Do not freeze the current nose-docking craft shape simply because it was used to validate P0–P3.
+
+Idea classification is mandatory:
+- **BANKED**: retained possibility; no implementation commitment
+- **CANDIDATE**: selected for bounded prototype
+- **VALIDATED**: device test demonstrated distinct useful play
+- **ROADMAP**: validated and intentionally scheduled/produced
+
+See `CONTENT_EXPANSION_MAP.md` for the canonical content grammar and `IDEA_BANK.md` for long-horizon stockpiled ideas.
+
 ## Accepted P3 notes that must survive platform work
 - RCS/mechanical audio and short event haptics are accepted.
 - AudioContext must be armed from real user gestures on mobile browsers/WebViews.
@@ -83,6 +114,8 @@ First Android slice is preflight only:
 - define device acceptance checks before APK generation
 
 Do not rewrite physics/input/docking/camera in native code merely for packaging, and do not mix platform fixes with gameplay tuning.
+
+After Android parity is demonstrated and the wrapper contract is frozen, return to the shared game core and begin `Docking Geometry v2`; do not remain in Android-specific feature development by default.
 
 ## Development pipeline
 For each bounded slice:
