@@ -1,0 +1,12 @@
+{
+  "appId": "com.hotmoral.twindock",
+  "appName": "Twin Dock",
+  "webDir": "www",
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "native",
+      "initialViewportFitValueHint": "cover",
+      "hidden": false
+    }
+  }
+}
