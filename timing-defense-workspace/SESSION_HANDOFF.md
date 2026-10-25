@@ -24,7 +24,7 @@ Do not make the user re-explain project state, dependency order or review philos
 11. runner contract/implementation, settlement bridge, Mage Lv31 fidelity bridge and Archer diagnostic width bridge;
 12. T1 skeleton/static authority `161/162` and four-Tier correction `160`;
 13. P6 closure `156` and active watches;
-14. production/harness live heads.
+14. production/harness live heads; if a shared branch moved, compare the diff before classifying Timing Defense semantics as changed.
 
 Do not rerun closed P6, full T1 skeleton audit, Stage49-50 search/materialization diagnostics, Mage attribution, or Wave A plan preflight without a concrete trigger.
 
@@ -94,7 +94,7 @@ Wider T1 Wave A plan = STATIC PREFLIGHT PASS
 CURRENT = WAVE A EXACT SPAWN RECIPE MATERIALIZATION DECISION GATE
 Wave A materialized = NO
 full exact T1 Stage1-50 recipe freeze = DEFERRED
-production = UNCHANGED / UNAUTHORIZED
+Timing Defense production gameplay/numerical semantics = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
@@ -262,7 +262,7 @@ A1 guards:
 - authored 4s density <= 8;
 - no monster/class scalar change;
 - no shop/EXP/P×P change;
-- no production change;
+- no Timing Defense production change;
 - static recipe gate immediately after A1;
 - do not author A2 before A1 static PASS;
 - do not dynamically execute A1 before A1 static PASS.
@@ -307,10 +307,12 @@ Planning/canonical:
 - `timing-defense-workspace`
 - always fetch live HEAD first.
 
-Production:
+Production/shared deployment branch:
 - `timing-defense-cloudflare-do-poc`
-- verified unchanged `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
-- unauthorized to change.
+- live HEAD `28f52afcb056c34f08e2d7831929a0673f3492ca`
+- previous Timing Defense checkpoint `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- compare `ea22cc2..28f52af` = one unrelated Twin Dock static-assets commit only under `timing-defense-v011/twindock/*`
+- no Timing Defense gameplay file changed; gameplay/numerical changes remain unauthorized.
 
 Harness:
 - `timing-defense-skilled-v2-harness-v01`
@@ -327,9 +329,10 @@ P6-B2 temp:
 
 Before ending a meaningful work group:
 1. fetch live canonical HEAD;
-2. verify production/harness unchanged unless explicitly authorized;
-3. separate evidence / candidate / approved authority / numerical freeze;
-4. sync status / next / handoff / active plan / relevant result docs;
-5. record contradictions and minimal fixes;
-6. leave no next-step dependency on chat memory;
-7. stop before a content-adoption gate requiring user approval.
+2. fetch live production/shared branch and compare diff if its HEAD moved;
+3. verify harness unchanged unless explicitly authorized;
+4. separate evidence / candidate / approved authority / numerical freeze;
+5. sync status / next / handoff / active plan / relevant result docs;
+6. record contradictions and minimal fixes;
+7. leave no next-step dependency on chat memory;
+8. stop before a content-adoption gate requiring user approval.
