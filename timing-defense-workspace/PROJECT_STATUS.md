@@ -7,9 +7,9 @@ Live remote wins over canonical summaries, handoff, copied SHA, memory and chat.
 
 ## Branch checkpoints
 - planning/canonical: `timing-defense-workspace` — always fetch live HEAD first.
-- shared production branch: `timing-defense-cloudflare-do-poc` live HEAD last verified `28f52afcb056c34f08e2d7831929a0673f3492ca`.
+- shared production branch: `timing-defense-cloudflare-do-poc` live HEAD last verified `4dc8bbdbe3c35bfb477df987cc0436f0a7d28713`.
 - previous Timing Defense production checkpoint: `ea22cc279603394dc4b439b6fdbb0c83aff4299a`.
-- compare `ea22cc2..28f52af` contains only unrelated Twin Dock static assets under `timing-defense-v011/twindock/*`; Timing Defense gameplay/numerical semantics did not change.
+- chained compares `ea22cc2..28f52af` and `28f52af..4dc8bbd` show all intervening changes are unrelated Twin Dock static assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
 - calibration harness: `timing-defense-skilled-v2-harness-v01` last verified `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`.
 - Timing Defense production gameplay changes remain unauthorized.
 
