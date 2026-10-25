@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#f6f5f0">
+  <title>Linkline — Pre-Human Validation</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand-wrap"><span class="brand">LINKLINE</span><span class="subbrand">A3</span></div>
+      <span class="mode">기술 검증 전용</span>
+    </header>
+    <section id="screen" class="screen" aria-live="polite"></section>
+  </main>
+  <script>
+    (()=>{
+      const nativeSetTimeout=window.setTimeout.bind(window);
+      window.setTimeout=(fn,delay,...args)=>nativeSetTimeout(fn,delay===140?48:delay,...args);
+    })();
+  </script>
+  <script type="module" src="./app.mjs"></script>
+  <script type="module">
+    const CELL='.cell', BOARD='.board-wrap';
+    const FIRST_RETRY_MS=52, RETRY_MS=8, MAX_RETRIES=24;
+    const SAMPLE_RATIO=.12, MIN_SAMPLE_PX=3, MAX_SAMPLE_PX=8;
+    let drag=null, suppressTrustedClickUntil=0;
+
+    const style=document.createElement('style');
+    style.textContent='.board-wrap,.board,.cell{touch-action:none;-webkit-user-select:none;user-select:none}.board-wrap.dragging .cell.endpoint{filter:brightness(.96)}';
+    document.head.append(style);
+
+    function cellNumber(cell){
+      const value=Number(String(cell?.getAttribute('aria-label')||'').replace('칸 ',''));
+      return Number.isInteger(value)?value:null;
+    }
+    function currentCell(number){
+      for(const cell of document.querySelectorAll(CELL)) if(cellNumber(cell)===number) return cell;
+      return null;
+    }
+    function gridInfo(){
+      const grid=document.querySelector('.board');
+      if(!grid)return null;
+      const cells=grid.querySelectorAll(CELL);
+      const n=Math.round(Math.sqrt(cells.length));
+      if(!n||n*n!==cells.length)return null;
+      const rect=grid.getBoundingClientRect();
+      return {grid,n,rect,cellW:rect.width/n,cellH:rect.height/n,cellSize:Math.min(rect.width/n,rect.height/n)};
+    }
+    function gridCellAt(x,y){
+      const info=gridInfo();
+      if(!info)return null;
+      const {rect,n,cellW,cellH}=info;
+      if(x<rect.left||x>=rect.right||y<rect.top||y>=rect.bottom)return null;
+      const col=Math.max(0,Math.min(n-1,Math.floor((x-rect.left)/cellW)));
+      const row=Math.max(0,Math.min(n-1,Math.floor((y-rect.top)/cellH)));
+      return row*n+col;
+    }
+    function pushQueued(number){
+      if(number===null||!drag)return;
+      const last=drag.queue.length?drag.queue.at(-1):drag.traceCell;
+      if(last===number)return;
+      drag.queue.push(number);
+    }
+    function appendTraceCell(number,segDx,segDy){
+      if(!drag||number===null||number===drag.traceCell)return;
+      const info=gridInfo();
+      if(!info){drag.traceCell=number;return;}
+      const n=info.n, from=drag.traceCell;
+      if(from===null){drag.traceCell=number;return;}
+      let fr=Math.floor(from/n),fc=from%n,tr=Math.floor(number/n),tc=number%n;
+      while(fr!==tr||fc!==tc){
+        if(fr!==tr&&fc!==tc){
+          const axis=drag.headingAxis||(Math.abs(segDx)>Math.abs(segDy)?'H':'V');
+          if(axis==='H'){fc+=Math.sign(tc-fc);drag.headingAxis='H';}
+          else{fr+=Math.sign(tr-fr);drag.headingAxis='V';}
+        }else if(fr!==tr){fr+=Math.sign(tr-fr);drag.headingAxis='V';}
+        else{fc+=Math.sign(tc-fc);drag.headingAxis='H';}
+        pushQueued(fr*n+fc);
+      }
+      drag.traceCell=number;
+    }
+    function sampleTo(x,y){
+      if(!drag)return;
+      const x0=drag.lastX,y0=drag.lastY,dx=x-x0,dy=y-y0;
+      const distance=Math.hypot(dx,dy);
+      const info=gridInfo();
+      const step=info?Math.max(MIN_SAMPLE_PX,Math.min(MAX_SAMPLE_PX,info.cellSize*SAMPLE_RATIO)):4;
+      const count=Math.max(1,Math.ceil(distance/step));
+      for(let i=1;i<=count;i++){
+        const t=i/count;
+        appendTraceCell(gridCellAt(x0+dx*t,y0+dy*t),dx,dy);
+      }
+      drag.lastX=x;drag.lastY=y;
+    }
+    function maybeFinish(){
+      if(!drag||!drag.released||drag.waiting||drag.queue.length)return;
+      suppressTrustedClickUntil=performance.now()+350;
+      document.querySelectorAll(`${BOARD}.dragging`).forEach(node=>node.classList.remove('dragging'));
+      drag=null;
+    }
+    function reselect(attempt=0){
+      if(!drag)return;
+      const endpoint=currentCell(drag.endpointCell);
+      if(!endpoint){drag.waiting=false;drag.queue.length=0;maybeFinish();return;}
+      if(endpoint.classList.contains('selected')){drag.waiting=false;pumpQueue();return;}
+      endpoint.click();
+      const fresh=currentCell(drag.endpointCell);
+      if(fresh?.classList.contains('selected')){drag.waiting=false;pumpQueue();return;}
+      if(attempt<MAX_RETRIES){setTimeout(()=>reselect(attempt+1),RETRY_MS);return;}
+      drag.waiting=false;
+      pumpQueue();
+    }
+    function pumpQueue(){
+      if(!drag||drag.waiting)return;
+      while(drag.queue.length){
+        const number=drag.queue[0];
+        if(number===drag.endpointCell){drag.queue.shift();continue;}
+        const endpoint=currentCell(drag.endpointCell);
+        if(!endpoint){drag.queue.length=0;maybeFinish();return;}
+        if(!endpoint.classList.contains('selected')){reselect();return;}
+        const cell=currentCell(number);
+        if(!cell){drag.queue.shift();continue;}
+        if(!cell.classList.contains('legal')){
+          drag.queue.length=0;
+          drag.traceCell=gridCellAt(drag.lastX,drag.lastY);
+          maybeFinish();
+          return;
+        }
+        drag.queue.shift();
+        drag.waiting=true;
+        drag.moved=true;
+        drag.endpointCell=number;
+        cell.click();
+        setTimeout(()=>reselect(),FIRST_RETRY_MS);
+        return;
+      }
+      maybeFinish();
+    }
+    function updatePointer(event){
+      if(!drag||event.pointerId!==drag.pointerId||drag.released)return;
+      event.preventDefault();
+      const points=typeof event.getCoalescedEvents==='function'?event.getCoalescedEvents():[];
+      const stream=points.length?points:[event];
+      for(const point of stream)sampleTo(point.clientX,point.clientY);
+      if(stream.at(-1)!==event)sampleTo(event.clientX,event.clientY);
+      pumpQueue();
+    }
+    function releaseDrag(event){
+      if(!drag||event.pointerId!==drag.pointerId)return;
+      event.preventDefault();
+      if(Number.isFinite(event.clientX)&&Number.isFinite(event.clientY))sampleTo(event.clientX,event.clientY);
+      drag.released=true;
+      try{document.documentElement.releasePointerCapture(event.pointerId);}catch{}
+      pumpQueue();
+      maybeFinish();
+    }
+
+    document.addEventListener('pointerdown',event=>{
+      const cell=event.target.closest?.(CELL);
+      const board=cell?.closest?.(BOARD);
+      if(!cell?.classList.contains('endpoint')||!board)return;
+      const number=cellNumber(cell);
+      if(number===null)return;
+      event.preventDefault();
+      drag={pointerId:event.pointerId,endpointCell:number,traceCell:number,lastX:event.clientX,lastY:event.clientY,queue:[],waiting:false,moved:false,released:false,headingAxis:null};
+      suppressTrustedClickUntil=Infinity;
+      board.classList.add('dragging');
+      try{document.documentElement.setPointerCapture(event.pointerId);}catch{}
+      cell.click();
+    },{capture:true,passive:false});
+
+    document.addEventListener('pointermove',updatePointer,{capture:true,passive:false});
+    document.addEventListener('pointerup',releaseDrag,{capture:true,passive:false});
+    document.addEventListener('pointercancel',releaseDrag,{capture:true,passive:false});
+
+    document.addEventListener('click',event=>{
+      if(!event.isTrusted)return;
+      if((drag||performance.now()<suppressTrustedClickUntil)&&event.target.closest?.(BOARD)){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    },true);
+  </script>
+</body>
+</html>
