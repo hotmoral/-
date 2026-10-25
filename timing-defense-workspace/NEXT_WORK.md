@@ -6,71 +6,36 @@ Updated: 2026-10-25 KST
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_52.yaml`;
-5. read `175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md`;
-6. read `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
-7. inspect `legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`;
-8. inspect approved Stage49-50 candidate `legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml` only as needed;
-9. preserve docs169-173 and representative v0.2 evidence without rerunning unless a concrete trigger appears;
-10. preserve runner fidelity bridges and T1 skeleton/P6 authority;
-11. verify production/harness heads.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_53.yaml`;
+5. read `176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+6. inspect `legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml`;
+7. read `175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md` and inspect `data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`;
+8. preserve user-approved Stage49-50 baseline under doc174 and its evidence 169-173;
+9. preserve representative v0.2/base runner evidence only as needed;
+10. verify production/harness live heads.
 
-Do not rerun closed Stage49-50 diagnostics or the completed Wave A plan preflight without a concrete trigger.
+Do not rerun closed Stage49-50 diagnostics, Wave A plan preflight, or A1 static preflight without a concrete trigger.
 
 ---
 
 # Current phase
 
 ```text
-T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
 Stage49-50 structural authoring baseline = USER APPROVED WITH WATCHES
-Stage49-50 exact evidence chain = CLOSED WITH WATCHES
 Wider T1 Wave A plan = STATIC PREFLIGHT PASS
-CURRENT = WAVE A EXACT SPAWN RECIPE MATERIALIZATION DECISION GATE
-Wave A recipes materialized = NO
+A1 Stage1/4/8 = MATERIALIZED / STATIC PASS / NOT ADOPTED
+A2 Stage15/19 = NOT STARTED / NEXT
+A3 = NOT STARTED
+A4 = NOT STARTED
 full 50-Stage exact recipe freeze = DEFERRED
-production = UNCHANGED / UNAUTHORIZED
+production gameplay semantics = UNCHANGED / UNAUTHORIZED
+CURRENT = WAVE A2 EXACT SPAWN RECIPE MATERIALIZATION GATE
 ```
 
 ---
 
-# Approved Stage49-50 baseline
+# Wave A plan
 
-Path:
-`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
-
-SHA256:
-`c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3`
-
-Approval source:
-`174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
-
-This is structural authoring authority only. Numerical and production boundaries remain unfrozen.
-
----
-
-# Wave A bounded plan
-
-Plan:
-`legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`
-
-Plan SHA256:
-`da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806`
-
-New target stages:
-```text
-1,4,8,
-15,19,
-24,25,29,30,31,
-33,37,38
-```
-
-Context-only stages:
-```text
-5,18,20,39,40,41,49,50
-```
-
-Slices:
 ```text
 A1 = [1,4,8]
 A2 = [15,19]
@@ -78,64 +43,122 @@ A3 = [24,25,29,30,31]
 A4 = [33,37,38]
 ```
 
-Purpose is to bridge high-risk structural transitions before any broad full-50 authoring fill.
+Context-only anchors:
+```text
+5,18,20,39,40,41,49,50
+```
+
+Rule:
+```text
+one slice materialized
+-> static recipe gate
+-> only then next slice
+```
+
+No full-T1 fill in this phase.
 
 ---
 
-# Wave A static preflight
+# A1 closed static evidence
 
-Final exact run:
+Candidate:
+`legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml`
+
+SHA256:
+`44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d`
+
+Recipes:
 ```text
-run      40189296422
-artifact 12597413342
-head     a2817325b87fe4796d7f3c10c860835e30513df0
-artifact sha256 d7a18825573c798484995d4ce107ff5d161365c1ad4e4bb5f134bee861d28643
-status   PASS
-errors   []
-warnings []
+Stage1
+E01 / G / F01 / CD01 / C0 / BASELINE
+G @ 0,1600,3200,4800ms / y0.46
+
+Stage4
+E01 / G / F01 / CD03 / C0 / BASELINE
+G @ 0,250,500 and 2800,3050,3300ms / y0.46
+
+Stage8
+E02 / G+R / F01 / CD03 / C1 / RUSH
+G,R @ 0,250
+G,R @ 1700,1950
+G,R @ 3400,3650
+R @ 5100
+all y0.46
 ```
 
-Exact identities:
+Stage5 RUNNER teach is unchanged exact context.
+
+Final static evidence:
 ```text
-skeleton = 4bc8af12324cee744f1bcb55e3261f41012e741c97fbcdbd8f5dadd6a297bf4c
-representative v0.2 = 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
-adopted Stage49-50 = c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3
+run      40193818274
+artifact 12599510840
+head     44793b082481df5bbff64eea383ed3240166dee4
+artifact sha256 231e3b97d32baa158eff069f4897ae889cb280e5aa0aa591d1a11cd7040b141a
+status PASS
+errors=[]
+warnings=[]
 ```
 
-All target signatures match the skeleton.
-All selected semantic guards passed.
-No target overlaps existing representative authored stages.
+```text
+Stage1 max4=3
+Stage4 max4=6
+Stage8 max4=6
+existing representative stages preserved=true
+Stage5 preserved=true
+```
 
-The earlier failed runs were caused by a validator schema assumption (`recipes` vs `stageOverrides`), not a plan contradiction. The validator was minimally fixed and the exact rerun passed.
+The earlier run `40193721046` is classified `VALIDATOR_MISUSE_NO_CANDIDATE_CONTENT_FAILURE`; candidate data did not change before the green rerun.
+
+A1 is still **candidate evidence**, not accepted/frozen content.
 
 ---
 
-# Current decision required
+# Important lifecycle constraint
 
-Recommended:
+Do not run `[1,4,5,8]` as a persistent-state sequential dynamic chain.
+It skips Stages2/3/6/7 and would not represent the real Tier lifecycle.
+
+Dynamic execution is deferred until either:
+- contiguous authored context exists; or
+- a separate standalone diagnostic contract is explicitly authorized and does not pretend to be persistent-run evidence.
+
+---
+
+# Exact next bounded task — A2
+
+Materialize only:
 ```text
-MATERIALIZE WAVE A EXACT SPAWN RECIPE CANDIDATES SLICE-BY-SLICE
+Stage15
+E03 / B / F01 / CD01 / C1 / BULWARK
+purpose = BRUTE first teach
+
+Stage19
+E03+E02 / B+R / F02 / CD05 / C2 / BULWARK
+purpose = first target-order/stagger contrast before Stage20 gate
 ```
 
-If approved, execute only A1 first:
+Context anchors that must remain unchanged:
 ```text
-Stages 1,4,8
+Stage18 = first G+B mixed / Lv16 collision watch
+Stage20 = Star Gate A synthesis
 ```
 
-Then immediately run a static recipe gate before any A2 authoring.
-
-A1 authoring guards:
-- exact skeleton signature/formation/cadence/complexity/pressure must be preserved;
-- Stage5 remains unchanged as the RUNNER-teach context anchor;
-- Stage8 remains the first G+R mixed bridge;
-- only GRUNT/RUNNER legal for A1;
-- right-edge entry only, no midfield pop-in;
+A2 authoring must check:
+- only GRUNT/RUNNER/BRUTE legal;
+- Stage15 BRUTE-only teach remains readable;
+- Stage19 uses already-taught B+R and does not introduce a new core grammar;
+- F01/CD01 Stage15 and F02/CD05 Stage19 remain exact skeleton metadata;
+- right-edge entry `x=0.92` only;
+- no midfield pop-in;
 - authored 4s density <= 8;
-- no monster/class/shop/EXP/P×P scalar mutation;
+- no monster/class scalar mutation;
+- no shop/EXP/P×P mutation;
 - no production change;
-- no dynamic execution until A1 static gate passes.
+- Stage18/20 exact anchor preservation;
+- run A2 static recipe gate immediately after materialization;
+- do not start A3 before A2 static PASS.
 
-If A1 static gate fails, classify source/schema/structure cause before changing any gameplay value.
+If A2 static gate fails, classify validator/source/structure cause before changing encounter content.
 
 ---
 
@@ -145,16 +168,13 @@ If A1 static gate fails, classify source/schema/structure cause before changing 
 LIVE REMOTE WINS
 NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
 STAGE49-50 BASELINE USER APPROVED WITH WATCHES
-WAVE A PLAN ONLY / 13 NEW TARGETS
-SLICE-BY-SLICE MATERIALIZATION
-A1 BEFORE A2 BEFORE A3 BEFORE A4
+A1 STATIC PASS / NOT ADOPTED
+A2 NEXT / A3-A4 HOLD
 STATIC GATE BEFORE NEXT SLICE
+NO FAKE NONCONTIGUOUS PERSISTENT DYNAMIC CHAIN
 NO FULL-50 EXACT AUTHORING YET
-NO CLASS BUFF/NERF FROM THIS WORK
-SURVIVAL != CLEAR
-TANK KILL PARITY NOT REQUIRED
 AUTHORED 4s DENSITY <= 8
-NO MONSTER/CLASS SCALAR CHANGE
+NO CLASS OR MONSTER SCALAR CHANGE
 NO SHOP/EXP/P×P CHANGE
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
 ```
