@@ -7,9 +7,9 @@ Live remote wins over canonical summaries, handoff, copied SHA, memory and chat.
 
 ## Branch checkpoints
 - planning/canonical: `timing-defense-workspace` — always fetch live HEAD first.
-- shared production branch: `timing-defense-cloudflare-do-poc` live HEAD last verified `4dc8bbdbe3c35bfb477df987cc0436f0a7d28713`.
+- shared production branch: `timing-defense-cloudflare-do-poc` live HEAD last verified `224dce9170aa9a45ed932b2ee97f3e1ea42d0558`.
 - previous Timing Defense production checkpoint: `ea22cc279603394dc4b439b6fdbb0c83aff4299a`.
-- chained compares `ea22cc2..28f52af` and `28f52af..4dc8bbd` show all intervening changes are unrelated Twin Dock static assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
+- chained compares through `224dce9` show intervening shared-branch changes are unrelated Twin Dock assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
 - calibration harness: `timing-defense-skilled-v2-harness-v01` last verified `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`.
 - Timing Defense production gameplay changes remain unauthorized.
 
@@ -25,9 +25,11 @@ Live remote wins over canonical summaries, handoff, copied SHA, memory and chat.
 - user-approved Stage49-50 structural baseline: `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
 - wider T1 Wave A plan/static preflight: `175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md`
 - Wave A1 materialization/static result: `176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`
+- Wave A2 materialization/static result: `177_T1_WIDER_EXACT_AUTHORING_WAVE_A2_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`
 - Wave A plan: `legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`
 - Wave A1 candidate: `legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml`
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_53.yaml`
+- Wave A2 candidate: `legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml`
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_54.yaml`
 
 ---
 
@@ -52,10 +54,12 @@ Stage49-50 structural authoring baseline = USER APPROVED WITH WATCHES
 Stage49-50 evidence chain = CLOSED WITH WATCHES
 Wider T1 Wave A plan = STATIC PREFLIGHT PASS
 Wave A1 Stage1/4/8 = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Wave A2 Stage15/19 = NOT STARTED / NEXT
+Wave A2 Stage15/19 = MATERIALIZED / STATIC PASS / NOT ADOPTED
+Wave A3 Stage24/25/29/30/31 = NOT STARTED / NEXT
+Wave A4 Stage33/37/38 = NOT STARTED
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 Timing Defense production semantics = UNCHANGED / UNAUTHORIZED
-CURRENT = WAVE A2 EXACT SPAWN RECIPE MATERIALIZATION GATE
+CURRENT = WAVE A3 EXACT SPAWN RECIPE MATERIALIZATION GATE
 ```
 
 ---
@@ -108,7 +112,6 @@ Retained exact evidence:
 ```text
 static run 40156618986 = PASS
 dynamic reproduction run 40156895093 = PASS
-Lv31 OFF->ON role signal:
 Knight +43.03%
 Rogue  +30.07%
 Tank   +27.37% plus 3 unresolved reduced
@@ -117,7 +120,7 @@ Mage   +9.42%
 Tank wall damage 1358 -> 164
 ```
 
-Mage `+0.108s` Stage50 settle inversion was attributed to valid delayed Lv31 package-tail drainage, not role/damage failure. Stage50 CLUSTER-final alternative remains rejected.
+Mage `+0.108s` Stage50 settle inversion was attributed to valid delayed Lv31 package-tail drainage. Stage50 CLUSTER-final alternative remains rejected.
 
 ---
 
@@ -131,7 +134,7 @@ A3 = [24,25,29,30,31]
 A4 = [33,37,38]
 ```
 
-Context-only anchors:
+Context-only anchors from Wave A plan:
 ```text
 5,18,20,39,40,41,49,50
 ```
@@ -145,62 +148,119 @@ errors=[]
 warnings=[]
 ```
 
-Do not fill all 50 Stages or all Wave A targets at once. Each slice must pass static gate before the next slice.
+Rule:
+```text
+one slice materialized
+-> static gate
+-> only then next slice
+```
+
+No full-T1 fill in this phase.
 
 ---
 
-# Wave A1 — current closed evidence unit
+# Wave A1 — closed static evidence unit
 
 Candidate:
 `legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml`
 
-Candidate SHA256:
+SHA256:
 `44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d`
 
-Recipes:
 ```text
 Stage1 = E01/G/F01/CD01/C0/BASELINE
-  G at 0,1600,3200,4800ms
+  G @ 0,1600,3200,4800ms
 
 Stage4 = E01/G/F01/CD03/C0/BASELINE
-  G at 0,250,500 + 2800,3050,3300ms
+  G @ 0,250,500 + 2800,3050,3300ms
 
 Stage8 = E02/G+R/F01/CD03/C1/RUSH
-  G,R at 0,250
-  G,R at 1700,1950
-  G,R at 3400,3650
-  R at 5100
+  G,R @ 0,250
+  G,R @ 1700,1950
+  G,R @ 3400,3650
+  R @ 5100
 ```
 
-Stage5 RUNNER teach remains exact representative authority and is unchanged.
-
-Final A1 static run:
+Final A1 static evidence:
 ```text
 run      40193818274
 artifact 12599510840
-head     44793b082481df5bbff64eea383ed3240166dee4
-artifact sha256 231e3b97d32baa158eff069f4897ae889cb280e5aa0aa591d1a11cd7040b141a
 status PASS
 errors=[]
 warnings=[]
+Stage1 max4=3
+Stage4 max4=6
+Stage8 max4=6
+Stage5 preserved=true
+existing representative stages preserved=true
 ```
-
-Static values:
-```text
-Stage1 authored4 / max4=3 / max6=4
-Stage4 authored6 / max4=6 / max6=6
-Stage8 authored7 / max4=6 / max6=7 / G3+R4
-```
-
-The first A1 run `40193721046` failed only because the validator misread the Wave plan signature field and incorrectly reused a fixed-stage-set legacy runner gate. Candidate data did not change. The dedicated expansion validator was minimally corrected and final exact rerun passed.
 
 A1 remains **candidate evidence only / not adopted / not dynamically executed**.
 
-Important lifecycle constraint:
+---
+
+# Wave A2 — closed static evidence unit
+
+Candidate:
+`legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml`
+
+SHA256:
+`2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d`
+
+### Stage15 — BRUTE first teach
 ```text
-DO NOT simulate [1,4,5,8] as one persistent-state chain.
+E03 / B / F01 / CD01 / C1 / BULWARK
+B @ 0,2200,4400ms / y0.46
 ```
-It would skip Stages2/3/6/7 and would not be lifecycle-faithful. Dynamic work remains deferred until contiguous context exists or a separate standalone diagnostic contract is explicitly defined.
+
+### Stage19 — B+R target-order stagger
+```text
+E03+E02 / B+R / F02 / CD05 / C2 / BULWARK
+B @ 0 y0.46
+R @ 650 y0.44
+R @ 1300 y0.48
+B @ 3000 y0.46
+R @ 3650 y0.43
+R @ 4300 y0.49
+```
+
+Exact local progression:
+```text
+Stage15 pure B teach
+-> Stage18 G+B first mix
+-> Stage19 B+R stagger/reorder
+-> Stage20 G+R+B synthesis
+```
+
+Final A2 static evidence:
+```text
+run      40200875375
+artifact 12601174423
+head     ff240f4859fce0e993406b6253fe9edb3ba6631e
+artifact sha256 6e6f4837ecbe6ea843c27840405b364acdbffe80d55688e79c081e8e974800a6
+status PASS
+errors=[]
+warnings=[]
+Stage15 authored3 / max4=2 / max6=3
+Stage19 authored6 / max4=5 / max6=6 / B2+R4
+Stage18 preserved=true
+Stage20 preserved=true
+existing representative stages preserved=true
+```
+
+The same source commit triggered an unrelated Cloudflare `timing-defense-skilled-v2-harness` build check failure (`check-run 121191618577`). The authoritative A2 GitHub Actions preflight check (`121191600322`) succeeded. Do not classify the external Cloudflare check as A2 authoring failure.
+
+A2 remains **candidate evidence only / not adopted / not dynamically executed**.
+
+---
+
+# Lifecycle constraint for Wave A dynamic work
+
+Do not simulate noncontiguous Wave A stages as one persistent-state chain. For example `[1,4,5,8]` skips real stages and is not lifecycle-faithful.
+
+Dynamic work remains deferred until:
+- contiguous authored context exists; or
+- a separately specified standalone diagnostic contract is explicitly defined and labeled non-persistent.
 
 ---
 
@@ -242,8 +302,8 @@ Do not add a watch without a concrete failure mode.
 
 Next bounded task, if approved:
 ```text
-MATERIALIZE WAVE A2 STAGES 15,19
+MATERIALIZE WAVE A3 STAGES 24,25,29,30,31
 -> STATIC RECIPE GATE
 ```
 
-Preserve exact context anchors Stage18 and Stage20. Do not start A3 before A2 static PASS. Do not interpret static PASS as content adoption, numerical freeze or production authorization.
+Preserve A1/A2 candidates and all representative anchors. Do not start A4 before A3 static PASS. Do not interpret static PASS as content adoption, numerical freeze or production authorization.
