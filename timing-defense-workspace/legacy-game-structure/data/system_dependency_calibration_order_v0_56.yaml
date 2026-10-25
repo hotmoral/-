@@ -1,0 +1,142 @@
+version: system-dependency-calibration-order-v0.56
+status: ACTIVE_FULL_WAVE_A_STATIC_PASS_ADOPTION_DECISION_GATE_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_55.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_55.yaml
+
+canonicalUpdates:
+  - 179_T1_WIDER_EXACT_AUTHORING_WAVE_A4_AND_FULL_STATIC_CLOSURE_V0_1.md
+  - data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+  - 178_T1_WIDER_EXACT_AUTHORING_WAVE_A3_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - 177_T1_WIDER_EXACT_AUTHORING_WAVE_A2_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - 176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - 175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md
+  - 174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+campaignAuthoring:
+  stage49_50Baseline:
+    structuralAuthoringBaseline: USER_APPROVED_WITH_WATCHES
+    adopted: true
+    numericalFreeze: false
+    productionGameplayChange: false
+
+  widerT1WaveA:
+    plan: data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+    planSha256: da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+    targetStages: [1, 4, 8, 15, 19, 24, 25, 29, 30, 31, 33, 37, 38]
+    slices:
+      - {id: A1, stages: [1, 4, 8], status: STATIC_PASS_NOT_ADOPTED}
+      - {id: A2, stages: [15, 19], status: STATIC_PASS_NOT_ADOPTED}
+      - {id: A3, stages: [24, 25, 29, 30, 31], status: STATIC_PASS_NOT_ADOPTED}
+      - {id: A4, stages: [33, 37, 38], status: STATIC_PASS_NOT_ADOPTED}
+    fullWaveMaterialized: true
+    fullWaveStaticStatus: PASS
+    fullWaveAccumulatedSha256: 28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b
+    adopted: false
+    dynamicExecutionAuthorized: false
+    fullT1ExactRecipeFreeze: false
+
+  waveA1:
+    candidate: data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml
+    candidateSha256: 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
+    staticAdmission: {status: PASS, exactRun: 40193818274, artifact: 12599510840}
+    adopted: false
+
+  waveA2:
+    candidate: data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml
+    candidateSha256: 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
+    staticAdmission: {status: PASS, exactRun: 40200875375, artifact: 12601174423}
+    adopted: false
+
+  waveA3:
+    candidate: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    candidateSha256: 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
+    staticAdmission: {status: PASS, exactRun: 40205404257, artifact: 12603138180}
+    adopted: false
+
+  waveA4:
+    candidate: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    candidateSha256: 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36
+    targetStages: [33, 37, 38]
+    contextStages: [39, 40]
+    staticAdmission:
+      status: PASS
+      exactRun: 40210214458
+      artifact: 12605184344
+      artifactSha256: be3990ba8ea112ee99e226902fb7561eae8b2e6f94d7732230a48ce9d9fd0c66
+      head: 5d66f969e10177a0c9778474a332eeddefbf7dfb
+      materializedAccumulatedSha256: 28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b
+      errors: []
+      warnings: []
+    stageStatic:
+      stage33: {authored: 12, max4: 8, max6: 12, lastSpawnMs: 5450, types: GRUNT12, ySpan: 0.07}
+      stage37: {authored: 8, max4: 8, max6: 8, lastSpawnMs: 3140, types: GRUNT4_RUNNER4, ySpan: 0.40}
+      stage38: {authored: 8, max4: 7, max6: 8, lastSpawnMs: 4050, types: GRUNT6_BRUTE2, ySpan: 0.06}
+      stage39Anchor: {authored: 14, max4: 8, max6: 12, lastSpawnMs: 7850, types: RUNNER9_BRUTE5, ySpan: 0.22}
+    priorCandidatePreservation:
+      a1: true
+      a2: true
+      a3: true
+      representativeBase: true
+      stage39: true
+      stage40: true
+    progressionGuard: MAGE_DENSITY_TO_SPLIT_TEMPO_TO_DURABLE_BRIDGE_TO_STAGE39_PEAK_TO_STAGE40_GATE
+    dynamicExecution: NOT_RUN
+    adopted: false
+    numericalFreeze: false
+    productionGameplayChange: false
+    firstStaticFailure:
+      exactRun: 40210087895
+      artifact: 12605450400
+      artifactSha256: 1676a6c22045405f91e030523fe1846a4eda1fbde55b5a5bebaef46aa63abdb1
+      classification: VALIDATOR_STAGE38_TYPE_CARDINALITY_PROXY_MISUSE_NO_CANDIDATE_CONTENT_FAILURE
+      candidateChangedAfterFailure: false
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  delayedCombatEventsMustDrainBeforeSettled: true
+  preserveStage5: true
+  preserveStage18: true
+  preserveStage20: true
+  preserveStage39: true
+  preserveStage40: true
+  preserveStage41: true
+  preserveAdoptedStage49_50: true
+  authored4sNormalMax: 8
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  productionGameplayChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+currentBoundary:
+  activePackage: T1_WIDER_EXACT_AUTHORING_WAVE_A_STATIC_ADOPTION_DECISION_GATE
+  waveAStatus: FULL_MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  a1Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  a2Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  a3Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  a4Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  recommendedDecision: USER_REVIEW_WAVE_A_EXACT_SPAWN_CANDIDATES_AS_CANONICAL_AUTHORING_BASELINE_WITH_WATCHES
+  validationRule: DO_NOT_EXPAND_OR_RUN_NONCONTIGUOUS_PERSISTENT_DYNAMIC_BEFORE_DECISION
+  lifecycleNote: DO_NOT_CHAIN_NONCONTIGUOUS_WAVE_A_STAGES_AS_PERSISTENT_RUNTIME_SEQUENCE
+  dynamicExecution: DEFERRED_UNTIL_CONTIGUOUS_CONTEXT_OR_SEPARATE_AUTHORIZED_CONTRACT
+  adoptionMeaning:
+    - EXACT_SPAWN_COUNTS_TIMESTAMPS_AND_Y_BECOME_AUTHORING_BASELINE_ONLY_IF_USER_APPROVES
+    - NO_PRODUCTION_CHANGE
+    - NO_CLASS_OR_MONSTER_SCALAR_FREEZE
+    - NO_SHOP_EXP_PXP_CHANGE
+    - NO_FULL_T1_RECIPE_FREEZE
+  ifApprovedNext: ADOPT_WAVE_A_AS_CANONICAL_AUTHORING_BASELINE_WITH_WATCHES_THEN_PLAN_NEXT_BOUNDED_CONTIGUOUS_COVERAGE
+  ifNotApprovedNext: HOLD_AT_FULL_WAVE_A_STATIC_PASS_AND_REVISE_ONLY_WITH_CONCRETE_FEEDBACK
+  awaitingUserDecision: true
