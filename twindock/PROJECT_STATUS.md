@@ -1,56 +1,71 @@
 # Twin Dock Project Status
 
 ## Current phase
-**P2 — World-readable docking feedback / mobile device-validation gate**
+**P2 — World-readable docking feedback: ACCEPTED / CLOSED**
 
 ## Accepted foundation
 - P0 modular foundation: ACCEPTED / canonical.
 - P1 Mission 01 five-stage vertical slice: ACCEPTED / CLOSED.
+- P2 world-readable docking feedback: ACCEPTED / CLOSED.
 - V8 remains the immutable fallback/control contract.
 - Frozen input, thrust, speed, camera semantics and precision-docking thresholds are unchanged.
 
-## Accepted P1 loop
-Mission 01 sequence remains:
+## P0 closure
+- deterministic smoke test: PASS
+- 12,000-frame V8-vs-modular parity: zero divergence
+- mobile feel parity: ACCEPTED
+- canonical foundation commit: `185a974dbd818386019677409f875640df27442f`
+
+## P1 accepted loop
+Mission 01 sequence:
 1. `STATIC`
 2. `TRANSLATE`
 3. `ROTATE`
 4. `COMBINED`
 5. `FINAL`
 
-The ship keeps its motion state between targets, target translation and rotational port velocity both participate in relative-speed docking calculations, and the deterministic background remains continuous.
+Accepted P1 result:
+- continuous five-target mission remained fun on device
+- ship state continues between dockings
+- target translation + rotational port velocity participate in relative-speed docking calculations
+- deterministic background persists across the run
+- recoverable collision/re-approach remains intact
+- frozen core feel remained unchanged
 
-## P2 product question
-Can the player judge docking readiness primarily from the world and docking hardware rather than a permanent four-condition debug checklist, without making the scene busier or changing the accepted feel?
+P1 accepted closure HEAD before P2: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`.
 
-## P2 candidate implemented
-Branch: `twindock-p2-world-feedback-v1`
+## P2 accepted result
+Product question:
+Can the player judge docking readiness primarily from the world/docking hardware rather than a permanent four-condition debug checklist, while preserving clarity and accepted game feel?
 
-Normal-play HUD changes:
-- permanent relative-speed number removed from normal HUD
-- permanent position / speed / direction / spin checklist removed from normal HUD
-- mission progress and compact status remain
-- target/stage message remains compact at top center
-- old numeric/checklist diagnostics remain available only with `?debug=1`
+Accepted answer: **yes**.
 
-World-readable feedback is implemented as a separate transparent `FeedbackRenderer` overlay so the accepted renderer/physics stack remains untouched.
+Device feedback after the P2 candidate: **better than the previous version / accepted**.
 
-Feedback channels:
-- **position**: four capture brackets close around the docking point and turn green inside the exact position threshold
-- **orientation**: fixed ship-frame notches and rotating port notches visually overlap as facing alignment converges
-- **angular velocity**: a short rotational trail shrinks as relative spin approaches zero and turns green inside the exact spin threshold
-- **relative velocity**: a drift arrow shows relative-motion direction and magnitude, shrinking/turning green inside the exact relative-speed threshold
-- successful capture receives a restrained green confirmation ring
+Accepted normal-play presentation:
+- compact mission progress + status only
+- old relative-speed numeric HUD removed from normal play
+- old position / speed / direction / spin checklist removed from normal play
+- old diagnostics remain accessible with `?debug=1` for QA
+- world-readable docking cues are rendered through a separate transparent `FeedbackRenderer`
 
-## Regression boundary
-Compared directly against accepted P1 closure HEAD `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`.
+Accepted feedback channels:
+- **position**: capture brackets converge and turn green at the exact position threshold
+- **orientation**: ship-frame and port notches converge/overlap and turn green at the exact direction threshold
+- **angular velocity**: relative-spin trail shrinks and turns green at the exact spin threshold
+- **relative velocity**: drift arrow communicates relative-motion direction/magnitude and turns green at the exact speed threshold
+- successful capture gets a restrained green confirmation ring
 
-Changed files only:
+## P2 regression boundary
+P2 was compared against accepted P1 closure HEAD `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`.
+
+Changed implementation files were limited to:
 - `twindock/index.html`
 - `twindock/styles.css`
 - `twindock/src/main.js`
-- `twindock/src/feedback.js` (new)
+- `twindock/src/feedback.js`
 
-Unchanged frozen/core files include:
+Core/frozen modules remained unchanged:
 - `config.js`
 - `input.js`
 - `physics.js`
@@ -59,27 +74,41 @@ Unchanged frozen/core files include:
 - `mission.js`
 - `renderer.js`
 
-Local JavaScript syntax checks for changed JS: PASS.
+Changed-JS syntax checks: PASS.
+Mobile device readability/presentation check: ACCEPTED.
 
-## Current gate
-**Mobile device playtest of the P2 world-feedback candidate.**
+## Next exact boundary
+**P3 — Game-feel / presentation polish**
 
-Evaluate:
-- can docking readiness be understood without looking for the old checklist?
-- do the four visual channels become understandable after a few attempts without requiring text labels?
-- are the markers restrained enough not to add motion sickness or clutter?
-- does the reduced HUD improve focus on the station?
-- is any signal misleading, especially relative velocity vs angular velocity?
-- does control feel remain identical to accepted P1?
+Product question:
+Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking feel substantially more satisfying without obscuring physical information, increasing fatigue, or changing the accepted control/docking behavior?
 
-Do not retune frozen controls or docking thresholds during this gate. If a visual signal is unclear, change the visual mapping first.
+Target P3 scope:
+- preserve all frozen control/physics/camera/docking values
+- preserve P1 five-stage Mission 01
+- preserve P2 world-readable feedback mappings
+- add restrained spacecraft-internal/RCS/mechanical audio cues rather than loud arcade effects
+- refine impact / bad-contact / recovery feedback
+- refine soft-capture / latch / release-to-next-target presentation
+- use short, low-fatigue haptic patterns tied to meaningful events only
+- improve final mission-complete presentation without blocking the playfield
+- keep audio/haptic systems separable and easy to disable/test
 
-## Next boundary after P2 acceptance
-If P2 is accepted, close/synchronize P2 and then decide between:
-1. presentation/game-feel polish (sound, restrained haptics, capture/transition polish), or
-2. Android packaging/build lane if the mobile-web presentation is stable enough.
+Non-goals for P3:
+- no fuel economy
+- no combat
+- no upgrade/meta progression
+- no 3D-engine migration
+- no retuning frozen controls/docking thresholds without a concrete regression
+- no Android packaging inside the same implementation batch
 
-Do not add fuel, combat, upgrades/meta progression, or 3D migration as part of P2.
+## Android gate
+Android packaging is now justified as a near-term platform step because:
+- the core control is accepted
+- the continuous mission loop is fun
+- world-readable UI direction is accepted
+
+However, complete and validate P3 presentation/game-feel first so Android packaging does not immediately require another large UI/feedback rewrite.
 
 ## Handoff rule
-At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` remains correct.
+At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` remains current.
