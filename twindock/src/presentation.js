@@ -38,6 +38,11 @@
 
     function syncAngle() {
       const currentWrapped = state.ship.angle;
+      if (!state.startedOnce) {
+        visualAngle = currentWrapped;
+        previousWrapped = currentWrapped;
+        return;
+      }
       visualAngle = TD.Presentation.unwrapAngle(visualAngle, previousWrapped, currentWrapped);
       previousWrapped = currentWrapped;
     }
