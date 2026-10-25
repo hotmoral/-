@@ -1,21 +1,23 @@
 # Twin Dock — Android Packaging / Parity Contract
 
-Status: **PREFLIGHT PASS / WRAPPER BUILD PASS / PHYSICAL DEVICE PARITY PENDING**
+Status: **PREFLIGHT PASS / WRAPPER BUILD PASS / PHYSICAL DEVICE PARITY PASS / WRAPPER CONTRACT FROZEN**
 
 Purpose: define and preserve the smallest Android packaging contract that carries the accepted P3 web game into an Android APK without changing gameplay truth.
 
-Authority rule: live GitHub on the current continuation branch remains authoritative. This document records the Android packaging decision and build evidence; it does not supersede `BASELINE_V8.md`, accepted P0–P3 contracts, or later physical-device evidence.
+Authority rule: live GitHub on the current continuation branch remains authoritative. This document records the Android packaging decision, build evidence and physical-device acceptance; it does not supersede `BASELINE_V8.md` or accepted P0–P3 gameplay contracts.
 
 ## 1. Product question
 
 Can the accepted Twin Dock web implementation be packaged on Android with materially equivalent dual-touch feel, ship-frame rendering, Mission 01 behavior, audio/haptics and presentation continuity without a native gameplay rewrite?
 
-Current answer:
+Accepted answer:
 - **preflight: yes**
 - **wrapper/build: yes**
-- **physical-device parity: not yet proven**
+- **physical-device parity: yes**
 
-No source-level contradiction was found that requires changing physics, input mapping, docking truth, camera semantics, Mission 01, P2 feedback, P3 effects, or P3 transitions for packaging.
+No source-level or device-level contradiction was found that requires changing physics, input mapping, docking truth, camera semantics, Mission 01, P2 feedback, P3 effects, or P3 transitions for Android parity.
+
+Physical-device acceptance occurred on **2026-10-26 KST**. The user executed the fixed parity matrix on a real Android phone and reported all checked behavior normal. No Android-specific gameplay tuning or platform workaround was required after the successful build.
 
 ## 2. Frozen guards
 
@@ -39,13 +41,13 @@ Platform fixes and gameplay tuning remain separate changes.
 
 Use a **thin Capacitor 8 Android wrapper** around the current static HTML/CSS/JS implementation.
 
-Pinned first-parity baseline:
+Frozen accepted parity baseline:
 - Capacitor core/CLI/Android: **8.5.3**
 - Node.js: **22+**
 - Android Studio: **2025.2.1+**
 - JDK: **21**
 
-Capacitor 9 is not used while it remains a pre-release line at this checkpoint.
+Capacitor 9 was not used while it remained a pre-release line at this checkpoint.
 
 Do not introduce React, Ionic UI, a JS framework migration, a native physics layer, or a native rendering rewrite merely for packaging.
 
@@ -55,13 +57,13 @@ The initial preflight incorrectly recorded JDK 17 after considering the Android 
 The first real Capacitor compilation exposed the mismatch with:
 `invalid source release: 21`.
 
-Direct inspection of the pinned `@capacitor/android` 8.5.3 Gradle source confirmed `JavaVersion.VERSION_21` for source and target compatibility. The contract is therefore **JDK 21**, and the packaging guard script now verifies that requirement directly.
+Direct inspection of the pinned `@capacitor/android` 8.5.3 Gradle source confirmed `JavaVersion.VERSION_21` for source and target compatibility. The contract is therefore **JDK 21**, and the packaging guard script verifies that requirement directly.
 
-This is a canonical correction, not a gameplay change.
+This was a canonical toolchain correction, not a gameplay change.
 
 ## 4. Android build contract
 
-Initial parity package contract:
+Accepted parity package contract:
 - display name: **Twin Dock**
 - application ID: **com.hotmoral.twindock**
 - versionName: **0.1.0**
@@ -79,7 +81,7 @@ Rationale:
 - the Capacitor 8.5.3 Android template uses minSdk 24, compileSdk 36, targetSdk 36, AGP 8.13.0 and Gradle 8.14.3
 - pinned Capacitor Android source compiles at Java 21
 
-Do not opportunistically upgrade Capacitor/AGP/Gradle/JDK during the parity probe without a concrete incompatibility and a bounded review.
+Do not opportunistically upgrade Capacitor/AGP/Gradle/JDK without a concrete incompatibility or future release requirement and a bounded review.
 
 ## 5. Web asset packaging contract
 
@@ -107,99 +109,105 @@ APK inspection after the successful build confirmed:
 
 ## 6. Network policy
 
-Twin Dock gameplay has **zero network runtime dependency** in the parity APK.
+Twin Dock gameplay has **zero network runtime dependency** in the accepted parity APK.
 
-The stock Capacitor Android template declares `android.permission.INTERNET`. Keep that stock permission for the first parity probe rather than modifying the native template before device validation, but do not add remote URLs, live-reload server URLs, analytics, CDN assets or API calls.
+The stock Capacitor Android template declares `android.permission.INTERNET`. It was retained for the parity milestone rather than modifying the native template before device validation, but no remote URLs, live-reload server URLs, analytics, CDN assets or API calls were added.
 
-After parity is proven, INTERNET permission removal may be evaluated as a separate least-privilege cleanup if it can be demonstrated not to disturb the wrapper/local-server path.
+INTERNET permission removal may be evaluated later as a separate least-privilege cleanup if it can be demonstrated not to disturb the wrapper/local-server path.
 
 Cloudflare `/twindock/` exposure is not used as the APK runtime source.
 
 ## 7. Input / pointer contract
 
-Current web assumptions to preserve:
+Accepted web assumptions preserved on device:
 - each pad owns a separate `pointerId`
 - `setPointerCapture()` is attempted on pointer down
 - pointer move/up/cancel are observed at window scope
 - scrolling/gesture interference is suppressed with `touch-action:none` / preventDefault
 - background visibility clears both control states
 
-Highest-risk physical-device area:
+Physical-device parity reported normal behavior for:
 - simultaneous two-finger identity
-- pointer capture at/near screen edges
-- `pointercancel` behavior
-- release/reacquire after app background/foreground
-- no stuck thrust after interruption
+- edge-touch/release/reacquire behavior
+- background/foreground recovery
+- no stuck thrust
+- accepted two-hand RCS feel
 
-Do not tune deadzone, exponent, force or torque to compensate for a WebView input defect.
+Do not tune deadzone, exponent, force or torque to compensate for a future WebView input defect.
 
 ## 8. Orientation / display contract
 
-Phone-first parity policy:
-- native activity requests **sensorLandscape** so either landscape direction is usable
+Accepted phone-first policy:
+- native activity requests **sensorLandscape** so either landscape direction is usable where supported
 - Android application category is **game**
 - retain the existing web portrait blocker as a fallback
 - keep web resize/orientation handling because native orientation policy is not a replacement for responsive layout
 
-Do not treat this first phone policy as a permanent large-screen product contract.
+The physical-device acceptance found no reported landscape/safe-area/system-bar mismatch.
+
+Do not treat this phone policy as a permanent large-screen product contract.
 
 ## 9. Safe area / edge-to-edge / system bars
 
 Current Twin Dock uses `viewport-fit=cover` and CSS `env(safe-area-inset-*)` around HUD/controls.
 
-Capacitor config:
+Accepted Capacitor config:
 - SystemBars inset handling: **native**
 - initial viewport-fit hint: **cover**
-- system bars visible by default for the first parity build
+- system bars visible by default for the parity baseline
 
-Important guard:
-- do **not** explicitly call `EdgeToEdge.enable(...)` or `WindowCompat.enableEdgeToEdge(...)` in the first wrapper
-- Android 15+/16 platform edge-to-edge behavior should be handled by the platform/Capacitor path
-- avoid forcing the same edge-to-edge path onto older supported Android versions before device evidence
+Guard:
+- do **not** explicitly call `EdgeToEdge.enable(...)` or `WindowCompat.enableEdgeToEdge(...)` in the accepted wrapper
+- Android platform edge-to-edge behavior is handled through the platform/Capacitor path
+- avoid forcing the same edge-to-edge path onto older supported Android versions without concrete evidence
 
 The patch script rejects explicit forced-edge-to-edge calls in `MainActivity`.
 
-The existing HTML Fullscreen API remains unchanged until physical-device evidence shows a concrete issue. If it fails, fix fullscreen/system-bar behavior as a bounded Android-only slice rather than mixing it with gameplay changes.
+The existing HTML Fullscreen API passed the device parity check without reported layout/state corruption and remains unchanged.
 
 ## 10. Lifecycle contract
 
 ### Warm background / foreground
-Must:
+Accepted behavior:
 - preserve mission index, score, ship state, station state and deterministic world identity
 - clear active input so no thrust remains latched
 - silence continuous RCS audio while hidden
 - avoid a large physics time-step on return
 - resume without random world/background regeneration
 
-The current web implementation already clears input on visibility change, silences RCS audio on visibility/page hide, and clamps simulation `dt`; preserve this first and validate in WebView before adding native lifecycle code.
+The current web implementation clears input on visibility change, silences RCS audio on visibility/page hide, and clamps simulation `dt`; the physical-device parity check reported normal warm resume behavior without requiring native lifecycle code.
 
 ### Cold relaunch / process death
-A true cold launch or Android process recreation may restart Mission 01 from its normal initial state for this milestone. Persistent mission save/restore is not part of parity validation.
+A true cold launch or Android process recreation may restart Mission 01 from its normal initial state for this milestone. Persistent mission save/restore was not part of parity validation.
+
+Cold relaunch itself was reported stable in the accepted matrix.
 
 ## 11. Android Back contract
 
-Do not add a custom back-navigation framework for the first parity build.
+No custom back-navigation framework was added for the accepted parity wrapper.
 
 Contract:
 - normal Android Back may return to home
 - Back must not call Twin Dock reset logic
 - returning to a still-alive activity from Recents should preserve current mission/world state
-- predictive-back behavior on targetSdk 36 must not crash or corrupt WebView state
+- predictive-back behavior must not crash or corrupt WebView state
 
-If accidental exits materially harm play, implement pause-first Back handling later as a separate Android-only slice using current predictive-back-compatible APIs.
+The physical-device acceptance reported normal Back behavior with no mission-state corruption.
+
+If accidental exits materially harm a future productized build, implement pause-first Back handling later as a separate Android-only slice using current predictive-back-compatible APIs.
 
 ## 12. Audio / haptic contract
 
 Audio:
 - preserve current Web Audio implementation
 - preserve real-user-gesture arming/resume (`pointerdown`, `touchstart`, `click`)
-- no native audio rewrite in the first APK
-- backgrounding must silence continuous RCS audio
+- no native audio rewrite in the accepted parity APK
+- backgrounding silences continuous RCS audio
 
 Haptics:
-- preserve `navigator.vibrate()` first
-- verify real WebView/device behavior
-- only introduce a native/Capacitor haptic adapter after a concrete mismatch
+- preserve `navigator.vibrate()`
+- accepted device check reported the short haptic behavior working normally
+- introduce a native/Capacitor haptic adapter only if a concrete future device/platform mismatch appears
 - any adapter must preserve accepted short event timing/meaning
 
 ## 13. Deterministic world / presentation guards
@@ -208,11 +216,13 @@ Current renderer star creation is seeded and guarded by `starFieldReady`; resize
 
 `src/presentation.js` wraps the renderer with a continuous renderer-facing ship angle while leaving physical `ship.angle` wrapped.
 
-Android packaging must preserve:
+Android packaging preserves:
 - deterministic star-field identity across resize/fullscreen/background resume
 - `presentation.js` loading and wrapper order
 - no physics mutation as a substitute for visual-angle continuity
 - no fifth-dock/background flip regression
+
+The physical-device parity reported no recurrence of the fifth-dock flip.
 
 ## 14. Implemented wrapper/build lane
 
@@ -226,7 +236,7 @@ Implemented on the continuation branch without modifying gameplay `src/*`:
 - relevant web regression run before Android build
 - debug APK build + artifact upload workflow
 
-The Android project is generated during CI rather than being maintained as a second large checked-in source tree at this stage. This keeps the wrapper reproducible and minimizes native drift while the contract is still under parity validation.
+The Android project is generated during CI rather than maintained as a second large checked-in source tree. This keeps the accepted wrapper reproducible and minimizes native drift.
 
 ## 15. Build-validation history
 
@@ -285,25 +295,27 @@ No `twindock/src/*`, gameplay CSS/HTML, physics, input, docking, camera, rendere
 
 The workflow trigger was narrowed to runtime/package/test inputs so canonical documentation-only commits do not waste APK builds.
 
-## 18. Physical-device acceptance contract
+## 18. Physical-device acceptance result
 
-The exact next boundary is physical Android parity validation.
+Acceptance date: **2026-10-26 KST**.
 
-Check on a real Android phone:
+The user ran the fixed parity matrix on a real Android phone and reported that **all checked behavior operated normally**.
+
+Accepted evidence covers:
 - install and cold launch succeed
-- landscape presentation is correct in both landscape directions where supported
+- landscape presentation is correct
 - dual-touch pointer identity is stable
 - simultaneous left/right RCS feel is materially equivalent to accepted web play
-- no edge-touch loss or stuck input
-- pause/background/resume clears old touches and accepts new touches
+- no observed edge-touch loss or stuck input
+- pause/background/resume clears stale touch and accepts new touch
 - no mission/world reset on normal warm resume
 - safe-area/system-bar layout does not cover controls or critical HUD
-- HTML/native fullscreen behavior does not corrupt layout/state
+- fullscreen behavior does not corrupt layout/state
 - ship-frame camera semantics remain correct
 - distant parallax stays continuous through `+π/-π`
 - fifth-dock background flip does not recur
-- Web Audio becomes audible after normal interaction
-- accepted short haptics work, or a concrete WebView limitation is identified
+- Web Audio is audible after normal interaction
+- accepted short haptics work
 - all five Mission 01 dockings complete normally
 - target translation and rotational-port-velocity docking behavior remains intact
 - P2 feedback remains aligned with actual docking truth
@@ -313,23 +325,22 @@ Check on a real Android phone:
 - warm background/foreground is stable
 - cold relaunch is stable
 
-Any failure must be classified before fixing as:
-- wrapper/platform defect
-- WebView capability mismatch
-- packaging/build defect
-- pre-existing web defect
-- frozen gameplay regression
+No failure category was activated because no mismatch was reported.
+No platform defect was masked with gameplay tuning.
 
-Do not compensate for a platform defect by tuning frozen gameplay.
-
-## 19. Exit / next state
+## 19. Exit / frozen state
 
 Android packaging preflight: **PASS / CLOSED**.
 Android minimal wrapper build: **BUILD PASS**.
-Physical Android parity: **PENDING**.
-Android wrapper contract: **not yet FROZEN** until device acceptance passes.
+Physical Android parity: **PASS / ACCEPTED**.
+Android wrapper/platform contract: **FROZEN**.
+Android parity lane: **CLOSED**.
 
-Exact next boundary:
-**install `app-debug.apk` on a physical Android phone -> run the fixed parity acceptance matrix -> classify/fix only concrete platform mismatches -> freeze wrapper on PASS.**
+FROZEN means this is the accepted Android parity baseline, not that Android can never evolve. Reopen only for a concrete future trigger such as:
+- relevant gameplay/runtime source change that affects the wrapper contract
+- Capacitor/SDK/AGP/JDK/package upgrade
+- concrete device/WebView mismatch
+- release/store requirement
+- explicit Android productization work
 
-After Android parity PASS and wrapper freeze, return to the shared game core for `Docking Geometry v2`.
+The project now returns to the shared game core for `Docking Geometry v2`.
