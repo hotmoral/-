@@ -35,12 +35,12 @@ Bridge status:
 - numerical freeze: false;
 - semantic fidelity correction only.
 
-After correction, Mage ROT0 Lv31 benefit increased materially, but ROT1/2/3 chronology sensitivity did not disappear. Therefore the remaining effect is not explained away by the fidelity defect.
+After correction, Mage ROT0 Lv31 benefit increased materially, but chronology sensitivity did not disappear. Therefore the remaining effect is not explained away by the fidelity defect.
 
 ### Archer Lv31
 Latest structural authority requires a materially wider straight corridor than ordinary/Lv26 line behavior, while exact width remains unfrozen.
 
-For this bounded diagnostic only, the existing Archer width bridge used:
+For this bounded diagnostic only:
 `yTolerance = 0.20`
 
 Status:
@@ -51,30 +51,25 @@ Do not promote 0.20 to production authority from this result.
 ## 3. Root-cause decomposition
 
 ### Archer
-The main instability was not demonstrated to be a damage-coefficient problem.
-
-When a BRUTE from the preceding `DURABLE_SCATTER` grammar remained frontmost, system targeting anchored Sky-Piercing Arrow to that older Y axis. A subsequent LINE grammar could then receive little value even though the P×P activation occurred during the nominal LINE phase.
+When a BRUTE from the preceding `DURABLE_SCATTER` grammar remained frontmost, system targeting could anchor Sky-Piercing Arrow to the older Y axis. A later LINE grammar then received reduced value even when P×P occurred during the nominal LINE phase.
 
 Classification:
 `PREVIOUS_GRAMMAR_FRONTMOST_TARGET_CONTAMINATION`
 
 Cheapest correction direction:
-- encounter chronology / grammar transition;
-- not an Archer buff.
+encounter chronology / grammar transition, not Archer damage buff.
 
 ### Mage
-The main instability was not demonstrated to be a damage-coefficient problem.
-
-A burst CLUSTER could have all authored enemies spawned but already be mostly resolved by the time the next P×P arrived. In those cases Lv31 technically fired but behaved like a one-target finisher instead of a density-collapse package.
+A burst Stage50 CLUSTER could be mostly resolved before the next P×P arrived. Lv31 then fired into a near-single-target remainder rather than a real density-collapse opportunity.
 
 Classification:
 `PXP_PHASE_ALIGNMENT_AND_CLUSTER_LIFETIME_SENSITIVITY`
 
-A durable center was required. Pure GRUNT speed-matching dissolved too quickly. BRUTE2 improved expression; BRUTE3 was the first tested durable core to restore positive Mage role expression in the integrated class-rotation shape.
+Pure GRUNT cohesion dissolved too quickly. BRUTE2 improved expression; BRUTE3 was the first tested integrated durable center that restored positive Mage role expression.
 
 ## 4. Integrated diagnostic shape
 
-Diagnostic grammar order:
+Grammar order:
 
 ```text
 Stage49:
@@ -84,20 +79,39 @@ Stage50:
 DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
 ```
 
-Diagnostic CLUSTER morphology:
+Important exact distinction:
 
+### Stage49 CLUSTER remains the distinct-grammar burst
 ```text
+bodies:
+GRUNT / RUNNER / GRUNT / RUNNER / BRUTE / GRUNT
+
+y:
+0.42 / 0.46 / 0.50 / 0.44 / 0.48 / 0.43
+
+offsets within Stage49 CLUSTER:
+0 / 120 / 240 / 360 / 480 / 600 ms
+```
+
+### Stage50 CLUSTER is the durable-center sustain variable
+```text
+DURABLE_CORE_3 bodies:
 BRUTE / GRUNT / BRUTE / GRUNT / BRUTE / GRUNT
+
+y:
+0.46 / 0.44 / 0.50 / 0.48 / 0.42 / 0.46
 ```
 
-The two final sustain timings compared were:
+Only the **Stage50 CLUSTER offsets** were varied in the final sustain comparison:
 
 ```text
-STAGGER_1800 offsets = 0 / 360 / 720 / 1080 / 1440 / 1800 ms
-SUSTAIN_3000 offsets = 0 / 600 / 1200 / 1800 / 2400 / 3000 ms
+STAGGER_1800 = 0 / 360 / 720 / 1080 / 1440 / 1800 ms
+SUSTAIN_3000 = 0 / 600 / 1200 / 1800 / 2400 / 3000 ms
 ```
 
-Both retained:
+All other grammar templates remained the same distinct-grammar templates with a 5500 ms phase gap.
+
+Both candidates retained:
 - Stage49 authored count 24;
 - Stage50 authored count 30;
 - max4s = 6 on Stage49;
@@ -110,15 +124,13 @@ Both retained:
 Workflow:
 `.github/workflows/timing-defense-t1-stage49-50-sustain-integration-compare.yml`
 
-Exact green run:
-
 ```text
 run      40153142570
 artifact 12583341810
 head     5eb71a861b1226887a8ec09dce98641c0dfff817
 artifact digest sha256 ab31640122bd1d00179d5af62104368cb46ad4e5d4137fb8922d561ebbfcacf5
-recipe sha256          3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
-seeds                  101,211,307,409,503
+source v0.2 recipe sha256 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+seeds 101,211,307,409,503
 ```
 
 Fidelity/static gate:
@@ -154,7 +166,7 @@ ON wall-positive cases     = 1/5
 fail/incomplete cases      = 0 on both sides
 ```
 
-Whole Stage49-50 paired window:
+Whole paired Stage49-50 window:
 
 ```text
 OFF total wall damage = 1358 / mean final Base HP 1945.68
@@ -167,27 +179,27 @@ ON  total wall damage = 164  / mean final Base HP 1993.44
 
 However:
 - Mage improvement was slightly smaller: 8.96% vs 9.42%;
-- the 3.0-second spread changes F03 cluster cadence more materially;
-- STAGGER_1800 achieves the same qualitative class-direction result with the smaller chronology change.
+- 3.0 seconds changes Stage50 CLUSTER cadence more materially;
+- 1.8 seconds achieves the same qualitative result with the smaller chronology change.
 
 Therefore:
 
 ```text
-DIAGNOSTIC_CENTER = STAGGER_1800
+DIAGNOSTIC_CENTER = STAGGER_1800_STAGE50_CLUSTER_ONLY
 ```
 
 This is a minimality decision, not a production freeze.
 
 ## 8. Residual watch / why this is not authoring adoption yet
 
-The diagnostic solved several role-expression problems but did **not** prove fully distributed objective pressure.
+The diagnostic improved class-role expression but did **not** prove fully distributed objective pressure.
 
 In STAGGER_1800:
 - wall damage remains concentrated in Tank cases;
-- Archer/Mage/Knight/Rogue show role-facing timing/exposure differences without wall damage;
+- Archer/Mage/Knight/Rogue show role-facing timing/exposure differences without material wall damage;
 - Tank remains the only class with material wall-pressure evidence in this exact sample.
 
-Therefore the correct interpretation is:
+Correct interpretation:
 
 ```text
 ROLE_ROTATION_SIGNAL = IMPROVED
@@ -196,25 +208,17 @@ SCALAR_CHANGE_REQUIRED = NOT SHOWN
 AUTHORING_ADOPTION = NOT YET
 ```
 
-Do not equalize wall damage across classes as a target. The next authoring candidate should preserve real class strengths/weaknesses while checking that the diagnostic shape is structurally legal and does not simply encode a Tank-only punishment.
+Do not equalize wall damage across classes as a target.
 
 ## 9. Next boundary
 
-Materialize a **Stage49-50-only authoring candidate** from the STAGGER_1800 diagnostic center and run static preflight before any wider exact dynamic authoring.
+Materialize a **Stage49-50-only authoring candidate** that exactly reproduces:
+- the Stage49/50 grammar order above;
+- the distinct grammar templates;
+- Stage49 CLUSTER unchanged from the distinct-grammar burst;
+- Stage50 CLUSTER = DURABLE_CORE_3 with STAGGER_1800 offsets;
+- 5500 ms grammar phase gap.
 
-The candidate must remain diagnostic/non-production and preserve:
-- Stage5 / Stage18 / Stage41;
-- current monster/class scalars;
-- shop/EXP/P×P probabilities;
-- right-edge entry;
-- 4-second authored density <= 8;
-- no full-50 recipe freeze.
+Then run static preflight before any wider exact dynamic authoring.
 
-The static preflight must check at minimum:
-- schema/source identity;
-- monster vocabulary legality;
-- Stage49/50 authored count and density;
-- Y spread / right-edge entry;
-- grammar order and phase separation;
-- no accidental edits outside Stage49/50;
-- consistency with T1 skeleton pressure/complexity intent.
+The candidate remains diagnostic/non-production and must preserve Stage5 / Stage18 / Stage41, current monster/class scalars, shop/EXP/P×P probabilities, right-edge entry, and authored 4-second density <= 8.
