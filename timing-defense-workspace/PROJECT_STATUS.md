@@ -4,10 +4,12 @@ Updated: 2026-10-25 KST
 
 ## Production / harness
 - production branch `timing-defense-cloudflare-do-poc`
-- verified HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- live branch HEAD `28f52afcb056c34f08e2d7831929a0673f3492ca`
+- previous Timing Defense checkpoint `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- compare `ea22cc2..28f52af` = one unrelated Twin Dock static-assets commit only under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed
 - calibration harness `timing-defense-skilled-v2-harness-v01`
 - verified HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
-- production gameplay/numerical changes remain unauthorized.
+- Timing Defense production gameplay/numerical semantics remain unchanged and unauthorized to modify.
 
 ## Canonical authority chain
 Live remote always wins.
@@ -64,7 +66,7 @@ Mage small Stage50 settle inversion = VALID DELAYED-PACKAGE TAIL ATTRIBUTED
 Wider T1 Wave A plan = STATIC PREFLIGHT PASS
 CURRENT = WAVE A EXACT SPAWN RECIPE MATERIALIZATION DECISION GATE
 full exact T1 Stage1-50 recipe freeze = DEFERRED
-production = UNCHANGED / UNAUTHORIZED
+Timing Defense production semantics = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
@@ -275,4 +277,4 @@ Still not authorized/frozen:
 - full T1 Stage1-50 exact recipe freeze;
 - monster/class/shop/EXP/P×P numerical freeze;
 - class buffs/nerfs;
-- production gameplay changes.
+- Timing Defense production gameplay changes.
