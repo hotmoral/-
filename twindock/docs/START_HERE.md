@@ -42,7 +42,8 @@ See `BASELINE_V8.md` for exact constants and artifact hash.
 - **P0**: modular foundation / V8 parity — ACCEPTED
 - **P1**: continuous five-target Mission 01 — ACCEPTED; fun/replay signal positive
 - **P2**: world-readable docking feedback / reduced debug HUD — ACCEPTED; preferred over the prior presentation
-- **Next**: P3 game-feel / presentation polish
+- **P3-A**: event-feedback foundation (RCS/mechanical audio + meaningful haptics + presentation angle-wrap protection) — ACCEPTED / CLOSED after mobile device validation
+- **Next**: P3-B stage-transition / final-completion polish
 
 ## Product direction
 Preserve these design principles:
@@ -59,9 +60,9 @@ Preserve these design principles:
 - do not add fuel economy, combat, upgrades/meta progression, or 3D migration until explicitly justified by a later product gate
 
 ## Current execution direction
-P3 should improve satisfaction without changing accepted gameplay truth. Favor restrained spacecraft-internal/mechanical sound, short event-based haptics, bad-contact/recovery feedback, soft-capture/latch feedback, and compact stage/final transitions.
+P3-B should polish stage transitions and final mission completion without changing accepted gameplay truth. Preserve the accepted P3-A sound/haptic event foundation, keep the playfield unobstructed, and only add visual/contact-transition effects where they improve clarity or satisfaction without fatigue.
 
-Android packaging is now a justified near-term step because core control, continuous mission play, and UI/readability direction are accepted. However, keep Android as a separate platform/build lane after P3 is device-validated so platform complexity does not get mixed with another major presentation rewrite.
+Android packaging is now a justified near-term step because core control, continuous mission play, world-readable feedback, and P3-A event feedback are accepted. However, keep Android as a separate platform/build lane after the remaining P3 polish is device-validated so platform complexity does not get mixed with another presentation rewrite.
 
 ## Development pipeline
 For each bounded slice:
