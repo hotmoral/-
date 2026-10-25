@@ -2,19 +2,21 @@
 
 This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at every large-group closure.
 
-## 1. Repository / branches
+## 1. Repository / accepted branches
 - Repository: `hotmoral/-`
 - P0 foundation branch: `twindock-foundation-v1`
 - P1 accepted Mission 01 branch: `twindock-p1-mission01-v1`
 - P2 accepted world-feedback branch: `twindock-p2-world-feedback-v1`
-- Current P3 working branch: `twindock-p3-gamefeel-v1`
-- P0 canonical closure commit: `185a974dbd818386019677409f875640df27442f`
-- P1 accepted closure HEAD before P2: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`
-- P2 accepted closure HEAD: resolve from live P2 branch when needed; copied SHAs are reference points only.
-- P3-A accepted closure HEAD: resolve from live `twindock-p3-gamefeel-v1` before new work; live remote is authoritative.
-- Live remote is authoritative. Old chats, memories, and copied SHAs are navigation aids only.
+- P3-A accepted event-feedback branch: `twindock-p3-gamefeel-v1`
+- P3-B accepted transition/final-polish branch: `twindock-p3b-transition-v1`
+- P0 canonical closure reference: `185a974dbd818386019677409f875640df27442f`
+- P1 closure-before-P2 reference: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`
+- P3-A accepted closure reference: `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`
+- P3-B accepted closure HEAD: resolve from live `twindock-p3b-transition-v1`; copied SHAs are reference points only.
+- Live remote is authoritative. Old chats, memories, copied SHAs and this handoff are navigation aids, not higher authority than live GitHub.
 
 ## 2. Required recovery order
+Before proposing or implementing work, read in this exact order:
 1. `twindock/docs/START_HERE.md`
 2. `twindock/PROJECT_STATUS.md`
 3. `twindock/docs/SESSION_HANDOFF.md`
@@ -24,14 +26,14 @@ This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at
 7. `twindock/README.md`
 8. exact source/tests relevant to the next bounded slice
 
-Do not delegate, refactor broadly, package Android, or rerun expensive verification before this recovery pass.
+Do not delegate, refactor broadly, package Android, or run expensive CI before this recovery pass.
 
-Already ACCEPTED / CLOSED / FROZEN phases must not be re-tested from scratch merely because a new GPT session started. Revalidate only when relevant source actually changed, a concrete mismatch appears, or the next slice prospectively depends on that contract.
+Already ACCEPTED / CLOSED / FROZEN phases must not be re-tested from scratch merely because a new GPT session started. Revalidate only when relevant source changed, a concrete mismatch appears, or the next slice prospectively depends on that contract.
 
 ## 3. Product identity / core feel
 Twin Dock is a mobile-first inertial spacecraft docking game centered on embodied two-hand control.
 
-Core control:
+Core control contract:
 - two independent full-2D thumb pads
 - common force produces translation
 - differential/lever-arm force produces torque
@@ -49,106 +51,72 @@ Rejected directions:
 - removing free rotation for tutorial simplicity
 - generous magnetic capture that substitutes for precision matching
 
-## 4. How the design evolved / why the current structure exists
-This project did not begin with the current docking structure. The control model was discovered through repeated tactile prototypes and device tests. Preserve the causal history below because it explains which parts are accidental implementation details versus actual product decisions.
+## 4. Design evolution / why current structure exists
+The current control model was discovered through repeated tactile prototypes and device tests.
 
 ### Early control exploration
-1. **Direct-touch inertial object control** proved the basic idea that input should change motion state rather than directly place an object, but the finger obscured the playfield.
-2. **Separated one-hand force pad** preserved inertial control but did not produce enough physical/embodied feel.
-3. **Heading-based / car-like steering** felt constrained and made correction unintuitive.
-4. **One 2D joystick** was better, but braking/reversal and fine correction remained sluggish.
-5. **Faster one-hand 2D control** improved responsiveness but still lacked the intended body-level cooperation.
-6. **Twin vertical-only thrusters** made the game harder rather than clearer because useful lateral freedom had been removed.
-7. **Two independent full-2D pads** was the breakthrough. Both hands can cooperate to translate while their differential naturally creates rotation. User response was strongly positive and this became the control foundation.
+1. Direct-touch inertial object control proved the motion-state concept but the finger obscured the playfield.
+2. Separated one-hand force pad preserved inertia but lacked embodied feel.
+3. Heading/car-like steering constrained correction and felt unintuitive.
+4. One 2D joystick improved freedom but braking/reversal/fine correction stayed sluggish.
+5. Faster one-hand 2D improved response but still lacked two-hand cooperation.
+6. Twin vertical-only thrusters removed useful lateral freedom and made play harder rather than clearer.
+7. Two independent full-2D pads were the breakthrough: both hands cooperate for translation while their differential naturally creates rotation.
 
-Design conclusion from this sequence:
-> Extra freedom is not inherently harder when each extra degree of freedom maps directly to an intuitive corrective action.
+Design conclusion:
+> Extra freedom is not inherently harder when each degree of freedom maps directly to an intuitive corrective action.
 
 ### Docking theme selection
-Spacecraft docking was chosen because it naturally turns the control model into a readable skill task. A good dock requires synchronization of:
+Spacecraft docking naturally turns the control model into a skill task requiring simultaneous synchronization of:
 - position
 - relative linear velocity
 - orientation
 - angular velocity
 
-This made the core interaction about matching motion state, not merely reaching a target.
+The interaction is therefore about matching motion state, not merely reaching a target.
 
-### Sensitivity and starting-state iteration
-Early docking tuning was too sensitive. The accepted direction became:
+### Sensitivity / starting-state direction
+Accepted direction developed toward:
 - larger thumb travel
 - nonlinear soft response near center
-- lower thrust/torque than the first versions
+- lower thrust/torque than earliest prototypes
 - broad fine-control region
-- ship starts fully stationary
+- stationary start
 - no automatic forward motion
-- touch point becomes local joystick origin
+- local touch point as joystick origin
 - global pointer tracking for robust mobile touch
 
-The V3-era sensitivity direction became the basis of the frozen V8 control feel.
+The V3-era sensitivity direction became the basis of frozen V8 feel.
 
-### Visual / geometry correction
-The player craft evolved from a simplified engine-like marker into a compact docking/service shuttle with:
+### Visual / geometry contract
+The player craft evolved into a compact docking/service shuttle with:
 - clear forward probe/collar
 - left/right control pods
 - multiple visible RCS nozzles
-- visual thruster firing tied to input
+- visible thruster firing tied to input
 
-The station gained a capture collar, tunnel, latches and guide lights. A critical contract was established: the visible docking probe/capture point must match the internal docking geometry exactly.
+The station gained capture collar, tunnel, latches and guide lights.
+
+Critical contract:
+**visible docking probe/capture geometry must match internal docking geometry.**
 
 ### Ship-frame camera breakthrough
-The most important presentation change was moving from a world camera to a **ship-frame camera**:
-- player craft remains visually fixed
+The decisive presentation change was the ship-frame camera:
+- player craft remains visually mostly fixed
 - world/station move and rotate relative to the ship
 - controls remain interpreted in body coordinates
 
-This significantly increased fun and embodiment. It also introduced motion-comfort risk, so the accepted mitigation became sparse stable references and calmer distant background motion rather than restricting rotation.
+This materially increased fun and embodiment. Motion-comfort risk is addressed with sparse stable references and calmer distant background motion, not by restricting rotation.
 
 ### V7/V8 stabilization
-Later iteration fixed two important presentation/precision issues:
+Later work fixed:
 - deterministic/fixed background so resize/fullscreen/reset does not appear to regenerate the universe
-- precision docking restored/tightened after it became clear an earlier failure report was mainly a docking-location misunderstanding rather than evidence that capture should be more generous
+- precision docking after an earlier failure report was recognized as mainly a docking-location misunderstanding rather than evidence for generous capture
 
-V8 therefore became the immutable fallback/control contract.
+V8 became the immutable fallback/control contract.
 
-### Formal project phases
-- **P0**: preserve V8, modularize source, prove deterministic parity, establish governance/handoff rules — ACCEPTED / CLOSED.
-- **P1**: test whether one fun docking action can become a continuous five-target mission — ACCEPTED / CLOSED; fun on device.
-- **P2**: replace developer-style docking checklist dependence with world-readable feedback — ACCEPTED / CLOSED; preferred over prior presentation.
-- **P3-A**: add presentation-only RCS/mechanical audio, meaningful haptics, capture/contact event feedback, and protect distant-background presentation across physical angle wrapping — ACCEPTED / CLOSED after device validation.
-- **P3-B next**: stage-transition / final-completion polish while preserving P3-A and all prior accepted gameplay truth.
-- **Android after P3**: package the stable proven web game as a separate platform/build lane.
-
-## 5. Camera / motion comfort
-Accepted camera is **ship-frame**:
-- player craft remains visually fixed
-- controls are interpreted in ship/body coordinates
-- nearby station/world geometry moves and rotates relative to the ship
-- this substantially increased immersion and replay desire
-
-Motion-comfort mitigation is visual, not by removing freedom:
-- stable body-frame/HUD cues
-- calmer distant background than nearby geometry
-- sparse relative-motion references rather than busy scenery
-- no random background regeneration on resize/reset/fullscreen
-
-Important P3-A presentation fix:
-- physical `ship.angle` continues to wrap normally in `[-π, +π]`
-- distant parallax must not directly treat that wrapped value as a fractional visual angle across the wrap boundary
-- `src/presentation.js` now provides a renderer-facing continuous visual angle while leaving physical/camera truth unchanged
-- reset must re-synchronize visual angle to the physical angle
-
-Do not remove this adapter or replace it with a physics-angle change unless there is a concrete reason and controlled test.
-
-## 6. Docking contract
-Successful docking requires simultaneous match of:
-- docking-point position
-- relative linear velocity
-- orientation
-- angular velocity
-
-Visible and internal docking geometry must agree. UI/world feedback and actual success thresholds must agree. Avoid generous magnetic capture.
-
-Frozen V8 values:
+## 5. Frozen V8 contract
+Do not silently change these during platform work or presentation cleanup:
 - force scale 58
 - deadzone 0.10
 - input exponent 2.05
@@ -160,24 +128,44 @@ Frozen V8 values:
 - docking direction error 0.095 rad
 - docking angular-speed error 0.10 rad/s
 
-Exact V8 artifact hash is in `BASELINE_V8.md`.
+Exact artifact hash is in `BASELINE_V8.md`.
 
-## 7. P0 closure
-P0 is complete and canonical.
-- modular source promoted
-- deterministic smoke PASS
-- 12,000-frame V8 parity: zero divergence
-- mobile feel parity: ACCEPTED
-- V8 remains immutable fallback/control contract
+## 6. Camera / motion comfort
+Accepted camera is **ship-frame** and is part of the game feel, not a cosmetic preference.
 
-## 8. Accepted relative-motion readability direction
-Accepted low-salience scene cues:
-- faint station reference ring
-- sparse ticks
-- three subtle navigation beacons
-- short rotation-direction arc
+Accepted mitigation:
+- stable body-frame/HUD cues
+- calmer distant background than nearby geometry
+- sparse relative-motion references
+- no random background regeneration on resize/reset/fullscreen
 
-These are readability aids only. Do not turn them into a busy moving background.
+Important P3-A fix:
+- physical `ship.angle` still wraps normally in `[-π,+π]`
+- distant parallax must not directly treat the wrapped value as a fractional visual angle across the boundary
+- `src/presentation.js` provides a renderer-facing continuous visual angle
+- physical/camera truth is unchanged
+- reset re-synchronizes visual angle to physical angle
+
+Do not remove this adapter or move the fix into physics without a concrete reason and controlled test.
+
+## 7. Docking contract
+Successful docking requires all four simultaneously:
+- docking-point position
+- relative linear velocity
+- orientation
+- angular velocity
+
+Docking-relative velocity includes target translation plus rotational port velocity.
+Visible/internal geometry and feedback/actual thresholds must agree.
+Avoid generous magnetic capture.
+
+## 8. Failure / recovery philosophy
+Prefer:
+`mistake -> unstable/bounce -> recovery -> re-approach`
+
+over immediate FAIL/RESET.
+
+Recovery is part of the tactile appeal.
 
 ## 9. Architecture contract
 - Physics/world state: position, velocity, angle, angular velocity, target motion.
@@ -185,18 +173,16 @@ These are readability aids only. Do not turn them into a busy moving background.
 - Camera: world -> ship-frame presentation; never mutate physical truth.
 - Docking: geometry, relative metrics, thresholds, success/recoverable collision.
 - Renderer: world visuals only; derive visible docking geometry from docking definitions where possible.
-- Feedback renderer: world-readable docking-readiness cues only; no physics mutation.
-- Presentation adapter: visual continuity/readability only; may adapt wrapped physical state for display but must not mutate source physical state.
-- Mission/state flow: target sequence, transitions, scoring/state; do not rewrite core physics.
-- Effects/audio/haptics: presentation only; may observe input/event state but must not mutate physics/docking truth.
+- Feedback renderer: world-readable readiness cues only; no physics mutation.
+- Presentation adapter: display continuity/readability only; may adapt wrapped physical values for presentation but must not mutate source physical state.
+- Mission/state flow: target sequence, scoring/state; do not rewrite core physics.
+- Effects/audio/haptics: presentation only; may observe input/events but must not mutate physics/docking truth.
+- Transition layer: presentation only; no gameplay state beyond transient visual state.
 
-## 10. Failure / recovery philosophy
-Prefer `mistake -> unstable/bounce -> recovery -> re-approach` over immediate fail/reset. Recovery is part of the tactile appeal.
+## 10. Visual / UI direction
+UI should expose the world rather than cover it.
 
-## 11. Visual / UI direction
-Player ship is a docking/service shuttle with clear forward probe/collar, left/right RCS pods, multiple attitude-control nozzles and legible RCS plumes. Station port uses capture collar, inner tunnel, guide lights and latch feedback.
-
-UI direction:
+Accepted direction:
 - compact mission progress
 - compact status
 - small stage/target messaging
@@ -208,13 +194,20 @@ Avoid:
 - permanent developer checklist in normal play
 - large central overlays
 - dense numeric instrument panels
-- visually busy rotating background layers
+- busy rotating scenery
 - effects that increase motion sickness or mask physical information
 
-## 12. P1 Mission 01 — ACCEPTED / CLOSED
-Product question: does the validated control remain compelling when expanded into a continuous multi-target mission rather than a single docking attempt?
+## 11. P0 — modular foundation: ACCEPTED / CLOSED
+- V8 modularized
+- deterministic smoke PASS
+- 12,000-frame V8 parity: zero divergence
+- mobile feel parity: ACCEPTED
+- V8 remains immutable fallback/control contract
 
-Accepted answer: **yes**. User device feedback was explicitly positive and fun. Exact run duration was not separately instrumented, so do not invent a measured 3–5 minute duration.
+## 12. P1 — Mission 01: ACCEPTED / CLOSED
+Product question: does validated control remain compelling across a continuous multi-target mission?
+
+Accepted answer: **yes**. Device feedback was explicitly positive/fun.
 
 Accepted sequence:
 1. `STATIC`
@@ -223,77 +216,98 @@ Accepted sequence:
 4. `COMBINED`
 5. `FINAL`
 
-Accepted P1 behavior:
+Accepted behavior:
 - deterministic five-target profiles
 - target world state includes linear velocity
-- docking-relative velocity includes target translation plus rotational port velocity
+- relative velocity includes target translation + rotational port velocity
 - ship state continues between dockings; no ship reset
-- deterministic background continues across the run
+- deterministic background persists
 - recoverable collision/re-approach remains intact
-- frozen V8/P0 control values and docking thresholds remain unchanged
+- frozen V8/P0 control values and docking thresholds unchanged
 
-Validation: JS syntax PASS, P0 smoke PASS, mission deterministic test PASS, mobile Mission 01 playtest ACCEPTED, fun/replay signal POSITIVE.
+Validation: JS syntax PASS, P0 smoke PASS, mission deterministic test PASS, mobile playtest ACCEPTED, fun/replay signal positive.
 
-## 13. P2 world-readable feedback — ACCEPTED / CLOSED
-P2 product question:
-**Can the player judge docking readiness primarily from the world and docking hardware rather than a permanent debug-style four-condition checklist, while preserving clarity and the accepted game feel?**
+Do not invent a measured 3–5 minute duration; exact run duration was not separately instrumented.
 
-Accepted answer: **yes**. User device feedback after the P2 candidate was that it was better than the previous version.
+## 13. P2 — world-readable docking feedback: ACCEPTED / CLOSED
+Product question: can the player judge readiness primarily from world/docking hardware rather than a permanent developer checklist?
+
+Accepted answer: **yes**; device feedback preferred it over the previous presentation.
 
 Accepted normal-play UI:
-- compact mission progress + compact status
-- old relative-speed numeric readout removed from normal play
-- old four-condition checklist removed from normal play
-- old diagnostics available only with `?debug=1` for QA
+- compact mission progress + status
+- relative-speed numeric readout removed from normal play
+- four-condition checklist removed from normal play
+- diagnostics retained only via `?debug=1`
 
-Accepted world-readable feedback:
-- **position**: four capture brackets converge around the docking point and turn green at the exact position threshold
-- **orientation**: ship-frame and rotating port notches converge/overlap and turn green at the exact direction threshold
-- **angular velocity**: relative-spin trail shrinks as mismatch approaches zero and turns green at the exact spin threshold
-- **relative velocity**: drift arrow shows relative-motion direction/magnitude and turns green at the exact relative-speed threshold
-- docked state gets a restrained green confirmation ring
+Accepted feedback:
+- position: capture brackets
+- orientation: ship-frame/port notches
+- angular velocity: relative-spin trail
+- relative linear velocity: drift arrow
+- success: restrained green confirmation ring
 
-The feedback mapping uses `TD.Docking.checks()` / the same thresholds as actual docking success. Do not create a separate hidden visual threshold contract.
+The visual mapping uses `TD.Docking.checks()` / the same thresholds as actual docking success. Never create a separate hidden visual-threshold contract.
 
-P2 implementation intentionally touched only:
-- `twindock/index.html`
-- `twindock/styles.css`
-- `twindock/src/main.js`
-- `twindock/src/feedback.js`
+P2 intentionally changed only `index.html`, `styles.css`, `src/main.js`, and added `src/feedback.js`. Core/frozen modules remained unchanged.
 
-Core/frozen modules remained unchanged: `config.js`, `input.js`, `physics.js`, `docking.js`, `camera.js`, `mission.js`, `renderer.js`.
+## 14. P3-A — event/audio/haptic foundation: ACCEPTED / CLOSED
+Accepted behavior:
+- low-salience continuous RCS hiss tracks existing input magnitude
+- bad contact has distinct mechanical/noise cue + short haptic
+- soft capture has distinct cue + short haptic
+- latch/hold completion has separate cue
+- next target has delayed compact cue
+- final Mission 01 completion has short audio/haptic cue
+- `?audio=0` and `?haptics=0` allow independent comparison
+- AudioContext arms/resumes from `pointerdown`, `touchstart`, `click`
+- RCS sound silences on pause/reset/background
+- gain automation is bounded rather than appended every animation frame
 
-Validation:
-- changed-JS syntax PASS
-- P1-vs-P2 scope compare confirmed no frozen/core source changes
-- mobile device readability/presentation check ACCEPTED
+Implementation introduced `src/effects.js` and `src/presentation.js` while preserving frozen/core modules.
 
-## 14. P3-A event-feedback foundation — ACCEPTED / CLOSED
-P3 product question:
-**Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking substantially more satisfying without obscuring physical information, increasing fatigue, or changing the accepted control/docking behavior?**
+### P3-A issue history
+**Audio initially perceived silent:** haptics worked, audio was not heard at the initial low device media volume. AudioContext activation was hardened and gains raised conservatively. Recheck: audio audible around normal mid-level media volume.
 
-P3-A handled the event/effects foundation portion only.
+**Fifth-dock background flip:** caused by fractional parallax using wrapped physical angle directly. Fix: renderer-facing continuous visual angle in `src/presentation.js`; no physics/camera-semantic change. Angle-wrap boundary check PASS and device recheck confirmed no recurrence.
 
-Accepted P3-A behavior:
-- continuous low-salience RCS hiss tracks existing left/right input magnitude
-- bad contact has a distinct mechanical/noise cue and short haptic
-- successful soft capture has a distinct cue and short haptic
-- latch/hold completion has a separate cue
-- next-target advance has a compact delayed cue
-- final Mission 01 completion has a short completion cue + haptic
-- audio/haptics are independently disableable (`?audio=0`, `?haptics=0`) for comparison
-- audio context arms/resumes from real mobile user gestures (`pointerdown`, `touchstart`, `click`)
-- RCS sound silences on pause/reset/backgrounding
-- audio gain changes are bounded instead of appending automation every animation frame
+### P3-A device result
+PASS / ACCEPTED:
+- audio/haptics work and are low-fatigue
+- contact vs capture is distinguishable
+- capture/latch/next-target sequence satisfactory
+- no touch/input regression
+- no perceived control/physics/camera regression
+- no background flip after fix
 
-Implementation boundary from accepted P2 base:
+## 15. P3-B — stage transition / final completion: ACCEPTED / CLOSED
+P3-B product question:
+Can stage transitions and final completion be clearer/more satisfying while preserving P3-A, P2 readability, sparse UI and frozen gameplay truth?
+
+Accepted answer after mobile device check: **yes**.
+
+Accepted implementation:
+- new `src/transitions.js` presentation-only controller
+- new `transitions.css`
+- successful dock briefly pulses compact Mission HUD
+- next target uses ~0.98 s thin horizontal sweep + compact `TARGET n / 5` + stage label
+- final completion uses ~1.9 s low-opacity edge frame + compact top completion cue
+- Mission HUD stays subtly green after full completion until reset/restart
+- transition layers are `pointer-events:none`
+- reset/restart clears transition state
+- `prefers-reduced-motion` respected
+- no large central modal; playfield remains visible
+
+P3-A accepted HEAD used as base: `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`.
+
+P3-B changed exactly:
 - `twindock/index.html`
 - `twindock/package.json`
 - `twindock/src/main.js`
-- `twindock/src/effects.js` (new)
-- `twindock/src/presentation.js` (new)
+- `twindock/src/transitions.js` (new)
+- `twindock/transitions.css` (new)
 
-Core/frozen modules remained unchanged:
+Unchanged accepted/core files:
 - `config.js`
 - `input.js`
 - `physics.js`
@@ -302,72 +316,75 @@ Core/frozen modules remained unchanged:
 - `mission.js`
 - `renderer.js`
 - `feedback.js`
+- `effects.js`
+- `presentation.js`
 
-### P3-A mobile issue / resolution history
-**Audio initially reported inaudible:** haptics worked but sound was not heard at the initial device-volume setting. AudioContext activation was hardened and gains were raised conservatively. Recheck confirmed sound is audible with the phone at roughly normal mid-level volume. Do not infer that the audio system is broken merely because a device is at very low media volume.
+Exact current `main.js` / `transitions.js` syntax checks: PASS.
+Local clone/npm execution was unavailable because the local execution environment lacked outbound DNS; that was an environment limitation, not a code failure. Since deterministic/core-covered modules were unchanged, accepted P0/P1 suites were not rerun solely for the presentation slice.
 
-**Fifth-dock background flip:** user observed the background suddenly appearing to flip around the fifth docking. Root cause was presentation-only: physical `ship.angle` wraps across `+π/-π`, while distant parallax multiplied that wrapped value by fractional rotation factors, causing a discontinuity. Fix was a renderer-facing continuous-angle adapter in `src/presentation.js`; physical state and camera semantics were not changed. A dedicated angle-wrap boundary check passed, reset behavior was protected, and the device recheck confirmed the flip no longer occurs.
+### P3-B device result
+PASS / ACCEPTED. User response to the candidate was positive (`오 괜찮네`) and no issue/regression was reported in transition clarity, final completion, scene obstruction, motion comfort, touch/input, P3-A audio/haptics, or background continuity.
 
-### P3-A device acceptance result
-**PASS / ACCEPTED.** User confirmed after the fixes:
-- audio works at normal mid-level device volume
-- haptics work and are not excessive
-- contact vs capture feedback is distinguishable
-- capture/latch/next-target sequence is satisfactory
-- audio does not materially obstruct docking judgment
-- no touch/input regression
-- no perceived camera/physics/control-feel regression
-- fifth-dock background flip no longer occurs
-- no remaining issue was reported in the full five-dock run
+**P3 as a whole is now ACCEPTED / CLOSED.**
 
-P3-A is CLOSED. Do not repeat this full validation unless relevant P3-A source changes or a concrete mismatch appears.
-
-## 15. Exact next boundary — P3-B stage-transition / final-completion polish
-P3-B product question:
-**Can stage transitions and the final mission-complete moment be made clearer and more satisfying while preserving accepted P3-A audio/haptics, P2 world-readable feedback, sparse UI, and all frozen gameplay truth?**
-
-Target P3-B scope:
-- improve next-target transition presentation
-- improve final mission-complete presentation
-- refine contact/capture visuals only where a concrete readability/satisfaction need is identified
-- preserve P3-A event audio/haptics unless a concrete regression appears
-- keep transitions short, restrained, non-blocking, and low-fatigue
-- require mobile device validation before P3-B acceptance
-
-P3-B non-goals:
-- no input/control tuning
-- no thrust/torque/speed/damping tuning
-- no docking-threshold changes
-- no camera-semantic change
-- no Mission 01 profile redesign
-- no fuel economy / survival resources
-- no combat
-- no upgrades/meta progression
-- no 3D-engine migration
-- no Android packaging in the same implementation batch
-
-Do not broaden P3-B into a general UI redesign. It is a narrow presentation-polish slice.
+Do not repeat full P0–P3 validation without a relevant source change, concrete mismatch, or prospective dependency.
 
 ## 16. Cloudflare mobile-validation exposure
-The repository already has Cloudflare Workers Builds / GitHub integration for the Timing Defense Cloudflare branch. Twin Dock mobile candidates can be exposed without modifying Timing Defense Worker/API behavior by copying only the candidate static assets under the existing asset root as `/twindock/`.
+For mobile validation, Twin Dock static assets were exposed under the existing Timing Defense Cloudflare Worker deployment at `/twindock/` without changing Timing Defense Worker/API behavior.
 
-Current test URL path convention:
-- `/twindock/index.html`
+Rules:
+- this is validation/exposure convenience only
+- source authority remains live Twin Dock branch + canonical docs
+- do not overwrite Timing Defense API/worker behavior
+- do not allow this temporary arrangement to become permanent product coupling by accident
+- if long-lived deployment is needed, prefer a dedicated Cloudflare project/domain
 
-Important:
-- this is a **validation/exposure lane**, not Twin Dock's source authority
-- authoritative Twin Dock source remains the live `twindock-p3-gamefeel-v1` branch and canonical docs
-- do not overwrite Timing Defense worker/API routes or repurpose its product behavior for Twin Dock
-- if future exposure becomes long-lived, prefer a dedicated Cloudflare project instead of coupling products indefinitely
+## 17. Exact next boundary — Android packaging lane
+P3 is closed. Android packaging is now authorized as a **separate platform/build lane**.
 
-## 17. Android direction
-Android packaging is justified as a near-term platform step because:
-- core dual-RCS control is accepted
-- Mission 01 continuous play is fun
-- P2 world-readable UI direction is accepted
-- P3-A audio/haptic event foundation is accepted
+Android product question:
+**Can the accepted web game be packaged on Android with essentially identical input feel, rendering/readability, audio/haptics and Mission 01 behavior, without platform-specific regressions or a premature native rewrite?**
 
-However, finish and device-validate P3-B first. Then Android should be a separate platform/build lane, initially preserving the proven web implementation (PWA/Capacitor-style wrapper) unless a concrete native-only requirement appears.
+### First Android slice: preflight / wrapper contract
+Do not immediately rewrite or generate broad native code. First:
+1. recover live P3-B closure state
+2. confirm exact accepted branch/HEAD
+3. inventory web runtime assumptions:
+   - multi-touch / pointer identity / pointer capture
+   - landscape/orientation
+   - fullscreen-equivalent behavior
+   - Web Audio lifecycle
+   - vibration/haptic availability
+   - safe-area layout
+   - local relative asset paths
+   - pause/resume/background lifecycle
+4. choose smallest wrapper approach, preferring Capacitor/WebView-style preservation unless a concrete native-only need appears
+5. explicitly define app name, application ID, versioning, min SDK, target SDK and build lane
+6. define offline/local asset packaging and network permissions
+7. define Android back/pause/resume/orientation behavior
+8. define device acceptance checks before generating APK
+
+### Android frozen guards
+- no native rewrite of physics/input/docking/camera merely for packaging
+- no V8/P0 control tuning while solving wrapper issues
+- no Mission 01 redesign
+- no P2/P3 presentation redesign in the packaging batch
+- no fuel/combat/progression/3D migration
+- platform fixes and gameplay changes remain separate
+
+### Initial Android acceptance checks
+- dual-touch controls retain pointer identity and accepted feel
+- no touch loss at edges or after pause/resume
+- landscape/safe-area layout matches web behavior
+- ship-frame camera/parallax continuity matches accepted P3
+- audio cues work after normal user interaction
+- haptics remain short/meaningful
+- all five Mission 01 dockings complete normally
+- no final-stage background flip
+- reset/lifecycle does not regenerate/randomize background
+- install/launch/pause/resume/relaunch lifecycle stable on target device
+
+The first Android goal is **faithful packaging of the accepted game**, not a native redesign.
 
 ## 18. Development / validation pipeline
 1. recover live state in required order
@@ -375,11 +392,11 @@ However, finish and device-validate P3-B first. Then Android should be a separat
 3. classify frozen-feel impact
 4. define acceptance checks before implementation
 5. implement smallest coherent batch
-6. run deterministic/static regressions relevant to changed source
-7. require device validation for input/camera/game-feel/readability/presentation changes
+6. run only deterministic/static regressions relevant to changed source
+7. require device validation for input/camera/game-feel/readability/presentation/platform changes
 8. promote only after acceptance
-9. at large-group closure update `PROJECT_STATUS.md` and this handoff together
-10. verify `START_HERE.md`, README, refs, risks, and exact next boundary are current
+9. at every large-group closure synchronize `PROJECT_STATUS.md` + this handoff
+10. verify `START_HERE.md`, README, refs, risks and exact next boundary are current
 
 Tool economy:
 - current chat/local tools for bounded design/implementation/static checks
@@ -392,30 +409,33 @@ Tool economy:
 - sensitivity creep
 - camera changes affecting feel
 - visible/internal docking divergence
-- feedback threshold / actual success threshold divergence
+- feedback threshold vs actual success divergence
 - random background regeneration
-- fractional parallax using wrapped physical angle directly and reintroducing `+π/-π` background jumps
+- fractional parallax using wrapped physical angle directly and reintroducing `+π/-π` jumps
 - visual cues becoming busy/dizzying
 - UI covering central scene
 - generous auto-capture returning
-- mission/UI/feedback/audio/presentation layers mutating core physics constants
-- excessive haptics causing fatigue
-- audio masking relative-motion cues or becoming arcade-like
-- mobile AudioContext remaining suspended on some browsers if user-gesture arming is removed
-- temporary Cloudflare validation exposure accidentally becoming product coupling or overwriting Timing Defense routes
+- mission/UI/feedback/audio/presentation/transition layers mutating core physics constants
+- excessive haptics
+- audio masking relative-motion cues
+- AudioContext remaining suspended if user-gesture arming is removed
+- Android WebView lifecycle breaking audio/touch state
+- Android back/pause/resume unexpectedly resetting mission or world state
+- safe-area/orientation differences covering controls
+- temporary shared Cloudflare exposure accidentally overwriting Timing Defense routes
 
 ## 20. Large-group closure discipline
-At each large-group closure:
+At every closure:
 - implementation/decision boundary explicit
-- relevant tests/checks passed
-- device feel/readability/presentation validated when required
+- relevant checks passed
+- device feel/readability/presentation/platform validated when required
 - accepted/frozen decisions recorded
 - `PROJECT_STATUS.md` + `SESSION_HANDOFF.md` synchronized
-- `START_HERE.md` read order/current milestone checked
+- `START_HERE.md` current milestone checked
 - README current phase checked
-- next exact execution boundary recorded
+- exact next boundary recorded
 - risks/blockers current
 - live refs refreshed where useful
 - no stale canonical contradiction
 
-A fresh GPT session must be able to recover the project from the live repository and these documents without relying on conversation memory.
+A fresh GPT session must be able to recover the project from live GitHub and these documents without conversation memory.
