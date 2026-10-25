@@ -1,0 +1,99 @@
+version: system-dependency-calibration-order-v0.52
+status: ACTIVE_MATERIALIZATION_DECISION_GATE_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_51.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_51.yaml
+
+canonicalUpdates:
+  - 175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md
+  - 174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  - data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+  - 173_T1_MAGE_STAGE50_PXP_AND_SETTLEMENT_TAIL_ATTRIBUTION_V0_1.md
+  - 172_T1_STAGE50_CLUSTER_FINAL_CONSEQUENCE_TRANSLATION_DIAGNOSTIC_V0_1.md
+  - 171_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_DYNAMIC_ADMISSION_V0_1.md
+  - 170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md
+  - 169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md
+
+campaignAuthoring:
+  stage49_50Baseline:
+    name: STAGGER_1800_STAGE50_CLUSTER_ONLY
+    path: data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+    sha256: c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3
+    structuralAuthoringBaseline: USER_APPROVED_WITH_WATCHES
+    adopted: true
+    numericalFreeze: false
+    productionGameplayChange: false
+    fullT1ExactRecipeFreeze: false
+
+  widerT1WaveA:
+    plan: data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+    planSha256: da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+    targetStages: [1, 4, 8, 15, 19, 24, 25, 29, 30, 31, 33, 37, 38]
+    targetCount: 13
+    contextOnlyStages: [5, 18, 20, 39, 40, 41, 49, 50]
+    slices:
+      - {id: A1, stages: [1, 4, 8]}
+      - {id: A2, stages: [15, 19]}
+      - {id: A3, stages: [24, 25, 29, 30, 31]}
+      - {id: A4, stages: [33, 37, 38]}
+    staticPreflight:
+      status: PASS
+      exactRun: 40189296422
+      artifact: 12597413342
+      artifactSha256: d7a18825573c798484995d4ce107ff5d161365c1ad4e4bb5f134bee861d28643
+      head: a2817325b87fe4796d7f3c10c860835e30513df0
+      errors: []
+      warnings: []
+    exactSpawnRecipesMaterialized: false
+    dynamicExecutionAuthorized: false
+    numericalFreeze: false
+    productionGameplayChange: false
+
+  rejectedAlternatives:
+    uniformDurationRepetition: CLASS_SKEWED_NOT_ADOPTED
+    stage50ClusterFinal: REJECTED_MAGE_TRANSLATION_NOT_IMPROVED
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  delayedCombatEventsMustDrainBeforeSettled: true
+  preserveStage5: true
+  preserveStage18: true
+  preserveStage20: true
+  preserveStage39: true
+  preserveStage40: true
+  preserveStage41: true
+  preserveAdoptedStage49_50: true
+  authored4sNormalMax: 8
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  productionGameplayChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+currentBoundary:
+  activePackage: T1_WIDER_EXACT_AUTHORING_WAVE_A_MATERIALIZATION_DECISION_GATE
+  stage49_50Status: USER_APPROVED_STRUCTURAL_BASELINE_WITH_WATCHES
+  waveAPlanStatus: STATIC_PREFLIGHT_PASS
+  recommendedDecision: MATERIALIZE_WAVE_A_EXACT_SPAWN_RECIPE_CANDIDATES_SLICE_BY_SLICE
+  materializationOrder: [A1, A2, A3, A4]
+  validationRule: EACH_SLICE_STATIC_GATE_BEFORE_NEXT_SLICE
+  dynamicExecutionBeforeStaticPass: false
+  adoptionMeaning:
+    - CANDIDATE_AUTHORING_ONLY
+    - NO_PRODUCTION_CHANGE
+    - NO_NUMERICAL_FREEZE
+    - NO_FULL_T1_RECIPE_FREEZE
+  ifApprovedNext: MATERIALIZE_A1_STAGES_1_4_8_AND_RUN_STATIC_RECIPE_GATE
+  ifNotApprovedNext: HOLD_AT_STATIC_PLAN_PASS
+  awaitingUserDecision: true
