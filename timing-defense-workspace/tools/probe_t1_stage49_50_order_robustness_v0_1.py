@@ -14,6 +14,7 @@ Boundaries:
 - GRUNT/RUNNER/BRUTE only, right-edge spawn, authored max4 <= 8;
 - no monster/class/shop/EXP/PxP scalar change;
 - Archer Lv31 yTol=0.20 is diagnostic MID_ADJACENT bridge only, not a freeze;
+- Mage Lv31 uses the approved-contract fidelity bridge only; no coefficient change;
 - deterministic Lv31 OFF/ON paired execution.
 
 No authoring adoption or numerical freeze is made by this probe.
@@ -29,6 +30,7 @@ import probe_t1_stage49_50_class_rotation_shape_v0_1 as shape
 import probe_t1_stage49_50_distinct_grammar_cadence_v0_1 as distinct
 import probe_t1_stage49_50_target_phase_clearance_v0_1 as target
 import probe_t1_archer_lv31_continuous_corridor_bridge_v0_1 as widthbridge
+import t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1 as magebridge
 
 r = shape.r
 WIDTH = 0.20
@@ -181,12 +183,16 @@ def main():
             candidates[order_id] = {"order": order, "staticErrors": static_errors, "stageStatic": stage_static}
             continue
 
-        overall = widthbridge.with_archer_final_width(
-            WIDTH,
-            lambda doc=doc: shape.execute_candidate(doc, p3, p4, temporal, seeds),
+        overall = magebridge.with_mage_lv31_fidelity(
+            lambda doc=doc: widthbridge.with_archer_final_width(
+                WIDTH,
+                lambda: shape.execute_candidate(doc, p3, p4, temporal, seeds),
+            )
         )
         fidelity.extend(f"{order_id}/overall/{e}" for e in overall["fidelityErrors"])
-        phase_rows, phase_agg, phase_fidelity = execute_target_phase(doc, p3, p4, temporal, seeds, order)
+        phase_rows, phase_agg, phase_fidelity = magebridge.with_mage_lv31_fidelity(
+            lambda doc=doc, order=order: execute_target_phase(doc, p3, p4, temporal, seeds, order)
+        )
         fidelity.extend(f"{order_id}/phase/{e}" for e in phase_fidelity)
 
         roles = {}
@@ -243,6 +249,7 @@ def main():
         "sourceRecipe": str(args.recipes),
         "sourceRecipeSha256": r.sha256_bytes(Path(args.recipes).read_bytes()),
         "archerWidthBridge": {"yTolerance": WIDTH, "status": "DIAGNOSTIC_ONLY_NOT_FROZEN"},
+        "mageLv31FidelityBridge": magebridge.BRIDGE_METADATA,
         "phaseGapMs": GAP_MS,
         "seeds": list(seeds),
         "baseOrder": BASE_ORDER,

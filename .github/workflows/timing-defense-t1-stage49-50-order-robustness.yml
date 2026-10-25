@@ -6,6 +6,7 @@ on:
       - timing-defense-workspace
     paths:
       - 'timing-defense-workspace/tools/probe_t1_stage49_50_order_robustness_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1.py'
       - '.github/workflows/timing-defense-t1-stage49-50-order-robustness.yml'
   workflow_dispatch:
 
@@ -44,6 +45,7 @@ jobs:
             tools/probe_t1_stage49_50_distinct_grammar_cadence_v0_1.py \
             tools/probe_t1_stage49_50_class_rotation_shape_v0_1.py \
             tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            tools/t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1.py \
             tools/run_t1_transition_slice_microsim_v0_1.py \
             tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
             tools/t1_transition_microsim_core_v0_1.py \
@@ -61,7 +63,8 @@ jobs:
           python -m py_compile \
             tools/probe_t1_stage49_50_order_robustness_v0_1.py \
             tools/probe_t1_stage49_50_target_phase_clearance_v0_1.py \
-            tools/probe_t1_stage49_50_distinct_grammar_cadence_v0_1.py
+            tools/probe_t1_stage49_50_distinct_grammar_cadence_v0_1.py \
+            tools/t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1.py
 
       - name: Execute order robustness probe
         run: |
@@ -78,6 +81,9 @@ jobs:
           d=json.loads(Path('artifacts/t1-stage49-50-order-robustness-v0_1.json').read_text())
           assert not d['fidelityErrors'], d['fidelityErrors']
           assert d['archerWidthBridge']['yTolerance'] == 0.20
+          assert d['mageLv31FidelityBridge']['version'] == 't1-transition-microsim-mage-lv31-fidelity-bridge-v0.1'
+          assert d['mageLv31FidelityBridge']['productionGameplayChange'] is False
+          assert d['mageLv31FidelityBridge']['numericalFreeze'] is False
           assert d['phaseGapMs'] == 5500
           assert set(d['candidates']) == {'ROT0','ROT1','ROT2','ROT3'}
           for c in d['candidates'].values():
