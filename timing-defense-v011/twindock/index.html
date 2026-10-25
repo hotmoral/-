@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#050914" />
 <title>Twin Dock · Mission 01</title>
 <link rel="stylesheet" href="./styles.css" />
+<link rel="stylesheet" href="./transitions.css?v=p3b1" />
 </head>
 <body>
 <div id="app">
@@ -13,11 +14,22 @@
   <canvas id="feedback" aria-hidden="true"></canvas>
 
   <div class="topbar">
-    <div class="hud missionHud"><div class="k">MISSION 01</div><div class="v"><span id="score">0 / 5</span></div></div>
+    <div id="missionHud" class="hud missionHud"><div class="k">MISSION 01</div><div class="v"><span id="score">0 / 5</span></div></div>
     <div class="hud statusHud"><div class="k">STATUS</div><div id="mode" class="v">대기</div></div>
   </div>
 
   <div class="centerMsg"><strong id="msgTitle">우주선 기준 시점 · 자유회전</strong><span id="msgSub">도킹 링과 상대 운동을 읽고 접근하세요.</span></div>
+
+  <div id="stageTransition" class="stageTransition" aria-hidden="true">
+    <div class="sweep"></div>
+    <div class="stageCue"><span id="stageKicker">TARGET 2 / 5</span><strong id="stageTitle">이동 포트</strong></div>
+    <div class="sweep"></div>
+  </div>
+
+  <div id="missionCompleteFx" class="missionCompleteFx" aria-hidden="true">
+    <div class="edgeFrame"></div>
+    <div class="completeCue"><span>MISSION 01</span><strong id="missionCompleteText">5 / 5 DOCKS COMPLETE</strong></div>
+  </div>
 
   <div class="debugHud" aria-hidden="true">
     <span>REL <b id="relSpeed">0.0</b></span>
@@ -57,6 +69,7 @@
 <script src="./src/presentation.js?v=p3a2"></script>
 <script src="./src/feedback.js"></script>
 <script src="./src/effects.js?v=p3a2"></script>
-<script src="./src/main.js"></script>
+<script src="./src/transitions.js?v=p3b1"></script>
+<script src="./src/main.js?v=p3b1"></script>
 </body>
 </html>
