@@ -105,9 +105,9 @@ Planning/canonical:
 
 Shared production branch:
 - `timing-defense-cloudflare-do-poc`
-- live head last verified `28f52afcb056c34f08e2d7831929a0673f3492ca`.
+- live head last verified `4dc8bbdbe3c35bfb477df987cc0436f0a7d28713`.
 - previous Timing Defense checkpoint `ea22cc279603394dc4b439b6fdbb0c83aff4299a`.
-- compare showed the only intervening commit adds Twin Dock static assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
+- chained compares `ea22cc2..28f52af` and `28f52af..4dc8bbd` show all intervening changes only touch Twin Dock static assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
 - Timing Defense production gameplay changes remain unauthorized.
 
 Harness:
