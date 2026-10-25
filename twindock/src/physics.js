@@ -11,6 +11,7 @@
     },
     update(state, dt, hooks = {}) {
       const C = TD.Config, ship = state.ship, station = state.station;
+      station.cx += station.vx * dt; station.cy += station.vy * dt;
       station.angle = normAngle(station.angle + station.omega * dt);
       if (state.docked) {
         state.dockHold -= dt;

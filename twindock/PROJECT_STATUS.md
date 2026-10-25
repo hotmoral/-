@@ -1,55 +1,59 @@
 # Twin Dock Project Status
 
 ## Current phase
-**P1 — Mission 01 vertical slice**
+**P1 — Mission 01 vertical slice / device-validation gate**
 
 ## Accepted foundation
-- V8 remains the immutable fallback/control baseline.
-- P0 modular source passed deterministic smoke tests and mobile feel parity against V8.
-- Canonical P0 source preserves the accepted ship-frame camera, dual independent 2D controls, free rotation, inertial motion, and precision four-condition docking.
+- P0 modular foundation is canonical.
+- V8 remains the immutable fallback/control contract.
+- Frozen ship feel constants and precision docking thresholds are unchanged.
 
 ## P0 closure
-- [x] Freeze V8 product contract and exact artifact hash.
-- [x] Establish canonical recovery/handoff/operating documents.
-- [x] Build modular separation for config/math/state/input/physics/docking/camera/renderer/UI/main.
-- [x] Deterministic smoke test PASS.
-- [x] 12,000-frame deterministic V8-vs-modular comparison: zero state/metric divergence.
-- [x] Mobile feel parity accepted by user.
-- [x] Promote modular source to canonical foundation.
-- [x] Synchronize P0 handoff package.
-
-## Accepted presentation decision after parity
-The user accepted a low-salience station-relative reference treatment because empty space made station rotation direction/rate hard to read:
-- faint station reference ring
-- sparse radial ticks
-- three subtle navigation beacons
-- short rotation-direction arc
-
-This decision is accepted, but the modular-source merge belongs to the first P1 presentation slice; it must not alter P0 physics or camera semantics.
+- deterministic smoke test: PASS
+- 12,000-frame V8-vs-modular parity: zero divergence
+- mobile feel parity: ACCEPTED
+- canonical foundation commit: `185a974dbd818386019677409f875640df27442f`
 
 ## P1 product question
 Can the accepted control remain compelling for a continuous 3–5 minute mission instead of only a single docking attempt?
 
-## P1 Mission 01 sequence
-1. static docking target
-2. translating target
-3. rotating target
-4. translating + rotating target
-5. final precision dock
+## Mission 01 candidate
+Deterministic sequence:
+1. `STATIC` — stationary target
+2. `TRANSLATE` — translating target, no rotation
+3. `ROTATE` — rotating target, no translation
+4. `COMBINED` — translating + rotating target
+5. `FINAL` — moving + rotating precision dock
 
-## P1 first implementation boundary
-- add mission/state-flow ownership without rewriting core physics
-- define five deterministic target profiles
-- transition between targets without apparent universe regeneration
-- merge the accepted station-relative reference cues as renderer-only behavior
-- preserve recoverable collision/re-approach behavior
-- keep UI lightweight and central docking view unobstructed
-- no fuel, combat, progression, Android packaging, or broad graphics rewrite
+Implemented:
+- [x] mission/state-flow layer separated from core physics
+- [x] deterministic five-target profiles
+- [x] station linear velocity added to target world state
+- [x] docking-relative velocity correctly includes target translation + rotation
+- [x] continuous ship state between dockings; no ship reset between targets
+- [x] same deterministic background remains across mission
+- [x] accepted low-salience station reference ring/ticks/beacons/rotation arc merged as renderer-only behavior
+- [x] recoverable collision/re-approach behavior preserved
+- [x] core V8/P0 input/thrust/speed/docking constants unchanged
+- [x] JavaScript syntax checks PASS
+- [x] P0 smoke test PASS
+- [x] Mission deterministic tests PASS
 
-## Validation
-- existing P0 smoke regression must remain PASS
-- add deterministic mission transition/profile tests
-- device playtest after a coherent Mission 01 candidate exists
+## Current gate
+**Mobile device playtest of Mission 01 candidate.**
+
+Evaluate:
+- whether 5 docks feel like one continuous run rather than repeated resets
+- whether target-motion progression is legible and meaningfully different
+- whether stages 2–5 are fair rather than merely annoying
+- whether accepted station-relative visual cues help without adding dizziness
+- whether touch/input feel remains P0-equivalent
+- rough run duration and desire to replay
+
+Do not tune frozen controls before this playtest identifies a concrete problem.
+
+## Deferred
+No fuel, combat, meta progression, Android packaging, or 3D migration before this gate is evaluated.
 
 ## Handoff rule
-At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together, then verify `docs/START_HERE.md` still gives the correct recovery order.
+At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` remains correct.

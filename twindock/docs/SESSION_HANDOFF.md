@@ -6,7 +6,8 @@ This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at
 - Repository: `hotmoral/-`
 - P0 foundation branch: `twindock-foundation-v1`
 - Live remote is authoritative. Old chat text, memories, and copied SHAs are navigation aids only.
-- P1 should branch from the live P0 closure commit.
+- P1 branch: `twindock-p1-mission01-v1`
+- P0 canonical closure commit: `185a974dbd818386019677409f875640df27442f`
 
 ## 2. Required recovery order
 1. `twindock/docs/START_HERE.md`
@@ -55,24 +56,15 @@ Ship-frame rotation can feel intense. Accepted mitigation is visual, not by remo
 - sparse relative-motion references rather than busy scenery
 
 ## 5. Docking contract
-Successful docking requires simultaneous match of:
-- docking-point position
-- relative linear velocity
-- orientation
-- angular velocity
-
-Visible docking probe/capture geometry and internal coordinates must agree.
-UI/visual success feedback must not use looser thresholds than actual success.
-Docking should feel earned; avoid large magnetic capture zones.
+Successful docking requires simultaneous match of docking-point position, relative linear velocity, orientation, and angular velocity. Visible and internal docking geometry must agree. UI feedback and actual success thresholds must agree. Avoid generous magnetic capture.
 
 ## 6. Frozen V8 feel constants
-V8 remains the immutable fallback until explicitly superseded:
 - force scale 58
 - deadzone 0.10
 - input exponent 2.05
 - max speed 78
 - max angular speed 0.90
-- station omega 0.18
+- station omega reference 0.18
 - docking distance 11
 - docking relative speed 10
 - docking direction error 0.095 rad
@@ -81,140 +73,88 @@ V8 remains the immutable fallback until explicitly superseded:
 Exact artifact hash is in `BASELINE_V8.md`.
 
 ## 7. P0 closure state
-P0 is complete.
-
-Accepted facts:
-- modular source separated config/math/state/input/physics/docking/camera/renderer/UI/main
-- deterministic smoke test PASS
-- 12,000-frame deterministic comparison against V8 produced zero divergence in state and docking metrics
-- mobile device feel parity against V8 was accepted by the user
-- modular source is the canonical implementation foundation
-- V8 remains the fallback/control contract
+P0 is complete. Modular source is canonical; deterministic smoke PASS; 12,000-frame V8 parity had zero divergence; mobile feel parity was accepted. V8 remains the fallback/control contract.
 
 ## 8. Accepted relative-motion readability direction
-The user reported that empty space made station rotation direction/rate difficult to judge.
-A low-salience visual candidate was accepted:
-- faint reference ring outside the station
-- sparse ticks
-- three subtle navigation beacons
-- short rotation-direction arc
-
-This is intentionally a visual/readability aid only. It must not change world physics, camera semantics, docking thresholds, or create a busy/motion-sickness-heavy background.
-Its modular-source merge is the first P1 presentation task.
+A low-salience visual treatment is accepted: faint station reference ring, sparse ticks, three subtle navigation beacons, and a short rotation-direction arc. It is a readability aid only and must not change physics/camera/docking or become a busy motion-sickness-heavy background.
 
 ## 9. Architecture contract
-Keep responsibilities separate:
-
-### Physics/world state
-Position, velocity, angle, angular velocity, target motion.
-
-### Input
-Pointer identity, two-hand tracking, response curve, body-frame command vectors.
-
-### Camera
-World-to-ship-frame presentation only. It must not mutate physical truth.
-
-### Docking
-Docking geometry, relative metrics, thresholds, success and recoverable collision behavior.
-
-### Renderer
-Visual-only presentation. Prefer deriving visible docking geometry from the same definitions used by docking logic.
-
-### Mission/state flow
-Target sequence, stage transition, mission scoring/state. It must not rewrite core physics.
+- Physics/world state: position, velocity, angle, angular velocity, target motion.
+- Input: pointer identity, two-hand tracking, response curve, body-frame command vectors.
+- Camera: presentation only; never mutate physical truth.
+- Docking: geometry, relative metrics, thresholds, success/recoverable collision.
+- Renderer: visual only; derive visible docking geometry from docking definitions where possible.
+- Mission/state flow: target sequence, transitions, scoring/state; do not rewrite core physics.
 
 ## 10. Failure / recovery philosophy
-Prefer:
-`mistake -> unstable/bounce state -> recovery -> re-approach`
-over:
-`mistake -> immediate fail/reset`.
-
-Recovery is part of the tactile appeal.
+Prefer `mistake -> unstable/bounce -> recovery -> re-approach` over immediate reset. Recovery is part of the tactile appeal.
 
 ## 11. Visual direction
-Player ship should read as a docking/service shuttle, not a fighter:
-- short wide craft
-- clear forward docking probe/collar
-- left/right RCS pods
-- multiple attitude-control nozzles
-- left/right accents
-- RCS plume positions should make input/force legible
-
-Station docking port should visibly include capture collar, inner tunnel/port, guide lights, and latch/capture feedback.
-UI should expose the world rather than cover it. Long term, alignment should increasingly be communicated by the docking scene instead of permanent debug checklists.
+Player ship is a docking/service shuttle with clear forward probe/collar, left/right RCS pods, multiple attitude-control nozzles and legible RCS plumes. Station port uses capture collar, inner tunnel, guide lights and latch feedback. UI should expose rather than cover the world.
 
 ## 12. Current phase: P1 Mission 01
-Product question:
-**Does the validated control remain compelling for a continuous 3–5 minute mission?**
+Product question: **Does the validated control remain compelling for a continuous 3–5 minute mission?**
 
-Planned deterministic sequence:
-1. static target
-2. translating target
-3. rotating target
-4. translating + rotating target
-5. final precision dock
+Sequence: STATIC -> TRANSLATE -> ROTATE -> COMBINED -> FINAL.
 
-Difficulty should come from synchronization dimensions, not merely faster targets.
+### P1 implementation status
+A coherent Mission 01 candidate is implemented and awaits device validation.
 
-### P1 first implementation boundary
-- add mission/state flow as a new layer
-- define deterministic five-target profiles
-- merge accepted station-relative reference cues as renderer-only behavior
-- preserve all P0/V8 feel constants
-- maintain continuous scene/background identity between docks
-- keep recoverable collision behavior
-- keep central view unobstructed
+Implemented:
+- mission/state flow is separate
+- deterministic five-target profiles
+- station world state includes linear velocity (`vx`, `vy`)
+- docking-relative velocity includes target translation plus rotational port velocity
+- ship state continues between targets; no ship reset after each dock
+- deterministic background identity continues across the run
+- accepted station reference cues are merged as renderer-only behavior
+- recoverable collision/re-approach remains intact
+- frozen V8/P0 control constants and docking thresholds are unchanged
 
-## 13. Deferred / non-goals until P1 evaluation
-Do not add yet:
-- fuel economy
-- oxygen/battery survival
-- combat
-- upgrades/meta progression
-- Android packaging
-- 3D-engine migration solely for graphics
+Validation completed:
+- JavaScript syntax PASS
+- P0 smoke regression PASS
+- Mission deterministic test PASS
 
-Android becomes justified only after a 3–5 minute mission loop, stable touch input, accepted UI direction, and continued replay intent.
+### Exact next gate
+Mobile device playtest of Mission 01. Do not tune frozen controls unless the device run exposes a concrete mismatch. Evaluate run continuity, stage differentiation/fairness, visual-cue comfort, input parity, approximate 3–5 minute duration, and replay desire.
+
+## 13. Deferred / non-goals
+No fuel economy, survival resources, combat, upgrades/meta progression, Android packaging, or 3D migration before P1 evaluation. Android becomes justified only after the mission loop, stable input, UI direction and replay intent are validated.
 
 ## 14. Development / validation pipeline
-For each bounded slice:
 1. recover live state in required order
 2. state one product question
-3. classify whether frozen feel is touched
-4. define acceptance checks first
+3. classify frozen-feel impact
+4. define acceptance checks
 5. implement smallest coherent batch
 6. run deterministic regressions
-7. require device feel validation for input/camera/game-feel changes
+7. require device validation for input/camera/game-feel changes
 8. promote only after acceptance
-9. at large-group closure update `PROJECT_STATUS.md` + this handoff together
+9. at large-group closure update `PROJECT_STATUS.md` and this handoff together
 
-### Tool economy
-- current chat/local tools: design, bounded implementation, static review, deterministic tests
-- Codex: substantial implementation batches only; provide scope/non-goals/frozen constants/tests up front
-- public GitHub Actions: only when repeatable build/test automation saves net manual work
-- do not repeatedly rescan/rebuild/revalidate frozen work without a concrete trigger
+Tool economy: use current chat/local tools for bounded work and deterministic checks; Codex only for substantial batches with explicit scope/non-goals/tests; public Actions only when automation saves net work; do not repeatedly revalidate frozen work without a concrete trigger.
 
 ## 15. Known regression risks
 - mobile pointer capture/input loss
-- sensitivity creep during refactor
-- camera changes silently changing feel
-- visible/internal docking-point divergence
-- UI checks and actual docking thresholds diverging
-- random background regeneration on reset/resize/fullscreen
-- relative-motion aids becoming visually busy and increasing discomfort
-- UI covering the central docking scene
-- generous auto-capture returning accidentally
+- sensitivity creep
+- camera changes affecting feel
+- visible/internal docking divergence
+- UI threshold/success threshold divergence
+- random background regeneration
+- visual cues becoming busy/dizzying
+- UI covering central scene
+- generous auto-capture returning
 - mission layer mutating core physics constants
 
 ## 16. Large-group closure checklist
-- [ ] exact implementation/decision boundary recorded
+- [ ] exact boundary recorded
 - [ ] deterministic tests passed
 - [ ] device feel validated when required
 - [ ] accepted/frozen decisions recorded
-- [ ] `PROJECT_STATUS.md` updated
-- [ ] `SESSION_HANDOFF.md` updated
-- [ ] `START_HERE.md` recovery order still correct
-- [ ] next exact execution boundary recorded
-- [ ] known risks/blockers current
-- [ ] useful live branch/commit refs refreshed
-- [ ] no stale statement contradicts live canonical state
+- [ ] status + handoff synchronized
+- [ ] START_HERE read order still correct
+- [ ] next execution boundary recorded
+- [ ] risks/blockers current
+- [ ] useful live refs refreshed
+- [ ] no stale canonical contradictions

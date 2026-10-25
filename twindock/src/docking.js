@@ -7,7 +7,7 @@
       const s = state.station;
       const ux = Math.cos(s.angle), uy = Math.sin(s.angle);
       const px = s.cx + ux * s.radius, py = s.cy + uy * s.radius;
-      return { ux, uy, px, py, pvx: -s.omega * uy * s.radius, pvy: s.omega * ux * s.radius, targetAngle: normAngle(s.angle + Math.PI) };
+      return { ux, uy, px, py, pvx: s.vx - s.omega * uy * s.radius, pvy: s.vy + s.omega * ux * s.radius, targetAngle: normAngle(s.angle + Math.PI) };
     },
     metrics(state) {
       const C = TD.Config, ship = state.ship, station = state.station;
@@ -17,7 +17,7 @@
       const tx = Math.cos(p.targetAngle), ty = Math.sin(p.targetAngle);
       const captureX = p.px + tx * C.PORT_CAPTURE_INSET, captureY = p.py + ty * C.PORT_CAPTURE_INSET;
       const rx = captureX - station.cx, ry = captureY - station.cy;
-      const captureVx = -station.omega * ry, captureVy = station.omega * rx;
+      const captureVx = station.vx - station.omega * ry, captureVy = station.vy + station.omega * rx;
       const rvx = ship.vx - captureVx, rvy = ship.vy - captureVy;
       return {
         p, probeX, probeY, captureX, captureY, captureVx, captureVy,

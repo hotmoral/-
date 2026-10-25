@@ -37,6 +37,14 @@
     function drawStation(){
       const station=state.station,m=TD.Docking.metrics(state),p=m.p;
       ctx.save();ctx.translate(station.cx,station.cy);
+      const refR=station.ringR*1.75;
+      ctx.strokeStyle='rgba(120,165,196,.12)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,refR,0,Math.PI*2);ctx.stroke();
+      for(let i=0;i<12;i++){const a=i*Math.PI*2/12,inner=refR-8,outer=refR+(i%3===0?10:4);ctx.strokeStyle=i%3===0?'rgba(170,210,235,.18)':'rgba(120,165,196,.10)';ctx.lineWidth=i%3===0?2:1;ctx.beginPath();ctx.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);ctx.lineTo(Math.cos(a)*outer,Math.sin(a)*outer);ctx.stroke();}
+      const navPts=[{a:0.55,r:refR*1.18,c:'#6fd2ff'},{a:2.42,r:refR*1.07,c:'#ffbe63'},{a:4.28,r:refR*1.14,c:'#9ef0b1'}];
+      for(const n of navPts){const x=Math.cos(n.a)*n.r,y=Math.sin(n.a)*n.r;ctx.strokeStyle='rgba(160,205,235,.10)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(Math.cos(n.a)*(refR+6),Math.sin(n.a)*(refR+6));ctx.lineTo(x,y);ctx.stroke();ctx.fillStyle=n.c;ctx.globalAlpha=.75;ctx.beginPath();ctx.arc(x,y,3.2,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.18;ctx.beginPath();ctx.arc(x,y,8.5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+      ctx.strokeStyle='rgba(111,210,255,.22)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,refR+.5,station.angle-.26,station.angle+.14);ctx.stroke();
+      const ah=station.angle+.14;ctx.fillStyle='rgba(111,210,255,.55)';ctx.beginPath();ctx.moveTo(Math.cos(ah)*(refR+.5),Math.sin(ah)*(refR+.5));ctx.lineTo(Math.cos(ah-.12)*(refR-7),Math.sin(ah-.12)*(refR-7));ctx.lineTo(Math.cos(ah+.10)*(refR-7),Math.sin(ah+.10)*(refR-7));ctx.closePath();ctx.fill();
+
       const metal=ctx.createRadialGradient(-24,-28,8,0,0,station.ringR*1.45);metal.addColorStop(0,'#31485b');metal.addColorStop(.38,'#1b3144');metal.addColorStop(.72,'#0b1724');metal.addColorStop(1,'#040910');
       ctx.strokeStyle='#24394c';ctx.lineWidth=station.ringR*.34;ctx.beginPath();ctx.arc(0,0,station.ringR,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='rgba(180,215,240,.18)';ctx.lineWidth=2;
       for(let i=0;i<24;i++){const a=i*Math.PI*2/24;ctx.beginPath();ctx.arc(0,0,station.ringR+(i%2?4:-4),a,a+.12);ctx.stroke();}
@@ -99,7 +107,7 @@
 
     return {
       resize(){
-        const r=ui.app.getBoundingClientRect(),v=state.viewport;v.W=Math.max(320,r.width);v.H=Math.max(240,r.height);v.DPR=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(v.W*v.DPR);canvas.height=Math.round(v.H*v.DPR);canvas.style.width=v.W+'px';canvas.style.height=v.H+'px';ctx.setTransform(v.DPR,0,0,v.DPR,0,0);state.station.cx=v.W*.79;state.station.cy=v.H*.45;state.station.radius=Math.min(v.W,v.H)*.12;state.station.ringR=state.station.radius*1.42;
+        const r=ui.app.getBoundingClientRect(),v=state.viewport;v.W=Math.max(320,r.width);v.H=Math.max(240,r.height);v.DPR=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(v.W*v.DPR);canvas.height=Math.round(v.H*v.DPR);canvas.style.width=v.W+'px';canvas.style.height=v.H+'px';ctx.setTransform(v.DPR,0,0,v.DPR,0,0);state.station.radius=Math.min(v.W,v.H)*.12;state.station.ringR=state.station.radius*1.42;
       },
       makeStars(){
         if(state.starFieldReady)return;state.stars=[];for(let i=0;i<C.STAR_COUNT;i++){const d=TD.MathUtil.seeded01(i*4),nx=TD.MathUtil.seeded01(i*4+1),ny=TD.MathUtil.seeded01(i*4+2),z=TD.MathUtil.seeded01(i*4+3);state.stars.push({nx,ny,r:.28+d*1.1,a:.22+d*.5,d,tw:z});}state.starFieldReady=true;
