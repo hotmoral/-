@@ -45,14 +45,8 @@ def stage_static(stage: dict) -> dict:
     }
 
 
-def metadata(stage: dict) -> dict:
-    return {
-        "archetype": stage.get("archetype"),
-        "formation": stage.get("formation"),
-        "cadence": stage.get("cadence"),
-        "complexity": stage.get("complexity"),
-        "pressure": ",".join(stage.get("pressureTags", [])),
-    }
+def expected_archetype(signature: str) -> str:
+    return str(signature).split("/", 1)[0].strip()
 
 
 def main() -> None:
@@ -123,6 +117,11 @@ def main() -> None:
     if base_by.get(5, {}).get("spawns") != expected_stage5:
         errors.append("stage5-context-anchor-drift")
 
+    # The legacy runner static gate is intentionally fixed to the representative-slice stage set.
+    # Validate the unchanged base through it, then validate newly added A1 stages explicitly below.
+    base_runner_static_errors = list(r.static_recipe_gate(base))
+    errors.extend(f"base-runner-static:{e}" for e in base_runner_static_errors)
+
     expected = {int(k): v for k, v in plan.get("expectedSignatures", {}).items()}
     for stage in TARGETS:
         raw = add_by.get(stage)
@@ -131,6 +130,9 @@ def main() -> None:
         extra = set(raw) - ALLOWED_STAGE_KEYS
         if extra:
             errors.append(f"stage{stage}-unexpected-keys:{sorted(extra)}")
+        times = [int(x.get("tMs", -1)) for x in raw.get("spawns", [])]
+        if not times or times[0] != 0 or any(b <= a for a, b in zip(times, times[1:])):
+            errors.append(f"stage{stage}-spawn-times-not-strictly-increasing-from-zero")
         for i, spawn in enumerate(raw.get("spawns", [])):
             extra_spawn = set(spawn) - ALLOWED_SPAWN_KEYS
             if extra_spawn:
@@ -141,12 +143,17 @@ def main() -> None:
                 errors.append(f"stage{stage}-spawn{i}-y-out-of-range")
         if float(raw.get("entryBaseX", -1)) != 0.92:
             errors.append(f"stage{stage}-entryBaseX-not-0.92")
+
         want = expected.get(stage, {})
-        got = metadata(raw)
-        for key in ("archetype", "formation", "cadence", "complexity"):
-            if str(got[key]) != str(want.get(key)):
-                errors.append(f"stage{stage}-{key}-plan-mismatch:{got[key]}!={want.get(key)}")
-        if got["pressure"].replace(" ", "") != str(want.get("pressure", "")).replace(" ", ""):
+        if str(raw.get("archetype")) != expected_archetype(want.get("signature", "")):
+            errors.append(
+                f"stage{stage}-archetype-plan-mismatch:{raw.get('archetype')}!={expected_archetype(want.get('signature', ''))}"
+            )
+        for key in ("formation", "cadence", "complexity"):
+            if str(raw.get(key)) != str(want.get(key)):
+                errors.append(f"stage{stage}-{key}-plan-mismatch:{raw.get(key)}!={want.get(key)}")
+        got_pressure = ",".join(raw.get("pressureTags", [])).replace(" ", "")
+        if got_pressure != str(want.get("pressure", "")).replace(" ", ""):
             errors.append(f"stage{stage}-pressure-plan-mismatch")
 
     # Candidate-specific pedagogic morphology.
@@ -187,9 +194,6 @@ def main() -> None:
     if mat_by.get(5) != base_by.get(5):
         errors.append("stage5-context-anchor-changed-after-materialization")
 
-    runner_static_errors = list(r.static_recipe_gate(materialized))
-    errors.extend(f"runner-static:{e}" for e in runner_static_errors)
-
     materialized_path = Path(args.materialized_out)
     materialized_path.parent.mkdir(parents=True, exist_ok=True)
     materialized_path.write_text(
@@ -205,11 +209,13 @@ def main() -> None:
         "materializedSha256": r.sha256_bytes(materialized_path.read_bytes()),
         "targetStages": TARGETS,
         "contextStage5RecipeDigest": r.sha256_obj(base_by[5]) if 5 in base_by else None,
+        "baseRunnerStaticErrors": base_runner_static_errors,
         "stageStatic": static,
         "existingRepresentativeStagesPreserved": not any(
             e.startswith("existing-representative-stage") for e in errors
         ),
         "stage5ContextPreserved": "stage5-context-anchor-changed-after-materialization" not in errors,
+        "expandedStageSetValidatedByDedicatedA1Gate": True,
         "dynamicExecutionPerformed": False,
         "candidateAdopted": False,
         "productionGameplayChange": False,
