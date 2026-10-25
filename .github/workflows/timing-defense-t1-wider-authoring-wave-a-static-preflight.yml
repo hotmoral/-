@@ -1,0 +1,56 @@
+name: Timing Defense T1 Wider Authoring Wave A Static Preflight
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace
+    paths:
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml'
+      - 'timing-defense-workspace/tools/preflight_t1_wider_exact_authoring_wave_a_v0_1.py'
+      - '.github/workflows/timing-defense-t1-wider-authoring-wave-a-static-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Record exact source
+        run: |
+          mkdir -p timing-defense-workspace/out/t1-wider-wave-a-static
+          git rev-parse HEAD | tee timing-defense-workspace/out/t1-wider-wave-a-static/source_head.txt
+          sha256sum \
+            timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml \
+            timing-defense-workspace/legacy-game-structure/161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md \
+            timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            timing-defense-workspace/legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml \
+            > timing-defense-workspace/out/t1-wider-wave-a-static/source_sha256.txt
+
+      - name: Run static preflight
+        working-directory: timing-defense-workspace
+        run: |
+          python tools/preflight_t1_wider_exact_authoring_wave_a_v0_1.py \
+            --plan legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml \
+            --skeleton legacy-game-structure/161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md \
+            --representative legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            --adopted legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml \
+            --json-out out/t1-wider-wave-a-static/preflight_result.json
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-t1-wider-authoring-wave-a-static-preflight
+          path: timing-defense-workspace/out/t1-wider-wave-a-static/
+          if-no-files-found: error
