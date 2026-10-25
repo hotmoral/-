@@ -31,6 +31,13 @@ requireText(rootGradle, "classpath 'com.android.tools.build:gradle:8.13.0'", 'bu
 const wrapper = await read('gradle/wrapper/gradle-wrapper.properties');
 requireText(wrapper, 'gradle-8.14.3-all.zip', 'gradle wrapper');
 
+const capacitorGradle = await readFile(
+  path.join(root, 'node_modules', '@capacitor', 'android', 'capacitor', 'build.gradle'),
+  'utf8'
+);
+requireText(capacitorGradle, 'sourceCompatibility JavaVersion.VERSION_21', '@capacitor/android Java source level');
+requireText(capacitorGradle, 'targetCompatibility JavaVersion.VERSION_21', '@capacitor/android Java target level');
+
 let appGradle = await read('app/build.gradle');
 requireText(appGradle, 'applicationId "com.hotmoral.twindock"', 'app/build.gradle applicationId');
 requireText(appGradle, 'namespace = "com.hotmoral.twindock"', 'app/build.gradle namespace');

@@ -5,7 +5,15 @@ on:
     branches:
       - twindock-p3b-transition-v1
     paths:
-      - 'twindock/**'
+      - 'twindock/index.html'
+      - 'twindock/styles.css'
+      - 'twindock/transitions.css'
+      - 'twindock/src/**'
+      - 'twindock/tests/**'
+      - 'twindock/package.json'
+      - 'twindock/capacitor.config.json'
+      - 'twindock/scripts/stage-android-web.mjs'
+      - 'twindock/scripts/patch-android.mjs'
       - '.github/workflows/twindock-android-parity.yml'
   workflow_dispatch:
 
@@ -30,11 +38,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - name: Install Android 36 SDK
         run: |
