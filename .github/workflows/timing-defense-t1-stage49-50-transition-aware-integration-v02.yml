@@ -1,0 +1,90 @@
+name: Timing Defense T1 Stage49-50 Transition-Aware Integration V02
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace
+    paths:
+      - 'timing-defense-workspace/tools/probe_t1_stage49_50_transition_aware_integration_v0_2.py'
+      - '.github/workflows/timing-defense-t1-stage49-50-transition-aware-integration-v02.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  transition-aware-integration-v02:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: timing-defense-workspace
+    env:
+      T1_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record exact source identity
+        run: |
+          mkdir -p artifacts
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/stage49-50-transition-aware-v02-source-identity.txt
+          sha256sum \
+            tools/probe_t1_stage49_50_transition_aware_integration_v0_2.py \
+            tools/probe_t1_stage49_50_transition_aware_integration_v0_1.py \
+            tools/probe_t1_stage50_mage_cluster_persistence_v0_1.py \
+            tools/probe_t1_stage49_50_order_robustness_v0_1.py \
+            tools/probe_t1_stage49_50_target_phase_clearance_v0_1.py \
+            tools/probe_t1_archer_lv31_continuous_corridor_bridge_v0_1.py \
+            tools/t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1.py \
+            tools/t1_transition_microsim_core_v0_1.py \
+            tools/t1_transition_microsim_skills_v0_1.py \
+            tools/t1_transition_microsim_engine_v0_1.py \
+            "$T1_RECIPE" \
+            legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
+            >> artifacts/stage49-50-transition-aware-v02-source-identity.txt
+          cat artifacts/stage49-50-transition-aware-v02-source-identity.txt
+      - name: Compile probe
+        run: python -m py_compile tools/probe_t1_stage49_50_transition_aware_integration_v0_2.py
+      - name: Execute integrated refinement
+        run: |
+          PYTHONPATH=tools python tools/probe_t1_stage49_50_transition_aware_integration_v0_2.py \
+            --recipes "$T1_RECIPE" \
+            --seeds 101,211,307,409,503 \
+            --json-out artifacts/t1-stage49-50-transition-aware-integration-v0_2.json
+      - name: Enforce fidelity gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('artifacts/t1-stage49-50-transition-aware-integration-v0_2.json').read_text())
+          assert not d['fidelityErrors'], d['fidelityErrors']
+          assert d['version'] == 't1-stage49-50-transition-aware-integration-probe-v0.2'
+          assert d['orders']['49'] == ['DURABLE_SCATTER','FRONTLINE','CLUSTER','LINE']
+          assert d['orders']['50'] == ['DURABLE_SCATTER','FRONTLINE','CLUSTER','LINE','LINE_REPRISE']
+          assert set(d['candidates']) == {'CONTROL','DURABLE_CORE_2','DURABLE_CORE_3'}
+          assert d['archerWidthBridge']['yTolerance'] == 0.20
+          assert d['mageLv31FidelityBridge']['productionGameplayChange'] is False
+          for block in d['candidates'].values():
+              assert not block['staticErrors'], block['staticErrors']
+              assert block['stageStatic']['49']['max4s'] <= 8
+              assert block['stageStatic']['50']['max4s'] <= 8
+          print('TRANSITION_AWARE_INTEGRATION_V02_FIDELITY=PASS')
+          PY
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: timing-defense-t1-stage49-50-transition-aware-integration-v02
+          path: |
+            timing-defense-workspace/artifacts/t1-stage49-50-transition-aware-integration-v0_2.json
+            timing-defense-workspace/artifacts/stage49-50-transition-aware-v02-source-identity.txt
+          if-no-files-found: error
