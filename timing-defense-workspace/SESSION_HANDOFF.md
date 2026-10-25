@@ -14,19 +14,20 @@ Do not make the user re-explain project state, dependency order, closed evidence
 1. live `timing-defense-workspace` HEAD;
 2. `PROJECT_STATUS.md`;
 3. `NEXT_WORK.md`;
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_53.yaml`;
-5. `legacy-game-structure/176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
-6. `legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml`;
-7. `legacy-game-structure/175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md`;
-8. `legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`;
-9. `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
-10. docs169-173 only when Stage49-50 exact evidence detail is needed;
-11. representative v0.2/docs167-168 only when a new slice needs anchor comparison;
-12. runner contract/implementation, settlement bridge, Mage Lv31 fidelity bridge and Archer diagnostic width bridge;
-13. T1 skeleton/static authority `161/162`, four-Tier correction `160`, P6 closure `156`;
-14. production/harness live heads.
+4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_54.yaml`;
+5. `legacy-game-structure/177_T1_WIDER_EXACT_AUTHORING_WAVE_A2_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`;
+6. `legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml`;
+7. `legacy-game-structure/176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md` only as needed;
+8. `legacy-game-structure/175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md`;
+9. `legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`;
+10. `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
+11. docs169-173 only when Stage49-50 exact evidence detail is needed;
+12. representative v0.2/docs167-168 only when a new slice needs anchor comparison;
+13. runner contract/implementation, settlement bridge, Mage Lv31 fidelity bridge and Archer diagnostic width bridge;
+14. T1 skeleton/static authority `161/162`, four-Tier correction `160`, P6 closure `156`;
+15. production/harness live heads.
 
-Do not rerun closed P6, full skeleton audit, Stage49-50 diagnostics, Wave A plan preflight or A1 static gate without a concrete trigger.
+Do not rerun closed P6, full skeleton audit, Stage49-50 diagnostics, Wave A plan preflight, A1 static gate or A2 static gate without a concrete trigger.
 
 ---
 
@@ -87,12 +88,12 @@ Stage49-50 structural authoring baseline = USER APPROVED WITH WATCHES
 Stage49-50 evidence chain = CLOSED WITH WATCHES
 Wider T1 Wave A plan = STATIC PREFLIGHT PASS
 Wave A1 Stage1/4/8 = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Wave A2 Stage15/19 = NOT STARTED / NEXT
-Wave A3 = NOT STARTED
-Wave A4 = NOT STARTED
+Wave A2 Stage15/19 = MATERIALIZED / STATIC PASS / NOT ADOPTED
+Wave A3 Stage24/25/29/30/31 = NOT STARTED / NEXT
+Wave A4 Stage33/37/38 = NOT STARTED
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 Timing Defense production semantics = UNCHANGED / UNAUTHORIZED
-CURRENT = WAVE A2 EXACT SPAWN RECIPE MATERIALIZATION GATE
+CURRENT = WAVE A3 EXACT SPAWN RECIPE MATERIALIZATION GATE
 ```
 
 ---
@@ -105,9 +106,9 @@ Planning/canonical:
 
 Shared production branch:
 - `timing-defense-cloudflare-do-poc`
-- live head last verified `4dc8bbdbe3c35bfb477df987cc0436f0a7d28713`.
+- live head last verified `224dce9170aa9a45ed932b2ee97f3e1ea42d0558`.
 - previous Timing Defense checkpoint `ea22cc279603394dc4b439b6fdbb0c83aff4299a`.
-- chained compares `ea22cc2..28f52af` and `28f52af..4dc8bbd` show all intervening changes only touch Twin Dock static assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
+- chained compares through `224dce9` show intervening changes only touch Twin Dock assets under `timing-defense-v011/twindock/*`; no Timing Defense gameplay file changed.
 - Timing Defense production gameplay changes remain unauthorized.
 
 Harness:
@@ -150,9 +151,7 @@ Mage   +9.42%
 wall OFF 1358 -> ON 164
 ```
 
-Mage apparent `+0.108s` Stage50 settle inversion is valid delayed-package tail drainage in the tested sample, not evidence of weaker Lv31 role performance.
-
-Stage50 CLUSTER-final alternative remains rejected.
+Mage apparent `+0.108s` Stage50 settle inversion is valid delayed-package tail drainage in the tested sample, not weaker Lv31 role performance. Stage50 CLUSTER-final alternative remains rejected.
 
 Approval is structural authoring baseline only. Do not freeze Archer width, Mage numerical centers, monster/class/shop/EXP/P×P values or production from this.
 
@@ -200,60 +199,18 @@ Candidate:
 SHA256:
 `44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d`
 
-### Stage1
 ```text
-E01 / G / F01 / CD01 / C0 / BASELINE
-G @ 0,1600,3200,4800ms / y0.46
-```
-
-### Stage4
-```text
-E01 / G / F01 / CD03 / C0 / BASELINE
-G @ 0,250,500 and 2800,3050,3300ms / y0.46
-```
-
-### Stage8
-```text
-E02 / G+R / F01 / CD03 / C1 / RUSH
-G,R @ 0,250
-G,R @ 1700,1950
-G,R @ 3400,3650
-R @ 5100
-all y0.46
-```
-
-Stage5 exact RUNNER teach context remains unchanged:
-```text
-R @ 0/1300/2600/3900ms
+Stage1: G @ 0/1600/3200/4800ms, max4=3
+Stage4: G @ 0/250/500 + 2800/3050/3300ms, max4=6
+Stage8: G,R pair-waves + R tail, max4=6
 ```
 
 Final A1 static run:
 ```text
-run      40193818274
+run 40193818274
 artifact 12599510840
-head     44793b082481df5bbff64eea383ed3240166dee4
-artifact sha256 231e3b97d32baa158eff069f4897ae889cb280e5aa0aa591d1a11cd7040b141a
-status PASS
-errors=[]
-warnings=[]
+PASS / errors=[] / warnings=[]
 ```
-
-Static facts:
-```text
-Stage1 authored4 / max4=3 / max6=4
-Stage4 authored6 / max4=6 / max6=6
-Stage8 authored7 / max4=6 / max6=7 / G3+R4
-existing representative stages preserved=true
-Stage5 preserved=true
-```
-
-Historical first run `40193721046` failed only because:
-1. validator read a nonexistent direct plan archetype instead of deriving it from `signature`;
-2. validator incorrectly reused the old runner's fixed representative-stage-set gate on an expanded stage set.
-
-Classification:
-`VALIDATOR_MISUSE_NO_CANDIDATE_CONTENT_FAILURE`.
-Candidate data was unchanged before the final green rerun.
 
 A1 status:
 ```text
@@ -266,54 +223,117 @@ NO NUMERICAL FREEZE
 
 ---
 
-# 8. Critical lifecycle correction for future work
+# 8. Wave A2 closed static evidence
 
-Do **not** run `[1,4,5,8]` as a persistent-state chain.
-It skips Stage2/3/6/7 and therefore cannot represent the real attempt lifecycle.
+Candidate:
+`legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml`
+
+SHA256:
+`2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d`
+
+### Stage15
+```text
+E03 / B / F01 / CD01 / C1 / BULWARK
+B @ 0,2200,4400ms / y0.46
+```
+
+### Stage19
+```text
+E03+E02 / B+R / F02 / CD05 / C2 / BULWARK
+B @ 0 y0.46
+R @ 650 y0.44
+R @ 1300 y0.48
+B @ 3000 y0.46
+R @ 3650 y0.43
+R @ 4300 y0.49
+```
+
+Local progression:
+```text
+Stage15 pure B teach
+-> Stage18 G+B first mix
+-> Stage19 B+R stagger/reorder
+-> Stage20 G+R+B synthesis
+```
+
+Final A2 static run:
+```text
+run      40200875375
+artifact 12601174423
+head     ff240f4859fce0e993406b6253fe9edb3ba6631e
+artifact sha256 6e6f4837ecbe6ea843c27840405b364acdbffe80d55688e79c081e8e974800a6
+PASS / errors=[] / warnings=[]
+Stage15 max4=2
+Stage19 max4=5
+Stage18 preserved=true
+Stage20 preserved=true
+existing representative stages preserved=true
+```
+
+External check separation:
+- the same source commit triggered Cloudflare check `Workers Builds: timing-defense-skilled-v2-harness`, check-run `121191618577`, conclusion failure;
+- A2 GitHub Actions preflight check-run `121191600322` concluded success;
+- do not reinterpret the unrelated Cloudflare check as A2 content failure.
+
+A2 status:
+```text
+MATERIALIZED
+STATIC PASS
+NOT ADOPTED
+NO DYNAMIC EXECUTION
+NO NUMERICAL FREEZE
+```
+
+---
+
+# 9. Critical lifecycle correction for future work
+
+Do **not** run noncontiguous Wave A targets as a persistent-state chain.
+A static slice passing does not make skipped stages disappear from the real attempt lifecycle.
 
 Dynamic work must wait until:
 - a contiguous authored sequence is available; or
 - a separately specified standalone diagnostic contract is approved and clearly labeled non-persistent.
 
-This correction prevents false lifecycle evidence from being created merely because A1 static PASS exists.
-
 ---
 
-# 9. Exact next task — A2 only
+# 10. Exact next task — A3 only
 
 Materialize:
 ```text
-Stage15
-E03 / B / F01 / CD01 / C1 / BULWARK
-purpose = BRUTE first teach
-
-Stage19
-E03+E02 / B+R / F02 / CD05 / C2 / BULWARK
-purpose = first target-order/stagger contrast
+Stage24 = E01 / G / F03 / CD04 / C1 / BASELINE,FLOOD
+Stage25 = E01 / G / F04 / CD01 / C0 / BASELINE
+Stage29 = E02+E03 / G+R+B / F08 / CD05 / C2 / RUSH,BULWARK
+Stage30 = E01+E03 / G+B / F01 / CD03 / C1 / BASELINE
+Stage31 = E03 / G+B / F02 / CD04 / C1 / BULWARK
 ```
 
-Preserve exact context anchors:
+Purpose sequence:
 ```text
-Stage18 = first G+B mixed, Lv16 collision watch
-Stage20 = Star Gate A synthesis
+Stage24 density pressure
+-> Stage25 Lv21 reward buffer/recovery
+-> Stage29 bounded split-axis synthesis
+-> Stage30 Checkpoint B mid synthesis
+-> Stage31 soft-wall durable-pressure entry
 ```
 
-A2 static gate must verify:
+A3 static gate must verify:
 - legal T1 monsters only;
-- Stage15 remains BRUTE-only readable teach;
-- Stage19 uses already-known BRUTE/RUNNER, no new core grammar;
-- skeleton formation/cadence/complexity/pressure preserved;
-- right-edge `x=0.92`, no midfield pop-in;
+- Stage25 remains materially lower-pressure/recovery relative to Stage24 and Stage29;
+- Stage29 F08 has clear spatial/temporal separation without midfield pop-in;
+- Stage30 introduces no mandatory new mechanic;
+- Stage31 pressure comes from known G+B morphology, not scalar mutation;
+- skeleton formation/cadence/complexity/pressure exact;
+- right-edge `x=0.92`;
 - authored 4s density <=8;
-- Stage18 and Stage20 unchanged;
-- existing A1/static evidence untouched;
+- all existing representative recipes and A1/A2 evidence untouched;
 - no scalar/shop/EXP/P×P/production change.
 
-Do not start A3 before A2 static PASS.
+Do not start A4 before A3 static PASS.
 
 ---
 
-# 10. Active watches
+# 11. Active watches
 
 ```text
 T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
@@ -330,16 +350,16 @@ Do not proliferate watches without a concrete failure mode.
 
 ---
 
-# 11. Approval boundary
+# 12. Approval boundary
 
-A1 authoring/static verification was authorized by the user's instruction to proceed.
-A1 is not accepted/frozen content merely because its static gate passed.
+A1 and A2 authoring/static verification were authorized by user instructions to proceed.
+Neither is accepted/frozen content merely because its static gate passed.
 
-Next recommended work is A2 candidate materialization + static gate. This remains candidate authoring only and does not imply production or numerical freeze.
+Next recommended work is A3 candidate materialization + static gate. This remains candidate authoring only and does not imply production or numerical freeze.
 
 ---
 
-# 12. Session-close quality gate
+# 13. Session-close quality gate
 
 Before ending a meaningful work group:
 1. fetch live canonical HEAD;
