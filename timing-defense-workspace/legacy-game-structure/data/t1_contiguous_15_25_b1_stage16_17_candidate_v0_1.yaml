@@ -1,0 +1,63 @@
+version: t1-contiguous-15-25-b1-stage16-17-candidate-v0.1
+status: BOUNDED_CONTIGUOUS_COVERAGE_CANDIDATE_NO_ADOPTION_NO_PRODUCTION_OR_NUMERICAL_FREEZE
+
+baseRecipe:
+  path: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  sha256: 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+
+adoptedWaveA:
+  approval: ../180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  a1: {path: data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml, sha256: 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d}
+  a2: {path: data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml, sha256: 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d}
+  a3: {path: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml, sha256: 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6}
+  a4: {path: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml, sha256: 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36}
+  fullWaveAccumulatedSha256: 28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b
+
+scope:
+  intendedContiguousWindow: [15, 25]
+  addedStages: [16, 17]
+  existingExactStages: [15, 18, 19, 20, 21, 22, 23, 24, 25]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+  candidateAdopted: false
+
+stageAdditions:
+  - id: T1_S16_BRUTE_DURABLE_FRONT_VERIFY_B1
+    stage: 16
+    archetype: E03
+    componentArchetypes: [E03]
+    formation: F02
+    formationSet: [F02]
+    cadence: CD02
+    complexity: C1
+    pressureTags: [BULWARK]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 1400, type: BRUTE, y: 0.44}
+      - {tMs: 2800, type: BRUTE, y: 0.48}
+      - {tMs: 4200, type: BRUTE, y: 0.46}
+
+  - id: T1_S17_GRUNT_RECOVERY_BEFORE_BRUTE_MIX_B1
+    stage: 17
+    archetype: E01
+    componentArchetypes: [E01]
+    formation: F01
+    formationSet: [F01]
+    cadence: CD03
+    complexity: C1
+    pressureTags: [BASELINE]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.46}
+      - {tMs: 300, type: GRUNT, y: 0.44}
+      - {tMs: 600, type: GRUNT, y: 0.48}
+      - {tMs: 3000, type: GRUNT, y: 0.45}
+      - {tMs: 3300, type: GRUNT, y: 0.47}
