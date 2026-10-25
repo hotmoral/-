@@ -1,0 +1,119 @@
+version: system-dependency-calibration-order-v0.54
+status: ACTIVE_A1_A2_STATIC_PASS_A3_MATERIALIZATION_GATE_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_53.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_53.yaml
+
+canonicalUpdates:
+  - 177_T1_WIDER_EXACT_AUTHORING_WAVE_A2_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml
+  - 176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md
+  - 175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md
+  - 174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+campaignAuthoring:
+  stage49_50Baseline:
+    structuralAuthoringBaseline: USER_APPROVED_WITH_WATCHES
+    adopted: true
+    numericalFreeze: false
+    productionGameplayChange: false
+
+  widerT1WaveA:
+    plan: data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+    planSha256: da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+    targetStages: [1, 4, 8, 15, 19, 24, 25, 29, 30, 31, 33, 37, 38]
+    slices:
+      - {id: A1, stages: [1, 4, 8], status: STATIC_PASS_NOT_ADOPTED}
+      - {id: A2, stages: [15, 19], status: STATIC_PASS_NOT_ADOPTED}
+      - {id: A3, stages: [24, 25, 29, 30, 31], status: NEXT_MATERIALIZATION}
+      - {id: A4, stages: [33, 37, 38], status: NOT_STARTED}
+    fullWaveMaterialized: false
+    dynamicExecutionAuthorized: false
+    fullT1ExactRecipeFreeze: false
+
+  waveA1:
+    candidate: data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml
+    candidateSha256: 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
+    targetStages: [1, 4, 8]
+    staticAdmission:
+      status: PASS
+      exactRun: 40193818274
+      artifact: 12599510840
+      artifactSha256: 231e3b97d32baa158eff069f4897ae889cb280e5aa0aa591d1a11cd7040b141a
+      head: 44793b082481df5bbff64eea383ed3240166dee4
+      errors: []
+      warnings: []
+    dynamicExecution: NOT_RUN
+    adopted: false
+
+  waveA2:
+    candidate: data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml
+    candidateSha256: 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
+    targetStages: [15, 19]
+    contextStages: [18, 20]
+    staticAdmission:
+      status: PASS
+      exactRun: 40200875375
+      artifact: 12601174423
+      artifactSha256: 6e6f4837ecbe6ea843c27840405b364acdbffe80d55688e79c081e8e974800a6
+      head: ff240f4859fce0e993406b6253fe9edb3ba6631e
+      materializedSha256: aef79d6323154dd0cfe660bc9e2d9a0bd580d75d905f1e15366c3dc3f5c5c617
+      errors: []
+      warnings: []
+    stageStatic:
+      stage15: {authored: 3, max4: 2, max6: 3, lastSpawnMs: 4400, types: BRUTE3}
+      stage19: {authored: 6, max4: 5, max6: 6, lastSpawnMs: 4300, types: BRUTE2_RUNNER4}
+    contextStage18Preserved: true
+    contextStage20Preserved: true
+    existingRepresentativeStagesPreserved: true
+    progressionGuard: PURE_B_TEACH_TO_GB_MIX_TO_BR_STAGGER_TO_GRB_SYNTH
+    dynamicExecution: NOT_RUN
+    adopted: false
+    numericalFreeze: false
+    productionGameplayChange: false
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  delayedCombatEventsMustDrainBeforeSettled: true
+  preserveStage5: true
+  preserveStage18: true
+  preserveStage20: true
+  preserveStage39: true
+  preserveStage40: true
+  preserveStage41: true
+  preserveAdoptedStage49_50: true
+  authored4sNormalMax: 8
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  productionGameplayChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+currentBoundary:
+  activePackage: T1_WIDER_EXACT_AUTHORING_WAVE_A3_MATERIALIZATION_GATE
+  a1Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  a2Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
+  a3Status: NOT_STARTED_NEXT
+  recommendedDecision: MATERIALIZE_A3_STAGES_24_25_29_30_31_AND_RUN_STATIC_RECIPE_GATE
+  validationRule: EACH_SLICE_STATIC_GATE_BEFORE_NEXT_SLICE
+  lifecycleNote: DO_NOT_CHAIN_NONCONTIGUOUS_WAVE_A_STAGES_AS_PERSISTENT_RUNTIME_SEQUENCE
+  dynamicExecution: DEFERRED_UNTIL_CONTIGUOUS_CONTEXT_OR_SEPARATE_AUTHORIZED_CONTRACT
+  adoptionMeaning:
+    - A1_A2_REMAIN_CANDIDATE_EVIDENCE_ONLY
+    - NO_PRODUCTION_CHANGE
+    - NO_NUMERICAL_FREEZE
+    - NO_FULL_T1_RECIPE_FREEZE
+  ifApprovedNext: MATERIALIZE_A3_STAGES_24_25_29_30_31_AND_RUN_STATIC_GATE
+  ifNotApprovedNext: HOLD_AT_A1_A2_STATIC_PASS
+  awaitingUserDecision: true
