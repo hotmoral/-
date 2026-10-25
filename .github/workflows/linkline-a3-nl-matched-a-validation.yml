@@ -1,0 +1,74 @@
+name: Linkline A3 N/L Matched A Validation
+
+on:
+  push:
+    branches:
+      - linkline/a3-production-nl-matched-a-validation
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Verify frozen runtime blobs
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          test "$(git hash-object linkline/nl_matched_a_runtime/index.html)" = "2429cf72ceb18d1265a2f69656aafebe1aa11f2e"
+          test "$(git hash-object linkline/nl_matched_a_runtime/app.mjs)" = "e6dc5a7da12d9428bc030e73783247633bfd2522"
+          test "$(git hash-object linkline/nl_matched_a_runtime/mechanic.mjs)" = "c214cd077c102c4e007b045cc3d24d48febdab3a"
+          test "$(git hash-object linkline/nl_matched_a_runtime/styles.css)" = "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
+          test "$(git hash-object linkline/nl_matched_a_runtime/config.mjs)" = "80ccd5891e760765a067d6347dd89dec38d35731"
+          test "$(git hash-object linkline/nl_matched_a_runtime/protocol.mjs)" = "2586a0b47447b3f7dded00ba154b757a1768d673"
+          test "$(git hash-object linkline/nl_matched_a_runtime/data/session_bundle.json)" = "7e7a24d600bebe285dec4c630b8ba2a1b7b1fcce"
+          test "$(git hash-object linkline/nl_matched_a_runtime/tests/runtime_preflight.mjs)" = "40ff940d29a402d30065d18ae9daf92d2013d234"
+          test "$(git hash-object linkline/nl_matched_a_runtime/package.json)" = "c0cc94a71149b377422aa15980dfac1948317244"
+
+      - name: Node runtime preflight
+        shell: bash
+        working-directory: repo/linkline/nl_matched_a_runtime
+        run: |
+          set -euo pipefail
+          node --version
+          npm test
+          node --check app.mjs
+          node --check protocol.mjs
+          node --check mechanic.mjs
+
+      - name: Static HTTP smoke
+        shell: bash
+        working-directory: repo/linkline/nl_matched_a_runtime
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 >/tmp/linkline-nl-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill ${server_pid}' EXIT
+          sleep 1
+          curl --fail --silent --show-error http://127.0.0.1:8765/index.html >/tmp/index.html
+          curl --fail --silent --show-error http://127.0.0.1:8765/data/session_bundle.json >/tmp/session_bundle.json
+          grep -q 'app.mjs' /tmp/index.html
+          python3 - <<'PY'
+          import json
+          with open('/tmp/session_bundle.json', encoding='utf-8') as f:
+              data=json.load(f)
+          assert data['schema']=='LINKLINE_A3_NL_MATCHED_SESSION_BUNDLE'
+          assert data['sessionId']=='NL_MATCHED_A_N4_N5'
+          assert data['puzzleCount']==12
+          assert len(data['puzzles'])==12
+          print('STATIC_HTTP_SMOKE_PASS')
+          PY
