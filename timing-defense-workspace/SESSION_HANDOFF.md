@@ -1,6 +1,6 @@
 # Timing Defense — Session Handoff
 
-Updated: 2026-10-24 KST
+Updated: 2026-10-25 KST
 
 ## 0. Recovery rule — mandatory
 Always fetch live remote first. Never reconstruct current state from chat, memory or copied SHA. Live GitHub canonical state wins.
@@ -14,19 +14,20 @@ Do not make the user re-explain project state, dependency order or review philos
 1. live `timing-defense-workspace` HEAD;
 2. `PROJECT_STATUS.md`;
 3. `NEXT_WORK.md`;
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_46.yaml`;
-5. `legacy-game-structure/168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md`;
-6. `legacy-game-structure/data/t1_pressure_shape_v0_2_and_duration_sensitivity_summary_v0_1.json`;
+4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_47.yaml`;
+5. `legacy-game-structure/169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md`;
+6. `legacy-game-structure/data/t1_stage49_50_class_rotation_diagnostic_center_summary_v0_1.json`;
 7. v0.2 diagnostic recipe `legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`;
-8. exact baseline result `167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md`;
-9. runner contract/implementation `165` / `166` and settlement bridge `tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py`;
-10. baseline recipe/static evidence `163-164`;
-11. T1 skeleton/static authority `160-162` only when broader context is needed;
-12. P6 closure `156` and active watches;
-13. production/harness live heads;
-14. older P3/P4/P5 evidence only for a concrete semantic question.
+8. `168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md`;
+9. exact baseline result `167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md`;
+10. runner contract/implementation `165/166`, settlement bridge, Mage Lv31 fidelity bridge, Archer diagnostic width bridge;
+11. baseline recipe/static evidence `163-164`;
+12. T1 skeleton/static authority `160-162` only when broader context is needed;
+13. P6 closure `156` and active watches;
+14. production/harness live heads;
+15. older P3/P4/P5 evidence only for a concrete semantic question.
 
-Do not rerun closed P6, full T1 skeleton audit or earlier baseline probes without a trigger.
+Do not rerun closed P6, full T1 skeleton audit, old baseline probes, or the completed Stage49-50 order/sustain search without a trigger.
 
 ---
 
@@ -92,7 +93,10 @@ Stage41 relief = RECONFIRMED
 v0.2 Stage46-50 Lv31 absence = TOO SAFE
 pressure duration lever = SUPPORTED
 uniform late repetition = CLASS-SKEWED / NOT ADOPTED
-CURRENT = STAGE49-50 CLASS-ROTATION PRESSURE-SHAPE DIAGNOSTIC
+Stage49-50 class-rotation diagnostic = PASS_WITH_WATCH
+DIAGNOSTIC CENTER = STAGGER_1800
+objective-pressure rotation = STILL SKEWED TOWARD TANK
+CURRENT = STAGE49-50 AUTHORING-CANDIDATE MATERIALIZATION + STATIC PREFLIGHT
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -158,193 +162,179 @@ Stage41 max4s = 3
 
 ---
 
-# 6. Runner implementation / fidelity correction
+# 6. Runner fidelity corrections that must remain intact
 
-Canonical runner assets:
-```text
-tools/run_t1_transition_slice_microsim_v0_1.py
-tools/t1_transition_microsim_core_v0_1.py
-tools/t1_transition_microsim_skills_v0_1.py
-tools/t1_transition_microsim_engine_v0_1.py
-tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py
-```
+## Settlement ordering
+Old bug: Stage-local wall shield/Aftershock timer incorrectly delayed `STAGE_SETTLED`.
 
-Important defect found by the first exact-source run:
-- `stage_settled()` incorrectly waited for Stage-local wallShield/Aftershock timer expiry.
-- This made Tank Lv16 ON Stage18 appear ~3 seconds longer than OFF despite unchanged removal chronology.
-
-Correct classification:
-```text
-FALSE_PASS_SETTLEMENT_ORDERING
-```
-
-Corrected semantics:
+Correct semantics:
 ```text
 authored spawns complete
 + zero live Stage-owned enemy
 + delayed combat-event queue empty
 => STAGE_SETTLED
-=> Stage-local passive temporary residue clears at boundary
+=> Stage-local passive temporary residue clears
 ```
 
-Do not revert to the old ordering.
+Bridge:
+`tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py`
 
-Exact-source admission after correction:
-```text
-exactRecipeIdentity = PASS
-stageSettledOrTerminalFailure = PASS
-noEnemyCarryAtSettledBoundary = PASS
-noTransientLeakageAtSettledBoundary = PASS
-persistentStateContinuity = PASS
-deterministicReplay = PASS
-pairedIsolation = PASS
-explicitSkillStateTrace = PASS
-```
+Do not revert without equivalent engine correction + revalidation.
 
-Skill authority zoning:
-```text
-Lv6 = current frozen combat authority
-Lv11/Lv16/Lv21 = legacy parity diagnostic inputs
-Lv26 = user-approved structural semantics + provisional diagnostic coefficients
-Lv31 = user-approved structural direction + P4D2 provisional diagnostic centers
-N3 = frozen milestone semantics
-```
-These do not become production numerical authority through simulation.
+## Mage Lv31
+During Stage49-50 diagnosis the T1 runner was found to under-represent approved staged-collapse semantics.
+
+Diagnostic semantic bridge restores:
+- inherited Lv11/Lv21 Y-radius growth;
+- primary exclusion across AoE stages;
+- final-chain exclusion of the full accumulated package hit set.
+
+This is fidelity correction only. It does not production-freeze any numerical coefficient.
+
+## Archer Lv31
+Diagnostic width bridge uses `yTolerance=0.20` to represent the approved materially-wider straight corridor.
+
+Exact width is still unfrozen. Do not copy 0.20 into production authority.
 
 ---
 
-# 7. Baseline exact dynamic result — doc167
+# 7. Baseline/v0.2/duration evidence to preserve
 
-Corrected baseline run:
+Corrected baseline exact run `167`:
 ```text
 run 40074583842
 job 120815112194
 artifact 12552383686
-head 61a4dc2fbef1bcf9bf6c48bee857bdbf2304d0d3
-artifact SHA256 368d51ae76a45fd4b2fcbfb9e794246ace508e6a975b54a9f286a05e5fb36227
-recipe SHA256 afd4c57e94ea797ab14954f67ecc576b202eeed4ca953162e0080892db1083a7
 ```
 
-Main conclusions:
+Main baseline conclusions:
 ```text
 Stage5 Lv6 collision = WATCH_NOT_FAIL
-Stage18 Lv16 collision = MATERIAL_WATCH, especially Archer/Mage compression
-Stage41 relief shape = SUPPORTED
-Stage20-23 pressure = UNDERSHOOT
-Stage39-45 pressure = UNDERSHOOT
-Stage46-50 mastery pressure = CLEAR UNDERSHOOT
+Stage18 Lv16 collision = MATERIAL_WATCH
+Stage41 relief = SUPPORTED
+Stage20-23 = UNDERSHOOT
+Stage39-45 = UNDERSHOOT
+Stage46-50 = CLEAR UNDERSHOOT
 ```
 
-No class buff/nerf is authorized from these findings.
-
----
-
-# 8. v0.2 pressure-shape candidate / exact result — doc168
-
-Source:
-`data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`
-
-Exact SHA256:
-`3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf`
-
-Boundary:
-- Stage5 unchanged;
-- Stage18 unchanged;
-- Stage41 unchanged;
-- no monster/class/shop/EXP scalar changes;
-- only representative pressure shape was deepened.
-
-Static gate PASS:
+v0.2 `168`:
 ```text
-all representative max4s <= 8
-Stage40 max4s 6
-Stage41 max4s 3
-```
-
-Final comprehensive run:
-```text
-run 40075651830
-job 120818295930
-artifact 12553201879
-head bd1959c73235255e9de8a103295d95aa260d69fd
-artifact SHA256 a60523c6ed34d58e02aafe6fffffb8f997b2d4d28bf03d8b275c3847ae3da008
-```
-
-v0.2 dynamic conclusions:
-- Stage20-23 gains only sparse pressure: 2/60 wall-positive rows / 246 total diagnostic damage;
-- Stage39-45 remains wall-safe but Stage41 relief is clearly preserved;
-- Stage46-50 Lv31 ON remains wall-safe;
-- explicit Lv31 OFF/ON paired probe shows both sides 15/15 clear Stage46-50 with zero wall damage.
-
-Therefore:
-```text
+Stage46-50 Lv31 OFF = 15/15 clear / zero wall damage
+Stage46-50 Lv31 ON  = 15/15 clear / zero wall damage
 V02_BASE_NOT_YET_MASTERY_GATE
 ```
 
----
-
-# 9. Pressure-duration sensitivity
-
-Naive repeated pulse spacing:
-```text
-6s / 8s / 10s = REJECTED BY authored4s DENSITY GUARD
-```
-No dynamic balance interpretation from rejected candidates.
-
-Legal search:
-```text
-extra copies = 1 / 2 / 3
-spacing = 11 / 12 / 14 / 16 seconds
-all retained max4 <= 8
-```
-
-Representative sensitivity only:
-```text
-COPY2_SHIFT11000
-OFF wall-positive 5/15
-ON  wall-positive 4/15
-OFF failures 1
-ON  failures 0
-OFF total wall damage 6184
-ON  total wall damage 777
-```
-
-Meaning:
-```text
-PRESSURE_DURATION_IS_A_REAL_MASTERY_GATE_LEVER = SUPPORTED
-SCALAR_INCREASE_REQUIRED = NOT SHOWN
-```
-
-But uniform repetition is **not adopted** because the pressure rotates poorly:
-- Tank and Rogue take disproportionate Stage49-50 wall pressure;
-- Archer/Mage remain too protected in many cases;
-- this risks becoming generic throughput pressure rather than class-readable mastery pressure.
-
-Do not promote any COPY/SHIFT candidate to authoring.
+Duration sensitivity:
+- generic 6/8/10s repetition rejected by max4 density guard;
+- legal 11/12/14/16s spacing proves duration is a real mastery-gate lever;
+- uniform repetition is not adopted because pressure is class-skewed toward Tank/Rogue.
 
 ---
 
-# 10. Exact next work
+# 8. Stage49-50 class-rotation diagnostic — doc169
 
-Next scope is intentionally narrow:
+Exact green source:
+```text
+run      40153142570
+artifact 12583341810
+head     5eb71a861b1226887a8ec09dce98641c0dfff817
+artifact sha256 ab31640122bd1d00179d5af62104368cb46ad4e5d4137fb8922d561ebbfcacf5
+recipe sha256 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+seeds 101,211,307,409,503
+fidelityErrors = []
+```
+
+Root-cause findings:
+
+### Archer
+Previous `DURABLE_SCATTER` BRUTE can remain frontmost and anchor Sky-Piercing Arrow to the previous Y axis, contaminating the following LINE opportunity.
+
+Classification:
+`PREVIOUS_GRAMMAR_FRONTMOST_TARGET_CONTAMINATION`
+
+Fix direction = grammar chronology, not Archer damage buff.
+
+### Mage
+Burst CLUSTER can dissolve before the next P×P phase. Lv31 may fire but see only one surviving target.
+
+Classification:
+`PXP_PHASE_ALIGNMENT_AND_CLUSTER_LIFETIME_SENSITIVITY`
+
+Pure GRUNT morphology dies too quickly; BRUTE2 helps; BRUTE3 is the first tested integrated durable core that restores positive Mage role expression.
+
+Integrated diagnostic grammar:
+```text
+Stage49: DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
+Stage50: DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
+CLUSTER = BRUTE / GRUNT / BRUTE / GRUNT / BRUTE / GRUNT
+```
+
+Compared sustain timings:
+```text
+STAGGER_1800 = 0/360/720/1080/1440/1800 ms
+SUSTAIN_3000 = 0/600/1200/1800/2400/3000 ms
+```
+
+Both static/fidelity PASS.
+
+STAGGER_1800 role-facing Lv31 OFF->ON:
+```text
+Knight +43.03% faster
+Rogue +30.07% faster
+Tank +27.37% faster + 3 unresolved reduced
+Archer +1.72% faster
+Mage +9.42% faster
+```
+
+Tank objective protection:
+```text
+OFF wall damage 1358
+ON wall damage 164
+reduction 1194
+```
+
+Why `STAGGER_1800` is the diagnostic center:
+- same qualitative five-class positive role direction as 3s sustain;
+- smaller chronology/cadence change;
+- Mage signal slightly stronger: 9.42% vs 8.96%.
+
+Important residual:
+```text
+ROLE_ROTATION_SIGNAL = IMPROVED
+OBJECTIVE_PRESSURE_ROTATION = STILL_SKEWED_TOWARD_TANK
+AUTHORING_ADOPTION = NO
+NUMERICAL_FREEZE = NO
+```
+
+Current exact sample still gives material wall pressure only to Tank. Do not convert this into an equal-damage target; preserve class specialties and real weaknesses.
+
+---
+
+# 9. Exact next work
+
+Active scope:
 ```text
 Stage49-50 only
 ```
 
-Build a bounded **distributed durable / split-axis pressure-shape candidate**.
+Materialize a non-production authoring candidate from `STAGGER_1800`, then run static preflight.
 
-Goals:
-1. reduce uniform-repeat Tank/Rogue skew;
-2. create spatial pressure that exposes limits of Archer strict-line and Mage local-density answers;
-3. preserve Rogue durable-normal execution opportunity;
-4. preserve Tank control/defense/objective-protection value;
-5. preserve Knight generalist/frontline utility;
-6. use only GRUNT/RUNNER/BRUTE;
-7. right-edge spawn only;
-8. authored 4s density <= 8;
-9. alter composition/geometry/chronology before scalars.
+Candidate direction:
+```text
+Stage49:
+DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
 
-Do not touch in this next unit:
+Stage50:
+DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
+
+CLUSTER:
+BRUTE / GRUNT / BRUTE / GRUNT / BRUTE / GRUNT
+
+CLUSTER offsets:
+0 / 360 / 720 / 1080 / 1440 / 1800 ms
+```
+
+Preserve:
 ```text
 Stage5
 Stage18
@@ -352,18 +342,31 @@ Stage41
 monster HP/speed/wall damage
 class coefficients
 shop/EXP/P×P probabilities
+right-edge spawn
+max authored 4s density <= 8
 ```
 
-Compare the candidate against:
-- v0.2 base;
-- duration-sensitivity envelope;
-- paired Lv31 OFF/ON.
+Static gates:
+1. schema/source identity;
+2. only Stage49/50 differ from v0.2;
+3. Stage5/18/41 unchanged;
+4. only T1 monster vocabulary;
+5. right-edge entry/no midfield pop-in;
+6. max4 <= 8;
+7. intended authored counts;
+8. intended Y spread/split-axis geometry;
+9. exact grammar order/phase separation;
+10. no scalar mutation;
+11. no contradiction with T1 skeleton pressure/complexity intent;
+12. explicit NON_PRODUCTION / NO_NUMERICAL_FREEZE labeling.
 
-A useful candidate need not equalize classes. It should show broader pressure rotation without simply moving all damage from Tank/Rogue to another single class.
+Only after static PASS should a narrow exact-source Stage49-50 dynamic admission run.
+
+Do not jump to full Stage1-50 authoring.
 
 ---
 
-# 11. Active watches
+# 10. Active watches
 
 ```text
 T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
@@ -373,17 +376,18 @@ FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
 TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
 T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
 TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-Do not proliferate watches without a concrete new failure mode.
+Do not proliferate watches without a concrete failure mode.
 
 ---
 
-# 12. Approval boundary
+# 11. Approval boundary
 
 Autonomous diagnostic work may:
-- create/test Stage49-50 diagnostic shape candidates;
-- add narrow instrumentation/validators;
+- materialize/test Stage49-50 diagnostic authoring candidates;
+- add narrow static/dynamic validators;
 - run exact-source deterministic comparisons;
 - classify failures;
 - repair diagnostic fidelity without changing gameplay semantics.
@@ -399,7 +403,7 @@ Explicit user approval remains required before adopting:
 
 ---
 
-# 13. Branch checkpoints
+# 12. Branch checkpoints
 
 Planning/canonical:
 - `timing-defense-workspace`
@@ -407,12 +411,12 @@ Planning/canonical:
 
 Production:
 - `timing-defense-cloudflare-do-poc`
-- last verified HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
+- verified HEAD `ea22cc279603394dc4b439b6fdbb0c83aff4299a`
 - unauthorized to change.
 
 Harness:
 - `timing-defense-skilled-v2-harness-v01`
-- last verified HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
+- verified HEAD `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`
 
 P6-B2 temp:
 - `timing-defense-workspace-temp-p6-b2-fresh-forward`
@@ -421,7 +425,7 @@ P6-B2 temp:
 
 ---
 
-# 14. Session-close quality gate
+# 13. Session-close quality gate
 
 Before ending a meaningful work group:
 1. fetch live canonical HEAD;
