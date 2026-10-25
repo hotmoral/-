@@ -49,6 +49,7 @@ jobs:
             --json-out out/t1-wider-wave-a-static/preflight_result.json
 
       - name: Upload evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: timing-defense-t1-wider-authoring-wave-a-static-preflight
