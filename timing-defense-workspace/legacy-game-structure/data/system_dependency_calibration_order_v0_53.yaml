@@ -1,5 +1,5 @@
 version: system-dependency-calibration-order-v0.53
-status: ACTIVE_A1_STATIC_PASS_DYNAMIC_DECISION_GATE_NO_NUMERICAL_FREEZE
+status: ACTIVE_A1_STATIC_PASS_A2_MATERIALIZATION_GATE_NO_NUMERICAL_FREEZE
 supersedes: data/system_dependency_calibration_order_v0_52.yaml
 inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_52.yaml
 
@@ -22,10 +22,11 @@ campaignAuthoring:
     targetStages: [1, 4, 8, 15, 19, 24, 25, 29, 30, 31, 33, 37, 38]
     slices:
       - {id: A1, stages: [1, 4, 8], status: STATIC_PASS_NOT_ADOPTED}
-      - {id: A2, stages: [15, 19], status: NOT_STARTED}
+      - {id: A2, stages: [15, 19], status: NEXT_MATERIALIZATION}
       - {id: A3, stages: [24, 25, 29, 30, 31], status: NOT_STARTED}
       - {id: A4, stages: [33, 37, 38], status: NOT_STARTED}
     fullWaveMaterialized: false
+    dynamicExecutionAuthorized: false
     fullT1ExactRecipeFreeze: false
 
   waveA1:
@@ -87,20 +88,18 @@ fixedGuards:
   fullT1ExactRecipeFreezeAuthorized: false
 
 currentBoundary:
-  activePackage: T1_WIDER_EXACT_AUTHORING_WAVE_A1_DYNAMIC_DECISION_GATE
+  activePackage: T1_WIDER_EXACT_AUTHORING_WAVE_A2_MATERIALIZATION_GATE
   a1Status: MATERIALIZED_STATIC_PASS_NOT_ADOPTED
-  a2Status: HOLD_NOT_STARTED
-  recommendedDecision: RUN_BOUNDED_A1_LIFECYCLE_FAITHFUL_DYNAMIC_DIAGNOSTIC
-  dynamicScopeIfApproved:
-    stages: [1, 4, 5, 8]
-    stage5Role: CONTEXT_ANCHOR_ONLY
-    preservePersistentState: true
-    noContentAdoptionFromRunAlone: true
+  a2Status: NOT_STARTED_NEXT
+  recommendedDecision: MATERIALIZE_A2_STAGES_15_19_AND_RUN_STATIC_RECIPE_GATE
+  validationRule: EACH_SLICE_STATIC_GATE_BEFORE_NEXT_SLICE
+  lifecycleNote: DO_NOT_CHAIN_NONCONTIGUOUS_A1_STAGES_AS_PERSISTENT_RUNTIME_SEQUENCE
+  dynamicExecution: DEFERRED_UNTIL_CONTIGUOUS_CONTEXT_OR_SEPARATE_AUTHORIZED_CONTRACT
   adoptionMeaning:
-    - CANDIDATE_EVIDENCE_ONLY_UNTIL_EXPLICIT_CONTENT_APPROVAL
+    - A1_REMAINS_CANDIDATE_EVIDENCE_ONLY
     - NO_PRODUCTION_CHANGE
     - NO_NUMERICAL_FREEZE
     - NO_FULL_T1_RECIPE_FREEZE
-  ifApprovedNext: RUN_A1_DYNAMIC_DIAGNOSTIC_BEFORE_A2_AUTHORING
+  ifApprovedNext: MATERIALIZE_A2_STAGES_15_19_AND_RUN_STATIC_GATE
   ifNotApprovedNext: HOLD_AT_A1_STATIC_PASS
   awaitingUserDecision: true
