@@ -1,0 +1,122 @@
+version: t1-stage49-50-stagger1800-authoring-candidate-v0.1
+status: DIAGNOSTIC_AUTHORING_CANDIDATE_NO_PRODUCTION_OR_NUMERICAL_FREEZE
+tier: T1
+
+baseRecipe:
+  path: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  sha256: 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+
+authority:
+  signatureSkeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  diagnosticResult: ../169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md
+  diagnosticSummary: data/t1_stage49_50_class_rotation_diagnostic_center_summary_v0_1.json
+  runLifecycle: ../72_RUN_STATE_LIFECYCLE_APPROVED_CONTRACT_V0_1.md
+
+scope:
+  overriddenStages: [49, 50]
+  preservedStages: [5, 18, 41]
+  phaseGapMs: 5500
+  diagnosticCenter: STAGGER_1800_STAGE50_CLUSTER_ONLY
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpChange: false
+  pxpProbabilityChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+
+guards:
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  stageBoundary: STAGE_SETTLED
+
+# Metadata remains aligned with the canonical T1 skeleton/v0.2 authoring state.
+# Only composition / geometry / chronology is materialized from the diagnostic center.
+stageOverrides:
+  - id: T1_S49_POST_LV31_SPLIT
+    stage: 49
+    archetype: E02
+    componentArchetypes: [E02, E03]
+    formation: F08
+    formationSet: [F08]
+    cadence: CD05
+    complexity: C2
+    pressureTags: [RUSH, BULWARK]
+    entryBaseX: 0.92
+    grammarOrder: [DURABLE_SCATTER, FRONTLINE, CLUSTER, LINE]
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.18}
+      - {tMs: 300, type: RUNNER, y: 0.82}
+      - {tMs: 600, type: BRUTE, y: 0.78}
+      - {tMs: 900, type: RUNNER, y: 0.22}
+      - {tMs: 1200, type: GRUNT, y: 0.50}
+      - {tMs: 1500, type: BRUTE, y: 0.54}
+
+      - {tMs: 5500, type: BRUTE, y: 0.44}
+      - {tMs: 5700, type: BRUTE, y: 0.48}
+      - {tMs: 5900, type: BRUTE, y: 0.50}
+      - {tMs: 6500, type: GRUNT, y: 0.46}
+      - {tMs: 6900, type: RUNNER, y: 0.42}
+      - {tMs: 7300, type: RUNNER, y: 0.54}
+
+      - {tMs: 11000, type: GRUNT, y: 0.42}
+      - {tMs: 11120, type: RUNNER, y: 0.46}
+      - {tMs: 11240, type: GRUNT, y: 0.50}
+      - {tMs: 11360, type: RUNNER, y: 0.44}
+      - {tMs: 11480, type: BRUTE, y: 0.48}
+      - {tMs: 11600, type: GRUNT, y: 0.43}
+
+      - {tMs: 16500, type: GRUNT, y: 0.46}
+      - {tMs: 17150, type: RUNNER, y: 0.48}
+      - {tMs: 17800, type: BRUTE, y: 0.46}
+      - {tMs: 18450, type: GRUNT, y: 0.44}
+      - {tMs: 19100, type: RUNNER, y: 0.50}
+      - {tMs: 19750, type: BRUTE, y: 0.46}
+
+  - id: T1_S50_LEARNED_VOCAB_FINAL
+    stage: 50
+    archetype: E01
+    componentArchetypes: [E01, E02, E03]
+    formation: F01
+    formationSet: [F01, F02, F03, F08]
+    cadence: CD03
+    complexity: C3
+    pressureTags: [BASELINE]
+    entryBaseX: 0.92
+    grammarOrder: [DURABLE_SCATTER, FRONTLINE, CLUSTER, LINE, LINE_REPRISE]
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.18}
+      - {tMs: 300, type: RUNNER, y: 0.82}
+      - {tMs: 600, type: BRUTE, y: 0.78}
+      - {tMs: 900, type: RUNNER, y: 0.22}
+      - {tMs: 1200, type: GRUNT, y: 0.50}
+      - {tMs: 1500, type: BRUTE, y: 0.54}
+
+      - {tMs: 5500, type: BRUTE, y: 0.44}
+      - {tMs: 5700, type: BRUTE, y: 0.48}
+      - {tMs: 5900, type: BRUTE, y: 0.50}
+      - {tMs: 6500, type: GRUNT, y: 0.46}
+      - {tMs: 6900, type: RUNNER, y: 0.42}
+      - {tMs: 7300, type: RUNNER, y: 0.54}
+
+      - {tMs: 11000, type: BRUTE, y: 0.46}
+      - {tMs: 11360, type: GRUNT, y: 0.44}
+      - {tMs: 11720, type: BRUTE, y: 0.50}
+      - {tMs: 12080, type: GRUNT, y: 0.48}
+      - {tMs: 12440, type: BRUTE, y: 0.42}
+      - {tMs: 12800, type: GRUNT, y: 0.46}
+
+      - {tMs: 16500, type: GRUNT, y: 0.46}
+      - {tMs: 17150, type: RUNNER, y: 0.48}
+      - {tMs: 17800, type: BRUTE, y: 0.46}
+      - {tMs: 18450, type: GRUNT, y: 0.44}
+      - {tMs: 19100, type: RUNNER, y: 0.50}
+      - {tMs: 19750, type: BRUTE, y: 0.46}
+
+      - {tMs: 22000, type: GRUNT, y: 0.46}
+      - {tMs: 22650, type: RUNNER, y: 0.48}
+      - {tMs: 23300, type: BRUTE, y: 0.46}
+      - {tMs: 23950, type: GRUNT, y: 0.44}
+      - {tMs: 24600, type: RUNNER, y: 0.50}
+      - {tMs: 25250, type: BRUTE, y: 0.46}
