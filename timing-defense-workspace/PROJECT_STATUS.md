@@ -25,8 +25,11 @@ Current late-T1 chain:
 - authoring dynamic admission: `171_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_DYNAMIC_ADMISSION_V0_1.md`
 - rejected Stage50 cluster-final diagnostic: `172_T1_STAGE50_CLUSTER_FINAL_CONSEQUENCE_TRANSLATION_DIAGNOSTIC_V0_1.md`
 - Mage P×P/settlement-tail attribution: `173_T1_MAGE_STAGE50_PXP_AND_SETTLEMENT_TAIL_ATTRIBUTION_V0_1.md`
-- candidate: `legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_51.yaml`
+- **user-approved Stage49-50 structural baseline:** `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
+- **wider T1 Wave A plan/static preflight:** `175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md`
+- approved Stage49-50 candidate: `legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
+- Wave A plan: `legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_52.yaml`
 
 ---
 
@@ -55,11 +58,11 @@ v0.2 Stage46-50 Lv31 absence = TOO SAFE
 pressure duration lever = SUPPORTED
 uniform late repetition = CLASS-SKEWED / NOT ADOPTED
 Stage49-50 class-rotation diagnostic = PASS_WITH_WATCH
-Stage49-50 authoring candidate = STATIC PASS / DYNAMIC REPRODUCTION PASS_WITH_WATCHES
+Stage49-50 structural authoring baseline = USER APPROVED WITH WATCHES
 Stage50 CLUSTER-final variant = REJECTED
 Mage small Stage50 settle inversion = VALID DELAYED-PACKAGE TAIL ATTRIBUTED
-CURRENT = STAGE49-50 AUTHORING ADOPTION DECISION GATE
-candidate adopted = NO / USER APPROVAL REQUIRED
+Wider T1 Wave A plan = STATIC PREFLIGHT PASS
+CURRENT = WAVE A EXACT SPAWN RECIPE MATERIALIZATION DECISION GATE
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -92,22 +95,123 @@ canonical = GRUNT first mixed Stage8-12
 
 ---
 
-# T1 structural authority
+# Stage49-50 approved structural authoring baseline
 
-Skeleton/static audit:
+Approval source:
+`174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
+
+Candidate:
+`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
+
+SHA256:
+`c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3`
+
 ```text
-structural FAIL = 0
-PASS_WITH_WATCHES
-pressure = BASELINE22 / FLOOD8 / RUSH16 / BULWARK16
-complexity = C0 8 / C1 25 / C2 15 / C3 2 / C4 0
-rolling 10-Stage class opportunity = 41/41 PASS
+phase gap = 5500 ms
+Stage49 = DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
+Stage50 = DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
 ```
 
-Late-T1 signatures:
+Important distinction:
 ```text
-Stage49 = E02+E03 / R+B / F08 / CD05 / C2 / RUSH+BULWARK
-Stage50 = SYNTH E01+E02+E03 / G+R+B / MULTI / CD03 / C3 / BASELINE
+Stage49 CLUSTER = G/R/G/R/B/G, 0..600ms burst
+Stage50 CLUSTER = B/G/B/G/B/G, 0..1800ms DURABLE_CORE_3
 ```
+
+This approval is structural authoring authority only.
+It does not freeze production, scalars, Archer exact width, Mage Lv31 centers, or the full T1 recipe set.
+
+Reopen only on concrete contradictory evidence, coupled downstream incompatibility, relevant source/runner change, or a watch becoming material.
+
+---
+
+# Exact evidence retained for Stage49-50
+
+Static legality — doc170:
+```text
+run 40156618986 / artifact 12585015454 / PASS
+```
+
+Dynamic reproduction — doc171:
+```text
+run 40156895093 / artifact 12585270921 / fidelityErrors=[]
+```
+
+Lv31 OFF->ON role-facing direction:
+```text
+Knight +43.0303%
+Rogue  +30.0662%
+Tank   +27.3684% + 3 unresolved reduced
+Archer +1.7241%
+Mage   +9.4216%
+```
+
+Objective protection:
+```text
+OFF wall damage 1358
+ON wall damage 164
+```
+
+Mage attribution — doc173:
+```text
+Stage50 CLUSTER P×P = 4/5 seeds
+ON mean Lv31 unique targets = 4.0
+ON mean Lv31 damage = 1342.5
++0.108s mean settle inversion = valid delayed package tail in this sample
+```
+
+No scalar failure evidence was found.
+
+---
+
+# Wider T1 exact authoring Wave A
+
+Plan:
+`legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`
+
+New target stages:
+```text
+1,4,8,
+15,19,
+24,25,29,30,31,
+33,37,38
+```
+
+Context-only anchors:
+```text
+5,18,20,39,40,41,49,50
+```
+
+Four slices:
+```text
+A1 = 1,4,8
+A2 = 15,19
+A3 = 24,25,29,30,31
+A4 = 33,37,38
+```
+
+Final static preflight:
+```text
+run      40189296422
+artifact 12597413342
+head     a2817325b87fe4796d7f3c10c860835e30513df0
+artifact sha256 d7a18825573c798484995d4ce107ff5d161365c1ad4e4bb5f134bee861d28643
+status   PASS
+errors   []
+warnings []
+```
+
+Exact source identities:
+```text
+plan = da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+skeleton = 4bc8af12324cee744f1bcb55e3261f41012e741c97fbcdbd8f5dadd6a297bf4c
+representative v0.2 = 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+adopted Stage49-50 = c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3
+```
+
+The first failed preflight was a validator schema defect (`recipes` vs `stageOverrides`), not a plan/content contradiction. Artifact recovery showed all other semantic guards already passed. Validator was minimally corrected and the exact rerun passed.
+
+Wave A static PASS means only that these 13 stages are a consistent bounded next authoring wave. No new spawn recipe is approved yet.
 
 ---
 
@@ -125,180 +229,9 @@ authored spawns complete
 Settlement bridge:
 `tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py`
 
-Mage Lv31 diagnostic fidelity bridge restores inherited Y-radius semantics and full-package hit exclusion. This is semantic fidelity correction only, not numerical freeze.
+Mage Lv31 diagnostic fidelity bridge is semantic fidelity correction only, not numerical freeze.
 
-Archer Lv31 diagnostic bridge uses `yTolerance=0.20` only to model the approved materially wider corridor. Exact width remains unfrozen and is not encoded into authoring data.
-
----
-
-# Stage49-50 admitted candidate
-
-Candidate:
-`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
-
-SHA256:
-`c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3`
-
-Grammar:
-```text
-phase gap = 5500 ms
-
-Stage49:
-DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
-
-Stage50:
-DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
-```
-
-Important CLUSTER distinction:
-```text
-Stage49 CLUSTER
-= GRUNT/RUNNER/GRUNT/RUNNER/BRUTE/GRUNT
-= offsets 0/120/240/360/480/600 ms
-= distinct-grammar burst
-
-Stage50 CLUSTER
-= BRUTE/GRUNT/BRUTE/GRUNT/BRUTE/GRUNT
-= offsets 0/360/720/1080/1440/1800 ms
-= DURABLE_CORE_3 / STAGGER_1800
-```
-
-Probe-only metadata broadening was not promoted. Stage49/50 metadata remains aligned with canonical skeleton/v0.2 authority.
-
----
-
-# Exact evidence chain
-
-## Static authoring legality — doc170
-```text
-run      40156618986
-artifact 12585015454
-head     4a06adbb523dd63e0a2a5fefb31fbb2553c0e4d1
-artifact sha256 ac2d233af17dd0f5415169d7daec38bfc472c3409bfe626ea756d8e986bd1676
-```
-
-Result:
-```text
-PASS / errors=[] / warnings=[]
-metadataPreservedFromV02 = true
-Stage49 authored24 / max4s6 / max6s11 / y0.18..0.82
-Stage50 authored30 / max4s6 / max6s9 / y0.18..0.82
-```
-
-## Dynamic materialization reproduction — doc171
-```text
-run      40156895093
-artifact 12585270921
-head     cd5d28ac6748a65b8e46c8c664954223a8cf5ef3
-artifact sha256 9f1ca98b624c31ffce1beefc5ca8dc17cbcdd2309d2db8abec7eb92cb66ebe8c
-fidelityErrors = []
-Stage49/50 spawn equivalence = true / true
-```
-
-Lv31 OFF->ON role-facing reproduction:
-```text
-Knight +43.0303%
-Rogue  +30.0662%
-Tank   +27.3684% + 3 unresolved reduced
-Archer +1.7241%
-Mage   +9.4216%
-```
-
-Objective protection:
-```text
-OFF wall damage 1358
-ON  wall damage 164
-OFF mean final Base HP 1945.68
-ON  mean final Base HP 1993.44
-fail/incomplete 0 / 0
-```
-
-## Stage50 CLUSTER-final chronology probe — doc172
-```text
-run      40157211995
-artifact 12585421260
-head     fd88ab0d5deb2cb483c6931aa4ba16293a472620
-artifact sha256 e988398a06990cd16e7b8dbe004ed2ee287f9c2be01dcd4acef167f818101f6b
-```
-
-Variant:
-```text
-DS -> FRONTLINE -> LINE -> LINE_REPRISE -> CLUSTER
-```
-
-Result:
-```text
-fidelity/static PASS
-Mage CLUSTER OFF 4728ms = ON 4728ms / 0% improvement
-Mage whole-window mastery delta remains -0.472s
-variant = REJECTED
-```
-
-Therefore simply moving CLUSTER to Stage termination does not improve Mage consequence translation.
-
-## Mage P×P / settlement-tail attribution — doc173
-```text
-run      40157463857
-artifact 12584527727
-head     d2fc1c3e85b32012edcfdf8f7db49032ea802671
-artifact sha256 78ae92b8f948a0824d94a33dc34091c6f74eb904645bfe4a5de016a289338c8a
-fidelityErrors = []
-```
-
-Current admitted Stage50 CLUSTER:
-```text
-P×P occurs in CLUSTER in 4/5 seeds
-ON primary target from CLUSTER = 4/4
-mean Lv31 unique targets = 4.0
-mean Lv31 damage = 1342.5
-mean CLUSTER-origin targets hit = 4.0
-```
-
-Rejected CLUSTER-final:
-```text
-mean Lv31 unique targets = 3.25
-mean Lv31 damage = 1078.75
-```
-
-Mage Stage50 mean settle:
-```text
-OFF 26.800s
-ON  26.908s
-apparent ON slowdown = 0.108s
-```
-
-Attribution:
-- four seeds settle 180ms later on ON because the authorized staged Lv31 delayed package remains in the combat-event queue;
-- one seed gains 180ms at combat level;
-- net `(4×180 - 180)/5 = 108ms`.
-
-Therefore:
-```text
-MAGE_STAGE50_SETTLE_INVERSION = VALID_DELAYED_PACKAGE_TAIL_EFFECT_IN_THIS_SAMPLE
-NOT EVIDENCE OF LV31 ROLE/DAMAGE FAILURE
-```
-
-Do not weaken settlement fidelity by discarding delayed events to improve this metric.
-
----
-
-# Current assessment
-
-```text
-static authoring legality = PASS
-exact materialization fidelity = PASS
-dynamic reproduction = PASS
-five-class role-facing direction = POSITIVE
-Mage Stage50 role expression = REAL
-Mage small settle inversion = EXPLAINED BY VALID SETTLEMENT TAIL
-CLUSTER-final alternative = REJECTED
-objective wall pressure = STILL TANK-SKEWED
-Archer role signal = MODEST POSITIVE
-scalar change required = NOT SHOWN
-candidate authoring adoption = NOT YET
-```
-
-Further local Stage49-50 chronology/scalar search is not justified by current evidence.
+Archer Lv31 diagnostic `yTolerance=0.20` remains diagnostic only and unfrozen.
 
 ---
 
@@ -315,37 +248,31 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-Residual Stage49-50 watch means current exact sample has material wall pressure concentrated in Tank cases. It does **not** require equal wall damage across classes; Tank objective-protection identity is expected to be more visible there.
+Do not proliferate watches without a concrete failure mode.
 
 ---
 
 # Current decision gate
 
-Recommended decision:
+Recommended next action:
 ```text
-ADOPT current Stage49-50 candidate as the canonical T1 structural authoring baseline WITH WATCHES
+MATERIALIZE WAVE A EXACT SPAWN RECIPE CANDIDATES SLICE-BY-SLICE
 ```
 
-If approved, adoption means only:
+Required order:
 ```text
-STRUCTURAL AUTHORING BASELINE
-+ existing watches
+A1 stages 1,4,8 -> static recipe gate
+A2 stages 15,19 -> static recipe gate
+A3 stages 24,25,29,30,31 -> static recipe gate
+A4 stages 33,37,38 -> static recipe gate
 ```
 
-It explicitly does **not** mean:
-```text
-production gameplay change
-numerical freeze
-Archer yTolerance=0.20 freeze
-Mage Lv31 numerical freeze
-monster/class/shop/EXP/P×P scalar freeze
-full T1 Stage1-50 exact recipe freeze
-```
+Do not author all 13 and validate only at the end.
+Do not begin dynamic execution for a slice before its static recipe gate passes.
 
-If approved, next bounded step is:
-```text
-PREPARE WIDER T1 EXACT AUTHORING PLAN + STATIC PREFLIGHT
-```
-not immediate full-50 production freeze.
-
-If not approved, continue Stage49-50 diagnosis only against the specific rejection reason.
+Still not authorized/frozen:
+- Wave A exact spawn recipes;
+- full T1 Stage1-50 exact recipe freeze;
+- monster/class/shop/EXP/P×P numerical freeze;
+- class buffs/nerfs;
+- production gameplay changes.
