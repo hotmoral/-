@@ -1,0 +1,100 @@
+version: system-dependency-calibration-order-v0.49
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_48.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_48.yaml
+
+canonicalUpdates:
+  - 171_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_DYNAMIC_ADMISSION_V0_1.md
+  - 170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md
+  - data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+  - 169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md
+  - 168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md
+  - 167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md
+  - 161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  - 156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md
+
+principles:
+  - live_remote_wins
+  - diagnose_before_patch
+  - source_simulator_fidelity_before_balance_interpretation
+  - lifecycle_state_before_encounter_geometry_or_scalar
+  - encounter_shape_before_scalar
+  - role_signal_must_be_checked_against_whole_stage_consequence
+  - class_opportunity_rotation_not_equal_parity
+  - preserve_class_specialties_and_real_weaknesses
+  - tank_objective_protection_not_kill_parity
+  - exact_scalar_freeze_last
+  - avoid_unnecessary_repeat_or_scope_expansion
+  - important_design_or_numerical_adoption_requires_user_approval
+  - production_changes_require_explicit_authorization
+
+campaignAuthoring:
+  initialCampaign: {tierCount: 4, status: USER_APPROVED}
+  monsterAvailability:
+    status: USER_APPROVED
+    T1: [GRUNT, RUNNER, BRUTE]
+    T2_add: [SHIELD, FLYER]
+    T3_add: [CHARGER, SPLITTER]
+    T4_add: [SUPPORTER, SIEGER]
+  T1SignatureSkeleton:
+    source: 161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+    status: STATIC_PASS_WITH_WATCHES
+  representativeTransitionSlices:
+    pressureShapeCandidate: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+    stage49_50AuthoringCandidate: data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+    classRotationResult: 169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md
+    authoringStaticResult: 170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md
+    authoringDynamicResult: 171_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_DYNAMIC_ADMISSION_V0_1.md
+    authoringCandidate:
+      staticAdmission: PASS
+      dynamicReproduction: PASS_WITH_WATCH
+      adopted: false
+      candidateSha256: c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3
+    residual:
+      objectivePressureRotation: STILL_SKEWED_TOWARD_TANK
+      archerWholeWindowTranslation: WEAK
+      mageWholeWindowTranslation: MIXED
+      scalarChangeRequired: NOT_SHOWN
+      leadingMechanism: FIXED_PHASE_WAIT_CAN_MASK_ROLE_LOCAL_CLEAR_ADVANTAGE
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  wallDeficitPersists: true
+  comboPersists: true
+  chargePersists: true
+  survivalIsClear: false
+  authored4sNormalMax: 8
+  currentClassBuffNerfAuthorized: false
+  monsterScalarChangeAuthorized: false
+  pxpProbabilityChangeAuthorized: false
+  shopNumericFreezeAuthorized: false
+  expRuleChangeAuthorized: false
+  finalExpRouting: P10R_PER_USER_APPROVED_R2
+  fullT1ExactRecipeFreezeAuthorized: false
+  productionChangesAuthorized: false
+
+currentBoundary:
+  activePackage: T1_STAGE50_ROLE_SIGNAL_TO_STAGE_CONSEQUENCE_CHRONOLOGY_PROBE
+  baseCandidate: STAGGER_1800_STAGE50_CLUSTER_ONLY
+  stage49Change: NONE
+  stage50DiagnosticOrder: [DURABLE_SCATTER, FRONTLINE, LINE, LINE_REPRISE, CLUSTER]
+  keepStage50Cluster: DURABLE_CORE_3_STAGGER_1800
+  keepPhaseAnchorsMs: [0, 5500, 11000, 16500, 22000]
+  purpose: TEST_FINAL_CLUSTER_CONSEQUENCE_TRANSLATION_WITHOUT_SCALAR_CHANGE
+  recommendedNext: RUN_ONE_BOUNDED_STAGE50_CLUSTER_FINAL_DIAGNOSTIC
+  full50ExactRecipeAuthoring: DEFERRED
+  exactProductionScalarFreeze: DEFERRED
+  productionGameplayChange: UNAUTHORIZED
+  awaitingUserDecision: false
