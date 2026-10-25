@@ -2,30 +2,31 @@
   "schema": "LINKLINE_A3_PUBLIC_NL_MATCHED_RUNTIME_MANIFEST",
   "version": "1.1.0",
   "status": "PUBLIC_PREVIEW",
-  "sessionId": "NL5_MATCHED_1_REPAIR_1",
-  "phase": "NL5_MATCHED_REPAIR_1",
-  "puzzleCount": 12,
+  "sessionId": "NL5_CONFIRMATION_1",
+  "phase": "NL5_CONFIRMATION_1",
+  "puzzleCount": 8,
   "analysisValuesIncluded": true,
   "analysisValueScope": "selected-session shortest-distance join only",
   "humanCollectionEnabled": false,
-  "sessionBundleFingerprint": "e96188be059588e8f73c110f3130048ea80f37fc3df84b1158d75ed84f872dbb",
-  "analysisMetadataFingerprint": "fa1605b1adb0572697187903f32b10583b713b7e4c3a99d5addd1103651f95fd",
+  "sessionBundleFingerprint": "0b679bb9b4dccab39700994870020602d99a5f79d0703fb560ec80fc3a236c48",
+  "analysisMetadataFingerprint": "9ef810a4de2e044b1cff4aabf5b4255a427438032f897fab3e9d01dac050b0e6",
   "validatedPublicSource": {
-    "branch": "linkline/a3-nl5-repair-runtime-validation-v1",
-    "commit": "01e09026263b20932cdf57b6c25daa422adfb64e",
-    "actionsRunId": 40201606995,
+    "branch": "linkline/a3-nl5-confirmation-runtime-validation-v1",
+    "commit": "91f95e237b63a78dc9db4e3e20758dc7e402263d",
+    "actionsRunId": 40213186090,
     "conclusion": "success"
   },
-  "privateRepairSource": {
-    "branch": "a3-nl-matched-exposure-repair-v1",
-    "commit": "28490c2428f5e91d58001a0189e8fc52a6322255"
+  "canonicalCandidateSource": {
+    "branch": "a3-nl5-confirmation-v1",
+    "runtimeSourceCommit": "fd287a1fd983544634124f72b623bf10b019c0ec",
+    "recoveredCanonicalHead": "bf26d1e88fd8c480e4f442ab9c5ac3ac4b529aa7"
   },
   "files": {
-    "app.mjs": "43f6f366087464e0dc5d98ac453a4ec5093369c2",
-    "config.mjs": "bcc8fa1a3791d5eff8febd84c17af0cf2a3e4edc",
-    "protocol.mjs": "9e7c08d724395ecc3dfe83179e31cee56696b8d0",
-    "data/session_bundle.json": "face15e6e333edce9e7a8ef81729ffdce18da347",
-    "data/analysis_metadata.json": "c2fec3c17e293d36f7691848fb06bd771c6992a3",
+    "app.mjs": "ccde47cc218c7dc1f8e40c457867769d4aee9d03",
+    "config.mjs": "4305fc9d885d15f795c5c90d410ab24f2ccf7741",
+    "protocol.mjs": "114aff311e401fcd88439e6b16b82796f3918b34",
+    "data/session_bundle.json": "086a1caae804bea0c06a3958996fbf9147a84ec1",
+    "data/analysis_metadata.json": "e4df2cb5426dee3acc0ed92602a8b29d809ba384",
     "index.html": "2429cf72ceb18d1265a2f69656aafebe1aa11f2e",
     "mechanic.mjs": "c214cd077c102c4e007b045cc3d24d48febdab3a",
     "styles.css": "10d61a9696c004a53ea48916d266d9b2b5fac8b6"

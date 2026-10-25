@@ -53,7 +53,7 @@ function renderBoard(puzzle,onCell){
 async function stateFp(){return sha256(stateSerialization(current.n,path));}
 
 function showInfo(){
-  const p=panel('Linkline 비교 테스트','12문제를 두 문제씩 이어서 풀고, 각 두 문제 뒤에 짧은 비교 질문에 답합니다.');
+  const p=panel('Linkline 비교 테스트',`${bundle.puzzleCount}문제를 두 문제씩 이어서 풀고, 각 두 문제 뒤에 짧은 비교 질문에 답합니다.`);
   const notice=el('div','notice','결과는 이 기기에서 JSON 파일로만 내보내며 자동 업로드하지 않습니다. 문제를 푸는 동안 예상 난이도나 비교 기준은 표시하지 않습니다.');
   const copy=el('div','copy');
   for(const [title,text] of [
@@ -71,12 +71,12 @@ function beginSession(){
 }
 function identityFor(puzzle,index){return {attemptId:`ATTEMPT-${String(index+1).padStart(2,'0')}-${sessionRunId.slice(-8)}`,researchEquivalenceIdV1:puzzle.researchEquivalenceIdV1,puzzleFingerprint:puzzle.puzzleFingerprint};}
 function startAttempt(index){
-  attemptIndex=index;if(index>=12){completeSession();return;}
+  attemptIndex=index;if(index>=bundle.puzzleCount){completeSession();return;}
   current=bundle.puzzles[index];path=canonicalPath(current.initial);selected=null;inputEnabled=true;finished=false;
   attemptLog=new EventLog({sessionRunId,clock});attemptIdentity=identityFor(current,index);attemptEmit('PUZZLE_PRESENTED');attemptEmit('INPUT_ENABLED');renderAttempt();
 }
 function renderAttempt(message=''){
-  clear();screen.append(el('div','progress',`문제 ${attemptIndex+1} / 12`));const status=el('div','status',message);
+  clear();screen.append(el('div','progress',`문제 ${attemptIndex+1} / ${bundle.puzzleCount}`));const status=el('div','status',message);
   screen.append(renderBoard(current,onCell),status);
   const actions=el('div','actions');const restart=button('처음부터','secondary');restart.onclick=restartAttempt;const abandon=button('문제 끝내기','danger');abandon.onclick=abandonAttempt;actions.append(restart,abandon);screen.append(actions);
 }
@@ -125,13 +125,15 @@ function submitPairFeedback(pairPosition,difficultyResponse,deviceBurdenResponse
   if(!PAIR_RESPONSE_VALUES.includes(difficultyResponse)||!PAIR_RESPONSE_VALUES.includes(deviceBurdenResponse))throw new Error('PAIR_RESPONSE');
   const pair=bundle.pairs[pairPosition-1];const row={pairId:pair.pairId,pairPosition,afterPuzzlePosition:pairPosition*2,difficultyResponse,deviceBurdenResponse};
   pairFeedback.push(row);emitSession('PAIR_FEEDBACK_SUBMITTED',row);
-  if(pairPosition===3){showBreak();return;}
-  if(pairPosition===6){completeSession();return;}
+  const breakPair=bundle.breakAfter/2;
+  if(pairPosition===breakPair){showBreak();return;}
+  if(pairPosition===bundle.pairCount){completeSession();return;}
   startAttempt(attemptIndex+1);
 }
 function showBreak(){
-  emitSession('BREAK_SHOWN',{afterAttempt:6,afterPair:3});clear();const p=el('div','panel');p.append(el('div','break-mark','BREAK'),el('h2','','여기까지 6문제를 풀었습니다.'),el('p','','원하면 잠시 쉬었다가 계속하세요.'));
-  const b=button('계속하기');b.onclick=()=>{emitSession('BREAK_CONTINUED',{nextAttempt:7,nextPair:4});startAttempt(6);};p.append(b);screen.append(p);
+  const afterPair=bundle.breakAfter/2;
+  emitSession('BREAK_SHOWN',{afterAttempt:bundle.breakAfter,afterPair});clear();const p=el('div','panel');p.append(el('div','break-mark','BREAK'),el('h2','',`여기까지 ${bundle.breakAfter}문제를 풀었습니다.`),el('p','','원하면 잠시 쉬었다가 계속하세요.'));
+  const b=button('계속하기');b.onclick=()=>{emitSession('BREAK_CONTINUED',{nextAttempt:bundle.breakAfter+1,nextPair:afterPair+1});startAttempt(bundle.breakAfter);};p.append(b);screen.append(p);
 }
 function validateExportPayload(payload){
   const errors=[];
@@ -140,7 +142,7 @@ function validateExportPayload(payload){
   if(payload.runtimeMode!==RUNTIME_MODE||payload.testerProfile!==TESTER_PROFILE||payload.matchedSessionId!==MATCHED_SESSION_ID)errors.push('identity');
   if(payload.mechanicBaseline!==MECHANIC_BASELINE||payload.presentationVersion!==PRESENTATION_VERSION)errors.push('baseline');
   if(payload.sessionBundleFingerprint!==SESSION_BUNDLE_FINGERPRINT||payload.analysisMetadataFingerprint!==ANALYSIS_METADATA_FINGERPRINT)errors.push('fingerprint');
-  if(payload.attempts.length!==12)errors.push('attemptCount');
+  if(payload.attempts.length!==bundle.puzzleCount)errors.push('attemptCount');
   const ids=payload.attempts.map(row=>row.researchEquivalenceIdV1),expected=bundle.puzzles.map(row=>row.researchEquivalenceIdV1);if(JSON.stringify(ids)!==JSON.stringify(expected))errors.push('attemptOrder');
   for(let i=0;i<payload.attempts.length;i++){
     const expectedShortest=metadata.shortestDistanceByResearchEquivalenceIdV1[expected[i]];
@@ -155,12 +157,12 @@ function completeSession(){
   emitSession('SESSION_ENDED',{reason:'NL_MATCHED_COMPLETE'});
   const streamErrors=[...validateEventStream(sessionLog.events),...attempts.flatMap((row,index)=>validateEventStream(row.events).map(error=>`attempt${index+1}:${error}`))];
   const payload=makeMatchedExport({sessionEvents:sessionLog.events,attempts,pairFeedback,sessionRunId});const all=[...streamErrors,...validateExportPayload(payload)];
-  clear();const p=el('div','panel');p.append(el('h2','','테스트 완료'),el('p','','12문제와 비교 질문을 모두 마쳤습니다.'));
+  clear();const p=el('div','panel');p.append(el('h2','','테스트 완료'),el('p','',`${bundle.puzzleCount}문제와 비교 질문을 모두 마쳤습니다.`));
   const notice=el('div','notice',all.length?'내보내기 검사에 실패했습니다. 이 화면을 그대로 알려주세요.':'결과 JSON을 이 기기에 저장한 뒤 이 채팅에 파일을 올려주세요.');p.append(notice);
   const exportButton=button('결과 JSON 내보내기','secondary');exportButton.disabled=all.length>0;exportButton.onclick=()=>downloadJson(payload);p.append(exportButton);
   if(all.length)p.append(el('div','debug',all.join(' · ')));screen.append(p);
 }
-function downloadJson(data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='linkline-nl5-matched-repair-1.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
+function downloadJson(data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='linkline-nl5-confirmation-1.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
 
 document.addEventListener('visibilitychange',()=>{if(!attemptLog||finished)return;if(document.hidden)attemptEmit('VISIBILITY_PAUSED');else attemptEmit('VISIBILITY_RESUMED');});
 window.addEventListener('pagehide',()=>{if(attemptLog&&!finished){try{attemptEmit('SESSION_ENDED',{reason:'PAGEHIDE'});}catch{}}});

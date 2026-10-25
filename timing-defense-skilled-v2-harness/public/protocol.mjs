@@ -60,16 +60,16 @@ export async function validateSessionBundle(bundle,metadata){
   if(bundle?.testerProfile!==TESTER_PROFILE)errors.push('testerProfile');
   if(bundle?.sessionId!==MATCHED_SESSION_ID)errors.push('sessionId');
   if(bundle?.largerN!==5)errors.push('largerN');
-  if(bundle?.pairCount!==6||bundle?.pairs?.length!==6)errors.push('pairCount');
-  if(bundle?.puzzleCount!==12||bundle?.puzzles?.length!==12)errors.push('puzzleCount');
-  if(bundle?.breakAfter!==6)errors.push('breakAfter');
+  if(bundle?.pairCount!==4||bundle?.pairs?.length!==4)errors.push('pairCount');
+  if(bundle?.puzzleCount!==8||bundle?.puzzles?.length!==8)errors.push('puzzleCount');
+  if(bundle?.breakAfter!==4)errors.push('breakAfter');
   if(JSON.stringify(bundle?.pairFeedbackAfterPuzzlePositions)!==JSON.stringify(PAIR_FEEDBACK_POSITIONS))errors.push('pairFeedbackPositions');
   if(bundle?.sessionBundleFingerprint!==SESSION_BUNDLE_FINGERPRINT)errors.push('bundleFingerprintLiteral');
   if(await normalizedFingerprint(bundle,'sessionBundleFingerprint')!==SESSION_BUNDLE_FINGERPRINT)errors.push('bundleFingerprintSemantic');
 
   const quarantine=new Set(QUARANTINED_RESEARCH_EQUIVALENCE_IDS),ids=new Set();
-  const lengthCounts=new Map([[6,0],[7,0],[9,0]]);
-  for(let pairIndex=0;pairIndex<6;pairIndex++){
+  const lengthCounts=new Map([[6,0],[7,0],[9,0]]),expectedLengthCounts=new Map([[6,1],[7,2],[9,1]]);
+  for(let pairIndex=0;pairIndex<4;pairIndex++){
     const pair=bundle.pairs?.[pairIndex],position=pairIndex+1;
     if(pair?.pairPosition!==position)errors.push(`pairPosition:${position}`);
     if(pair?.axis!=='SAME_L')errors.push(`pairAxis:${position}`);
@@ -84,7 +84,7 @@ export async function validateSessionBundle(bundle,metadata){
     if(pair.orientation==='CONTROL_FIRST'&&members[0]?.pairMember!=='control')errors.push(`pairOrder:${position}`);
     if(pair.orientation==='LARGER_FIRST'&&members[0]?.pairMember!=='larger')errors.push(`pairOrder:${position}`);
   }
-  for(const [length,count] of lengthCounts)if(count!==2)errors.push(`lengthPairCount:${length}:${count}`);
+  for(const [length,count] of lengthCounts)if(count!==expectedLengthCounts.get(length))errors.push(`lengthPairCount:${length}:${count}`);
 
   for(const [index,puzzle] of (bundle.puzzles||[]).entries()){
     try{
@@ -189,7 +189,7 @@ export function reconstructAttempt(events,shortestDistance){
 
 export function validatePairFeedback(rows,bundle){
   const errors=[];
-  if(rows.length!==6)errors.push('pairFeedbackCount');
+  if(rows.length!==4)errors.push('pairFeedbackCount');
   for(let i=0;i<rows.length;i++){
     const row=rows[i],pair=bundle.pairs[i];
     if(row.pairPosition!==i+1||row.pairId!==pair.pairId)errors.push(`pairFeedbackBinding:${i+1}`);
