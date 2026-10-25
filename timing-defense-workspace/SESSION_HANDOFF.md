@@ -120,6 +120,12 @@ P6-B2 temp:
 - last known `5093a151142090d58c0e1d26f52cdbee43653542`
 - evidence only.
 
+Inert refs created during A2 tool routing:
+- `timing-defense-workspace-temp-a2-unused`
+- `timing-defense-workspace-temp-a2-unused-2`
+- both point to pre-A2 canonical `f6833a3ba3558246e51c8da71582c237b04e8a4a` and contain no unique work.
+- they are **not authority and must be ignored**. Current connector exposes no branch-ref deletion action, so they were left inert rather than reused.
+
 ---
 
 # 5. Stage49-50 approved baseline — preserve
