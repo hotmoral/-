@@ -1,18 +1,23 @@
 # Twin Dock Project Status
 
 ## Current phase
-**P3 — Game-feel / presentation polish: P3-A ACCEPTED / CLOSED; P3-B CANDIDATE / DEVICE VALIDATION PENDING**
+**P3 — Game-feel / presentation polish: ACCEPTED / CLOSED**
 
-Current P3-B working branch: `twindock-p3b-transition-v1`.
+Next exact boundary: **Android packaging lane — preflight first, implementation only after the wrapper/build contract is fixed.**
+
+Accepted P3-B working/closure branch: `twindock-p3b-transition-v1`.
 P3-B base: accepted P3-A closure commit `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`.
+Copied SHAs are reference points only; live remote is always authoritative.
 
-## Accepted foundation
-- P0 modular foundation: ACCEPTED / canonical.
-- P1 Mission 01 five-stage vertical slice: ACCEPTED / CLOSED.
-- P2 world-readable docking feedback: ACCEPTED / CLOSED.
-- P3-A event-feedback foundation: ACCEPTED / CLOSED after mobile device validation.
+## Accepted milestone stack
+- P0 modular foundation / V8 parity: **ACCEPTED / CLOSED**
+- P1 Mission 01 five-stage continuous loop: **ACCEPTED / CLOSED**
+- P2 world-readable docking feedback: **ACCEPTED / CLOSED**
+- P3-A event/audio/haptic foundation: **ACCEPTED / CLOSED**
+- P3-B stage-transition / final-completion polish: **ACCEPTED / CLOSED**
 - V8 remains the immutable fallback/control contract.
-- Frozen input, thrust, speed, camera semantics and precision-docking thresholds are unchanged.
+
+Frozen input, thrust, speed, camera semantics, collision/docking truth and precision thresholds remain unchanged through P3.
 
 ## P0 closure
 - deterministic smoke test: PASS
@@ -48,140 +53,76 @@ Accepted normal-play presentation:
 - compact mission progress + status only
 - old relative-speed numeric HUD removed from normal play
 - old position / speed / direction / spin checklist removed from normal play
-- old diagnostics remain accessible with `?debug=1` for QA
-- world-readable docking cues are rendered through a separate transparent `FeedbackRenderer`
+- old diagnostics remain accessible with `?debug=1`
+- world-readable docking cues rendered through separate `FeedbackRenderer`
 
 Accepted feedback channels:
-- **position**: capture brackets converge and turn green at the exact position threshold
-- **orientation**: ship-frame and port notches converge/overlap and turn green at the exact direction threshold
-- **angular velocity**: relative-spin trail shrinks and turns green at the exact spin threshold
-- **relative velocity**: drift arrow communicates relative-motion direction/magnitude and turns green at the exact speed threshold
-- successful capture gets a restrained green confirmation ring
+- position: capture brackets converge/turn green at exact position threshold
+- orientation: ship-frame/port notches converge/turn green at exact direction threshold
+- angular velocity: relative-spin trail shrinks/turns green at exact spin threshold
+- relative velocity: drift arrow shows relative motion and turns green at exact speed threshold
+- successful capture: restrained green confirmation ring
 
 P2 core/frozen modules remained unchanged: `config.js`, `input.js`, `physics.js`, `docking.js`, `camera.js`, `mission.js`, `renderer.js`.
-Changed-JS syntax checks: PASS. Mobile device readability/presentation check: ACCEPTED.
+Changed-JS syntax checks: PASS. Mobile readability/presentation: ACCEPTED.
 
 ## P3 product question
-Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking feel substantially more satisfying without obscuring physical information, increasing fatigue, or changing the accepted control/docking behavior?
+Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking feel substantially more satisfying without obscuring physical information, increasing fatigue, or changing accepted control/docking behavior?
+
+Accepted answer after P3-A + P3-B mobile validation: **yes**.
 
 ## P3-A — event feedback foundation: ACCEPTED / CLOSED
-Purpose:
-Establish a presentation-only event/effects layer before broader transition/final polish.
-
-Accepted P3-A implementation:
-- new `src/effects.js` presentation layer
-- restrained continuous RCS hiss driven only by existing left/right input magnitude
-- bad-contact mechanical/noise cue + short haptic
-- soft-capture cue + short haptic
-- latch cue after dock hold before the next target
+Accepted implementation:
+- `src/effects.js` presentation layer
+- restrained continuous RCS hiss driven by existing input magnitude
+- distinct bad-contact mechanical/noise cue + short haptic
+- distinct soft-capture cue + short haptic
+- latch cue after dock hold
 - delayed next-target cue
-- compact final mission-complete cue + haptic
-- mobile browser AudioContext arming/resume on user gestures
+- compact mission-complete audio/haptic cue
+- mobile AudioContext arming/resume on real user gestures
 - RCS audio silences on pause/reset/backgrounding
-- audio and haptics independently disableable for A/B testing with `?audio=0` and `?haptics=0`
-- RCS gain automation change-bounded rather than appended every animation frame
-- presentation-only continuous-angle adapter in `src/presentation.js` to prevent distant-background parallax jumps at the `+π / -π` physical angle wrap
+- audio and haptics independently disableable with `?audio=0`, `?haptics=0`
+- change-bounded RCS gain automation
+- `src/presentation.js` continuous visual-angle adapter protecting distant parallax at physical `+π/-π` wrap
 
-P3-A event routing uses existing orchestration hooks/events only:
-- dock success
-- bad contact / collision
-- dock hold end / stage advance
-- existing RCS input state
+P3-A event routing observes existing orchestration hooks/input state only. It does not alter collision response, docking truth, target motion, mission rules, camera semantics or input physics.
 
-P3-A does **not** alter collision response, docking truth, target motion, mission progression logic, camera semantics, or input physics.
+### P3-A issue history
+Audio was initially perceived silent on the mobile device at low media volume. AudioContext activation was hardened across `pointerdown`, `touchstart`, and `click`, and gains were raised conservatively. Device recheck confirmed audio is audible around normal mid-level media volume.
 
-## P3-A regression / bug history
-Base for P3-A comparison: `2ee58e5d7808257b12946a2740efa48c19bf32b1`.
+A fifth-dock distant-background flip was observed. Root cause was presentation-only: wrapped physical `ship.angle` was multiplied by fractional parallax factors. A renderer-facing continuous visual angle was added while physical/camera truth stayed unchanged. Dedicated angle-wrap boundary check PASS; device recheck confirmed the flip no longer occurs.
 
-Implementation/presentation changes are limited to:
-- `twindock/index.html`
-- `twindock/package.json`
-- `twindock/src/effects.js` (new)
-- `twindock/src/main.js`
-- `twindock/src/presentation.js` (new)
+P3-A mobile acceptance confirmed:
+- audio/haptics work and remain low-fatigue
+- contact vs capture is distinguishable
+- capture/latch/next-target sequence is satisfactory
+- no touch/input regression
+- no perceived control/physics/camera regression
+- no recurrence of background flip
 
-Frozen/core and accepted P2 feedback modules remain unchanged:
-- `config.js`
-- `input.js`
-- `physics.js`
-- `docking.js`
-- `camera.js`
-- `mission.js`
-- `renderer.js`
-- `feedback.js`
+## P3-B — stage transition / final completion: ACCEPTED / CLOSED
+Product question:
+Can stage transitions and the final mission-complete moment be made clearer and more satisfying while preserving accepted P3-A sound/haptics, P2 world-readable information, sparse playfield, and frozen gameplay truth?
 
-Changed-JS syntax checks: PASS.
-Presentation angle-wrap boundary test: PASS.
-Existing accepted P0/P1 deterministic/core tests were not rerun solely for this presentation-only slice because their covered core modules did not change.
+Accepted answer from device validation: **yes**. User response to the candidate was positive (`괜찮네`) with no reported issue/regression.
 
-### Device issue 1 — audio initially perceived silent
-Observed on the mobile device: haptics worked but audio was not heard at the initial device-volume setting.
+Accepted P3-B presentation:
+- `src/transitions.js` isolated presentation-only controller
+- `transitions.css` isolated transition styles
+- successful dock briefly pulses compact Mission HUD
+- next target gets ~0.98 s thin horizontal sweep + compact `TARGET n / 5` and stage label
+- final completion gets ~1.9 s low-opacity edge frame + compact top completion cue
+- Mission HUD retains a subtle green completed state until reset/restart
+- all transition layers use `pointer-events:none`
+- reset/restart clears transient/persistent transition state
+- `prefers-reduced-motion` respected
+- no large central modal; docking/world scene remains readable
 
-Adjustment:
-- AudioContext activation made more robust across `pointerdown`, `touchstart`, and `click`
-- event functions re-arm/resume the audio context
-- output/RCS/event gain raised conservatively
-
-Recheck result:
-- audio audible once device volume was set around a normal mid-level
-- no further functional audio issue reported
-
-### Device issue 2 — final-dock background apparent flip
-Observed: around the fifth docking the distant background appeared to suddenly flip.
-
-Root cause:
-- physical `ship.angle` correctly wraps between `+π` and `-π`
-- distant background/parallax rendering multiplied the wrapped angle by fractional rotation factors
-- mathematically equivalent physical directions therefore became discontinuous parallax presentation angles at the wrap boundary
-
-Fix:
-- keep physical angle and camera truth untouched
-- add a renderer-facing continuous visual angle in `src/presentation.js`
-- on reset, presentation angle re-synchronizes to the physical angle so deterministic reset behavior is preserved
-
-Recheck result:
-- fifth-dock/background flip no longer reproduced on device
-- no perceived camera/control/physics feel regression
-
-## P3-A device acceptance result
-**PASS / ACCEPTED.**
-
-User device validation confirmed:
-- RCS/mechanical audio is audible at normal mid-level device volume
-- bad contact and successful capture are distinguishable
-- soft-capture / latch / next-target sequence is satisfactory
-- haptics are acceptable and not fatiguing across the five-dock run
-- audio does not materially interfere with docking judgment
-- no touch/input regression perceived
-- no control/physics/camera feel regression perceived
-- normal play remains visually sparse/readable
-- final-dock background wrap issue is fixed
-
-Therefore P3-A is closed and must not be repeatedly revalidated without a concrete relevant source change or mismatch.
-
-## P3-B product question
-Can stage transitions and the final mission-complete moment be made clearer and more satisfying while preserving the accepted P3-A sound/haptic foundation, P2 world-readable information, sparse playfield, and frozen gameplay truth?
-
-## P3-B candidate — stage transition / final completion presentation
-Implemented, **not yet accepted**.
-
-Current candidate:
-- new `src/transitions.js` presentation-only controller
-- new `transitions.css` isolated presentation styles
-- successful dock briefly pulses the compact Mission HUD
-- next target uses a ~0.98 s thin horizontal sweep with a compact `TARGET n / 5` + stage-label cue
-- final completion uses a ~1.9 s low-opacity edge frame and compact top completion cue rather than a central modal
-- Mission HUD remains subtly green after mission completion until reset/restart
-- all transition layers are `pointer-events:none`
-- reset/restart clears transient/persistent P3-B presentation state
-- `prefers-reduced-motion` is respected for transition animations
-
-P3-B intentionally does not add new gameplay state, thresholds, physics mutation, camera mutation, or mission rules.
-
-## P3-B regression boundary
+### P3-B regression boundary
 Compared against accepted P3-A closure `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`.
 
-Changed files are exactly:
+Changed files were exactly:
 - `twindock/index.html`
 - `twindock/package.json`
 - `twindock/src/main.js`
@@ -201,39 +142,65 @@ Unchanged accepted/core files include:
 - `presentation.js`
 
 Exact current `main.js` and `transitions.js` syntax checks: PASS.
-The local execution environment could not clone GitHub because outbound DNS/network is unavailable; this is an environment limitation, not a code/test failure. Since all deterministic/core-covered modules are unchanged, the accepted P0/P1 deterministic suite is not being rerun solely for this presentation-only candidate.
+Local GitHub clone/npm execution was unavailable because the local execution environment had no outbound DNS/network. This was an environment limitation, not a test failure. Because all deterministic/core-covered modules were unchanged, P0/P1 deterministic suites were not rerun solely for this presentation-only slice.
 
-## P3-B device acceptance gate
-Before P3-B can be accepted, validate on the actual mobile device:
-- next-target cue is noticeable without obscuring the new target or docking hardware
-- transition duration feels quick and does not interrupt recovery/control flow
-- Mission HUD pulse is legible but not distracting
-- final completion feels more satisfying than P3-A without becoming arcade-like
-- edge-frame completion effect does not create motion discomfort
-- no touch/input regression
-- no audio/haptic regression from P3-A
-- no recurrence of the final-dock background-wrap issue
-- normal play remains sparse and readable
+### P3-B device acceptance result
+**PASS / ACCEPTED.** Device check confirmed the new transition/final-completion presentation is acceptable. No new issue was reported with:
+- next-target transition clarity
+- final completion satisfaction
+- central scene obstruction
+- motion comfort
+- touch/input
+- P3-A audio/haptics
+- background angle-wrap fix
 
-Do not promote P3-B or start Android packaging until this device gate is evaluated.
+P3 is therefore **CLOSED**. Do not repeatedly revalidate P0–P3 without relevant source changes, a concrete mismatch, or a prospective dependency of the next lane.
 
-## Cloudflare device-test exposure
-For mobile validation, Twin Dock is exposed as static assets under the already-connected Cloudflare Worker deployment without modifying Timing Defense Worker/API behavior.
+## Cloudflare mobile-validation exposure
+Twin Dock has been exposed for device validation as static assets under the already-connected Timing Defense Cloudflare Worker deployment without changing Timing Defense Worker/API behavior.
 
 Current test path convention:
 `/twindock/index.html`
 
-The Cloudflare exposure is a validation/deployment convenience only; the authoritative Twin Dock source remains the live Twin Dock working branch and canonical documents.
+This is a validation/exposure convenience, not source authority. Authoritative Twin Dock source remains the live Twin Dock branch/canonical documents. Do not let this temporary shared exposure create long-term product coupling; prefer a dedicated deployment later if needed.
 
-## Android gate
-Android packaging remains justified as a near-term platform step because:
-- the core control is accepted
-- the continuous mission loop is fun
-- world-readable UI direction is accepted
-- P3-A event-feedback foundation is accepted
+## Exact next boundary — Android packaging lane
+P3 is complete, so Android packaging is now authorized as a separate platform/build lane.
 
-Complete and device-validate P3-B before starting Android packaging so platform work does not get mixed with presentation iteration.
+### Android product question
+Can the accepted web implementation be packaged on Android with essentially identical control feel, rendering/readability, audio/haptics and Mission 01 behavior, without introducing platform-specific regressions or forcing a native rewrite?
+
+### First Android slice: preflight / wrapper contract only
+Before implementation:
+- recover live P3 closure state
+- confirm exact accepted P3-B source branch/HEAD
+- inventory web runtime assumptions: touch/pointer capture, fullscreen/orientation, Web Audio, vibration, safe areas, asset paths
+- choose the smallest wrapper approach, preferring Capacitor/WebView-style preservation of the proven web app unless a concrete native-only need appears
+- define application ID/name/version/min SDK/target SDK/build lane explicitly
+- define offline/local asset packaging and any network permissions
+- define Android back/pause/resume/orientation behavior
+- define device acceptance checks before generating APK
+
+### Android frozen guards
+- do not rewrite physics/input/docking/camera in native code merely for packaging
+- do not tune V8/P0 controls while solving wrapper issues
+- do not redesign Mission 01 or P2/P3 presentation in the packaging batch
+- do not add fuel/combat/progression/3D migration
+- keep platform fixes separate from gameplay changes
+
+### Initial Android acceptance checks
+- dual-touch controls retain pointer identity and feel
+- no touch loss at edges or after pause/resume
+- landscape presentation and safe-area layout match web behavior
+- ship-frame camera and parallax continuity match accepted P3
+- Web Audio cues audible after normal interaction
+- haptics remain short and meaningful
+- all five Mission 01 dockings complete normally
+- no final-stage background flip
+- reset/fullscreen-equivalent lifecycle does not regenerate/randomize the world
+- APK/install/launch lifecycle is stable on the target device
+
+Do not begin a broad native rewrite. The first goal is faithful packaging of the accepted game.
 
 ## Handoff rule
-At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` remains current.
-P3-B is currently a candidate awaiting device validation, so the accepted P3-A handoff remains the last closed baseline until P3-B is accepted or otherwise closed.
+At every large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` + README remain current.
