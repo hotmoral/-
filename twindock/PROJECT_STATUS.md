@@ -1,10 +1,10 @@
 # Twin Dock Project Status
 
 ## Current phase
-**P3 — Game-feel / presentation polish: P3-A ACCEPTED / CLOSED; P3-B NEXT**
+**P3 — Game-feel / presentation polish: P3-A ACCEPTED / CLOSED; P3-B CANDIDATE / DEVICE VALIDATION PENDING**
 
-Current P3 working branch: `twindock-p3-gamefeel-v1`.
-P3 branch base: accepted P2 presentation state after README sync, commit `2ee58e5d7808257b12946a2740efa48c19bf32b1`.
+Current P3-B working branch: `twindock-p3b-transition-v1`.
+P3-B base: accepted P3-A closure commit `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`.
 
 ## Accepted foundation
 - P0 modular foundation: ACCEPTED / canonical.
@@ -159,28 +159,66 @@ User device validation confirmed:
 
 Therefore P3-A is closed and must not be repeatedly revalidated without a concrete relevant source change or mismatch.
 
-## Exact next boundary — P3-B stage-transition / final-completion polish
-Product question:
+## P3-B product question
 Can stage transitions and the final mission-complete moment be made clearer and more satisfying while preserving the accepted P3-A sound/haptic foundation, P2 world-readable information, sparse playfield, and frozen gameplay truth?
 
-Target P3-B scope:
-- improve next-target transition presentation
-- improve final mission-complete presentation
-- refine contact/capture visuals only if a concrete device-readability need is identified
-- preserve accepted P3-A audio/haptic behavior unless a concrete regression appears
-- keep effects short, restrained, low-fatigue, and non-blocking
-- require device validation for the resulting presentation changes
+## P3-B candidate — stage transition / final completion presentation
+Implemented, **not yet accepted**.
 
-P3-B non-goals:
-- no control/physics/camera/docking threshold tuning
-- no fuel economy
-- no combat
-- no upgrade/meta progression
-- no 3D-engine migration
-- no Android packaging inside the P3-B implementation batch
+Current candidate:
+- new `src/transitions.js` presentation-only controller
+- new `transitions.css` isolated presentation styles
+- successful dock briefly pulses the compact Mission HUD
+- next target uses a ~0.98 s thin horizontal sweep with a compact `TARGET n / 5` + stage-label cue
+- final completion uses a ~1.9 s low-opacity edge frame and compact top completion cue rather than a central modal
+- Mission HUD remains subtly green after mission completion until reset/restart
+- all transition layers are `pointer-events:none`
+- reset/restart clears transient/persistent P3-B presentation state
+- `prefers-reduced-motion` is respected for transition animations
+
+P3-B intentionally does not add new gameplay state, thresholds, physics mutation, camera mutation, or mission rules.
+
+## P3-B regression boundary
+Compared against accepted P3-A closure `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`.
+
+Changed files are exactly:
+- `twindock/index.html`
+- `twindock/package.json`
+- `twindock/src/main.js`
+- `twindock/src/transitions.js` (new)
+- `twindock/transitions.css` (new)
+
+Unchanged accepted/core files include:
+- `config.js`
+- `input.js`
+- `physics.js`
+- `docking.js`
+- `camera.js`
+- `mission.js`
+- `renderer.js`
+- `feedback.js`
+- `effects.js`
+- `presentation.js`
+
+Exact current `main.js` and `transitions.js` syntax checks: PASS.
+The local execution environment could not clone GitHub because outbound DNS/network is unavailable; this is an environment limitation, not a code/test failure. Since all deterministic/core-covered modules are unchanged, the accepted P0/P1 deterministic suite is not being rerun solely for this presentation-only candidate.
+
+## P3-B device acceptance gate
+Before P3-B can be accepted, validate on the actual mobile device:
+- next-target cue is noticeable without obscuring the new target or docking hardware
+- transition duration feels quick and does not interrupt recovery/control flow
+- Mission HUD pulse is legible but not distracting
+- final completion feels more satisfying than P3-A without becoming arcade-like
+- edge-frame completion effect does not create motion discomfort
+- no touch/input regression
+- no audio/haptic regression from P3-A
+- no recurrence of the final-dock background-wrap issue
+- normal play remains sparse and readable
+
+Do not promote P3-B or start Android packaging until this device gate is evaluated.
 
 ## Cloudflare device-test exposure
-For mobile validation, Twin Dock can be exposed as static assets under the already-connected Cloudflare Worker deployment without modifying Timing Defense Worker/API behavior.
+For mobile validation, Twin Dock is exposed as static assets under the already-connected Cloudflare Worker deployment without modifying Timing Defense Worker/API behavior.
 
 Current test path convention:
 `/twindock/index.html`
@@ -198,3 +236,4 @@ Complete and device-validate P3-B before starting Android packaging so platform 
 
 ## Handoff rule
 At each large-group closure, update this file and `docs/SESSION_HANDOFF.md` together and verify `docs/START_HERE.md` remains current.
+P3-B is currently a candidate awaiting device validation, so the accepted P3-A handoff remains the last closed baseline until P3-B is accepted or otherwise closed.
