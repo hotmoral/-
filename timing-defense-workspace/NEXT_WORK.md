@@ -6,17 +6,18 @@ Updated: 2026-10-25 KST
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_48.yaml`;
-5. read `170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md`;
-6. inspect candidate `legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`;
-7. read `169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md` and compact diagnostic summary;
-8. inspect v0.2 base recipe;
-9. preserve `168` pressure/duration result and `167` exact baseline result;
-10. preserve runner contract/implementation `165/166`, settlement bridge, Mage Lv31 fidelity bridge and Archer diagnostic width bridge;
-11. preserve T1 skeleton/static authority `160-164` and P6 closure `156`;
-12. verify production/harness heads.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_51.yaml`;
+5. read `173_T1_MAGE_STAGE50_PXP_AND_SETTLEMENT_TAIL_ATTRIBUTION_V0_1.md`;
+6. read `172_T1_STAGE50_CLUSTER_FINAL_CONSEQUENCE_TRANSLATION_DIAGNOSTIC_V0_1.md`;
+7. read `171_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_DYNAMIC_ADMISSION_V0_1.md`;
+8. read `170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md`;
+9. inspect candidate `legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`;
+10. read `169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md` and compact summary;
+11. inspect v0.2 base recipe only as needed;
+12. preserve runner fidelity bridges and T1 skeleton/P6 authority;
+13. verify production/harness heads.
 
-Do not rerun closed P6, the full T1 skeleton audit, baseline exact-source diagnostics, the completed order/sustain search, or the completed static authoring preflight without a concrete trigger.
+Do not rerun closed Stage49-50 diagnostics unless new evidence or a specific rejection reason requires it.
 
 ---
 
@@ -24,188 +25,171 @@ Do not rerun closed P6, the full T1 skeleton audit, baseline exact-source diagno
 
 ```text
 T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
-baseline representative recipe = STATIC PASS / EXACT-SOURCE EXECUTED
-micro-sim runner = EXACT-SOURCE ADMISSION PASS AFTER SETTLEMENT CORRECTION
-v0.2 pressure-shape candidate = STATIC PASS / DYNAMIC DIAGNOSTIC ONLY
-Stage41 relief = RECONFIRMED
-v0.2 Stage46-50 Lv31 absence = TOO SAFE
-pressure duration lever = SUPPORTED
-uniform pulse repetition = CLASS-SKEWED / NOT ADOPTED
 Stage49-50 class-rotation diagnostic = PASS_WITH_WATCH
 DIAGNOSTIC CENTER = STAGGER_1800_STAGE50_CLUSTER_ONLY
-Stage49-50 authoring candidate = MATERIALIZED / STATIC PASS
+Stage49-50 authoring candidate = STATIC PASS / DYNAMIC REPRODUCTION PASS_WITH_WATCHES
+Stage50 CLUSTER-final alternative = REJECTED
+Mage small Stage50 settle inversion = VALID DELAYED-PACKAGE TAIL ATTRIBUTED
 objective-pressure rotation = STILL SKEWED TOWARD TANK
-CURRENT = MATERIALIZED CANDIDATE NARROW EXACT DYNAMIC ADMISSION
+CURRENT = STAGE49-50 AUTHORING ADOPTION DECISION GATE
+candidate adopted = NO
+awaiting user approval = YES
 full 50-Stage exact recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
 
 ---
 
-# Exact diagnostic center to preserve
+# Candidate under decision
 
-Phase gap:
+Path:
+`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
+
+SHA256:
+`c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3`
+
+Structure:
 ```text
-5500 ms
+phase gap = 5500 ms
+
+Stage49:
+DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
+
+Stage50:
+DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
 ```
 
-Order:
+Stage49 CLUSTER:
 ```text
-Stage49: DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
-Stage50: DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
+GRUNT/RUNNER/GRUNT/RUNNER/BRUTE/GRUNT
+0/120/240/360/480/600 ms
 ```
 
-Important Stage49/Stage50 distinction:
-
+Stage50 CLUSTER:
 ```text
-Stage49 CLUSTER
-= distinct-grammar burst
-= GRUNT/RUNNER/GRUNT/RUNNER/BRUTE/GRUNT
-= offsets 0/120/240/360/480/600 ms within phase
-
-Stage50 CLUSTER
-= DURABLE_CORE_3
-= BRUTE/GRUNT/BRUTE/GRUNT/BRUTE/GRUNT
-= offsets 0/360/720/1080/1440/1800 ms within phase
+BRUTE/GRUNT/BRUTE/GRUNT/BRUTE/GRUNT
+0/360/720/1080/1440/1800 ms
 ```
 
-Do not apply Stage50 sustain morphology to Stage49.
+The candidate preserves canonical Stage49/50 skeleton metadata and changes only the bounded spawn composition/geometry/chronology.
 
-Diagnostic exact run:
+---
+
+# Evidence supporting the decision
+
+## Static legality
 ```text
-run 40153142570
-artifact 12583341810
-head 5eb71a861b1226887a8ec09dce98641c0dfff817
-artifact sha256 ab31640122bd1d00179d5af62104368cb46ad4e5d4137fb8922d561ebbfcacf5
-fidelityErrors = []
+run 40156618986 / artifact 12585015454
+PASS / errors=[] / warnings=[]
+Stage49 max4s=6
+Stage50 max4s=6
+metadataPreservedFromV02=true
 ```
 
-Role-facing Lv31 OFF->ON diagnostic direction:
+## Exact dynamic reproduction
 ```text
-Knight +43.03%
-Rogue  +30.07%
-Tank   +27.37% + 3 unresolved reduced
-Archer +1.72%
-Mage   +9.42%
+run 40156895093 / artifact 12585270921
+PASS / fidelityErrors=[]
+Stage49/50 spawn equivalence=true/true
 ```
 
-Tank objective protection:
+Lv31 role-facing OFF->ON:
+```text
+Knight +43.0303%
+Rogue  +30.0662%
+Tank   +27.3684% + 3 unresolved reduced
+Archer +1.7241%
+Mage   +9.4216%
+```
+
+Objective protection:
 ```text
 OFF wall damage 1358
 ON wall damage 164
+fail/incomplete 0/0
 ```
 
-Residual watch:
+## Rejected alternative
+Stage50 CLUSTER-final diagnostic:
 ```text
-material wall pressure appears only in Tank cases in this exact sample
+run 40157211995 / artifact 12585421260
+Mage CLUSTER OFF=4728ms / ON=4728ms
+0% improvement
+variant REJECTED
 ```
-Do not turn this into an equal-wall-damage target.
+
+## Mage residual attribution
+```text
+run 40157463857 / artifact 12584527727
+fidelityErrors=[]
+```
+
+Current admitted Stage50 CLUSTER:
+```text
+P×P in CLUSTER = 4/5 seeds
+ON primary from CLUSTER = 4/4
+mean Lv31 unique targets = 4.0
+mean Lv31 damage = 1342.5
+```
+
+The apparent Mage Stage50 mean settle inversion `+0.108s` is exactly explained in this sample by valid delayed Lv31 package tail drainage before `STAGE_SETTLED`, not by weaker role performance.
 
 ---
 
-# Static authoring-candidate PASS — doc170
+# Residual watches
 
-Candidate:
-`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
-
-Exact static run:
 ```text
-run      40156618986
-artifact 12585015454
-head     4a06adbb523dd63e0a2a5fefb31fbb2553c0e4d1
-artifact sha256 ac2d233af17dd0f5415169d7daec38bfc472c3409bfe626ea756d8e986bd1676
+T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+- material wall pressure remains concentrated in Tank cases
+- do not force equal wall damage across classes
+
+Archer role signal
+- positive but modest
+- diagnostic `yTolerance=0.20` remains unfrozen
+
+Mage Lv31 numerical centers
+- diagnostic/provisional only
+- no numerical freeze from this candidate
 ```
 
-Identity:
-```text
-candidate sha256    c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3
-materialized sha256 de1b5944c560da9c0ea33f6e4dbc88bd898ee66f772a802274c96db4c711b33c
-base recipe sha256  3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
-```
-
-Result:
-```text
-status = PASS
-errors = []
-warnings = []
-metadataPreservedFromV02 = true
-Stage49 = authored24 / max4s6 / max6s11 / y 0.18..0.82
-Stage50 = authored30 / max4s6 / max6s9 / y 0.18..0.82
-```
-
-Materialization deliberately preserves v0.2/skeleton metadata. Diagnostic-probe-only metadata broadening was not promoted into authoring authority.
+No evidence currently requires a monster/class scalar change.
 
 ---
 
-# Fidelity cautions
+# Decision required
 
-Mage Lv31 bridge is a semantic fidelity correction, not a numerical freeze.
+Recommended:
+```text
+ADOPT candidate as canonical T1 Stage49-50 STRUCTURAL AUTHORING BASELINE WITH WATCHES
+```
 
-Archer Lv31 `yTolerance=0.20` is diagnostic only. Do not encode 0.20 in the authoring recipe or production authority.
+Approval would mean:
+- Stage49-50 structure becomes the canonical authoring baseline for subsequent T1 work;
+- existing watches remain active;
+- later evidence may reopen it only with a concrete trigger.
 
-Settlement bridge remains required until equivalent engine correction is independently validated.
+Approval would **not** mean:
+- production gameplay change;
+- numerical freeze;
+- Archer width freeze;
+- Mage Lv31 numerical freeze;
+- monster/class/shop/EXP/P×P scalar freeze;
+- full T1 Stage1-50 exact recipe freeze.
 
 ---
 
-# Exact next bounded task
+# If approved
 
-Run a **narrow exact-source Stage49-50 dynamic admission** on the materialized candidate.
-
-The admission must prove:
-
+Next bounded work:
 ```text
-1. exact candidate/base/source identity;
-2. materialized Stage49/50 spawn lists match the intended diagnostic center;
-3. Stage46-48 remain v0.2 and provide the same persistent-state lead-in;
-4. Lv31 OFF/ON use identical deterministic entry state;
-5. deterministic replay PASS;
-6. settlement/lifecycle continuity PASS;
-7. no transient/enemy carry leakage;
-8. Archer diagnostic width bridge remains diagnostic only;
-9. Mage Lv31 fidelity bridge remains semantic-only;
-10. five-class role-facing direction is consistent with doc169;
-11. Tank objective-protection signal is retained;
-12. objective-pressure skew is not materially worsened by materialization;
-13. no class/monster/shop/EXP/P×P scalar mutation;
-14. no production or full-T1 authoring adoption.
+1. record Stage49-50 structural adoption source;
+2. mark current candidate as canonical T1 Stage49-50 authoring baseline WITH WATCHES;
+3. preserve all numerical/unfrozen boundaries;
+4. prepare a bounded wider-T1 exact-authoring plan;
+5. static-preflight that plan before wider dynamic execution;
+6. do not jump directly to a full production/final 50-Stage freeze.
 ```
 
-For reproduction comparison, prefer exact same seeds:
-```text
-101,211,307,409,503
-```
+# If not approved
 
-If materialized data differs dynamically from the diagnostic-generated candidate, classify the mismatch before changing any encounter/scalar value.
-
----
-
-# What comes after dynamic admission
-
-If narrow dynamic admission reproduces the intended shape:
-- close the Stage49-50 authoring-candidate evidence unit;
-- report candidate as dynamically admitted but still **not adopted**;
-- evaluate whether the residual Tank-only wall-pressure watch requires another encounter-shape iteration or is acceptable as class-specific objective-protection evidence before any wider T1 recipe authoring.
-
-Do **not** jump directly to full Stage1-50 exact recipe freeze.
-
----
-
-# Fixed guards
-
-```text
-LIVE REMOTE WINS
-NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
-STAGE49-50 CANDIDATE SCOPE ONLY
-PRESERVE STAGE5 / STAGE18 / STAGE41
-PRESERVE STAGE46-48 LEAD-IN FOR DYNAMIC ADMISSION
-NO FULL-50 EXACT AUTHORING YET
-NO CLASS BUFF/NERF FROM THIS SLICE
-SURVIVAL != CLEAR
-TANK KILL PARITY NOT REQUIRED
-AUTHORED 4s DENSITY <= 8
-NO MONSTER/CLASS SCALAR CHANGE
-NO SHOP/EXP/P×P PROBABILITY CHANGE
-NO FLAT SHOP->EXP MULTIPLIER
-FINAL EXP ROUTING = P10R
-NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
-```
+Do not restart broad search. Diagnose only the user's specific rejection reason while preserving the evidence already closed.
