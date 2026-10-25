@@ -1,0 +1,85 @@
+version: t1-wider-exact-authoring-wave-a1-candidate-v0.1
+status: BOUNDED_A1_EXACT_SPAWN_CANDIDATE_NO_ADOPTION_NO_NUMERICAL_FREEZE
+tier: T1
+
+baseRecipe:
+  path: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  sha256: 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+
+plan:
+  path: data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+  sha256: da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+  slice: WAVE_A1_ONBOARDING_TO_FIRST_MIX_BRIDGE
+
+authority:
+  signatureSkeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  waveAPlanResult: ../175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md
+  stage49_50ApprovedBaseline: ../174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+scope:
+  addedStages: [1, 4, 8]
+  contextOnlyStages: [5]
+  allowedMonsters: [GRUNT, RUNNER]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+  candidateAdopted: false
+
+stageAdditions:
+  - id: T1_S01_GRUNT_BASELINE_TEACH
+    stage: 1
+    archetype: E01
+    componentArchetypes: [E01]
+    formation: F01
+    formationSet: [F01]
+    cadence: CD01
+    complexity: C0
+    pressureTags: [BASELINE]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0,    type: GRUNT, y: 0.46}
+      - {tMs: 1600, type: GRUNT, y: 0.46}
+      - {tMs: 3200, type: GRUNT, y: 0.46}
+      - {tMs: 4800, type: GRUNT, y: 0.46}
+
+  - id: T1_S04_GRUNT_FIRST_WAVE_BOUNDARY
+    stage: 4
+    archetype: E01
+    componentArchetypes: [E01]
+    formation: F01
+    formationSet: [F01]
+    cadence: CD03
+    complexity: C0
+    pressureTags: [BASELINE]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0,    type: GRUNT, y: 0.46}
+      - {tMs: 250,  type: GRUNT, y: 0.46}
+      - {tMs: 500,  type: GRUNT, y: 0.46}
+      - {tMs: 2800, type: GRUNT, y: 0.46}
+      - {tMs: 3050, type: GRUNT, y: 0.46}
+      - {tMs: 3300, type: GRUNT, y: 0.46}
+
+  - id: T1_S08_RUNNER_FIRST_MIX
+    stage: 8
+    archetype: E02
+    componentArchetypes: [E02]
+    formation: F01
+    formationSet: [F01]
+    cadence: CD03
+    complexity: C1
+    pressureTags: [RUSH]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0,    type: GRUNT,  y: 0.46}
+      - {tMs: 250,  type: RUNNER, y: 0.46}
+      - {tMs: 1700, type: GRUNT,  y: 0.46}
+      - {tMs: 1950, type: RUNNER, y: 0.46}
+      - {tMs: 3400, type: GRUNT,  y: 0.46}
+      - {tMs: 3650, type: RUNNER, y: 0.46}
+      - {tMs: 5100, type: RUNNER, y: 0.46}
