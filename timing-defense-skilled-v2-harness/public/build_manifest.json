@@ -1,0 +1,34 @@
+{
+  "schema": "LINKLINE_A3_PUBLIC_NL_MATCHED_RUNTIME_MANIFEST",
+  "version": "1.1.0",
+  "status": "PUBLIC_PREVIEW",
+  "sessionId": "NL5_CONFIRMATION_1",
+  "phase": "NL5_CONFIRMATION_1",
+  "puzzleCount": 8,
+  "analysisValuesIncluded": true,
+  "analysisValueScope": "selected-session shortest-distance join only",
+  "humanCollectionEnabled": false,
+  "sessionBundleFingerprint": "0b679bb9b4dccab39700994870020602d99a5f79d0703fb560ec80fc3a236c48",
+  "analysisMetadataFingerprint": "9ef810a4de2e044b1cff4aabf5b4255a427438032f897fab3e9d01dac050b0e6",
+  "validatedPublicSource": {
+    "branch": "linkline/a3-nl5-confirmation-runtime-validation-v1",
+    "commit": "91f95e237b63a78dc9db4e3e20758dc7e402263d",
+    "actionsRunId": 40213186090,
+    "conclusion": "success"
+  },
+  "canonicalCandidateSource": {
+    "branch": "a3-nl5-confirmation-v1",
+    "runtimeSourceCommit": "fd287a1fd983544634124f72b623bf10b019c0ec",
+    "recoveredCanonicalHead": "bf26d1e88fd8c480e4f442ab9c5ac3ac4b529aa7"
+  },
+  "files": {
+    "app.mjs": "ccde47cc218c7dc1f8e40c457867769d4aee9d03",
+    "config.mjs": "4305fc9d885d15f795c5c90d410ab24f2ccf7741",
+    "protocol.mjs": "114aff311e401fcd88439e6b16b82796f3918b34",
+    "data/session_bundle.json": "086a1caae804bea0c06a3958996fbf9147a84ec1",
+    "data/analysis_metadata.json": "e4df2cb5426dee3acc0ed92602a8b29d809ba384",
+    "index.html": "2429cf72ceb18d1265a2f69656aafebe1aa11f2e",
+    "mechanic.mjs": "c214cd077c102c4e007b045cc3d24d48febdab3a",
+    "styles.css": "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
+  }
+}
