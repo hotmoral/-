@@ -1,24 +1,31 @@
 {
   "schema": "LINKLINE_A3_PUBLIC_NL_MATCHED_RUNTIME_MANIFEST",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLIC_PREVIEW",
-  "sessionId": "NL_MATCHED_A_N4_N5",
-  "phase": "NL_MATCHED_A_N4_N5",
+  "sessionId": "NL5_MATCHED_1_REPAIR_1",
+  "phase": "NL5_MATCHED_REPAIR_1",
   "puzzleCount": 12,
-  "analysisValuesIncluded": false,
+  "analysisValuesIncluded": true,
+  "analysisValueScope": "selected-session shortest-distance join only",
   "humanCollectionEnabled": false,
-  "sessionBundleFingerprint": "f2f03232d41eba3142cdd3f1b4c307323809e5d411193e571f74d028e24a8753",
+  "sessionBundleFingerprint": "e96188be059588e8f73c110f3130048ea80f37fc3df84b1158d75ed84f872dbb",
+  "analysisMetadataFingerprint": "fa1605b1adb0572697187903f32b10583b713b7e4c3a99d5addd1103651f95fd",
   "validatedPublicSource": {
-    "branch": "linkline/a3-production-nl-matched-a-validation",
-    "commit": "b8ee0cd3d490856cf9d4885aa0fa7fec38371122",
-    "actionsRunId": 40194823565,
+    "branch": "linkline/a3-nl5-repair-runtime-validation-v1",
+    "commit": "01e09026263b20932cdf57b6c25daa422adfb64e",
+    "actionsRunId": 40201606995,
     "conclusion": "success"
   },
+  "privateRepairSource": {
+    "branch": "a3-nl-matched-exposure-repair-v1",
+    "commit": "28490c2428f5e91d58001a0189e8fc52a6322255"
+  },
   "files": {
-    "app.mjs": "e6dc5a7da12d9428bc030e73783247633bfd2522",
-    "config.mjs": "80ccd5891e760765a067d6347dd89dec38d35731",
-    "protocol.mjs": "2586a0b47447b3f7dded00ba154b757a1768d673",
-    "data/session_bundle.json": "7e7a24d600bebe285dec4c630b8ba2a1b7b1fcce",
+    "app.mjs": "43f6f366087464e0dc5d98ac453a4ec5093369c2",
+    "config.mjs": "bcc8fa1a3791d5eff8febd84c17af0cf2a3e4edc",
+    "protocol.mjs": "9e7c08d724395ecc3dfe83179e31cee56696b8d0",
+    "data/session_bundle.json": "face15e6e333edce9e7a8ef81729ffdce18da347",
+    "data/analysis_metadata.json": "c2fec3c17e293d36f7691848fb06bd771c6992a3",
     "index.html": "2429cf72ceb18d1265a2f69656aafebe1aa11f2e",
     "mechanic.mjs": "c214cd077c102c4e007b045cc3d24d48febdab3a",
     "styles.css": "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
