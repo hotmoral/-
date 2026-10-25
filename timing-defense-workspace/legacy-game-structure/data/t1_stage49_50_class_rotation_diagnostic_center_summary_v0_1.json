@@ -28,12 +28,22 @@
     }
   },
   "diagnosticCenter": {
-    "name": "STAGGER_1800",
+    "name": "STAGGER_1800_STAGE50_CLUSTER_ONLY",
+    "phaseGapMs": 5500,
     "stage49Order": ["DURABLE_SCATTER", "FRONTLINE", "CLUSTER", "LINE"],
     "stage50Order": ["DURABLE_SCATTER", "FRONTLINE", "CLUSTER", "LINE", "LINE_REPRISE"],
-    "clusterMorphology": ["BRUTE", "GRUNT", "BRUTE", "GRUNT", "BRUTE", "GRUNT"],
-    "clusterOffsetsMs": [0, 360, 720, 1080, 1440, 1800],
-    "phaseGapMs": 5500,
+    "stage49Cluster": {
+      "morphology": ["GRUNT", "RUNNER", "GRUNT", "RUNNER", "BRUTE", "GRUNT"],
+      "y": [0.42, 0.46, 0.50, 0.44, 0.48, 0.43],
+      "offsetsMs": [0, 120, 240, 360, 480, 600],
+      "status": "DISTINCT_GRAMMAR_BURST_UNCHANGED_BY_SUSTAIN_SEARCH"
+    },
+    "stage50Cluster": {
+      "morphology": ["BRUTE", "GRUNT", "BRUTE", "GRUNT", "BRUTE", "GRUNT"],
+      "y": [0.46, 0.44, 0.50, 0.48, 0.42, 0.46],
+      "offsetsMs": [0, 360, 720, 1080, 1440, 1800],
+      "status": "DURABLE_CORE_3_STAGGER_1800"
+    },
     "stage49": {"authored": 24, "max4s": 6, "max6s": 11, "minY": 0.18, "maxY": 0.82, "ySpread": 0.64},
     "stage50": {"authored": 30, "max4s": 6, "max6s": 9, "minY": 0.18, "maxY": 0.82, "ySpread": 0.64},
     "roleDirectionOffToOn": {
@@ -58,8 +68,8 @@
     }
   },
   "alternative": {
-    "name": "SUSTAIN_3000",
-    "clusterOffsetsMs": [0, 600, 1200, 1800, 2400, 3000],
+    "name": "SUSTAIN_3000_STAGE50_CLUSTER_ONLY",
+    "stage50ClusterOffsetsMs": [0, 600, 1200, 1800, 2400, 3000],
     "mageClearLatencyImprovementPct": 0.089618,
     "status": "LEGAL_BUT_NOT_MINIMAL_CENTER"
   },
@@ -67,7 +77,7 @@
     "roleRotationSignal": "IMPROVED",
     "objectivePressureRotation": "STILL_SKEWED_TOWARD_TANK",
     "scalarChangeRequired": "NOT_SHOWN",
-    "diagnosticCenter": "STAGGER_1800",
+    "diagnosticCenter": "STAGGER_1800_STAGE50_CLUSTER_ONLY",
     "authoringAdoption": false,
     "numericalFreeze": false,
     "productionGameplayChange": false
