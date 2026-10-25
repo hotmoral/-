@@ -154,11 +154,7 @@ def main() -> None:
             errors.append(f"context-stage{stage}-absent-from-base")
 
     expected = {int(k): v for k, v in plan.get("expectedSignatures", {}).items()}
-    expected_components = {
-        33: ["E01"],
-        37: ["E02"],
-        38: ["E01", "E03"],
-    }
+    expected_components = {33: ["E01"], 37: ["E02"], 38: ["E01", "E03"]}
 
     for stage in TARGETS:
         raw = add_by.get(stage)
@@ -278,8 +274,8 @@ def main() -> None:
         errors.append("stage38-not-count-bounded-below-stage39-peak")
     if static.get("38", {}).get("max4s", 99) >= s39_static.get("max4s", 0):
         errors.append("stage38-not-density-bounded-below-stage39-peak")
-    if len({x["type"] for x in s38}) >= len({x["type"] for x in expected39}):
-        errors.append("stage38-not-vocabulary-bounded-below-stage39-peak")
+    if static.get("38", {}).get("ySpan", 99.0) >= s39_static.get("ySpan", 0.0):
+        errors.append("stage38-not-geometry-bounded-below-stage39-peak")
 
     base_static_errors = list(r.static_recipe_gate(base))
     errors.extend(f"base-runner-static:{e}" for e in base_static_errors)
@@ -314,9 +310,7 @@ def main() -> None:
 
     materialized_path = Path(args.materialized_out)
     materialized_path.parent.mkdir(parents=True, exist_ok=True)
-    materialized_path.write_text(
-        yaml.safe_dump(materialized, sort_keys=False, allow_unicode=True), encoding="utf-8"
-    )
+    materialized_path.write_text(yaml.safe_dump(materialized, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
     result = {
         "version": "t1-wider-exact-authoring-wave-a4-static-preflight-v0.1",
@@ -332,12 +326,8 @@ def main() -> None:
         "stage39Static": s39_static,
         "stage39RecipeDigest": r.sha256_obj(base_by[39]) if 39 in base_by else None,
         "stage40RecipeDigest": r.sha256_obj(base_by[40]) if 40 in base_by else None,
-        "priorCandidatesPreserved": not any(
-            e.startswith(("a1-stage", "a2-stage", "a3-stage")) for e in errors
-        ),
-        "existingRepresentativeStagesPreserved": not any(
-            e.startswith("existing-representative-stage") for e in errors
-        ),
+        "priorCandidatesPreserved": not any(e.startswith(("a1-stage", "a2-stage", "a3-stage")) for e in errors),
+        "existingRepresentativeStagesPreserved": not any(e.startswith("existing-representative-stage") for e in errors),
         "contextAnchorsPreserved": not any(e.startswith("context-stage") for e in errors),
         "fullWaveAStaticMaterialized": not errors,
         "progressionGuard": "MAGE_DENSITY_TO_SPLIT_TEMPO_TO_DURABLE_BRIDGE_TO_STAGE39_PEAK_TO_STAGE40_GATE",
