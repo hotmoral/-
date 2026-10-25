@@ -177,7 +177,6 @@ def main() -> None:
         if got["pressure"].replace(" ", "") != str(want.get("pressure", "")).replace(" ", ""):
             errors.append(f"stage{stage}-pressure-plan-mismatch")
 
-    # Stage24: two readable four-GRUNT cluster bursts, density pressure without new vocabulary.
     s24 = add_by.get(24, {}).get("spawns", [])
     if [x["type"] for x in s24] != ["GRUNT"] * 8:
         errors.append("stage24-not-eight-grunt-density")
@@ -186,7 +185,6 @@ def main() -> None:
     if s24 and (max(float(x["y"]) for x in s24) - min(float(x["y"]) for x in s24) > 0.08):
         errors.append("stage24-cluster-y-span-too-wide")
 
-    # Stage25: low-count scatter recovery for Lv21 reward attribution.
     s25 = add_by.get(25, {}).get("spawns", [])
     if [x["type"] for x in s25] != ["GRUNT"] * 4:
         errors.append("stage25-not-four-grunt-recovery")
@@ -195,7 +193,6 @@ def main() -> None:
     if s25 and (max(float(x["y"]) for x in s25) - min(float(x["y"]) for x in s25) < 0.40):
         errors.append("stage25-scatter-y-span-too-narrow")
 
-    # Stage29: first bounded F08 three-type split-axis synthesis.
     s29 = add_by.get(29, {}).get("spawns", [])
     if Counter(x["type"] for x in s29) != Counter({"GRUNT": 3, "RUNNER": 3, "BRUTE": 3}):
         errors.append("stage29-not-balanced-grunt-runner-brute-synthesis")
@@ -207,7 +204,6 @@ def main() -> None:
     if any(0.40 < y < 0.60 for y in y29):
         errors.append("stage29-mid-axis-clutter-present")
 
-    # Stage30: lower-complexity two-type checkpoint after Stage29 synthesis.
     s30 = add_by.get(30, {}).get("spawns", [])
     if Counter(x["type"] for x in s30) != Counter({"GRUNT": 5, "BRUTE": 2}):
         errors.append("stage30-checkpoint-type-count-drift")
@@ -216,7 +212,6 @@ def main() -> None:
     if any(x["type"] == "RUNNER" for x in s30):
         errors.append("stage30-unintended-runner")
 
-    # Stage31: simple repeated durable-front burst, intensity over complexity.
     s31 = add_by.get(31, {}).get("spawns", [])
     expected31 = ["BRUTE", "GRUNT", "GRUNT", "GRUNT", "BRUTE", "GRUNT", "GRUNT", "GRUNT"]
     if [x["type"] for x in s31] != expected31:
@@ -231,7 +226,6 @@ def main() -> None:
         if stats["max4s"] > 8:
             errors.append(f"stage{stage}-max4s-exceeds-8")
 
-    # Cross-stage semantic progression guards.
     if static.get("25", {}).get("authored", 99) >= static.get("24", {}).get("authored", 0):
         errors.append("stage25-not-lower-count-recovery-than-stage24")
     if static.get("25", {}).get("max4s", 99) >= static.get("24", {}).get("max4s", 0):
@@ -240,14 +234,12 @@ def main() -> None:
         errors.append("stage29-to-stage30-vocabulary-decompression-failed")
     if static.get("31", {}).get("max4s", 0) < static.get("30", {}).get("max4s", 0):
         errors.append("stage31-softwall-entry-not-intensity-rise-over-stage30")
-    if len({float(x["y"]) for x in s31}) > 5:
-        errors.append("stage31-geometry-too-complex-for-c1-entry")
+    if static.get("31", {}).get("ySpan", 1.0) > 0.08:
+        errors.append("stage31-geometry-too-wide-for-c1-durable-line-entry")
 
-    # Base representative recipe remains authoritative and must still satisfy its original fixed-set gate.
     base_static_errors = list(r.static_recipe_gate(base))
     errors.extend(f"base-runner-static:{e}" for e in base_static_errors)
 
-    # Build an accumulated inspection artifact: base + unchanged A1 + unchanged A2 + A3.
     accumulated_additions = (
         copy.deepcopy(a1.get("stageAdditions", []))
         + copy.deepcopy(a2.get("stageAdditions", []))
