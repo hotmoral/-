@@ -2,12 +2,13 @@
 
 This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at every large-group closure.
 
-## 1. Repository / branch
+## 1. Repository / branches
 - Repository: `hotmoral/-`
 - P0 foundation branch: `twindock-foundation-v1`
-- Live remote is authoritative. Old chat text, memories, and copied SHAs are navigation aids only.
-- P1 branch: `twindock-p1-mission01-v1`
+- P1 Mission 01 branch: `twindock-p1-mission01-v1`
 - P0 canonical closure commit: `185a974dbd818386019677409f875640df27442f`
+- P1 implementation commit before acceptance closure: `1216c825fc77e172ebd0124b0c865ceb32b87028`
+- Live remote is authoritative. Old chats, memories, and copied SHAs are navigation aids only.
 
 ## 2. Required recovery order
 1. `twindock/docs/START_HERE.md`
@@ -92,22 +93,26 @@ Prefer `mistake -> unstable/bounce -> recovery -> re-approach` over immediate re
 ## 11. Visual direction
 Player ship is a docking/service shuttle with clear forward probe/collar, left/right RCS pods, multiple attitude-control nozzles and legible RCS plumes. Station port uses capture collar, inner tunnel, guide lights and latch feedback. UI should expose rather than cover the world.
 
-## 12. Current phase: P1 Mission 01
-Product question: **Does the validated control remain compelling for a continuous 3–5 minute mission?**
+## 12. P1 Mission 01 — ACCEPTED / CLOSED
+Product question: **Does the validated control remain compelling when expanded into a continuous multi-target mission rather than a single docking attempt?**
 
-Sequence: STATIC -> TRANSLATE -> ROTATE -> COMBINED -> FINAL.
+Accepted answer: **yes**. Mobile device feedback after playing the five-stage candidate was explicitly positive (`좋아`, `재미있네`). This is sufficient to promote the Mission 01 loop concept. Exact run duration was not separately instrumented, so do not invent a measured 3–5 minute duration.
 
-### P1 implementation status
-A coherent Mission 01 candidate is implemented and awaits device validation.
+Accepted sequence:
+1. `STATIC` — stationary target
+2. `TRANSLATE` — translating target, no rotation
+3. `ROTATE` — rotating target, no translation
+4. `COMBINED` — translating + rotating target
+5. `FINAL` — moving + rotating precision dock
 
-Implemented:
-- mission/state flow is separate
+Accepted P1 behavior:
+- mission/state flow remains separate from core physics
 - deterministic five-target profiles
 - station world state includes linear velocity (`vx`, `vy`)
 - docking-relative velocity includes target translation plus rotational port velocity
 - ship state continues between targets; no ship reset after each dock
 - deterministic background identity continues across the run
-- accepted station reference cues are merged as renderer-only behavior
+- accepted station reference cues remain renderer-only
 - recoverable collision/re-approach remains intact
 - frozen V8/P0 control constants and docking thresholds are unchanged
 
@@ -115,27 +120,57 @@ Validation completed:
 - JavaScript syntax PASS
 - P0 smoke regression PASS
 - Mission deterministic test PASS
+- mobile Mission 01 playtest ACCEPTED
+- fun/replay signal POSITIVE
 
-### Exact next gate
-Mobile device playtest of Mission 01. Do not tune frozen controls unless the device run exposes a concrete mismatch. Evaluate run continuity, stage differentiation/fairness, visual-cue comfort, input parity, approximate 3–5 minute duration, and replay desire.
+## 13. Exact next boundary — P2 world-readable feedback / UI reduction
+P2 product question:
+**Can the player judge docking readiness primarily from the world and docking hardware rather than a permanent debug-style four-condition checklist, while preserving clarity and the accepted game feel?**
 
-## 13. Deferred / non-goals
-No fuel economy, survival resources, combat, upgrades/meta progression, Android packaging, or 3D migration before P1 evaluation. Android becomes justified only after the mission loop, stable input, UI direction and replay intent are validated.
+Target P2 scope:
+- preserve all frozen control, camera, physics, and docking constants
+- preserve the accepted five-stage Mission 01 structure
+- move position feedback into capture-ring / alignment geometry
+- move relative-speed feedback into approach/guidance-light behavior
+- move orientation feedback into visible alignment markers
+- move angular-speed feedback into rotating/phase-matching visual cues
+- reduce or hide the developer-style four-condition checklist during normal play
+- keep mission progress compact and non-obstructive
+- add restrained stage-complete and final-complete presentation
+- preserve the sparse station reference ring/ticks/beacons/rotation arc
+- maintain motion-comfort discipline; do not solve readability by filling the screen with moving scenery
 
-## 14. Development / validation pipeline
+P2 acceptance should be device-based because it affects readability and presentation, but deterministic regressions must still confirm frozen gameplay values are untouched.
+
+## 14. Deferred / non-goals
+Still deferred until P2 presentation direction is accepted:
+- fuel economy
+- survival resources
+- combat
+- upgrades/meta progression
+- Android packaging
+- 3D-engine migration
+
+Android is now a plausible later step because the mission loop is fun, but platform complexity should follow a stable UI/presentation layer rather than precede it.
+
+## 15. Development / validation pipeline
 1. recover live state in required order
 2. state one product question
 3. classify frozen-feel impact
 4. define acceptance checks
 5. implement smallest coherent batch
 6. run deterministic regressions
-7. require device validation for input/camera/game-feel changes
+7. require device validation for input/camera/game-feel/readability changes
 8. promote only after acceptance
 9. at large-group closure update `PROJECT_STATUS.md` and this handoff together
 
-Tool economy: use current chat/local tools for bounded work and deterministic checks; Codex only for substantial batches with explicit scope/non-goals/tests; public Actions only when automation saves net work; do not repeatedly revalidate frozen work without a concrete trigger.
+Tool economy:
+- current chat/local tools for bounded design, implementation, and deterministic checks
+- Codex only for substantial batches with explicit scope/non-goals/tests
+- public GitHub Actions only when repeat automation saves net work
+- avoid repeated scans/builds/revalidation of frozen areas without a concrete trigger
 
-## 15. Known regression risks
+## 16. Known regression risks
 - mobile pointer capture/input loss
 - sensitivity creep
 - camera changes affecting feel
@@ -145,16 +180,19 @@ Tool economy: use current chat/local tools for bounded work and deterministic ch
 - visual cues becoming busy/dizzying
 - UI covering central scene
 - generous auto-capture returning
-- mission layer mutating core physics constants
+- mission/UI layer mutating core physics constants
+- removing too much debug feedback before world-space cues are actually readable
 
-## 16. Large-group closure checklist
-- [ ] exact boundary recorded
-- [ ] deterministic tests passed
-- [ ] device feel validated when required
-- [ ] accepted/frozen decisions recorded
-- [ ] status + handoff synchronized
-- [ ] START_HERE read order still correct
-- [ ] next execution boundary recorded
-- [ ] risks/blockers current
-- [ ] useful live refs refreshed
-- [ ] no stale canonical contradictions
+## 17. Large-group closure checklist
+- [x] P1 exact boundary recorded
+- [x] deterministic tests passed
+- [x] device feel/playability validated
+- [x] accepted/frozen decisions recorded
+- [x] status + handoff synchronized
+- [x] START_HERE read order remains valid
+- [x] next execution boundary recorded
+- [x] risks/blockers current
+- [x] useful live refs refreshed where relevant
+- [x] no known stale canonical contradiction
+
+A fresh GPT session must be able to recover the project from the live repository and this handoff without relying on conversation memory.
