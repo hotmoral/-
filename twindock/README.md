@@ -27,17 +27,33 @@ Frozen feel:
 - P2 world-readable docking feedback — ACCEPTED / CLOSED
 - P3-A restrained audio/haptics/contact-capture feedback — ACCEPTED / CLOSED
 - P3-B stage transition / final completion polish — ACCEPTED / CLOSED
+- Android packaging preflight — PASS / CLOSED
 
-P3 mobile validation also confirmed the final-stage distant-background angle-wrap fix, normal audio at practical device volume, acceptable haptics, and no reported control/camera/touch regression.
+P3 mobile validation confirmed the final-stage distant-background angle-wrap fix, practical-volume audio, acceptable haptics, and no reported control/camera/touch regression.
 
 ## Current phase
-**P3 is ACCEPTED / CLOSED. Next: minimal Android packaging/parity lane.**
+**Next: minimal Capacitor Android wrapper implementation, then debug APK and physical Android parity validation.**
 
-The Android lane should initially preserve the proven web implementation rather than rewrite gameplay natively. Begin with wrapper/build preflight: multi-touch/pointer capture, landscape/orientation, Web Audio, vibration, lifecycle, safe-area layout, local asset packaging, application ID/version/SDK choices, and device acceptance criteria.
+Canonical Android preflight contract:
 
-Preferred direction is a thin Capacitor/WebView-style wrapper unless a concrete native-only requirement appears.
+`docs/ANDROID_PACKAGING_PREFLIGHT.md`
 
-Do not mix Android/platform fixes with changes to frozen V8 control, docking thresholds, Mission 01 profiles, P2 feedback mapping, or P3 presentation behavior.
+Fixed first-probe build baseline:
+- Capacitor 8.5.3
+- app ID `com.hotmoral.twindock`
+- version `0.1.0` / versionCode `1`
+- minSdk 24
+- targetSdk / compileSdk 36
+- AGP 8.13.0
+- Gradle 8.14.3
+- JDK 17
+- Node.js 22+
+
+The wrapper must preserve the existing web game as local/offline assets. The initial implementation should use a deterministic generated `www/` package while keeping the existing root HTML/CSS/`src/` as canonical editable source.
+
+Do not mix Android/platform work with changes to frozen V8 control, docking thresholds, Mission 01 profiles, P2 feedback mapping, P3 presentation behavior, or `src/presentation.js` angle-wrap protection.
+
+Physical-device acceptance must prove dual-touch identity, edge behavior, lifecycle resume, safe-area/system-bar layout, audio, haptics, ship-frame camera continuity, all five Mission 01 dockings and no fifth-dock background regression.
 
 ## Content expansion direction
 Mission 01's current shuttle/front probe is a **reference craft**, not a permanent universal geometry.
@@ -58,15 +74,13 @@ Mission 03 is a decision gate, not the planned end of the game. Mission 04+ and 
 
 Canonical planning files:
 - `docs/CONTENT_EXPANSION_MAP.md` — near-term content grammar, gates and promotion order
-- `docs/IDEA_BANK.md` — long-horizon stockpile; **not** a roadmap
+- `docs/IDEA_BANK.md` — long-horizon stockpile; not a roadmap
 
 Idea states are `BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`. Documentation in the Idea Bank alone does not commit a feature.
 
-See `PROJECT_STATUS.md` for the exact next boundary and `docs/SESSION_HANDOFF.md` for the full project history/architecture/validation record.
-
 ## Operating policy
-Work in bounded slices. Refactor and tuning are separate changes. Prefer local deterministic checks over expensive build/AI workflows. Use Codex/CI only when they save net work. Device validation is required for input/camera/game-feel/readability/presentation/platform changes.
+Work in bounded slices. Refactor and tuning are separate changes. Prefer cheap consistency review and relevant deterministic checks before expensive build/device work. Use Codex/CI only when they save net work. Device validation is required for input/camera/game-feel/readability/presentation/platform changes.
 
-Prefer geometry/motion/clearance content expansion before adding unrelated combat/economy/RPG/open-world systems.
+Do not revalidate closed P0–P3 work without a relevant source change, prospective dependency, platform/package trigger, or concrete mismatch.
 
-At every large-group closure, synchronize `PROJECT_STATUS.md` and `docs/SESSION_HANDOFF.md`, then verify `docs/START_HERE.md`, `docs/CONTENT_EXPANSION_MAP.md` when relevant, and this README remain current.
+At every large-group closure, synchronize `PROJECT_STATUS.md` and `docs/SESSION_HANDOFF.md`, then verify `docs/START_HERE.md`, this README and any affected design docs remain consistent.
