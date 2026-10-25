@@ -25,7 +25,7 @@
       const sp=TD.Camera.worldToScreen(state,m.captureX,m.captureY);
       if(sp.x<-80||sp.x>W+80||sp.y<-80||sp.y>H+80)return;
       const ship=state.ship,alpha=clamp(1-(m.dist-45)/190,.20,1);
-      const relAngle=Math.atan2(Math.sin(m.p.targetAngle-ship.angle),Math.cos(m.p.targetAngle-ship.angle));
+      const relAngle=Math.atan2(Math.sin(m.stationAnchor.angle-m.shipAnchor.angle),Math.cos(m.stationAnchor.angle-m.shipAnchor.angle));
       ctx.save();ctx.translate(sp.x,sp.y);ctx.globalAlpha=alpha;
 
       if(state.docked){
@@ -41,7 +41,7 @@
       const signedSpin=state.station.omega-ship.angVel,trail=clamp(Math.abs(signedSpin)*.85,.035,.72),spinDir=signedSpin===0?1:Math.sign(signedSpin);
       ctx.strokeStyle=checks.spin?'rgba(116,226,164,.90)':'rgba(255,180,79,.56)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,43,relAngle-spinDir*trail,relAngle);ctx.stroke();ctx.fillStyle=checks.spin?'#74e2a4':'#ffb44f';ctx.beginPath();ctx.arc(Math.cos(relAngle)*43,Math.sin(relAngle)*43,checks.spin?2.8:2.2,0,Math.PI*2);ctx.fill();
 
-      const rvx=ship.vx-m.captureVx,rvy=ship.vy-m.captureVy,c=Math.cos(ship.angle),s=Math.sin(ship.angle),bx=c*rvx+s*rvy,by=-s*rvx+c*rvy,mag=Math.hypot(bx,by);
+      const rvx=m.rvx,rvy=m.rvy,c=Math.cos(ship.angle),s=Math.sin(ship.angle),bx=c*rvx+s*rvy,by=-s*rvx+c*rvy,mag=Math.hypot(bx,by);
       if(mag<1.2){ctx.fillStyle='rgba(116,226,164,.90)';ctx.beginPath();ctx.arc(0,51,2.5,0,Math.PI*2);ctx.fill();}
       else{
         const ux=bx/mag,uy=by/mag,len=clamp(mag*.55,7,42),start=49,end=start+len,color=checks.vel?'rgba(116,226,164,.90)':'rgba(255,180,79,.66)';

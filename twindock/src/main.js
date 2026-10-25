@@ -26,7 +26,7 @@
 
   function dockSuccess(m){
     state.docked=true;state.dockHold=TD.Config.DOCK_HOLD_SECONDS;state.score++;ui.score.textContent=progressText();clearControls();transitions.progress();
-    const ship=state.ship;ship.angle=m.p.targetAngle;ship.angVel=state.station.omega;const fx=Math.cos(ship.angle),fy=Math.sin(ship.angle);ship.x=m.captureX-fx*TD.Config.VISUAL_PROBE_X;ship.y=m.captureY-fy*TD.Config.VISUAL_PROBE_X;ship.vx=m.captureVx;ship.vy=m.captureVy;
+    const ship=state.ship,pose=TD.Geometry.bodyPoseForWorldAnchor(m.captureX,m.captureY,m.stationAnchor.angle,ship.dockAnchor);ship.x=pose.x;ship.y=pose.y;ship.angle=pose.angle;ship.angVel=state.station.omega;ship.vx=m.captureVx;ship.vy=m.captureVy;
     ui.mode.textContent='DOCK';ui.msgT.textContent=`DOCK ${state.mission.index+1} COMPLETE`;ui.msgS.textContent='SOFT CAPTURE · 다음 목표로 이어집니다.';ui.pulse.classList.remove('on');void ui.pulse.offsetWidth;ui.pulse.classList.add('on');effects.softCapture();
   }
 

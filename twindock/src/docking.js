@@ -3,27 +3,43 @@
   const TD = window.TwinDock;
   const { normAngle } = TD.MathUtil;
   TD.Docking = {
-    portState(state) {
-      const s = state.station;
-      const ux = Math.cos(s.angle), uy = Math.sin(s.angle);
-      const px = s.cx + ux * s.radius, py = s.cy + uy * s.radius;
-      return { ux, uy, px, py, pvx: s.vx - s.omega * uy * s.radius, pvy: s.vy + s.omega * ux * s.radius, targetAngle: normAngle(s.angle + Math.PI) };
+    portState(state, stationAnchor = TD.Geometry.stationDockAnchor(state)) {
+      const C = TD.Config, s = state.station;
+      const tx = Math.cos(stationAnchor.angle), ty = Math.sin(stationAnchor.angle);
+      const px = stationAnchor.x - tx * C.PORT_CAPTURE_INSET;
+      const py = stationAnchor.y - ty * C.PORT_CAPTURE_INSET;
+      const rx = px - s.cx, ry = py - s.cy;
+      return {
+        ux: -tx,
+        uy: -ty,
+        px,
+        py,
+        pvx: s.vx - s.omega * ry,
+        pvy: s.vy + s.omega * rx,
+        targetAngle: stationAnchor.angle
+      };
     },
     metrics(state) {
-      const C = TD.Config, ship = state.ship, station = state.station;
-      const p = this.portState(state);
-      const fx = Math.cos(ship.angle), fy = Math.sin(ship.angle);
-      const probeX = ship.x + fx * C.VISUAL_PROBE_X, probeY = ship.y + fy * C.VISUAL_PROBE_X;
-      const tx = Math.cos(p.targetAngle), ty = Math.sin(p.targetAngle);
-      const captureX = p.px + tx * C.PORT_CAPTURE_INSET, captureY = p.py + ty * C.PORT_CAPTURE_INSET;
-      const rx = captureX - station.cx, ry = captureY - station.cy;
-      const captureVx = station.vx - station.omega * ry, captureVy = station.vy + station.omega * rx;
-      const rvx = ship.vx - captureVx, rvy = ship.vy - captureVy;
+      const ship = state.ship, station = state.station;
+      const shipAnchor = TD.Geometry.shipDockAnchor(state);
+      const stationAnchor = TD.Geometry.stationDockAnchor(state);
+      const p = this.portState(state, stationAnchor);
+      const rvx = ship.vx - stationAnchor.vx, rvy = ship.vy - stationAnchor.vy;
       return {
-        p, probeX, probeY, captureX, captureY, captureVx, captureVy,
-        dist: Math.hypot(probeX - captureX, probeY - captureY),
+        p,
+        shipAnchor,
+        stationAnchor,
+        probeX: shipAnchor.x,
+        probeY: shipAnchor.y,
+        captureX: stationAnchor.x,
+        captureY: stationAnchor.y,
+        captureVx: stationAnchor.vx,
+        captureVy: stationAnchor.vy,
+        rvx,
+        rvy,
+        dist: Math.hypot(shipAnchor.x - stationAnchor.x, shipAnchor.y - stationAnchor.y),
         rel: Math.hypot(rvx, rvy),
-        dir: Math.abs(normAngle(ship.angle - p.targetAngle)),
+        dir: Math.abs(normAngle(shipAnchor.angle - stationAnchor.angle)),
         spin: Math.abs(ship.angVel - station.omega)
       };
     },

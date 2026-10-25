@@ -16,9 +16,8 @@
       if (state.docked) {
         state.dockHold -= dt;
         const m = TD.Docking.metrics(state);
-        ship.angle = m.p.targetAngle; ship.angVel = station.omega;
-        const fx = Math.cos(ship.angle), fy = Math.sin(ship.angle);
-        ship.x = m.captureX - fx * C.VISUAL_PROBE_X; ship.y = m.captureY - fy * C.VISUAL_PROBE_X;
+        const pose = TD.Geometry.bodyPoseForWorldAnchor(m.captureX, m.captureY, m.stationAnchor.angle, ship.dockAnchor);
+        ship.x = pose.x; ship.y = pose.y; ship.angle = pose.angle; ship.angVel = station.omega;
         ship.vx = m.captureVx; ship.vy = m.captureVy;
         if (state.dockHold <= 0 && hooks.onDockHoldEnd) hooks.onDockHoldEnd();
         return;

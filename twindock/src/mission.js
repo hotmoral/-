@@ -28,6 +28,10 @@
     station.vy=s*profile.bodyVx + c*profile.bodyVy;
     station.radius=Math.min(W,H)*0.12;
     station.ringR=station.radius*1.42;
+    station.dockAnchor.x=station.radius-TD.Config.PORT_CAPTURE_INSET;
+    station.dockAnchor.y=0;
+    station.dockAnchor.angle=Math.PI;
+    station.dockAnchor.tracksRadius=true;
     return profile;
   }
 
