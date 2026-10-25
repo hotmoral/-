@@ -14,17 +14,16 @@ Live remote always wins.
 
 Current key chain:
 - P6 closure: `156_P6_STRUCTURAL_CLOSURE_WITH_WATCHES_V0_1.md`;
-- four-Tier adoption: `158_INITIAL_FOUR_TIER_CAMPAIGN_AND_MONSTER_AVAILABILITY_APPROVED_CONTRACT_V0_1.md`;
-- approved lower-layer constraints/correction: `160_FOUR_TIER_AUTHORING_CONSTRAINT_APPROVED_WITH_T1_BASELINE_CORRECTION_V0_1.md`;
-- T1 Stage1-50 signature skeleton: `161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md`;
-- static skeleton audit: `162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md`;
+- four-Tier adoption/correction: `158` / `160`;
+- T1 Stage1-50 skeleton/static audit: `161` / `162`;
 - representative-slice preflight/materialization: `163` / `164`;
 - micro-sim contract/adapter: `165` / `166`;
-- exact-source baseline result: `167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md`;
+- exact baseline result: `167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md`;
 - v0.2 pressure/Lv31-absence/duration result: `168_T1_PRESSURE_SHAPE_V0_2_LV31_ABSENCE_AND_DURATION_SENSITIVITY_RESULT_V0_1.md`;
-- Stage49-50 class-rotation/sustain result: `169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md`;
-- compact Stage49-50 summary: `legacy-game-structure/data/t1_stage49_50_class_rotation_diagnostic_center_summary_v0_1.json`;
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_47.yaml`.
+- Stage49-50 class-rotation result: `169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md`;
+- Stage49-50 authoring static result: `170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md`;
+- candidate: `legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`;
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_48.yaml`.
 
 ---
 
@@ -52,10 +51,11 @@ Stage41 relief = RECONFIRMED
 v0.2 Stage46-50 Lv31 absence = TOO SAFE
 pressure duration lever = SUPPORTED
 uniform late-pulse repetition = CLASS-SKEWED / NOT ADOPTED
-Stage49-50 class-rotation diagnostic = PASS_WITH_WATCH / DIAGNOSTIC CENTER SELECTED
-DIAGNOSTIC CENTER = STAGGER_1800
+Stage49-50 class-rotation diagnostic = PASS_WITH_WATCH
+DIAGNOSTIC CENTER = STAGGER_1800_STAGE50_CLUSTER_ONLY
+Stage49-50 authoring candidate = MATERIALIZED / STATIC PASS
 objective-pressure rotation = STILL SKEWED TOWARD TANK
-CURRENT = STAGE49-50 AUTHORING-CANDIDATE MATERIALIZATION + STATIC PREFLIGHT
+CURRENT = MATERIALIZED CANDIDATE NARROW EXACT DYNAMIC ADMISSION
 Full exact T1 Stage1-50 recipe freeze = DEFERRED
 production = UNCHANGED / UNAUTHORIZED
 ```
@@ -85,7 +85,6 @@ Historical GRUNT-mix contradiction remains closed:
 obsolete = GRUNT first mixed Stage4-6
 canonical = GRUNT first mixed Stage8-12
 ```
-Skeleton uses Stage8. Do not pull RUNNER or BRUTE earlier to satisfy the obsolete window.
 
 ---
 
@@ -94,28 +93,27 @@ Skeleton uses Stage8. Do not pull RUNNER or BRUTE earlier to satisfy the obsolet
 Skeleton/static audit:
 ```text
 structural FAIL = 0
-verdict = PASS_WITH_WATCHES
+PASS_WITH_WATCHES
 pressure = BASELINE22 / FLOOD8 / RUSH16 / BULWARK16
 complexity = C0 8 / C1 25 / C2 15 / C3 2 / C4 0
 rolling 10-Stage class opportunity = 41/41 PASS
 ```
 
-Baseline representative recipe static result:
+Stage49 skeleton:
 ```text
-Stages = 5, 18, 20-23, 39-45, 46-50
-RESULT = PASS
-errors = 0
-warnings = 0
-highest authored 4s density = 8
-Stage40 max4s = 6
-Stage41 max4s = 3
+E02+E03 / R+B / F08 / CD05 / C2 / RUSH+BULWARK
+pre-final split-axis mastery
+```
+
+Stage50 skeleton:
+```text
+SYNTH E01+E02+E03 / G+R+B / MULTI / CD03 / C3 / BASELINE
+full learned-vocabulary synthesis
 ```
 
 ---
 
 # Runner fidelity authority
-
-The first exact-source execution exposed a false PASS because Stage-local wall shield/Aftershock was incorrectly allowed to delay `STAGE_SETTLED`.
 
 Correct settlement ordering:
 ```text
@@ -126,39 +124,25 @@ authored spawns complete
 => Stage-local passive temporary residue clears
 ```
 
-Minimal bridge:
+Settlement bridge:
 `tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py`
 
-Exact-source admission after correction remains PASS for:
-- recipe identity;
-- settlement/terminal result;
-- no enemy carry;
-- no transient leakage;
-- persistent state continuity;
-- deterministic replay;
-- paired isolation;
-- explicit skill-state trace.
+Mage Lv31 diagnostic fidelity bridge restores inherited Y-radius semantics and full-package hit exclusion. It is semantic fidelity correction only, not numerical freeze.
 
-During Stage49-50 diagnosis a second fidelity issue was found in Mage Lv31 staged-collapse semantics. The diagnostic bridge restores inherited Y radius and full-package hit exclusion. This is a semantic fidelity correction, not a production numerical freeze.
-
-Archer Lv31 uses a diagnostic width bridge `yTolerance=0.20`; exact width remains unfrozen.
+Archer Lv31 diagnostic width bridge uses `yTolerance=0.20`; exact width remains unfrozen and is not encoded in authoring data.
 
 ---
 
-# v0.2 / duration result — doc168
+# v0.2 / duration evidence
 
-v0.2 preserves Stage5 / Stage18 / Stage41 and all current monster/class/shop/EXP scalars.
-
-Key result:
 ```text
 Stage46-50 Lv31 ON: 15/15 clear, zero wall damage
 Stage46-50 Lv31 OFF: 15/15 clear, zero wall damage
 V02_STAGE46_50_MASTERY_GATE = NOT PRESENT
 ```
 
-Legal pressure-duration repetition proved that duration can create OFF>ON mastery separation without scalar inflation, but uniform repetition over-punished Tank/Rogue and under-exposed Archer/Mage.
+Legal duration extension proves pressure duration is a real mastery-gate lever, but uniform repetition is class-skewed and not adopted.
 
-Therefore:
 ```text
 PRESSURE_DURATION_IS_A_REAL_MASTERY_GATE_LEVER = SUPPORTED
 UNIFORM_REPETITION = CLASS_SKEWED_NOT_ADOPTED
@@ -179,27 +163,29 @@ seeds    101,211,307,409,503
 fidelityErrors = []
 ```
 
-Diagnostic grammar:
+Grammar order:
 ```text
 Stage49 = DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
 Stage50 = DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
-CLUSTER = BRUTE / GRUNT / BRUTE / GRUNT / BRUTE / GRUNT
+phase gap = 5500ms
 ```
 
-Compared:
+Exact Stage49/50 CLUSTER distinction:
 ```text
-STAGGER_1800 = 0/360/720/1080/1440/1800 ms
-SUSTAIN_3000 = 0/600/1200/1800/2400/3000 ms
+Stage49 CLUSTER
+= G/R/G/R/B/G
+= 0/120/240/360/480/600ms within phase
+= distinct-grammar burst
+
+Stage50 CLUSTER
+= B/G/B/G/B/G
+= 0/360/720/1080/1440/1800ms within phase
+= DURABLE_CORE_3 STAGGER_1800
 ```
 
-Both static PASS:
-```text
-Stage49 max4s = 6
-Stage50 max4s = 6
-Y spread = 0.18..0.82
-```
+Do not project the Stage50 sustain morphology onto Stage49.
 
-`STAGGER_1800` role-facing Lv31 OFF->ON direction:
+STAGGER_1800 Lv31 OFF->ON role-facing direction:
 ```text
 Knight +43.03% faster
 Rogue  +30.07% faster
@@ -211,7 +197,7 @@ Mage   +9.42% faster
 Tank objective protection:
 ```text
 OFF wall damage 1358
-ON  wall damage 164
+ON wall damage 164
 reduction 1194
 ```
 
@@ -219,12 +205,44 @@ Interpretation:
 ```text
 ROLE_ROTATION_SIGNAL = IMPROVED
 OBJECTIVE_PRESSURE_ROTATION = STILL_SKEWED_TOWARD_TANK
-DIAGNOSTIC_CENTER = STAGGER_1800
 AUTHORING_ADOPTION = NOT YET
 NUMERICAL_FREEZE = NO
 ```
 
-`STAGGER_1800` is preferred over `SUSTAIN_3000` because it achieves the same qualitative five-class role direction with a smaller chronology/cadence change; Mage signal is also slightly stronger (9.42% vs 8.96%).
+---
+
+# Stage49-50 authoring candidate static PASS — doc170
+
+Candidate:
+`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
+
+Important materialization rule:
+- diagnostic spawn composition/geometry/chronology is materialized;
+- probe-only metadata broadening is **not** promoted;
+- Stage49/50 metadata remains exactly aligned with v0.2/skeleton authority.
+
+Exact static run:
+```text
+run      40156618986
+artifact 12585015454
+head     4a06adbb523dd63e0a2a5fefb31fbb2553c0e4d1
+artifact sha256 ac2d233af17dd0f5415169d7daec38bfc472c3409bfe626ea756d8e986bd1676
+```
+
+Identity/result:
+```text
+candidate sha256    c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3
+materialized sha256 de1b5944c560da9c0ea33f6e4dbc88bd898ee66f772a802274c96db4c711b33c
+base sha256         3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+status = PASS
+errors = []
+warnings = []
+metadataPreservedFromV02 = true
+Stage49 = authored24 / max4s6 / max6s11 / y0.18..0.82
+Stage50 = authored30 / max4s6 / max6s9 / y0.18..0.82
+```
+
+This is static admission only. No dynamic authoring adoption is implied.
 
 ---
 
@@ -241,7 +259,7 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-The new watch is concrete: current exact Stage49-50 sample still produces material wall pressure only for Tank. Do not interpret it as a demand for equal wall damage across classes.
+The Stage49-50 watch is concrete: current exact diagnostic sample still produces material wall pressure only for Tank. It is not a requirement for equal wall damage across classes.
 
 ---
 
@@ -269,37 +287,24 @@ Also preserve:
 
 Next bounded work:
 ```text
-MATERIALIZE_STAGE49_50_ONLY_AUTHORING_CANDIDATE_AND_RUN_STATIC_PREFLIGHT
+RUN_NARROW_EXACT_SOURCE_STAGE49_50_DYNAMIC_ADMISSION_ON_MATERIALIZED_CANDIDATE
 ```
 
-Use the `STAGGER_1800` diagnostic center as input, not as frozen content.
+Use the exact same Stage46-48 lead-in and seeds `101,211,307,409,503` so persistent combo/charge/RNG state remains comparable to doc169.
 
-Must preserve:
-```text
-Stage5
-Stage18
-Stage41
-monster HP/speed/wall damage
-class coefficients
-shop/EXP/P×P probabilities
-right-edge spawn
-4s density <= 8
-```
-
-Static preflight must check:
-- exact source/schema identity;
-- only Stage49/50 changed from v0.2;
-- T1 monster vocabulary legality;
-- authored count/density;
-- Y spread/right-edge entry;
-- grammar order/phase separation;
-- T1 skeleton pressure/complexity consistency;
-- no accidental numerical freeze.
+The dynamic admission must check:
+- candidate source/materialization identity;
+- deterministic replay and lifecycle continuity;
+- Lv31 OFF/ON paired entry-state equality;
+- intended five-class role direction;
+- Tank objective protection;
+- no materially worse objective-pressure skew;
+- no scalar or production change.
 
 Still not authorized/frozen:
+- Stage49-50 authoring adoption;
 - full 50-Stage exact recipe freeze;
 - monster/class/shop/EXP/P×P numerical freeze;
 - class buffs/nerfs;
 - Tank damage normalization;
-- boss adoption;
 - production gameplay changes.
