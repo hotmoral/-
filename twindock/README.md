@@ -27,11 +27,13 @@ P0 modularization passed deterministic and mobile parity checks and is the canon
 A subtle station-relative reference treatment has also been accepted for readability; its modular merge is tracked as the first P1 presentation change so the P0 parity point stays clean.
 
 ## Current phase
-**P1 — Mission 01 vertical slice**: five continuous docking situations intended to test whether the core control remains compelling for 3–5 minutes.
+**P2 — World-readable docking feedback: ACCEPTED / CLOSED.**
+
+The exact next boundary is **P3 — game-feel / presentation polish**: restrained audio, haptics, contact/capture feedback, and stage-transition polish while preserving the frozen V8 control/physics/camera/docking contract, accepted Mission 01, and P2 world-readable feedback mappings.
 
 See `PROJECT_STATUS.md` for the exact current boundary.
 
 ## Operating policy
-Work in bounded slices. Refactor and tuning are separate changes. Prefer local deterministic checks over expensive build/AI workflows. Use Codex/CI only when they save net work. Android packaging is deferred until Mission 01, input stability, UI direction, and replay intent are validated.
+Work in bounded slices. Refactor and tuning are separate changes. Prefer local deterministic checks over expensive build/AI workflows. Use Codex/CI only when they save net work. P3 must remain presentation-only with respect to accepted gameplay truth; Android packaging follows as a separate lane after P3 device validation.
 
 At every large-group closure, synchronize `PROJECT_STATUS.md` and `docs/SESSION_HANDOFF.md` before proceeding.
