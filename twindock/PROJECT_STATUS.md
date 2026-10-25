@@ -5,6 +5,8 @@
 
 Next exact boundary: **Android packaging lane — preflight first, implementation only after the wrapper/build contract is fixed.**
 
+Post-Android parity return boundary: **Docking Geometry v2** in the shared game core.
+
 Accepted P3-B working/closure branch: `twindock-p3b-transition-v1`.
 P3-B base: accepted P3-A closure commit `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`.
 Copied SHAs are reference points only; live remote is always authoritative.
@@ -18,6 +20,59 @@ Copied SHAs are reference points only; live remote is always authoritative.
 - V8 remains the immutable fallback/control contract.
 
 Frozen input, thrust, speed, camera semantics, collision/docking truth and precision thresholds remain unchanged through P3.
+
+## Content expansion planning — canonical direction established
+Long-horizon content planning now has two canonical documents:
+- `docs/CONTENT_EXPANSION_MAP.md` — near-term content grammar, promotion gates and macro sequence
+- `docs/IDEA_BANK.md` — broad stockpile of future possibilities; not a roadmap
+
+Important decision:
+- the current Mission 01 shuttle silhouette and front-center probe are **reference content**, not frozen universal geometry
+- future content is expected to vary craft shape, craft docking-anchor local position/orientation, station geometry, motion and clearance while preserving the accepted control/docking truth
+
+Idea promotion states:
+- `BANKED` — retained possibility, no commitment
+- `CANDIDATE` — selected for bounded prototype
+- `VALIDATED` — relevant device test demonstrated useful distinct play
+- `ROADMAP` — validated and intentionally scheduled/produced
+
+Current promoted content candidates after Android parity:
+- arbitrary player docking-anchor position/orientation
+- side/mid-body docking craft
+- rear/asymmetric docking craft
+- simplified hull clearance
+- recessed/corridor/slot station geometry
+- Mission 02 centered on anchor geometry
+- Mission 03 centered on geometry + clearance
+
+Current macro direction:
+`P3 accepted baseline`
+→ `minimal Android parity probe`
+→ `freeze wrapper contract`
+→ `Docking Geometry v2`
+→ `reference-shuttle regression`
+→ `three-craft geometry probe`
+→ `simplified hull clearance`
+→ `station geometry probe`
+→ `Mission 02`
+→ `Mission 03`
+→ `content-expansion/productization gate`
+→ `Mission 04+ / justified meta and productization`
+
+Mission 03 is therefore a **decision gate**, not a planned end of the game.
+
+Near-term hold list remains:
+- combat/weapons
+- resource harvesting/economy
+- crafting
+- RPG stat trees
+- large open world
+- PvP
+- complex narrative systems
+- fuel economy as a primary loop
+- large inventory/equipment systems
+
+These may remain banked but must not displace geometry-driven content validation without a new explicit product decision.
 
 ## P0 closure
 - deterministic smoke test: PASS
@@ -42,6 +97,7 @@ Accepted P1 result:
 - frozen core feel remained unchanged
 
 P1 accepted closure HEAD before P2: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`.
+Exact run duration was not separately instrumented; do not invent a measured 3–5 minute duration.
 
 ## P2 accepted result
 Product question:
@@ -105,7 +161,7 @@ P3-A mobile acceptance confirmed:
 Product question:
 Can stage transitions and the final mission-complete moment be made clearer and more satisfying while preserving accepted P3-A sound/haptics, P2 world-readable information, sparse playfield, and frozen gameplay truth?
 
-Accepted answer from device validation: **yes**. User response to the candidate was positive (`괜찮네`) with no reported issue/regression.
+Accepted answer from device validation: **yes**. User response to the candidate was positive with no reported issue/regression.
 
 Accepted P3-B presentation:
 - `src/transitions.js` isolated presentation-only controller
@@ -145,14 +201,7 @@ Exact current `main.js` and `transitions.js` syntax checks: PASS.
 Local GitHub clone/npm execution was unavailable because the local execution environment had no outbound DNS/network. This was an environment limitation, not a test failure. Because all deterministic/core-covered modules were unchanged, P0/P1 deterministic suites were not rerun solely for this presentation-only slice.
 
 ### P3-B device acceptance result
-**PASS / ACCEPTED.** Device check confirmed the new transition/final-completion presentation is acceptable. No new issue was reported with:
-- next-target transition clarity
-- final completion satisfaction
-- central scene obstruction
-- motion comfort
-- touch/input
-- P3-A audio/haptics
-- background angle-wrap fix
+**PASS / ACCEPTED.** Device check confirmed the new transition/final-completion presentation is acceptable. No new issue was reported with transition clarity, final completion satisfaction, central scene obstruction, motion comfort, touch/input, P3-A audio/haptics, or background angle-wrap fix.
 
 P3 is therefore **CLOSED**. Do not repeatedly revalidate P0–P3 without relevant source changes, a concrete mismatch, or a prospective dependency of the next lane.
 
@@ -185,6 +234,7 @@ Before implementation:
 - do not rewrite physics/input/docking/camera in native code merely for packaging
 - do not tune V8/P0 controls while solving wrapper issues
 - do not redesign Mission 01 or P2/P3 presentation in the packaging batch
+- do not freeze the current front-center craft geometry as the final content model merely because it is the Android parity reference
 - do not add fuel/combat/progression/3D migration
 - keep platform fixes separate from gameplay changes
 
@@ -199,6 +249,11 @@ Before implementation:
 - no final-stage background flip
 - reset/fullscreen-equivalent lifecycle does not regenerate/randomize the world
 - APK/install/launch lifecycle is stable on the target device
+
+On Android parity PASS:
+- freeze the wrapper/platform contract
+- return to the shared game core
+- begin `Docking Geometry v2` as defined in `docs/CONTENT_EXPANSION_MAP.md`
 
 Do not begin a broad native rewrite. The first goal is faithful packaging of the accepted game.
 
