@@ -45,10 +45,10 @@ The current front-center shuttle docking probe is a **reference craft**, not the
 
 ## 4. Immediate execution sequence
 
-### Stage A — Android parity probe
+### Stage A — Android parity probe — PASS / CLOSED
 Goal: verify the accepted P3 web game survives a thin Android wrapper without changing gameplay truth.
 
-Validate:
+Validated:
 - dual simultaneous touch / pointer behavior
 - landscape behavior and safe-area handling
 - audio
@@ -56,15 +56,22 @@ Validate:
 - pause/resume/background lifecycle
 - local asset packaging
 - frame/interaction stability
+- Mission 01 parity on a real Android phone
+
+Physical-device acceptance occurred on **2026-10-26 KST**. The user ran the fixed parity matrix and reported all checked behavior normal. No Android-specific gameplay tuning or platform workaround was required after the successful wrapper build.
 
 Exit condition:
-- Mission 01 feels materially equivalent to the accepted web version.
+- Mission 01 feels materially equivalent to the accepted web version — **PASS**.
 
-On PASS:
-- freeze only the Android wrapper/platform contract.
-- return game/content development to the shared web core.
+Result:
+- Android physical-device parity: **PASS / ACCEPTED**
+- Android wrapper/platform contract: **FROZEN**
+- Android parity lane: **CLOSED**
+- game/content development returns to the shared web core
 
-### Stage B — Docking Geometry v2
+Do not reopen Stage A without a concrete platform/package/device/release trigger.
+
+### Stage B — Docking Geometry v2 — CURRENT NEXT STAGE
 Goal: remove the hidden assumption that the player's docking point is always a fixed forward probe.
 
 Target model:
@@ -77,6 +84,9 @@ Target model:
 
 Non-goal:
 - no broad collision rewrite yet.
+- no control/physics tuning.
+- no Android-specific gameplay fork.
+- no new side/rear craft until the reference shuttle passes regression.
 
 Exit condition:
 - the current reference shuttle represented through Geometry v2 reproduces Mission 01 behavior with no meaningful feel/readability regression.
@@ -310,9 +320,8 @@ They may remain in the idea bank as distant possibilities, but should not consum
 
 ## 13. Current macro roadmap
 `P3 accepted web baseline`
-→ `minimal Android parity probe`
-→ `Android wrapper contract frozen`
-→ `Docking Geometry v2`
+→ `Android parity probe PASS / wrapper contract FROZEN`
+→ **`Docking Geometry v2`**
 → `reference-craft regression`
 → `3-craft geometry probe`
 → `simplified hull clearance`
