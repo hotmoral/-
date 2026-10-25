@@ -23,8 +23,11 @@ Before proposing or implementing work, read in this exact order:
 4. `twindock/docs/BASELINE_V8.md`
 5. `twindock/docs/FOUNDATION_MANIFEST.md`
 6. `twindock/docs/OPERATING_RULES.md`
-7. `twindock/README.md`
-8. exact source/tests relevant to the next bounded slice
+7. `twindock/docs/CONTENT_EXPANSION_MAP.md`
+8. `twindock/README.md`
+9. exact source/tests relevant to the next bounded slice
+
+Before new mission/content ideation, also read `twindock/docs/IDEA_BANK.md`.
 
 Do not delegate, refactor broadly, package Android, or run expensive CI before this recovery pass.
 
@@ -100,6 +103,11 @@ The station gained capture collar, tunnel, latches and guide lights.
 Critical contract:
 **visible docking probe/capture geometry must match internal docking geometry.**
 
+Important later clarification:
+- this contract freezes **agreement between visible and internal geometry**, not the current craft silhouette or front-center probe location
+- the Mission 01 shuttle is now treated as a **reference craft**
+- future craft may place docking anchors on the side, rear, middle, or asymmetric locations once Geometry v2 is validated
+
 ### Ship-frame camera breakthrough
 The decisive presentation change was the ship-frame camera:
 - player craft remains visually mostly fixed
@@ -159,6 +167,8 @@ Docking-relative velocity includes target translation plus rotational port veloc
 Visible/internal geometry and feedback/actual thresholds must agree.
 Avoid generous magnetic capture.
 
+Future Geometry v2 must preserve these truths while generalizing docking anchors from the current front probe to arbitrary local positions/orientations.
+
 ## 8. Failure / recovery philosophy
 Prefer:
 `mistake -> unstable/bounce -> recovery -> re-approach`
@@ -178,6 +188,7 @@ Recovery is part of the tactile appeal.
 - Mission/state flow: target sequence, scoring/state; do not rewrite core physics.
 - Effects/audio/haptics: presentation only; may observe input/events but must not mutate physics/docking truth.
 - Transition layer: presentation only; no gameplay state beyond transient visual state.
+- Future content geometry: craft/station docking anchors and collision geometry should become data/geometry-driven only after bounded prototypes expose the actual requirements.
 
 ## 10. Visual / UI direction
 UI should expose the world rather than cover it.
@@ -196,6 +207,12 @@ Avoid:
 - dense numeric instrument panels
 - busy rotating scenery
 - effects that increase motion sickness or mask physical information
+
+Future geometry direction:
+- active player port must be readable on the craft itself even when not nose-mounted
+- station target port must remain physically readable
+- P2 feedback should derive from the actual anchor frames rather than assuming craft center/nose
+- do not solve unusual craft geometry with permanent large HUD arrows if world design can communicate it instead
 
 ## 11. P0 — modular foundation: ACCEPTED / CLOSED
 - V8 modularized
@@ -228,6 +245,8 @@ Accepted behavior:
 Validation: JS syntax PASS, P0 smoke PASS, mission deterministic test PASS, mobile playtest ACCEPTED, fun/replay signal positive.
 
 Do not invent a measured 3–5 minute duration; exact run duration was not separately instrumented.
+
+Mission 01 is the **reference/basic mission**, not the intended total content volume.
 
 ## 13. P2 — world-readable docking feedback: ACCEPTED / CLOSED
 Product question: can the player judge readiness primarily from world/docking hardware rather than a permanent developer checklist?
@@ -339,7 +358,72 @@ Rules:
 - do not allow this temporary arrangement to become permanent product coupling by accident
 - if long-lived deployment is needed, prefer a dedicated Cloudflare project/domain
 
-## 17. Exact next boundary — Android packaging lane
+## 17. Canonical content-expansion direction
+Two planning documents now govern long-term content growth:
+- `docs/CONTENT_EXPANSION_MAP.md` — content grammar, near-term promotion order, prototype gates and macro sequence
+- `docs/IDEA_BANK.md` — broad idea stockpile; deliberately not a roadmap
+
+### Core content decision
+Do **not** assume the player craft must remain the current shape or always dock from the nose.
+
+The current Mission 01 shuttle/front probe is a reference craft. Future validated content may vary:
+- craft silhouette/proportions
+- craft docking-anchor local X/Y
+- craft docking-anchor local orientation
+- station geometry and target-anchor position/orientation
+- station translation/rotation pattern
+- available approach corridor
+- simplified craft/station collision hulls
+
+The intended content-expansion thesis is:
+> Keep the proven dual-RCS inertial control and docking truth, but create new spatial/physical problems through geometry, motion and clearance.
+
+### Promotion states
+- `BANKED`: retained possibility; no commitment
+- `CANDIDATE`: explicit bounded prototype selected
+- `VALIDATED`: relevant device test demonstrates distinct useful play
+- `ROADMAP`: validated and intentionally scheduled/produced
+
+Do not convert the Idea Bank into an automatic feature list.
+
+### Current promoted post-Android candidates
+- Docking Geometry v2: arbitrary player/station local docking anchors
+- reference-shuttle regression through the new anchor model
+- side/mid-body docking craft
+- rear/asymmetric docking craft
+- simplified compound hull clearance
+- recessed/slot/corridor station geometry
+- Mission 02 centered on anchor geometry
+- Mission 03 centered on geometry + clearance
+
+Mission 03 is a **productization/content-expansion decision gate**, not the planned end of the game.
+
+### Current macro content path
+`minimal Android parity`
+→ `freeze wrapper contract`
+→ `Docking Geometry v2`
+→ `reference-craft regression`
+→ `three-craft geometry probe`
+→ `simplified hull clearance`
+→ `station geometry probe`
+→ `Mission 02`
+→ `Mission 03`
+→ `content expansion reassessment / productization gate`
+→ `Mission 04+ and only then justified scoring/unlock/meta/productization expansion`
+
+### Near-term hold
+Do not let these displace the geometry-content proof unless a new explicit gate justifies them:
+- combat/weapons
+- resource harvesting/economy
+- crafting
+- RPG stats
+- large open world
+- PvP
+- complex narrative systems
+- fuel economy as the primary loop
+- large inventory/equipment systems
+
+## 18. Exact next boundary — Android packaging lane
 P3 is closed. Android packaging is now authorized as a **separate platform/build lane**.
 
 Android product question:
@@ -369,6 +453,7 @@ Do not immediately rewrite or generate broad native code. First:
 - no V8/P0 control tuning while solving wrapper issues
 - no Mission 01 redesign
 - no P2/P3 presentation redesign in the packaging batch
+- do not freeze Mission 01 craft geometry as the universal future content model
 - no fuel/combat/progression/3D migration
 - platform fixes and gameplay changes remain separate
 
@@ -386,7 +471,12 @@ Do not immediately rewrite or generate broad native code. First:
 
 The first Android goal is **faithful packaging of the accepted game**, not a native redesign.
 
-## 18. Development / validation pipeline
+On parity PASS:
+- freeze the Android wrapper/platform contract
+- return to the shared web/game core
+- begin Docking Geometry v2
+
+## 19. Development / validation pipeline
 1. recover live state in required order
 2. state one product question
 3. classify frozen-feel impact
@@ -404,7 +494,13 @@ Tool economy:
 - public GitHub Actions only when repeat automation saves net work
 - avoid repeated scans/builds/revalidation of frozen areas without a concrete trigger
 
-## 19. Known regression risks
+Content economy:
+- consult the Idea Bank before inventing a new content family from scratch
+- promote only a small bounded set of banked ideas at a time
+- prefer geometry/motion/clearance variants before genre-system proliferation
+- do not build a giant generic mission schema before Mission 02/03 expose real requirements
+
+## 20. Known regression / scope risks
 - mobile pointer capture/input loss
 - sensitivity creep
 - camera changes affecting feel
@@ -423,16 +519,23 @@ Tool economy:
 - Android back/pause/resume unexpectedly resetting mission or world state
 - safe-area/orientation differences covering controls
 - temporary shared Cloudflare exposure accidentally overwriting Timing Defense routes
+- Android wrapper work accidentally freezing the reference front-probe craft into the permanent content model
+- arbitrary anchor geometry being implemented visually without matching docking/velocity math
+- hull collision becoming too detailed too early and consuming scope before geometry fun is proven
+- Idea Bank entries being mistaken for committed roadmap features
+- difficulty degenerating into raw speed increases rather than new spatial problems
 
-## 20. Large-group closure discipline
+## 21. Large-group closure discipline
 At every closure:
 - implementation/decision boundary explicit
 - relevant checks passed
 - device feel/readability/presentation/platform validated when required
 - accepted/frozen decisions recorded
 - `PROJECT_STATUS.md` + `SESSION_HANDOFF.md` synchronized
-- `START_HERE.md` current milestone checked
+- `START_HERE.md` current milestone/read order checked
 - README current phase checked
+- `CONTENT_EXPANSION_MAP.md` updated when content direction/promotion changes
+- `IDEA_BANK.md` may grow continuously, but BANKED items must not silently become roadmap commitments
 - exact next boundary recorded
 - risks/blockers current
 - live refs refreshed where useful
