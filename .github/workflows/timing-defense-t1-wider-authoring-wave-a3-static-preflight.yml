@@ -1,0 +1,79 @@
+name: Timing Defense T1 Wider Authoring Wave A3 Static Preflight
+
+on:
+  push:
+    branches:
+      - timing-defense-workspace
+    paths:
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+      - 'timing-defense-workspace/tools/preflight_t1_wider_exact_authoring_wave_a3_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_core_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
+      - '.github/workflows/timing-defense-t1-wider-authoring-wave-a3-static-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: timing-defense-workspace
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependency
+        run: pip install PyYAML
+
+      - name: Record exact source
+        run: |
+          mkdir -p out/wave-a3-static
+          printf '%s\n' '${{ github.sha }}' > out/wave-a3-static/source_sha.txt
+          git status --short > out/wave-a3-static/git_status_before.txt
+
+      - name: Run static preflight
+        run: |
+          python tools/preflight_t1_wider_exact_authoring_wave_a3_v0_1.py \
+            --base legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            --plan legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml \
+            --a1 legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml \
+            --a2 legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml \
+            --candidate legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml \
+            --json-out out/wave-a3-static/result.json \
+            --materialized-out out/wave-a3-static/materialized.yaml
+
+      - name: Record final status
+        if: always()
+        run: |
+          git status --short > out/wave-a3-static/git_status_after.txt
+          sha256sum \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml \
+            legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            out/wave-a3-static/materialized.yaml \
+            > out/wave-a3-static/sha256.txt || true
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-t1-wider-authoring-wave-a3-static-preflight
+          path: timing-defense-workspace/out/wave-a3-static
+          if-no-files-found: error
