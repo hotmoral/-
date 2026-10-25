@@ -1,0 +1,99 @@
+name: Linkline A3 NL5 Repair Runtime Validation
+
+on:
+  push:
+    branches:
+      - linkline/a3-nl5-repair-runtime-validation-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Verify exact runtime blobs
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          P=linkline/nl5_repair_runtime
+          test "$(git hash-object ${P}/index.html)" = "2429cf72ceb18d1265a2f69656aafebe1aa11f2e"
+          test "$(git hash-object ${P}/mechanic.mjs)" = "c214cd077c102c4e007b045cc3d24d48febdab3a"
+          test "$(git hash-object ${P}/styles.css)" = "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
+          test "$(git hash-object ${P}/app.mjs)" = "43f6f366087464e0dc5d98ac453a4ec5093369c2"
+          test "$(git hash-object ${P}/config.mjs)" = "bcc8fa1a3791d5eff8febd84c17af0cf2a3e4edc"
+          test "$(git hash-object ${P}/protocol.mjs)" = "9e7c08d724395ecc3dfe83179e31cee56696b8d0"
+          test "$(git hash-object ${P}/data/session_bundle.json)" = "face15e6e333edce9e7a8ef81729ffdce18da347"
+          test "$(git hash-object ${P}/data/analysis_metadata.json)" = "c2fec3c17e293d36f7691848fb06bd771c6992a3"
+          test "$(git hash-object ${P}/tests/runtime_preflight.mjs)" = "1159f5125c67b8eb3b91d93eb691620609d63dcf"
+          test "$(git hash-object ${P}/package.json)" = "7cc02090dbd972e0e3a34f55129ed22b1932fa53"
+
+      - name: Node runtime preflight
+        shell: bash
+        working-directory: repo/linkline/nl5_repair_runtime
+        run: |
+          set -euo pipefail
+          node --version
+          npm test
+          node --check app.mjs
+          node --check protocol.mjs
+          node --check mechanic.mjs
+
+      - name: Static HTTP smoke
+        shell: bash
+        working-directory: repo/linkline/nl5_repair_runtime
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 >/tmp/linkline-nl5-repair-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill ${server_pid}' EXIT
+          sleep 1
+          curl --fail --silent --show-error http://127.0.0.1:8765/index.html >/tmp/index.html
+          curl --fail --silent --show-error http://127.0.0.1:8765/data/session_bundle.json >/tmp/session_bundle.json
+          curl --fail --silent --show-error http://127.0.0.1:8765/data/analysis_metadata.json >/tmp/analysis_metadata.json
+          grep -q 'app.mjs' /tmp/index.html
+          python3 - <<'PY'
+          import json
+          q={
+            '5c2b8f5ea4f6f5bb0427e25743101d325d544fead47e6eac24c2d24dd15ae410',
+            '853d724463f3fcaf9bb788eabc447ef2436df9b1906ea528b3cdf344e925a8e5',
+            '3a5a53100fde46016d6f660c0ca91b95cbf5b5014805093e059403441cc3ab94',
+            'c58a039bee8312d91870b6789a07ab8273fbe6d5fef9ae2d402bfce0e359e4c2',
+            'df48e08dee31a80f9101028d28c9029b332a0d932234a4453cb5c1a55c50036b',
+            '9644e32dc0a74e135589aa6d48655408852e894490f934f8466affae55c584a2',
+            '40cc54d0d58fe90fa522446d215d060de9c6bd3c7f3cf4b212062027868775a2',
+            '4c99ff2fab90cc29b875450b6ec9885cd0a243eded8d4fc4477f3817ef7e2d57',
+            '96a5f0fa4606162e100aaaacf5aeb3bfc1f04632e18b497dcf9b67d226ce6ffc',
+            '133b684781872df9075aa9bee087ccdac996f4e71720e1ec6a5dab9fcf8c90a2',
+            'e7d7f0af0cf6dce76b0dcae185bd7291fc464fa4e18fa19bb84fdc158c0dfa3a',
+            'fa52d1034865f7e366523eeff8fc0a8e5ebe698b8614f757a1760d99f1358388',
+          }
+          with open('/tmp/session_bundle.json',encoding='utf-8') as f: s=json.load(f)
+          with open('/tmp/analysis_metadata.json',encoding='utf-8') as f: m=json.load(f)
+          assert s['schema']=='LINKLINE_A3_NL_MATCHED_SESSION_BUNDLE'
+          assert s['sessionId']=='NL5_MATCHED_1_REPAIR_1'
+          assert s['sessionBundleFingerprint']=='e96188be059588e8f73c110f3130048ea80f37fc3df84b1158d75ed84f872dbb'
+          assert s['puzzleCount']==12 and len(s['puzzles'])==12
+          assert s['pairFeedbackAfterPuzzlePositions']==[2,4,6,8,10,12]
+          ids=[p['researchEquivalenceIdV1'] for p in s['puzzles']]
+          assert len(ids)==len(set(ids))==12
+          assert not (set(ids)&q)
+          assert m['schema']=='LINKLINE_A3_NL5_RUNTIME_ANALYSIS_METADATA'
+          assert m['sessionId']=='NL5_MATCHED_1_REPAIR_1'
+          assert m['metadataFingerprint']=='fa1605b1adb0572697187903f32b10583b713b7e4c3a99d5addd1103651f95fd'
+          assert set(m['shortestDistanceByResearchEquivalenceIdV1'])==set(ids)
+          print('STATIC_HTTP_SMOKE_PASS')
+          PY
