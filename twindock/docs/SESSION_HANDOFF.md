@@ -6,7 +6,7 @@ This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at
 - Repository: `hotmoral/-`
 - P0 foundation branch: `twindock-foundation-v1`
 - P1 accepted Mission 01 branch: `twindock-p1-mission01-v1`
-- Current P2 candidate branch: `twindock-p2-world-feedback-v1`
+- P2 accepted world-feedback branch: `twindock-p2-world-feedback-v1`
 - P0 canonical closure commit: `185a974dbd818386019677409f875640df27442f`
 - P1 accepted closure HEAD before P2: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`
 - Live remote is authoritative. Old chats, memories, and copied SHAs are navigation aids only.
@@ -101,6 +101,7 @@ These are readability aids only. Do not turn them into a busy moving background.
 - Renderer: world visuals only; derive visible docking geometry from docking definitions where possible.
 - Feedback renderer: world-readable docking-readiness cues only; no physics mutation.
 - Mission/state flow: target sequence, transitions, scoring/state; do not rewrite core physics.
+- Audio/haptics in future work must remain a presentation layer and must not mutate physics/docking truth.
 
 ## 9. Failure / recovery philosophy
 Prefer `mistake -> unstable/bounce -> recovery -> re-approach` over immediate fail/reset. Recovery is part of the tactile appeal.
@@ -131,70 +132,79 @@ Accepted P1 behavior:
 
 Validation: JS syntax PASS, P0 smoke PASS, mission deterministic test PASS, mobile Mission 01 playtest ACCEPTED, fun/replay signal POSITIVE.
 
-## 12. Current phase — P2 world-readable feedback candidate
+## 12. P2 world-readable feedback — ACCEPTED / CLOSED
 P2 product question:
 **Can the player judge docking readiness primarily from the world and docking hardware rather than a permanent debug-style four-condition checklist, while preserving clarity and the accepted game feel?**
 
-Current branch: `twindock-p2-world-feedback-v1`.
+Accepted answer: **yes**. User device feedback after the P2 candidate was that it was better than the previous version.
 
-### P2 implementation
-Normal play now keeps only compact mission progress + status + target message. The old relative-speed number and four-condition checklist are removed from normal HUD but retained behind `?debug=1` for QA.
+Accepted normal-play UI:
+- compact mission progress + compact status
+- old relative-speed numeric readout removed from normal play
+- old four-condition checklist removed from normal play
+- old diagnostics available only with `?debug=1` for QA
 
-A new transparent `src/feedback.js` module draws docking feedback without altering the accepted world renderer or core gameplay modules.
+Accepted world-readable feedback:
+- **position**: four capture brackets converge around the docking point and turn green at the exact position threshold
+- **orientation**: ship-frame and rotating port notches converge/overlap and turn green at the exact direction threshold
+- **angular velocity**: relative-spin trail shrinks as mismatch approaches zero and turns green at the exact spin threshold
+- **relative velocity**: drift arrow shows relative-motion direction/magnitude and turns green at the exact relative-speed threshold
+- docked state gets a restrained green confirmation ring
 
-Visual mappings:
-- **position**: four capture brackets close around the docking point; exact threshold turns them green
-- **orientation**: fixed ship-frame notches + rotating port notches converge/overlap; exact threshold turns them green
-- **angular velocity**: relative-spin trail shrinks as spin mismatch approaches zero; exact threshold turns it green
-- **relative velocity**: drift arrow shows direction + magnitude and shrinks as relative speed falls; exact threshold turns it green
-- docked state: restrained green confirmation ring
+The feedback mapping uses `TD.Docking.checks()` / the same thresholds as actual docking success. Do not create a separate hidden visual threshold contract.
 
-The mapping uses the same `TD.Docking.checks()` thresholds as actual docking success, so there is no hidden looser/stricter visual contract.
-
-### P2 regression boundary
-Compared directly with accepted P1 closure HEAD `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`.
-
-Changed files only:
+P2 implementation intentionally touched only:
 - `twindock/index.html`
 - `twindock/styles.css`
 - `twindock/src/main.js`
-- `twindock/src/feedback.js` (new)
+- `twindock/src/feedback.js`
 
-Frozen/core files are unchanged, including `config.js`, `input.js`, `physics.js`, `docking.js`, `camera.js`, `mission.js`, and `renderer.js`.
+Core/frozen modules remained unchanged: `config.js`, `input.js`, `physics.js`, `docking.js`, `camera.js`, `mission.js`, `renderer.js`.
 
-Changed-JS syntax checks: PASS.
+Validation:
+- changed-JS syntax PASS
+- P1-vs-P2 scope compare confirmed no frozen/core source changes
+- mobile device readability/presentation check ACCEPTED
 
-### Exact current gate
-**Mobile device playtest of the P2 candidate.**
+## 13. Exact next boundary — P3 game-feel / presentation polish
+P3 product question:
+**Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking substantially more satisfying without obscuring physical information, increasing fatigue, or changing the accepted control/docking behavior?**
 
-Evaluate:
-- can the player dock without relying on the old checklist?
-- after a few approaches, do position / drift / orientation / spin cues become legible?
-- are the cues restrained enough not to increase dizziness or clutter?
-- does the reduced HUD improve focus on the station?
-- is any visual cue misleading or too abstract?
-- does control feel remain identical to accepted P1?
+Target P3 scope:
+- preserve all frozen control/physics/camera/docking values
+- preserve the accepted five-stage Mission 01
+- preserve P2 world-readable feedback mappings
+- add restrained spacecraft-internal / RCS / mechanical audio cues rather than loud arcade effects
+- improve bad-contact / bounce / recovery feedback
+- improve soft-capture, latch and next-target transition feedback
+- use short low-fatigue haptic patterns only for meaningful events
+- improve final mission-complete presentation without covering the scene
+- keep audio/haptics separable and easy to disable or compare
 
-If a cue is unclear, change the cue first. Do not retune frozen controls or docking thresholds during this gate.
+P3 non-goals:
+- no fuel economy / survival resources
+- no combat
+- no upgrades/meta progression
+- no 3D-engine migration
+- no frozen-control or docking-threshold tuning without a concrete regression
+- no Android packaging inside the same implementation batch
 
-## 13. Deferred / non-goals
-Still deferred during P2:
-- fuel economy / survival resources
-- combat
-- upgrades/meta progression
-- 3D-engine migration
-- control retuning without a concrete regression
+## 14. Android direction
+Android packaging is now justified as a near-term platform step because:
+- the core control is accepted
+- Mission 01 continuous play is fun
+- P2 world-readable UI direction is accepted
 
-Android packaging is now plausible because Mission 01 is fun, but platform/build complexity should follow a stable accepted P2 presentation layer.
+However, finish and device-validate P3 first. Then Android can be introduced as a separate platform/build lane, preferably preserving the proven web implementation initially (PWA/Capacitor-style wrapper unless a native-only requirement appears).
 
-## 14. Development / validation pipeline
+## 15. Development / validation pipeline
 1. recover live state in required order
 2. state one product question
 3. classify frozen-feel impact
 4. define acceptance checks
 5. implement smallest coherent batch
 6. run deterministic/static regressions
-7. require device validation for input/camera/game-feel/readability changes
+7. require device validation for input/camera/game-feel/readability/presentation changes
 8. promote only after acceptance
 9. at large-group closure update `PROJECT_STATUS.md` and this handoff together
 
@@ -204,7 +214,7 @@ Tool economy:
 - public GitHub Actions only when repeat automation saves net work
 - avoid repeated scans/builds/revalidation of frozen areas without a concrete trigger
 
-## 15. Known regression risks
+## 16. Known regression risks
 - mobile pointer capture/input loss
 - sensitivity creep
 - camera changes affecting feel
@@ -214,14 +224,15 @@ Tool economy:
 - visual cues becoming busy/dizzying
 - UI covering central scene
 - generous auto-capture returning
-- mission/UI/feedback layer mutating core physics constants
-- removing too much textual feedback before visual cues are actually readable
+- mission/UI/feedback/audio layer mutating core physics constants
+- excessive haptics causing fatigue
+- audio masking relative-motion cues or becoming arcade-like
 
-## 16. Large-group closure discipline
+## 17. Large-group closure discipline
 At each large-group closure:
 - implementation/decision boundary explicit
 - relevant tests/checks passed
-- device feel/readability validated when required
+- device feel/readability/presentation validated when required
 - accepted/frozen decisions recorded
 - `PROJECT_STATUS.md` + `SESSION_HANDOFF.md` synchronized
 - `START_HERE.md` read order checked
