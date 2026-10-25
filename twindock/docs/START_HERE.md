@@ -38,6 +38,12 @@ Do not silently change V8 feel constants during structural cleanup. Any change t
 
 See `BASELINE_V8.md` for exact constants and artifact hash.
 
+## Accepted milestone stack
+- **P0**: modular foundation / V8 parity — ACCEPTED
+- **P1**: continuous five-target Mission 01 — ACCEPTED; fun/replay signal positive
+- **P2**: world-readable docking feedback / reduced debug HUD — ACCEPTED; preferred over the prior presentation
+- **Next**: P3 game-feel / presentation polish
+
 ## Product direction
 Preserve these design principles:
 
@@ -48,8 +54,14 @@ Preserve these design principles:
 - visual docking geometry and physics collision/docking points must match
 - deterministic/fixed background; no apparent world reset caused by random background regeneration
 - UI should reveal the world rather than cover it
-- final gameplay should increasingly communicate alignment through the docking scene itself rather than permanent debug checklists
-- avoid fuel economy, progression, combat, or Android packaging until the 3–5 minute mission loop proves compelling
+- communicate docking readiness primarily through the scene/docking hardware; keep old numeric/checklist diagnostics for QA rather than normal play
+- maintain sparse relative-motion references to improve readability without increasing motion sickness
+- do not add fuel economy, combat, upgrades/meta progression, or 3D migration until explicitly justified by a later product gate
+
+## Current execution direction
+P3 should improve satisfaction without changing accepted gameplay truth. Favor restrained spacecraft-internal/mechanical sound, short event-based haptics, bad-contact/recovery feedback, soft-capture/latch feedback, and compact stage/final transitions.
+
+Android packaging is now a justified near-term step because core control, continuous mission play, and UI/readability direction are accepted. However, keep Android as a separate platform/build lane after P3 is device-validated so platform complexity does not get mixed with another major presentation rewrite.
 
 ## Development pipeline
 For each bounded slice:
@@ -57,10 +69,10 @@ For each bounded slice:
 1. Recover live state using the required read order.
 2. Confirm the exact product question for the slice.
 3. Check whether the slice touches frozen V8 behavior.
-4. Prefer local deterministic tests for math/contracts.
+4. Prefer local deterministic/static tests for math/contracts and narrow presentation changes.
 5. Implement the smallest coherent batch.
 6. Run deterministic regression checks.
-7. For input/camera/game-feel changes, require device feel validation; synthetic tests are not enough.
+7. For input/camera/game-feel/readability/presentation changes, require device validation; synthetic tests are not enough.
 8. Promote only after acceptance criteria pass.
 9. Update `PROJECT_STATUS.md` and `SESSION_HANDOFF.md` together at group closure.
 10. Record any new frozen/accepted decision in the appropriate canonical document.
@@ -68,11 +80,11 @@ For each bounded slice:
 ## Tooling / usage-efficiency rule
 Use the cheapest adequate lane:
 
-- design, reasoning, constants, and narrow code review: current chat/local tools
+- design, reasoning, constants, narrow implementation, and code review: current chat/local tools
 - deterministic math/regression: local Node/browser tests
 - Codex: only for implementation batches large enough to justify delegation, with frozen constants and acceptance tests supplied up front
 - public GitHub Actions: only when repeatable build/test automation materially reduces manual cost
-- Android packaging: only after the web mission loop, input stability, and replay intent are validated
+- Android packaging/build lane: after P3 presentation is stable; initially preserve the proven web implementation unless a concrete native requirement appears
 
 Avoid repeated repository scans, repeated builds, repeated AI delegation, or broad verification of already-frozen areas unless relevant source changed or a concrete mismatch appears.
 
