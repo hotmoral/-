@@ -21,3 +21,9 @@
 19. At every large-group closure, update `PROJECT_STATUS.md` and `SESSION_HANDOFF.md` together before starting the next group.
 20. The handoff package must contain game structure/direction, frozen and accepted decisions, repository/document read order, architecture, development/validation/build pipeline, usage-efficiency policy, known risks, and the exact next execution boundary.
 21. After each large-group closure, verify `START_HERE.md`, README, and other canonical documents reflect the current milestone and do not contradict live canonical state.
+22. The current Mission 01 shuttle silhouette and front-center docking probe are reference content, not frozen universal craft geometry. Future content may change craft shape, docking-anchor local position/orientation, station geometry, and clearance while preserving frozen gameplay truth.
+23. Prefer expanding Twin Dock through craft geometry, station geometry, relative motion, approach space, and hull clearance before adding unrelated genre systems such as combat, economy, RPG stats, crafting, or open-world structure.
+24. New content ideas must be classified as `BANKED`, `CANDIDATE`, `VALIDATED`, or `ROADMAP`. An item in `IDEA_BANK.md` is not a promised feature merely because it is documented.
+25. Promote only a small bounded set of ideas at a time. `CANDIDATE` requires an explicit product question and acceptance gate; `VALIDATED` requires relevant device evidence; `ROADMAP` requires an intentional production decision after validation.
+26. `CONTENT_EXPANSION_MAP.md` is authoritative for near-term content direction and promotion order. `IDEA_BANK.md` is a long-horizon stockpile and should not override the active bounded slice.
+27. After the minimal Android parity probe succeeds and the wrapper contract is frozen, return by default to the shared game core for `Docking Geometry v2` rather than continuing Android-specific feature work.
