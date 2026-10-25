@@ -1,0 +1,59 @@
+version: t1-wider-exact-authoring-wave-a2-candidate-v0.1
+status: BOUNDED_WAVE_A2_CANDIDATE_NO_ADOPTION_NO_PRODUCTION_OR_NUMERICAL_FREEZE
+
+baseRecipe:
+  path: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  sha256: 3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf
+
+plan:
+  path: data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml
+  sha256: da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806
+  slice: WAVE_A2_BRUTE_TEACH_TO_FIRST_REORDER_BRIDGE
+
+scope:
+  addedStages: [15, 19]
+  contextOnlyStages: [18, 20]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+  candidateAdopted: false
+
+stageAdditions:
+  - id: T1_S15_BRUTE_FIRST_TEACH_A2
+    stage: 15
+    archetype: E03
+    componentArchetypes: [E03]
+    formation: F01
+    formationSet: [F01]
+    cadence: CD01
+    complexity: C1
+    pressureTags: [BULWARK]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 2200, type: BRUTE, y: 0.46}
+      - {tMs: 4400, type: BRUTE, y: 0.46}
+
+  - id: T1_S19_BRUTE_RUNNER_REORDER_A2
+    stage: 19
+    archetype: E03
+    componentArchetypes: [E03, E02]
+    formation: F02
+    formationSet: [F02]
+    cadence: CD05
+    complexity: C2
+    pressureTags: [BULWARK]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 650, type: RUNNER, y: 0.44}
+      - {tMs: 1300, type: RUNNER, y: 0.48}
+      - {tMs: 3000, type: BRUTE, y: 0.46}
+      - {tMs: 3650, type: RUNNER, y: 0.43}
+      - {tMs: 4300, type: RUNNER, y: 0.49}
