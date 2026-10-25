@@ -2,15 +2,15 @@
 
 Purpose: preserve long-term content headroom without turning unvalidated ideas into roadmap commitments.
 
-This document separates **frozen core**, **near-term validation axes**, **promotion gates**, and **later expansion families**. It is a planning authority for content direction, not a promise to implement every listed idea.
+This document separates **frozen core**, **validated foundations**, **near-term validation axes**, **promotion gates**, and **later expansion families**. It is a planning authority for content direction, not a promise to implement every listed idea.
 
 ## 1. Core rule
 Twin Dock should grow primarily by creating new physical/spatial docking problems from the already-proven control model before adding unrelated genre systems.
 
-The preferred expansion question is:
-> Can the same dual-RCS inertial control become meaningfully different through craft geometry, docking-anchor geometry, station geometry, relative motion, and clearance constraints?
+Preferred expansion question:
+> Can the same dual-RCS inertial control become meaningfully different through craft geometry, docking-anchor geometry, station geometry, relative motion and clearance constraints?
 
-Do not solve content scarcity first with combat, resource economy, RPG stats, or large meta systems.
+Do not solve content scarcity first with combat, resource economy, RPG stats or large meta systems.
 
 ## 2. Frozen core — not a content variable
 The following are accepted gameplay truth and are not ordinary content knobs:
@@ -20,8 +20,8 @@ The following are accepted gameplay truth and are not ordinary content knobs:
 - free rotation from first play
 - ship-frame camera
 - recoverable collision/re-approach philosophy
-- docking success requires simultaneous position, relative linear velocity, orientation, and angular-velocity match
-- world-readable docking feedback should reflect the same truth as actual docking success
+- docking success requires simultaneous position, accepted relative linear velocity, orientation and angular-velocity match
+- world-readable docking feedback reflects the same truth as docking success
 - deterministic background / no apparent world regeneration
 
 Changing these requires a new explicit product experiment, not normal content authoring.
@@ -43,70 +43,81 @@ These should not be frozen to the Mission 01 implementation:
 
 The current front-center shuttle docking probe is a **reference craft**, not the final universal docking layout.
 
-## 4. Immediate execution sequence
+## 4. Validated platform/foundation state
+### Stage A — Android parity probe
+Status: **PASS / ACCEPTED / CLOSED**.
 
-### Stage A — Android parity probe — PASS / CLOSED
-Goal: verify the accepted P3 web game survives a thin Android wrapper without changing gameplay truth.
-
-Validated:
-- dual simultaneous touch / pointer behavior
-- landscape behavior and safe-area handling
-- audio
-- haptics
-- pause/resume/background lifecycle
-- local asset packaging
-- frame/interaction stability
-- Mission 01 parity on a real Android phone
-
-Physical-device acceptance occurred on **2026-10-26 KST**. The user ran the fixed parity matrix and reported all checked behavior normal. No Android-specific gameplay tuning or platform workaround was required after the successful wrapper build.
-
-Exit condition:
-- Mission 01 feels materially equivalent to the accepted web version — **PASS**.
+The accepted P3 web game was carried into a thin Capacitor Android wrapper and validated on a physical Android phone with no reported mismatch in the fixed parity matrix.
 
 Result:
-- Android physical-device parity: **PASS / ACCEPTED**
-- Android wrapper/platform contract: **FROZEN**
-- Android parity lane: **CLOSED**
-- game/content development returns to the shared web core
+- Android wrapper/platform contract FROZEN
+- shared game/content development returned to the common web core
+- no Android-specific gameplay tuning was required
 
-Do not reopen Stage A without a concrete platform/package/device/release trigger.
+### Stage B1 — Docking Geometry v2 reference-anchor foundation
+Status: **PASS / ACCEPTED**.
 
-### Stage B — Docking Geometry v2 — CURRENT NEXT STAGE
-Goal: remove the hidden assumption that the player's docking point is always a fixed forward probe.
+Implemented:
+- player docking anchor as local `x / y / angle`
+- station docking anchor as local `x / y / angle`
+- world anchor pose derived from body transform
+- inverse body pose solving for dock snap/hold
+- docking position/orientation and P2 orientation feedback use the same anchor frames
+- current reference shuttle/station reproduce Mission 01 docking behavior
 
-Target model:
-- player docking anchor: local X, local Y, local angle
-- station docking anchor: local X, local Y, local angle
-- world docking pose derived from local anchors + body transforms
-- relative velocity evaluated at the actual docking anchor, including rotational tangential velocity
-- orientation matching evaluated from anchor normals/frames, not body-center direction alone
-- P2 feedback originates from the actual anchors
+Validation:
+- 256 deterministic states compare Geometry v2 against the exact legacy reference formulas
+- arbitrary non-front/asymmetric anchor transform closes correctly
+- accepted web regressions and Android packaging/build path pass
 
-Non-goal:
-- no broad collision rewrite yet.
-- no control/physics tuning.
-- no Android-specific gameplay fork.
-- no new side/rear craft until the reference shuttle passes regression.
+Canonical detail: `docs/GEOMETRY_V2.md`.
 
-Exit condition:
-- the current reference shuttle represented through Geometry v2 reproduces Mission 01 behavior with no meaningful feel/readability regression.
+### Important relative-velocity boundary
+The accepted Mission 01 velocity truth is deliberately preserved during the Geometry v2 structural refactor:
+- player side uses ship linear velocity
+- target side uses velocity at the actual station capture anchor, including station rotational tangential velocity
 
-### Stage C — Three-craft geometry probe
-Build only enough craft variation to determine whether docking-anchor geometry creates genuinely different play.
+Geometry v2 can calculate rigid velocity at the player anchor too. However, promoting player-anchor rotational tangential velocity into docking success would change an already accepted metric, including for the front reference probe.
 
-Minimum probe set:
-1. **Reference Shuttle** — front-center anchor. Control case.
-2. **Side-Service Craft** — side/mid-body anchor. Forces lateral/rotational positioning rather than nose-first alignment.
-3. **Offset/Tail Craft** — rear or strongly asymmetric anchor. Tests mental transform and non-intuitive approach posture.
+Therefore full rigid anchor-to-anchor relative velocity is a **CANDIDATE physics experiment**, not an automatic consequence of Geometry v2. It must be evaluated separately before non-front craft acceptance and must not be introduced incidentally during visual/content work.
+
+## 5. Immediate execution sequence
+### Stage B2 — Side/mid-body craft geometry probe — NEXT
+Goal: determine whether a non-front player anchor creates genuinely distinct but understandable play.
+
+Smallest coherent probe:
+- make visible player docking hardware follow `ship.dockAnchor`
+- preserve Reference Shuttle as control/fallback
+- build one Side-Service Craft or equivalent side/mid-body anchor
+- keep handling constants unchanged
+- keep current station geometry initially
+- do not add hull-clearance collision yet
 
 Questions:
-- does each craft demand a distinct correction strategy?
-- is the docking anchor readable without extra HUD clutter?
+- is the active side port readable without large HUD explanation?
+- does it demand a distinct correction/body-posture strategy?
 - does ship-frame camera remain intuitive when the active port is away from the nose?
 - can the player recover naturally after a bad approach?
+- do position/orientation/spin/drift cues agree with visible and physical anchor truth?
+
+Before promotion, separately compare the accepted velocity metric with full rigid anchor-to-anchor velocity. Any change to success truth needs its own evidence.
 
 Exit condition:
-- at least one non-front anchor produces clearly distinct but understandable gameplay on device.
+- at least one non-front anchor produces clearly distinct but understandable gameplay on device
+- no control retuning or threshold loosening is required to make the concept work
+
+### Stage C — Rear/asymmetric craft probe
+After the side/mid-body probe passes, test a rear or strongly asymmetric player anchor.
+
+Purpose:
+- stress mental body-to-anchor transformation
+- test non-intuitive approach posture
+- verify world-readable feedback remains sufficient
+
+Do not build many craft variants yet.
+
+Exit condition:
+- a second non-front geometry creates another understandable correction pattern rather than merely more confusion.
 
 ### Stage D — Simplified hull clearance
 Goal: make craft shape matter physically, not only cosmetically.
@@ -118,7 +129,7 @@ Start cheap:
 Questions:
 - can a valid anchor pose still fail because another part of the craft clips the station?
 - does this create interesting approach planning rather than frustrating hidden collisions?
-- can clearance be communicated visually without adding another checklist?
+- can clearance be communicated visually without another checklist?
 
 Exit condition:
 - hull clearance creates meaningful spatial planning and remains readable.
@@ -143,13 +154,13 @@ Purpose: prove that a new craft/anchor arrangement can carry a complete mission 
 
 Preferred identity:
 - side or mid-body docking as the main new skill
-- motion difficulty stays controlled enough that geometry, not raw speed, is the lesson
+- motion difficulty controlled enough that geometry, not raw speed, is the lesson
 
 Mission 02 should answer:
 > Does arbitrary docking-anchor geometry sustain a full mission with a learning curve?
 
 ### Stage G — Mission 03
-Purpose: combine anchor geometry with physical clearance / more constrained station space.
+Purpose: combine anchor geometry with physical clearance / constrained station space.
 
 Preferred identity:
 - asymmetric/rear/mid-body craft
@@ -162,12 +173,12 @@ Mission 03 should answer:
 ### Stage H — Productization gate
 Mission 03 is not the end of content. It is the first strong decision point.
 
-At this gate, assess:
+Assess:
 - are Mission 01/02/03 meaningfully different?
 - is the content grammar producing new problems without changing core controls?
 - is the difficulty curve teachable?
 - is repetition appearing from motion alone, or does geometry keep the experience fresh?
-- which idea-bank families have now earned promotion?
+- which idea-bank families have earned promotion?
 
 If YES:
 - formalize mission/content data structures
@@ -178,15 +189,15 @@ If YES:
 If NO:
 - do not hide the weakness under meta progression; revisit the content grammar first.
 
-## 5. Content grammar
-A future authored docking problem can be thought of as a composition of:
+## 6. Content grammar
+A future authored docking problem can be treated as a composition of:
 
 ### Craft
 - body shape
 - docking anchor local position
 - docking anchor local normal/orientation
 - collision hull
-- optionally handling differences only after geometry is proven insufficient
+- optionally handling differences only after geometry proves insufficient
 
 ### Station
 - body/obstacle geometry
@@ -217,7 +228,7 @@ A future authored docking problem can be thought of as a composition of:
 
 A new mission should preferably change one or two primary dimensions at a time before combining many dimensions.
 
-## 6. Difficulty policy
+## 7. Difficulty policy
 Avoid equating difficulty with simply making everything faster.
 
 Preferred difficulty progression:
@@ -229,21 +240,21 @@ Preferred difficulty progression:
 6. introduce unusual anchor orientation/placement
 7. combine previously learned skills
 
-Raw speed/rotation increases are valid, but should be only one difficulty axis.
+Raw speed/rotation increases are valid but only one difficulty axis.
 
-## 7. UI/readability implications
+## 8. UI/readability implications
 The current UI skeleton can remain, but future content must not assume a nose-mounted docking point.
 
 Required direction:
 - player docking anchor visibly identifiable on the craft itself
 - target anchor visibly identifiable on the station
-- position/orientation/spin/drift feedback derived from actual anchor frames
+- position/orientation/spin/drift feedback derived from actual anchor frames and the accepted docking velocity truth
 - no large persistent arrow/text explaining where the port is
 - avoid moving critical information back into a permanent numeric checklist
 
-If a new geometry cannot be understood without a large HUD explanation, first improve world readability before adding more UI.
+If a new geometry cannot be understood without a large HUD explanation, improve world readability before adding more UI.
 
-## 8. Craft variety policy
+## 9. Craft variety policy
 Different craft should preferably create different docking problems, not merely different skins.
 
 Good reason for a new craft:
@@ -253,11 +264,11 @@ Good reason for a new craft:
 - different proportions that affect approach planning
 
 Weak reason:
-- same gameplay geometry with only decorative art changes.
+- same gameplay geometry with only decorative art changes
 
 Cosmetic variants may exist later, but they should not be confused with core content variety.
 
-## 9. Mission authoring / data-driven timing
+## 10. Mission authoring / data-driven timing
 Do not build a giant generic mission schema before Mission 02/03 expose real requirements.
 
 After at least two non-reference geometry families work on device, consider a data-driven description covering:
@@ -273,7 +284,7 @@ After at least two non-reference geometry families work on device, consider a da
 
 Default assumption: frozen global docking truth remains shared unless deliberately changed.
 
-## 10. Promotion ladder for ideas
+## 11. Promotion ladder for ideas
 Every idea belongs to one of four states:
 
 ### BANKED
@@ -290,21 +301,23 @@ Validated and selected for production/content scheduling.
 
 Never treat BANKED ideas as promised features.
 
-## 11. Current promoted candidates
-The following are currently promoted above the general idea bank:
-- arbitrary player docking-anchor position
-- arbitrary player docking-anchor orientation
-- side/mid-body docking craft
-- rear/asymmetric docking craft
+## 12. Current promoted candidates
+Currently promoted above the general idea bank:
+- side/mid-body docking craft — **NEXT CANDIDATE**
+- rear/asymmetric docking craft — CANDIDATE after side probe
+- full rigid player-anchor relative-velocity semantics — CANDIDATE physics experiment before non-front acceptance
 - simplified hull clearance
 - station recess/corridor geometry
 - open-vs-constrained approach contrast
 - Mission 02 centered on anchor geometry
 - Mission 03 centered on geometry + clearance
 
-These are still subject to bounded prototype gates; they are not yet accepted gameplay.
+Already validated foundation:
+- arbitrary local player docking-anchor position/orientation transform
+- arbitrary local station docking-anchor position/orientation transform
+- reference shuttle parity through Geometry v2
 
-## 12. Explicit hold list
+## 13. Explicit hold list
 Keep these out of the near-term critical path until the physical content grammar is proven:
 - combat/weapons
 - resource harvesting/economy
@@ -318,12 +331,12 @@ Keep these out of the near-term critical path until the physical content grammar
 
 They may remain in the idea bank as distant possibilities, but should not consume implementation budget now.
 
-## 13. Current macro roadmap
+## 14. Current macro roadmap
 `P3 accepted web baseline`
-→ `Android parity probe PASS / wrapper contract FROZEN`
-→ **`Docking Geometry v2`**
-→ `reference-craft regression`
-→ `3-craft geometry probe`
+→ `Android parity PASS / wrapper FROZEN`
+→ `Geometry v2 reference-anchor foundation PASS`
+→ **`side/mid-body craft probe`**
+→ `rear/asymmetric craft probe`
 → `simplified hull clearance`
 → `station geometry probe`
 → `Mission 02`
@@ -333,4 +346,4 @@ They may remain in the idea bank as distant possibilities, but should not consum
 → `Mission 04+ scale-out`
 → `Android productization / release candidate`
 
-This sequence is directional, not calendar commitment. A failed gate may redirect later stages.
+This sequence is directional, not a calendar commitment. A failed gate may redirect later stages.

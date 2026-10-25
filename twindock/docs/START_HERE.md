@@ -1,12 +1,11 @@
 # Twin Dock — START HERE
 
-This file is the first entry point for any new GPT session, human contributor, or delegated implementation agent.
+This file is the first entry point for any new GPT session, human contributor or delegated implementation agent.
 
 ## Authority rule
-Live GitHub on the current Twin Dock continuation branch is the authority. Past chat, memory, copied SHAs, and handoff text are navigation aids only. If they disagree with live repository state, live repository state wins.
+Live GitHub on the current Twin Dock continuation branch is the authority. Past chat, memory, copied SHAs and handoff text are navigation aids only. If they disagree with live repository state, live repository state wins.
 
 ## Required read order
-Read these in order before proposing or implementing work:
 1. `twindock/docs/START_HERE.md`
 2. `twindock/PROJECT_STATUS.md`
 3. `twindock/docs/SESSION_HANDOFF.md`
@@ -15,12 +14,13 @@ Read these in order before proposing or implementing work:
 6. `twindock/docs/OPERATING_RULES.md`
 7. `twindock/README.md`
 8. `twindock/docs/CONTENT_EXPANSION_MAP.md`
-9. exact source/tests relevant to the next bounded slice
+9. `twindock/docs/GEOMETRY_V2.md` for current geometry work
+10. `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` only when Android history/contract is relevant
+11. exact source/tests relevant to the next bounded slice
 
-Read `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` when Android history/contract is relevant.
 Before proposing/promoting new content, also consult `twindock/docs/IDEA_BANK.md`.
 
-Already ACCEPTED/CLOSED/FROZEN work must not be revalidated from scratch merely because a new session started. Revalidate only for a relevant source change, prospective dependency, platform/package trigger, release requirement, or concrete mismatch.
+Already ACCEPTED/CLOSED/FROZEN work must not be revalidated merely because a new session started. Revalidate only for a relevant source change, prospective dependency, platform/package trigger, release requirement or concrete mismatch.
 
 ## Project identity / frozen core
 Twin Dock is a mobile-first inertial precision-docking game centered on embodied two-hand control.
@@ -34,8 +34,8 @@ Frozen direction:
 - stationary start / body-frame control
 - ship-frame camera
 - recovery/re-approach after mistakes
-- docking requires position + relative linear velocity + orientation + relative angular velocity
-- relative velocity includes target translation and rotating-port tangential velocity
+- docking requires position + accepted relative linear velocity + orientation + relative angular velocity
+- station capture velocity includes target translation and rotating-port tangential velocity
 - deterministic background identity
 - precise earned docking rather than generous magnetic capture
 
@@ -48,90 +48,99 @@ V8 remains the immutable fallback/control baseline. See `BASELINE_V8.md` for exa
 - P3-A audio/haptics/event feedback + angle-wrap protection — ACCEPTED / CLOSED
 - P3-B transition/final polish — ACCEPTED / CLOSED
 - P3 overall — ACCEPTED / CLOSED
-- Android packaging preflight — PASS / CLOSED
-- Android minimal wrapper/build — BUILD PASS
-- Android physical-device parity — **PASS / ACCEPTED**
-- Android wrapper/platform contract — **FROZEN**
-- Android parity lane — **CLOSED**
-- Docking Geometry v2 — **NEXT / not yet implemented**
+- Android packaging/device parity — PASS / ACCEPTED; wrapper contract FROZEN
+- Geometry v2 reference-anchor foundation — **PASS / ACCEPTED**
+- Reference-shuttle deterministic regression — **PASS**
 
 ## Current exact boundary
-Do **not** reopen Android parity or start broad hull/collision work without a concrete trigger.
+Do not reopen Android packaging or start hull collision/Mission 02 yet.
 
 The next product question is:
-**Can the hidden fixed-forward-probe assumption be replaced by local player/station docking anchors while the current reference shuttle reproduces Mission 01 with no meaningful feel/readability regression?**
+**Does a side/mid-body player docking anchor create distinct but understandable play while preserving the accepted controls, ship-frame camera, docking thresholds and recovery loop?**
 
 Exact next slice:
-`Docking Geometry v2 -> represent current reference shuttle through local anchor frames -> bounded reference-shuttle regression`
+`anchor-driven player-port visual -> one side/mid-body craft probe -> focused regression -> physical-device readability/gameplay check`
 
-## Android accepted baseline
-Canonical contract/history: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
+The current reference shuttle remains the control/fallback.
 
-Successful wrapper implementation/build:
-- implementation head: `596ba9e4e89e4926cd10aad08908694572b0bf4b`
-- workflow run: `40207650795`
-- Capacitor: 8.5.3
-- Node: 22+
-- JDK: 21
-- minSdk: 24
-- targetSdk/compileSdk: 36
-- AGP: 8.13.0
-- Gradle: 8.14.3
-- app ID: `com.hotmoral.twindock`
-- version: `0.1.0` / versionCode 1
+## Geometry v2 accepted foundation
+Canonical detail: `docs/GEOMETRY_V2.md`.
 
-Debug APK reference:
-- filename `app-debug.apk`
-- SHA-256 `96e29d19f4c1c211ffcc8805e338549cc7ccd13c8f2255df14868afecb4cfcc2`
+Foundation implementation:
+- ref `0f60ab8f05b7c24dadb0a13a83f0951124754817`
+- CI run `40240803157` — SUCCESS
+- new `src/geometry.js`
+- player and station anchors represented as local `x / y / angle`
+- docking position/orientation derives from world anchor frames
+- dock snap/hold uses inverse anchor pose solving
+- P2 orientation feedback reads anchor frames
+- Mission 01 reference geometry remains numerically equivalent
 
-Wrapper implementation did **not** change gameplay `src/*`.
+Validation:
+- 256 deterministic states compared against exact legacy formulas
+- arbitrary non-front/asymmetric anchor transform closes correctly
+- accepted web regressions PASS
+- Android staging/build contract PASS
+- debug APK build PASS
 
-Physical-device parity was accepted on **2026-10-26 KST** after the user ran the fixed Android matrix on a real phone and reported all checked behavior normal. No Android-specific gameplay tuning or platform workaround was required after the successful build.
+### Important velocity decision
+Do **not** silently change docking relative velocity to use player-anchor rigid/tangential velocity.
 
-The accepted Android wrapper/platform contract is now FROZEN. Reopen only for a relevant source/platform/package change, device mismatch, release requirement, or explicit Android productization slice.
+Current accepted truth remains:
+- ship linear velocity on player side
+- actual station capture-anchor velocity on target side, including station rotational tangential velocity
 
-## Android wrapper guards
-- thin Capacitor wrapper
-- local/offline assets
-- generated `www/` is output, not source authority
-- preserve `renderer.js -> presentation.js -> main.js`
-- phone-first `sensorLandscape`
-- app category `game`
-- SystemBars native inset handling + viewport-fit cover
-- no explicit forced `EdgeToEdge.enable` / `WindowCompat.enableEdgeToEdge`
-- keep current Web Audio / `navigator.vibrate()` baseline unless concrete evidence requires change
-- no native physics/input/docking/camera rewrite
+`Geometry.shipDockAnchor()` exposes rigid anchor velocity for future analysis, but that value is not yet promoted into docking success.
+
+Any change here is a separate gameplay/physics experiment because it can change Mission 01 difficulty.
+
+## Geometry v2 next-slice guards
+For the side/mid-body probe:
+- renderer/player docking fixture must visually follow `ship.dockAnchor`
+- preserve exact reference craft as control
+- one new anchor prototype only
+- no broad craft schema
+- no new handling constants
+- no hull-clearance collision yet
+- no station catalogue
+- no Mission 02 yet
+- no large explanatory HUD
+- P2 cues and visible/physical anchor must agree
+
+Require device evidence before promoting the non-front craft.
 
 ## P3 regression guard
 `src/presentation.js` is required. It provides a continuous renderer-facing visual angle across physical `+π/-π` wrap and prevents the accepted fifth-dock distant-background regression without changing physical state.
 
-Do not bypass it during Geometry v2 or move the fix into physics casually.
+Required loading chain remains:
+`renderer.js -> presentation.js -> main.js`.
 
-## Docking Geometry v2 — immediate scope
-Goal: remove the assumption that the player docking point is always a fixed forward probe.
+## Android state
+Android wrapper/platform contract is already FROZEN after physical-device parity PASS on 2026-10-26 KST.
 
-Target model:
-- player docking anchor: local X, local Y, local angle
-- station docking anchor: local X, local Y, local angle
-- derive world docking pose from local anchors + body transforms
-- evaluate relative velocity at the actual docking anchor, including rotational tangential velocity
-- evaluate orientation from anchor normals/frames rather than body-center direction alone
-- originate P2 feedback from actual anchor frames
+Pinned accepted wrapper:
+- Capacitor 8.5.3
+- Node 22+
+- JDK 21
+- minSdk 24
+- targetSdk/compileSdk 36
+- AGP 8.13.0
+- Gradle 8.14.3
+- app ID `com.hotmoral.twindock`
+- local/offline assets
 
-Non-goals:
-- no broad hull/collision rewrite yet
-- no control tuning
-- no Android-specific implementation fork
-- no new side/rear craft until the reference shuttle passes regression
+Shared-core content changes may continue to produce APK CI artifacts, but do not reinterpret that as reopening Android platform parity.
 
-Exit condition:
-**the current reference shuttle represented through Geometry v2 reproduces Mission 01 behavior with no meaningful feel/readability regression.**
-
-## Content direction after Geometry v2
-The current front-port shuttle is a reference craft, not the final universal geometry.
-
-Path:
-`Docking Geometry v2 -> reference-shuttle regression -> side/mid-body -> rear/asymmetric -> simplified hull clearance -> station geometry -> Mission 02 -> Mission 03 -> content/productization gate`.
+## Content direction
+Current path:
+`Geometry v2 reference foundation PASS`
+→ `side/mid-body craft`
+→ `rear/asymmetric craft`
+→ `simplified hull clearance`
+→ `station geometry`
+→ `Mission 02`
+→ `Mission 03`
+→ `content/productization gate`
 
 Ideas follow `BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`.
 `IDEA_BANK.md` is not a roadmap.
@@ -145,14 +154,14 @@ For each bounded slice:
 5. define acceptance first
 6. implement smallest coherent change
 7. run only relevant deterministic/static checks
-8. require device evidence for tactile/visual/platform behavior
+8. require device evidence for genuinely new tactile/visual behavior
 9. promote only after acceptance
 10. synchronize canonical handoff at large-group closure
 
 ## Cost discipline
-Prefer cheap review before expensive build/device work, but avoid repeated scans and closed-phase replay. Use Codex only for batches large enough to justify it and CI only when repeatability saves net work.
+Prefer cheap review before expensive build/device work. Avoid repeated scans, accepted-phase replay, redundant CI and premature schema generalization.
 
-The Android build workflow intentionally does not trigger on documentation-only changes.
+For multi-file source changes, batch blobs/tree/commit and move the branch ref once; do not create avoidable intermediate commits that each trigger Android CI.
 
 ## Group-closure rule
-At every large-group closure synchronize `PROJECT_STATUS.md` and `SESSION_HANDOFF.md`, then verify this file, README and any affected design docs agree on current truth, known risks and the exact next boundary.
+At every large-group closure synchronize `PROJECT_STATUS.md` and `SESSION_HANDOFF.md`, then verify this file, README and affected design docs agree on current truth, known risks and exact next boundary.
