@@ -1,0 +1,77 @@
+name: Twin Dock Android parity build
+
+on:
+  push:
+    branches:
+      - twindock-p3b-transition-v1
+    paths:
+      - 'twindock/**'
+      - '.github/workflows/twindock-android-parity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: twindock
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 36 SDK
+        run: sdkmanager 'platform-tools' 'platforms;android-36' 'build-tools;35.0.0'
+
+      - name: Install pinned Capacitor dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run accepted web regressions
+        run: npm test
+
+      - name: Stage local web assets
+        run: npm run stage:android
+
+      - name: Generate pinned Capacitor Android shell
+        run: npx cap add android
+
+      - name: Verify and patch Android contract
+        run: npm run android:patch
+
+      - name: Sync staged web assets
+        run: npx cap sync android
+
+      - name: Re-verify Android contract after sync
+        run: npm run android:patch
+
+      - name: Build debug APK
+        run: |
+          chmod +x android/gradlew
+          ./android/gradlew --no-daemon assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: twindock-android-debug
+          path: twindock/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
