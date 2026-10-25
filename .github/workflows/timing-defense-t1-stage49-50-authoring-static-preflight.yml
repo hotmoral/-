@@ -1,0 +1,87 @@
+name: Timing Defense T1 Stage49-50 Authoring Static Preflight
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/tools/preflight_t1_stage49_50_stagger1800_authoring_candidate_v0_1.py'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+      - '.github/workflows/timing-defense-t1-stage49-50-authoring-static-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-preflight:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: timing-defense-workspace
+    env:
+      BASE_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+      CANDIDATE: legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record exact source identity
+        run: |
+          mkdir -p artifacts
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/stage49-50-authoring-static-source-identity.txt
+          sha256sum \
+            tools/preflight_t1_stage49_50_stagger1800_authoring_candidate_v0_1.py \
+            "$CANDIDATE" \
+            "$BASE_RECIPE" \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            tools/t1_transition_microsim_core_v0_1.py \
+            tools/t1_transition_microsim_skills_v0_1.py \
+            tools/t1_transition_microsim_engine_v0_1.py \
+            >> artifacts/stage49-50-authoring-static-source-identity.txt
+          cat artifacts/stage49-50-authoring-static-source-identity.txt
+      - name: Compile preflight
+        run: python -m py_compile tools/preflight_t1_stage49_50_stagger1800_authoring_candidate_v0_1.py
+      - name: Run static preflight
+        run: |
+          PYTHONPATH=tools python tools/preflight_t1_stage49_50_stagger1800_authoring_candidate_v0_1.py \
+            --base "$BASE_RECIPE" \
+            --candidate "$CANDIDATE" \
+            --json-out artifacts/t1-stage49-50-stagger1800-authoring-static-preflight-v0_1.json \
+            --materialized-out artifacts/t1-stage49-50-stagger1800-materialized-v0_1.yaml
+      - name: Admission assertions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('artifacts/t1-stage49-50-stagger1800-authoring-static-preflight-v0_1.json').read_text())
+          assert d['status']=='PASS', d['errors']
+          assert d['errors']==[], d['errors']
+          assert d['baseRecipeSha256']=='3b42c207a662e91ccf90d4fc0cc31950e6330453c7ba74d214760649409f65bf'
+          assert d['scope']['overriddenStages']==[49,50]
+          assert d['scope']['preservedStages']==[5,18,41]
+          assert d['stageStatic']['49']['authored']==24
+          assert d['stageStatic']['50']['authored']==30
+          assert d['stageStatic']['49']['max4s']<=8
+          assert d['stageStatic']['50']['max4s']<=8
+          assert d['stage49ClusterMode']=='DISTINCT_GRAMMAR_BURST_0600'
+          assert d['stage50ClusterMode']=='DURABLE_CORE_3_STAGGER_1800'
+          assert d['metadataPreservedFromV02'] is True
+          assert d['productionGameplayChange'] is False
+          assert d['numericalFreeze'] is False
+          assert d['fullT1ExactRecipeFreeze'] is False
+          print('T1_STAGE49_50_AUTHORING_STATIC_PREFLIGHT=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: timing-defense-t1-stage49-50-authoring-static-preflight
+          path: |
+            timing-defense-workspace/artifacts/t1-stage49-50-stagger1800-authoring-static-preflight-v0_1.json
+            timing-defense-workspace/artifacts/t1-stage49-50-stagger1800-materialized-v0_1.yaml
+            timing-defense-workspace/artifacts/stage49-50-authoring-static-source-identity.txt
+          if-no-files-found: error
