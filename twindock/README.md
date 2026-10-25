@@ -3,84 +3,83 @@
 Twin Dock is a mobile-first inertial spacecraft docking game built around dual independent 2D RCS controls and a ship-frame camera.
 
 ## Start here
-For any new GPT session, contributor, or delegated implementation agent, begin with:
-
-`docs/START_HERE.md`
-
-Then follow its required read order. Live GitHub is authoritative over past chat, memory, copied SHAs, or handoff text.
+New sessions/contributors begin with `docs/START_HERE.md` and follow its recovery order. Live GitHub is authoritative over past chat, memory, copied SHAs or handoff text.
 
 ## Frozen fallback
-The immutable fallback/control contract is **V8**.
+V8 is the immutable fallback/control contract.
 
-Frozen feel:
+Frozen feel includes:
 - ship-frame camera
 - two independent full-2D thumb pads
 - full free rotation from first play
 - inertial translation and rotation
-- docking requires simultaneous position, relative velocity, orientation, and angular-velocity match
-- deterministic/fixed background
+- simultaneous position / relative velocity / orientation / angular-velocity docking truth
+- deterministic background
 - precision thresholds: distance 11, relative speed 10, direction 0.095 rad, spin 0.10 rad/s
 
-## Accepted milestone stack
+## Accepted / current stack
 - P0 modular/V8 parity — ACCEPTED / CLOSED
 - P1 five-stage Mission 01 — ACCEPTED / CLOSED
 - P2 world-readable docking feedback — ACCEPTED / CLOSED
-- P3-A restrained audio/haptics/contact-capture feedback — ACCEPTED / CLOSED
-- P3-B stage transition / final completion polish — ACCEPTED / CLOSED
+- P3-A audio/haptics/contact-capture + angle-wrap protection — ACCEPTED / CLOSED
+- P3-B stage/final polish — ACCEPTED / CLOSED
 - Android packaging preflight — PASS / CLOSED
+- Android minimal wrapper/build — **BUILD PASS**
+- Android physical-device parity — **PENDING**
 
-P3 mobile validation confirmed the final-stage distant-background angle-wrap fix, practical-volume audio, acceptable haptics, and no reported control/camera/touch regression.
+## Current exact phase
+A reproducible Capacitor debug APK has been built successfully. The next step is **physical Android parity validation**, not Geometry v2 yet.
 
-## Current phase
-**Next: minimal Capacitor Android wrapper implementation, then debug APK and physical Android parity validation.**
+Successful build reference:
+- wrapper head `596ba9e4e89e4926cd10aad08908694572b0bf4b`
+- Actions run `40207650795`
+- artifact `twindock-android-debug`
+- APK `app-debug.apk`
+- APK SHA-256 `96e29d19f4c1c211ffcc8805e338549cc7ccd13c8f2255df14868afecb4cfcc2`
 
-Canonical Android preflight contract:
-
-`docs/ANDROID_PACKAGING_PREFLIGHT.md`
-
-Fixed first-probe build baseline:
+Pinned first-parity baseline:
 - Capacitor 8.5.3
 - app ID `com.hotmoral.twindock`
-- version `0.1.0` / versionCode `1`
+- version `0.1.0` / versionCode 1
 - minSdk 24
 - targetSdk / compileSdk 36
 - AGP 8.13.0
 - Gradle 8.14.3
-- JDK 17
+- JDK **21**
 - Node.js 22+
 
-The wrapper must preserve the existing web game as local/offline assets. The initial implementation should use a deterministic generated `www/` package while keeping the existing root HTML/CSS/`src/` as canonical editable source.
+The earlier JDK 17 preflight assumption was corrected after real Capacitor compilation proved Java 21 is required.
 
-Do not mix Android/platform work with changes to frozen V8 control, docking thresholds, Mission 01 profiles, P2 feedback mapping, P3 presentation behavior, or `src/presentation.js` angle-wrap protection.
+Wrapper implementation changed packaging/build files only; gameplay `src/*` remained untouched.
 
-Physical-device acceptance must prove dual-touch identity, edge behavior, lifecycle resume, safe-area/system-bar layout, audio, haptics, ship-frame camera continuity, all five Mission 01 dockings and no fifth-dock background regression.
+Canonical Android details: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
+
+## Android parity policy
+The APK uses local/offline assets. Generated `www/` is packaging output, not source authority.
+
+Device validation must cover dual touch/pointer capture, edge touch, pause/resume, landscape/safe-area/system bars, fullscreen, Web Audio, haptics, Back, ship-frame camera, angle-wrap continuity, all five Mission 01 docks and deterministic world identity.
+
+Do not compensate for platform defects by tuning V8 controls or changing docking truth.
+
+The wrapper is not FROZEN until physical-device parity passes.
 
 ## Content expansion direction
-Mission 01's current shuttle/front probe is a **reference craft**, not a permanent universal geometry.
+Mission 01's current shuttle/front probe is a reference craft, not a permanent universal geometry.
 
-After Android parity is proven and the wrapper contract is frozen, the default return path is:
-
+After Android parity PASS and wrapper freeze:
 `Docking Geometry v2 -> reference-shuttle regression -> side/mid-body craft -> rear/asymmetric craft -> simplified hull clearance -> station geometry -> Mission 02 -> Mission 03 -> content/productization gate`.
 
-The intended expansion strategy is to keep the accepted dual-RCS inertial control and docking truth while creating new physical problems through:
-- craft silhouette/proportions
-- arbitrary local docking-anchor position/orientation
-- station/port geometry
-- target motion
-- approach clearance
-- simplified hull collision
+The intended expansion keeps the accepted dual-RCS inertial control/docking truth and creates new problems through craft geometry, arbitrary local docking anchors, station geometry, target motion, approach clearance and simplified hull collision.
 
-Mission 03 is a decision gate, not the planned end of the game. Mission 04+ and progression/productization work should follow only after the geometry-driven content grammar proves sustainable.
+Mission 03 is a decision gate, not the planned end of the game.
 
-Canonical planning files:
-- `docs/CONTENT_EXPANSION_MAP.md` — near-term content grammar, gates and promotion order
-- `docs/IDEA_BANK.md` — long-horizon stockpile; not a roadmap
+Planning docs:
+- `docs/CONTENT_EXPANSION_MAP.md`
+- `docs/IDEA_BANK.md` — long-horizon stockpile, not a roadmap
 
-Idea states are `BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`. Documentation in the Idea Bank alone does not commit a feature.
+Idea states: `BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`.
 
 ## Operating policy
-Work in bounded slices. Refactor and tuning are separate changes. Prefer cheap consistency review and relevant deterministic checks before expensive build/device work. Use Codex/CI only when they save net work. Device validation is required for input/camera/game-feel/readability/presentation/platform changes.
+Work in bounded slices. Refactor and tuning are separate. Perform cheap relevant consistency review before expensive work, but do not repeat accepted phases without a trigger. Device validation is required for tactile/visual/platform behavior.
 
-Do not revalidate closed P0–P3 work without a relevant source change, prospective dependency, platform/package trigger, or concrete mismatch.
-
-At every large-group closure, synchronize `PROJECT_STATUS.md` and `docs/SESSION_HANDOFF.md`, then verify `docs/START_HERE.md`, this README and any affected design docs remain consistent.
+At every large-group closure synchronize `PROJECT_STATUS.md` + `docs/SESSION_HANDOFF.md`, then verify `START_HERE.md`, this README and affected design docs remain consistent.

@@ -1,24 +1,23 @@
 # Twin Dock — Session Handoff
 
-This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at every large-group closure.
+This is the canonical fresh-session handoff. Update it with `PROJECT_STATUS.md` at every large-group closure.
 
-## 1. Authority / repository / current continuation
-- Repository: `hotmoral/-`
-- Current continuation branch: `twindock-p3b-transition-v1`
-- Live remote is authoritative.
-- Past chats, memories, copied SHAs and this handoff are navigation aids only when they agree with live GitHub.
+## 1. Authority / repository / continuation
+- repository: `hotmoral/-`
+- continuation branch: `twindock-p3b-transition-v1`
+- live remote is authoritative
+- past chats, memory, copied SHAs and this handoff are navigation aids only when they agree with live GitHub
 
 Historical accepted refs:
-- P0 foundation: `185a974dbd818386019677409f875640df27442f`
+- P0 closure: `185a974dbd818386019677409f875640df27442f`
 - P1 closure before P2: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`
 - P3-A closure: `62fa4d75301071256dabdb20fdb4c0eb6f97d3d4`
-- P3-B accepted branch: `twindock-p3b-transition-v1`
-- Android packaging preflight closure document commit: `f482770af7e08cbdb6dcecda0f1d21aae9ed3897`
+- Android successful wrapper implementation/build head: `596ba9e4e89e4926cd10aad08908694572b0bf4b`
 
 Copied SHAs are never higher authority than the current live branch.
 
-## 2. Required recovery order
-Before proposing or implementing work, read in this order:
+## 2. Recovery order
+Read before work:
 1. `twindock/docs/START_HERE.md`
 2. `twindock/PROJECT_STATUS.md`
 3. `twindock/docs/SESSION_HANDOFF.md`
@@ -27,15 +26,15 @@ Before proposing or implementing work, read in this order:
 6. `twindock/docs/OPERATING_RULES.md`
 7. `twindock/README.md`
 8. `twindock/docs/CONTENT_EXPANSION_MAP.md`
-9. `twindock/docs/IDEA_BANK.md` when content ideation/promotion is relevant
-10. `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` for the current Android lane
+9. `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` for Android work
+10. `twindock/docs/IDEA_BANK.md` when content ideation/promotion is relevant
 11. exact source/tests relevant to the next bounded slice
 
-Do not delegate, refactor broadly, generate an APK, or rerun expensive validation before the recovery pass establishes the exact live boundary.
+Do not broadly refactor, retune controls, begin Geometry v2, delegate, or rerun expensive validation before recovery establishes the exact live boundary.
 
-Already ACCEPTED / CLOSED / FROZEN work must not be re-tested from scratch merely because a new session started. Revalidation requires a relevant source change, concrete mismatch, prospective dependency, or platform/package change that directly affects the contract.
+Closed/frozen work is not re-tested simply because a session restarted. Revalidation requires a relevant source change, prospective dependency, platform/package trigger, or concrete mismatch.
 
-## 3. Current exact state
+## 3. Exact current state
 - P0: ACCEPTED / CLOSED
 - P1: ACCEPTED / CLOSED
 - P2: ACCEPTED / CLOSED
@@ -43,75 +42,81 @@ Already ACCEPTED / CLOSED / FROZEN work must not be re-tested from scratch merel
 - P3-B: ACCEPTED / CLOSED
 - P3 overall: ACCEPTED / CLOSED
 - Android packaging preflight: PASS / CLOSED
-- Android wrapper implementation: **not yet implemented**
-- APK: **not yet generated**
-- Android physical-device parity: **not yet validated**
-- Docking Geometry v2: **not yet implemented**
+- Android minimal wrapper/build: **BUILD PASS**
+- debug APK: **generated**
+- Android physical-device parity: **PENDING**
+- Android wrapper/platform contract: **not yet FROZEN**
+- Docking Geometry v2: **not started**
 
 Exact next boundary:
-**minimal Capacitor Android wrapper implementation -> debug APK -> physical Android parity validation.**
+**install the debug APK on a physical Android phone -> execute the fixed parity matrix -> classify/fix only concrete Android mismatches -> freeze wrapper on PASS.**
 
-After Android parity PASS:
-**freeze wrapper contract -> return to shared game core -> Docking Geometry v2.**
+After PASS:
+**return to shared game core -> Docking Geometry v2.**
 
-## 4. Project identity / core experience
+## 4. Project identity / experiential loop
 Twin Dock is a mobile-first inertial spacecraft precision-docking game centered on embodied two-hand control.
 
-The player uses two independent full-2D RCS pads. Their common force creates translation; their differential/lever-arm effect creates rotation.
+Core control:
+- two independent full-2D thumb/RCS pads
+- common force produces translation
+- differential/lever-arm force produces torque
+- input changes motion state, not direct position
+- inertia is preserved
+- full free rotation from first play
+- stationary start
+- body-frame control
 
-Input changes motion state rather than directly moving the ship.
-
-Core experiential loop:
+Experiential loop:
 `mistake -> instability -> regain control -> recover -> re-approach -> precise docking`
 
-Mistakes should usually remain recoverable rather than immediately forcing FAIL/RESET.
+Prefer recovery to immediate FAIL/RESET.
 
-Rejected directions unless a new explicit product experiment is opened:
+Rejected unless reopened as explicit experiment:
 - one-hand primary control
 - car/boat heading steering
 - forward/back-only twin thrusters
-- removing free rotation for tutorial simplicity
-- unlocking rotation later
-- large magnetic capture that substitutes for precision
+- tutorial removal/stage-gating of free rotation
+- generous magnetic capture replacing precision
 
-## 5. How the control model was reached
-Early tactile exploration established the current structure:
-1. direct-touch inertial object control proved motion-state control but fingers obscured play
+## 5. Why the current control model exists
+The current structure emerged from tactile device prototypes:
+1. direct-touch inertial control proved motion-state control but fingers obscured the scene
 2. separated one-hand force control preserved inertia but lacked embodied feel
-3. heading/car-like steering constrained correction
-4. one 2D joystick improved freedom but braking/reversal remained weak
-5. faster one-hand control improved responsiveness but still lacked two-hand cooperation
-6. twin vertical-only thrust removed useful freedom and made control harder
+3. heading/car steering restricted correction
+4. one 2D joystick improved freedom but braking/reversal/fine correction stayed weak
+5. faster one-hand 2D improved response but lacked two-hand cooperation
+6. twin vertical-only thrust removed useful freedom and became harder, not clearer
 7. two independent full-2D pads became the accepted breakthrough
 
 Design conclusion:
 **extra freedom is not inherently harder when every degree of freedom maps to an intuitive corrective action.**
 
-The space-docking theme then made the control model a skill task requiring simultaneous position, relative velocity, orientation and angular-velocity synchronization.
+Space docking turns that control into a skill task requiring simultaneous motion-state synchronization.
 
-## 6. Frozen V8 control contract
+## 6. Frozen V8 contract
 V8 is the immutable fallback/control baseline until explicitly superseded.
 
-Do not silently change during platform, structure, UI or content work:
-- FORCE_SCALE = 58
-- deadzone = 0.10
-- input exponent = 2.05
-- max speed = 78
-- max angular speed = 0.90
-- station omega reference = 0.18
-- docking distance = 11
-- docking relative speed = 10
-- docking direction/orientation error = 0.095 rad
-- docking angular-speed error = 0.10 rad/s
+Frozen values:
+- FORCE_SCALE 58
+- deadzone 0.10
+- exponent 2.05
+- max speed 78
+- max angular speed 0.90
+- station omega reference 0.18
+- docking distance 11
+- docking relative speed 10
+- docking orientation/direction error 0.095 rad
+- docking angular-speed error 0.10 rad/s
 
-Exact baseline artifact/hash live in `BASELINE_V8.md`.
+Exact artifact/hash are in `BASELINE_V8.md`.
 
-Structural refactor and control tuning are separate changes. Any tuning requires an explicit controlled experiment and device validation.
+Structural/platform work must not silently alter these. Tuning is a separate controlled experiment requiring device evidence.
 
-## 7. Camera / motion-comfort contract
+## 7. Camera / motion comfort
 Accepted camera: **ship-frame**.
 
-The player craft remains visually mostly fixed while nearby world/station geometry moves and rotates relative to it. This is part of the game feel, not a cosmetic choice.
+The player craft remains visually mostly fixed while nearby world/station geometry moves and rotates relative to it. This is a core feel contract.
 
 Motion-comfort mitigation:
 - stable body-frame/HUD cues
@@ -121,15 +126,16 @@ Motion-comfort mitigation:
 
 Do not solve motion comfort by removing rotation freedom.
 
-### P3-A angle-wrap protection
-Physical `ship.angle` remains wrapped in normal gameplay coordinates.
+### P3-A presentation angle protection
+Physical `ship.angle` remains wrapped for gameplay.
+`src/presentation.js` supplies a continuous renderer-facing visual angle through a renderer wrapper/Proxy.
 
-`src/presentation.js` wraps the renderer with a Proxy and supplies a continuous renderer-facing visual angle. This prevents distant fractional parallax from jumping at physical `+π/-π` wrap without changing physics or camera truth.
+This prevents fractional distant parallax from jumping across physical `+π/-π` without changing physical/camera truth.
 
-Script/order guard:
-`renderer.js -> presentation.js -> main.js`
+Required loading chain:
+`renderer.js -> presentation.js -> main.js`.
 
-Do not remove this adapter, bypass it during packaging, or move the fix into physics casually.
+Do not remove/bypass this adapter or move the fix into physics casually.
 
 ## 8. Docking truth
 Successful docking requires all four simultaneously:
@@ -140,84 +146,65 @@ Successful docking requires all four simultaneously:
 
 Relative velocity includes:
 - target translation
-- target rotational tangential velocity at the docking port
+- target rotation-induced tangential velocity at the port
 
-Visible/internal docking geometry must agree.
+Visible/internal geometry must agree.
 P2 readiness feedback and actual success thresholds must agree.
 Avoid generous magnetic capture.
 
-## 9. Architecture responsibility contract
+## 9. Architecture boundaries
 ### Input
-- pointer identity
-- dual-touch tracking
-- response curve
-- body-frame command vectors
+pointer identity, dual-touch tracking, response curve, body-frame commands.
 
 ### Physics
-- position / velocity
-- angle / angular velocity
-- inertial state
-- collision response
+position, velocity, angle, angular velocity, inertia, collision response.
 
 ### Docking
-- geometry
-- relative metrics
-- four-condition truth
-- success/recoverable collision criteria
+geometry, relative metrics, four-condition truth, capture/recoverable collision criteria.
 
 ### Camera
-- world -> ship-frame transform
-- never mutate physical truth
+world -> ship-frame presentation; no physical mutation.
 
 ### Renderer
-- world visuals
-- visible docking hardware
+world visuals and visible docking hardware.
 
 ### Feedback
-- world-readable P2 readiness cues
-- no physics mutation
+world-readable P2 readiness cues only; no physics mutation.
 
 ### Mission
-- target/stage sequence
-- persistent ship state between dockings
+stage/target sequence and persistent ship state between docks.
 
 ### Effects
-- audio/haptics presentation only
+presentation audio/haptics only.
 
 ### Presentation adapter
-- rendering continuity/readability only
-- protects angle-wrap presentation without mutating physics
+visual continuity/readability only; wrapped physical values may be adapted for display, never source-state mutation.
 
 ### Transitions
-- stage/final presentation only
-- no gameplay truth mutation
+stage/final presentation only.
 
-### Future geometry/content
-- craft/station anchors and collision geometry should become data-driven only after bounded prototypes expose actual requirements
+### Future geometry
+craft/station docking anchors and collision geometry become data-driven only after bounded prototypes expose real requirements.
 
-Keep these boundaries intact during Android work.
+## 10. P0 — modular foundation
+Status: ACCEPTED / CLOSED.
 
-## 10. P0 — modular foundation / V8 parity
-Status: **ACCEPTED / CLOSED**
-
-Result:
+Evidence:
 - V8 modularized
 - deterministic smoke PASS
 - 12,000-frame V8-vs-modular comparison
 - zero observed divergence in position, velocity, angle, angular velocity, station angle and docking metrics
 - mobile feel parity accepted
 
-V8 remains the immutable fallback/control point.
+V8 remains fallback/control.
 
 ## 11. P1 — Mission 01
-Status: **ACCEPTED / CLOSED**
+Status: ACCEPTED / CLOSED.
 
-Product question:
-Does the accepted control remain compelling across a continuous multi-target mission?
+Question: does the validated control remain compelling across a continuous multi-target mission?
+Accepted answer: yes.
 
-Accepted answer: **yes**.
-
-Mission 01 sequence:
+Sequence:
 1. STATIC
 2. TRANSLATE
 3. ROTATE
@@ -225,117 +212,87 @@ Mission 01 sequence:
 5. FINAL
 
 Accepted behavior:
-- five deterministic target profiles
+- deterministic five-target profiles
 - ship state persists between docks
-- target translation participates in docking-relative velocity
-- rotational port tangential velocity participates in docking-relative velocity
+- target translation included in relative velocity
+- rotational port tangential velocity included in relative velocity
 - deterministic background persists
-- collisions remain recoverable
-- V8 feel unchanged
+- recoverable collision/re-approach
+- frozen V8 feel unchanged
 
-Do not invent a measured 3–5 minute mission duration; exact duration was not separately instrumented.
+Exact mission duration was not separately instrumented; do not invent one.
+Mission 01 is a reference/basic mission, not total intended content.
 
-Mission 01 is the reference/basic mission, not the intended total content volume.
+## 12. P2 — world-readable feedback
+Status: ACCEPTED / CLOSED.
 
-## 12. P2 — world-readable docking feedback
-Status: **ACCEPTED / CLOSED**
+Normal UI removed the permanent numeric/checklist diagnostics; QA diagnostics remain under `?debug=1`.
 
-Accepted normal presentation:
-- compact mission progress/status
-- old permanent relative-speed number removed from normal play
-- old four-condition debug checklist removed from normal play
-- debug diagnostics retained under `?debug=1`
-
-World feedback:
+Accepted scene feedback:
 - position -> capture brackets
 - orientation -> ship/port notches
 - angular velocity -> relative-spin trail
 - relative linear velocity -> drift arrow
-- success -> restrained green ring
+- success -> restrained green confirmation ring
 
-Feedback uses the same docking truth/thresholds as actual docking success.
+Feedback uses the same docking checks/thresholds as actual success.
 
-## 13. P3-A — audio / haptic / event feedback
-Status: **ACCEPTED / CLOSED**
+## 13. P3-A — event/audio/haptic foundation
+Status: ACCEPTED / CLOSED.
 
-Accepted behavior:
+Accepted:
 - restrained continuous RCS hiss
-- bad-contact mechanical/noise cue + short haptic
+- bad-contact cue + short haptic
 - soft-capture cue + short haptic
 - latch cue
 - delayed next-target cue
 - mission-complete cue
-- `?audio=0`
-- `?haptics=0`
-- mobile AudioContext arm/resume on `pointerdown`, `touchstart`, `click`
-- RCS sound silences on pause/reset/background
+- `?audio=0`, `?haptics=0`
+- AudioContext arm/resume from `pointerdown`, `touchstart`, `click`
+- RCS silence on pause/reset/background
+- `src/presentation.js` angle-wrap protection
 
 Issue history:
-- audio initially appeared silent at low media volume; activation and gain were hardened conservatively and practical-volume device recheck passed
-- fifth-dock distant-background flip was traced to fractional parallax using wrapped physical angle and fixed in the presentation layer
+- initial low media volume made audio seem silent; activation/gain hardened conservatively and recheck passed
+- fifth-dock distant-background flip came from fractional parallax using wrapped angle; fixed presentation-only and device recheck passed
 
-Device acceptance confirmed:
-- audio/haptics satisfactory and low-fatigue
-- contact vs capture distinct
-- capture/latch/next-target sequence satisfactory
-- no touch/control/camera regression reported
-- no background flip recurrence
+No accepted control/physics/camera regression was reported.
 
-## 14. P3-B — transition / final polish
-Status: **ACCEPTED / CLOSED**
+## 14. P3-B — transition/final polish
+Status: ACCEPTED / CLOSED.
 
-Accepted implementation:
-- `src/transitions.js`
-- `transitions.css`
-- brief dock pulse in Mission HUD
-- ~0.98 s thin sweep for next target
-- compact target/stage label
-- ~1.9 s low-opacity final edge frame
-- compact completion cue
-- completed HUD state until reset
-- `pointer-events:none`
+Accepted:
+- `src/transitions.js` + `transitions.css`
+- short dock HUD pulse
+- ~0.98 s next-target sweep + compact cue
+- ~1.9 s low-opacity final frame + completion cue
+- subtle completed HUD state until reset
+- transition layers `pointer-events:none`
 - reduced-motion support
 - no large central modal
 
-Device result: PASS / ACCEPTED.
+Device result PASS. P3 overall CLOSED.
 
-P3 overall is CLOSED. Do not re-open it without a real trigger.
-
-## 15. Current UI direction
-Preserve:
-- open central playfield
-- transparent lower-corner controls
-- compact mission/status UI
-- world-readable docking information
-- sparse numeric instrumentation
-- debug checklist hidden in normal play
-
-Do not freeze the current craft silhouette/front port as the final content geometry.
-
-## 16. Content expansion direction
-Canonical documents:
+## 15. Content direction
+Canonical:
 - `docs/CONTENT_EXPANSION_MAP.md`
 - `docs/IDEA_BANK.md`
 
-The current shuttle/front-center port is reference content only.
+The current front-center shuttle/probe is reference content, not a universal final geometry.
 
-Future intended content axes:
+Primary future axes:
 - craft silhouette/proportions
-- craft docking-anchor local position
-- craft docking-anchor local orientation
-- station geometry
-- station port geometry
+- player docking-anchor local position/orientation
+- station geometry/anchor
 - target translation/rotation
-- initial relative pose
-- approach corridor / clearance
-- simplified craft/station hull collision
+- initial relative pose/motion
+- approach corridor/clearance
+- simplified hull collision
 - mission composition
-- later scoring/mastery if the physical content grammar proves sustainable
+- later scoring/mastery if physical content grammar proves sustainable
 
 Idea lifecycle:
-`BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`
-
-`IDEA_BANK.md` is not a roadmap.
+`BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`.
 
 Post-Android path:
 `Docking Geometry v2`
@@ -347,283 +304,207 @@ Post-Android path:
 → `Mission 02`
 → `Mission 03`
 → `content/productization gate`
-→ `Mission 04+ / justified scoring, unlocks, records, selection`
+→ `Mission 04+ / justified meta`
 
-Mission 03 is a decision gate, not the end of the game.
+Mission 03 is a decision gate, not an end point.
 
-Near-term hold:
-- combat/weapons
-- resource economy
-- crafting
-- RPG stat trees
-- large open world
-- PvP
-- complex narrative systems
-- fuel economy as primary loop
-- large inventory/equipment systems
+Hold near-term: combat, economy/harvesting, crafting, RPG stats, large open world, PvP, complex narrative, fuel economy as primary loop, large inventory/equipment systems.
 
-## 17. Android packaging preflight — PASS / CLOSED
-Canonical contract:
-`docs/ANDROID_PACKAGING_PREFLIGHT.md`
+## 16. Android packaging preflight
+Status: PASS / CLOSED.
+Canonical detail: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
 
-Product question:
-Can the accepted web game be packaged faithfully on Android without native gameplay rewrite or platform-driven gameplay tuning?
+Chosen wrapper:
+- thin Capacitor 8 wrapper
+- local/offline web assets
+- no native gameplay rewrite
 
-Preflight answer: **yes; no blocking source/contract contradiction found.**
+Current canonical toolchain:
+- Capacitor 8.5.3
+- Node 22+
+- JDK **21**
+- minSdk 24
+- targetSdk 36
+- compileSdk 36
+- AGP 8.13.0
+- Gradle 8.14.3
+- app ID `com.hotmoral.twindock`
+- versionName 0.1.0 / versionCode 1
 
-This is not device parity. APK implementation/testing remains outstanding.
+Important correction:
+The initial preflight used JDK 17 by looking at AGP minimum requirements. Actual pinned Capacitor compilation failed with `invalid source release: 21`; Capacitor 8.5.3 source was then directly checked and confirmed Java 21. The build/guard contract was corrected to JDK 21.
 
-### Chosen stable toolchain
-- Capacitor core/CLI/Android: 8.5.3
-- Node.js: 22+
-- Android Studio: 2025.2.1+
-- app name: Twin Dock
-- application ID: `com.hotmoral.twindock`
-- versionName: 0.1.0
-- versionCode: 1
-- minSdk: 24
-- targetSdk: 36
-- compileSdk: 36
-- AGP: 8.13.0
-- Gradle: 8.14.3
-- JDK: 17
+## 17. Android wrapper implementation — BUILD PASS
+Implementation intentionally remained outside gameplay source.
 
-Capacitor 9 is not selected while pre-release/alpha.
+Added/changed only:
+- `.github/workflows/twindock-android-parity.yml`
+- `twindock/capacitor.config.json`
+- `twindock/package.json`
+- `twindock/scripts/stage-android-web.mjs`
+- `twindock/scripts/patch-android.mjs`
 
-### Asset packaging contract
-- use a deterministic generated web directory such as `www/`
-- current root HTML/CSS/JS remains source authority
-- generated package is not a second editable source tree
-- copy only runtime assets
-- preserve relative paths and script order
-- no remote runtime dependency
-- APK must not load Twin Dock from Cloudflare
+No `twindock/src/*` change.
 
-The stock Capacitor INTERNET permission may remain during the first probe, but Twin Dock gameplay itself must remain offline. Permission removal is a separate least-privilege cleanup after parity if justified.
+### Staging/build architecture
+- root HTML/CSS/`src/` remain canonical editable source
+- deterministic script creates `www/`
+- staging rejects remote entrypoint assets
+- staging verifies `renderer -> presentation -> main`
+- CI generates the native Android project from pinned Capacitor 8.5.3
+- patch script asserts SDK/AGP/Gradle/app ID/version/orientation/category/Java-21 contract
+- patch script rejects explicit forced edge-to-edge calls in MainActivity
+- `cap sync` then re-verifies contract
+- Gradle builds debug APK
 
-### Input contract / highest risk
-Current web implementation:
-- independent left/right `pointerId`
-- pointer capture attempted on each pad
-- window-scoped move/up/cancel
-- `touch-action:none`
-- background visibility clears input
+The native project is not yet maintained as a second large checked-in source tree; reproducible generation minimizes drift during parity validation.
 
-Android device must prove:
-- two simultaneous pointers remain distinct
-- edges do not lose control
-- pointer cancel/reacquire works
-- background/resume cannot leave stuck thrust
+### Build history / classification discipline
+Run 1: setup action requested obsolete Android SDK `tools`; infrastructure failure before app work. Replaced with direct runner sdkmanager.
 
-Do not tune controls to hide a WebView defect.
+Run 2: Gradle invoked from wrong working directory; CI path defect. Corrected to `android/` project root.
 
-### Orientation / display
-First parity policy:
-- `sensorLandscape`
-- Android app category `game`
-- retain portrait web blocker as fallback
-- remain resilient to resize/configuration changes
+Run 3: first real toolchain mismatch: Capacitor Android Java source level 21 vs JDK 17. Corrected canonical/tooling to JDK 21 and added a direct guard.
 
-### Safe area / system bars
-Android 16 edge-to-edge must be treated explicitly.
+Run 4: **PASS**.
+- run ID `40207650795`
+- head `596ba9e4e89e4926cd10aad08908694572b0bf4b`
+- web regressions PASS
+- staging PASS
+- Capacitor project generation PASS
+- contract checks PASS before/after sync
+- Gradle assembleDebug PASS
+- artifact upload PASS
 
-Initial policy:
+### Artifact
+- artifact name `twindock-android-debug`
+- ID `12604396208`
+- ZIP SHA-256 `10436d55b5057092a830fada531e084f9ddb0e9dd086725002e1987d442ac670`
+- APK `app-debug.apk`
+- bytes `4141919`
+- APK SHA-256 `96e29d19f4c1c211ffcc8805e338549cc7ccd13c8f2255df14868afecb4cfcc2`
+
+APK archive inspection confirmed local game runtime assets, no project docs/tests, and preserved presentation script order.
+
+The GitHub artifact is temporary. Reproducible source/build contract is canonical.
+
+## 18. Android platform contract under test
+- phone-first `sensorLandscape`
+- app category `game`
+- existing web portrait blocker retained
 - SystemBars inset handling `native`
-- initial viewport-fit hint `cover`
-- system bars visible by default in the first probe
-- current HTML Fullscreen API remains unchanged until device evidence shows a problem
-- no controls/HUD may be obscured by cutout/navigation/system insets
+- viewport-fit hint `cover`
+- system bars visible by default for first probe
+- no explicit `EdgeToEdge.enable` / `WindowCompat.enableEdgeToEdge` in first wrapper
+- existing HTML Fullscreen API unchanged until device evidence
+- warm background/foreground preserves mission/world, clears touches, silences RCS audio
+- cold process recreation may restart Mission 01
+- normal Back initially; must not reset/corrupt game state
+- Web Audio + `navigator.vibrate()` preserved first
+- native adapters only after concrete mismatch
 
-### Lifecycle
-Warm background/foreground:
-- preserve mission/world state
-- clear active touches
-- silence RCS audio while hidden
-- prevent huge physics time step
-- preserve deterministic world/background
+## 19. Exact next slice — physical Android parity
+The wrapper is **not frozen yet**.
 
-Cold process recreation may restart Mission 01. Persistent save/restore is not part of this milestone.
+Install `app-debug.apk` on a real Android phone and verify:
+- install/cold launch
+- landscape/safe-area/system bars
+- simultaneous pointer identity
+- edge touch / pointer cancel / reacquire
+- accepted dual-RCS feel
+- no stuck thrust
+- pause/background/resume state preservation
+- fullscreen behavior
+- ship-frame camera
+- continuous angle-wrap parallax and no fifth-dock flip
+- Web Audio
+- haptics
+- all five Mission 01 docks
+- target translation + rotational port velocity truth
+- P2 feedback vs actual docking truth
+- P3 transition/effect readability
+- deterministic reset/world identity
+- Android Back
+- warm resume / cold relaunch stability
 
-### Android Back
-First parity build uses normal system behavior; do not add custom navigation preemptively.
-
-Requirements:
-- Back must not invoke game reset
-- returning to a still-alive activity should preserve state
-- target SDK 36 predictive-back behavior must not crash or corrupt the WebView
-
-If accidental exits materially harm play, implement pause-first Back later as a bounded platform-only slice using modern back APIs.
-
-### Audio / haptics
-- keep Web Audio implementation first
-- retain real user-gesture arming
-- keep `navigator.vibrate()` first
-- only introduce native haptics if device evidence shows a concrete WebView mismatch
-
-### Deterministic background / presentation
-- seeded star field must retain identity across resize/resume
-- `starFieldReady` prevents regeneration
-- presentation-angle Proxy must remain active
-- fifth-dock background flip must not recur
-
-## 18. Exact next bounded slice
-**Minimal Android wrapper implementation.**
-
-Authorized scope:
-1. add Capacitor 8.5.3 dependencies/config
-2. add deterministic staging into `www/`
-3. generate/add Android platform
-4. apply app ID/version/SDK/orientation/inset contract
-5. make only platform-required source changes
-6. run existing relevant JS regressions + build/static checks
-7. produce debug APK
-8. stop for physical-device parity validation
-
-Not authorized in this slice:
-- native gameplay rewrite
-- control tuning
-- Mission 01 redesign
-- P2/P3 redesign
-- Docking Geometry v2
-- Mission 02
-- scoring/unlock/meta work
-
-## 19. Android APK acceptance contract
-Before implementation, acceptance is fixed:
-- install/cold launch stable
-- landscape correct
-- dual-touch identity stable
-- left/right RCS feel materially equivalent
-- no edge touch loss/stuck input
-- background/resume clears old touches and accepts new ones
-- no warm-resume mission reset
-- safe area/system bars do not cover controls
-- fullscreen behavior does not corrupt layout/state
-- ship-frame camera correct
-- parallax continuous across angle wrap
-- fifth-dock background flip absent
-- Web Audio works after normal interaction
-- haptics work or limitation is identified concretely
-- all five Mission 01 docks work
-- target translation/rotational-port velocity logic survives
-- P2 feedback still matches actual docking truth
-- P3 transitions/effects remain readable/non-blocking
-- reset deterministic
-- Back does not reset/corrupt state
-- warm resume/relaunch stable
-
-Classify any failure before fixing:
+Classify each failure before fixing:
 - wrapper/platform defect
 - WebView capability mismatch
 - packaging/build defect
 - pre-existing web defect
 - frozen gameplay regression
 
-Never compensate for platform defects by silently tuning frozen gameplay.
+Do not tune frozen gameplay to hide platform defects.
 
-## 20. Android 16 / future platform notes
-- Google Play API-36 target requirement is already active for new apps/updates at this checkpoint.
-- Android 16 uses enforced edge-to-edge behavior.
-- Android 16 predictive Back means deprecated `onBackPressed` assumptions are unsafe.
-- API-36 large-screen orientation restrictions can be ignored generally; games are an exception at API 36 when categorized as games.
-- Future API-37 productization will require more general adaptive behavior, so do not assume landscape lock is a permanent universal solution.
+On PASS:
+- freeze Android wrapper/platform contract
+- synchronize canonical docs
+- return to shared game core
+- begin Docking Geometry v2
 
-These are platform constraints, not reasons to change core gameplay.
-
-## 21. Cloudflare role
-Twin Dock was exposed under the existing Timing Defense Cloudflare Worker `/twindock/` route for mobile browser validation.
+## 20. Cloudflare role
+Twin Dock browser validation was exposed under the existing Timing Defense Worker `/twindock/` route.
 
 This is temporary validation convenience only.
+- source authority remains GitHub
+- APK uses packaged local assets
+- do not modify Timing Defense Worker/API behavior for Android packaging
+- do not let shared exposure become permanent coupling
 
-Rules:
-- GitHub live branch/docs remain source authority
-- APK runtime must use packaged local assets
-- do not alter Timing Defense Worker/API behavior
-- do not let shared validation routing become permanent product coupling
-
-## 22. Development / validation operating policy
+## 21. Operating / consistency discipline
 Every slice:
 1. recover live state
 2. state one product question
-3. classify frozen-contract impact
-4. check previous-stage consistency from multiple relevant viewpoints
-5. define acceptance criteria first
+3. identify frozen contracts touched
+4. review consistency from relevant views: baseline, architecture, lifecycle/state, visual/physics agreement, regression history, platform, future extensibility, validation cost
+5. define acceptance before implementation
 6. implement smallest coherent change
-7. run only regressions relevant to changed source/contracts
-8. require device validation for tactile/platform/presentation behavior
+7. run only relevant deterministic/static regressions
+8. require device evidence for tactile/visual/platform behavior
 9. promote only after acceptance
 10. synchronize canonical handoff at large-group closure
 
-Multi-view consistency review should consider:
-- frozen baseline
-- architecture responsibility
-- state/lifecycle semantics
-- visual/physics agreement
-- prior regression history
-- platform behavior
-- future content extensibility
-- cost/benefit of each validation
+Avoid whole-repository rescans, full replay of accepted phases, over-broad scope, small-task Codex use, and CI that does not save net work.
 
-Avoid:
-- whole-repository rescans every session
-- full replay of accepted phases without triggers
-- over-broad scope
-- Codex for tiny work
-- CI for cheap one-off smoke checks
-- mixing refactor with tuning
+The Android workflow trigger is narrowed to runtime/package/test files, so documentation-only commits do not rebuild the APK.
 
-## 23. Tool / cost policy
-Use the cheapest adequate lane:
-- reasoning/design/narrow review: current chat/tools
-- deterministic math/contracts: local Node/browser tests
-- Codex: only sufficiently large implementation batches
-- GitHub Actions: only if repeat automation saves net work
-- device: only when behavior is tactile, visual, platform-specific or lifecycle-specific
-
-The project intentionally spends cheap review effort early to catch contract contradictions before expensive build/device work.
-
-## 24. Known regression / scope risks
+## 22. Known regression / scope risks
 - dual-touch identity loss
-- pointer capture/edge-touch loss
-- sensitivity creep
-- Android WebView pointer cancellation differences
+- pointer capture / edge-touch loss
+- WebView pointer cancellation differences
+- sensitivity creep from attempting to compensate for platform behavior
 - camera semantic drift
 - visible/internal docking divergence
-- feedback threshold vs success divergence
-- deterministic background accidentally regenerating
+- feedback threshold divergence
+- deterministic background regeneration
 - `+π/-π` fractional-parallax discontinuity recurrence
-- `presentation.js` bypass caused by asset/script-order changes
-- excessive visual motion
-- center-scene obstruction
+- `presentation.js` bypass/script-order change
+- visual motion clutter / center obstruction
 - generous auto-capture creep
-- excessive haptics
-- audio masking relative-motion cues
+- excessive haptics / audio masking
 - suspended AudioContext
-- Android lifecycle resetting mission/world
-- stuck controls after background/resume
+- Android lifecycle mission/world reset
+- stuck input after background/resume
 - safe-area/system-bar overlap
-- fullscreen behavior corrupting resize/state
-- predictive Back mishandled with deprecated APIs
+- forced edge-to-edge mismatch on older supported Android
+- fullscreen resize/state corruption
+- predictive Back misuse
 - platform fix mixed with gameplay tuning
-- current front-port shuttle accidentally frozen as universal geometry
-- arbitrary anchor visuals diverging from actual docking math later
-- hull collision scope expanding too early
+- current reference craft accidentally frozen as universal geometry
+- later arbitrary-anchor visuals diverging from docking math
+- premature hull-collision scope growth
 - Idea Bank mistaken for roadmap
 - shared Cloudflare route affecting Timing Defense
 
-## 25. Large-group closure discipline
-At every large-group closure:
-- implementation/decision boundary explicit
-- relevant checks passed
-- device validation recorded when required
-- accepted/frozen decisions recorded
-- `PROJECT_STATUS.md` + `SESSION_HANDOFF.md` synchronized
-- `START_HERE.md` current milestone/read order checked
-- README current phase checked
-- relevant design/expansion docs checked for contradiction
-- exact next boundary recorded
-- known risks/blockers refreshed
-- live refs refreshed where useful
-- no stale canonical contradiction
+## 23. Large-group closure discipline
+At closure:
+- record exact implementation/decision boundary
+- record relevant tests/device evidence
+- distinguish BUILD PASS from DEVICE ACCEPTED
+- synchronize `PROJECT_STATUS.md` + this handoff
+- verify `START_HERE.md`, README and affected design docs
+- record exact next boundary and current risks
+- refresh live refs where useful
+- ensure no stale canonical contradiction
 
-A fresh GPT session must be able to recover the entire project structure, why it exists, what is frozen, what has been accepted, current architecture, validation philosophy, content direction, platform contract and exact next execution boundary without relying on conversation memory.
+A fresh session must be able to recover the entire project structure, rationale, frozen contracts, accepted history, architecture, validation philosophy, content direction, Android build contract, known risks and exact next step without conversation memory.
