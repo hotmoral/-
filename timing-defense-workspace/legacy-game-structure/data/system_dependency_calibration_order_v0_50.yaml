@@ -1,0 +1,71 @@
+version: system-dependency-calibration-order-v0.50
+status: ACTIVE_STRUCTURAL_EXECUTION_PLAN_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_49.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_49.yaml
+
+canonicalUpdates:
+  - 172_T1_STAGE50_CLUSTER_FINAL_CONSEQUENCE_TRANSLATION_DIAGNOSTIC_V0_1.md
+  - 171_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_DYNAMIC_ADMISSION_V0_1.md
+  - 170_T1_STAGE49_50_STAGGER1800_AUTHORING_CANDIDATE_STATIC_PREFLIGHT_V0_1.md
+  - 169_T1_STAGE49_50_CLASS_ROTATION_AND_SUSTAIN_DIAGNOSTIC_RESULT_V0_1.md
+  - data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+
+campaignAuthoring:
+  stage49_50BaseCandidate:
+    name: STAGGER_1800_STAGE50_CLUSTER_ONLY
+    staticAdmission: PASS
+    dynamicReproduction: PASS_WITH_WATCH
+    adopted: false
+  clusterFinalVariant:
+    status: REJECTED_DIAGNOSTIC
+    reason: MAGE_WHOLE_WINDOW_AND_TARGET_CLUSTER_TRANSLATION_NOT_IMPROVED
+    exactRun: 40157211995
+    artifact: 12585421260
+    sourceHead: fd88ab0d5deb2cb483c6931aa4ba16293a472620
+    mageTargetClusterDirection: NEUTRAL
+    mageWholeWindowMasteryDeltaSeconds: -0.472
+  residual:
+    objectivePressureRotation: STILL_SKEWED_TOWARD_TANK
+    archerWholeWindowTranslation: WEAK
+    mageWholeWindowTranslation: MIXED
+    scalarChangeRequired: NOT_SHOWN
+    simpleFixedNextPhaseWaitHypothesis: NOT_SUPPORTED_BY_CLUSTER_FINAL_PROBE
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  stage49Change: NONE
+  candidateScalarChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreezeAuthorized: false
+  currentClassBuffNerfAuthorized: false
+  authored4sNormalMax: 8
+  physicalSpawnX: 0.92
+  stageBoundary: STAGE_SETTLED
+  preserveStage46_48LeadIn: true
+
+currentBoundary:
+  activePackage: T1_MAGE_STAGE50_PXP_PHASE_ATTRIBUTION_TRACE
+  compare:
+    - ADMITTED_STAGGER1800_BASE
+    - REJECTED_CLUSTER_FINAL_VARIANT
+  classes: [MAGE]
+  seeds: [101, 211, 307, 409, 503]
+  record:
+    - STAGE49_EXIT_STAGE50_ENTRY_STATE
+    - STAGE50_ENTRY_CHARGE_COMBO
+    - HEAVY_PXP_TIMESTAMPS_AND_PHASES
+    - CLUSTER_SPAWN_PROGRESS_AT_PXP
+    - PRIMARY_TARGET_ORIGIN_GRAMMAR
+    - LV31_PAYLOAD_DAMAGE_UNIQUE_TARGETS_AND_ORIGIN
+    - STAGE50_SETTLE
+  recommendedNext: RUN_ATTRIBUTION_ONLY_NO_ENCOUNTER_OR_SCALAR_CHANGE
+  awaitingUserDecision: false
