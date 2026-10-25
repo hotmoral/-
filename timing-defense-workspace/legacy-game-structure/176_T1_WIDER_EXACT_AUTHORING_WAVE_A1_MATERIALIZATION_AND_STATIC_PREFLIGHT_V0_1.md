@@ -167,7 +167,7 @@ PASS does **not** prove:
 - production readiness;
 - full T1 exact recipe completion.
 
-## 6. Current status
+## 6. Current status and next boundary
 
 ```text
 A1 exact spawn candidate = MATERIALIZED
@@ -177,9 +177,13 @@ A1 content adoption = NO
 A2 authoring = NOT STARTED
 ```
 
-Next bounded gate:
+Do **not** run a fake persistent-state chain over `[1,4,5,8]`: missing Stage2/3/6/7 would make that sequence lifecycle-incomplete.
+
+Wave A's approved slice-by-slice rule therefore continues with:
 ```text
-A1 LIFECYCLE-FAITHFUL DYNAMIC DIAGNOSTIC / ADMISSION
+NEXT = MATERIALIZE A2 STAGES 15,19 -> STATIC RECIPE GATE
 ```
 
-Do not begin A2 before the A1 next gate is explicitly advanced under canonical authority.
+Dynamic execution remains deferred until a lifecycle-faithful contiguous context is available or a separately authorized standalone diagnostic contract is defined.
+
+A1 remains candidate evidence only until explicit content adoption later.
