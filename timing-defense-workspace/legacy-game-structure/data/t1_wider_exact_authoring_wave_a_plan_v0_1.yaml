@@ -1,0 +1,84 @@
+version: t1-wider-exact-authoring-wave-a-plan-v0.1
+status: STATIC_PREFLIGHT_CANDIDATE_NO_RECIPE_MATERIALIZATION
+purpose: BOUNDED_BRIDGE_AUTHORING_BEFORE_WIDER_T1_EXACT_RECIPE_FILL
+
+authority:
+  signatureSkeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  signatureAudit: ../162_T1_STAGE1_50_SIGNATURE_SKELETON_STATIC_AUDIT_V0_1.md
+  stage49_50Adoption: ../174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  representativeRecipeBase: t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  adoptedStage49_50: t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+
+scope:
+  newAuthoringTargetStages: [1, 4, 8, 15, 19, 24, 25, 29, 30, 31, 33, 37, 38]
+  targetCount: 13
+  contextOnlyStages: [5, 18, 20, 39, 40, 41, 49, 50]
+  explicitlyNotThisWave:
+    - FULL_STAGE1_50_RECIPE_FILL
+    - PRODUCTION_GAMEPLAY_CHANGE
+    - NUMERICAL_FREEZE
+    - MONSTER_OR_CLASS_SCALAR_CHANGE
+    - SHOP_EXP_PXP_CHANGE
+
+slices:
+  - id: WAVE_A1_ONBOARDING_TO_FIRST_MIX_BRIDGE
+    targetStages: [1, 4, 8]
+    contextStages: [5]
+    reason: establish initial baseline, first authored wave boundary, and first G+R mix around preserved RUNNER teach
+
+  - id: WAVE_A2_BRUTE_TEACH_TO_FIRST_REORDER_BRIDGE
+    targetStages: [15, 19]
+    contextStages: [18, 20]
+    reason: connect BRUTE teach and preserved first mixed stage into first B+R target-order contrast and Star Gate A
+
+  - id: WAVE_A3_LV21_BUFFER_TO_CHECKPOINT_B_SOFTWALL_ENTRY
+    targetStages: [24, 25, 29, 30, 31]
+    contextStages: []
+    reason: validate Lv21 reward buffer, first bounded F08 synthesis, Checkpoint B, and first soft-wall durable pressure entry
+
+  - id: WAVE_A4_PRE_GATE_PRESSURE_BRIDGE
+    targetStages: [33, 37, 38]
+    contextStages: [39, 40]
+    reason: validate Mage density pressure, bounded F08 tempo, and durable bridge into the already-authored Stage39 peak and Stage40 gate
+
+expectedSignatures:
+  1:  {band: Establish, signature: 'E01 / G', formation: F01, cadence: CD01, complexity: C0, pressure: BASELINE}
+  4:  {band: Establish, signature: 'E01 / G', formation: F01, cadence: CD03, complexity: C0, pressure: BASELINE}
+  8:  {band: Establish, signature: 'E02 / G+R', formation: F01, cadence: CD03, complexity: C1, pressure: RUSH}
+  15: {band: 'Introduce & Mix', signature: 'E03 / B', formation: F01, cadence: CD01, complexity: C1, pressure: BULWARK}
+  19: {band: 'Introduce & Mix', signature: 'E03+E02 / B+R', formation: F02, cadence: CD05, complexity: C2, pressure: BULWARK}
+  24: {band: Deepen, signature: 'E01 / G', formation: F03, cadence: CD04, complexity: C1, pressure: 'BASELINE,FLOOD'}
+  25: {band: Deepen, signature: 'E01 / G', formation: F04, cadence: CD01, complexity: C0, pressure: BASELINE}
+  29: {band: Deepen, signature: 'E02+E03 / G+R+B', formation: F08, cadence: CD05, complexity: C2, pressure: 'RUSH,BULWARK'}
+  30: {band: 'Checkpoint B', signature: 'E01+E03 / G+B', formation: F01, cadence: CD03, complexity: C1, pressure: BASELINE}
+  31: {band: 'Pressure / Soft Wall', signature: 'E03 / G+B', formation: F02, cadence: CD04, complexity: C1, pressure: BULWARK}
+  33: {band: 'Pressure / Soft Wall', signature: 'E01 / G', formation: F03, cadence: CD04, complexity: C2, pressure: 'BASELINE,FLOOD'}
+  37: {band: 'Pressure / Soft Wall', signature: 'E02 / G+R', formation: F08, cadence: CD04, complexity: C2, pressure: RUSH}
+  38: {band: 'Pressure / Soft Wall', signature: 'E01+E03 / G+B', formation: F02, cadence: CD03, complexity: C1, pressure: BULWARK}
+
+fixedGuards:
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  authored4sNormalMax: 8
+  preserveStage5: true
+  preserveStage18: true
+  preserveStage20: true
+  preserveStage39: true
+  preserveStage40: true
+  preserveStage41: true
+  preserveAdoptedStage49_50: true
+  productionGameplayChangeAuthorized: false
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+materializationOrder:
+  - WAVE_A1_ONBOARDING_TO_FIRST_MIX_BRIDGE
+  - WAVE_A2_BRUTE_TEACH_TO_FIRST_REORDER_BRIDGE
+  - WAVE_A3_LV21_BUFFER_TO_CHECKPOINT_B_SOFTWALL_ENTRY
+  - WAVE_A4_PRE_GATE_PRESSURE_BRIDGE
+
+stopRule: STATIC_PREFLIGHT_MUST_PASS_BEFORE_ANY_NEW_EXACT_SPAWN_RECIPE_IS_AUTHORED
