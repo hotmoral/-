@@ -26,13 +26,13 @@ Read before work:
 6. `twindock/docs/OPERATING_RULES.md`
 7. `twindock/README.md`
 8. `twindock/docs/CONTENT_EXPANSION_MAP.md`
-9. `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` for Android work
+9. `twindock/docs/ANDROID_PACKAGING_PREFLIGHT.md` when Android history/contract is relevant
 10. `twindock/docs/IDEA_BANK.md` when content ideation/promotion is relevant
 11. exact source/tests relevant to the next bounded slice
 
-Do not broadly refactor, retune controls, begin Geometry v2, delegate, or rerun expensive validation before recovery establishes the exact live boundary.
+Do not broadly refactor, retune controls, reopen Android parity, delegate, or rerun expensive validation before recovery establishes the exact live boundary.
 
-Closed/frozen work is not re-tested simply because a session restarted. Revalidation requires a relevant source change, prospective dependency, platform/package trigger, or concrete mismatch.
+Closed/frozen work is not re-tested simply because a session restarted. Revalidation requires a relevant source change, prospective dependency, platform/package trigger, release requirement, or concrete mismatch.
 
 ## 3. Exact current state
 - P0: ACCEPTED / CLOSED
@@ -44,15 +44,18 @@ Closed/frozen work is not re-tested simply because a session restarted. Revalida
 - Android packaging preflight: PASS / CLOSED
 - Android minimal wrapper/build: **BUILD PASS**
 - debug APK: **generated**
-- Android physical-device parity: **PENDING**
-- Android wrapper/platform contract: **not yet FROZEN**
-- Docking Geometry v2: **not started**
+- Android physical-device parity: **PASS / ACCEPTED**
+- Android wrapper/platform contract: **FROZEN**
+- Android parity lane: **CLOSED**
+- Docking Geometry v2: **NEXT / not yet implemented**
+
+Android device acceptance occurred on **2026-10-26 KST**. The user ran the fixed parity matrix on a physical Android phone and reported that all checked behavior operated normally with no observed mismatch. No Android-specific gameplay tuning or platform workaround was required after the successful build.
 
 Exact next boundary:
-**install the debug APK on a physical Android phone -> execute the fixed parity matrix -> classify/fix only concrete Android mismatches -> freeze wrapper on PASS.**
+**return to the shared game core -> Docking Geometry v2.**
 
-After PASS:
-**return to shared game core -> Docking Geometry v2.**
+The immediate product question is:
+**Can the hidden fixed-forward-probe assumption be replaced by local player/station docking anchors while the current reference shuttle reproduces Mission 01 with no meaningful feel/readability regression?**
 
 ## 4. Project identity / experiential loop
 Twin Dock is a mobile-first inertial spacecraft precision-docking game centered on embodied two-hand control.
@@ -111,7 +114,7 @@ Frozen values:
 
 Exact artifact/hash are in `BASELINE_V8.md`.
 
-Structural/platform work must not silently alter these. Tuning is a separate controlled experiment requiring device evidence.
+Structural/platform/content work must not silently alter these. Tuning is a separate controlled experiment requiring device evidence.
 
 ## 7. Camera / motion comfort
 Accepted camera: **ship-frame**.
@@ -152,6 +155,8 @@ Visible/internal geometry must agree.
 P2 readiness feedback and actual success thresholds must agree.
 Avoid generous magnetic capture.
 
+Geometry v2 changes where anchor frames live and how their world poses are derived; it does **not** change this four-condition docking truth.
+
 ## 9. Architecture boundaries
 ### Input
 pointer identity, dual-touch tracking, response curve, body-frame commands.
@@ -160,7 +165,7 @@ pointer identity, dual-touch tracking, response curve, body-frame commands.
 position, velocity, angle, angular velocity, inertia, collision response.
 
 ### Docking
-geometry, relative metrics, four-condition truth, capture/recoverable collision criteria.
+geometry, anchor-frame world transforms, relative metrics, four-condition truth, capture/recoverable collision criteria.
 
 ### Camera
 world -> ship-frame presentation; no physical mutation.
@@ -169,7 +174,7 @@ world -> ship-frame presentation; no physical mutation.
 world visuals and visible docking hardware.
 
 ### Feedback
-world-readable P2 readiness cues only; no physics mutation.
+world-readable P2 readiness cues only; no physics mutation. Geometry v2 feedback must originate from actual anchor frames.
 
 ### Mission
 stage/target sequence and persistent ship state between docks.
@@ -183,8 +188,8 @@ visual continuity/readability only; wrapped physical values may be adapted for d
 ### Transitions
 stage/final presentation only.
 
-### Future geometry
-craft/station docking anchors and collision geometry become data-driven only after bounded prototypes expose real requirements.
+### Geometry/content
+craft/station docking anchors become data-driven through bounded Geometry v2 work. Broad hull collision remains later scope.
 
 ## 10. P0 — modular foundation
 Status: ACCEPTED / CLOSED.
@@ -294,7 +299,7 @@ Primary future axes:
 Idea lifecycle:
 `BANKED -> CANDIDATE -> VALIDATED -> ROADMAP`.
 
-Post-Android path:
+Current path:
 `Docking Geometry v2`
 → `reference-shuttle regression`
 → `side/mid-body craft`
@@ -310,8 +315,7 @@ Mission 03 is a decision gate, not an end point.
 
 Hold near-term: combat, economy/harvesting, crafting, RPG stats, large open world, PvP, complex narrative, fuel economy as primary loop, large inventory/equipment systems.
 
-## 16. Android packaging preflight
-Status: PASS / CLOSED.
+## 16. Android packaging / wrapper — ACCEPTED baseline
 Canonical detail: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
 
 Chosen wrapper:
@@ -319,7 +323,7 @@ Chosen wrapper:
 - local/offline web assets
 - no native gameplay rewrite
 
-Current canonical toolchain:
+Frozen accepted parity baseline:
 - Capacitor 8.5.3
 - Node 22+
 - JDK **21**
@@ -330,9 +334,16 @@ Current canonical toolchain:
 - Gradle 8.14.3
 - app ID `com.hotmoral.twindock`
 - versionName 0.1.0 / versionCode 1
+- phone-first `sensorLandscape`
+- app category `game`
+- SystemBars inset handling `native`
+- viewport-fit hint `cover`
+- no explicit forced `EdgeToEdge.enable` / `WindowCompat.enableEdgeToEdge`
+- Web Audio and `navigator.vibrate()` preserved
+- `renderer.js -> presentation.js -> main.js` preserved
 
-Important correction:
-The initial preflight used JDK 17 by looking at AGP minimum requirements. Actual pinned Capacitor compilation failed with `invalid source release: 21`; Capacitor 8.5.3 source was then directly checked and confirmed Java 21. The build/guard contract was corrected to JDK 21.
+Important correction history:
+The initial preflight used JDK 17 by looking at AGP minimum requirements. Actual pinned Capacitor compilation failed with `invalid source release: 21`; Capacitor 8.5.3 source was directly checked and confirmed Java 21. The build/guard contract was corrected to JDK 21.
 
 ## 17. Android wrapper implementation — BUILD PASS
 Implementation intentionally remained outside gameplay source.
@@ -357,7 +368,7 @@ No `twindock/src/*` change.
 - `cap sync` then re-verifies contract
 - Gradle builds debug APK
 
-The native project is not yet maintained as a second large checked-in source tree; reproducible generation minimizes drift during parity validation.
+The native project is generated rather than maintained as a second large checked-in source tree. This keeps the accepted wrapper reproducible and minimizes native drift.
 
 ### Build history / classification discipline
 Run 1: setup action requested obsolete Android SDK `tools`; infrastructure failure before app work. Replaced with direct runner sdkmanager.
@@ -385,35 +396,19 @@ Run 4: **PASS**.
 - APK SHA-256 `96e29d19f4c1c211ffcc8805e338549cc7ccd13c8f2255df14868afecb4cfcc2`
 
 APK archive inspection confirmed local game runtime assets, no project docs/tests, and preserved presentation script order.
-
 The GitHub artifact is temporary. Reproducible source/build contract is canonical.
 
-## 18. Android platform contract under test
-- phone-first `sensorLandscape`
-- app category `game`
-- existing web portrait blocker retained
-- SystemBars inset handling `native`
-- viewport-fit hint `cover`
-- system bars visible by default for first probe
-- no explicit `EdgeToEdge.enable` / `WindowCompat.enableEdgeToEdge` in first wrapper
-- existing HTML Fullscreen API unchanged until device evidence
-- warm background/foreground preserves mission/world, clears touches, silences RCS audio
-- cold process recreation may restart Mission 01
-- normal Back initially; must not reset/corrupt game state
-- Web Audio + `navigator.vibrate()` preserved first
-- native adapters only after concrete mismatch
+## 18. Android physical-device parity — PASS / ACCEPTED
+Acceptance date: **2026-10-26 KST**.
 
-## 19. Exact next slice — physical Android parity
-The wrapper is **not frozen yet**.
-
-Install `app-debug.apk` on a real Android phone and verify:
+The user executed the previously fixed physical-device matrix on a real Android phone and reported all checked behavior normal. Accepted evidence therefore covers:
 - install/cold launch
 - landscape/safe-area/system bars
 - simultaneous pointer identity
-- edge touch / pointer cancel / reacquire
+- edge touch / pointer cancel / reacquire behavior
 - accepted dual-RCS feel
 - no stuck thrust
-- pause/background/resume state preservation
+- pause/background/resume state preservation and stale-input clearing
 - fullscreen behavior
 - ship-frame camera
 - continuous angle-wrap parallax and no fifth-dock flip
@@ -424,31 +419,52 @@ Install `app-debug.apk` on a real Android phone and verify:
 - P2 feedback vs actual docking truth
 - P3 transition/effect readability
 - deterministic reset/world identity
-- Android Back
+- Android Back without state corruption
 - warm resume / cold relaunch stability
 
-Classify each failure before fixing:
-- wrapper/platform defect
-- WebView capability mismatch
-- packaging/build defect
-- pre-existing web defect
-- frozen gameplay regression
+No wrapper/platform defect, WebView capability mismatch, packaging defect, pre-existing web defect or frozen gameplay regression was reported.
+No post-build gameplay compensation was added.
 
-Do not tune frozen gameplay to hide platform defects.
+Result:
+- Android physical-device parity: **PASS / ACCEPTED**
+- Android wrapper/platform contract: **FROZEN**
+- Android parity work group: **CLOSED**
 
-On PASS:
-- freeze Android wrapper/platform contract
-- synchronize canonical docs
-- return to shared game core
-- begin Docking Geometry v2
+Reopen only for a concrete future trigger: relevant source/platform/package change, device mismatch, release requirement, or explicit Android productization slice.
+
+## 19. Exact next slice — Docking Geometry v2
+Current work returns to the **shared game core**, not Android-specific code.
+
+Goal:
+**remove the hidden assumption that the player's docking point is always a fixed forward probe.**
+
+Target model:
+- player docking anchor: local X, local Y, local angle
+- station docking anchor: local X, local Y, local angle
+- world docking pose derived from local anchors + body transforms
+- relative velocity evaluated at the actual docking anchor, including rotational tangential velocity
+- orientation matching evaluated from anchor normals/frames, not body-center direction alone
+- P2 feedback originates from actual anchor frames
+
+Non-goals for this stage:
+- no broad collision/hull rewrite
+- no new handling model
+- no new control tuning
+- no Android-specific rewrite
+- no side/rear craft before reference-shuttle regression closes
+
+Exit condition:
+**the current reference shuttle represented through Geometry v2 reproduces Mission 01 behavior with no meaningful feel/readability regression.**
+
+Validation should be bounded to the contracts Geometry v2 actually touches: docking geometry/math, renderer-visible port agreement, feedback origin, Mission 01 reference behavior, and relevant deterministic tests. Do not replay unrelated P0–P3 or Android acceptance.
 
 ## 20. Cloudflare role
-Twin Dock browser validation was exposed under the existing Timing Defense Worker `/twindock/` route.
+Twin Dock browser validation is exposed under the existing Timing Defense Worker `/twindock/` route.
 
-This is temporary validation convenience only.
+This is validation convenience only.
 - source authority remains GitHub
 - APK uses packaged local assets
-- do not modify Timing Defense Worker/API behavior for Android packaging
+- do not modify Timing Defense Worker/API behavior for Twin Dock packaging/content work
 - do not let shared exposure become permanent coupling
 
 ## 21. Operating / consistency discipline
@@ -469,29 +485,26 @@ Avoid whole-repository rescans, full replay of accepted phases, over-broad scope
 The Android workflow trigger is narrowed to runtime/package/test files, so documentation-only commits do not rebuild the APK.
 
 ## 22. Known regression / scope risks
-- dual-touch identity loss
-- pointer capture / edge-touch loss
-- WebView pointer cancellation differences
-- sensitivity creep from attempting to compensate for platform behavior
+- geometry v2 accidentally changing frozen docking thresholds/truth
+- visible docking hardware diverging from physical anchor math
+- P2 cues still originating from body-center/front-probe assumptions
+- relative velocity evaluated at body center instead of actual anchor
+- anchor orientation sign/frame convention inconsistency
+- broad hull collision work leaking into Geometry v2
+- reference craft regression hidden by gameplay tuning
+- current reference craft accidentally frozen as universal geometry
+- later arbitrary-anchor visuals diverging from docking math
+- dual-touch identity loss after future platform changes
 - camera semantic drift
-- visible/internal docking divergence
-- feedback threshold divergence
 - deterministic background regeneration
 - `+π/-π` fractional-parallax discontinuity recurrence
 - `presentation.js` bypass/script-order change
 - visual motion clutter / center obstruction
 - generous auto-capture creep
 - excessive haptics / audio masking
-- suspended AudioContext
-- Android lifecycle mission/world reset
-- stuck input after background/resume
-- safe-area/system-bar overlap
-- forced edge-to-edge mismatch on older supported Android
-- fullscreen resize/state corruption
-- predictive Back misuse
+- Android lifecycle state regression after future wrapper changes
+- safe-area/system-bar regression after future SDK/Capacitor changes
 - platform fix mixed with gameplay tuning
-- current reference craft accidentally frozen as universal geometry
-- later arbitrary-anchor visuals diverging from docking math
 - premature hull-collision scope growth
 - Idea Bank mistaken for roadmap
 - shared Cloudflare route affecting Timing Defense
@@ -507,4 +520,4 @@ At closure:
 - refresh live refs where useful
 - ensure no stale canonical contradiction
 
-A fresh session must be able to recover the entire project structure, rationale, frozen contracts, accepted history, architecture, validation philosophy, content direction, Android build contract, known risks and exact next step without conversation memory.
+A fresh session must be able to recover the entire project structure, rationale, frozen contracts, accepted history, architecture, validation philosophy, content direction, Android accepted build/device contract, known risks and exact next step without conversation memory.
