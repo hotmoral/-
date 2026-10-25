@@ -15,10 +15,22 @@
 - [x] Freeze V8 product contract
 - [x] Record exact V8 artifact hash
 - [x] Define bounded operating rules
+- [x] Establish canonical new-session recovery order (`docs/START_HERE.md`)
+- [x] Establish canonical comprehensive session handoff (`docs/SESSION_HANDOFF.md`)
+- [x] Require handoff/status synchronization at every large-group closure
 - [x] Build a local modularization candidate
 - [x] Add deterministic smoke tests to the local candidate
 - [ ] Mobile parity check: modular candidate vs V8
 - [ ] Promote modular candidate to canonical source after parity
+
+## Documentation authority / recovery
+A new session must recover live state through `docs/START_HERE.md` before implementation or delegation. Live GitHub is authoritative over past chat, memory, or copied SHAs.
+
+At every large-group closure, synchronize at minimum:
+- `PROJECT_STATUS.md`
+- `docs/SESSION_HANDOFF.md`
+
+Also verify that `docs/START_HERE.md` still contains the correct read order and that accepted/frozen decisions are reflected in their canonical documents.
 
 ## Next gate
 **P1 — Mission 01 vertical slice**
