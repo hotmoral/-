@@ -24,20 +24,25 @@ Frozen feel includes:
 - P3-A audio/haptics/contact-capture + angle-wrap protection — ACCEPTED / CLOSED
 - P3-B stage/final polish — ACCEPTED / CLOSED
 - Android packaging preflight — PASS / CLOSED
-- Android minimal wrapper/build — **BUILD PASS**
-- Android physical-device parity — **PENDING**
+- Android minimal wrapper/build — BUILD PASS
+- Android physical-device parity — **PASS / ACCEPTED**
+- Android wrapper/platform contract — **FROZEN**
+- Android parity lane — **CLOSED**
+- Docking Geometry v2 — **NEXT**
 
 ## Current exact phase
-A reproducible Capacitor debug APK has been built successfully. The next step is **physical Android parity validation**, not Geometry v2 yet.
+The reproducible Capacitor Android wrapper passed physical-device parity on **2026-10-26 KST**. The user ran the fixed acceptance matrix on a real Android phone and reported all checked behavior normal. No Android-specific gameplay tuning or platform workaround was required after the successful build.
 
-Successful build reference:
-- wrapper head `596ba9e4e89e4926cd10aad08908694572b0bf4b`
+The project now returns to the shared game core for **Docking Geometry v2**.
+
+Successful Android build reference:
+- wrapper implementation head `596ba9e4e89e4926cd10aad08908694572b0bf4b`
 - Actions run `40207650795`
 - artifact `twindock-android-debug`
 - APK `app-debug.apk`
 - APK SHA-256 `96e29d19f4c1c211ffcc8805e338549cc7ccd13c8f2255df14868afecb4cfcc2`
 
-Pinned first-parity baseline:
+Frozen accepted Android parity baseline:
 - Capacitor 8.5.3
 - app ID `com.hotmoral.twindock`
 - version `0.1.0` / versionCode 1
@@ -45,8 +50,14 @@ Pinned first-parity baseline:
 - targetSdk / compileSdk 36
 - AGP 8.13.0
 - Gradle 8.14.3
-- JDK **21**
+- JDK 21
 - Node.js 22+
+- local/offline packaged assets
+- phone-first `sensorLandscape`
+- SystemBars native inset handling + viewport-fit cover
+- no explicit forced edge-to-edge call in MainActivity
+- Web Audio + `navigator.vibrate()` accepted on the parity device
+- `renderer.js -> presentation.js -> main.js` preserved
 
 The earlier JDK 17 preflight assumption was corrected after real Capacitor compilation proved Java 21 is required.
 
@@ -54,19 +65,35 @@ Wrapper implementation changed packaging/build files only; gameplay `src/*` rema
 
 Canonical Android details: `docs/ANDROID_PACKAGING_PREFLIGHT.md`.
 
-## Android parity policy
+## Android parity policy after acceptance
 The APK uses local/offline assets. Generated `www/` is packaging output, not source authority.
 
-Device validation must cover dual touch/pointer capture, edge touch, pause/resume, landscape/safe-area/system bars, fullscreen, Web Audio, haptics, Back, ship-frame camera, angle-wrap continuity, all five Mission 01 docks and deterministic world identity.
+The first wrapper/platform contract is now FROZEN. Do not reopen Android parity just because a new session starts. Reopen only for a relevant source/platform/package change, a concrete device mismatch, release requirement, or explicit Android productization work.
 
-Do not compensate for platform defects by tuning V8 controls or changing docking truth.
+Do not compensate for future platform defects by tuning V8 controls or changing docking truth.
 
-The wrapper is not FROZEN until physical-device parity passes.
+## Docking Geometry v2
+Immediate goal:
+**remove the hidden assumption that the player's docking point is always a fixed forward probe.**
+
+Target model:
+- player docking anchor has local X / Y / angle
+- station docking anchor has local X / Y / angle
+- world docking pose comes from local anchors + body transforms
+- relative velocity is evaluated at the actual docking anchor, including rotational tangential velocity
+- orientation uses anchor frames/normals rather than body-center direction alone
+- P2 feedback originates from actual anchor frames
+
+Non-goal:
+- no broad hull/collision rewrite yet
+
+Exit condition:
+**the current reference shuttle represented through Geometry v2 reproduces Mission 01 behavior with no meaningful feel/readability regression.**
 
 ## Content expansion direction
 Mission 01's current shuttle/front probe is a reference craft, not a permanent universal geometry.
 
-After Android parity PASS and wrapper freeze:
+Current path:
 `Docking Geometry v2 -> reference-shuttle regression -> side/mid-body craft -> rear/asymmetric craft -> simplified hull clearance -> station geometry -> Mission 02 -> Mission 03 -> content/productization gate`.
 
 The intended expansion keeps the accepted dual-RCS inertial control/docking truth and creates new problems through craft geometry, arbitrary local docking anchors, station geometry, target motion, approach clearance and simplified hull collision.
