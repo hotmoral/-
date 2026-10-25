@@ -7,7 +7,7 @@ For any new GPT session, contributor, or delegated implementation agent, begin w
 
 `docs/START_HERE.md`
 
-Then follow its required read order. Live GitHub is authoritative over past chat, memory, or copied SHAs.
+Then follow its required read order. Live GitHub is authoritative over past chat, memory, copied SHAs, or handoff text.
 
 ## Frozen fallback
 The immutable fallback/control contract is **V8**.
@@ -21,23 +21,27 @@ Frozen feel:
 - deterministic/fixed background
 - precision thresholds: distance 11, relative speed 10, direction 0.095 rad, spin 0.10 rad/s
 
-## Canonical foundation
-P0 modularization passed deterministic and mobile parity checks and is the canonical implementation foundation for feature work.
+## Accepted milestone stack
+- P0 modular/V8 parity — ACCEPTED / CLOSED
+- P1 five-stage Mission 01 — ACCEPTED / CLOSED
+- P2 world-readable docking feedback — ACCEPTED / CLOSED
+- P3-A restrained audio/haptics/contact-capture feedback — ACCEPTED / CLOSED
+- P3-B stage transition / final completion polish — ACCEPTED / CLOSED
 
-A subtle station-relative reference treatment has also been accepted for readability; its modular merge is tracked as the first P1 presentation change so the P0 parity point stays clean.
+P3 mobile validation also confirmed the final-stage distant-background angle-wrap fix, normal audio at practical device volume, acceptable haptics, and no reported control/camera/touch regression.
 
 ## Current phase
-**P3 — Game-feel / presentation polish: P3-A ACCEPTED / CLOSED; P3-B is next.**
+**P3 is ACCEPTED / CLOSED. Next: Android packaging lane.**
 
-P0, P1, P2, and P3-A are accepted. P3-A adds a presentation-only effects layer for restrained RCS/mechanical audio and meaningful event haptics while preserving the frozen V8 control/physics/camera/docking contract, accepted Mission 01, and P2 world-readable feedback mappings.
+The Android lane should initially preserve the proven web implementation rather than rewrite gameplay natively. Begin with wrapper/build preflight: multi-touch/pointer capture, landscape/orientation, Web Audio, vibration, lifecycle, safe-area layout, local asset packaging, application ID/version/SDK choices, and device acceptance criteria.
 
-P3-A mobile validation confirmed audio is audible at normal mid-level device volume, haptics are acceptable across the five-dock run, contact/capture cues are distinct and non-fatiguing, and no touch/control/camera feel regression was perceived. A final-dock distant-background flip was traced to wrapped physical angle being multiplied by parallax factors and was fixed with a presentation-only continuous-angle adapter; the device recheck confirmed the flip no longer occurs.
+Preferred direction is a thin Capacitor/WebView-style wrapper unless a concrete native-only requirement appears.
 
-The exact next slice is P3-B: stage-transition and final mission-completion polish, still presentation-only.
+Do not mix Android/platform fixes with changes to frozen V8 control, docking thresholds, Mission 01 profiles, P2 feedback mapping, or P3 presentation behavior.
 
-See `PROJECT_STATUS.md` for the exact current boundary.
+See `PROJECT_STATUS.md` for the exact next boundary and `docs/SESSION_HANDOFF.md` for the full project history/architecture/validation record.
 
 ## Operating policy
-Work in bounded slices. Refactor and tuning are separate changes. Prefer local deterministic checks over expensive build/AI workflows. Use Codex/CI only when they save net work. P3 must remain presentation-only with respect to accepted gameplay truth; Android packaging follows as a separate lane after P3 device validation.
+Work in bounded slices. Refactor and tuning are separate changes. Prefer local deterministic checks over expensive build/AI workflows. Use Codex/CI only when they save net work. Device validation is required for input/camera/game-feel/readability/presentation/platform changes.
 
-At every large-group closure, synchronize `PROJECT_STATUS.md` and `docs/SESSION_HANDOFF.md` before proceeding.
+At every large-group closure, synchronize `PROJECT_STATUS.md` and `docs/SESSION_HANDOFF.md`, then verify `docs/START_HERE.md` and this README remain current.
