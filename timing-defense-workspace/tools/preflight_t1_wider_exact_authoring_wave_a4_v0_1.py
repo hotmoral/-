@@ -170,7 +170,7 @@ def main() -> None:
         for i, spawn in enumerate(raw.get("spawns", [])):
             extra_spawn = set(spawn) - ALLOWED_SPAWN_KEYS
             if extra_spawn:
-                errors.append(f"stage{stage}-spawn{i-unexpected-keys:{sorted(extra_spawn)}")
+                errors.append(f"stage{stage}-spawn{i}-unexpected-keys:{sorted(extra_spawn)}")
             if str(spawn.get("type")) not in ALLOWED_MONSTERS:
                 errors.append(f"stage{stage}-spawn{i}-illegal-monster:{spawn.get('type')}")
             if not (0.0 <= float(spawn.get("y", -1)) <= 1.0):
@@ -191,17 +191,14 @@ def main() -> None:
         if got["pressure"].replace(" ", "") != str(want.get("pressure", "")).replace(" ", ""):
             errors.append(f"stage{stage}-pressure-plan-mismatch")
 
-    # Stage33: sustained GRUNT density, no new monster or geometry vocabulary.
     s33 = add_by.get(33, {}).get("spawns", [])
-    expected33_times = [0, 150, 300, 450, 2200, 2350, 2500, 2650, 5000, 5150, 5300, 5450]
     if [x["type"] for x in s33] != ["GRUNT"] * 12:
         errors.append("stage33-not-twelve-grunt-density")
-    if [int(x["tMs"]) for x in s33] != expected33_times:
+    if [int(x["tMs"]) for x in s33] != [0, 150, 300, 450, 2200, 2350, 2500, 2650, 5000, 5150, 5300, 5450]:
         errors.append("stage33-density-chronology-drift")
     if s33 and max(float(x["y"]) for x in s33) - min(float(x["y"]) for x in s33) > 0.08:
         errors.append("stage33-cluster-y-span-too-wide")
 
-    # Stage37: two-axis G+R burst tempo, intentionally simpler than Stage29's three-type F08.
     s37 = add_by.get(37, {}).get("spawns", [])
     if Counter(x["type"] for x in s37) != Counter({"GRUNT": 4, "RUNNER": 4}):
         errors.append("stage37-not-balanced-grunt-runner-split")
@@ -215,7 +212,6 @@ def main() -> None:
     if any(x["type"] == "BRUTE" for x in s37):
         errors.append("stage37-unintended-brute")
 
-    # Stage38: two readable durable-front waves before Stage39 C3 split peak.
     s38 = add_by.get(38, {}).get("spawns", [])
     expected38_types = ["BRUTE", "GRUNT", "GRUNT", "GRUNT", "BRUTE", "GRUNT", "GRUNT", "GRUNT"]
     if [x["type"] for x in s38] != expected38_types:
@@ -232,7 +228,6 @@ def main() -> None:
         if stats["max4s"] > 8:
             errors.append(f"stage{stage}-max4s-exceeds-8")
 
-    # Prior-wave semantic references.
     s24 = a3_by.get(24, {}).get("spawns", [])
     s29 = a3_by.get(29, {}).get("spawns", [])
     if len(s33) <= len(s24):
@@ -244,7 +239,6 @@ def main() -> None:
     if len(s37) >= len(s29):
         errors.append("stage37-not-count-bounded-below-stage29-f08")
 
-    # Pin Stage39/40 context exactly enough to prevent accidental peak/gate erosion.
     expected39 = [
         {"tMs": 0, "type": "BRUTE", "y": 0.38},
         {"tMs": 250, "type": "RUNNER", "y": 0.42},
