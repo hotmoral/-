@@ -9,6 +9,7 @@ This is the canonical new-session handoff. Update it with `PROJECT_STATUS.md` at
 - P2 accepted world-feedback branch: `twindock-p2-world-feedback-v1`
 - P0 canonical closure commit: `185a974dbd818386019677409f875640df27442f`
 - P1 accepted closure HEAD before P2: `6c9ac2f0de5fbeb669f476b62a3a58d86b0324f2`
+- P2 accepted closure HEAD: resolve from live branch before new work; copied SHAs are reference points only.
 - Live remote is authoritative. Old chats, memories, and copied SHAs are navigation aids only.
 
 ## 2. Required recovery order
@@ -40,7 +41,75 @@ Rejected directions:
 - forward/back-only twin thrusters
 - removing free rotation for tutorial simplicity
 
-## 4. Camera / motion comfort
+## 4. How the design evolved / why the current structure exists
+This project did not begin with the current docking structure. The control model was discovered through repeated tactile prototypes and device tests. Preserve the causal history below because it explains which parts are accidental implementation details versus actual product decisions.
+
+### Early control exploration
+1. **Direct-touch inertial object control** proved the basic idea that input should change motion state rather than directly place an object, but the finger obscured the playfield.
+2. **Separated one-hand force pad** preserved inertial control but did not produce enough physical/embodied feel.
+3. **Heading-based / car-like steering** felt constrained and made correction unintuitive.
+4. **One 2D joystick** was better, but braking/reversal and fine correction remained sluggish.
+5. **Faster one-hand 2D control** improved responsiveness but still lacked the intended body-level cooperation.
+6. **Twin vertical-only thrusters** made the game harder rather than clearer because useful lateral freedom had been removed.
+7. **Two independent full-2D pads** was the breakthrough. Both hands can cooperate to translate while their differential naturally creates rotation. User response was strongly positive and this became the control foundation.
+
+Design conclusion from this sequence:
+> Extra freedom is not inherently harder when each extra degree of freedom maps directly to an intuitive corrective action.
+
+### Docking theme selection
+Spacecraft docking was chosen because it naturally turns the control model into a readable skill task. A good dock requires synchronization of:
+- position
+- relative linear velocity
+- orientation
+- angular velocity
+
+This made the core interaction about matching motion state, not merely reaching a target.
+
+### Sensitivity and starting-state iteration
+Early docking tuning was too sensitive. The accepted direction became:
+- larger thumb travel
+- nonlinear soft response near center
+- lower thrust/torque than the first versions
+- broad fine-control region
+- ship starts fully stationary
+- no automatic forward motion
+- touch point becomes local joystick origin
+- global pointer tracking for robust mobile touch
+
+The V3-era sensitivity direction became the basis of the frozen V8 control feel.
+
+### Visual / geometry correction
+The player craft evolved from a simplified engine-like marker into a compact docking/service shuttle with:
+- clear forward probe/collar
+- left/right control pods
+- multiple visible RCS nozzles
+- visual thruster firing tied to input
+
+The station gained a capture collar, tunnel, latches and guide lights. A critical contract was established: the visible docking probe/capture point must match the internal docking geometry exactly.
+
+### Ship-frame camera breakthrough
+The most important presentation change was moving from a world camera to a **ship-frame camera**:
+- player craft remains visually fixed
+- world/station move and rotate relative to the ship
+- controls remain interpreted in body coordinates
+
+This significantly increased fun and embodiment. It also introduced motion-comfort risk, so the accepted mitigation became sparse stable references and calmer distant background motion rather than restricting rotation.
+
+### V7/V8 stabilization
+Later iteration fixed two important presentation/precision issues:
+- deterministic/fixed background so resize/fullscreen/reset does not appear to regenerate the universe
+- precision docking restored/tightened after it became clear an earlier failure report was mainly a docking-location misunderstanding rather than evidence that capture should be more generous
+
+V8 therefore became the immutable fallback/control contract.
+
+### Formal project phases
+- **P0**: preserve V8, modularize source, prove deterministic parity, establish governance/handoff rules.
+- **P1**: test whether one fun docking action can become a continuous five-target mission; accepted as fun on device.
+- **P2**: replace developer-style docking checklist dependence with world-readable feedback; accepted as better than P1 presentation.
+- **P3 next**: add restrained audio/haptics/capture-transition polish without altering accepted physics or readability.
+- **Android after P3**: package the stable proven web game as a separate platform/build lane.
+
+## 5. Camera / motion comfort
 Accepted camera is **ship-frame**:
 - player craft remains visually fixed
 - controls are interpreted in ship/body coordinates
@@ -53,7 +122,7 @@ Motion-comfort mitigation is visual, not by removing freedom:
 - sparse relative-motion references rather than busy scenery
 - no random background regeneration on resize/reset/fullscreen
 
-## 5. Docking contract
+## 6. Docking contract
 Successful docking requires simultaneous match of:
 - docking-point position
 - relative linear velocity
@@ -76,7 +145,7 @@ Frozen V8 values:
 
 Exact V8 artifact hash is in `BASELINE_V8.md`.
 
-## 6. P0 closure
+## 7. P0 closure
 P0 is complete and canonical.
 - modular source promoted
 - deterministic smoke PASS
@@ -84,7 +153,7 @@ P0 is complete and canonical.
 - mobile feel parity: ACCEPTED
 - V8 remains immutable fallback/control contract
 
-## 7. Accepted relative-motion readability direction
+## 8. Accepted relative-motion readability direction
 Accepted low-salience scene cues:
 - faint station reference ring
 - sparse ticks
@@ -93,7 +162,7 @@ Accepted low-salience scene cues:
 
 These are readability aids only. Do not turn them into a busy moving background.
 
-## 8. Architecture contract
+## 9. Architecture contract
 - Physics/world state: position, velocity, angle, angular velocity, target motion.
 - Input: pointer identity, two-hand tracking, response curve, body-frame command vectors.
 - Camera: presentation only; never mutate physical truth.
@@ -103,13 +172,13 @@ These are readability aids only. Do not turn them into a busy moving background.
 - Mission/state flow: target sequence, transitions, scoring/state; do not rewrite core physics.
 - Audio/haptics in future work must remain a presentation layer and must not mutate physics/docking truth.
 
-## 9. Failure / recovery philosophy
+## 10. Failure / recovery philosophy
 Prefer `mistake -> unstable/bounce -> recovery -> re-approach` over immediate fail/reset. Recovery is part of the tactile appeal.
 
-## 10. Visual direction
+## 11. Visual direction
 Player ship is a docking/service shuttle with clear forward probe/collar, left/right RCS pods, multiple attitude-control nozzles and legible RCS plumes. Station port uses capture collar, inner tunnel, guide lights and latch feedback. UI should expose rather than cover the world.
 
-## 11. P1 Mission 01 — ACCEPTED / CLOSED
+## 12. P1 Mission 01 — ACCEPTED / CLOSED
 Product question: does the validated control remain compelling when expanded into a continuous multi-target mission rather than a single docking attempt?
 
 Accepted answer: **yes**. User device feedback was explicitly positive and fun. Exact run duration was not separately instrumented, so do not invent a measured 3–5 minute duration.
@@ -124,7 +193,7 @@ Accepted sequence:
 Accepted P1 behavior:
 - deterministic five-target profiles
 - target world state includes linear velocity
-- docking-relative velocity includes target translation + rotational port velocity
+- docking-relative velocity includes target translation plus rotational port velocity
 - ship state continues between dockings; no ship reset
 - deterministic background continues across the run
 - recoverable collision/re-approach remains intact
@@ -132,7 +201,7 @@ Accepted P1 behavior:
 
 Validation: JS syntax PASS, P0 smoke PASS, mission deterministic test PASS, mobile Mission 01 playtest ACCEPTED, fun/replay signal POSITIVE.
 
-## 12. P2 world-readable feedback — ACCEPTED / CLOSED
+## 13. P2 world-readable feedback — ACCEPTED / CLOSED
 P2 product question:
 **Can the player judge docking readiness primarily from the world and docking hardware rather than a permanent debug-style four-condition checklist, while preserving clarity and the accepted game feel?**
 
@@ -166,7 +235,7 @@ Validation:
 - P1-vs-P2 scope compare confirmed no frozen/core source changes
 - mobile device readability/presentation check ACCEPTED
 
-## 13. Exact next boundary — P3 game-feel / presentation polish
+## 14. Exact next boundary — P3 game-feel / presentation polish
 P3 product question:
 **Can restrained audio, haptics, contact/capture feedback, and stage transitions make docking substantially more satisfying without obscuring physical information, increasing fatigue, or changing the accepted control/docking behavior?**
 
@@ -189,7 +258,7 @@ P3 non-goals:
 - no frozen-control or docking-threshold tuning without a concrete regression
 - no Android packaging inside the same implementation batch
 
-## 14. Android direction
+## 15. Android direction
 Android packaging is now justified as a near-term platform step because:
 - the core control is accepted
 - Mission 01 continuous play is fun
@@ -197,7 +266,7 @@ Android packaging is now justified as a near-term platform step because:
 
 However, finish and device-validate P3 first. Then Android can be introduced as a separate platform/build lane, preferably preserving the proven web implementation initially (PWA/Capacitor-style wrapper unless a native-only requirement appears).
 
-## 15. Development / validation pipeline
+## 16. Development / validation pipeline
 1. recover live state in required order
 2. state one product question
 3. classify frozen-feel impact
@@ -214,7 +283,7 @@ Tool economy:
 - public GitHub Actions only when repeat automation saves net work
 - avoid repeated scans/builds/revalidation of frozen areas without a concrete trigger
 
-## 16. Known regression risks
+## 17. Known regression risks
 - mobile pointer capture/input loss
 - sensitivity creep
 - camera changes affecting feel
@@ -228,7 +297,7 @@ Tool economy:
 - excessive haptics causing fatigue
 - audio masking relative-motion cues or becoming arcade-like
 
-## 17. Large-group closure discipline
+## 18. Large-group closure discipline
 At each large-group closure:
 - implementation/decision boundary explicit
 - relevant tests/checks passed
