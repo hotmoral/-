@@ -1,6 +1,6 @@
 # Timing Defense — Project Status
 
-Updated: 2026-10-25 KST
+Updated: 2026-10-26 KST
 
 ## Authority rule
 Live remote wins over canonical summaries, handoff, copied SHA, memory and chat.
@@ -26,7 +26,8 @@ Live remote wins over canonical summaries, handoff, copied SHA, memory and chat.
 - Wave A1 materialization/static result: `176_T1_WIDER_EXACT_AUTHORING_WAVE_A1_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`
 - Wave A2 materialization/static result: `177_T1_WIDER_EXACT_AUTHORING_WAVE_A2_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`
 - Wave A3 materialization/static result: `178_T1_WIDER_EXACT_AUTHORING_WAVE_A3_MATERIALIZATION_AND_STATIC_PREFLIGHT_V0_1.md`
-- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_55.yaml`
+- Wave A4 + full Wave A static closure: `179_T1_WIDER_EXACT_AUTHORING_WAVE_A4_AND_FULL_STATIC_CLOSURE_V0_1.md`
+- active plan: `legacy-game-structure/data/system_dependency_calibration_order_v0_56.yaml`
 
 ---
 
@@ -53,10 +54,11 @@ Wider T1 Wave A plan = STATIC PREFLIGHT PASS
 Wave A1 Stage1/4/8 = MATERIALIZED / STATIC PASS / NOT ADOPTED
 Wave A2 Stage15/19 = MATERIALIZED / STATIC PASS / NOT ADOPTED
 Wave A3 Stage24/25/29/30/31 = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Wave A4 Stage33/37/38 = NOT STARTED / NEXT
+Wave A4 Stage33/37/38 = MATERIALIZED / STATIC PASS / NOT ADOPTED
+Full Wave A accumulated materialization = STATIC PASS / NOT ADOPTED
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 Timing Defense production semantics = UNCHANGED / UNAUTHORIZED
-CURRENT = WAVE A4 EXACT SPAWN RECIPE MATERIALIZATION GATE
+CURRENT = FULL WAVE A STATIC ADOPTION DECISION GATE
 ```
 
 ---
@@ -103,8 +105,6 @@ Stage49 CLUSTER = G/R/G/R/B/G burst 0..600ms
 Stage50 CLUSTER = B/G/B/G/B/G DURABLE_CORE_3 0..1800ms
 ```
 
-Approval is structural authoring authority only. It does not freeze production, class/monster/shop/EXP/P×P values, Archer exact corridor width, Mage Lv31 centers, or the full T1 recipe set.
-
 Retained exact evidence:
 ```text
 static run 40156618986 = PASS
@@ -119,14 +119,16 @@ Tank wall damage 1358 -> 164
 
 Mage `+0.108s` Stage50 settle inversion was attributed to valid delayed Lv31 package-tail drainage. Stage50 CLUSTER-final alternative remains rejected.
 
+Approval is structural authoring authority only. It does not freeze production, class/monster/shop/EXP/P×P values, Archer exact corridor width, Mage Lv31 centers, or the full T1 recipe set.
+
 ---
 
-# Wider T1 Wave A
+# Wider T1 Wave A — full static closure
 
 Plan:
 `legacy-game-structure/data/t1_wider_exact_authoring_wave_a_plan_v0_1.yaml`
 
-Slices:
+Plan targets:
 ```text
 A1 = [1,4,8]
 A2 = [15,19]
@@ -139,135 +141,92 @@ Context-only anchors:
 5,18,20,39,40,41,49,50
 ```
 
-Plan static preflight:
+Plan preflight:
 ```text
 run 40189296422
 artifact 12597413342
 PASS / errors=[] / warnings=[]
 ```
 
-Rule:
+### A1
 ```text
-one slice materialized
--> static gate
--> only then next slice
-```
-
-No full-T1 fill in this phase.
-
----
-
-# Wave A1 — closed static evidence
-
-Candidate SHA256:
-`44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d`
-
-```text
-run 40193818274
-artifact 12599510840
+candidate SHA256 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
+run 40193818274 / artifact 12599510840
 PASS / errors=[] / warnings=[]
 Stage1 max4=3
 Stage4 max4=6
 Stage8 max4=6
 ```
 
-A1 remains candidate-only / not adopted / no dynamic execution.
-
----
-
-# Wave A2 — closed static evidence
-
-Candidate SHA256:
-`2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d`
-
+### A2
 ```text
-Stage15 = BRUTE3 / max4=2
-Stage19 = BRUTE2+RUNNER4 / max4=5
-```
-
-Exact local progression:
-```text
-Stage15 pure B teach
--> Stage18 G+B first mix
--> Stage19 B+R stagger/reorder
--> Stage20 G+R+B synthesis
-```
-
-Final evidence:
-```text
-run 40200875375
-artifact 12601174423
+candidate SHA256 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
+run 40200875375 / artifact 12601174423
 PASS / errors=[] / warnings=[]
-Stage18 preserved=true
-Stage20 preserved=true
-existing representative stages preserved=true
+Stage15 B3 / max4=2
+Stage19 B2+R4 / max4=5
+Stage18/20 preserved=true
 ```
 
-The same source commit triggered an unrelated Cloudflare harness build check failure. The authoritative A2 GitHub Actions preflight passed; do not classify the external check as A2 authoring failure.
+### A3
+```text
+candidate SHA256 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
+run 40205404257 / artifact 12603138180
+PASS / errors=[] / warnings=[]
+Stage24 G8 / max4=8
+Stage25 G4 / max4=3
+Stage29 G3+R3+B3 / max4=6
+Stage30 G5+B2 / max4=6
+Stage31 G6+B2 / max4=8
+```
 
-A2 remains candidate-only / not adopted / no dynamic execution.
+A3 first run `40205234927` was a validator geometry-proxy false failure; candidate data did not change.
 
----
-
-# Wave A3 — closed static evidence
-
+### A4
 Candidate:
-`legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml`
+`legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml`
 
-SHA256:
-`30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6`
-
-Progression:
 ```text
-Stage24 density pressure
--> Stage25 Lv21 reward buffer
--> Stage29 bounded split-axis synthesis
--> Stage30 Checkpoint B decompression
--> Stage31 durable soft-wall entry
+candidate SHA256 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36
+Stage33 G12 / max4=8 / max6=12 / ySpan=0.07
+Stage37 G4+R4 / max4=8 / max6=8 / F08 axes 0.30..0.32 and 0.68..0.70
+Stage38 G6+B2 / max4=7 / max6=8 / ySpan=0.06
+Stage39 anchor authored14 / max4=8 / max6=12 / ySpan=0.22
 ```
 
-Static facts:
+First A4 run:
 ```text
-Stage24 G8 / max4=8 / ySpan=0.07
-Stage25 G4 / max4=3 / ySpan=0.48
-Stage29 G3+R3+B3 / max4=6 / split axes 0.28..0.32 and 0.68..0.72
-Stage30 G5+B2 / max4=6 / ySpan=0.06
-Stage31 G6+B2 / max4=8 / ySpan=0.06
-```
-
-First run:
-```text
-run 40205234927
-artifact 12603262478
-FAIL only on stage31-geometry-too-complex-for-c1-entry
-classification = VALIDATOR_GEOMETRY_PROXY_MISUSE_NO_CANDIDATE_CONTENT_FAILURE
+run 40210087895 / artifact 12605450400
+FAIL only on stage38-not-vocabulary-bounded-below-stage39-peak
+classification = VALIDATOR_STAGE38_TYPE_CARDINALITY_PROXY_MISUSE_NO_CANDIDATE_CONTENT_FAILURE
 candidate changed = false
 ```
 
-Final exact evidence:
+Final A4 evidence:
 ```text
-run      40205404257
-artifact 12603138180
-head     2eb99491bb555e2f15ddc2dbe94429db31abebf7
-artifact sha256 c1cfde2a366226e028812a0f3cea7192ba62e7c3050e02b0a98a9be3ce1f8efc
+run      40210214458
+artifact 12605184344
+head     5d66f969e10177a0c9778474a332eeddefbf7dfb
+artifact sha256 be3990ba8ea112ee99e226902fb7561eae8b2e6f94d7732230a48ce9d9fd0c66
 PASS / errors=[] / warnings=[]
-```
-
-Accumulated materialization:
-```text
-SHA256 a401d619151681befeac38a1b15d0b56c4b9ae2162901eede60e77a737a6bd69
+A1/A2/A3 preserved=true
 representative base preserved=true
-A1 preserved=true
-A2 preserved=true
+Stage39/40 preserved=true
 ```
 
-A3 remains candidate-only / not adopted / no dynamic execution.
+Full accumulated Wave A materialization:
+```text
+SHA256 28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b
+status = STATIC PASS
+```
+
+All A1-A4 exact spawn candidates remain **candidate evidence only / not adopted / not dynamically executed**.
 
 ---
 
-# Lifecycle constraint for Wave A dynamic work
+# Lifecycle constraint
 
-Do not simulate noncontiguous Wave A stages as one persistent-state chain. Static PASS does not authorize skipped-stage lifecycle evidence.
+Do not simulate noncontiguous Wave A targets as one persistent-state chain. Static PASS does not authorize skipped-stage lifecycle evidence.
 
 Dynamic work remains deferred until:
 - contiguous authored context exists; or
@@ -311,10 +270,12 @@ Do not add a watch without a concrete failure mode.
 
 # Current work boundary
 
-Next bounded task, if approved:
+The Wave A materialization/static-validation work group is closed.
+
+Next boundary requires explicit user approval because it would promote exact spawn counts/timestamps/Y positions from candidate evidence into canonical authoring authority:
 ```text
-MATERIALIZE WAVE A4 STAGES 33,37,38
--> STATIC RECIPE GATE
+DECIDE WHETHER TO ADOPT FULL WAVE A
+AS T1 EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 ```
 
-Preserve Stage39/40 exact anchors, A1/A2/A3 candidate identities, and all representative authority. Do not interpret static PASS as content adoption, numerical freeze, production authorization, or full-T1 completion.
+If approved, that adoption still does **not** authorize production deployment, class/monster/shop/EXP/P×P scalar freeze, or full Stage1-50 recipe freeze. After adoption, the next planning task is to design the smallest bounded contiguous-coverage wave needed before lifecycle-faithful dynamic execution.
