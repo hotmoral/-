@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<meta name="theme-color" content="#050914" />
+<title>Twin Dock · Foundation</title>
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="우주선 기준 회전 우주정거장 도킹 게임"></canvas>
+  <div class="topbar">
+    <div class="hud"><div class="k">도킹 완료</div><div class="v"><span id="score">0</span> 회</div></div>
+    <div class="hud"><div class="k">상대 속도</div><div class="v"><span id="relSpeed">0.0</span> <small style="font-size:10px;color:var(--muted)">m/s</small></div></div>
+    <div class="hud statusHud"><div class="k">현재 상태</div><div id="mode" class="v">대기</div></div>
+    <div class="hud"><div class="k">도킹 조건</div><div class="checks">
+      <span id="ckPos"><i class="dot"></i>위치</span><span id="ckVel"><i class="dot"></i>속도</span>
+      <span id="ckDir"><i class="dot"></i>방향</span><span id="ckSpin"><i class="dot"></i>회전</span>
+    </div></div>
+  </div>
+  <div class="centerMsg"><strong id="msgTitle">우주선 기준 시점 · 자유회전</strong><span id="msgSub">배경은 고정된 하나의 우주 공간을 유지하고, 도킹 판정은 정밀 모드입니다.</span></div>
+  <div class="controls">
+    <div class="padWrap">
+      <div class="padLabel"><span>왼쪽 RCS · 기체 기준</span><b id="lPct">0%</b></div>
+      <div id="lPad" class="pad"><div class="padRing"></div><div id="lOrigin" class="origin"></div><div id="lThumb" class="thumb"></div></div>
+    </div>
+    <div class="middleControls">
+      <button id="startBtn" class="btn primary" type="button">시작</button>
+      <button id="resetBtn" class="btn" type="button">초기화</button>
+      <button id="fullBtn" class="btn" type="button">전체</button>
+      <div class="tiny">양손의 합 = 이동 · 정밀 감도<br>양손 차이 = 회전</div>
+    </div>
+    <div class="padWrap">
+      <div class="padLabel"><span>오른쪽 RCS · 기체 기준</span><b id="rPct">0%</b></div>
+      <div id="rPad" class="pad"><div class="padRing"></div><div id="rOrigin" class="origin"></div><div id="rThumb" class="thumb"></div></div>
+    </div>
+  </div>
+  <div class="portraitBlock"><div><strong>가로 화면으로 돌려주세요</strong><span>양손 조작을 위해 가로 화면에 맞춰 설계했습니다.</span></div></div>
+  <div id="flash" class="flash"></div><div id="pulse" class="dockPulse"></div>
+</div>
+<script src="./src/config.js"></script>
+<script src="./src/math.js"></script>
+<script src="./src/state.js"></script>
+<script src="./src/docking.js"></script>
+<script src="./src/input.js"></script>
+<script src="./src/physics.js"></script>
+<script src="./src/camera.js"></script>
+<script src="./src/ui.js"></script>
+<script src="./src/renderer.js"></script>
+<script src="./src/main.js"></script>
+</body>
+</html>
