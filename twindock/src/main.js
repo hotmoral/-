@@ -34,11 +34,11 @@
   }
 
   function dockHoldEnd(){
-    const next=TD.Mission.advance(state);effects.latch();
+    const next=TD.Mission.advance(state);
     if(!next){
       state.running=false;state.dockHold=1e9;clearControls();ui.mode.textContent='완료';ui.msgT.textContent='MISSION 01 COMPLETE';ui.msgS.textContent='5 DOCKS COMPLETE · 다시 시작할 수 있습니다.';ui.start.textContent='다시';effects.missionComplete();return;
     }
-    state.docked=false;state.dockHold=0;state.angularDrive=0;clearControls();effects.nextTarget();
+    state.docked=false;state.dockHold=0;state.angularDrive=0;clearControls();effects.latch();effects.nextTarget();
     ui.mode.textContent='접근';ui.msgT.textContent=targetText(next);ui.msgS.textContent='새 목표의 움직임을 먼저 읽으세요.';
     [ui.ckPos,ui.ckVel,ui.ckDir,ui.ckSpin].forEach(x=>TD.UI.setCheck(x,false));
   }
