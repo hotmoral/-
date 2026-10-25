@@ -43,7 +43,10 @@ def parse_skeleton(path: str) -> dict[int, dict[str, str]]:
 
 
 def recipe_stages(doc: dict) -> set[int]:
-    return {int(x["stage"]) for x in doc.get("recipes", [])}
+    rows = []
+    rows.extend(doc.get("recipes", []) or [])
+    rows.extend(doc.get("stageOverrides", []) or [])
+    return {int(x["stage"]) for x in rows}
 
 
 def main():
@@ -110,7 +113,6 @@ def main():
         if got["pressure"].replace(" ", "") != str(want["pressure"]).replace(" ", ""):
             errors.append(f"stage {stage} pressure: skeleton={got['pressure']!r} plan={want['pressure']!r}")
 
-    # High-value semantic guards for the selected bridge stages.
     semantic = {
         "stage8FirstMixedGR": skeleton.get(8, {}).get("signature") == "E02 / G+R",
         "stage15BruteTeach": skeleton.get(15, {}).get("signature") == "E03 / B",
