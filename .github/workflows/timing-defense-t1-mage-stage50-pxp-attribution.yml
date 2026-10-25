@@ -1,0 +1,77 @@
+name: Timing Defense T1 Mage Stage50 PXP Attribution
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - 'timing-defense-workspace/tools/trace_t1_mage_stage50_pxp_alignment_current_vs_cluster_final_v0_1.py'
+      - 'timing-defense-workspace/tools/probe_t1_stage50_cluster_final_consequence_translation_v0_1.py'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml'
+      - '.github/workflows/timing-defense-t1-mage-stage50-pxp-attribution.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trace:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: timing-defense-workspace
+    env:
+      BASE_RECIPE: legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+      CANDIDATE: legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml
+      SEEDS: 101,211,307,409,503
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record source identity
+        run: |
+          mkdir -p artifacts
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/mage-stage50-pxp-attribution-source-identity.txt
+          sha256sum \
+            tools/trace_t1_mage_stage50_pxp_alignment_current_vs_cluster_final_v0_1.py \
+            tools/probe_t1_stage50_cluster_final_consequence_translation_v0_1.py \
+            tools/probe_t1_stage49_50_pxp_phase_alignment_v0_1.py \
+            "$CANDIDATE" "$BASE_RECIPE" \
+            tools/t1_transition_microsim_mage_lv31_fidelity_bridge_v0_1.py \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            >> artifacts/mage-stage50-pxp-attribution-source-identity.txt
+          cat artifacts/mage-stage50-pxp-attribution-source-identity.txt
+      - name: Compile
+        run: python -m py_compile tools/trace_t1_mage_stage50_pxp_alignment_current_vs_cluster_final_v0_1.py
+      - name: Run attribution
+        run: |
+          PYTHONPATH=tools python tools/trace_t1_mage_stage50_pxp_alignment_current_vs_cluster_final_v0_1.py \
+            --base "$BASE_RECIPE" \
+            --candidate "$CANDIDATE" \
+            --seeds "$SEEDS" \
+            --json-out artifacts/t1-mage-stage50-pxp-attribution-v0_1.json
+      - name: Fidelity assertions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('artifacts/t1-mage-stage50-pxp-attribution-v0_1.json').read_text())
+          assert d['status']=='ATTRIBUTION_PASS', d['fidelityErrors']
+          assert d['fidelityErrors']==[], d['fidelityErrors']
+          assert set(d['variants'])=={'ADMITTED_BASE','CLUSTER_FINAL_REJECTED'}
+          assert d['productionGameplayChange'] is False
+          assert d['authoringAdopted'] is False
+          assert d['numericalFreeze'] is False
+          print('T1_MAGE_STAGE50_PXP_ATTRIBUTION=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: timing-defense-t1-mage-stage50-pxp-attribution
+          path: |
+            timing-defense-workspace/artifacts/t1-mage-stage50-pxp-attribution-v0_1.json
+            timing-defense-workspace/artifacts/mage-stage50-pxp-attribution-source-identity.txt
+          if-no-files-found: error
