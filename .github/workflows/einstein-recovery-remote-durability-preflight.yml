@@ -1,0 +1,241 @@
+name: Einstein Recovery Remote Durability Zero-Draw Preflight
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type RUN_EINSTEIN_REMOTE_DURABILITY_PREFLIGHT_V1 exactly'
+        required: true
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-recovery-remote-durability-preflight.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: einstein-recovery-remote-durability-preflight-v1
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.confirm == 'RUN_EINSTEIN_REMOTE_DURABILITY_PREFLIGHT_V1') ||
+      (github.event_name == 'push' && github.event.head_commit.message == 'ci: prepare Einstein remote durability preflight')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RUNNER_SHA: 0b76652f4a2cdb1dfff5ba2ef6f12ddd4c1b3a78
+      ACCEPTED_SOURCE_SHA: ee82e3748b28e0a4389e5221ff66aafe47fa22e6
+      FIXTURE_SHA: b34abb909dd1d154ca964423c6bde3bcb347407d
+      FIXTURE_BLOB_SHA: ce555f511ca4003e95a24fbca975081c61109222
+      EVIDENCE_BRANCH: campaign-intent-acquisition-draw0-recovery-evidence-v1
+      FORMAL_REMOTE_ROOT: evidence/bounded-acquisition/draw0-recovery-invocation-2
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+      CLASSES_DIR: /tmp/einstein-remote-durable-classes
+      SOURCES_FILE: /tmp/einstein-remote-durable-sources.txt
+      PREFLIGHT_DIR: /tmp/einstein-remote-durable-preflight
+    steps:
+      - name: Require separate read and evidence-write tokens
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$READ_TOKEN"
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact ack-gated runner
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 0b76652f4a2cdb1dfff5ba2ef6f12ddd4c1b3a78
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 3
+          persist-credentials: false
+
+      - name: Checkout exact frozen bounded fixture
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: b34abb909dd1d154ca964423c6bde3bcb347407d
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: FrozenFixture
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout private evidence branch with write credential
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-intent-acquisition-draw0-recovery-evidence-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: EvidenceStore
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Hard-gate all source and evidence boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
+          test "$(git merge-base "$ACCEPTED_SOURCE_SHA" HEAD)" = "$ACCEPTED_SOURCE_SHA"
+          mapfile -t changed < <(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD)
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java'
+          test -z "$(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java)"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          cd ../FrozenFixture
+          test "$(git rev-parse HEAD)" = "$FIXTURE_SHA"
+          F='puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java'
+          test "$(git hash-object "$F")" = "$FIXTURE_BLOB_SHA"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          cd ../EvidenceStore
+          test "$(git rev-parse --abbrev-ref HEAD)" = "$EVIDENCE_BRANCH"
+          git cat-file -e "$ACCEPTED_SOURCE_SHA^{commit}"
+          test "$(git merge-base "$ACCEPTED_SOURCE_SHA" HEAD)" = "$ACCEPTED_SOURCE_SHA"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test ! -e "$FORMAL_REMOTE_ROOT"
+          test -z "$(git ls-tree -r --name-only HEAD -- "$FORMAL_REMOTE_ROOT")"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile exact Java 8 runner and fixture
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          rm -rf "$CLASSES_DIR" "$SOURCES_FILE" "$PREFLIGHT_DIR"
+          mkdir -p "$CLASSES_DIR"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES_FILE"
+          cat >> "$SOURCES_FILE" <<'EOF'
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
+          ../FrozenFixture/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java
+          EOF
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES_DIR" "@$SOURCES_FILE"
+
+      - name: Run synthetic private remote checkpoint preflight
+        shell: bash
+        working-directory: EinsteinGame
+        env:
+          EINSTEIN_PRODUCTION_SOURCE_HEAD: ee82e3748b28e0a4389e5221ff66aafe47fa22e6
+          EINSTEIN_REMOTE_PREFLIGHT_AUTHORIZATION: RUN_REMOTE_EVIDENCE_PREFLIGHT_V1
+        run: |
+          set -euo pipefail
+          test -z "${EINSTEIN_FORMAL_RECOVERY_AUTHORIZATION:-}"
+          export EINSTEIN_REMOTE_EVIDENCE_ROOT="evidence/bounded-acquisition/remote-runner-preflight/run-${GITHUB_RUN_ID}-attempt-${GITHUB_RUN_ATTEMPT}"
+          export ACK_NAME='synthetic-attempt.json'
+          export READY="$PREFLIGHT_DIR/$ACK_NAME.ready.json"
+          export ACK="$PREFLIGHT_DIR/$ACK_NAME.remote-ack.json"
+          export SOURCE="$PREFLIGHT_DIR/$ACK_NAME"
+          export SIDECAR="$PREFLIGHT_DIR/$ACK_NAME.sha256"
+          export EVIDENCE_STORE="$GITHUB_WORKSPACE/EvidenceStore"
+
+          (
+            set -euo pipefail
+            deadline=$((SECONDS+120))
+            while [ ! -f "$READY" ] && [ "$SECONDS" -lt "$deadline" ]; do sleep 0.1; done
+            test -f "$READY"
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=json.loads(Path(os.environ['READY']).read_text())
+          assert p['recordType']=='RemoteSealRequestV1'
+          assert p['file']==os.environ['ACK_NAME']
+          assert p['evidenceBranch']==os.environ['EVIDENCE_BRANCH']
+          assert p['remoteRoot']==os.environ['EINSTEIN_REMOTE_EVIDENCE_ROOT']
+          assert p['formalDraw'] is False
+          assert len(p['sha256'])==64
+          print('READY_CONTRACT=PASS')
+          PY
+            SHA="$(python3 -c 'import json,os;print(json.load(open(os.environ["READY"]))["sha256"])')"
+            test -f "$SOURCE"
+            test -f "$SIDECAR"
+            test "$(sha256sum "$SOURCE" | awk '{print $1}')" = "$SHA"
+            test "$(cat "$SIDECAR")" = "$SHA  $ACK_NAME"
+
+            TARGET_ROOT="$EVIDENCE_STORE/$EINSTEIN_REMOTE_EVIDENCE_ROOT"
+            TARGET="$TARGET_ROOT/$ACK_NAME"
+            TARGET_SHA="$TARGET.sha256"
+            test ! -e "$TARGET"
+            test ! -e "$TARGET_SHA"
+            test -z "$(git -C "$EVIDENCE_STORE" ls-tree -r --name-only HEAD -- "$EINSTEIN_REMOTE_EVIDENCE_ROOT/$ACK_NAME")"
+            REMOTE_BEFORE="$(git -C "$EVIDENCE_STORE" ls-remote origin "refs/heads/$EVIDENCE_BRANCH" | cut -f1)"
+            test "$REMOTE_BEFORE" = "$(git -C "$EVIDENCE_STORE" rev-parse HEAD)"
+            mkdir -p "$TARGET_ROOT"
+            cp --no-clobber "$SOURCE" "$TARGET"
+            cp --no-clobber "$SIDECAR" "$TARGET_SHA"
+            cmp "$SOURCE" "$TARGET"
+            cmp "$SIDECAR" "$TARGET_SHA"
+            git -C "$EVIDENCE_STORE" config user.name 'Einstein Recovery Evidence'
+            git -C "$EVIDENCE_STORE" config user.email 'noreply@localhost'
+            git -C "$EVIDENCE_STORE" add -- "$EINSTEIN_REMOTE_EVIDENCE_ROOT/$ACK_NAME" "$EINSTEIN_REMOTE_EVIDENCE_ROOT/$ACK_NAME.sha256"
+            git -C "$EVIDENCE_STORE" commit -m "evidence: remote durability preflight $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT"
+            COMMIT="$(git -C "$EVIDENCE_STORE" rev-parse HEAD)"
+            git -C "$EVIDENCE_STORE" push origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
+            REMOTE_AFTER="$(git -C "$EVIDENCE_STORE" ls-remote origin "refs/heads/$EVIDENCE_BRANCH" | cut -f1)"
+            test "$REMOTE_AFTER" = "$COMMIT"
+            git -C "$EVIDENCE_STORE" show "$COMMIT:$EINSTEIN_REMOTE_EVIDENCE_ROOT/$ACK_NAME" > /tmp/remote-main
+            git -C "$EVIDENCE_STORE" show "$COMMIT:$EINSTEIN_REMOTE_EVIDENCE_ROOT/$ACK_NAME.sha256" > /tmp/remote-sha
+            cmp "$SOURCE" /tmp/remote-main
+            cmp "$SIDECAR" /tmp/remote-sha
+            test -z "$(git -C "$EVIDENCE_STORE" status --porcelain --untracked-files=all)"
+            export SHA COMMIT
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          ack={
+            'status':'REMOTE_SEAL_PASS',
+            'sha256':os.environ['SHA'],
+            'evidenceBranch':os.environ['EVIDENCE_BRANCH'],
+            'remoteRoot':os.environ['EINSTEIN_REMOTE_EVIDENCE_ROOT'],
+            'remotePath':os.environ['EINSTEIN_REMOTE_EVIDENCE_ROOT']+'/'+os.environ['ACK_NAME'],
+            'remoteCommitSha':os.environ['COMMIT']
+          }
+          p=Path(os.environ['ACK'])
+          with p.open('x') as f:
+            json.dump(ack,f,separators=(',',':'),sort_keys=True)
+            f.write('\n')
+          PY
+          ) &
+          SIDECAR_PID=$!
+
+          java -Xmx2g -cp "$CLASSES_DIR" \
+            com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionAckDurableRecoveryRunnerV1 \
+            remote-preflight "$PREFLIGHT_DIR" RUN_REMOTE_EVIDENCE_PREFLIGHT_V1 | tee /tmp/einstein-remote-durability-preflight.log
+          wait "$SIDECAR_PID"
+          grep -F 'ACK_DURABLE_RECOVERY_REMOTE_PREFLIGHT=PASS' /tmp/einstein-remote-durability-preflight.log
+          grep -F 'formalAcquisitionInvocationCount=0' /tmp/einstein-remote-durability-preflight.log
+
+      - name: Remote and formal-boundary postflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EvidenceStore
+          test "$(git rev-parse --abbrev-ref HEAD)" = "$EVIDENCE_BRANCH"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          REMOTE="$(git ls-remote origin "refs/heads/$EVIDENCE_BRANCH" | cut -f1)"
+          test "$REMOTE" = "$(git rev-parse HEAD)"
+          test ! -e "$FORMAL_REMOTE_ROOT"
+          test -z "$(git ls-tree -r --name-only HEAD -- "$FORMAL_REMOTE_ROOT")"
+          cd ../EinsteinGame
+          test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          printf '%s\n' \
+            'EINSTEIN_REMOTE_DURABILITY_PREFLIGHT=PASS' \
+            "runner=$RUNNER_SHA" \
+            "evidenceBranch=$EVIDENCE_BRANCH" \
+            'privateRemoteCreateNew=PASS' \
+            'remoteHeadVerification=PASS' \
+            'remoteByteVerification=PASS' \
+            'formalRemoteRootUntouched=PASS' \
+            'formalAcquisitionInvocation=0' \
+            'artifactUpload=0' \
+            'cacheUpload=0'
