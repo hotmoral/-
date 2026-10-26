@@ -1,0 +1,99 @@
+version: t1-contiguous-26-28-c1-authoring-plan-v0.1
+status: BOUNDED_AUTHORING_PLAN_STATIC_PREFLIGHT_READY_NO_EXACT_RECIPE_YET
+
+scope:
+  targetStages: [26, 27, 28]
+  leftExactAnchor: 25
+  rightExactAnchors: [29, 30, 31]
+  intendedContiguousWindowAfterFutureAdoption: [15, 31]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+
+structuralAuthority:
+  skeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  staticAudit: ../162_T1_STAGE1_50_SIGNATURE_SKELETON_STATIC_AUDIT_V0_1.md
+  leftAndRightExactAuthority: ../180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  stage16_17Approval: ../182_T1_STAGE16_17_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  b1Closure: ../181_T1_CONTIGUOUS_15_25_B1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md
+
+stageContracts:
+  - stage: 26
+    band: Deepen
+    archetype: E03
+    monsters: [GRUNT, BRUTE]
+    formation: F01
+    cadence: CD02
+    complexity: C1
+    pressureTags: [BULWARK]
+    purpose: KNOWN_DURABLE_FOCUS_NO_NEW_ATTRIBUTION
+    opportunity: [Knight, Rogue, Archer]
+
+  - stage: 27
+    band: Deepen
+    archetype: E02
+    monsters: [GRUNT, RUNNER]
+    formation: F04
+    cadence: CD03
+    complexity: C1
+    pressureTags: [RUSH]
+    purpose: KNOWN_TEMPO_FOCUS
+    opportunity: [Rogue, Tank]
+
+  - stage: 28
+    band: Deepen
+    archetype: E01
+    monsters: [GRUNT]
+    formation: F03
+    cadence: CD03
+    complexity: C1
+    pressureTags: [BASELINE, FLOOD]
+    purpose: DENSITY_RECALL_WHILE_LV21_SETTLES
+    opportunity: [Mage]
+
+adjacentExactAnchors:
+  stage25:
+    source: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    signature: E01_GRUNT_F04_CD01_C0_BASELINE
+    purpose: LV21_FIRST_TIME_REWARD_BUFFER
+    spawnCount: 4
+  stage29:
+    source: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    signature: E02_E03_G_R_B_F08_CD05_C2_RUSH_BULWARK
+    purpose: LATE_LIMITED_SPLIT_AXIS_SYNTHESIS
+    spawnCount: 9
+  stage30:
+    source: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    signature: E01_E03_G_B_F01_CD03_C1_BASELINE
+    purpose: CHECKPOINT_B
+  stage31:
+    source: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    signature: E03_G_B_F02_CD04_C1_BULWARK
+    purpose: SOFTWALL_DURABLE_ENTRY
+
+progressionGuard:
+  lv21ReachBand: [25, 28]
+  exactActivationStageFrozen: false
+  authoringIntent:
+    - PRESERVE_STAGE25_RELIEF
+    - ALLOW_LV21_EXPRESSION_ACROSS_26_28_WITHOUT_NEW_MECHANIC
+    - DO_NOT_INFER_EXP_THRESHOLD_FROM_AUTHORING
+
+preflightGuards:
+  - EXACT_SIGNATURE_MATCH_REQUIRED
+  - NO_NEW_MONSTER_OR_PRESSURE_VOCABULARY
+  - STAGE26_28_COMPLEXITY_MUST_REMAIN_C1
+  - STAGE28_MUST_NOT_EXCEED_STAGE24_HIGH_PRESSURE_DENSITY_ROLE
+  - STAGE29_SYNTHESIS_MUST_REMAIN_CLEAR_STEP_UP
+  - AUTHORED_4S_NORMAL_DENSITY_MAX_8
+  - NO_SCALAR_CHANGE
+  - NO_PRODUCTION_CHANGE
+  - NO_FULL_T1_EXACT_FREEZE
+
+nextAction: MATERIALIZE_C1_STAGE26_28_EXACT_SPAWN_CANDIDATE
