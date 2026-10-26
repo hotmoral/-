@@ -2,37 +2,48 @@
 
 Updated: 2026-10-26 KST
 
-## 0. Recovery rule — mandatory
-Always fetch live remote first. Never reconstruct current state from chat, memory or copied SHA. Live GitHub canonical state wins.
+## 0. Mandatory authority / recovery rule
 
-Do not make the user re-explain project state, dependency order, closed evidence or review philosophy.
+Always recover live state first. Never reconstruct current state from chat, memory, copied SHA, or this handoff alone.
 
----
+```text
+live remote > canonical documents > exact evidence > handoff > copied SHA/chat/memory
+```
 
-# 1. Mandatory recovery order
+Do not make the user re-explain already closed project state. A new GPT session is not a reason to rerun accepted work.
 
-1. live `timing-defense-workspace` HEAD;
-2. `PROJECT_STATUS.md`;
-3. `NEXT_WORK.md`;
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_56.yaml`;
-5. `legacy-game-structure/179_T1_WIDER_EXACT_AUTHORING_WAVE_A4_AND_FULL_STATIC_CLOSURE_V0_1.md`;
-6. `legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml`;
-7. docs178/177/176 and A3/A2/A1 candidates only when prior-slice detail is needed;
-8. `175_T1_WIDER_EXACT_AUTHORING_WAVE_A_PLAN_AND_STATIC_PREFLIGHT_V0_1.md` + its plan YAML;
-9. `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
-10. docs169-173 only when Stage49-50 exact evidence detail is needed;
-11. representative v0.2/docs167-168 only when a new slice needs anchor comparison;
-12. runner contract/implementation, settlement bridge, Mage Lv31 fidelity bridge and Archer diagnostic width bridge;
-13. T1 skeleton/static authority `161/162`, formation/cadence vocabulary `33`, four-Tier correction `160`, P6 closure `156`;
-14. production/harness live heads.
-
-Do not rerun closed P6, full skeleton audit, Stage49-50 diagnostics, Wave A plan preflight, or A1-A4 static gates without a concrete trigger.
+Reopen only when at least one concrete trigger exists:
+- relevant source actually changed;
+- a new relevant commit exists;
+- exact-byte evidence is required;
+- a concrete mismatch is found;
+- an active watch materializes;
+- a coupled layer changes;
+- new evidence contradicts an accepted conclusion.
 
 ---
 
-# 2. Mandatory working method
+# 1. Mandatory recovery order for the next session
+
+1. fetch live `timing-defense-workspace` HEAD;
+2. read `PROJECT_STATUS.md`;
+3. read `NEXT_WORK.md`;
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_58.yaml`;
+5. read `legacy-game-structure/181_T1_CONTIGUOUS_15_25_B1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md`;
+6. inspect `legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml` only when exact Stage16/17 detail is needed;
+7. preserve `180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
+8. preserve `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
+9. read older Wave A or Stage49-50 evidence only if a concrete question requires it;
+10. verify shared production and calibration-harness live heads.
+
+Do **not** rerun closed Stage49-50 diagnostics, Wave A A1-A4 static gates, or B1 static/dynamic admission without a concrete trigger.
+
+---
+
+# 2. Working method to preserve
 
 At every meaningful step inspect:
+
 ```text
 upstream authority
 -> local decision
@@ -43,6 +54,7 @@ upstream authority
 ```
 
 Root-cause order:
+
 ```text
 source/simulator fidelity
 -> lifecycle/state
@@ -53,20 +65,21 @@ source/simulator fidelity
 ```
 
 Campaign authoring order:
+
 ```text
 approved structural signature
 -> bounded slice selection
 -> exact spawn candidate materialization
 -> static recipe gate
--> adoption only by explicit user decision
--> dynamic execution only when lifecycle-faithful contiguous context exists or a separate non-persistent diagnostic contract is explicitly authorized
+-> explicit user adoption when content authority would change
+-> lifecycle-faithful dynamic execution only with contiguous context
 ```
 
-Avoid broad fill, unnecessary repetition and scope inflation.
+Avoid broad fill, random combinatorial tuning, unnecessary revalidation, and full-50 authoring before bounded evidence supports it.
 
 ---
 
-# 3. Current exact state
+# 3. Current macro state
 
 ```text
 P0 = PASS_WITH_WATCHES
@@ -78,22 +91,24 @@ P5 A2 shop = USER APPROVED
 P5 class identity group = DIRECTIONALLY CLOSED
 P5->P6 fidelity bridge = EXACT TEMP PASS
 P6 = USER_APPROVED STRUCTURAL CLOSED WITH WATCHES
+
 Initial campaign = 4 Tiers / USER APPROVED
 T1 ordinary roster = GRUNT/RUNNER/BRUTE / USER APPROVED
 T1 Stage1-50 signature skeleton = STATIC PASS_WITH_WATCHES
 representative recipes = STATIC PASS / EXACT-SOURCE EXECUTED
-transition micro-sim runner = EXACT-SOURCE ADMISSION PASS AFTER SETTLEMENT CORRECTION
-Stage49-50 structural authoring baseline = USER APPROVED WITH WATCHES
-Stage49-50 evidence chain = CLOSED WITH WATCHES
-Wider T1 Wave A plan = STATIC PREFLIGHT PASS
-Wave A1 [1,4,8] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Wave A2 [15,19] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Wave A3 [24,25,29,30,31] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Wave A4 [33,37,38] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Full Wave A accumulated materialization = STATIC PASS / NOT ADOPTED
-full exact T1 Stage1-50 recipe freeze = DEFERRED
-Timing Defense production semantics = UNCHANGED / UNAUTHORIZED
-CURRENT = FULL WAVE A STATIC ADOPTION DECISION GATE
+transition micro-sim = EXACT-SOURCE ADMISSION PASS AFTER SETTLEMENT CORRECTION
+
+Stage49-50 authoring baseline = USER APPROVED WITH WATCHES
+Wave A 13 target Stages = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
+
+B1 Stage16/17 = MATERIALIZED / STATIC PASS
+Stage15-25 contiguous exact window = ESTABLISHED
+B1 Stage15-25 persistent dynamic admission = PASS_WITH_WATCHES
+B1 Stage16/17 exact-spawn adoption = NOT YET
+
+full Stage1-50 exact recipe freeze = DEFERRED
+Timing Defense production gameplay = UNCHANGED / UNAUTHORIZED
+CURRENT = T1_B1_STAGE16_17_AUTHORING_ADOPTION_DECISION_GATE
 ```
 
 ---
@@ -102,70 +117,108 @@ CURRENT = FULL WAVE A STATIC ADOPTION DECISION GATE
 
 Planning/canonical:
 - `timing-defense-workspace`
-- always fetch live HEAD first.
+- always fetch live HEAD first; the SHA copied into any prior chat is only a checkpoint.
 
-Shared production branch:
+Shared production:
 - `timing-defense-cloudflare-do-poc`
-- last verified `224dce9170aa9a45ed932b2ee97f3e1ea42d0558` before this close; verify again at session start/close.
-- previous Timing Defense checkpoint `ea22cc279603394dc4b439b6fdbb0c83aff4299a`.
-- changes through the last verified shared head touched Twin Dock assets only; no Timing Defense gameplay file changed.
+- last verified during this B1 close: `224dce9170aa9a45ed932b2ee97f3e1ea42d0558`;
+- previous Timing Defense production checkpoint: `ea22cc279603394dc4b439b6fdbb0c83aff4299a`;
+- intervening shared-branch changes through the verified head were Twin Dock-only under `timing-defense-v011/twindock/*`;
 - Timing Defense production gameplay changes remain unauthorized.
 
-Harness:
+Calibration harness:
 - `timing-defense-skilled-v2-harness-v01`
-- last verified `063a9ac9986ba9a8028beb31a5b4c733c9bfa863` before this close; verify live when needed.
+- last verified during this B1 close: `063a9ac9986ba9a8028beb31a5b4c733c9bfa863`.
 
-P6-B2 temp:
+P6-B2 temp evidence branch:
 - `timing-defense-workspace-temp-p6-b2-fresh-forward`
 - last known `5093a151142090d58c0e1d26f52cdbee43653542`
 - evidence only.
 
-Inert refs created during earlier A2 tool routing:
+Old inert A2 routing refs:
 - `timing-defense-workspace-temp-a2-unused`
 - `timing-defense-workspace-temp-a2-unused-2`
 - no unique work; not authority; ignore.
 
 ---
 
-# 5. Stage49-50 approved baseline — preserve
+# 5. Fixed campaign authority
+
+```text
+T1 = GRUNT / RUNNER / BRUTE
+T2 = + SHIELD / FLYER
+T3 = + CHARGER / SPLITTER
+T4 = + SUPPORTER / SIEGER
+T5+ = future expansion
+```
+
+Tier identities:
+
+```text
+T1 Foundation / Timing & Frontline
+T2 Mitigation / Geometry
+T3 Burst / Transformation
+T4 Formation / Siege
+```
+
+Historical correction remains closed:
+
+```text
+obsolete GRUNT first mixed = Stage4-6
+canonical GRUNT first mixed = Stage8-12
+```
+
+Tank role reminder:
+
+```text
+Tank is control / defense / wall protection, not kill-parity DPS.
+```
+
+Do not require equal wall damage, action counts, or failure curves across classes merely for symmetry.
+
+---
+
+# 6. Stage49-50 approved baseline — preserve
 
 Approval source:
 `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
 
-Candidate SHA256:
+Candidate:
+`legacy-game-structure/data/t1_stage49_50_stagger1800_authoring_candidate_v0_1.yaml`
+
+SHA256:
 `c1bd5f45fb3cbdff6efa45b90f34e20bbc303a94d089564abf62523e15425bc3`
 
 ```text
 Stage49 = DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE
 Stage50 = DURABLE_SCATTER -> FRONTLINE -> CLUSTER -> LINE -> LINE_REPRISE
 phase gap = 5500ms
-Stage49 CLUSTER = G/R/G/R/B/G burst 0..600ms
-Stage50 CLUSTER = B/G/B/G/B/G DURABLE_CORE_3 0..1800ms
 ```
 
 Retained dynamic evidence:
+
 ```text
 Knight +43.03%
 Rogue  +30.07%
-Tank   +27.37% + 3 unresolved reduced
+Tank   +27.37% plus 3 unresolved reduced
 Archer +1.72%
 Mage   +9.42%
-wall OFF 1358 -> ON 164
+Tank wall damage 1358 -> 164
 ```
 
-Mage apparent `+0.108s` Stage50 settle inversion = valid delayed-package tail drainage, not weaker Lv31 role performance.
-Stage50 CLUSTER-final alternative remains rejected.
+Mage apparent `+0.108s` Stage50 settle inversion = valid delayed-package tail drainage, not weaker Lv31 role expression. Stage50 CLUSTER-final alternative remains rejected.
 
-Approval is structural authoring baseline only. Do not freeze Archer width, Mage numerical centers, monster/class/shop/EXP/P×P values or production from this.
+This is structural authoring authority only; it does not freeze production, Archer exact corridor width, Mage exact Lv31 centers, monster/class/shop/EXP/PxP values, or the full T1 recipe set.
 
 ---
 
-# 6. Wave A bounded plan
+# 7. Wave A is USER APPROVED authoring authority
 
-Plan SHA256:
-`da383188a61f0488769b87e5767286ece7840d15262ebb07ed8c449173a6b806`
+Approval source:
+`180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
 
-Slices:
+Approved target sets:
+
 ```text
 A1 = [1,4,8]
 A2 = [15,19]
@@ -173,180 +226,299 @@ A3 = [24,25,29,30,31]
 A4 = [33,37,38]
 ```
 
-Context-only anchors:
-```text
-5,18,20,39,40,41,49,50
-```
-
-Plan preflight:
-```text
-40189296422 / artifact 12597413342 / PASS
-```
-
----
-
-# 7. Wave A1 static evidence
+Candidate SHA256:
 
 ```text
-candidate SHA256 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
-run 40193818274 / artifact 12599510840 / PASS
+A1 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
+A2 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
+A3 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
+A4 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36
 ```
 
-Key morphology:
-```text
-Stage1 G4 slow drip / max4=3
-Stage4 G6 two waves / max4=6
-Stage8 G3+R4 mixed waves / max4=6
-```
+Full Wave A accumulated static SHA256:
+`28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b`
 
-Status: candidate only / not adopted / no dynamic execution.
+Exact counts/timestamps/types/Y for these 13 Stages are now canonical authoring baseline WITH WATCHES.
 
----
-
-# 8. Wave A2 static evidence
-
-```text
-candidate SHA256 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
-run 40200875375 / artifact 12601174423 / PASS
-```
-
-Key morphology:
-```text
-Stage15 B3 slow teach / max4=2
-Stage19 B2+R4 target-order stagger / max4=5
-Stage18/20 exact context preserved
-```
-
-Local progression:
-```text
-pure B teach -> G+B mix -> B+R reorder -> G+R+B synthesis
-```
-
-The same source commit had an unrelated Cloudflare harness build check failure; A2 GitHub Actions preflight passed. Keep them separate.
-
-Status: candidate only / not adopted / no dynamic execution.
-
----
-
-# 9. Wave A3 static evidence
-
-```text
-candidate SHA256 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
-run 40205404257 / artifact 12603138180 / PASS
-```
-
-Key morphology:
-```text
-Stage24 G8 density / max4=8
-Stage25 G4 reward buffer / max4=3
-Stage29 G3+R3+B3 split-axis synthesis / max4=6
-Stage30 G5+B2 checkpoint / max4=6
-Stage31 G6+B2 durable soft-wall entry / max4=8
-```
-
-First run `40205234927` failed only because validator used distinct small Y literals as geometry complexity proxy. Candidate did not change.
-
-Status: candidate only / not adopted / no dynamic execution.
-
----
-
-# 10. Wave A4 + full Wave A static closure
-
-Candidate:
-`legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml`
-
-SHA256:
-`93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36`
-
-Key morphology:
-```text
-Stage33 = G12 / F03 / CD04 / max4=8 / max6=12 / ySpan=0.07
-Stage37 = G4+R4 / F08 / CD04 / max4=8 / two axes 0.30..0.32 and 0.68..0.70
-Stage38 = G6+B2 / F02 / CD03 / max4=7 / ySpan=0.06
-Stage39 anchor = B5+R9 / F08 / CD05 / C3 / max4=8 / max6=12 / ySpan=0.22
-```
-
-First exact run:
-```text
-40210087895 / artifact 12605450400
-FAIL only on stage38-not-vocabulary-bounded-below-stage39-peak
-classification = VALIDATOR_STAGE38_TYPE_CARDINALITY_PROXY_MISUSE_NO_CANDIDATE_CONTENT_FAILURE
-candidate changed = false
-```
-
-Reason:
-- Stage38 and Stage39 both contain 2 monster types;
-- type-count cardinality is not the correct complexity proxy;
-- authoritative distinction is Stage38 `G+B/F02/CD03/C1` vs Stage39 `R+B/F08/CD05/C3`, plus lower count/density/geometry.
-
-Final run:
-```text
-40210214458 / artifact 12605184344
-head 5d66f969e10177a0c9778474a332eeddefbf7dfb
-artifact sha256 be3990ba8ea112ee99e226902fb7561eae8b2e6f94d7732230a48ce9d9fd0c66
-PASS / errors=[] / warnings=[]
-```
-
-Exact context digests:
-```text
-Stage39 = 45dc3710bce7bc89ccfa88f56e457a8993ec735a900c49768f6893e919e3f275
-Stage40 = 5e58f43170262d2be15a85099be3f72f1b41fab465891a3116b421480fa4d35c
-```
-
-Full accumulated materialization:
-```text
-SHA256 28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b
-representative base preserved=true
-A1 preserved=true
-A2 preserved=true
-A3 preserved=true
-Stage39 preserved=true
-Stage40 preserved=true
-fullWaveAStaticMaterialized=true
-```
-
-This closes the Wave A materialization/static-validation work group.
-
-A1-A4 remain candidate-only / not adopted / no dynamic execution / no numerical freeze.
-
----
-
-# 11. Critical lifecycle constraint
-
-Do **not** run noncontiguous Wave A target stages as one persistent-state chain.
-Static PASS does not make skipped stages disappear from the real Tier lifecycle.
-
-Dynamic work must wait until:
-- a contiguous authored sequence exists; or
-- a separate non-persistent diagnostic contract is explicitly approved and clearly labeled.
-
----
-
-# 12. Exact next decision — user approval required
-
-Decision:
-```text
-ADOPT FULL WAVE A EXACT SPAWN CANDIDATES
-AS CANONICAL T1 AUTHORING BASELINE WITH WATCHES
-```
-
-If approved, exact counts/timestamps/Y positions for the 13 Wave A target stages become authoring authority.
-
-Approval still does NOT authorize:
+Wave A approval still does not authorize:
 - production deployment;
-- class or monster scalar freeze;
-- shop/EXP/P×P changes;
-- Archer corridor width freeze;
-- Mage Lv31 numerical freeze;
+- class/monster scalar freeze;
+- shop/EXP/PxP numerical change;
+- Archer Lv31 width freeze;
+- Mage Lv31 numerical-center freeze;
 - full Stage1-50 exact recipe freeze.
 
-After approval, do not fill the rest of T1 blindly. Plan the smallest contiguous-coverage wave needed before lifecycle-faithful dynamic execution.
+---
 
-If not approved, hold at full Wave A static PASS and revise only with concrete feedback.
+# 8. B1 Stage16/17 candidate
+
+Purpose: fill only the two missing exact recipes needed to make Stage15→25 a real contiguous window.
+
+Candidate:
+`legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml`
+
+Live exact candidate SHA256 used by final evidence:
+`b9abc507c5ccdc20bc19c5681ba92cead920326fa9d04c1acf5b2ed90ff91465`
+
+Stage16:
+
+```text
+BRUTE ×4
+0 / 1400 / 2800 / 4200ms
+F02 / CD02 / C1 / BULWARK
+```
+
+Stage17:
+
+```text
+GRUNT ×5
+0 / 300 / 600 / 3000 / 3300ms
+F01 / CD03 / C1 / BASELINE
+```
+
+Same-run static preflight:
+
+```text
+PASS
+errors=[]
+warnings=[]
+contiguous15to25=true
+authorityPreserved=true
+```
+
+Live exact materialized Stage15-25 byte SHA256:
+`f769dd79e750882a6b7a75dad18bfdbc514da546b183587ec2ed909e50b2ed0f`
+
+Stage16/17 are **NOT adopted yet**.
 
 ---
 
-# 13. Active watches
+# 9. Lv16 / Lv21 reach authority — do not invent exact unlock Stages
+
+Current power-spine authority:
+
+```text
+Lv16 = Stage18-21 calibration-candidate reach band
+Lv21 = Stage25-28 calibration-candidate reach band
+```
+
+These are not final EXP thresholds or exact activation Stages.
+
+B1 therefore tested boundary sensitivity rather than choosing one hidden threshold:
+
+```text
+Lv16 before Stage18 vs before Stage21
+×
+Lv21 ACTIVE at Stage25 vs AFTER Stage25
+```
+
+Stage15 begins with `[Lv6,Lv11]` active because the pre-existing Stage18 paired diagnostic already uses `[6,11]` as prior state. This is inherited diagnostic context, not a new EXP freeze.
+
+Final EXP semantics, exact milestone thresholds, and visible EXP scale remain open under the existing P10R reconvergence route.
+
+---
+
+# 10. B1 exact dynamic evidence
+
+Final admitted run:
+
+```text
+workflow run  40254326926
+artifact      12622340036
+exact HEAD    e5b12a2c386de719c97dc020aeef9ffdbd9b1b3a
+artifact SHA256
+2f940ebea4c8b2be008e937d45e46f10595ec106b847f49af5ce1dc1b77b3acf
+```
+
+Admission:
+
+```text
+status = PASS_DYNAMIC_DIAGNOSTIC_ONLY
+exactMaterializedIdentity = true
+persistentStateContinuity = true
+deterministicReplay = true
+settlementAndCarryInvariants = true
+fidelityErrors = []
+continuityErrors = []
+replayErrors = []
+invariantErrors = []
+pass = true
+```
+
+Coverage:
+
+```text
+4 reach-boundary variants
+× 5 classes
+× 5 seeds (101,211,307,409,503)
+= 100 persistent cases
+
+100/100 completed through Stage25
+1100 Stage rows
+terminal failure rows = 0
+```
+
+---
+
+# 11. Superseded v0.1 identity failure — do not misread as balance failure
+
+First run:
+
+```text
+run      40254173222
+artifact 12621508214
+```
+
+Static re-materialization passed. The v0.1 dynamic wrapper then failed closed because it held a copied historical materialized byte SHA (`7295...`) that differed from the live same-run serialization (`f769...`).
+
+Classification:
+
+`B1_DYNAMIC_V01_STALE_MATERIALIZED_BYTE_IDENTITY_GUARD_FALSE_FAILURE`
+
+No candidate recipe, combat logic, skill rule, lifecycle rule, or balance parameter changed in response.
+
+`tools/admit_t1_contiguous_15_25_b1_dynamic_v0_2.py` only pins the live exact materialized identity and reuses the unchanged v0.1 implementation.
+
+The superseded v0.1 workflow file was removed so future unrelated pushes do not create a false-red check. Keep the v0.1 Python implementation because v0.2 imports it.
+
+---
+
+# 12. B1 interpretation
+
+## Stage15-17
+
+All variants:
+- zero wall damage;
+- zero terminal failures.
+
+Mean root timing-action counts:
+
+```text
+             S15    S16    S17
+Knight       9.0    8.6    5.0
+Rogue        9.0    9.0    5.2
+Tank        13.0   16.6    8.6
+Archer      10.0    9.0    5.8
+Mage        10.0    9.0    6.0
+```
+
+Stage17 is a clear decompression/recovery step before Stage18 G+B first mix.
+
+## Lv16 collision
+
+Mean `Lv16@18 - Lv16@21` Stage18 action delta:
+
+```text
+Knight -0.2
+Rogue   0.0
+Tank    0.0
+Archer -2.0
+Mage   -2.6
+```
+
+Mean Stage18 settle delta:
+
+```text
+Knight -0.220s
+Rogue  -0.555s
+Tank    0.000s
+Archer -2.200s
+Mage   -2.680s
+```
+
+No Stage18/20 wall damage occurs. The known Lv16 issue is timing-opportunity / kill-speed compression, not immediate survival failure.
+
+`T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH` remains justified. Do not patch EXP or nerf classes from this evidence alone.
+
+## Stage21-24 objective pressure
+
+Tank mean wall damage:
+
+```text
+S21 17.2
+S22 97.6
+S23 81.6
+S24 33.0
+```
+
+Knight/Rogue/Archer/Mage mean wall damage in S21-24 = `0.0` in this bounded sample.
+
+Tank mean final Base HP after S25 = `1770.6 / 2000`; other four classes remain `2000 / 2000` in this sample.
+
+This is class-skewed objective-pressure evidence, not a mandate for equal wall damage or immediate scalar tuning.
+
+## Stage25 relief / Lv21 boundary
+
+Stage25 wall damage = `0` in all 100 cases.
+
+Tank S24→S25 wall damage:
+
+```text
+33.0 -> 0.0
+```
+
+Stage25 relief is therefore supported in the real contiguous lifecycle and does not depend on forcing Lv21 active exactly at Stage25.
+
+---
+
+# 13. B1 verdict
+
+```text
+B1 Stage16/17 materialization = STATIC PASS
+Stage15-25 contiguous exact window = ESTABLISHED
+persistent lifecycle dynamic admission = PASS
+100/100 complete through Stage25
+terminal failures = 0
+Stage17 recovery = SUPPORTED
+Stage25 objective-pressure relief = SUPPORTED
+Lv16 timing-opportunity collision = RECONFIRMED / WATCH
+Stage21-24 objective pressure = CLASS-SKEWED / WATCH
+B1 = PASS_WITH_WATCHES
+Stage16/17 candidate adoption = NO
+production change = NO
+numerical freeze = NO
+full T1 exact recipe freeze = NO
+```
+
+No evidence requires revising Stage16/17 before the adoption decision.
+
+---
+
+# 14. Active plan / exact next gate
+
+Active plan:
+`legacy-game-structure/data/system_dependency_calibration_order_v0_58.yaml`
+
+Current package:
+
+`T1_B1_STAGE16_17_AUTHORING_ADOPTION_DECISION_GATE`
+
+The next session should resolve **only this gate first**:
+
+> Adopt Stage16 and Stage17 exact spawn recipes as canonical T1 authoring baseline WITH WATCHES?
+
+If approved:
+- exact count/timestamp/type/Y for Stage16/17 become authoring authority;
+- keep all existing watches;
+- advance the active plan immutably;
+- then select the next smallest bounded authoring package based on remaining gaps and lifecycle value.
+
+Approval does **not** mean:
+- production deployment;
+- class/monster scalar freeze;
+- final EXP freeze or exact Lv16/Lv21 activation Stage;
+- shop/PxP change;
+- full Stage1-50 exact recipe freeze.
+
+If rejected:
+- preserve all B1 evidence;
+- revise only the specific rejected Stage16/17 authoring property.
+
+**Do not start another authoring group before this decision is resolved.**
+
+---
+
+# 15. Active watches
 
 ```text
 T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
@@ -359,17 +531,18 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-Do not proliferate watches without a concrete failure mode.
+Do not add watches without a concrete failure mode.
 
 ---
 
-# 14. Session-close quality gate
+# 16. Session-close / next-session quality gate
 
-Before ending a meaningful work group:
+Before any new work in the next GPT session:
 1. fetch live canonical HEAD;
-2. verify production/harness state and classify unrelated shared-branch changes rather than assuming HEAD stability;
-3. separate evidence / candidate / approved authority / numerical freeze;
-4. sync status / next / handoff / active plan / relevant result docs;
-5. record contradictions and minimal fixes;
-6. leave no next-step dependency on chat memory;
-7. stop before content adoption requiring explicit approval.
+2. verify this handoff against live `PROJECT_STATUS`, `NEXT_WORK`, v0.58 and doc181;
+3. verify production/harness live heads;
+4. do not re-run B1 unless a real trigger exists;
+5. resolve Stage16/17 adoption gate first;
+6. only after explicit approval may another bounded authoring package be selected.
+
+This is an intentional clean handoff boundary. No unfinished B1 diagnostic work should need reconstruction from chat history.
