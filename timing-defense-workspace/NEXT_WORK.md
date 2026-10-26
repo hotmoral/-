@@ -7,18 +7,19 @@ Updated: 2026-10-26 KST
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_64.yaml`;
-5. preserve E1 technical closure `legacy-game-structure/187_T1_CONTIGUOUS_15_38_E1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md`;
-6. preserve D1 approval doc186 and all earlier approved/closed authorities.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_65.yaml`;
+5. preserve E1 approval `legacy-game-structure/188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
+6. preserve E1 closure doc187 and all earlier approved/closed authorities;
+7. read F1 plan `legacy-game-structure/data/t1_stage39_40_existing_exact_promotion_preflight_v0_1.yaml`;
+8. recover the live representative exact source and its historical pressure-shape evidence before changing Stage39/40.
 
-Do not rerun closed D1 or E1 evidence without a concrete trigger.
+Do not rerun closed E1/D1/C1/B1 evidence without a concrete trigger.
 
 ## Current state
 
 ```text
-Stage15-33 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
-Stage15-38 = VALIDATED EXACT MATERIALIZED EVIDENCE WINDOW
-E1 Stage34-36 v0.2 static = PASS
+Stage15-38 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
+E1 Stage34-36 v0.2 = USER APPROVED AUTHORING BASELINE WITH WATCHES
 E1 persistent Stage15-38 dynamic = PASS_WITH_WATCHES
 300/300 complete through Stage38
 7200 Stage rows
@@ -29,74 +30,63 @@ Stage35 recovery intent = SUPPORTED
 production gameplay = UNCHANGED / UNAUTHORIZED
 full Stage1-50 exact recipe freeze = DEFERRED
 
-CURRENT = T1_E1_STAGE34_36_AUTHORING_ADOPTION_DECISION_GATE
+CURRENT = T1_F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT
 ```
 
-## Current exact candidate
+## Exact next package
 
 ```text
-S34  E03+E02 / F02 / CD05 / C2 / BULWARK
-     B,R,G,R,B,R,G,R @ 0,550,1100,1650,3300,3850,4400,4950ms
-
-S35  E01 / F04 / CD05 / C1 / BASELINE
-     G,G,G,G @ 0,800,2400,3200ms
-
-S36  E03 / F01 / CD03 / C1 / BULWARK
-     B,G,G,B,G,G,B @ 0,250,500,2800,3050,3300,6000ms
+T1_F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT
 ```
 
-Candidate SHA256:
-`da4624a55c327fa68f71bd92b6626fee5e30fd5ddd2d6369403dd6d8b6715550`
-
-Materialized Stage15-38 SHA256:
-`58dbc3109c1b919fed9de48118a88063595b8ef616632ee3c2aa8595ec70925d`
-
-## Why v0.2
-
-E1 v0.1 passed technical invariants but Stage35 was not a readable recovery:
+Why this package:
 
 ```text
-S34 actions 8.19 / settle 7.9009s
-S35 actions 9.56 / settle 9.4770s
+Stage38 = canonical exact / approved
+Stage39 = existing exact candidate, not canonical
+Stage40 = existing exact candidate, not canonical
 ```
 
-Only Stage35 was revised. Accepted v0.2 gives:
+Do **not** author new Stage39/40 recipes first. The existing candidate source is:
+
+`legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`
+
+Current known structural identities:
 
 ```text
-S34 actions 8.19 / settle 7.9009s
-S35 actions 6.21 / settle 5.7993s
+S39  E02+E03 / R+B / F08 / CD05 / C3 / RUSH+BULWARK
+     rare late-T1 synthesis peak / 9 authored
+
+S40  E01+E02+E03 / G+R+B / F01+F03 / CD03 / C2 / BASELINE
+     Star Gate B known-vocabulary check / 10 authored
 ```
 
-All five classes show lower Stage35 actions and settle time than Stage34.
+These exact recipes are candidates only. Historical representative-slice evidence is diagnostic and must be reconciled with later pressure-shape revisions before promotion.
 
-## Required next action
+## Required F1 order
 
 ```text
-ASK EXPLICIT USER ADOPTION OF STAGE34-36 E1 V0.2
+1. recover exact current Stage39/40 source identity from live remote
+2. recover docs/evidence in the representative pressure-shape chain and identify the latest authority that applies to Stage39/40
+3. confirm exact skeleton/signature match and authored-density guards
+4. confirm no Stage15-38 canonical authority is mutated
+5. if existing recipes remain valid, statically materialize Stage15-40
+6. decide whether persistent Stage15-40 dynamic admission is required for promotion
+7. if required, execute the real contiguous lifecycle with STAGE_SETTLED boundaries
+8. close technical result and open an explicit Stage39/40 adoption gate only if evidence supports promotion
 ```
 
-Recommendation:
-`ADOPT_STAGE34_36_AS_CANONICAL_T1_AUTHORING_BASELINE_WITH_WATCHES`
-
-If approved:
-- create user-approved Stage34-36 baseline document;
-- advance active plan immutably;
-- canonical contiguous exact-authoring window becomes Stage15-38;
-- retain all existing watches and add none absent new evidence;
-- then select the next bounded gap from live canonical state.
-
-If rejected:
-- preserve all accepted evidence;
-- revise only the specifically rejected authoring property;
-- do not reopen D1/C1/B1/Wave A.
+Any Stage39/40 canonical promotion requires explicit user approval.
 
 ## Fixed guards
 
 ```text
 LIVE REMOTE WINS
-STAGE15-33 REMAINS CANONICAL UNTIL USER ADOPTION
-NO FURTHER AUTHORING BEFORE E1 DECISION
+STAGE15-38 IS CANONICAL EXACT AUTHORITY
+NO REAUTHORING OF STAGE39/40 WITHOUT A CONCRETE EVIDENCE MISMATCH
+NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
 AUTHORED 4s NORMAL DENSITY <= 8
+STAGE_SETTLED REQUIRES DELAYED EVENT QUEUE DRAINAGE
 NO CLASS OR MONSTER SCALAR CHANGE
 NO SHOP/EXP/P×P CHANGE
 NO EXACT LV26 EXP REACH FREEZE
