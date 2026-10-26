@@ -1,0 +1,41 @@
+{
+  "schema": "LINKLINE_A3_PUBLIC_NL_MATCHED_RUNTIME_MANIFEST",
+  "version": "1.2.0",
+  "status": "PUBLIC_PREVIEW",
+  "sessionId": "NL6_MATCHED_1_REPAIR_1",
+  "phase": "NL6_REPAIRED_MATCHED_1",
+  "puzzleCount": 12,
+  "analysisValuesIncluded": true,
+  "analysisValueScope": "selected-session shortest-distance join only",
+  "humanCollectionEnabled": false,
+  "sessionBundleFingerprint": "59faae0af1add033551b41d5e3b42a1dea31122059f6fe16f4edaa73588e62da",
+  "analysisMetadataFingerprint": "277e5c7c9a339638476139872b8df15aba5585ed1a34135af41a31044ee26946",
+  "validatedPublicSource": {
+    "branch": "linkline/a3-nl6-repair-runtime-validation-v1",
+    "commit": "b9990175c2873abc3c65734e52152ee174236aac",
+    "actionsRunId": 40251229501,
+    "conclusion": "success"
+  },
+  "canonicalCandidateSource": {
+    "branch": "a3-nl6-repair-v1",
+    "correctedRuntimeCommit": "42e86fcce5b097d1933ea36f7d50b89d3935e60e",
+    "currentEvidenceCommit": "3f303c075347029a79dff958b7e3914b3a4f8ed1"
+  },
+  "deliveryMaterialization": {
+    "appBaseGitBlob": "43f6f366087464e0dc5d98ac453a4ec5093369c2",
+    "deliveredAppGitBlob": "4eb9fa0c7deded41d9e33074618873edd760c86a",
+    "protocolBaseGitBlob": "9e7c08d724395ecc3dfe83179e31cee56696b8d0",
+    "deliveredProtocolGitBlob": "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868",
+    "failClosed": true
+  },
+  "files": {
+    "app.mjs": "4eb9fa0c7deded41d9e33074618873edd760c86a",
+    "config.mjs": "324a104b180c56952edb496f16213d7e7b967482",
+    "protocol.mjs": "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868",
+    "data/session_bundle.json": "e54a71fbae07218c7b0f469b00086be03db29ab8",
+    "data/analysis_metadata.json": "a63c193eb6f17c58a914720a0e6f472e5387c8ad",
+    "index.html": "2429cf72ceb18d1265a2f69656aafebe1aa11f2e",
+    "mechanic.mjs": "c214cd077c102c4e007b045cc3d24d48febdab3a",
+    "styles.css": "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
+  }
+}
