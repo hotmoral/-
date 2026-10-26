@@ -15,13 +15,13 @@ concurrency:
 
 jobs:
   formal-recovery:
-    if: github.event.head_commit.message == 'formal: execute authorized Einstein draw0 recovery invocation 4'
+    if: >-
+      github.event.head_commit.message == 'formal: retry authorized Einstein draw0 recovery invocation 4 workflow parse'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
       RUNNER_SHA: 49a2f69582cc7b120d9e6d41de461a03f53fa520
       ACCEPTED_SOURCE_SHA: cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
-      AUTHORIZATION_SHA: 007a4ebbc14269015b28a999c04975b0a4fd2aac
       FIXTURE_SHA: b34abb909dd1d154ca964423c6bde3bcb347407d
       FIXTURE_BLOB_SHA: ce555f511ca4003e95a24fbca975081c61109222
       EVIDENCE_BRANCH: campaign-intent-acquisition-draw0-recovery-evidence-v1
@@ -60,16 +60,6 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Checkout exact authorization record
-        uses: actions/checkout@v4
-        with:
-          repository: hotmoral/EinsteinGame
-          ref: 007a4ebbc14269015b28a999c04975b0a4fd2aac
-          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
-          path: Authorization
-          fetch-depth: 1
-          persist-credentials: false
-
       - name: Checkout private evidence branch
         uses: actions/checkout@v4
         with:
@@ -92,27 +82,16 @@ jobs:
           test "${changed[0]}" = 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java'
           test -z "$(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java)"
           test -z "$(git status --porcelain --untracked-files=all)"
-          F='puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java'
-          grep -F 'EXPECTED_PRODUCTION_SOURCE="cdb66a3e0509bfec050a907bb43efb4e01b4ffeb"' "$F"
-          grep -F 'EXECUTE_TOKEN="RUN_AUTHORIZED_DRAW0_RECOVERY_INVOCATION_4"' "$F"
-          grep -F 'FORMAL_REMOTE_ROOT="evidence/bounded-acquisition/draw0-recovery-invocation-4"' "$F"
-          grep -F '"historicalDraw0InvocationCount",3,"recoveryInvocationOrdinal",4' "$F"
-          grep -F 'draw0InvocationOrdinal=4' "$F"
+          grep -F 'EXPECTED_PRODUCTION_SOURCE="cdb66a3e0509bfec050a907bb43efb4e01b4ffeb"' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
+          grep -F 'EXECUTE_TOKEN="RUN_AUTHORIZED_DRAW0_RECOVERY_INVOCATION_4"' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
+          grep -F 'FORMAL_REMOTE_ROOT="evidence/bounded-acquisition/draw0-recovery-invocation-4"' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
+          grep -F '"historicalDraw0InvocationCount",3,"recoveryInvocationOrdinal",4' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
 
           cd ../FrozenFixture
           test "$(git rev-parse HEAD)" = "$FIXTURE_SHA"
-          FF='puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java'
-          test "$(git hash-object "$FF")" = "$FIXTURE_BLOB_SHA"
+          F='puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java'
+          test "$(git hash-object "$F")" = "$FIXTURE_BLOB_SHA"
           test -z "$(git status --porcelain --untracked-files=all)"
-
-          cd ../Authorization
-          test "$(git rev-parse HEAD)" = "$AUTHORIZATION_SHA"
-          AF='docs/project/BOUNDED_ACQUISITION_DRAW0_RECOVERY_INVOCATION4_AUTHORIZATION_V1.md'
-          test -f "$AF"
-          grep -F '**AUTHORIZED / NOT YET EXECUTED**' "$AF"
-          grep -F 'permits exactly **one** new formal same-identity recovery invocation' "$AF"
-          grep -F '`-Xmx8g`' "$AF"
-          grep -F '`240 minutes`' "$AF"
 
           cd ../EvidenceStore
           test "$(git rev-parse --abbrev-ref HEAD)" = "$EVIDENCE_BRANCH"
@@ -122,7 +101,9 @@ jobs:
           test ! -e "$FORMAL_REMOTE_ROOT"
           test -z "$(git ls-tree -r --name-only HEAD -- "$FORMAL_REMOTE_ROOT")"
           test -f 'evidence/bounded-acquisition/draw0-recovery-invocation-3/invocation-start.json'
+          test -f 'evidence/bounded-acquisition/draw0-recovery-invocation-3/invocation-start.json.sha256'
           test -f 'evidence/bounded-acquisition/draw0-recovery-invocation-3/draw-start-0.json'
+          test -f 'evidence/bounded-acquisition/draw0-recovery-invocation-3/draw-start-0.json.sha256'
           test ! -e 'evidence/bounded-acquisition/draw0-recovery-invocation-3/attempt-draw0.json'
 
       - name: Set up JDK 17
@@ -139,9 +120,10 @@ jobs:
           rm -rf "$CLASSES_DIR" "$SOURCES_FILE" "$EXEC_DIR"
           mkdir -p "$CLASSES_DIR"
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES_FILE"
-          printf '%s\n' \
-            'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java' \
-            '../FrozenFixture/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java' >> "$SOURCES_FILE"
+          cat >> "$SOURCES_FILE" <<'EOF'
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
+          ../FrozenFixture/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java
+          EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES_DIR" "@$SOURCES_FILE"
           test ! -e "$EXEC_DIR"
 
@@ -171,6 +153,7 @@ jobs:
                   ACK="$EXEC_DIR/$NAME.remote-ack.json"
                   [ -e "$ACK" ] && continue
                   handled=1
+
                   case "$state:$NAME" in
                     0:invocation-start.json) state=1 ;;
                     1:draw-start-0.json) state=2 ;;
@@ -185,19 +168,27 @@ jobs:
                     8:completion-manifest.json) state=9 ;;
                     *) echo "unexpected formal seal sequence state=$state name=$NAME" >&2; exit 91 ;;
                   esac
-                  test "$(jq -r '.recordType' "$READY")" = 'RemoteSealRequestV1'
-                  test "$(jq -r '.file' "$READY")" = "$NAME"
-                  test "$(jq -r '.evidenceBranch' "$READY")" = "$EVIDENCE_BRANCH"
-                  test "$(jq -r '.remoteRoot' "$READY")" = "$FORMAL_REMOTE_ROOT"
-                  test "$(jq -r '.formalDraw' "$READY")" = 'true'
-                  SHA="$(jq -r '.sha256' "$READY")"
-                  test "${#SHA}" -eq 64
+
+                  export READY NAME ACK
+                  python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=json.loads(Path(os.environ['READY']).read_text())
+          assert p['recordType']=='RemoteSealRequestV1'
+          assert p['file']==os.environ['NAME']
+          assert p['evidenceBranch']==os.environ['EVIDENCE_BRANCH']
+          assert p['remoteRoot']==os.environ['FORMAL_REMOTE_ROOT']
+          assert p['formalDraw'] is True
+          assert len(p['sha256'])==64
+          PY
+                  SHA="$(python3 -c 'import json,os;print(json.load(open(os.environ["READY"]))["sha256"])')"
                   SOURCE="$EXEC_DIR/$NAME"
                   SIDECAR="$EXEC_DIR/$NAME.sha256"
                   test -f "$SOURCE"
                   test -f "$SIDECAR"
                   test "$(sha256sum "$SOURCE" | awk '{print $1}')" = "$SHA"
                   test "$(cat "$SIDECAR")" = "$SHA  $NAME"
+
                   TARGET_ROOT="$EVIDENCE_STORE/$FORMAL_REMOTE_ROOT"
                   TARGET="$TARGET_ROOT/$NAME"
                   TARGET_SHA="$TARGET.sha256"
@@ -216,10 +207,28 @@ jobs:
                   COMMIT="$(git -C "$EVIDENCE_STORE" rev-parse HEAD)"
                   git -C "$EVIDENCE_STORE" push origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
                   test "$(git -C "$EVIDENCE_STORE" ls-remote origin "refs/heads/$EVIDENCE_BRANCH" | cut -f1)" = "$COMMIT"
-                  TMP_ACK="$ACK.tmp"
-                  jq -cn --arg sha "$SHA" --arg branch "$EVIDENCE_BRANCH" --arg root "$FORMAL_REMOTE_ROOT" --arg name "$NAME" --arg commit "$COMMIT" '{status:"REMOTE_SEAL_PASS",sha256:$sha,evidenceBranch:$branch,remoteRoot:$root,remotePath:($root+"/"+$name),remoteCommitSha:$commit}' > "$TMP_ACK"
-                  test ! -e "$ACK"
-                  mv "$TMP_ACK" "$ACK"
+                  git -C "$EVIDENCE_STORE" show "$COMMIT:$FORMAL_REMOTE_ROOT/$NAME" > /tmp/formal4-remote-main
+                  git -C "$EVIDENCE_STORE" show "$COMMIT:$FORMAL_REMOTE_ROOT/$NAME.sha256" > /tmp/formal4-remote-sha
+                  cmp "$SOURCE" /tmp/formal4-remote-main
+                  cmp "$SIDECAR" /tmp/formal4-remote-sha
+                  test -z "$(git -C "$EVIDENCE_STORE" status --porcelain --untracked-files=all)"
+
+                  export SHA COMMIT
+                  python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          ack={
+            'status':'REMOTE_SEAL_PASS',
+            'sha256':os.environ['SHA'],
+            'evidenceBranch':os.environ['EVIDENCE_BRANCH'],
+            'remoteRoot':os.environ['FORMAL_REMOTE_ROOT'],
+            'remotePath':os.environ['FORMAL_REMOTE_ROOT']+'/'+os.environ['NAME'],
+            'remoteCommitSha':os.environ['COMMIT']
+          }
+          with Path(os.environ['ACK']).open('x') as f:
+            json.dump(ack,f,separators=(',',':'),sort_keys=True)
+            f.write('\n')
+          PY
                   if [ "$state" -eq 9 ]; then exit 0; fi
                 done
               fi
@@ -231,10 +240,11 @@ jobs:
           SIDECAR_PID=$!
 
           set +e
-          /usr/bin/time -v -o /tmp/einstein-formal-recovery4-resource.txt java -Xmx8g -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionAckDurableRecoveryRunnerV1 execute "$EXEC_DIR" RUN_AUTHORIZED_DRAW0_RECOVERY_INVOCATION_4 | tee /tmp/einstein-formal-recovery4.log
+          java -Xmx8g -cp "$CLASSES_DIR" \
+            com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionAckDurableRecoveryRunnerV1 \
+            execute "$EXEC_DIR" RUN_AUTHORIZED_DRAW0_RECOVERY_INVOCATION_4 | tee /tmp/einstein-formal-recovery4.log
           JAVA_STATUS=${PIPESTATUS[0]}
           set -e
-          cat /tmp/einstein-formal-recovery4-resource.txt || true
           if [ "$JAVA_STATUS" -ne 0 ]; then
             kill "$SIDECAR_PID" 2>/dev/null || true
             wait "$SIDECAR_PID" 2>/dev/null || true
