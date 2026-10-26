@@ -1,0 +1,109 @@
+name: Einstein Recovery Ack Runner 8924 Zero-Draw Preflight
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-recovery-ack-runner-8924-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    if: github.event.head_commit.message == 'ci: validate Einstein ack runner 8924'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RUNNER_SHA: 892401456d7dafa346928c24c79242828dda3561
+      ACCEPTED_SOURCE_SHA: ee82e3748b28e0a4389e5221ff66aafe47fa22e6
+      FIXTURE_SHA: b34abb909dd1d154ca964423c6bde3bcb347407d
+      FIXTURE_BLOB_SHA: ce555f511ca4003e95a24fbca975081c61109222
+      PRIVATE_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      CLASSES_DIR: /tmp/einstein-ack-8924-classes
+      SOURCES_FILE: /tmp/einstein-ack-8924-sources.txt
+      PREFLIGHT_DIR: /tmp/einstein-ack-8924-preflight
+      EINSTEIN_REMOTE_EVIDENCE_ROOT: evidence/bounded-acquisition/local-ack-8924-preflight
+    steps:
+      - name: Require read token
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$PRIVATE_TOKEN"
+
+      - name: Checkout exact runner
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 892401456d7dafa346928c24c79242828dda3561
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 3
+          persist-credentials: false
+
+      - name: Checkout frozen fixture
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: b34abb909dd1d154ca964423c6bde3bcb347407d
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: FrozenFixture
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Hard-gate scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
+          test "$(git merge-base "$ACCEPTED_SOURCE_SHA" HEAD)" = "$ACCEPTED_SOURCE_SHA"
+          mapfile -t changed < <(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD)
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java'
+          test -z "$(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java)"
+          R='puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java'
+          grep -F 'VERSION="1.0.1"' "$R"
+          grep -F 'remote ack root mismatch' "$R"
+          grep -F 'remote ack path mismatch' "$R"
+          ! grep -F 'evaluateDraw' "$R"
+          ! grep -F 'getDeclaredMethod' "$R"
+          ! grep -F 'setAccessible' "$R"
+          cd ../FrozenFixture
+          F='puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java'
+          test "$(git rev-parse HEAD)" = "$FIXTURE_SHA"
+          test "$(git hash-object "$F")" = "$FIXTURE_BLOB_SHA"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile and run local ACK protocol
+        shell: bash
+        working-directory: EinsteinGame
+        env:
+          EINSTEIN_PRODUCTION_SOURCE_HEAD: ee82e3748b28e0a4389e5221ff66aafe47fa22e6
+        run: |
+          set -euo pipefail
+          rm -rf "$CLASSES_DIR" "$SOURCES_FILE" "$PREFLIGHT_DIR"
+          mkdir -p "$CLASSES_DIR"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES_FILE"
+          cat >> "$SOURCES_FILE" <<'EOF'
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
+          ../FrozenFixture/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java
+          EOF
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES_DIR" "@$SOURCES_FILE"
+          java -Xmx2g -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionAckDurableRecoveryRunnerV1 preflight "$PREFLIGHT_DIR" | tee /tmp/einstein-ack-8924.log
+          grep -F 'ACK_DURABLE_RECOVERY_LOCAL_PREFLIGHT=PASS' /tmp/einstein-ack-8924.log
+          grep -F 'formalAcquisitionInvocationCount=0' /tmp/einstein-ack-8924.log
+
+      - name: Postflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          printf '%s\n' 'EINSTEIN_ACK_RUNNER_8924_PREFLIGHT=PASS' 'formalAcquisitionInvocation=0' 'productionSourceDelta=0'
