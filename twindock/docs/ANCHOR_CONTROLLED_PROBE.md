@@ -1,6 +1,6 @@
 # Twin Dock — Anchor Eccentricity Controlled Probe
 
-Status: **IMPLEMENTED / BUILD PASS / PHYSICAL DEVICE EVALUATION PENDING**
+Status: **BUILD PASS / PHYSICAL DEVICE EVALUATED / CAUSAL RESULT CONFOUNDED**
 
 This is an experimental Geometry v2 branch. It is not accepted gameplay.
 
@@ -12,13 +12,13 @@ Physical-device difficulty ordering from the combined craft/port probe:
 
 `5 > 4 > 2 > 3 > 1`
 
-The user explicitly rejected moving the craft rotation center / COM as a difficulty mechanism. That is a fixed invariant for this probe.
+The user explicitly rejected moving the craft rotation center / COM as a difficulty mechanism. That remains a fixed invariant.
 
-## Product question
+## Intended product question
 
-With craft hull, port shape, controls, rotation center, docking thresholds and target motion all fixed, how much difficulty difference comes from docking-anchor eccentricity and direction alone?
+With craft hull, port shape, controls, rotation center, docking thresholds and target motion fixed, how much difficulty difference comes from docking-anchor eccentricity and direction alone?
 
-## Controlled variables
+## Intended controlled variables
 
 Every stage uses:
 - craft: `LONG CARGO`
@@ -26,8 +26,8 @@ Every stage uses:
 - accepted rotation-center / COM semantics unchanged
 - accepted `ship.length` / `ship.width` physical values unchanged
 - same station placement factors: `ahead=0.49`, `lateral=-0.10`
-- same target body translation: `(4, -5)`
-- same target angular velocity: `-0.14`
+- same station-COM body translation: `(4, -5)`
+- same station angular velocity: `-0.14`
 - same docking thresholds
 - same dual-RCS controls
 - same ship-frame camera
@@ -62,17 +62,15 @@ This provides two matched-radius groups:
 - `r61`: upper side vs lower side
 - `r98`: front vs rear vs corner
 
-The comparison can therefore separate some direction effects from distance effects while keeping the craft rotation center fixed.
-
 ## Rotation-center regression guard
 
-Automated tests explicitly verify that applying each anchor setup does not change:
+Automated tests verify that applying each anchor setup does not change:
 - ship center `x/y`
 - ship body angle
 - accepted physical `ship.length`
 - accepted physical `ship.width`
 
-The probe therefore cannot create difficulty by silently moving COM or changing the accepted torque lever.
+The probe therefore does not manufacture difficulty by moving COM or changing the accepted torque lever.
 
 ## Automated evidence
 
@@ -96,18 +94,67 @@ Passed:
 - artifact upload
 
 Artifact:
-- artifact name `twindock-android-debug`
 - artifact ID `12624068522`
-- artifact ZIP digest `sha256:40ebf213295307bd3fe15fdfd3d41b9c0130f7e574445cc46bd11e4c21ef6c7f`
-- APK filename `app-debug.apk`
 - extracted APK bytes `4,147,309`
 - extracted APK SHA-256 `0dd3b3dc57a4490c2206ef1609be0f160d59b88ce2128369ad77569b74537693`
 
-## Residual experimental limitation
+## 2026-10-26 physical-device result
 
-The five trials are still played sequentially in one mission. Player learning and inherited ship motion across docks can influence subjective ordering. The target motion profile itself is now controlled, so this is substantially cleaner than the parent five-stage probe, but it is not a laboratory-isolated single-trial reset design.
+User-reported difficulty, hardest to easiest:
 
-If device evidence remains ambiguous, the next probe should use an explicit trial selector that resets to identical initial state for each anchor.
+`2 > 4 > 1 > 3 > 5`
+
+The user also reported that the station appeared to change movement/rotation speed in a regular pattern and specifically asked whether control sensitivity or station motion had changed.
+
+### Control sensitivity did not change
+
+The accepted control constants and physics code are unchanged:
+- `FORCE_SCALE=58`
+- deadzone `0.10`
+- exponent `2.05`
+- max speed `78`
+- max angular speed `0.90`
+- accepted damping/torque integration unchanged
+
+### The causal-control assumption was nevertheless incomplete
+
+Although all five profiles use identical **station-COM** body translation `(4,-5)` and identical `omega=-0.14`, the actual gameplay-relative target motion is not identical.
+
+Two mechanisms create a systematic difference:
+
+1. **Inherited ship motion across sequential docks**
+   - on successful docking, the ship is assigned the station capture anchor velocity (`ship.vx/vy = captureVx/captureVy`) and station angular velocity
+   - the next stage does not reset ship linear/angular motion to an identical baseline
+   - therefore each trial inherits motion produced by the previous anchor orientation
+
+2. **Station capture-anchor tangential velocity depends on target orientation**
+   - station COM velocity is fixed, but the capture anchor also has `omega × r` tangential velocity
+   - changing the player anchor angle changes the station orientation required for geometric alignment
+   - this rotates the station capture-anchor tangential-velocity vector
+   - therefore identical station-COM translation/omega does **not** imply identical capture-anchor world velocity
+
+The same issue also means identical station-center placement factors do not guarantee identical target capture-anchor start position across anchor orientations.
+
+Consequently, `2 > 4 > 1 > 3 > 5` is valid device evidence about this build, but **must not be promoted as a causal anchor-direction/eccentricity ranking**.
+
+## Required corrected probe
+
+The next probe must control the quantities that docking actually sees, not only station COM settings.
+
+For every anchor trial:
+- same Long Cargo hull
+- same rectangular player/target port semantics
+- fixed accepted craft rotation center / COM
+- identical ship initial `x/y`
+- identical ship initial `vx/vy = 0`
+- identical ship initial angle and angular velocity
+- identical target **capture-anchor world position** relative to the ship
+- identical target **capture-anchor world linear velocity**
+- identical target angular velocity
+- derive station center pose and station COM velocity from that capture-anchor truth
+- reset each trial independently rather than carrying previous dock motion forward
+
+Then vary only the player docking anchor local `(x,y,angle)`.
 
 ## Physical-truth boundaries
 
@@ -118,14 +165,8 @@ Still deferred:
 - recessed/internal bays before hull-clearance collision exists
 - polygonal port collision
 
-## Device question
+## Disposition
 
-Play all five and report difficulty ordering again.
+This v1 probe remains useful because it exposed a lifecycle/relative-motion confound that a static parameter comparison would miss.
 
-Most useful comparisons:
-- 1 vs 3: same radius 61, opposite side direction
-- 2 vs 4: same radius 98, front vs rear
-- 2 vs 5 vs 4: same radius ~98, different direction/placement
-- r61 group vs r98 group: whether larger eccentricity consistently increases difficulty
-
-Do not tune controls or docking thresholds from this probe. The goal is causal attribution, not balance.
+Do not tune controls or docking thresholds from its subjective difficulty order.
