@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: linkline-a3-final-catalog-order-v1
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   candidate-pool:
@@ -62,7 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf public_output/a3_final_candidate_pool_v1
-          python tools/a3_final_candidate_pool_public.py --output-dir public_output/a3_final_candidate_pool_v1
+          python -c 'import tools.a3_final_candidate_pool_public as m; m.LEGACY_BUFFER_FACTOR=2.0; m.main()'
           test -s public_output/a3_final_candidate_pool_v1/candidate_pool.json
           test -s public_output/a3_final_candidate_pool_v1/summary.json
           sha256sum public_output/a3_final_candidate_pool_v1/candidate_pool.json public_output/a3_final_candidate_pool_v1/summary.json
