@@ -28,10 +28,11 @@ A new session is not a reason to rerun closed work. Reopen only on a concrete tr
 184  Stage26-28 exact-spawn authoring baseline user approval
 185  contiguous Stage15-33 D1 static/dynamic admission and closure
 186  Stage32 exact-spawn authoring baseline user approval
+187  contiguous Stage15-38 E1 technical admission and closure
 ```
 
 Active plan:
-`legacy-game-structure/data/system_dependency_calibration_order_v0_63.yaml`
+`legacy-game-structure/data/system_dependency_calibration_order_v0_64.yaml`
 
 ## Current phase
 
@@ -47,50 +48,56 @@ Stage26/27/28 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage32 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage15-33 contiguous exact authoring window = CANONICAL
 
-D1 persistent Stage15-33 dynamic admission = PASS_WITH_WATCHES
+E1 Stage34-36 v0.2 = TECHNICALLY VALIDATED / USER ADOPTION PENDING
+Stage15-38 exact materialized evidence = PASS_WITH_WATCHES
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 production semantics = UNCHANGED / UNAUTHORIZED
 
-CURRENT = T1_E1_STAGE34_36_CONTIGUOUS_GAP_PREFLIGHT
+CURRENT = T1_E1_STAGE34_36_AUTHORING_ADOPTION_DECISION_GATE
 ```
 
-## D1 user-approved authority
+## E1 validated candidate
 
-Approval source:
-`legacy-game-structure/186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
+Plan:
+`legacy-game-structure/data/t1_contiguous_34_36_e1_authoring_plan_v0_2.yaml`
 
 Candidate:
-`legacy-game-structure/data/t1_contiguous_32_d1_candidate_v0_1.yaml`
+`legacy-game-structure/data/t1_contiguous_34_36_e1_candidate_v0_2.yaml`
 
 ```text
 candidate SHA256
-91909c0b9be28003a8fdcbafd3ad65b325ed9b2247524e810f950bd3541d45d8
+da4624a55c327fa68f71bd92b6626fee5e30fd5ddd2d6369403dd6d8b6715550
 
-materialized Stage15-33 SHA256
-47f02889b659dcad7988645fcc6e11381de38607657bd7751d7387856dba5466
+materialized Stage15-38 SHA256
+58dbc3109c1b919fed9de48118a88063595b8ef616632ee3c2aa8595ec70925d
 ```
 
-Canonical exact Stage32:
+Exact candidate summary:
 
 ```text
-R,G,R,G,R,G,R,G,R
-@ 0,180,360,2200,2380,2560,4700,4880,5060ms
-Y = .28,.70,.42,.66,.32,.74,.40,.68,.30
+S34 = B,R,G,R,B,R,G,R @ 0,550,1100,1650,3300,3850,4400,4950ms
+S35 = G,G,G,G         @ 0,800,2400,3200ms
+S36 = B,G,G,B,G,G,B   @ 0,250,500,2800,3050,3300,6000ms
 ```
+
+Exact Y placements are in candidate v0.2 and doc187.
+
+E1 v0.1 was technically valid but superseded because Stage35 did not behave as recovery. v0.2 changes Stage35 only.
 
 Retained evidence:
 
 ```text
-static run 40331569664 = PASS
-dynamic run 40332410094 = PASS_WITH_WATCHES
-200/200 completed Stage15->33
-3800 Stage rows
+static run 40336925232 / artifact 12657965202 = PASS
+dynamic run 40337357872 / artifact 12658500115 = PASS_WITH_WATCHES
+300/300 completed Stage15->38
+7200 Stage rows
 terminal failures = 0
+Stage34-38 wall damage = 0
 continuity/replay/settlement errors = 0
-Stage31-33 wall damage = 0 in all cases
+Stage35 recovery intent = SUPPORTED
 ```
 
-No new watch was created by D1.
+No new watch was created by E1.
 
 ## Progression authority
 
@@ -100,7 +107,7 @@ Lv21 = Stage25-28 calibration-candidate reach band
 Lv26 = Stage32-36 calibration-candidate reach band
 ```
 
-These are not exact EXP unlock Stages.
+Lv26 Stage32/34/36 positions were diagnostic only; no exact EXP unlock Stage is frozen.
 
 ## Active watches
 
@@ -115,36 +122,19 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-## Current next package — E1 Stage34-36
-
-Plan:
-`legacy-game-structure/data/t1_contiguous_34_36_e1_authoring_plan_v0_1.yaml`
+## Current decision gate
 
 ```text
-left exact anchor  = Stage33
-missing gap        = Stage34-36
-right exact anchor = Stage37
-future contiguous exact window after adoption = Stage15-37
+E1 technical = CLOSED / PASS_WITH_WATCHES
+Stage34-36 candidateAdopted = false
+user adoption = PENDING
+canonical contiguous exact window = Stage15-33
+validated materialized evidence window = Stage15-38
 ```
 
-Skeleton contract:
+If the user adopts Stage34-36 v0.2, the canonical contiguous exact-authoring window becomes **Stage15-38**, because Stage37 and Stage38 are already user-approved Wave A exact authorities.
 
-```text
-Stage34 = E03+E02 / G+B+R / F02 / CD05 / C2 / BULWARK
-Stage35 = E01 / G / F04 / CD05 / C1 / BASELINE
-Stage36 = E03 / G+B / F01 / CD03 / C1 / BULWARK
-```
+Recommendation:
+`ADOPT_STAGE34_36_AS_CANONICAL_T1_AUTHORING_BASELINE_WITH_WATCHES`
 
-Current E1 state:
-
-```text
-structural plan = CREATED
-exact recipe candidate = NOT YET
-static admission = NOT RUN
-dynamic admission = NOT RUN
-user adoption = NOT APPLICABLE YET
-production change = NO
-numerical freeze = NO
-```
-
-Next action: recover Stage33/37 exact anchors and materialize only Stage34-36 within the existing T1 formation/cadence vocabulary and fixed density guards.
+No further authoring package begins before this decision.
