@@ -1,6 +1,6 @@
 # Twin Dock — Side / Mid-body Craft Probe
 
-Status: **IMPLEMENTED / BUILD PASS / PHYSICAL DEVICE EVALUATION PENDING**
+Status: **IMPLEMENTED / BUILD PASS / POSITIVE PHYSICAL-DEVICE OBSERVATION / NOT YET PROMOTED**
 
 This is an experimental Geometry v2 candidate, not yet accepted gameplay.
 
@@ -14,7 +14,7 @@ Experimental branch:
 - `twindock-geometry-side-probe-v1`
 - implementation commit: `828461d2178ce2e988241ac80f8dfabd43c6fc9b`
 
-Do not promote this branch back to accepted continuation until physical-device evidence closes the product question.
+Do not promote this branch back to accepted continuation until the remaining velocity-semantics question is closed.
 
 ## Product question
 Does a non-front player docking anchor create a clearly different but understandable correction strategy without changing accepted dual-RCS controls, ship-frame camera, docking thresholds, or recovery philosophy?
@@ -30,8 +30,23 @@ Side probe:
 
 Station target orientation is initialized from the active player anchor frame so the target does not manufacture an unrelated initial orientation penalty. Reference mode remains mathematically identical because its anchor angle is zero.
 
+## Physical-device observation — 2026-10-26 KST
+The user tested the side-port APK on the physical Android device used for the prior platform parity acceptance.
+
+Observed result:
+- changing the docking-point location clearly changed the player's spatial sense / spatial interpretation of the approach
+- the user specifically identified alternating docking locations as a likely natural way to raise difficulty
+- no new Android/platform regression was reported in that observation
+
+Interpretation:
+- the core Geometry v2 product hypothesis received positive physical-device evidence
+- non-front anchor position is therefore a credible mission-difficulty/content axis
+- this evidence motivates the separate `twindock-geometry-alternating-probe-v1` mission-composition experiment
+
+This is not yet a full promotion of side geometry because player-anchor rotational tangential velocity remains intentionally unresolved.
+
 ## User-facing probe control
-The same APK contains both modes.
+The side-probe APK contains both modes.
 
 Button:
 - `기체 · 기준` = accepted reference shuttle
@@ -77,7 +92,7 @@ The probe still uses accepted Mission 01 relative-velocity truth:
 
 `tests/side-probe.mjs` deliberately proves that, on a rotating side-anchor case, full player-anchor rigid velocity differs materially from the currently accepted metric.
 
-Therefore device evaluation must not be interpreted as final acceptance of velocity semantics. Before promoting non-front craft, separately evaluate whether player-anchor rotational tangential velocity should enter docking success truth.
+Therefore the positive device observation must not be interpreted as final acceptance of velocity semantics. Before promoting non-front craft broadly, separately evaluate whether player-anchor rotational tangential velocity should enter docking success truth.
 
 ## Automated evidence
 GitHub Actions run:
@@ -106,39 +121,10 @@ Artifact:
 - APK bytes `4144460`
 - APK SHA-256 `4f081fb8267779eb6edafb7206fed25dd645e61e8b0eb89c50b5f2a85b118101`
 
-## Physical-device acceptance questions
-Compare REFERENCE and SIDE in the same APK.
+## Next boundary
+The direct A/B product question is positive enough to justify a mission-composition probe.
 
-SIDE candidate passes only if device play shows:
-1. active side port is immediately identifiable without relying on explanatory HUD
-2. docking posture/correction strategy feels materially different from nose-first reference docking
-3. difference is understandable rather than arbitrary confusion
-4. ship-frame camera remains intuitive
-5. P2 position/orientation/spin/drift cues agree with the visible side port
-6. bad approaches remain recoverable through normal RCS correction
-7. no control retuning or docking-threshold loosening is needed
-8. no input, background, presentation-angle, audio, haptic, transition, or Android-wrapper regression appears
-
-Prefer completing the five-target Mission 01 in SIDE mode if the first targets are readable enough to continue.
-
-## Failure classification
-Before fixing any observed problem classify it as one of:
-- side-port visual/readability defect
-- anchor/mission-placement defect
-- P2 visual/physical mismatch
-- candidate velocity-semantics issue
-- pre-existing reference defect
-- Android/platform regression
-- content-design failure (geometry is not meaningfully distinct or understandable)
-
-Do not compensate by changing frozen controls or widening docking thresholds.
-
-## Decision after device evidence
-If PASS:
-- decide the player-anchor tangential-velocity question in a separate bounded experiment
-- then promote side/mid-body geometry and proceed toward rear/asymmetric probe
-
-If FAIL:
-- keep accepted reference foundation intact
-- fix only the classified side-probe issue or reject/reposition this anchor
-- do not proceed to hull clearance, Mission 02, or broad craft schema
+Next experiment:
+- branch `twindock-geometry-alternating-probe-v1`
+- alternate front / upper-side / front / lower-side / front anchors while keeping accepted Mission 01 motion constants unchanged
+- evaluate whether anchor alternation itself creates a readable difficulty curve
