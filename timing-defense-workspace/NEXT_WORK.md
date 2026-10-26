@@ -7,132 +7,130 @@ Updated: 2026-10-26 KST
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_59.yaml`;
-5. preserve Stage16/17 approval `182_T1_STAGE16_17_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
-6. preserve B1 closure `181_T1_CONTIGUOUS_15_25_B1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md`;
-7. preserve Wave A approval `180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
-8. preserve Stage49-50 approval `174_T1_STAGE49_50_STRUCTURAL_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
-9. recover Stage26-28 structural signature authority from the Stage1-50 skeleton and coupled contracts;
-10. verify production/harness live heads before any execution that depends on them.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_60.yaml`;
+5. read C1 closure `legacy-game-structure/183_T1_CONTIGUOUS_15_31_C1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md`;
+6. preserve Stage16/17 approval `182_T1_STAGE16_17_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
+7. preserve B1 closure `181_T1_CONTIGUOUS_15_25_B1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md`;
+8. preserve Wave A approval `180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`;
+9. do not start Stage32+ authoring before resolving the current C1 adoption gate.
 
-Do not rerun closed Stage49-50, Wave A, or B1 evidence without a concrete trigger.
+Do not rerun closed Stage49-50, Wave A, B1, C1 static, or C1 dynamic evidence without a concrete trigger.
 
----
-
-# Current state
+## Current state
 
 ```text
 Stage49-50 = USER APPROVED STRUCTURAL AUTHORING BASELINE WITH WATCHES
 Wave A 13 Stages = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage16/17 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage15-25 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
-B1 persistent dynamic admission = PASS_WITH_WATCHES
+
+C1 Stage26-28 candidate = STATIC PASS
+persistent Stage15-31 admission = PASS_WITH_WATCHES
+100/100 cases completed Stage15->31
+terminal failures = 0
+Stage15-31 exact materialized evidence = ESTABLISHED
+C1 user adoption = PENDING
 
 full Stage1-50 exact recipe freeze = DEFERRED
 production gameplay = UNCHANGED / UNAUTHORIZED
-CURRENT = T1_C1_STAGE26_28_CONTIGUOUS_BRIDGE_AUTHORING_PREFLIGHT
+
+CURRENT = T1_C1_STAGE26_28_AUTHORING_ADOPTION_DECISION_GATE
 ```
 
----
+## Exact C1 evidence
 
-# Closed B1 evidence to preserve
+Candidate SHA256:
+`63e40e635b47c54876778a1c64809e961b3929062e3279ea4a805fdf9d8760e4`
 
-Candidate source:
-`legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml`
+Materialized Stage15-31 SHA256:
+`284426b71fe03e9838ae141d90422d3d0dec55ad55c71466a4a28bc1fc91297c`
 
-Approval source:
-`legacy-game-structure/182_T1_STAGE16_17_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
+Static:
 
 ```text
-candidate SHA256
-b9abc507c5ccdc20bc19c5681ba92cead920326fa9d04c1acf5b2ed90ff91465
-
-materialized Stage15-25 SHA256
-f769dd79e750882a6b7a75dad18bfdbc514da546b183587ec2ed909e50b2ed0f
-
-100/100 persistent cases completed through Stage25
-terminal failures = 0
-persistent continuity = PASS
-deterministic replay = PASS
-settlement/carry invariants = PASS
+run 40324812125
+artifact 12651020986
+PASS
 ```
 
-Stage16/17 exact spawn count, timestamp, monster type and Y placement are now canonical authoring authority WITH WATCHES.
-
----
-
-# Progression reach boundary
-
-Do not invent exact unlock Stages.
+Dynamic:
 
 ```text
-Lv16 Stage18-21 = calibration-candidate reach band
-Lv21 Stage25-28 = calibration-candidate reach band
+run 40325507618
+artifact 12651550217
+head 80a4b42134100693fe161e02ef4e0c3828974ead
+
+100 cases
+100 completed through Stage31
+1700 Stage rows
+0 terminal failures
+continuity/replay/settlement errors = 0
 ```
 
-No final EXP semantics or exact milestone threshold is frozen.
-
----
-
-# Exact next package
+C1 exact candidate:
 
 ```text
-T1_C1_STAGE26_28_CONTIGUOUS_BRIDGE_AUTHORING
+S26: B,G,G,B,G @ 0,800,1600,2400,3200ms
+S27: R,G,R,G,R,G,R @ 0,250,500,2000,2250,3750,4000ms
+S28: G,G,G,G,G,G @ 0,250,500,2000,2250,2500ms
 ```
 
-Target:
+Y placement remains exact in the candidate file and closure doc.
+
+## Current product-authority question
 
 ```text
-Stage26
-Stage27
-Stage28
+ADOPT STAGE26 + STAGE27 + STAGE28 EXACT SPAWN CANDIDATE
+AS CANONICAL T1 AUTHORING BASELINE WITH WATCHES?
 ```
 
-Why this package is next:
+Recommended decision:
+`ADOPT`
 
-```text
-left exact anchor  = Stage25
-right exact anchor = Stage29-31
-smallest gap       = Stage26-28
-future contiguous window after adoption = Stage15-31
-Lv21 reach band tail = Stage26-28
-```
+This recommendation is based on:
+- exact reference integrity PASS;
+- unchanged existing authorities;
+- 4s authored-density guard PASS;
+- 100/100 persistent completion;
+- deterministic replay and carry invariants PASS;
+- Stage28 decompression retained;
+- Stage29 remains a strong C2 synthesis step-up;
+- only bounded Tank Stage27 objective contact, already covered by an existing watch.
 
-The package is deliberately limited to three Stages. Do not broaden it to unrelated Stage32+ authoring before the C1 evidence closes.
+## If user approves
 
----
+Only after explicit approval:
 
-# Required C1 order
+1. create the user-approved Stage26-28 exact-spawn authoring-baseline source;
+2. mark candidate adoption true;
+3. promote canonical contiguous exact authoring window from Stage15-25 to Stage15-31;
+4. retain all existing watches;
+5. advance active plan immutably beyond v0.60;
+6. sync `PROJECT_STATUS.md`, `NEXT_WORK.md`, `SESSION_HANDOFF.md`;
+7. select the next smallest bounded package from remaining exact-authoring gaps and lifecycle value.
 
-```text
-1. recover Stage26-28 signature-skeleton authority
-2. recover relevant pressure/cadence/formation guards
-3. identify upstream/downstream exact anchors
-4. define bounded C1 authoring contract
-5. only then create exact spawn candidates
-6. run static materialization/admission
-7. if static PASS, determine whether lifecycle-faithful dynamic admission is required
-8. exact content authority changes require explicit user adoption
-```
+Approval does **not** mean:
+- production deployment;
+- class/monster scalar freeze;
+- shop/EXP/P×P numerical freeze;
+- exact Lv21 activation Stage freeze;
+- full T1 Stage1-50 exact recipe freeze.
 
-Do not fabricate skipped-Stage persistent state. Any dynamic execution that claims Stage15-31 continuity must use every Stage in sequence with correct `STAGE_SETTLED` boundaries.
+## If user rejects
 
----
+Preserve all static/dynamic evidence and revise only the specifically rejected authoring property. Do not reopen unrelated B1/Wave A/Stage49-50 work.
 
-# Fixed guards
+## Fixed guards
 
 ```text
 LIVE REMOTE WINS
 NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
-STAGE16_17 ARE USER-APPROVED AUTHORING AUTHORITY
-WAVE A IS USER-APPROVED AUTHORING AUTHORITY
+NO NEW AUTHORING PACKAGE BEFORE C1 ADOPTION DECISION
 NO FAKE SKIPPED-STAGE PERSISTENT CHAIN
 STAGE_SETTLED REQUIRES DELAYED EVENT QUEUE DRAINAGE
-NO FULL-50 EXACT AUTHORING YET
 AUTHORED 4s NORMAL DENSITY <= 8
 NO CLASS OR MONSTER SCALAR CHANGE
 NO SHOP/EXP/P×P CHANGE
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
+NO FULL-50 EXACT AUTHORING FREEZE
 ```
-
-Current action: **C1 Stage26-28 structural recovery and bounded authoring preflight.**
