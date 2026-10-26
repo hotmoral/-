@@ -15,13 +15,15 @@ Always fetch the live branch before acting. A fresh session is not a reason to r
 1. live `timing-defense-workspace`;
 2. `PROJECT_STATUS.md`;
 3. `NEXT_WORK.md`;
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_64.yaml`;
-5. E1 closure doc187;
-6. D1 approval doc186 and closure doc185;
-7. C1 approval/closure docs184/183;
-8. Stage16/17 approval doc182 and B1 closure doc181;
-9. Wave A approval doc180;
-10. Stage49-50 approval doc174.
+4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_65.yaml`;
+5. E1 approval doc188;
+6. E1 closure doc187;
+7. D1 approval/closure docs186/185;
+8. C1 approval/closure docs184/183;
+9. Stage16/17 approval doc182 and B1 closure doc181;
+10. Wave A approval doc180;
+11. Stage49-50 approval doc174;
+12. F1 plan `legacy-game-structure/data/t1_stage39_40_existing_exact_promotion_preflight_v0_1.yaml`.
 
 ## 2. Current macro state
 
@@ -35,17 +37,20 @@ Wave A = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage16/17 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage26/27/28 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage32 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
-Stage15-33 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
+Stage34/35/36 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
+Stage15-38 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
 
-E1 Stage34-36 v0.2 = TECHNICALLY CLOSED / PASS_WITH_WATCHES / USER ADOPTION PENDING
-Stage15-38 = VALIDATED EXACT MATERIALIZED EVIDENCE WINDOW ONLY
+E1 persistent Stage15-38 dynamic = PASS_WITH_WATCHES
 production gameplay = UNCHANGED / UNAUTHORIZED
 full Stage1-50 exact recipe freeze = DEFERRED
 
-CURRENT = T1_E1_STAGE34_36_AUTHORING_ADOPTION_DECISION_GATE
+CURRENT = T1_F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT
 ```
 
-## 3. E1 v0.2 candidate
+## 3. E1 approved exact authority
+
+Approval:
+`legacy-game-structure/188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
 
 Plan:
 `legacy-game-structure/data/t1_contiguous_34_36_e1_authoring_plan_v0_2.yaml`
@@ -59,7 +64,7 @@ Candidate SHA256:
 Materialized Stage15-38 SHA256:
 `58dbc3109c1b919fed9de48118a88063595b8ef616632ee3c2aa8595ec70925d`
 
-Exact candidate:
+Canonical exact recipes:
 
 ```text
 S34: B,R,G,R,B,R,G,R
@@ -75,15 +80,11 @@ T  : 0,250,500,2800,3050,3300,6000ms
 Y  : .46,.44,.48,.46,.45,.47,.46
 ```
 
-## 4. E1 evidence and supersession chain
+## 4. E1 retained evidence
 
-E1 v0.1:
-- static and lifecycle invariants passed;
-- 300/300 through Stage37;
-- but Stage35 recovery product intent failed because actions/settle exceeded Stage34;
-- v0.1 superseded without changing Stage34 or Stage36.
+E1 v0.1 passed technical invariants but Stage35 failed the intended recovery role because its action/settle demand exceeded Stage34. Only Stage35 was revised; Stage34 and Stage36 remained unchanged.
 
-E1 v0.2 static:
+Accepted v0.2 static:
 
 ```text
 run 40336925232
@@ -94,7 +95,7 @@ candidate SHA da4624a55c327fa68f71bd92b6626fee5e30fd5ddd2d6369403dd6d8b6715550
 materialized Stage15-38 SHA 58dbc3109c1b919fed9de48118a88063595b8ef616632ee3c2aa8595ec70925d
 ```
 
-First v0.2 dynamic invocation `40336925635` was superseded before simulation due only to a stale expected materialized-SHA constant in the runner.
+First v0.2 dynamic invocation `40336925635` is superseded because of a stale expected materialized-SHA constant in the runner only.
 
 Accepted v0.2 dynamic:
 
@@ -146,31 +147,54 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-## 7. Current product-authority gate
+## 7. Current F1 package
+
+Plan:
+`legacy-game-structure/data/t1_stage39_40_existing_exact_promotion_preflight_v0_1.yaml`
+
+The next two contiguous Stages already have exact candidates in:
+`legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`
+
+They are not user-approved canonical authority.
+
+Current known candidate identities:
 
 ```text
-ADOPT STAGE34-36 E1 V0.2 EXACT SPAWN CANDIDATE
-AS CANONICAL T1 AUTHORING BASELINE WITH WATCHES?
+S39 = E02+E03 / R+B / F08 / CD05 / C3 / RUSH+BULWARK
+      rare late-T1 synthesis peak
+      9 authored units
+
+S40 = E01+E02+E03 / G+R+B / F01+F03 / CD03 / C2 / BASELINE
+      Star Gate B broad known-vocabulary check
+      10 authored units
 ```
 
-Recommendation:
-`ADOPT_STAGE34_36_AS_CANONICAL_T1_AUTHORING_BASELINE_WITH_WATCHES`
+F1 is an **existing-authority recovery/promotion preflight**, not a new-authoring package.
 
-Until explicit approval:
-- canonical contiguous exact window remains Stage15-33;
-- Stage15-38 remains validated evidence only;
-- candidateAdopted = false;
-- do not start another authoring package.
+Required sequence:
 
-If approved, Stage37 and Stage38 are already Wave A user-approved exact authorities, so the canonical contiguous exact-authoring window becomes Stage15-38 immediately.
+```text
+1. recover current Stage39/40 exact source identity from live remote
+2. recover historical representative exact/pressure-shape evidence and identify the latest applicable authority
+3. verify skeleton/signature/density/reference integrity
+4. preserve Stage15-38 canonical authority unchanged
+5. if valid, materialize Stage15-40
+6. decide minimum persistent dynamic admission needed for promotion
+7. if required, execute real Stage15-40 lifecycle with STAGE_SETTLED boundaries
+8. only then open explicit Stage39/40 user adoption gate
+```
+
+Do not reauthor Stage39/40 unless a concrete mismatch requires it. Any canonical promotion requires explicit user approval. If later adopted, the contiguous exact-authoring window becomes Stage15-40.
 
 ## 8. Fixed guards
 
 ```text
 LIVE REMOTE WINS
 NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
+STAGE15-38 IS CANONICAL EXACT AUTHORITY
 STAGE_SETTLED REQUIRES DELAYED EVENT QUEUE DRAINAGE
 AUTHORED 4s NORMAL DENSITY <= 8
+NO STAGE39/40 REAUTHORING WITHOUT EVIDENCE MISMATCH
 NO CLASS/MONSTER SCALAR CHANGE
 NO SHOP/EXP/P×P CHANGE
 NO EXACT LV26 UNLOCK FREEZE
