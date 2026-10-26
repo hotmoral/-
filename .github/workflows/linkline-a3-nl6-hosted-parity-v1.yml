@@ -1,0 +1,87 @@
+name: Linkline A3 NL6 Hosted Parity
+
+on:
+  push:
+    branches:
+      - linkline/a3-nl6-hosted-parity-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hosted-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch stable and immutable hosted assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          STABLE='https://linkline-cloudflare-nl6-repai-timing-defense-skilled-v2-harness.sktjsek.workers.dev'
+          IMMUTABLE='https://e42e0ae5-timing-defense-skilled-v2-harness.sktjsek.workers.dev'
+          mkdir -p /tmp/stable/data /tmp/immutable/data
+          for path in index.html app.mjs protocol.mjs config.mjs mechanic.mjs styles.css data/session_bundle.json data/analysis_metadata.json build_manifest.json; do
+            curl --fail --silent --show-error --retry 3 --retry-delay 1 "${STABLE}/${path}" -o "/tmp/stable/${path}"
+            curl --fail --silent --show-error --retry 3 --retry-delay 1 "${IMMUTABLE}/${path}" -o "/tmp/immutable/${path}"
+            cmp "/tmp/stable/${path}" "/tmp/immutable/${path}"
+          done
+          curl --fail --silent --show-error --retry 3 --retry-delay 1 "${STABLE}/api/health" -o /tmp/stable/health.json
+          curl --fail --silent --show-error --retry 3 --retry-delay 1 "${IMMUTABLE}/api/health" -o /tmp/immutable/health.json
+          cmp /tmp/stable/health.json /tmp/immutable/health.json
+          echo HOSTED_FETCH_AND_STABLE_IMMUTABLE_PARITY_PASS
+
+      - name: Verify canonical hosted blob identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          for root in /tmp/stable /tmp/immutable; do
+            test "$(git hash-object ${root}/index.html)" = "2429cf72ceb18d1265a2f69656aafebe1aa11f2e"
+            test "$(git hash-object ${root}/app.mjs)" = "4eb9fa0c7deded41d9e33074618873edd760c86a"
+            test "$(git hash-object ${root}/protocol.mjs)" = "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868"
+            test "$(git hash-object ${root}/config.mjs)" = "324a104b180c56952edb496f16213d7e7b967482"
+            test "$(git hash-object ${root}/mechanic.mjs)" = "c214cd077c102c4e007b045cc3d24d48febdab3a"
+            test "$(git hash-object ${root}/styles.css)" = "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
+            test "$(git hash-object ${root}/data/session_bundle.json)" = "e54a71fbae07218c7b0f469b00086be03db29ab8"
+            test "$(git hash-object ${root}/data/analysis_metadata.json)" = "a63c193eb6f17c58a914720a0e6f472e5387c8ad"
+            test "$(git hash-object ${root}/build_manifest.json)" = "1accc522540b7e966cf8e0540ab5962e26228c1b"
+          done
+          echo HOSTED_CANONICAL_BLOB_PARITY_PASS
+
+      - name: Verify hosted semantic identity and no stale NL5 export label
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'app.mjs' /tmp/stable/index.html
+          grep -q 'pointerdown' /tmp/stable/index.html
+          grep -q 'linkline-nl6-matched-repair-1.json' /tmp/stable/app.mjs
+          if grep -q 'linkline-nl5-matched-repair-1.json' /tmp/stable/app.mjs; then exit 1; fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for root in (Path('/tmp/stable'), Path('/tmp/immutable')):
+              s=json.loads((root/'data/session_bundle.json').read_text())
+              m=json.loads((root/'data/analysis_metadata.json').read_text())
+              manifest=json.loads((root/'build_manifest.json').read_text())
+              health=json.loads((root/'health.json').read_text())
+              assert s['sessionId']=='NL6_MATCHED_1_REPAIR_1'
+              assert s['largerN']==6
+              assert s['pairCount']==6 and s['puzzleCount']==12
+              assert s['sessionBundleFingerprint']=='59faae0af1add033551b41d5e3b42a1dea31122059f6fe16f4edaa73588e62da'
+              assert [p['axis'] for p in s['pairs']]==[
+                  'SAME_L','OCCUPANCY_40_EXACT_DISTANCE','SAME_L',
+                  'OCCUPANCY_40_EXACT_DISTANCE','SAME_L','OCCUPANCY_40_EXACT_DISTANCE']
+              ids=[p['researchEquivalenceIdV1'] for p in s['puzzles']]
+              assert len(ids)==len(set(ids))==12
+              assert m['schema']=='LINKLINE_A3_NL6_RUNTIME_ANALYSIS_METADATA'
+              assert m['sessionId']=='NL6_MATCHED_1_REPAIR_1'
+              assert m['metadataFingerprint']=='277e5c7c9a339638476139872b8df15aba5585ed1a34135af41a31044ee26946'
+              assert set(m['shortestDistanceByResearchEquivalenceIdV1'])==set(ids)
+              assert manifest['deliveryMode']=='STATIC_CANONICAL_ASSETS'
+              assert manifest['sessionId']=='NL6_MATCHED_1_REPAIR_1'
+              assert manifest['humanCollectionEnabled'] is False
+              assert health['ok'] is True
+              assert health['lane']=='HARNESS_ONLY'
+              assert health['campaignPersistence'] is False
+              assert health['externalTelemetry'] is False
+          print('HOSTED_SEMANTIC_IDENTITY_PASS')
+          PY
