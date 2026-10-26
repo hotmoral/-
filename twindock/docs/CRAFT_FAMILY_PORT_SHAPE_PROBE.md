@@ -1,6 +1,6 @@
 # Twin Dock — Craft Family + Port Shape Probe
 
-Status: **IMPLEMENTED / BUILD PASS / PHYSICAL DEVICE EVALUATION PENDING**
+Status: **IMPLEMENTED / BUILD PASS / PHYSICAL DEVICE EVALUATION IN PROGRESS**
 
 This is an experimental Geometry v2 branch. It is not accepted gameplay yet.
 
@@ -53,7 +53,7 @@ The original Mission 01 station motion values are preserved. Only the craft/anch
 5. `LONG CARGO · 직사각 전방`
    - same Long Cargo hull and same rectangular port semantics as stage 2
    - front anchor x=98, y=0, angle=0
-   - stage 2 vs 5 therefore provides a same-hull/same-port comparison with anchor location changed
+   - stage 2 vs 5 provides a same-hull/same-port comparison with anchor location changed, but **not a controlled anchor-only comparison**, because the preserved Mission 01 target-motion profiles also differ between stages 2 and 5
 
 ## Port-shape semantics
 
@@ -150,13 +150,40 @@ Artifact:
 - APK bytes `4,147,165`
 - APK SHA-256 `31490585c118875912305df4a5cba94060342fdeb1a6ace79fe219bd86558b1a`
 
+## Physical-device evidence
+
+### 2026-10-26 — stage 5 difficulty observation
+
+Device play feedback: **stage 5 felt substantially harder than the other stages**.
+
+Relevant geometry / motion facts:
+- stage 2 = `LONG CARGO · RECT · SIDE`, player anchor radius from COM = 61 (`x=0, y=-61`), target translation `(bodyVx=5, bodyVy=6)`, target `omega=0`
+- stage 5 = `LONG CARGO · RECT · FRONT`, player anchor radius from COM = 98 (`x=98, y=0`), target translation `(bodyVx=5, bodyVy=6)`, target `omega=0.18`
+- same hull and same port shape mean the stage-2-vs-stage-5 difference is **not explained by hull family or port shape alone**
+- stage 5 anchor eccentricity is `98/61 ≈ 1.61×` stage 2, so the player docking point sweeps a materially larger arc for the same craft rotation
+- stage 5 also adds rotating-target capture-anchor motion and relative angular-velocity matching pressure that stage 2 does not have
+
+Interpretation:
+- this is positive evidence that **anchor eccentricity can be a strong difficulty axis**
+- it also confirms that the current five-stage probe is **confounded for causal attribution**: stage 5 combines larger player-anchor radius with the hardest preserved Mission 01 target-motion profile
+- do **not** conclude yet that front placement is inherently harder than side placement
+- do **not** retune controls or docking thresholds based on this observation
+
+Next cheapest causal probe:
+- use one Long Cargo hull
+- use one rectangular port shape
+- use identical station position/translation/rotation conditions for every trial
+- vary only player-anchor placement/eccentricity
+- compare at minimum near-center/side-edge/front-extreme/corner/rear-extreme exposed anchors
+- keep recessed/internal bays deferred until hull-clearance collision exists
+
 ## Physical-device questions
 
 Play the five docks continuously and judge:
 1. Does Long Cargo feel materially larger and require a different spatial plan than Shuttle?
 2. Does Wide Tug + corner port produce a stronger correction problem than side-anchor-only Shuttle?
 3. Stage 1 vs 3: does circle vs trapezoid materially change orientation readability/feel when hull and anchor are otherwise the same?
-4. Stage 2 vs 5: does side vs front anchor remain clearly different when hull and port shape are held constant?
+4. Stage 2 vs 5: does side vs front anchor remain clearly different when hull and port shape are held constant, while remembering that their target-motion profiles are not controlled?
 5. Are rectangle/trapezoid direction markers readable without relying on explanatory HUD text?
 6. Do large hulls visually remain clear of the station at successful docking poses?
 7. Does any alternate hull create confusing RCS presentation or camera interpretation?
