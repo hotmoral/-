@@ -1,7 +1,7 @@
 {
   "schema": "LINKLINE_A3_PUBLIC_NL_MATCHED_RUNTIME_MANIFEST",
-  "version": "1.2.0",
-  "status": "PUBLIC_PREVIEW",
+  "version": "1.3.0",
+  "status": "PUBLIC_PREVIEW_STATIC_CANONICAL",
   "sessionId": "NL6_MATCHED_1_REPAIR_1",
   "phase": "NL6_REPAIRED_MATCHED_1",
   "puzzleCount": 12,
@@ -21,12 +21,14 @@
     "correctedRuntimeCommit": "42e86fcce5b097d1933ea36f7d50b89d3935e60e",
     "currentEvidenceCommit": "3f303c075347029a79dff958b7e3914b3a4f8ed1"
   },
-  "deliveryMaterialization": {
+  "deliveryMode": "STATIC_CANONICAL_ASSETS",
+  "materialization": {
+    "tool": "preview-tools/materialize_static.py",
     "appBaseGitBlob": "43f6f366087464e0dc5d98ac453a4ec5093369c2",
-    "deliveredAppGitBlob": "4eb9fa0c7deded41d9e33074618873edd760c86a",
     "protocolBaseGitBlob": "9e7c08d724395ecc3dfe83179e31cee56696b8d0",
-    "deliveredProtocolGitBlob": "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868",
-    "failClosed": true
+    "requiredAppGitBlob": "4eb9fa0c7deded41d9e33074618873edd760c86a",
+    "requiredProtocolGitBlob": "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868",
+    "failClosedBeforeCommit": true
   },
   "files": {
     "app.mjs": "4eb9fa0c7deded41d9e33074618873edd760c86a",

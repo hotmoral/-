@@ -1,3 +1,4 @@
-Linkline NL6 repaired preview trigger
+Linkline NL6 static repaired preview trigger
 session=NL6_MATCHED_1_REPAIR_1
 validated=b9990175c2873abc3c65734e52152ee174236aac
+mode=STATIC_CANONICAL_ASSETS
