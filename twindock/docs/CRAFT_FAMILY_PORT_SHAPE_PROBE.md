@@ -169,12 +169,39 @@ Interpretation:
 - do **not** conclude yet that front placement is inherently harder than side placement
 - do **not** retune controls or docking thresholds based on this observation
 
+### 2026-10-26 — full device difficulty ordering
+
+User-reported difficulty from hardest to easiest:
+
+`5 > 4 > 2 > 3 > 1`
+
+This ordering is now product evidence, not a theoretical ranking.
+
+Interpretation boundaries:
+- stage 5 = Long Cargo / rectangular / front / strongest preserved target rotation
+- stage 4 = Wide Tug / trapezoid / corner / combined target motion
+- stage 2 = Long Cargo / rectangular / side / translating target
+- stage 3 = Shuttle / trapezoid / front / rotating target
+- stage 1 = Shuttle / circle / front / static target
+- therefore the ranking supports geometry as a meaningful difficulty axis, but it still mixes hull family, anchor geometry, port semantics and target motion
+
+### Rotation-center invariant
+
+Physical-device feedback explicitly rejects moving the craft rotation center / COM as a content trick.
+
+For Geometry v2 content work:
+- keep the accepted craft rotation-center semantics fixed
+- do not move COM merely to manufacture difficulty
+- treat difficulty as a function of the docking anchor **relative to the fixed rotation center**, together with hull geometry and target motion
+- if true mass-distribution / inertia work is ever considered, it must be a separate physics workgroup rather than hidden inside content geometry
+
 Next cheapest causal probe:
 - use one Long Cargo hull
 - use one rectangular port shape
 - use identical station position/translation/rotation conditions for every trial
-- vary only player-anchor placement/eccentricity
-- compare at minimum near-center/side-edge/front-extreme/corner/rear-extreme exposed anchors
+- vary only exposed player-anchor placement/eccentricity/direction
+- include matched-radius comparisons so direction can be separated from distance
+- keep the accepted rotation center fixed
 - keep recessed/internal bays deferred until hull-clearance collision exists
 
 ## Physical-device questions
@@ -197,4 +224,4 @@ Positive evidence should promote the following as candidate content axes:
 - anchor eccentricity / location / angle
 - port visual shape / directional readability
 
-Do not promote recessed bays, hull-clearance gameplay, player-anchor rotational velocity, or craft-specific control tuning from this probe alone.
+Do not promote recessed bays, hull-clearance gameplay, player-anchor rotational velocity, craft-specific control tuning, or movable rotation-center semantics from this probe alone.
