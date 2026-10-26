@@ -15,7 +15,8 @@ concurrency:
 
 jobs:
   validate:
-    if: github.event.head_commit.message == 'ci: validate Einstein draw0 invocation3 runner preflight'
+    if: >-
+      github.event.head_commit.message == 'ci: validate Einstein draw0 invocation3 runner preflight'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
