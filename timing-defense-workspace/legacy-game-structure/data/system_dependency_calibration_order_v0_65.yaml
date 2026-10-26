@@ -1,0 +1,102 @@
+version: system-dependency-calibration-order-v0.65
+status: ACTIVE_T1_F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_64.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_64.yaml
+
+canonicalUpdates:
+  - ../188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  - ../187_T1_CONTIGUOUS_15_38_E1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md
+  - ../186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+campaignAuthoring:
+  contiguousCoverageE1:
+    id: E1_STAGE34_36_CONTIGUOUS_GAP_AUTHORING
+    targetStages: [34, 35, 36]
+    planPath: data/t1_contiguous_34_36_e1_authoring_plan_v0_2.yaml
+    candidatePath: data/t1_contiguous_34_36_e1_candidate_v0_2.yaml
+    candidateSha256: da4624a55c327fa68f71bd92b6626fee5e30fd5ddd2d6369403dd6d8b6715550
+    materializedStage15_38Sha256: 58dbc3109c1b919fed9de48118a88063595b8ef616632ee3c2aa8595ec70925d
+    staticAdmission: PASS
+    dynamicAdmission: PASS_WITH_WATCHES
+    approvalSource: ../188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+    candidateAdopted: true
+    userAdoption: APPROVED_2026_10_26_KST
+    authoringBaseline: USER_APPROVED_WITH_WATCHES
+    canonicalWindowAfterAdoption: [15, 38]
+    numericalFreeze: false
+    productionGameplayChange: false
+
+  contiguousCoverageF1:
+    id: F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT
+    targetStages: [39, 40]
+    leftCanonicalAnchorStage: 38
+    existingCandidateSource: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+    planPath: data/t1_stage39_40_existing_exact_promotion_preflight_v0_1.yaml
+    intendedCanonicalWindowAfterFutureAdoption: [15, 40]
+    status: EXISTING_EXACT_AUTHORITY_RECOVERY_REQUIRED
+    exactRecipeCandidateCreated: EXISTING_REPRESENTATIVE_CANDIDATE
+    reauthoringAuthorized: false
+    staticAdmission: NOT_RUN_FOR_CONTIGUOUS_PROMOTION
+    dynamicAdmission: NOT_RUN_FOR_CONTIGUOUS_PROMOTION
+    userAdoption: NOT_APPLICABLE_YET
+    rationale:
+      - RECOVER_EXISTING_STAGE39_40_EXACT_EVIDENCE_BEFORE_ANY_REAUTHORING
+      - PRESERVE_STAGE38_CANONICAL_LEFT_ANCHOR
+      - CHECK_SKELETON_AND_CURRENT_EXACT_SOURCE_IDENTITY
+      - MATERIALIZE_STAGE15_40_ONLY_IF_EXISTING_RECIPES_REMAIN_VALID
+    numericalFreeze: false
+    productionGameplayChange: false
+
+progressionReachAuthority:
+  lv16:
+    band: [18, 21]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  lv21:
+    band: [25, 28]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  lv26:
+    band: [32, 36]
+    testedDiagnosticPositions: [32, 34, 36]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  exactExpThresholdFreeze: false
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  delayedCombatEventsMustDrainBeforeSettled: true
+  preserveWaveAApprovedExactRecipes: true
+  preserveStage16_17AdoptedExactRecipes: true
+  preserveC1AdoptedExactRecipes: true
+  preserveD1AdoptedExactRecipe: true
+  preserveE1AdoptedExactRecipes: true
+  canonicalContiguousExactWindow: [15, 38]
+  authored4sNormalMax: 8
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  productionGameplayChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+closedDecision:
+  id: T1_E1_STAGE34_36_AUTHORING_ADOPTION_DECISION_GATE
+  result: USER_APPROVED_WITH_WATCHES
+  approvalSource: ../188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+currentBoundary:
+  activePackage: T1_F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT
+  e1Status: USER_APPROVED_AUTHORING_BASELINE_WITH_WATCHES
+  f1Status: EXISTING_EXACT_AUTHORITY_RECOVERY_REQUIRED
+  nextRequiredAction: RECOVER_STAGE39_40_REPRESENTATIVE_EXACT_EVIDENCE_AND_DETERMINE_CANONICAL_PROMOTION_ELIGIBILITY_WITHOUT_REAUTHORING
+  noProductionChange: true
+  noNumericalFreeze: true
