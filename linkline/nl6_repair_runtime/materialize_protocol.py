@@ -47,7 +47,7 @@ once(
     "      if(shape.axis==='OCCUPANCY_40_EXACT_DISTANCE'&&metadata?.shortestDistanceByResearchEquivalenceIdV1?.[control.researchEquivalenceIdV1]!==metadata?.shortestDistanceByResearchEquivalenceIdV1?.[larger.researchEquivalenceIdV1])errors.push(`pairExactDistance:${position}`);\n"
     "    }"
 )
-once("  for(const [length,count] of lengthCounts)if(count!==2)errors.push(`lengthPairCount:${length}:${count}`);\n\n", "")
+once("  for(const [length,count] of lengthCounts)if(count!==2)errors.push(`lengthPairCount:${length}:${count}`);\n\n", "\n")
 once("if(![4,5].includes(puzzle.n))", "if(![4,6].includes(puzzle.n))")
 
 out.write_text(text, encoding='utf-8')
