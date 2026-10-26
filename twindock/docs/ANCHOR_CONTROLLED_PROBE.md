@@ -1,6 +1,6 @@
 # Twin Dock — Anchor Eccentricity Controlled Probe
 
-Status: **IMPLEMENTED / BUILD VALIDATION PENDING**
+Status: **IMPLEMENTED / BUILD PASS / PHYSICAL DEVICE EVALUATION PENDING**
 
 This is an experimental Geometry v2 branch. It is not accepted gameplay.
 
@@ -63,6 +63,45 @@ This provides two matched-radius groups:
 - `r98`: front vs rear vs corner
 
 The comparison can therefore separate some direction effects from distance effects while keeping the craft rotation center fixed.
+
+## Rotation-center regression guard
+
+Automated tests explicitly verify that applying each anchor setup does not change:
+- ship center `x/y`
+- ship body angle
+- accepted physical `ship.length`
+- accepted physical `ship.width`
+
+The probe therefore cannot create difficulty by silently moving COM or changing the accepted torque lever.
+
+## Automated evidence
+
+GitHub Actions:
+- run `40260448984`
+- implementation head `1ff61e879295c15c106a13222a3865b9fecc5918`
+- result **SUCCESS**
+
+Passed:
+- accepted presentation-angle regression
+- accepted Geometry v2 smoke/reference regression
+- controlled Mission profile tests
+- controlled non-front anchor contract tests
+- retained craft-family/port-shape regression
+- new anchor-eccentricity controlled tests
+- JS syntax checks
+- local Android staging
+- Capacitor Android shell generation
+- Android contract checks before/after sync
+- Gradle debug APK build
+- artifact upload
+
+Artifact:
+- artifact name `twindock-android-debug`
+- artifact ID `12624068522`
+- artifact ZIP digest `sha256:40ebf213295307bd3fe15fdfd3d41b9c0130f7e574445cc46bd11e4c21ef6c7f`
+- APK filename `app-debug.apk`
+- extracted APK bytes `4,147,309`
+- extracted APK SHA-256 `0dd3b3dc57a4490c2206ef1609be0f160d59b88ce2128369ad77569b74537693`
 
 ## Residual experimental limitation
 
