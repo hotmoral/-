@@ -1,0 +1,108 @@
+version: t1-contiguous-34-36-e1-authoring-plan-v0.2
+status: BOUNDED_AUTHORING_PLAN_RECOVERY_REVISION_AND_STAGE38_CONTINUATION_NO_EXACT_ADOPTION
+supersedes: data/t1_contiguous_34_36_e1_authoring_plan_v0_1.yaml
+
+revision:
+  priorCandidate: data/t1_contiguous_34_36_e1_candidate_v0_1.yaml
+  triggerEvidenceRun: 40335839268
+  trigger: STAGE35_RECOVERY_INTENT_NOT_SUPPORTED_BY_DYNAMIC_ACTION_AND_SETTLE_DEMAND
+  observedAllCaseMeans:
+    stage34: {actions: 8.19, settledSeconds: 7.9009, peakActive: 3.653333}
+    stage35: {actions: 9.56, settledSeconds: 9.477033, peakActive: 3.076667}
+  interpretation: STAGE35_STATIC_COMPLEXITY_LOWER_BUT_DYNAMIC_RECOVERY_NOT_READABLE_ENOUGH
+  changeBoundary: STAGE35_EXACT_SPAWN_ONLY
+  preserveExactCandidateStages: [34, 36]
+  noScalarChange: true
+
+scope:
+  targetStages: [34, 35, 36]
+  leftExactAnchor: 33
+  primaryRightExactAnchor: 37
+  inheritedApprovedExactContinuation: [38]
+  intendedContiguousWindowAfterFutureAdoption: [15, 38]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+
+structuralAuthority:
+  skeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  staticAudit: ../162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md
+  anchorAuthority: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+  d1Approval: ../186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  waveAApproval: ../180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+stageContracts:
+  - stage: 34
+    band: Pressure / Soft Wall
+    archetype: E03+E02
+    monsters: [GRUNT, BRUTE, RUNNER]
+    formation: F02
+    cadence: CD05
+    complexity: C2
+    pressureTags: [BULWARK]
+    purpose: TARGET_REORDER_CONTROL_OPPORTUNITY
+    opportunity: [Knight, Rogue, Tank, Archer]
+
+  - stage: 35
+    band: Pressure / Soft Wall
+    archetype: E01
+    monsters: [GRUNT]
+    formation: F04
+    cadence: CD05
+    complexity: C1
+    pressureTags: [BASELINE]
+    purpose: LOWER_COMPLEXITY_TIMING_REORDER_RECOVERY
+    opportunity: [Knight, Rogue]
+    revisionIntent: REDUCE_COUNT_AND_TAIL_DURATION_WITHOUT_CHANGING_SIGNATURE
+
+  - stage: 36
+    band: Pressure / Soft Wall
+    archetype: E03
+    monsters: [GRUNT, BRUTE]
+    formation: F01
+    cadence: CD03
+    complexity: C1
+    pressureTags: [BULWARK]
+    purpose: FOCUSED_HEAVY_LINE_LV26_ATTRIBUTION_SPACE
+    opportunity: [Knight, Rogue, Archer]
+
+adjacentExactAnchors:
+  stage33:
+    source: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    signature: E01_GRUNT_F03_CD04_C2_BASELINE_FLOOD
+    purpose: MAGE_DENSITY_PRESSURE
+    spawnCount: 12
+  stage37:
+    source: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    signature: E02_G_R_F08_CD04_C2_RUSH
+    purpose: SPLIT_AXIS_TEMPO
+    spawnCount: 8
+  stage38:
+    source: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    signature: E01_E03_G_B_F02_CD03_C1_BULWARK
+    purpose: DURABLE_PRE_PEAK_BRIDGE
+    spawnCount: 8
+    status: ALREADY_USER_APPROVED_WAVE_A_EXACT_AUTHORITY
+
+preflightGuards:
+  - EXACT_SIGNATURE_MATCH_REQUIRED_FOR_STAGES34_35_36
+  - NO_NEW_MONSTER_OR_PRESSURE_VOCABULARY
+  - PRESERVE_STAGE33_DENSITY_TO_34_REORDER_TO_35_RECOVERY_TO_36_DURABLE_TO_37_SPLIT_TEMPO_ROTATION
+  - STAGE35_MUST_REMAIN_LOWER_COMPLEXITY_C1_RECOVERY
+  - STAGE35_DYNAMIC_MEAN_ACTIONS_MUST_BE_LOWER_THAN_STAGE34
+  - STAGE35_DYNAMIC_MEAN_SETTLED_TIME_MUST_BE_LOWER_THAN_STAGE34
+  - STAGE36_MUST_REMAIN_LV26_ATTRIBUTION_SPACE_NOT_SYNTHESIS_PEAK
+  - AUTHORED_4S_NORMAL_DENSITY_MAX_8
+  - STAGE33_STAGE37_STAGE38_APPROVED_EXACT_AUTHORITIES_MUST_REMAIN_UNCHANGED
+  - REAL_PERSISTENT_DYNAMIC_WINDOW_MUST_INCLUDE_STAGE38_BEFORE_USER_ADOPTION_GATE
+  - NO_SCALAR_CHANGE
+  - NO_PRODUCTION_CHANGE
+  - NO_FULL_T1_EXACT_FREEZE
+
+nextAction: MATERIALIZE_E1_V0_2_WITH_STAGE35_ONLY_REVISION_AND_VALIDATE_PERSISTENT_STAGE15_38
