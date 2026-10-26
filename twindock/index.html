@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <meta name="theme-color" content="#050914" />
-<title>Twin Dock · Anchor Controlled Probe</title>
+<title>Twin Dock · Capture Anchor Control v2</title>
 <link rel="stylesheet" href="./styles.css" />
 <link rel="stylesheet" href="./transitions.css?v=p3b1" />
 </head>
@@ -14,11 +14,11 @@
   <canvas id="feedback" aria-hidden="true"></canvas>
 
   <div class="topbar">
-    <div id="missionHud" class="hud missionHud"><div class="k">ANCHOR CONTROLLED PROBE</div><div class="v"><span id="score">0 / 5</span></div></div>
+    <div id="missionHud" class="hud missionHud"><div class="k">ANCHOR CONTROL V2</div><div class="v"><span id="score">0 / 5</span></div></div>
     <div class="hud statusHud"><div class="k">STATUS</div><div id="mode" class="v">대기</div></div>
   </div>
 
-  <div class="centerMsg"><strong id="msgTitle">LONG CARGO · 동일 운동 조건</strong><span id="msgSub">회전중심은 고정하고 도킹 anchor 위치만 비교합니다.</span></div>
+  <div class="centerMsg"><strong id="msgTitle">동일 상대운동 · 도킹 위치 비교</strong><span id="msgSub">각 trial은 같은 초기 상태에서 독립적으로 시작합니다.</span></div>
 
   <div id="stageTransition" class="stageTransition" aria-hidden="true">
     <div class="sweep"></div>
@@ -28,7 +28,7 @@
 
   <div id="missionCompleteFx" class="missionCompleteFx" aria-hidden="true">
     <div class="edgeFrame"></div>
-    <div class="completeCue"><span>ANCHOR CONTROLLED PROBE</span><strong id="missionCompleteText">5 / 5 DOCKS COMPLETE</strong></div>
+    <div class="completeCue"><span>ANCHOR CONTROL V2</span><strong id="missionCompleteText">5 / 5 TRIALS COMPLETE</strong></div>
   </div>
 
   <div class="debugHud" aria-hidden="true">
@@ -46,7 +46,7 @@
       <button id="startBtn" class="btn primary" type="button">시작</button>
       <button id="resetBtn" class="btn" type="button">초기화</button>
       <button id="fullBtn" class="btn" type="button">전체</button>
-      <div class="tiny">같은 CARGO · 같은 RECT · 같은 목표 운동<br>도킹 anchor 위치/방향만 변경</div>
+      <div class="tiny">양손의 합 = 이동 · 정밀 감도<br>양손 차이 = 회전</div>
     </div>
     <div class="padWrap">
       <div class="padLabel"><span>오른쪽 RCS · 기체 기준</span><b id="rPct">0%</b></div>
@@ -59,10 +59,10 @@
 <script src="./src/config.js"></script>
 <script src="./src/math.js"></script>
 <script src="./src/geometry.js"></script>
-<script src="./src/craft-geometry.js?v=anchorctrl1"></script>
+<script src="./src/craft-geometry.js?v=anchorv2"></script>
 <script src="./src/state.js?v=craftshape1"></script>
 <script src="./src/docking.js"></script>
-<script src="./src/mission.js?v=anchorctrl1"></script>
+<script src="./src/mission.js?v=anchorv2"></script>
 <script src="./src/input.js"></script>
 <script src="./src/physics.js"></script>
 <script src="./src/camera.js"></script>
@@ -73,6 +73,6 @@
 <script src="./src/feedback.js"></script>
 <script src="./src/effects.js?v=p3a2"></script>
 <script src="./src/transitions.js?v=p3b1"></script>
-<script src="./src/main.js?v=craftshape1"></script>
+<script src="./src/main.js?v=anchorv2"></script>
 </body>
 </html>

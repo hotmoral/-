@@ -14,7 +14,7 @@
   function resetShip(){ TD.Physics.resetShip(state, clearControls); }
   function updateChecks(){ const m=TD.Docking.metrics(state); TD.UI.updateDockChecks(ui,m); }
   function progressText(){ const p=TD.Mission.progress(state); return `${Math.min(state.score,p.total)} / ${p.total}`; }
-  function targetText(profile){ return `TARGET ${state.mission.index+1} · ${profile.label}`; }
+  function targetText(profile){ return `TRIAL ${state.mission.index+1} · ${profile.label}`; }
   function setupText(profile){
     const setup=TD.CraftGeometry.get(profile.setupId),craft=TD.CraftGeometry.craft(setup.craftId),port=TD.CraftGeometry.port(setup.portShape);
     return `${craft.label} · ${port.label} 포트 · ${setup.anchorLabel}`;
@@ -24,14 +24,14 @@
     state.running=false;state.startedOnce=false;state.score=0;effects.silence();transitions.reset();resetShip();
     const profile=TD.Mission.reset(state);
     ui.score.textContent=progressText();ui.rel.textContent='0.0';ui.mode.textContent='대기';
-    ui.msgT.textContent=targetText(profile);ui.msgS.textContent=setupText(profile);ui.start.textContent='시작';
+    ui.msgT.textContent=targetText(profile);ui.msgS.textContent='각 trial은 동일한 초기 위치·속도에서 시작합니다.';ui.start.textContent='시작';
     [ui.ckPos,ui.ckVel,ui.ckDir,ui.ckSpin].forEach(x=>TD.UI.setCheck(x,false));renderer.draw();feedback.draw();
   }
 
   function dockSuccess(m){
     state.docked=true;state.dockHold=TD.Config.DOCK_HOLD_SECONDS;state.score++;ui.score.textContent=progressText();clearControls();transitions.progress();
     const ship=state.ship,pose=TD.Geometry.bodyPoseForWorldAnchor(m.captureX,m.captureY,m.stationAnchor.angle,ship.dockAnchor);ship.x=pose.x;ship.y=pose.y;ship.angle=pose.angle;ship.angVel=state.station.omega;ship.vx=m.captureVx;ship.vy=m.captureVy;
-    ui.mode.textContent='DOCK';ui.msgT.textContent=`DOCK ${state.mission.index+1} COMPLETE`;ui.msgS.textContent='SOFT CAPTURE · 다음 기체/포트 조합으로 이어집니다.';ui.pulse.classList.remove('on');void ui.pulse.offsetWidth;ui.pulse.classList.add('on');effects.softCapture();
+    ui.mode.textContent='DOCK';ui.msgT.textContent=`TRIAL ${state.mission.index+1} COMPLETE`;ui.msgS.textContent='다음 trial은 운동 상태를 이어받지 않고 동일 조건으로 재시작합니다.';ui.pulse.classList.remove('on');void ui.pulse.offsetWidth;ui.pulse.classList.add('on');effects.softCapture();
   }
 
   function collision(){
@@ -41,10 +41,10 @@
   function dockHoldEnd(){
     const next=TD.Mission.advance(state);
     if(!next){
-      state.running=false;state.dockHold=1e9;clearControls();ui.mode.textContent='완료';ui.msgT.textContent='CRAFT GEOMETRY PROBE COMPLETE';ui.msgS.textContent='5개 기체/포트 조합 완료 · 다시 비교할 수 있습니다.';ui.start.textContent='다시';effects.missionComplete();transitions.missionComplete(TD.Mission.profiles.length);return;
+      state.running=false;state.dockHold=1e9;clearControls();ui.mode.textContent='완료';ui.msgT.textContent='ANCHOR CONTROL V2 COMPLETE';ui.msgS.textContent='5개 독립 trial 완료 · 난도 순서를 비교해주세요.';ui.start.textContent='다시';effects.missionComplete();transitions.missionComplete(TD.Mission.profiles.length);return;
     }
     state.docked=false;state.dockHold=0;state.angularDrive=0;clearControls();effects.latch();effects.nextTarget();
-    ui.mode.textContent='접근';ui.msgT.textContent=targetText(next);ui.msgS.textContent=setupText(next);
+    ui.mode.textContent='접근';ui.msgT.textContent=targetText(next);ui.msgS.textContent='동일 초기 운동 상태 · anchor 위치만 변경';
     transitions.nextTarget(next,state.mission.index+1,TD.Mission.profiles.length);
     [ui.ckPos,ui.ckVel,ui.ckDir,ui.ckSpin].forEach(x=>TD.UI.setCheck(x,false));
   }

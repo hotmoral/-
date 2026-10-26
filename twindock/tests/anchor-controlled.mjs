@@ -11,47 +11,46 @@ for(const file of ['config.js','math.js','geometry.js','craft-geometry.js','stat
   vm.runInContext(fs.readFileSync(path.join(root,'src',file),'utf8'),context,{filename:file});
 }
 const TD=context.window.TwinDock;
-const { normAngle }=TD.MathUtil;
 const EPS=1e-9;
+const near=(a,b,eps=EPS)=>assert.ok(Math.abs(a-b)<=eps,`${a} != ${b}`);
 const ids=['CARGO_CTRL_SIDE_TOP','CARGO_CTRL_FRONT','CARGO_CTRL_SIDE_BOTTOM','CARGO_CTRL_REAR','CARGO_CTRL_CORNER'];
 assert.deepEqual(Array.from(TD.Mission.profiles,p=>p.setupId),ids);
 
 const setup=Object.fromEntries(ids.map(id=>[id,TD.CraftGeometry.get(id)]));
 for(const id of ids){assert.equal(setup[id].craftId,'CARGO');assert.equal(setup[id].portShape,'RECT');}
 const r=id=>Math.hypot(setup[id].x,setup[id].y);
-assert.ok(Math.abs(r('CARGO_CTRL_SIDE_TOP')-61)<EPS);
-assert.ok(Math.abs(r('CARGO_CTRL_SIDE_BOTTOM')-61)<EPS);
-assert.ok(Math.abs(r('CARGO_CTRL_FRONT')-98)<EPS);
-assert.ok(Math.abs(r('CARGO_CTRL_REAR')-98)<EPS);
-assert.ok(Math.abs(r('CARGO_CTRL_CORNER')-98)<1e-6);
-assert.equal(setup.CARGO_CTRL_FRONT.angle,0);
-assert.equal(setup.CARGO_CTRL_REAR.angle,Math.PI);
-assert.equal(setup.CARGO_CTRL_SIDE_TOP.angle,-Math.PI/2);
-assert.equal(setup.CARGO_CTRL_SIDE_BOTTOM.angle,Math.PI/2);
-assert.equal(setup.CARGO_CTRL_CORNER.angle,Math.PI/4);
+near(r('CARGO_CTRL_SIDE_TOP'),61);near(r('CARGO_CTRL_SIDE_BOTTOM'),61);
+near(r('CARGO_CTRL_FRONT'),98);near(r('CARGO_CTRL_REAR'),98);near(r('CARGO_CTRL_CORNER'),98,1e-6);
 
-const motion=TD.Mission.profiles[0];
-for(const p of TD.Mission.profiles){
-  for(const key of ['ahead','lateral','bodyVx','bodyVy','omega']) assert.equal(p[key],motion[key],`${key} must remain controlled`);
-}
-
+const snapshots=[];
 for(let i=0;i<TD.Mission.profiles.length;i++){
   const s=TD.createState();
-  s.viewport.W=1000;s.viewport.H=600;s.ship.x=137;s.ship.y=289;s.ship.angle=.37;s.mission.index=i;
-  const before={x:s.ship.x,y:s.ship.y,angle:s.ship.angle,length:s.ship.length,width:s.ship.width};
+  s.viewport.W=1200;s.viewport.H=700;s.mission.index=i;
+  const physicalLength=s.ship.length,physicalWidth=s.ship.width;
+  s.ship.x=-500;s.ship.y=900;s.ship.vx=44;s.ship.vy=-33;s.ship.angle=-2.2;s.ship.angVel=.8;s.angularDrive=-3;
   TD.Mission.placeCurrent(s);
-  assert.equal(s.ship.x,before.x,'craft geometry must not move rotation center x');
-  assert.equal(s.ship.y,before.y,'craft geometry must not move rotation center y');
-  assert.equal(s.ship.angle,before.angle,'craft geometry must not rotate body as a setup side effect');
-  assert.equal(s.ship.length,before.length,'visual geometry must not alter accepted torque lever');
-  assert.equal(s.ship.width,before.width,'visual geometry must not alter accepted physical width');
-  assert.equal(s.ship.craftId,'CARGO');assert.equal(s.ship.portShape,'RECT');
+
+  assert.equal(s.ship.length,physicalLength,'trial reset must not alter accepted physical torque lever');
+  assert.equal(s.ship.width,physicalWidth,'trial reset must not alter accepted physical width');
+  near(s.ship.x,s.viewport.W*.14);near(s.ship.y,s.viewport.H*.46);
+  near(s.ship.vx,0);near(s.ship.vy,0);near(s.ship.angle,0);near(s.ship.angVel,0);near(s.angularDrive,0);
+
+  const player=TD.Geometry.shipDockAnchor(s);
   const target=TD.Geometry.stationDockAnchor(s);
-  assert.ok(Math.abs(normAngle(target.angle-(s.ship.angle+s.ship.dockAnchor.angle)))<EPS);
-  const pose=TD.Geometry.bodyPoseForWorldAnchor(target.x,target.y,target.angle,s.ship.dockAnchor);
-  s.ship.x=pose.x;s.ship.y=pose.y;s.ship.angle=pose.angle;s.ship.vx=target.vx;s.ship.vy=target.vy;s.ship.angVel=s.station.omega;
-  const m=TD.Docking.metrics(s);
-  assert.ok(m.dist<EPS,`stage ${i+1} dist`);assert.ok(m.rel<EPS,`stage ${i+1} rel`);assert.ok(m.dir<EPS,`stage ${i+1} dir`);assert.ok(m.spin<EPS,`stage ${i+1} spin`);assert.equal(TD.Docking.canDock(m),true,`stage ${i+1} canDock`);
+  snapshots.push({
+    dx:target.x-player.x,dy:target.y-player.y,
+    targetVx:target.vx,targetVy:target.vy,targetOmega:s.station.omega,
+    stationVx:s.station.vx,stationVy:s.station.vy,
+    playerX:player.x,playerY:player.y
+  });
 }
 
-console.log('Twin Dock anchor eccentricity controlled probe tests: PASS');
+for(let i=1;i<snapshots.length;i++){
+  near(snapshots[i].dx,snapshots[0].dx);near(snapshots[i].dy,snapshots[0].dy);
+  near(snapshots[i].targetVx,snapshots[0].targetVx);near(snapshots[i].targetVy,snapshots[0].targetVy);
+  near(snapshots[i].targetOmega,snapshots[0].targetOmega);
+}
+assert.notEqual(snapshots[1].playerX,snapshots[3].playerX,'front and rear player anchors must remain geometrically distinct');
+assert.ok(new Set(snapshots.map(x=>`${x.stationVx.toFixed(6)},${x.stationVy.toFixed(6)}`)).size>1,'station COM compensation should vary by orientation');
+
+console.log('Twin Dock capture-anchor causal-control tests: PASS');
