@@ -1,7 +1,8 @@
 from pathlib import Path
 
-base = Path(__file__).with_name('protocol.base.mjs')
-out = Path(__file__).with_name('protocol.mjs')
+root = Path(__file__).parent
+base = root / 'protocol.base.mjs'
+out = root / 'protocol.mjs'
 text = base.read_text(encoding='utf-8')
 
 def once(old: str, new: str) -> None:
@@ -49,5 +50,12 @@ once(
 )
 once("  for(const [length,count] of lengthCounts)if(count!==2)errors.push(`lengthPairCount:${length}:${count}`);\n\n", "\n")
 once("if(![4,5].includes(puzzle.n))", "if(![4,6].includes(puzzle.n))")
-
 out.write_text(text, encoding='utf-8')
+
+app = root / 'app.mjs'
+app_text = app.read_text(encoding='utf-8')
+old = "a.download='linkline-nl5-matched-repair-1.json'"
+new = "a.download='linkline-nl6-matched-repair-1.json'"
+if app_text.count(old) != 1:
+    raise SystemExit('app export filename replacement cardinality mismatch')
+app.write_text(app_text.replace(old, new, 1), encoding='utf-8')

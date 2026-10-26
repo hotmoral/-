@@ -4,6 +4,9 @@ import {validateSessionBundle,normalizedFingerprint,validatePairFeedback,Synthet
 import {SESSION_BUNDLE_FINGERPRINT,ANALYSIS_METADATA_FINGERPRINT} from '../config.mjs';
 const bundle=JSON.parse(fs.readFileSync(new URL('../data/session_bundle.json',import.meta.url)));
 const metadata=JSON.parse(fs.readFileSync(new URL('../data/analysis_metadata.json',import.meta.url)));
+const app=fs.readFileSync(new URL('../app.mjs',import.meta.url),'utf-8');
+assert.match(app,/linkline-nl6-matched-repair-1\.json/);
+assert.doesNotMatch(app,/linkline-nl5-matched-repair-1\.json/);
 assert.deepEqual(await validateSessionBundle(bundle,metadata),[]);
 assert.equal(await normalizedFingerprint(bundle,'sessionBundleFingerprint'),SESSION_BUNDLE_FINGERPRINT);
 assert.equal(await normalizedFingerprint(metadata,'metadataFingerprint'),ANALYSIS_METADATA_FINGERPRINT);

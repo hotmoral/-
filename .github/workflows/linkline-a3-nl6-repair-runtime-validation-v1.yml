@@ -24,15 +24,17 @@ jobs:
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
 
-      - name: Materialize exact canonical NL6 protocol
+      - name: Materialize exact canonical NL6 runtime deltas
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
           P=linkline/nl6_repair_runtime
           test "$(git hash-object ${P}/protocol.base.mjs)" = "9e7c08d724395ecc3dfe83179e31cee56696b8d0"
+          test "$(git hash-object ${P}/app.mjs)" = "43f6f366087464e0dc5d98ac453a4ec5093369c2"
           python3 "${P}/materialize_protocol.py"
           test "$(git hash-object ${P}/protocol.mjs)" = "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868"
+          test "$(git hash-object ${P}/app.mjs)" = "4eb9fa0c7deded41d9e33074618873edd760c86a"
 
       - name: Verify exact canonical runtime blobs
         shell: bash
@@ -43,12 +45,12 @@ jobs:
           test "$(git hash-object ${P}/index.html)" = "2429cf72ceb18d1265a2f69656aafebe1aa11f2e"
           test "$(git hash-object ${P}/mechanic.mjs)" = "c214cd077c102c4e007b045cc3d24d48febdab3a"
           test "$(git hash-object ${P}/styles.css)" = "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
-          test "$(git hash-object ${P}/app.mjs)" = "43f6f366087464e0dc5d98ac453a4ec5093369c2"
+          test "$(git hash-object ${P}/app.mjs)" = "4eb9fa0c7deded41d9e33074618873edd760c86a"
           test "$(git hash-object ${P}/config.mjs)" = "324a104b180c56952edb496f16213d7e7b967482"
           test "$(git hash-object ${P}/protocol.mjs)" = "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868"
           test "$(git hash-object ${P}/data/session_bundle.json)" = "e54a71fbae07218c7b0f469b00086be03db29ab8"
           test "$(git hash-object ${P}/data/analysis_metadata.json)" = "a63c193eb6f17c58a914720a0e6f472e5387c8ad"
-          test "$(git hash-object ${P}/tests/runtime_preflight.mjs)" = "7fba66eee7f4d6191b0e9ed49b85bb213e13438a"
+          test "$(git hash-object ${P}/tests/runtime_preflight.mjs)" = "4fdfaa67c91a448780a9c31ba00f416aa2c9eefe"
           test "$(git hash-object ${P}/package.json)" = "7cc02090dbd972e0e3a34f55129ed22b1932fa53"
 
       - name: Node runtime preflight
@@ -72,11 +74,15 @@ jobs:
           trap 'kill ${server_pid}' EXIT
           sleep 1
           curl --fail --silent --show-error http://127.0.0.1:8765/index.html >/tmp/index.html
+          curl --fail --silent --show-error http://127.0.0.1:8765/app.mjs >/tmp/app.mjs
           curl --fail --silent --show-error http://127.0.0.1:8765/protocol.mjs >/tmp/protocol.mjs
           curl --fail --silent --show-error http://127.0.0.1:8765/data/session_bundle.json >/tmp/session_bundle.json
           curl --fail --silent --show-error http://127.0.0.1:8765/data/analysis_metadata.json >/tmp/analysis_metadata.json
           grep -q 'app.mjs' /tmp/index.html
           grep -q 'pointerdown' /tmp/index.html
+          grep -q 'linkline-nl6-matched-repair-1.json' /tmp/app.mjs
+          if grep -q 'linkline-nl5-matched-repair-1.json' /tmp/app.mjs; then exit 1; fi
+          test "$(git hash-object /tmp/app.mjs)" = "4eb9fa0c7deded41d9e33074618873edd760c86a"
           test "$(git hash-object /tmp/protocol.mjs)" = "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868"
           python3 - <<'PY'
           import json
