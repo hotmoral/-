@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "test": "node --check src/craft-geometry.js && node --check src/craft-probe.js && node --check src/effects.js && node --check src/presentation.js && node --check src/transitions.js && node --check src/main.js && node tests/presentation-angle.mjs && node tests/smoke.mjs && node tests/mission.mjs && node tests/side-probe.mjs && node tests/alternating-probe.mjs && node tests/craft-family-port-shape.mjs",
+    "test": "node --check src/craft-geometry.js && node --check src/craft-probe.js && node --check src/effects.js && node --check src/presentation.js && node --check src/transitions.js && node --check src/main.js && node tests/presentation-angle.mjs && node tests/smoke.mjs && node tests/mission.mjs && node tests/side-probe.mjs && node tests/craft-family-port-shape.mjs && node tests/anchor-controlled.mjs",
     "serve": "python3 -m http.server 8080",
     "stage:android": "node scripts/stage-android-web.mjs",
     "android:patch": "node scripts/patch-android.mjs"

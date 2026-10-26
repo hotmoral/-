@@ -2,6 +2,9 @@
   'use strict';
   const TD = window.TwinDock;
   const C = TD.Config;
+  const OUTER_R = 98;
+  const CORNER_Y = 36;
+  const CORNER_X = Math.sqrt(OUTER_R*OUTER_R - CORNER_Y*CORNER_Y);
 
   const crafts = Object.freeze({
     SHUTTLE: Object.freeze({ id:'SHUTTLE', label:'SHUTTLE', visualKind:'SHUTTLE', visualLength:84, visualWidth:46 }),
@@ -22,7 +25,13 @@
     CARGO_RECT_SIDE: Object.freeze({ id:'CARGO_RECT_SIDE', label:'LONG CARGO · 직사각 측면', craftId:'CARGO', portShape:'RECT', anchorClass:'SIDE', anchorLabel:'상단 측면', x:0, y:-61, angle:-Math.PI/2 }),
     SHUTTLE_TRAPEZOID_FRONT: Object.freeze({ id:'SHUTTLE_TRAPEZOID_FRONT', label:'SHUTTLE · 사다리꼴 전방', craftId:'SHUTTLE', portShape:'TRAPEZOID', anchorClass:'FRONT', anchorLabel:'전방', x:C.VISUAL_PROBE_X, y:0, angle:0 }),
     TUG_TRAPEZOID_CORNER: Object.freeze({ id:'TUG_TRAPEZOID_CORNER', label:'WIDE TUG · 사다리꼴 모서리', craftId:'TUG', portShape:'TRAPEZOID', anchorClass:'CORNER', anchorLabel:'우하단 모서리', x:58, y:50, angle:Math.PI/4 }),
-    CARGO_RECT_FRONT: Object.freeze({ id:'CARGO_RECT_FRONT', label:'LONG CARGO · 직사각 전방', craftId:'CARGO', portShape:'RECT', anchorClass:'FRONT', anchorLabel:'전방', x:98, y:0, angle:0 })
+    CARGO_RECT_FRONT: Object.freeze({ id:'CARGO_RECT_FRONT', label:'LONG CARGO · 직사각 전방', craftId:'CARGO', portShape:'RECT', anchorClass:'FRONT', anchorLabel:'전방', x:98, y:0, angle:0 }),
+
+    CARGO_CTRL_SIDE_TOP: Object.freeze({ id:'CARGO_CTRL_SIDE_TOP', label:'LONG CARGO · 상단 측면 · r61', craftId:'CARGO', portShape:'RECT', anchorClass:'SIDE', anchorLabel:'상단 측면', x:0, y:-61, angle:-Math.PI/2 }),
+    CARGO_CTRL_FRONT: Object.freeze({ id:'CARGO_CTRL_FRONT', label:'LONG CARGO · 전방 · r98', craftId:'CARGO', portShape:'RECT', anchorClass:'FRONT', anchorLabel:'전방', x:OUTER_R, y:0, angle:0 }),
+    CARGO_CTRL_SIDE_BOTTOM: Object.freeze({ id:'CARGO_CTRL_SIDE_BOTTOM', label:'LONG CARGO · 하단 측면 · r61', craftId:'CARGO', portShape:'RECT', anchorClass:'SIDE', anchorLabel:'하단 측면', x:0, y:61, angle:Math.PI/2 }),
+    CARGO_CTRL_REAR: Object.freeze({ id:'CARGO_CTRL_REAR', label:'LONG CARGO · 후방 · r98', craftId:'CARGO', portShape:'RECT', anchorClass:'REAR', anchorLabel:'후방', x:-OUTER_R, y:0, angle:Math.PI }),
+    CARGO_CTRL_CORNER: Object.freeze({ id:'CARGO_CTRL_CORNER', label:'LONG CARGO · 우하단 모서리 · r98', craftId:'CARGO', portShape:'RECT', anchorClass:'CORNER', anchorLabel:'우하단 모서리', x:CORNER_X, y:CORNER_Y, angle:Math.PI/4 })
   });
 
   function get(id){ return setups[id] || setups.REFERENCE; }

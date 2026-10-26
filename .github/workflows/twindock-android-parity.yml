@@ -7,6 +7,7 @@ on:
       - twindock-geometry-side-probe-v1
       - twindock-geometry-alternating-probe-v1
       - twindock-geometry-craft-shape-probe-v1
+      - twindock-geometry-anchor-controlled-probe-v1
     paths:
       - 'twindock/index.html'
       - 'twindock/styles.css'
