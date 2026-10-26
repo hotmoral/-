@@ -1,0 +1,102 @@
+name: Timing Defense T1 Contiguous 15-25 B1 Dynamic Admission V0.2
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - '.github/workflows/timing-defense-t1-contiguous-15-25-b1-dynamic-admission-v0-2.yml'
+      - 'timing-defense-workspace/tools/admit_t1_contiguous_15_25_b1_dynamic_v0_1.py'
+      - 'timing-defense-workspace/tools/admit_t1_contiguous_15_25_b1_dynamic_v0_2.py'
+      - 'timing-defense-workspace/tools/preflight_t1_contiguous_15_25_b1_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_v0_1.py'
+      - 'timing-defense-workspace/tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_core_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_skills_v0_1.py'
+      - 'timing-defense-workspace/tools/t1_transition_microsim_engine_v0_1.py'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json'
+      - 'timing-defense-workspace/legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json'
+      - 'timing-defense-workspace/legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dynamic-admission:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check PyYAML
+      - name: Record exact source
+        working-directory: timing-defense-workspace
+        run: |
+          mkdir -p artifacts/t1-contiguous-15-25-b1-dynamic-v02
+          printf 'GITHUB_SHA=%s\n' "$GITHUB_SHA" > artifacts/t1-contiguous-15-25-b1-dynamic-v02/source-identity.txt
+          sha256sum \
+            tools/admit_t1_contiguous_15_25_b1_dynamic_v0_1.py \
+            tools/admit_t1_contiguous_15_25_b1_dynamic_v0_2.py \
+            tools/preflight_t1_contiguous_15_25_b1_v0_1.py \
+            tools/run_t1_transition_slice_microsim_v0_1.py \
+            tools/run_t1_transition_slice_microsim_settlement_fix_v0_1.py \
+            tools/t1_transition_microsim_core_v0_1.py \
+            tools/t1_transition_microsim_skills_v0_1.py \
+            tools/t1_transition_microsim_engine_v0_1.py \
+            legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml \
+            legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml \
+            legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
+            legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
+            >> artifacts/t1-contiguous-15-25-b1-dynamic-v02/source-identity.txt
+      - name: Compile admission tools
+        working-directory: timing-defense-workspace
+        run: |
+          python -m py_compile tools/preflight_t1_contiguous_15_25_b1_v0_1.py
+          python -m py_compile tools/admit_t1_contiguous_15_25_b1_dynamic_v0_1.py
+          python -m py_compile tools/admit_t1_contiguous_15_25_b1_dynamic_v0_2.py
+      - name: Re-materialize exact Stage15-25 input
+        working-directory: timing-defense-workspace
+        run: |
+          python tools/preflight_t1_contiguous_15_25_b1_v0_1.py \
+            --base legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            --a1 legacy-game-structure/data/t1_wider_exact_authoring_wave_a1_candidate_v0_1.yaml \
+            --a2 legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml \
+            --a3 legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml \
+            --a4 legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml \
+            --candidate legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml \
+            --json-out artifacts/t1-contiguous-15-25-b1-dynamic-v02/static-result.json \
+            --materialized-out artifacts/t1-contiguous-15-25-b1-dynamic-v02/materialized-stage15-25.yaml
+      - name: Execute persistent Stage15-25 dynamic admission
+        working-directory: timing-defense-workspace
+        env:
+          PYTHONPATH: tools
+        run: |
+          python tools/admit_t1_contiguous_15_25_b1_dynamic_v0_2.py \
+            --base legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            --materialized artifacts/t1-contiguous-15-25-b1-dynamic-v02/materialized-stage15-25.yaml \
+            --p3-fixture legacy-game-structure/data/p3_ten_stage_fixture_v0_1.json \
+            --p4d2-base legacy-game-structure/data/p4d2_lv31_pressure_probe_fixture_v0_1.json \
+            --p4d2-temporal legacy-game-structure/data/p4d2_stage46_temporal_pressure_fixture_v0_1.json \
+            --seeds 101,211,307,409,503 \
+            --json-out artifacts/t1-contiguous-15-25-b1-dynamic-v02/dynamic-result.json
+      - name: Upload exact-source evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-t1-contiguous-15-25-b1-dynamic-admission-v02
+          path: timing-defense-workspace/artifacts/t1-contiguous-15-25-b1-dynamic-v02
+          if-no-files-found: error
