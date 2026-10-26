@@ -1,0 +1,40 @@
+name: Linkline A3 Candidate Artifact Export
+
+on:
+  push:
+    branches:
+      - linkline/a3-final-catalog-order-v1
+    paths:
+      - .github/workflows/linkline-a3-export-artifact.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test -s linkline/public_output/a3_final_candidate_pool_v2/candidate_pool.json
+          test -s linkline/public_output/a3_final_candidate_pool_v2/summary.json
+
+      - name: Upload measured candidate pool
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkline-a3-final-candidate-pool-v2
+          path: |
+            repo/linkline/public_output/a3_final_candidate_pool_v2/candidate_pool.json
+            repo/linkline/public_output/a3_final_candidate_pool_v2/summary.json
+          if-no-files-found: error
+          retention-days: 1
