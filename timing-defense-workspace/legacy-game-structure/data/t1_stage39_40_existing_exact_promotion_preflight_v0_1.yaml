@@ -1,0 +1,77 @@
+version: t1-stage39-40-existing-exact-promotion-preflight-v0.1
+status: BOUNDED_EXISTING_EXACT_AUTHORITY_RECOVERY_NO_REAUTHORING_NO_ADOPTION
+
+scope:
+  targetStages: [39, 40]
+  canonicalLeftAnchorStage: 38
+  canonicalContiguousExactWindowBeforePromotion: [15, 38]
+  intendedContiguousExactWindowAfterFutureAdoption: [15, 40]
+  existingCandidateSource: data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  reauthoringAuthorized: false
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+
+structuralAuthority:
+  skeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  staticAudit: ../162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md
+  historicalExactMicrosim: ../167_T1_TRANSITION_SLICE_EXACT_SOURCE_MICROSIM_RESULT_V0_1.md
+  e1Approval: ../188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  waveAApproval: ../180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+existingStageCandidates:
+  - stage: 39
+    id: T1_S39_SYNTHESIS_PEAK
+    archetype: E02+E03
+    monsters: [RUNNER, BRUTE]
+    formation: F08
+    cadence: CD05
+    complexity: C3
+    pressureTags: [RUSH, BULWARK]
+    purpose: RARE_LATE_T1_SYNTHESIS_PEAK
+    authoredCount: 9
+    status: EXISTING_EXACT_CANDIDATE_NOT_CANONICAL
+
+  - stage: 40
+    id: T1_S40_STAR_GATE_B
+    archetype: E01+E02+E03
+    monsters: [GRUNT, RUNNER, BRUTE]
+    formation: F01+F03
+    cadence: CD03
+    complexity: C2
+    pressureTags: [BASELINE]
+    purpose: STAR_GATE_B_KNOWN_VOCABULARY_CHECK
+    authoredCount: 10
+    status: EXISTING_EXACT_CANDIDATE_NOT_CANONICAL
+
+preflightQuestions:
+  - DOES_CURRENT_REPRESENTATIVE_SOURCE_IDENTITY_MATCH_THE_LATEST_ACCEPTED_PRESSURE_SHAPE_EVIDENCE
+  - DO_STAGE39_AND_STAGE40_STILL_MATCH_THE_CANONICAL_SIGNATURE_SKELETON
+  - CAN_STAGE15_40_BE_MATERIALIZED_WITHOUT_MUTATING_ANY_STAGE15_38_CANONICAL_AUTHORITY
+  - IS_PERSISTENT_STAGE15_40_DYNAMIC_ADMISSION_REQUIRED_BEFORE_PROMOTION
+  - DOES_STAGE39_REMAIN_A_RARE_SYNTHESIS_PEAK_AND_STAGE40_A_BROAD_KNOWN_VOCABULARY_GATE
+
+fixedGuards:
+  - LIVE_REMOTE_WINS
+  - DO_NOT_REAUTHOR_STAGE39_40_UNLESS_CONCRETE_EVIDENCE_MISMATCH_REQUIRES_IT
+  - PRESERVE_STAGE15_38_CANONICAL_EXACT_AUTHORITY_BYTE_FOR_BYTE
+  - EXACT_SIGNATURE_MATCH_REQUIRED
+  - NO_NEW_MONSTER_OR_PRESSURE_VOCABULARY
+  - AUTHORED_4S_NORMAL_DENSITY_MAX_8
+  - REAL_PERSISTENT_LIFECYCLE_IF_DYNAMIC_ADMISSION_IS_NEEDED
+  - NO_SCALAR_CHANGE
+  - NO_EXP_PXP_SHOP_FREEZE
+  - NO_PRODUCTION_CHANGE
+  - NO_FULL_T1_EXACT_FREEZE
+
+promotionGate:
+  userApprovalRequired: true
+  userAdoption: NOT_APPLICABLE_YET
+  candidateCanonicalStatus: NOT_YET_ELIGIBLE
+
+nextAction: RECOVER_STAGE39_40_EXACT_SOURCE_AND_HISTORICAL_PRESSURE_SHAPE_EVIDENCE_THEN_RUN_MINIMUM_CONTIGUOUS_PROMOTION_PREFLIGHT
