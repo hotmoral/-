@@ -16,7 +16,7 @@ concurrency:
 jobs:
   validate-and-publish-candidate:
     if: >-
-      github.event.head_commit.message == 'ci: run Einstein pre4 P2 evidence memoization zero draw'
+      github.event.head_commit.message == 'ci: rerun Einstein pre4 P2 evidence memoization zero draw'
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
@@ -32,6 +32,20 @@ jobs:
           ref: main
           path: Harness
           persist-credentials: false
+
+      - name: Correct static helper qualification in local harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Harness/scripts/einstein-pre4-runtime-memory-optimize-p2.sh')
+          s=p.read_text()
+          old='Collections.unmodifiableMap(productive(ops.get(k)))'
+          new='Collections.unmodifiableMap(StructuralAhaAnalyzer.productive(ops.get(k)))'
+          if s.count(old)!=1: raise SystemExit('productive helper correction anchor mismatch')
+          p.write_text(s.replace(old,new,1))
+          PY
 
       - name: Checkout exact P1 candidate with write credential
         uses: actions/checkout@v4
