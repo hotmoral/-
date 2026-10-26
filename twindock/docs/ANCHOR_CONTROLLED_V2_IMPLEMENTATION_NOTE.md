@@ -1,0 +1,1 @@
+Implementation should branch from this checkpoint as `twindock-geometry-capture-controlled-probe-v2` and must not alter accepted continuation.
