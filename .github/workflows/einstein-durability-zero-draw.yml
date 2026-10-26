@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      PRIVATE_REPO: hotmoral/EinsteinGame
       CANDIDATE_SHA: ee82e3748b28e0a4389e5221ff66aafe47fa22e6
       ACCEPTED_BASE_SHA: 08270c5e9875cb5fa765102cfd0f5da477d4f34e
       PRIVATE_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
@@ -76,15 +75,14 @@ jobs:
         working-directory: EinsteinGame
         run: |
           set -euo pipefail
-          chmod +x gradlew
-          ./gradlew --no-daemon --console=plain :puzzle-authoring:testClasses
+          bash ./gradlew --no-daemon --console=plain :puzzle-authoring:testClasses
 
       - name: Run IA-1 contract regression
         shell: bash
         working-directory: EinsteinGame
         run: |
           set -euo pipefail
-          ./gradlew --no-daemon --console=plain :puzzle-authoring:verifyIntentAcquisitionIA1 | tee /tmp/einstein-ia1.log
+          bash ./gradlew --no-daemon --console=plain :puzzle-authoring:verifyIntentAcquisitionIA1 | tee /tmp/einstein-ia1.log
           grep -F 'IntentAcquisitionTest PASS assertions=22' /tmp/einstein-ia1.log
 
       - name: Run IA-2 contract regression
@@ -92,7 +90,7 @@ jobs:
         working-directory: EinsteinGame
         run: |
           set -euo pipefail
-          ./gradlew --no-daemon --console=plain :puzzle-authoring:verifyIntentAcquisitionIA2 | tee /tmp/einstein-ia2.log
+          bash ./gradlew --no-daemon --console=plain :puzzle-authoring:verifyIntentAcquisitionIA2 | tee /tmp/einstein-ia2.log
           grep -F 'IntentAcquisitionIA2Test PASS assertions=33' /tmp/einstein-ia2.log
 
       - name: Run IA-3 contract and Golden regression
@@ -100,7 +98,7 @@ jobs:
         working-directory: EinsteinGame
         run: |
           set -euo pipefail
-          ./gradlew --no-daemon --console=plain :puzzle-authoring:verifyIntentAcquisitionIA3 | tee /tmp/einstein-ia3.log
+          bash ./gradlew --no-daemon --console=plain :puzzle-authoring:verifyIntentAcquisitionIA3 | tee /tmp/einstein-ia3.log
           grep -F 'IntentAcquisitionIA3Test PASS assertions=43' /tmp/einstein-ia3.log
 
       - name: Run completed-attempt checkpoint regression
