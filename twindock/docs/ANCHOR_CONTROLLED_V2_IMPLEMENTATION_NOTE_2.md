@@ -1,0 +1,1 @@
+The corrected independent-trial implementation proceeds on `twindock-geometry-capture-controlled-probe-v2` from the v1 evidence checkpoint.
