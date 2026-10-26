@@ -1,0 +1,461 @@
+{
+  "expandedDomains": [
+    {
+      "chainLength": 6,
+      "constructive": {
+        "attempts": 148,
+        "generated": 148,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 160,
+        "generated": 160,
+        "overlapWithConstructive": 17,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 145
+      },
+      "exactProfileFailures": 1,
+      "exactProfileRows": 90,
+      "goalRecordCount": 96,
+      "goalStatusCounts": {
+        "SOLVED": 91,
+        "UNSOLVABLE": 5
+      },
+      "n": 5,
+      "poolFingerprint": "9749a1a0079575d101774ffe683e75ec60bdb552f43158642a6d5784a11353d2",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 91,
+      "sourceIdentityFingerprint": "ffb9052c36c61c1603217e2500fcba7e855cba7ac74142351d69201b5c605e3d",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 7,
+      "constructive": {
+        "attempts": 142,
+        "generated": 142,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 151,
+        "generated": 151,
+        "overlapWithConstructive": 11,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 139
+      },
+      "exactProfileFailures": 1,
+      "exactProfileRows": 94,
+      "goalRecordCount": 96,
+      "goalStatusCounts": {
+        "SOLVED": 96
+      },
+      "n": 5,
+      "poolFingerprint": "833216645cdb1d5a4784e0079876d071c2d5d8c3db2e7d75b53b0ccd1217695e",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 95,
+      "sourceIdentityFingerprint": "87b6c50d403579fac0ce341d8103d9b17b0719b634e530e636ff47f43e52c53b",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 8,
+      "constructive": {
+        "attempts": 133,
+        "generated": 133,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 140,
+        "generated": 140,
+        "overlapWithConstructive": 4,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 132
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 80,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "SOLVED": 80
+      },
+      "n": 5,
+      "poolFingerprint": "98171bfe72080292aa6880e817ff30346f9e0cf9896c8bad2b487206e41d2f77",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 80,
+      "sourceIdentityFingerprint": "1b7fe5ed1f5a5a33c37e09987ff141638eef4558f82ff52fb1350cac390295a8",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 9,
+      "constructive": {
+        "attempts": 133,
+        "generated": 133,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 133,
+        "generated": 133,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 2,
+      "exactProfileRows": 73,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "SOLVED": 75,
+        "UNSOLVABLE": 5
+      },
+      "n": 5,
+      "poolFingerprint": "ab1d93dd9f9225604aaaeed1146dae36362916431e1a7f205cd6e7d9cf68eaac",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 75,
+      "sourceIdentityFingerprint": "37ed728c29b22f5e66ed49913cf13e6483557789c232549f7928128b99811c49",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 10,
+      "constructive": {
+        "attempts": 129,
+        "generated": 129,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 137,
+        "generated": 137,
+        "overlapWithConstructive": 1,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 129
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 70,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "SOLVED": 70,
+        "UNSOLVABLE": 10
+      },
+      "n": 5,
+      "poolFingerprint": "dbc772decf6c137e93bcc65a8bc60a327e6cf76ffb43db957cc2470f78cd415a",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 70,
+      "sourceIdentityFingerprint": "e900d29629bdd32601410936f7c7e935c6214702ceb33b903911ac8444639f03",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 8,
+      "constructive": {
+        "attempts": 132,
+        "generated": 132,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 133,
+        "generated": 133,
+        "overlapWithConstructive": 1,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 129
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 90,
+      "goalRecordCount": 96,
+      "goalStatusCounts": {
+        "SOLVED": 90,
+        "UNSOLVABLE": 6
+      },
+      "n": 6,
+      "poolFingerprint": "a7e96f495606db13bbdb6941309a42f3ef6bfa7ea1040a143fffe8d0af9791f9",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 90,
+      "sourceIdentityFingerprint": "5b594e44d0109b2b20021f85cfbcd6c3378eff55b1226dfe6bb5e1fe32206b81",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 9,
+      "constructive": {
+        "attempts": 130,
+        "generated": 130,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 133,
+        "generated": 133,
+        "overlapWithConstructive": 1,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 129
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 96,
+      "goalRecordCount": 96,
+      "goalStatusCounts": {
+        "SOLVED": 96
+      },
+      "n": 6,
+      "poolFingerprint": "82462144f4315888b93154fe005915129bc69af176fa836c7186741c523c21f7",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 96,
+      "sourceIdentityFingerprint": "5d017dba8d403da95237e2ef693eca6200502af5e7b4e187315c3311b140d7a1",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 10,
+      "constructive": {
+        "attempts": 129,
+        "generated": 129,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 129,
+        "generated": 129,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 73,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "INCOMPLETE": 2,
+        "SOLVED": 73,
+        "UNSOLVABLE": 5
+      },
+      "n": 6,
+      "poolFingerprint": "c1995cd9b794ba81731d8afbb85a22a3474519d2c8721a4224ba2c391c96c933",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 73,
+      "sourceIdentityFingerprint": "1178e12997919378b7206a9dc9b148d049f81d1dd0ef3e059d55b0f635899445",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 11,
+      "constructive": {
+        "attempts": 129,
+        "generated": 129,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 133,
+        "generated": 133,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 73,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "INCOMPLETE": 2,
+        "SOLVED": 73,
+        "UNSOLVABLE": 5
+      },
+      "n": 6,
+      "poolFingerprint": "b5c15ba5b906879da9b58a1c6fa0b17d1eae4d28a265383b5b05403f3854d39b",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 73,
+      "sourceIdentityFingerprint": "059d184234695f56a39462592b5885964d01d28b7660040797ae8300d3c08572",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 12,
+      "constructive": {
+        "attempts": 129,
+        "generated": 129,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 131,
+        "generated": 131,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 65,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "INCOMPLETE": 5,
+        "SOLVED": 65,
+        "UNSOLVABLE": 10
+      },
+      "n": 6,
+      "poolFingerprint": "348751ac16bf6aba55509df864fdcef06b704a2c102e338c6ff362ad615254b4",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 65,
+      "sourceIdentityFingerprint": "4f8cddb42f6082fb6499d1ca49e94b80be161034df82a8fa97853ed11f39cd84",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 13,
+      "constructive": {
+        "attempts": 128,
+        "generated": 128,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 134,
+        "generated": 134,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 0,
+      "exactProfileRows": 70,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "INCOMPLETE": 5,
+        "SOLVED": 70,
+        "UNSOLVABLE": 5
+      },
+      "n": 6,
+      "poolFingerprint": "d1e2bd18716d12fdaa8730dc910ff01f538d614dc42044ecd6d9a13f9e8ad066",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 70,
+      "sourceIdentityFingerprint": "4ed4fc863ad8b26450d734c967c48ae9b2718b21a8c3a58ccb75782da1ff8e78",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 14,
+      "constructive": {
+        "attempts": 128,
+        "generated": 128,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 132,
+        "generated": 132,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 1,
+      "exactProfileRows": 68,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "INCOMPLETE": 6,
+        "SOLVED": 69,
+        "UNSOLVABLE": 5
+      },
+      "n": 6,
+      "poolFingerprint": "53ff1142555f0cd2059bb9d2530c2bf9421a7cacec0fd86f1a3ea16ea583750a",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 69,
+      "sourceIdentityFingerprint": "41dc5539bf415f29a06910c3bada57ed77f3661d6dbc6e229cb342f4ebfa9d9f",
+      "uniqueTotal": 256
+    },
+    {
+      "chainLength": 15,
+      "constructive": {
+        "attempts": 128,
+        "generated": 128,
+        "nodeCapHits": 0,
+        "requested": 128,
+        "unique": 128
+      },
+      "dynamic": {
+        "attempts": 132,
+        "generated": 132,
+        "overlapWithConstructive": 0,
+        "requested": 128,
+        "unique": 128,
+        "withinFamilyUnique": 128
+      },
+      "exactProfileFailures": 1,
+      "exactProfileRows": 78,
+      "goalRecordCount": 80,
+      "goalStatusCounts": {
+        "INCOMPLETE": 1,
+        "SOLVED": 79
+      },
+      "n": 6,
+      "poolFingerprint": "b97c202ff4d42cc251fb30f24c32f94f33366deea274670814a9b60ae30334b6",
+      "selectedStateCount": 16,
+      "solvedUniqueIdentityCount": 79,
+      "sourceIdentityFingerprint": "8c0bb8baf57f371f4d25714708894f3d35abd4e3f665376e89e491371541b687",
+      "uniqueTotal": 256
+    }
+  ],
+  "legacyReplay": {
+    "boundedExactEligibleBeforePrivateIsolation": 1905,
+    "exactN3BeforePrivateIsolation": 390,
+    "legacyUnionBeforePrivateIsolation": 2270,
+    "legacyUnionIdentityFingerprintBeforePrivateIsolation": "a93bfc773928a1457aa685af4258f7367a59e04fd6f8e18dab6b4165b21debd9",
+    "universeCount": 84320
+  },
+  "poolBeforePrivateIsolation": {
+    "crossFormatUniqueFamilyCount": 2205,
+    "formatAwareUniqueFamilyCount": 2429,
+    "identityFingerprint": "10c08ea21ac083f97c332386c14110e3b562d568d70bcffceb8d2a5c0cc2fd87",
+    "nCounts": {
+      "3": 390,
+      "4": 1880,
+      "5": 407,
+      "6": 613
+    },
+    "nlCounts": {
+      "N3L3": 42,
+      "N3L4": 95,
+      "N3L5": 107,
+      "N3L6": 61,
+      "N3L7": 80,
+      "N3L8": 5,
+      "N4L10": 552,
+      "N4L3": 13,
+      "N4L4": 45,
+      "N4L5": 72,
+      "N4L6": 163,
+      "N4L7": 227,
+      "N4L8": 360,
+      "N4L9": 448,
+      "N5L10": 70,
+      "N5L6": 90,
+      "N5L7": 94,
+      "N5L8": 80,
+      "N5L9": 73,
+      "N6L10": 73,
+      "N6L11": 73,
+      "N6L12": 65,
+      "N6L13": 70,
+      "N6L14": 68,
+      "N6L15": 78,
+      "N6L8": 90,
+      "N6L9": 96
+    },
+    "qualitativeSignatureCount": 70,
+    "rowCount": 3290
+  },
+  "schema": "LINKLINE_A3_PUBLIC_FINAL_CANDIDATE_POOL_REUSE_FIRST_SUMMARY",
+  "summaryFingerprint": "439f171245f25c3b6625c0abbfe24e7bfe1d7276f599f02d5700bb648acc0e77",
+  "version": "2.0.0"
+}
