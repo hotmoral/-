@@ -8,20 +8,20 @@ Updated: 2026-10-26 KST
 live remote > canonical documents > exact evidence > handoff > copied SHA/chat/memory
 ```
 
-Always fetch live `timing-defense-workspace` before acting. A new session is not a reason to rerun closed evidence.
+Always fetch the live branch before acting. A fresh session is not a reason to rerun accepted work.
 
 ## 1. Recovery order
 
-1. live `timing-defense-workspace` HEAD;
+1. live `timing-defense-workspace`;
 2. `PROJECT_STATUS.md`;
 3. `NEXT_WORK.md`;
-4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_62.yaml`;
-5. D1 closure doc185;
-6. C1 approval doc184 and closure doc183;
-7. Stage16/17 approval doc182;
-8. B1 closure doc181;
+4. active `legacy-game-structure/data/system_dependency_calibration_order_v0_63.yaml`;
+5. D1 approval doc186;
+6. D1 closure doc185;
+7. C1 approval doc184 and closure doc183;
+8. Stage16/17 approval doc182 and B1 closure doc181;
 9. Wave A approval doc180;
-10. Stage49-50 approval doc174.
+10. E1 Stage34-36 plan.
 
 ## 2. Current macro state
 
@@ -34,136 +34,65 @@ Stage49-50 = USER APPROVED AUTHORING BASELINE WITH WATCHES
 Wave A = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage16/17 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage26/27/28 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
-Stage15-31 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
+Stage32 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
+Stage15-33 = CANONICAL CONTIGUOUS EXACT AUTHORING WINDOW
 
-D1 Stage32 candidate static = PASS
+D1 static = PASS
 D1 persistent Stage15-33 dynamic = PASS_WITH_WATCHES
-D1 user adoption = PENDING
-
 production gameplay = UNCHANGED / UNAUTHORIZED
 full Stage1-50 exact recipe freeze = DEFERRED
 
-CURRENT = T1_D1_STAGE32_AUTHORING_ADOPTION_DECISION_GATE
+CURRENT = T1_E1_STAGE34_36_CONTIGUOUS_GAP_PREFLIGHT
 ```
 
-## 3. D1 exact candidate
+## 3. D1 approved exact authority
 
-Path:
+Approval:
+`legacy-game-structure/186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
+
+Candidate:
 `legacy-game-structure/data/t1_contiguous_32_d1_candidate_v0_1.yaml`
 
 SHA256:
 `91909c0b9be28003a8fdcbafd3ad65b325ed9b2247524e810f950bd3541d45d8`
 
 ```text
-Stage32
-E02 / F04 / CD04 / C2 / RUSH
-RUNNER 0ms    y=.28
-GRUNT  180ms  y=.70
-RUNNER 360ms  y=.42
-GRUNT  2200ms y=.66
-RUNNER 2380ms y=.32
-GRUNT  2560ms y=.74
-RUNNER 4700ms y=.40
-GRUNT  4880ms y=.68
-RUNNER 5060ms y=.30
+S32: R,G,R,G,R,G,R,G,R
+T  : 0,180,360,2200,2380,2560,4700,4880,5060ms
+Y  : .28,.70,.42,.66,.32,.74,.40,.68,.30
 ```
 
-The candidate is validated but **not adopted**.
+Exact count/timestamp/type/Y are canonical authoring authority WITH WATCHES.
 
-## 4. Static evidence
-
-```text
-run 40331569664
-artifact 12653329249
-exact HEAD 20f5a4cc16c920bdfe86b1a0a3110284ff7c4ef4
-artifact SHA256 2107ce835dcba4ae1e7cc06bd8baf08f3ab2b907dcdd0db0ea9df9e133700290
-candidate SHA256 91909c0b9be28003a8fdcbafd3ad65b325ed9b2247524e810f950bd3541d45d8
-materialized Stage15-33 SHA256 47f02889b659dcad7988645fcc6e11381de38607657bd7751d7387856dba5466
-
-PASS
-errors=[] warnings=[]
-referenceIntegrity=PASS
-authorityPreserved=true
-contiguous15to33=true
-rotation31to33Preserved=true
-```
-
-Static counts:
+## 4. D1 retained evidence
 
 ```text
-S31 8 / max4s 8
-S32 9 / max4s 6
-S33 12 / max4s 8
-```
+static run 40331569664 / artifact 12653329249 / PASS
+materialized Stage15-33 SHA256
+47f02889b659dcad7988645fcc6e11381de38607657bd7751d7387856dba5466
 
-## 5. Dynamic evidence
-
-Accepted run:
-
-```text
-run 40332410094
-artifact 12653794932
-exact HEAD b34bb2432797dc0d6ae5e8135072b19dd3ebaa85
-artifact SHA256 bfb0333d7773fee53a03f67025d8a295fee3b332f7a0ded9b6f251853b1aba52
-runner SHA256 1a6a15ae228a3d7c674678479a0049979e40f59f025b09221abceda8b2938a87
-dynamic-result SHA256 550271fe67fc46f67a5671276bbec8ebe6e98adbd51a3a3b5ce7f723ed2bb688
-```
-
-Variants:
-
-```text
-Lv16@18 vs Lv16@21
-× Lv21@25 vs Lv21@28
-× Lv26@32 vs inactive through Stage33
-```
-
-5 classes × 5 seeds × 8 variants = 200 cases.
-
-Admission:
-
-```text
-PASS_DYNAMIC_DIAGNOSTIC_ONLY
-200/200 complete through Stage33
+dynamic run 40332410094 / artifact 12653794932
+exact dynamic HEAD b34bb2432797dc0d6ae5e8135072b19dd3ebaa85
+200/200 complete Stage15->33
 3800 Stage rows
-terminal failures = 0
-exact materialized identity PASS
-persistent continuity PASS
-deterministic replay PASS
-settlement/carry invariants PASS
-all error arrays = []
+terminal failures 0
+continuity/replay/settlement errors 0
 ```
 
-Stage31-33:
+Behavioral closure:
 
 ```text
-S31 wall 0 / actions 7.700 / settle 7.3963 / peak 4.510
-S32 wall 0 / actions 8.305 / settle 8.1189 / peak 4.230
-S33 wall 0 / actions 9.010 / settle 8.9018 / peak 6.205
+S31->S32 tempo increase SUPPORTED
+S32 below S33 density identity SUPPORTED
+S32->S33 density escalation SUPPORTED
+S31-33 wall damage 0 in bounded sample
 ```
 
-Therefore:
+The superseded first dynamic run was a runner metadata-literal defect only. No candidate/runtime change resulted.
 
-```text
-S31->32 tempo demand increase SUPPORTED
-S32 tempo role distinct from S33 density SUPPORTED
-S32->33 density escalation SUPPORTED
-objective safety in bounded sample SUPPORTED
-```
+No new D1 watch was added.
 
-Paired Lv26@32 minus inactive-through-33:
-
-```text
-S32 wall delta 0 / actions -0.21 / settle -0.2260s
-S33 wall delta 0 / actions -0.46 / settle -0.4046s
-```
-
-This does not freeze the exact Lv26 activation Stage.
-
-## 6. Superseded first dynamic invocation
-
-Run `40331982731` failed only after simulation because two result-metadata Python literals used `false` instead of `False`. The candidate/runtime were not changed. The corrected accepted run above supersedes it.
-
-## 7. Progression authority
+## 5. Progression authority
 
 ```text
 Lv16 = Stage18-21 calibration-candidate band
@@ -171,9 +100,9 @@ Lv21 = Stage25-28 calibration-candidate band
 Lv26 = Stage32-36 calibration-candidate band
 ```
 
-No exact EXP threshold is frozen.
+These are not exact EXP unlock Stages.
 
-## 8. Active watches
+## 6. Active watches
 
 ```text
 T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
@@ -186,26 +115,56 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-No new D1 watch was added.
+## 7. Current E1 package
 
-## 9. Current decision gate
-
-Ask exactly:
+Plan:
+`legacy-game-structure/data/t1_contiguous_34_36_e1_authoring_plan_v0_1.yaml`
 
 ```text
-ADOPT STAGE32 EXACT SPAWN CANDIDATE
-AS CANONICAL T1 AUTHORING BASELINE WITH WATCHES?
+left anchor = Stage33 exact
+Stage34-36 = missing contiguous gap
+right anchor = Stage37 exact
+future exact contiguous window = Stage15-37
 ```
 
-Evidence recommendation:
-`ADOPT`
+Structural authority:
 
-If approved:
-- create user-approved Stage32 baseline source;
-- promote canonical contiguous exact window to Stage15-33;
-- retain watches;
-- advance the active plan;
-- sync canonical docs;
-- then select the next smallest bounded exact-authoring gap from live authority.
+```text
+S34 = E03+E02 / G+B+R / F02 / CD05 / C2 / BULWARK
+S35 = E01 / G / F04 / CD05 / C1 / BASELINE
+S36 = E03 / G+B / F01 / CD03 / C1 / BULWARK
+```
 
-Approval does not authorize production, scalar changes, exact Lv26 unlock Stage, final EXP/P×P/shop values, or full T1 Stage1-50 exact freeze.
+Approved anchor Stage37:
+
+```text
+E02 / G+R / F08 / CD04 / C2 / RUSH
+8 authored units
+```
+
+E1 current state:
+
+```text
+structural plan CREATED
+exact recipes NOT YET
+static admission NOT RUN
+dynamic admission NOT RUN
+user adoption NOT APPLICABLE YET
+```
+
+## 8. Fixed guards
+
+```text
+LIVE REMOTE WINS
+NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
+STAGE15-33 IS CANONICAL EXACT AUTHORITY
+STAGE_SETTLED REQUIRES DELAYED EVENT QUEUE DRAINAGE
+AUTHORED 4s NORMAL DENSITY <= 8
+NO CLASS/MONSTER SCALAR CHANGE
+NO SHOP/EXP/P×P CHANGE
+NO EXACT LV26 UNLOCK FREEZE
+NO PRODUCTION GAMEPLAY CHANGE
+NO FULL T1 STAGE1-50 EXACT FREEZE
+```
+
+Continue from E1 Stage34-36 structural recovery/preflight and nowhere earlier unless a concrete inconsistency appears.

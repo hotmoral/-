@@ -1,0 +1,99 @@
+version: system-dependency-calibration-order-v0.63
+status: ACTIVE_T1_E1_STAGE34_36_CONTIGUOUS_GAP_PREFLIGHT_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_62.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_62.yaml
+
+canonicalUpdates:
+  - ../186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  - ../185_T1_CONTIGUOUS_15_33_D1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md
+  - ../184_T1_STAGE26_28_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+campaignAuthoring:
+  contiguousCoverageD1:
+    id: D1_STAGE32_SINGLE_GAP_AUTHORING
+    targetStages: [32]
+    candidatePath: data/t1_contiguous_32_d1_candidate_v0_1.yaml
+    candidateSha256: 91909c0b9be28003a8fdcbafd3ad65b325ed9b2247524e810f950bd3541d45d8
+    materializedStage15_33Sha256: 47f02889b659dcad7988645fcc6e11381de38607657bd7751d7387856dba5466
+    staticAdmission: PASS
+    dynamicAdmission: PASS_WITH_WATCHES
+    approvalSource: ../186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+    candidateAdopted: true
+    userAdoption: APPROVED_2026_10_26_KST
+    authoringBaseline: USER_APPROVED_WITH_WATCHES
+    canonicalWindowAfterAdoption: [15, 33]
+    numericalFreeze: false
+    productionGameplayChange: false
+
+  contiguousCoverageE1:
+    id: E1_STAGE34_36_CONTIGUOUS_GAP_AUTHORING
+    targetStages: [34, 35, 36]
+    leftAnchorStage: 33
+    rightAnchorStage: 37
+    intendedCanonicalWindowAfterAdoption: [15, 37]
+    planPath: data/t1_contiguous_34_36_e1_authoring_plan_v0_1.yaml
+    status: STRUCTURAL_RECOVERY_AND_PREFLIGHT_REQUIRED
+    rationale:
+      - CLOSE_NEXT_CONTIGUOUS_GAP_WITHOUT_BROAD_AUTHORING
+      - PRESERVE_APPROVED_STAGE33_AND_STAGE37_EXACT_AUTHORITIES
+      - COVER_REMAINDER_OF_LV26_CALIBRATION_CANDIDATE_BAND_WITH_EXISTING_T1_VOCABULARY
+      - EXTEND_REAL_PERSISTENT_LIFECYCLE_TO_STAGE37_IF_LATER_ADOPTED
+    exactRecipeCandidateCreated: false
+    staticAdmission: NOT_RUN
+    dynamicAdmission: NOT_RUN
+    userAdoption: NOT_APPLICABLE_YET
+    numericalFreeze: false
+    productionGameplayChange: false
+
+progressionReachAuthority:
+  lv16:
+    band: [18, 21]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  lv21:
+    band: [25, 28]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  lv26:
+    band: [32, 36]
+    testedDiagnosticPositions: [32, ABSENT_THROUGH_33]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  exactExpThresholdFreeze: false
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  delayedCombatEventsMustDrainBeforeSettled: true
+  preserveWaveAApprovedExactRecipes: true
+  preserveStage16_17AdoptedExactRecipes: true
+  preserveC1AdoptedExactRecipes: true
+  preserveD1AdoptedExactRecipe: true
+  canonicalContiguousExactWindow: [15, 33]
+  authored4sNormalMax: 8
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  productionGameplayChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+closedDecision:
+  id: T1_D1_STAGE32_AUTHORING_ADOPTION_DECISION_GATE
+  result: USER_APPROVED_WITH_WATCHES
+  approvalSource: ../186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+currentBoundary:
+  activePackage: T1_E1_STAGE34_36_CONTIGUOUS_GAP_PREFLIGHT
+  d1Status: USER_APPROVED_AUTHORING_BASELINE_WITH_WATCHES
+  e1Status: STRUCTURAL_RECOVERY_AND_PREFLIGHT_REQUIRED
+  nextRequiredAction: RECOVER_STAGE33_37_EXACT_ANCHORS_AND_DEFINE_BOUNDED_STAGE34_36_AUTHORING_CONTRACT
+  noProductionChange: true
+  noNumericalFreeze: true
