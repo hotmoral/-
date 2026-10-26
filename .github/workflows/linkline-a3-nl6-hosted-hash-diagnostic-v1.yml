@@ -1,0 +1,25 @@
+name: Linkline A3 NL6 Hosted Hash Diagnostic
+
+on:
+  push:
+    branches:
+      - linkline/a3-nl6-hosted-parity-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hosted-hashes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print immutable hosted Git blob hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://e42e0ae5-timing-defense-skilled-v2-harness.sktjsek.workers.dev'
+          mkdir -p /tmp/hosted/data
+          for path in index.html app.mjs protocol.mjs config.mjs mechanic.mjs styles.css data/session_bundle.json data/analysis_metadata.json build_manifest.json; do
+            curl --fail --silent --show-error --retry 3 --retry-delay 1 "${BASE}/${path}" -o "/tmp/hosted/${path}"
+            printf '%s  %s\n' "$(git hash-object /tmp/hosted/${path})" "${path}"
+          done
