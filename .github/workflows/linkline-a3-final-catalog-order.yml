@@ -6,6 +6,7 @@ on:
       - linkline/a3-final-catalog-order-v1
     paths:
       - linkline/tools/a3_final_candidate_pool_public.py
+      - linkline/tools/a3_final_candidate_pool_reuse_v2.py
       - .github/workflows/linkline-a3-final-catalog-order.yml
 
 permissions:
@@ -43,6 +44,7 @@ jobs:
           test "$(git hash-object linkline/analysis/a2_cognitive.py)" = "880aa4d8668fd71e2ce8222331f0da0368229400"
           test "$(git hash-object linkline/analysis/a3_structural_features.py)" = "35a6b997816ee3608d4d8064febd059159030796"
           test "$(git hash-object linkline/tools/a3_final_candidate_pool_public.py)" = "86635edf7266f2f2524ed031467cf4e3045c69c9"
+          test "$(git hash-object linkline/tools/a3_final_candidate_pool_reuse_v2.py)" = "ed5d25f09a0ede74cfd02323137da56c3fefcc5d"
 
       - name: Cheap syntax check
         shell: bash
@@ -50,9 +52,9 @@ jobs:
         run: |
           set -euo pipefail
           python --version
-          python -m py_compile tools/a3_final_candidate_pool_public.py
+          python -m py_compile tools/a3_final_candidate_pool_public.py tools/a3_final_candidate_pool_reuse_v2.py
 
-      - name: Materialize de-identified candidate pool
+      - name: Reconstruct reuse-first de-identified candidate pool
         shell: bash
         working-directory: repo/linkline
         env:
@@ -61,11 +63,11 @@ jobs:
           PYTHONPATH: "."
         run: |
           set -euo pipefail
-          rm -rf public_output/a3_final_candidate_pool_v1
-          python -c 'import tools.a3_final_candidate_pool_public as m; m.LEGACY_BUFFER_FACTOR=2.0; m.main()'
-          test -s public_output/a3_final_candidate_pool_v1/candidate_pool.json
-          test -s public_output/a3_final_candidate_pool_v1/summary.json
-          sha256sum public_output/a3_final_candidate_pool_v1/candidate_pool.json public_output/a3_final_candidate_pool_v1/summary.json
+          rm -rf public_output/a3_final_candidate_pool_v2
+          python tools/a3_final_candidate_pool_reuse_v2.py
+          test -s public_output/a3_final_candidate_pool_v2/candidate_pool.json
+          test -s public_output/a3_final_candidate_pool_v2/summary.json
+          sha256sum public_output/a3_final_candidate_pool_v2/candidate_pool.json public_output/a3_final_candidate_pool_v2/summary.json
 
       - name: Commit public-safe measured output
         shell: bash
@@ -76,10 +78,10 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add linkline/public_output/a3_final_candidate_pool_v1
+          git add linkline/public_output/a3_final_candidate_pool_v2
           if git diff --cached --quiet; then
             echo "No generated changes"
             exit 0
           fi
-          git commit -m "Linkline A3: materialize public-safe final candidate pool"
+          git commit -m "Linkline A3: materialize reuse-first final candidate pool"
           git push origin HEAD:linkline/a3-final-catalog-order-v1
