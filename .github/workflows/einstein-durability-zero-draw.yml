@@ -7,6 +7,10 @@ on:
         description: 'Type RUN_EINSTEIN_DURABILITY_ZERO_DRAW_V1 exactly'
         required: true
         type: string
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-durability-zero-draw.yml'
 
 permissions:
   contents: read
@@ -17,7 +21,9 @@ concurrency:
 
 jobs:
   validate:
-    if: inputs.confirm == 'RUN_EINSTEIN_DURABILITY_ZERO_DRAW_V1'
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.confirm == 'RUN_EINSTEIN_DURABILITY_ZERO_DRAW_V1') ||
+      (github.event_name == 'push' && github.event.head_commit.message == 'ci: trigger Einstein zero-draw validation')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -30,7 +36,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$PRIVATE_TOKEN" || {
-            echo 'EINSTEINGAME_READ_TOKEN is not configured; refusing validation.' >&2
+            echo 'EINSTEINGAME_READ_TOKEN is not configured; refusing validation before checkout.' >&2
             exit 2
           }
 
