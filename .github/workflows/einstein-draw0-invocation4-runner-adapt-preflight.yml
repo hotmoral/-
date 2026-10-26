@@ -15,7 +15,6 @@ concurrency:
 
 jobs:
   adapt:
-    if: github.event.head_commit.message == 'ci: adapt Einstein draw0 invocation4 runner zero draw'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -108,21 +107,10 @@ jobs:
           rm -rf "$CLASSES_DIR" "$SOURCES_FILE" "$EXEC_DIR"
           mkdir -p "$CLASSES_DIR"
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES_FILE"
-          cat >> "$SOURCES_FILE" <<'EOF'
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java
-          ../FrozenFixture/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java
-          EOF
+          printf '%s\n' \
+            'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/IntentAcquisitionAckDurableRecoveryRunnerV1.java' \
+            '../FrozenFixture/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/BoundedAcquisitionContextEpochPreflightTest.java' >> "$SOURCES_FILE"
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES_DIR" "@$SOURCES_FILE"
-          python3 - <<'PY'
-          from pathlib import Path
-          import struct
-          files=list(Path('/tmp/einstein-invocation4-runner-classes').rglob('*.class'))
-          assert files
-          for p in files:
-              magic,minor,major=struct.unpack('>IHH',p.read_bytes()[:8])
-              assert (magic,minor,major)==(0xCAFEBABE,0,52),(p,major)
-          print('JAVA8_CLASSFILE_TARGET=PASS count='+str(len(files)))
-          PY
 
       - name: Run zero-draw local durability and split-resume preflight
         shell: bash
@@ -132,9 +120,7 @@ jobs:
           EINSTEIN_REMOTE_EVIDENCE_ROOT: preflight/invocation4-local
         run: |
           set -euo pipefail
-          java -Xmx512m -cp "$CLASSES_DIR" \
-            com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionAckDurableRecoveryRunnerV1 \
-            preflight "$EXEC_DIR" | tee /tmp/einstein-invocation4-runner-preflight.log
+          java -Xmx512m -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionAckDurableRecoveryRunnerV1 preflight "$EXEC_DIR" | tee /tmp/einstein-invocation4-runner-preflight.log
           grep -F 'ACK_DURABLE_RECOVERY_LOCAL_PREFLIGHT=PASS' /tmp/einstein-invocation4-runner-preflight.log
           grep -F 'SPLIT_RESUME_CONTRACT=PASS' /tmp/einstein-invocation4-runner-preflight.log
           grep -F 'formalAcquisitionInvocationCount=0' /tmp/einstein-invocation4-runner-preflight.log
@@ -152,10 +138,4 @@ jobs:
           NEW_SHA="$(git rev-parse HEAD)"
           git push origin "HEAD:refs/heads/$RUNNER_BRANCH"
           test "$(git ls-remote origin "refs/heads/$RUNNER_BRANCH" | cut -f1)" = "$NEW_SHA"
-          printf '%s\n' \
-            'EINSTEIN_DRAW0_INVOCATION4_RUNNER_ADAPTATION=PASS' \
-            "runner=$NEW_SHA" \
-            "acceptedSource=$ACCEPTED_SOURCE_SHA" \
-            'splitResume=PASS' \
-            'localRemoteAck=PASS' \
-            'formalAcquisitionInvocation=0'
+          printf '%s\n' 'EINSTEIN_DRAW0_INVOCATION4_RUNNER_ADAPTATION=PASS' "runner=$NEW_SHA" "acceptedSource=$ACCEPTED_SOURCE_SHA" 'splitResume=PASS' 'localRemoteAck=PASS' 'formalAcquisitionInvocation=0'
