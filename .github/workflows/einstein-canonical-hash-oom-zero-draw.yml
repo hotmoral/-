@@ -118,7 +118,7 @@ jobs:
 
       - name: Run PSS Aha regression
         shell: bash
-        working-directory: EinsteinGame/puzzle-authoring
+        working-directory: EinsteinGame
         run: |
           set -euo pipefail
           java -Xmx2g -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.PssAhaTest | tee /tmp/einstein-pss-aha.log
