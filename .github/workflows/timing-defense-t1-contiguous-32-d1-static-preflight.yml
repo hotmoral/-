@@ -1,0 +1,59 @@
+name: Timing Defense T1 Contiguous 32 D1 Static Preflight
+
+on:
+  push:
+    branches: [timing-defense-workspace]
+    paths:
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_contiguous_32_d1_authoring_plan_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_contiguous_32_d1_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/legacy-game-structure/data/t1_contiguous_26_28_c1_candidate_v0_1.yaml'
+      - 'timing-defense-workspace/tools/preflight_t1_contiguous_32_d1_v0_1.py'
+      - '.github/workflows/timing-defense-t1-contiguous-32-d1-static-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: pip install pyyaml
+      - name: Record exact source
+        run: |
+          mkdir -p artifacts/t1-contiguous-32-d1
+          echo "$GITHUB_SHA" > artifacts/t1-contiguous-32-d1/exact-source-sha.txt
+      - name: Compile validator
+        run: python -m py_compile timing-defense-workspace/tools/preflight_t1_contiguous_32_d1_v0_1.py
+      - name: Run static preflight
+        id: preflight
+        continue-on-error: true
+        run: |
+          python timing-defense-workspace/tools/preflight_t1_contiguous_32_d1_v0_1.py \
+            --plan timing-defense-workspace/legacy-game-structure/data/t1_contiguous_32_d1_authoring_plan_v0_1.yaml \
+            --base timing-defense-workspace/legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml \
+            --a2 timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a2_candidate_v0_1.yaml \
+            --a3 timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml \
+            --a4 timing-defense-workspace/legacy-game-structure/data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml \
+            --b1 timing-defense-workspace/legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml \
+            --c1 timing-defense-workspace/legacy-game-structure/data/t1_contiguous_26_28_c1_candidate_v0_1.yaml \
+            --candidate timing-defense-workspace/legacy-game-structure/data/t1_contiguous_32_d1_candidate_v0_1.yaml \
+            --json-out artifacts/t1-contiguous-32-d1/result.json \
+            --materialized-out artifacts/t1-contiguous-32-d1/materialized-stage15-33.yaml
+      - name: Record final status
+        run: echo '${{ steps.preflight.outcome }}' > artifacts/t1-contiguous-32-d1/step-outcome.txt
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-defense-t1-contiguous-32-d1-static-preflight
+          path: artifacts/t1-contiguous-32-d1
+      - name: Fail if preflight failed
+        if: steps.preflight.outcome != 'success'
+        run: exit 1

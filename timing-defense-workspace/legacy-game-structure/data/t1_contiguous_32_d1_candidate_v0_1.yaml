@@ -1,0 +1,60 @@
+version: t1-contiguous-32-d1-candidate-v0.1
+status: BOUNDED_D1_EXACT_AUTHORING_CANDIDATE_NO_ADOPTION_NO_PRODUCTION_OR_NUMERICAL_FREEZE
+
+plan:
+  path: data/t1_contiguous_32_d1_authoring_plan_v0_1.yaml
+  gitBlobSha: 98c3bbd0acd5f0dcee179eb70c60e6f1568e78b4
+
+authority:
+  adoptedC1:
+    approval: ../184_T1_STAGE26_28_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+    approvalGitBlobSha: b3c72bc9e791a782563dde2677c55805255f81b3
+    candidate: {path: data/t1_contiguous_26_28_c1_candidate_v0_1.yaml, sha256: 63e40e635b47c54876778a1c64809e961b3929062e3279ea4a805fdf9d8760e4}
+  leftAnchor:
+    path: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+    sha256: 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
+    gitBlobSha: 4d3a068a9393d275f7ac2699544b7179a7147bf2
+    stage: 31
+  rightAnchor:
+    path: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    sha256: 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36
+    gitBlobSha: 0c3ea19a5b3ccd7eecd76fe221c795fd8f30d90d
+    stage: 33
+
+scope:
+  intendedContiguousWindowAfterFutureAdoption: [15, 33]
+  addedStages: [32]
+  canonicalExactWindowBeforeCandidate: [15, 31]
+  rightExactAnchorStages: [33]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+  candidateAdopted: false
+
+stageAdditions:
+  - id: T1_S32_LV26_TEMPO_PRESSURE_D1
+    stage: 32
+    archetype: E02
+    componentArchetypes: [E02]
+    formation: F04
+    formationSet: [F04]
+    cadence: CD04
+    complexity: C2
+    pressureTags: [RUSH]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: RUNNER, y: 0.28}
+      - {tMs: 180, type: GRUNT, y: 0.70}
+      - {tMs: 360, type: RUNNER, y: 0.42}
+      - {tMs: 2200, type: GRUNT, y: 0.66}
+      - {tMs: 2380, type: RUNNER, y: 0.32}
+      - {tMs: 2560, type: GRUNT, y: 0.74}
+      - {tMs: 4700, type: RUNNER, y: 0.40}
+      - {tMs: 4880, type: GRUNT, y: 0.68}
+      - {tMs: 5060, type: RUNNER, y: 0.30}
