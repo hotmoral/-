@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: einstein-pre4-candidate-zero-draw-v2
+  group: einstein-pre4-candidate-zero-draw-v3
   cancel-in-progress: false
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 45
     env:
       BASE_SHA: bddc1e741252eec7793d9064a607c495c006ce9c
-      CANDIDATE_SHA: b9cee065c261066919c36284c04c4777323c167b
+      CANDIDATE_SHA: e4e7fb44cc798985270c5ebc134f2255f20a4368
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BASE_CLASSES: /tmp/einstein-pre4-base-classes
       CANDIDATE_CLASSES: /tmp/einstein-pre4-candidate-classes
@@ -37,17 +37,17 @@ jobs:
           ref: bddc1e741252eec7793d9064a607c495c006ce9c
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: Baseline
-          fetch-depth: 2
+          fetch-depth: 3
           persist-credentials: false
 
       - name: Checkout exact candidate
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: b9cee065c261066919c36284c04c4777323c167b
+          ref: e4e7fb44cc798985270c5ebc134f2255f20a4368
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: Candidate
-          fetch-depth: 2
+          fetch-depth: 3
           persist-credentials: false
 
       - name: Hard gate exact reviewed delta
@@ -60,6 +60,7 @@ jobs:
           test "$(git -C Candidate merge-base "$BASE_SHA" HEAD)" = "$BASE_SHA"
           mapfile -t changed < <(git -C Candidate diff --name-only "$BASE_SHA" HEAD | sort)
           expected=(
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/aha/StructuralAhaAnalyzer.java'
             'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/contract/HumanStep.java'
             'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/RawDifficultyEvidence.java'
             'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java'
@@ -69,7 +70,7 @@ jobs:
             'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/path/HumanSolutionPath.java'
           )
           mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
-          test "${#changed[@]}" -eq 7
+          test "${#changed[@]}" -eq 8
           diff -u <(printf '%s\n' "${expected_sorted[@]}") <(printf '%s\n' "${changed[@]}")
           test -z "$(git -C Candidate diff --name-only "$BASE_SHA" HEAD -- puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/acquisition)"
           test -z "$(git -C Candidate diff --name-only "$BASE_SHA" HEAD -- puzzle-authoring/build.gradle)"
@@ -105,8 +106,7 @@ jobs:
               bad=[]
               for p in files:
                   magic,minor,major=struct.unpack('>IHH',p.read_bytes()[:8])
-                  if (magic,minor,major)!=(0xCAFEBABE,0,52):
-                      bad.append((str(p),major))
+                  if (magic,minor,major)!=(0xCAFEBABE,0,52): bad.append((str(p),major))
               assert not bad,bad[:10]
               print('JAVA8_CLASSFILE_TARGET=PASS root='+root+' count='+str(len(files)))
           PY
@@ -146,6 +146,8 @@ jobs:
           grep -F 'reuseSuppliedAha ? suppliedAha : new StructuralAhaAnalyzer().analyze(paths)' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java
           grep -F 'reuseSuppliedDifficulty ? suppliedDifficulty' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java
           grep -F 'Objects.requireNonNull(kind), pathId' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/path/HumanSolutionPath.java
+          grep -F 'Map<String,List<PathEdge>> outgoing = new TreeMap<>()' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/aha/StructuralAhaAnalyzer.java
+          grep -F 'prefixPathIds(p,rootPathId,transitions)' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java
           ! grep -F '"pathExperienceTraces",RecordSupport.value(traces)' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java
 
       - name: Run candidate path and acquisition regressions
@@ -177,7 +179,7 @@ jobs:
           test "$(git -C Candidate rev-parse HEAD)" = "$CANDIDATE_SHA"
           test -z "$(git -C Candidate status --porcelain --untracked-files=all)"
           printf '%s\n' \
-            'EINSTEIN_PRE4_CANDIDATE_ZERO_DRAW=PASS' \
+            'EINSTEIN_PRE4_P1_CANDIDATE_ZERO_DRAW=PASS' \
             "candidate=$CANDIDATE_SHA" \
             'CP8_CP9_CP10_EXACT_OUTPUT_EQUIVALENCE=PASS' \
             'PATH_AND_IA_REGRESSIONS=PASS' \
