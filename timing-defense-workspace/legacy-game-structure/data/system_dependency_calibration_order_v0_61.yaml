@@ -1,0 +1,105 @@
+version: system-dependency-calibration-order-v0.61
+status: ACTIVE_T1_D1_STAGE32_SINGLE_GAP_AUTHORING_PREFLIGHT_NO_NUMERICAL_FREEZE
+supersedes: data/system_dependency_calibration_order_v0_60.yaml
+inheritsHistoricalClosedWorkFrom: data/system_dependency_calibration_order_v0_60.yaml
+
+canonicalUpdates:
+  - 184_T1_STAGE26_28_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  - 183_T1_CONTIGUOUS_15_31_C1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md
+  - 182_T1_STAGE16_17_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+  - 180_T1_WAVE_A_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+campaignAuthoring:
+  contiguousCoverageB1:
+    targetStages: [16, 17]
+    canonicalWindow: [15, 25]
+    authoringBaseline: USER_APPROVED_WITH_WATCHES
+    candidateAdopted: true
+
+  contiguousCoverageC1:
+    id: C1_STAGE26_28_CONTIGUOUS_BRIDGE_AUTHORING
+    targetStages: [26, 27, 28]
+    candidatePath: data/t1_contiguous_26_28_c1_candidate_v0_1.yaml
+    candidateSha256: 63e40e635b47c54876778a1c64809e961b3929062e3279ea4a805fdf9d8760e4
+    materializedStage15_31Sha256: 284426b71fe03e9838ae141d90422d3d0dec55ad55c71466a4a28bc1fc91297c
+    staticAdmission: PASS
+    dynamicAdmission: PASS_WITH_WATCHES
+    approvalSource: ../184_T1_STAGE26_28_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+    candidateAdopted: true
+    userAdoption: APPROVED_2026_10_26_KST
+    authoringBaseline: USER_APPROVED_WITH_WATCHES
+    canonicalWindowAfterAdoption: [15, 31]
+    numericalFreeze: false
+    productionGameplayChange: false
+
+  contiguousCoverageD1:
+    id: D1_STAGE32_SINGLE_GAP_AUTHORING
+    targetStages: [32]
+    leftAnchorStage: 31
+    rightAnchorStage: 33
+    intendedCanonicalWindowAfterAdoption: [15, 33]
+    planPath: data/t1_contiguous_32_d1_authoring_plan_v0_1.yaml
+    status: STRUCTURAL_RECOVERY_AND_PREFLIGHT_REQUIRED
+    rationale:
+      - CLOSE_SMALLEST_REMAINING_CONTIGUOUS_GAP
+      - PRESERVE_APPROVED_STAGE31_AND_STAGE33_EXACT_AUTHORITIES
+      - EXTEND_REAL_CONTIGUOUS_LIFECYCLE_WITH_MINIMUM_AUTHORING_SURFACE
+      - AVOID_BROAD_FILL_AUTHORING
+    exactRecipeCandidateCreated: false
+    staticAdmission: NOT_RUN
+    dynamicAdmission: NOT_RUN
+    userAdoption: NOT_APPLICABLE_YET
+    numericalFreeze: false
+    productionGameplayChange: false
+
+progressionReachAuthority:
+  lv16:
+    band: [18, 21]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  lv21:
+    band: [25, 28]
+    testedEdges: [25, 28]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  lv26:
+    band: [32, 36]
+    status: CALIBRATION_CANDIDATE_NOT_EXACT_EXP_AUTHORITY
+  exactExpThresholdFreeze: false
+
+activeWatches:
+  - T1_RUNNER_LV6_PEDAGOGIC_COLLISION_WATCH
+  - T1_BRUTE_LV16_CALIBRATION_COLLISION_WATCH
+  - T1_RUNNER_HIGH_PRESSURE_LV16_TAIL_WATCH
+  - FRESH_FORWARD_ABSOLUTE_MAGNITUDE_WATCH
+  - TANK_CONTROL_DEFENSE_TO_OBJECTIVE_PROTECTION_WATCH
+  - T4_SUPPORTER_SIEGER_LEARNING_DENSITY_WATCH
+  - TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
+  - T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
+
+fixedGuards:
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  stageBoundary: STAGE_SETTLED
+  delayedCombatEventsMustDrainBeforeSettled: true
+  preserveWaveAApprovedExactRecipes: true
+  preserveStage16_17AdoptedExactRecipes: true
+  preserveC1AdoptedExactRecipes: true
+  canonicalContiguousExactWindow: [15, 31]
+  authored4sNormalMax: 8
+  monsterScalarChangeAuthorized: false
+  classScalarChangeAuthorized: false
+  shopExpPxpChangeAuthorized: false
+  productionGameplayChangeAuthorized: false
+  fullT1ExactRecipeFreezeAuthorized: false
+
+closedDecision:
+  id: T1_C1_STAGE26_28_AUTHORING_ADOPTION_DECISION_GATE
+  result: USER_APPROVED_WITH_WATCHES
+  approvalSource: ../184_T1_STAGE26_28_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+currentBoundary:
+  activePackage: T1_D1_STAGE32_SINGLE_GAP_AUTHORING_PREFLIGHT
+  c1Status: USER_APPROVED_AUTHORING_BASELINE_WITH_WATCHES
+  d1Status: STRUCTURAL_RECOVERY_AND_PREFLIGHT_REQUIRED
+  nextRequiredAction: RECOVER_STAGE31_33_EXACT_ANCHORS_AND_DEFINE_BOUNDED_STAGE32_EXACT_AUTHORING_CONTRACT
+  noProductionChange: true
+  noNumericalFreeze: true

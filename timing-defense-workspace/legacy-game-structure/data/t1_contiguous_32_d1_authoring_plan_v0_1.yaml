@@ -1,0 +1,59 @@
+version: t1-contiguous-32-d1-authoring-plan-v0.1
+status: BOUNDED_AUTHORING_PLAN_STRUCTURAL_PREFLIGHT_NO_EXACT_RECIPE_YET
+
+scope:
+  targetStages: [32]
+  leftExactAnchor: 31
+  rightExactAnchor: 33
+  intendedContiguousWindowAfterFutureAdoption: [15, 33]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+
+structuralAuthority:
+  skeleton: ../161_T1_STAGE1_50_SIGNATURE_SKELETON_CANDIDATE_V0_1.md
+  staticAudit: ../162_T1_STAGE_SIGNATURE_STATIC_CONSISTENCY_AUDIT_V0_1.md
+  leftExactAuthority: data/t1_wider_exact_authoring_wave_a3_candidate_v0_1.yaml
+  rightExactAuthority: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+  c1Approval: ../184_T1_STAGE26_28_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+
+stageContract:
+  stage: 32
+  band: Pressure / Soft Wall
+  archetype: E02
+  monsters: [GRUNT, RUNNER]
+  formation: F04
+  cadence: CD04
+  complexity: C2
+  pressureTags: [RUSH]
+  purpose: LV26_BAND_TEMPO_PRESSURE
+  opportunity: [Rogue, Tank]
+
+adjacentExactAnchors:
+  stage31:
+    signature: E03_G_B_F02_CD04_C1_BULWARK
+    purpose: SOFTWALL_DURABLE_ENTRY
+  stage33:
+    source: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    signature: E01_GRUNT_F03_CD04_C2_BASELINE_FLOOD
+    purpose: MAGE_DENSITY_PRESSURE
+    spawnCount: 12
+
+preflightGuards:
+  - EXACT_SIGNATURE_MATCH_REQUIRED
+  - NO_NEW_MONSTER_OR_PRESSURE_VOCABULARY
+  - STAGE32_COMPLEXITY_MUST_REMAIN_C2
+  - PRESERVE_STAGE31_DURABLE_TO_STAGE32_TEMPO_TO_STAGE33_DENSITY_ROTATION
+  - AUTHORED_4S_NORMAL_DENSITY_MAX_8
+  - STAGE33_APPROVED_EXACT_AUTHORITY_MUST_REMAIN_UNCHANGED
+  - NO_SCALAR_CHANGE
+  - NO_PRODUCTION_CHANGE
+  - NO_FULL_T1_EXACT_FREEZE
+
+nextAction: RECOVER_STAGE31_33_EXACT_ANCHORS_AND_MATERIALIZE_STAGE32_EXACT_SPAWN_CANDIDATE
