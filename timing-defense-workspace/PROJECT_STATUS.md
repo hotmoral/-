@@ -29,10 +29,11 @@ A new session is not a reason to rerun closed work. Reopen only on a concrete tr
 185  contiguous Stage15-33 D1 static/dynamic admission and closure
 186  Stage32 exact-spawn authoring baseline user approval
 187  contiguous Stage15-38 E1 technical admission and closure
+188  Stage34-36 exact-spawn authoring baseline user approval
 ```
 
 Active plan:
-`legacy-game-structure/data/system_dependency_calibration_order_v0_64.yaml`
+`legacy-game-structure/data/system_dependency_calibration_order_v0_65.yaml`
 
 ## Current phase
 
@@ -46,20 +47,20 @@ Wave A [1,4,8,15,19,24,25,29,30,31,33,37,38] = USER APPROVED AUTHORING BASELINE 
 Stage16/17 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage26/27/28 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
 Stage32 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
-Stage15-33 contiguous exact authoring window = CANONICAL
+Stage34/35/36 = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
+Stage15-38 contiguous exact authoring window = CANONICAL
 
-E1 Stage34-36 v0.2 = TECHNICALLY VALIDATED / USER ADOPTION PENDING
-Stage15-38 exact materialized evidence = PASS_WITH_WATCHES
+E1 persistent Stage15-38 dynamic admission = PASS_WITH_WATCHES
 full exact T1 Stage1-50 recipe freeze = DEFERRED
 production semantics = UNCHANGED / UNAUTHORIZED
 
-CURRENT = T1_E1_STAGE34_36_AUTHORING_ADOPTION_DECISION_GATE
+CURRENT = T1_F1_STAGE39_40_EXISTING_EXACT_PROMOTION_PREFLIGHT
 ```
 
-## E1 validated candidate
+## E1 user-approved authority
 
-Plan:
-`legacy-game-structure/data/t1_contiguous_34_36_e1_authoring_plan_v0_2.yaml`
+Approval source:
+`legacy-game-structure/188_T1_STAGE34_36_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md`
 
 Candidate:
 `legacy-game-structure/data/t1_contiguous_34_36_e1_candidate_v0_2.yaml`
@@ -72,7 +73,7 @@ materialized Stage15-38 SHA256
 58dbc3109c1b919fed9de48118a88063595b8ef616632ee3c2aa8595ec70925d
 ```
 
-Exact candidate summary:
+Canonical exact summary:
 
 ```text
 S34 = B,R,G,R,B,R,G,R @ 0,550,1100,1650,3300,3850,4400,4950ms
@@ -80,9 +81,7 @@ S35 = G,G,G,G         @ 0,800,2400,3200ms
 S36 = B,G,G,B,G,G,B   @ 0,250,500,2800,3050,3300,6000ms
 ```
 
-Exact Y placements are in candidate v0.2 and doc187.
-
-E1 v0.1 was technically valid but superseded because Stage35 did not behave as recovery. v0.2 changes Stage35 only.
+Exact Y placements are authoritative in candidate v0.2 and doc188.
 
 Retained evidence:
 
@@ -97,7 +96,7 @@ continuity/replay/settlement errors = 0
 Stage35 recovery intent = SUPPORTED
 ```
 
-No new watch was created by E1.
+E1 v0.1 remains superseded only for Stage35 product-intent mismatch. The first v0.2 dynamic run remains superseded only for a stale runner materialized-SHA constant. No new E1 watch was created.
 
 ## Progression authority
 
@@ -122,19 +121,21 @@ TEMP_BRANCH_PUSH_TRIGGERS_HARNESS_CLOUDFLARE_BUILD_WATCH
 T1_STAGE49_50_OBJECTIVE_PRESSURE_ROTATION_WATCH
 ```
 
-## Current decision gate
+## Current next package — F1 Stage39-40 existing exact promotion preflight
+
+Plan:
+`legacy-game-structure/data/t1_stage39_40_existing_exact_promotion_preflight_v0_1.yaml`
+
+Stage39 and Stage40 already exist as exact candidates in:
+`legacy-game-structure/data/t1_representative_transition_slice_recipes_v0_2_pressure_shape_candidate.yaml`
+
+They are **not canonical yet**.
 
 ```text
-E1 technical = CLOSED / PASS_WITH_WATCHES
-Stage34-36 candidateAdopted = false
-user adoption = PENDING
-canonical contiguous exact window = Stage15-33
-validated materialized evidence window = Stage15-38
+left canonical anchor = Stage38
+existing candidate Stage39 = E02+E03 / R+B / F08 / CD05 / C3 / RUSH+BULWARK / 9 authored
+existing candidate Stage40 = E01+E02+E03 / G+R+B / F01+F03 / CD03 / C2 / BASELINE / 10 authored
+future contiguous exact window after later adoption = Stage15-40
 ```
 
-If the user adopts Stage34-36 v0.2, the canonical contiguous exact-authoring window becomes **Stage15-38**, because Stage37 and Stage38 are already user-approved Wave A exact authorities.
-
-Recommendation:
-`ADOPT_STAGE34_36_AS_CANONICAL_T1_AUTHORING_BASELINE_WITH_WATCHES`
-
-No further authoring package begins before this decision.
+F1 must recover current exact-source identity and the historical pressure-shape evidence before any reauthoring. If the existing recipes remain valid, materialize Stage15-40 without mutating Stage15-38 authority and determine the minimum lifecycle-faithful promotion evidence required. Any Stage39/40 canonical promotion still requires explicit user approval.
