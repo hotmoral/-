@@ -14,9 +14,9 @@
       if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}
     }
 
-    function drawSideProbeOverlay(){
+    function drawActiveAnchorOverlay(){
       const ship=state.ship;
-      if(ship.geometryId!=='SIDE') return;
+      if(ship.geometryId==='REFERENCE') return;
       const cx=Cam.camX(state),cy=Cam.camY(state),a=ship.dockAnchor;
 
       ctx.save();
@@ -42,19 +42,12 @@
       ctx.globalAlpha=1;
       ctx.strokeStyle='rgba(255,197,111,.34)';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,14.5,-.72,.72);ctx.stroke();
       ctx.restore();
-
-      ctx.save();
-      ctx.translate(cx-2,cy-24);
-      ctx.strokeStyle='rgba(255,197,111,.28)';ctx.lineWidth=1.2;
-      ctx.beginPath();ctx.moveTo(-18,0);ctx.lineTo(18,0);ctx.stroke();
-      ctx.fillStyle='rgba(255,197,111,.72)';ctx.font='8px system-ui, sans-serif';ctx.textAlign='center';ctx.fillText('SIDE SERVICE',0,-4);
-      ctx.restore();
     }
 
     return Object.freeze({
       resize: renderer.resize,
       makeStars: renderer.makeStars,
-      draw(){ renderer.draw(); drawSideProbeOverlay(); }
+      draw(){ renderer.draw(); drawActiveAnchorOverlay(); }
     });
   };
 })();

@@ -21,6 +21,14 @@ if (remoteRuntimeRef.test(index)) {
   throw new Error('Android parity package must not contain remote runtime asset references.');
 }
 
+const geometryAt = index.indexOf('./src/geometry.js');
+const craftGeometryAt = index.indexOf('./src/craft-geometry.js');
+const stateAt = index.indexOf('./src/state.js');
+const missionAt = index.indexOf('./src/mission.js');
+if (!(geometryAt >= 0 && craftGeometryAt > geometryAt && stateAt > craftGeometryAt && missionAt > stateAt)) {
+  throw new Error('Required geometry -> craft-geometry -> state -> mission script order is not preserved.');
+}
+
 const rendererAt = index.indexOf('./src/renderer.js');
 const craftProbeAt = index.indexOf('./src/craft-probe.js');
 const presentationAt = index.indexOf('./src/presentation.js');

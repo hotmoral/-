@@ -4,17 +4,18 @@
   const { normAngle } = TD.MathUtil;
 
   const profiles = Object.freeze([
-    Object.freeze({ id:'STATIC', label:'정지 포트', ahead:0.45, lateral:0.00, bodyVx:0, bodyVy:0, omega:0.00 }),
-    Object.freeze({ id:'TRANSLATE', label:'이동 포트', ahead:0.47, lateral:-0.11, bodyVx:5, bodyVy:6, omega:0.00 }),
-    Object.freeze({ id:'ROTATE', label:'회전 포트', ahead:0.46, lateral:0.12, bodyVx:0, bodyVy:0, omega:0.12 }),
-    Object.freeze({ id:'COMBINED', label:'이동 + 회전', ahead:0.49, lateral:-0.13, bodyVx:4, bodyVy:-5, omega:-0.14 }),
-    Object.freeze({ id:'FINAL', label:'최종 정밀 도킹', ahead:0.52, lateral:0.10, bodyVx:5, bodyVy:6, omega:0.18 })
+    Object.freeze({ id:'STATIC', label:'정지 포트', craftId:'REFERENCE', ahead:0.45, lateral:0.00, bodyVx:0, bodyVy:0, omega:0.00 }),
+    Object.freeze({ id:'TRANSLATE', label:'이동 포트', craftId:'SIDE_TOP', ahead:0.47, lateral:-0.11, bodyVx:5, bodyVy:6, omega:0.00 }),
+    Object.freeze({ id:'ROTATE', label:'회전 포트', craftId:'REFERENCE', ahead:0.46, lateral:0.12, bodyVx:0, bodyVy:0, omega:0.12 }),
+    Object.freeze({ id:'COMBINED', label:'이동 + 회전', craftId:'SIDE_BOTTOM', ahead:0.49, lateral:-0.13, bodyVx:4, bodyVy:-5, omega:-0.14 }),
+    Object.freeze({ id:'FINAL', label:'최종 정밀 도킹', craftId:'REFERENCE', ahead:0.52, lateral:0.10, bodyVx:5, bodyVy:6, omega:0.18 })
   ]);
 
   function current(state){ return profiles[state.mission.index] || profiles[profiles.length-1]; }
 
   function placeCurrent(state){
     const profile=current(state), ship=state.ship, station=state.station;
+    TD.CraftGeometry.apply(ship,profile.craftId);
     const W=state.viewport.W, H=state.viewport.H;
     const c=Math.cos(ship.angle), s=Math.sin(ship.angle);
     const forwardX=c, forwardY=s, rightX=-s, rightY=c;

@@ -7,7 +7,7 @@
       return {
         app: byId('app'), canvas: byId('game'), score: byId('score'), rel: byId('relSpeed'), mode: byId('mode'),
         msgT: byId('msgTitle'), msgS: byId('msgSub'), ckPos: byId('ckPos'), ckVel: byId('ckVel'), ckDir: byId('ckDir'), ckSpin: byId('ckSpin'),
-        start: byId('startBtn'), reset: byId('resetBtn'), full: byId('fullBtn'), craft: byId('craftBtn'), flash: byId('flash'), pulse: byId('pulse'),
+        start: byId('startBtn'), reset: byId('resetBtn'), full: byId('fullBtn'), flash: byId('flash'), pulse: byId('pulse'),
         left: { pad: byId('lPad'), origin: byId('lOrigin'), thumb: byId('lThumb'), pct: byId('lPct') },
         right: { pad: byId('rPad'), origin: byId('rOrigin'), thumb: byId('rThumb'), pct: byId('rPct') }
       };

@@ -7,7 +7,7 @@ const here=path.dirname(fileURLToPath(import.meta.url));
 const root=path.resolve(here,'..');
 const context={window:{TwinDock:{}},performance:{now:()=>0},console};
 vm.createContext(context);
-for(const file of ['config.js','math.js','geometry.js','state.js','docking.js','mission.js']){
+for(const file of ['config.js','math.js','geometry.js','craft-geometry.js','state.js','docking.js','mission.js']){
   vm.runInContext(fs.readFileSync(path.join(root,'src',file),'utf8'),context,{filename:file});
 }
 const TD=context.window.TwinDock;
@@ -26,15 +26,20 @@ assert.equal(reference.ship.dockAnchor.x,TD.Config.VISUAL_PROBE_X);
 assert.equal(reference.ship.dockAnchor.y,0);
 assert.equal(reference.ship.dockAnchor.angle,0);
 
+const sideTop=TD.createState();
+sideTop.viewport.W=1000;sideTop.viewport.H=600;sideTop.ship.x=100;sideTop.ship.y=300;sideTop.ship.angle=.41;sideTop.mission.index=1;
+TD.Mission.placeCurrent(sideTop);
+const topTarget=TD.Geometry.stationDockAnchor(sideTop);
+assert.equal(sideTop.ship.geometryId,'SIDE_TOP');
+near(normAngle(topTarget.angle-(sideTop.ship.angle+sideTop.ship.dockAnchor.angle)),0);
+assert.ok(Math.hypot(sideTop.ship.dockAnchor.x-TD.Config.VISUAL_PROBE_X,sideTop.ship.dockAnchor.y)>40);
+
 const side=TD.createState();
-side.viewport.W=1000;side.viewport.H=600;side.ship.x=100;side.ship.y=300;side.ship.angle=.41;
-side.ship.geometryId='SIDE';
-side.ship.dockAnchor.x=2;side.ship.dockAnchor.y=-31;side.ship.dockAnchor.angle=-Math.PI/2;
-side.mission.index=2;
+side.viewport.W=1000;side.viewport.H=600;side.ship.x=100;side.ship.y=300;side.ship.angle=.41;side.mission.index=3;
 TD.Mission.placeCurrent(side);
 const sideTarget=TD.Geometry.stationDockAnchor(side);
+assert.equal(side.ship.geometryId,'SIDE_BOTTOM');
 near(normAngle(sideTarget.angle-(side.ship.angle+side.ship.dockAnchor.angle)),0);
-assert.ok(Math.hypot(side.ship.dockAnchor.x-TD.Config.VISUAL_PROBE_X,side.ship.dockAnchor.y)>40);
 assert.notEqual(side.station.omega,0);
 
 const pose=TD.Geometry.bodyPoseForWorldAnchor(sideTarget.x,sideTarget.y,sideTarget.angle,side.ship.dockAnchor);
