@@ -58,6 +58,7 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
           PYTHONHASHSEED: "1"
+          PYTHONPATH: "."
         run: |
           set -euo pipefail
           rm -rf public_output/a3_final_candidate_pool_v1
