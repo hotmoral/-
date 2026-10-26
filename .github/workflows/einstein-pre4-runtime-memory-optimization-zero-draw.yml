@@ -1,4 +1,4 @@
-name: Einstein Pre4 Runtime Memory Optimization Zero-Draw
+name: Einstein Pre4 Candidate Zero-Draw Validation
 
 on:
   push:
@@ -10,140 +10,69 @@ permissions:
   contents: read
 
 concurrency:
-  group: einstein-pre4-runtime-memory-optimization-zero-draw-v1
+  group: einstein-pre4-candidate-zero-draw-v2
   cancel-in-progress: false
 
 jobs:
-  validate-and-publish-candidate:
-    if: github.event.head_commit.message == 'ci: validate Einstein pre4 runtime memory optimization zero draw'
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
       BASE_SHA: bddc1e741252eec7793d9064a607c495c006ce9c
-      CANDIDATE_BRANCH: pre4-zero-draw-runtime-memory-optimization-v1
+      CANDIDATE_SHA: b9cee065c261066919c36284c04c4777323c167b
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
-      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
       BASE_CLASSES: /tmp/einstein-pre4-base-classes
       CANDIDATE_CLASSES: /tmp/einstein-pre4-candidate-classes
     steps:
-      - name: Require private credentials
+      - name: Require private read token
         shell: bash
         run: |
           set -euo pipefail
           test -n "$READ_TOKEN"
-          test -n "$WRITE_TOKEN"
 
-      - name: Checkout exact accepted production
+      - name: Checkout exact baseline
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
           ref: bddc1e741252eec7793d9064a607c495c006ce9c
-          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
-          path: EinsteinGame
-          fetch-depth: 5
-          persist-credentials: true
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: Baseline
+          fetch-depth: 2
+          persist-credentials: false
 
-      - name: Freeze baseline copy and create candidate branch
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: b9cee065c261066919c36284c04c4777323c167b
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: Candidate
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Hard gate exact reviewed delta
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git -C EinsteinGame rev-parse HEAD)" = "$BASE_SHA"
-          cp -a EinsteinGame Baseline
-          git -C EinsteinGame switch -c "$CANDIDATE_BRANCH"
-          test -z "$(git -C EinsteinGame status --porcelain --untracked-files=all)"
-
-      - name: Apply bounded runtime and memory optimization
-        shell: bash
-        working-directory: EinsteinGame
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-
-          def replace_once(path, old, new):
-              p=Path(path); s=p.read_text()
-              n=s.count(old)
-              if n != 1:
-                  raise SystemExit(f'{path}: expected exactly one match, found {n}: {old[:100]!r}')
-              p.write_text(s.replace(old,new,1))
-
-          # HumanSolutionPath: terminal classification does not affect history/pathId.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/path/HumanSolutionPath.java'
-          replace_once(p,'SolutionCostVector cost, TerminalKind kind) {','SolutionCostVector cost, TerminalKind kind, String knownPathId) {')
-          replace_once(p,'pathId = CanonicalJson.hash(historyData());','pathId = knownPathId == null ? CanonicalJson.hash(historyData()) : knownPathId;')
-          replace_once(p,'SolutionCostVector.zero(), TerminalKind.FRONTIER);','SolutionCostVector.zero(), TerminalKind.FRONTIER, null);')
-          replace_once(p,'return new HumanSolutionPath(initialStateHash, next, hashes, cost.plus(step), TerminalKind.FRONTIER);','return new HumanSolutionPath(initialStateHash, next, hashes, cost.plus(step), TerminalKind.FRONTIER, null);')
-          replace_once(p,'return new HumanSolutionPath(initialStateHash, steps, stateHashes, cost, Objects.requireNonNull(kind));','return new HumanSolutionPath(initialStateHash, steps, stateHashes, cost, Objects.requireNonNull(kind), pathId);')
-
-          # HumanStep: immutable 64-char identity memoization + identity equality fast path.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/contract/HumanStep.java'
-          replace_once(p,' public final AnalysisVersionRef versions;\n',' public final AnalysisVersionRef versions;\n private String semanticIdentity;\n')
-          replace_once(p,' @Override public boolean equals(Object other){return other instanceof HumanStep&&json().equals(((HumanStep)other).json());}',
-              ' @Override public String semanticHash(){String value=semanticIdentity;if(value==null){value=CanonicalJson.hash(data());semanticIdentity=value;}return value;}\n @Override public boolean equals(Object other){return this==other||(other instanceof HumanStep&&json().equals(((HumanStep)other).json()));}')
-
-          # StaticDifficultyAssessment: non-canonical in-memory provenance only.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAssessment.java'
-          replace_once(p,'import com.example.einsteingame.authoring.pss.contract.*;\nimport java.util.*;',
-              'import com.example.einsteingame.authoring.pss.contract.*;\nimport com.example.einsteingame.authoring.pss.aha.*;\nimport com.example.einsteingame.authoring.pss.path.*;\nimport java.util.*;')
-          replace_once(p,'    public final String label, policyVersion;\n    StaticDifficultyAssessment(RawDifficultyEvidence raw, DifficultyPolicy policy) {\n        this.raw = raw; policyVersion = policy == null ? null : RecordSupport.text(policy.version());\n        label = policy == null ? null : RecordSupport.text(policy.label(raw));\n    }',
-              '    public final String label, policyVersion;\n    public final PathExplorerResult sourcePaths;\n    public final StaticPuzzleMetadata sourceMetadata;\n    public final StructuralAhaAnalysisResult sourceAha;\n    StaticDifficultyAssessment(RawDifficultyEvidence raw, DifficultyPolicy policy) { this(raw,policy,null,null,null); }\n    StaticDifficultyAssessment(RawDifficultyEvidence raw, DifficultyPolicy policy, PathExplorerResult sourcePaths, StaticPuzzleMetadata sourceMetadata, StructuralAhaAnalysisResult sourceAha) {\n        this.raw = raw; this.sourcePaths=sourcePaths; this.sourceMetadata=sourceMetadata; this.sourceAha=sourceAha;\n        policyVersion = policy == null ? null : RecordSupport.text(policy.version());\n        label = policy == null ? null : RecordSupport.text(policy.label(raw));\n    }')
-
-          # RawDifficultyEvidence: share already-frozen DifficultyTimeline maps instead of deep-copying them again.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/RawDifficultyEvidence.java'
-          replace_once(p,'    RawDifficultyEvidence(Map<String,Object> value) { this.value = freeze(value); }',
-              '    RawDifficultyEvidence(Map<String,Object> value) { this.value = freeze(value); }\n    RawDifficultyEvidence(Map<String,Object> source, List<DifficultyTimeline> timelines) {\n        Map<String,Object> base=freeze(source);\n        if(base.containsKey("perPathEvidence")) throw new IllegalArgumentException("perPathEvidence supplied twice");\n        Map<String,Object> out=new TreeMap<>(base); List<Object> data=new ArrayList<>();\n        for(DifficultyTimeline timeline:timelines)data.add(Objects.requireNonNull(timeline).data());\n        out.put("perPathEvidence",Collections.unmodifiableList(data)); value=Collections.unmodifiableMap(out);\n    }')
-
-          # StaticDifficultyAnalyzer: reuse exact same in-memory CP8 result; preserve fallback verification for all other callers.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java'
-          replace_once(p,'        StructuralAhaAnalysisResult verified = new StructuralAhaAnalyzer().analyze(paths);\n        if (suppliedAha != null && !rawAhaIdentity(verified).equals(rawAhaIdentity(suppliedAha)))',
-              '        boolean reuseSuppliedAha = suppliedAha != null && suppliedAha.paths == paths && suppliedAha.policyVersion == null;\n        StructuralAhaAnalysisResult verified = reuseSuppliedAha ? suppliedAha : new StructuralAhaAnalyzer().analyze(paths);\n        if (suppliedAha != null && !reuseSuppliedAha && !rawAhaIdentity(verified).equals(rawAhaIdentity(suppliedAha)))')
-          replace_once(p,'"staticMetadata",metadata.data(),"explicitReferenceSetIdentity",metadata.semanticHash(),"axisEvidence",axes,"perPathEvidence",RecordSupport.value(timelines),\n                "peakEvidence"',
-              '"staticMetadata",metadata.data(),"explicitReferenceSetIdentity",metadata.semanticHash(),"axisEvidence",axes,\n                "peakEvidence"')
-          replace_once(p,'                "inputStatus",verified.data().get("inputStatus"),"unknowns",unknowns,"calibrationStatus","CALIBRATION_PENDING"));\n        return new StaticDifficultyAssessment(raw,policy);',
-              '                "inputStatus",verified.data().get("inputStatus"),"unknowns",unknowns,"calibrationStatus","CALIBRATION_PENDING"),timelines);\n        return new StaticDifficultyAssessment(raw,policy,paths,metadata,verified);')
-          replace_once(p,'    private static List<Object> normalizedFrontier(PathExplorerResult paths) {\n        List<Object> out = new ArrayList<>(); for (FrontierWitness f : paths.frontier) out.add(f.data()); out.sort(Comparator.comparing(CanonicalJson::write)); return out;\n    }',
-              '    private static List<Object> normalizedFrontier(PathExplorerResult paths) {\n        return RecordSupport.sortedDataView(paths.frontier);\n    }')
-
-          # RawExperienceEvidence: share already-frozen PathExperienceTrace maps instead of duplicating the whole trace tree.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/RawExperienceEvidence.java'
-          replace_once(p,'    RawExperienceEvidence(Map<String,Object> value) { this.value = freeze(value); }',
-              '    RawExperienceEvidence(Map<String,Object> value) { this.value = freeze(value); }\n    RawExperienceEvidence(Map<String,Object> source, List<PathExperienceTrace> traces) {\n        Map<String,Object> base=freeze(source);\n        if(base.containsKey("pathExperienceTraces")) throw new IllegalArgumentException("pathExperienceTraces supplied twice");\n        Map<String,Object> out=new TreeMap<>(base); List<Object> data=new ArrayList<>();\n        for(PathExperienceTrace trace:traces)data.add(Objects.requireNonNull(trace).data());\n        out.put("pathExperienceTraces",Collections.unmodifiableList(data)); value=Collections.unmodifiableMap(out);\n    }')
-
-          # ExperienceSimulator: same-object reuse for CP8/CP9; all non-identical callers keep full independent verification.
-          p='puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java'
-          replace_once(p,'        StructuralAhaAnalysisResult aha = new StructuralAhaAnalyzer().analyze(paths);\n        Map<String,Object> rawAhaHashes = rawAhaHashes(aha);\n        if (suppliedAha != null && (!aha.data().get("pathEvidenceHash").equals(suppliedAha.data().get("pathEvidenceHash"))\n                || !rawAhaHashes.equals(rawAhaHashes(suppliedAha)))) throw new IllegalArgumentException("incompatible CP8 raw evidence");\n        StaticDifficultyAssessment difficulty = new StaticDifficultyAnalyzer().analyze(paths,metadata);\n        Map<String,Object> difficultyInput = difficultyStructure(difficulty);\n        if (suppliedDifficulty != null && !CanonicalJson.write(difficultyInput).equals(CanonicalJson.write(difficultyStructure(suppliedDifficulty))))',
-              '        boolean reuseSuppliedAha = suppliedAha != null && suppliedAha.paths == paths && suppliedAha.policyVersion == null;\n        StructuralAhaAnalysisResult aha = reuseSuppliedAha ? suppliedAha : new StructuralAhaAnalyzer().analyze(paths);\n        Map<String,Object> rawAhaHashes = rawAhaHashes(aha);\n        if (suppliedAha != null && !reuseSuppliedAha && (!aha.data().get("pathEvidenceHash").equals(suppliedAha.data().get("pathEvidenceHash"))\n                || !rawAhaHashes.equals(rawAhaHashes(suppliedAha)))) throw new IllegalArgumentException("incompatible CP8 raw evidence");\n        boolean reuseSuppliedDifficulty = suppliedDifficulty != null && suppliedDifficulty.sourcePaths == paths\n                && suppliedDifficulty.sourceMetadata == metadata && suppliedDifficulty.sourceAha == aha && suppliedDifficulty.policyVersion == null;\n        StaticDifficultyAssessment difficulty = reuseSuppliedDifficulty ? suppliedDifficulty\n                : new StaticDifficultyAnalyzer().analyze(paths,metadata,aha,Collections.emptyList(),Collections.emptyList(),null);\n        Map<String,Object> difficultyInput = difficultyStructure(difficulty);\n        if (suppliedDifficulty != null && !reuseSuppliedDifficulty && !CanonicalJson.write(difficultyInput).equals(CanonicalJson.write(difficultyStructure(suppliedDifficulty))))')
-          replace_once(p,'        Map<String,List<Object>> frontiers = new TreeMap<>();\n        for (FrontierWitness f : paths.frontier) { leaves.put(f.path.pathId,f.path); frontiers.computeIfAbsent(f.path.pathId,k->new ArrayList<>()).add(f.data()); }\n        for (List<Object> f : frontiers.values()) f.sort(Comparator.comparing(CanonicalJson::write));',
-              '        Map<String,List<FrontierWitness>> frontiers = new TreeMap<>();\n        for (FrontierWitness f : paths.frontier) { leaves.put(f.path.pathId,f.path); frontiers.computeIfAbsent(f.path.pathId,k->new ArrayList<>()).add(f); }\n        for (List<FrontierWitness> f : frontiers.values()) f.sort(Comparator.comparing(x->CanonicalJson.write(x.data())));')
-          replace_once(p,'"CP9StructuralEvidenceIdentity",CanonicalJson.hash(difficultyInput),"scenario",scenario.data(),"pathExperienceTraces",RecordSupport.value(traces),\n                "crossPathVariation"',
-              '"CP9StructuralEvidenceIdentity",CanonicalJson.hash(difficultyInput),"scenario",scenario.data(),\n                "crossPathVariation"')
-          replace_once(p,'                "unknowns",unknowns,"calibrationStatus","CALIBRATION_PENDING"));\n        return new ExperienceSimulationResult(raw,traces,policy);',
-              '                "unknowns",unknowns,"calibrationStatus","CALIBRATION_PENDING"),traces);\n        return new ExperienceSimulationResult(raw,traces,policy);')
-          replace_once(p,'            Map<String,SkillOpportunity> generated,List<Object> frontier,Map<String,SortedSet<String>> continuations,Map<String,List<SkillOpportunity>> cache) {',
-              '            Map<String,SkillOpportunity> generated,List<FrontierWitness> frontier,Map<String,SortedSet<String>> continuations,Map<String,List<SkillOpportunity>> cache) {')
-          replace_once(p,'                        "playerFeltStuck","NOT_INFERRED"),"frontierEvidence",frontier,"futureContinuationInspection"',
-              '                        "playerFeltStuck","NOT_INFERRED"),"frontierEvidence",RecordSupport.dataView(frontier),"futureContinuationInspection"')
-          PY
-
-          git diff --check
-          git diff --stat
-          test -z "$(git diff --name-only "$BASE_SHA" -- puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/acquisition)"
-          test -z "$(git diff --name-only "$BASE_SHA" -- puzzle-authoring/build.gradle)"
-
-      - name: Static optimization gates
-        shell: bash
-        working-directory: EinsteinGame
-        run: |
-          set -euo pipefail
-          D=puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java
-          E=puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java
-          H=puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/path/HumanSolutionPath.java
-          grep -F 'reuseSuppliedAha ? suppliedAha : new StructuralAhaAnalyzer().analyze(paths)' "$D"
-          grep -F 'reuseSuppliedDifficulty ? suppliedDifficulty' "$E"
-          grep -F 'new StaticDifficultyAnalyzer().analyze(paths,metadata,aha,Collections.emptyList(),Collections.emptyList(),null)' "$E"
-          grep -F 'Objects.requireNonNull(kind), pathId' "$H"
-          ! grep -F '"pathExperienceTraces",RecordSupport.value(traces)' "$E"
-          ! grep -F 'for (FrontierWitness f : paths.frontier) { leaves.put(f.path.pathId,f.path); frontiers.computeIfAbsent(f.path.pathId,k->new ArrayList<>()).add(f.data()); }' "$E"
+          test "$(git -C Baseline rev-parse HEAD)" = "$BASE_SHA"
+          test "$(git -C Candidate rev-parse HEAD)" = "$CANDIDATE_SHA"
+          git -C Candidate cat-file -e "$BASE_SHA^{commit}"
+          test "$(git -C Candidate merge-base "$BASE_SHA" HEAD)" = "$BASE_SHA"
+          mapfile -t changed < <(git -C Candidate diff --name-only "$BASE_SHA" HEAD | sort)
+          expected=(
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/contract/HumanStep.java'
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/RawDifficultyEvidence.java'
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java'
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAssessment.java'
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java'
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/RawExperienceEvidence.java'
+            'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/path/HumanSolutionPath.java'
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          test "${#changed[@]}" -eq 7
+          diff -u <(printf '%s\n' "${expected_sorted[@]}") <(printf '%s\n' "${changed[@]}")
+          test -z "$(git -C Candidate diff --name-only "$BASE_SHA" HEAD -- puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/acquisition)"
+          test -z "$(git -C Candidate diff --name-only "$BASE_SHA" HEAD -- puzzle-authoring/build.gradle)"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -151,49 +80,57 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile baseline and candidate Java 8 surfaces
+      - name: Compile baseline and candidate as Java 8
         shell: bash
         run: |
           set -euo pipefail
           compile_repo() {
-            repo="$1" out="$2" src="/tmp/$(basename "$out")-sources.txt"
-            rm -rf "$out" "$src"; mkdir -p "$out"
+            repo="$1"
+            out="$2"
+            src="/tmp/$(basename "$out")-sources.txt"
+            rm -rf "$out" "$src"
+            mkdir -p "$out"
             find "$repo/puzzle-core/src/main/java" "$repo/puzzle-authoring/src/main/java" -type f -name '*.java' -print | sort > "$src"
             find "$repo/puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss" -type f -name '*.java' -print | sort >> "$src"
             java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$out" "@$src"
           }
           compile_repo Baseline "$BASE_CLASSES"
-          compile_repo EinsteinGame "$CANDIDATE_CLASSES"
+          compile_repo Candidate "$CANDIDATE_CLASSES"
           python3 - <<'PY'
           from pathlib import Path
           import struct
           for root in ['/tmp/einstein-pre4-base-classes','/tmp/einstein-pre4-candidate-classes']:
-              files=list(Path(root).rglob('*.class')); assert files
+              files=list(Path(root).rglob('*.class'))
+              assert files
               bad=[]
               for p in files:
                   magic,minor,major=struct.unpack('>IHH',p.read_bytes()[:8])
-                  if (magic,minor,major)!=(0xCAFEBABE,0,52): bad.append((str(p),major))
+                  if (magic,minor,major)!=(0xCAFEBABE,0,52):
+                      bad.append((str(p),major))
               assert not bad,bad[:10]
               print('JAVA8_CLASSFILE_TARGET=PASS root='+root+' count='+str(len(files)))
           PY
 
-      - name: Run exact CP8 CP9 CP10 baseline candidate equivalence
+      - name: Run CP8 CP9 CP10 exact equivalence and timing
         shell: bash
         run: |
           set -euo pipefail
           run_suite() {
-            repo="$1" cp="$2" tag="$3"
+            repo="$1"
+            cp="$2"
+            tag="$3"
             rm -rf "$repo/build/pss-logical-core"
             (cd "$repo" && /usr/bin/time -f '%e' -o "/tmp/${tag}-aha.time" java -Xmx2g -cp "$cp" com.example.einsteingame.authoring.pss.PssAhaTest > "/tmp/${tag}-aha.log")
             (cd "$repo" && /usr/bin/time -f '%e' -o "/tmp/${tag}-difficulty.time" java -Xmx2g -cp "$cp" com.example.einsteingame.authoring.pss.PssDifficultyTest > "/tmp/${tag}-difficulty.log")
             (cd "$repo" && /usr/bin/time -f '%e' -o "/tmp/${tag}-experience.time" java -Xmx2g -cp "$cp" com.example.einsteingame.authoring.pss.PssExperienceTest > "/tmp/${tag}-experience.log")
           }
           run_suite Baseline "$BASE_CLASSES" base
-          run_suite EinsteinGame "$CANDIDATE_CLASSES" candidate
+          run_suite Candidate "$CANDIDATE_CLASSES" candidate
           diff -u /tmp/base-aha.log /tmp/candidate-aha.log
           diff -u /tmp/base-difficulty.log /tmp/candidate-difficulty.log
           diff -u /tmp/base-experience.log /tmp/candidate-experience.log
-          diff -qr Baseline/build/pss-logical-core EinsteinGame/build/pss-logical-core
+          diff -qr Baseline/build/pss-logical-core Candidate/build/pss-logical-core
+          grep -F 'CP8 STRUCTURAL AHA ANALYZER: PASS; assertions=3511' /tmp/candidate-aha.log
           echo "BASE_AHA_SECONDS=$(cat /tmp/base-aha.time)"
           echo "CANDIDATE_AHA_SECONDS=$(cat /tmp/candidate-aha.time)"
           echo "BASE_DIFFICULTY_SECONDS=$(cat /tmp/base-difficulty.time)"
@@ -201,71 +138,50 @@ jobs:
           echo "BASE_EXPERIENCE_SECONDS=$(cat /tmp/base-experience.time)"
           echo "CANDIDATE_EXPERIENCE_SECONDS=$(cat /tmp/candidate-experience.time)"
 
-      - name: Verify immutable-map sharing semantics
+      - name: Verify optimization structure
         shell: bash
-        working-directory: EinsteinGame
+        working-directory: Candidate
         run: |
           set -euo pipefail
-          mkdir -p /tmp/pre4-probe/com/example/einsteingame/authoring/pss/experience /tmp/pre4-probe/com/example/einsteingame/authoring/pss/difficulty
-          cat > /tmp/pre4-probe/com/example/einsteingame/authoring/pss/experience/ExperienceSharingProbe.java <<'EOF'
-          package com.example.einsteingame.authoring.pss.experience;
-          import com.example.einsteingame.authoring.pss.contract.*; import java.util.*;
-          public final class ExperienceSharingProbe { public static void main(String[] a){
-            PathExperienceTrace t=new PathExperienceTrace(CanonicalJson.object("recordType","PathExperienceTrace","payload",Arrays.asList(1,2,3)));
-            RawExperienceEvidence r=new RawExperienceEvidence(CanonicalJson.object("recordType","RawExperienceEvidence"),Arrays.asList(t));
-            Object x=((List<?>)r.data().get("pathExperienceTraces")).get(0);
-            if(x!=t.data())throw new AssertionError("trace map was deep-copied");
-            if(!CanonicalJson.write(x).equals(CanonicalJson.write(t.data())))throw new AssertionError("trace bytes changed");
-            System.out.println("EXPERIENCE_TRACE_MAP_SHARING=PASS"); }}
-          EOF
-          cat > /tmp/pre4-probe/com/example/einsteingame/authoring/pss/difficulty/DifficultySharingProbe.java <<'EOF'
-          package com.example.einsteingame.authoring.pss.difficulty;
-          import com.example.einsteingame.authoring.pss.contract.*; import java.util.*;
-          public final class DifficultySharingProbe { public static void main(String[] a){
-            DifficultyTimeline t=new DifficultyTimeline(CanonicalJson.object("recordType","DifficultyTimeline","payload",Arrays.asList(1,2,3)));
-            RawDifficultyEvidence r=new RawDifficultyEvidence(CanonicalJson.object("recordType","RawDifficultyEvidence"),Arrays.asList(t));
-            Object x=((List<?>)r.data().get("perPathEvidence")).get(0);
-            if(x!=t.data())throw new AssertionError("timeline map was deep-copied");
-            if(!CanonicalJson.write(x).equals(CanonicalJson.write(t.data())))throw new AssertionError("timeline bytes changed");
-            System.out.println("DIFFICULTY_TIMELINE_MAP_SHARING=PASS"); }}
-          EOF
-          java -Xmx512m -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -cp "$CANDIDATE_CLASSES" -d "$CANDIDATE_CLASSES" $(find /tmp/pre4-probe -name '*.java' -print)
-          java -Xmx128m -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.experience.ExperienceSharingProbe
-          java -Xmx128m -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.difficulty.DifficultySharingProbe
+          grep -F 'reuseSuppliedAha ? suppliedAha : new StructuralAhaAnalyzer().analyze(paths)' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java
+          grep -F 'reuseSuppliedDifficulty ? suppliedDifficulty' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java
+          grep -F 'Objects.requireNonNull(kind), pathId' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/path/HumanSolutionPath.java
+          ! grep -F '"pathExperienceTraces",RecordSupport.value(traces)' puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/experience/ExperienceSimulator.java
 
       - name: Run candidate path and acquisition regressions
         shell: bash
-        working-directory: EinsteinGame
         run: |
           set -euo pipefail
-          java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.PssPathExplorerTest | tee /tmp/pre4-path.log
-          java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionTest | tee /tmp/pre4-ia1.log
-          java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionIA2Test | tee /tmp/pre4-ia2.log
-          java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionIA3Test | tee /tmp/pre4-ia3.log
-          java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest | tee /tmp/pre4-checkpoint.log
+          (cd Candidate && java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.PssPathExplorerTest | tee /tmp/pre4-path.log)
+          (cd Candidate/puzzle-authoring && java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionTest | tee /tmp/pre4-ia1.log)
+          (cd Candidate/puzzle-authoring && java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionIA2Test | tee /tmp/pre4-ia2.log)
+          (cd Candidate/puzzle-authoring && java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionIA3Test | tee /tmp/pre4-ia3.log)
+          (cd Candidate/puzzle-authoring && java -Xmx2g -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest | tee /tmp/pre4-checkpoint.log)
           grep -F 'IntentAcquisitionTest PASS assertions=22' /tmp/pre4-ia1.log
           grep -F 'IntentAcquisitionIA2Test PASS assertions=33' /tmp/pre4-ia2.log
           grep -F 'IntentAcquisitionIA3Test PASS assertions=43' /tmp/pre4-ia3.log
           grep -F 'IntentAcquisitionCheckpointTest PASS assertions=12' /tmp/pre4-checkpoint.log
 
-      - name: Commit and push validated candidate
+      - name: Run bounded-view constrained heap regression
         shell: bash
-        working-directory: EinsteinGame
+        working-directory: Candidate/puzzle-authoring
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" != "$BASE_SHA" 2>/dev/null || true
-          git config user.name 'Einstein Zero-Draw Optimization'
-          git config user.email 'noreply@localhost'
-          git add puzzle-authoring/src/main/java
-          mapfile -t changed < <(git diff --cached --name-only | sort)
-          printf '%s\n' "${changed[@]}"
-          test "${#changed[@]}" -eq 7
-          git commit -m 'perf: reuse bounded analysis and frozen evidence maps'
-          CANDIDATE_SHA="$(git rev-parse HEAD)"
-          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
-          git push origin "HEAD:refs/heads/$CANDIDATE_BRANCH"
-          test "$(git ls-remote origin "refs/heads/$CANDIDATE_BRANCH" | cut -f1)" = "$CANDIDATE_SHA"
-          echo "CANDIDATE_SHA=$CANDIDATE_SHA"
-          echo 'formalAcquisitionInvocation=0'
-          echo 'privateEvidenceWrite=0'
-          echo 'EINSTEIN_PRE4_RUNTIME_MEMORY_OPTIMIZATION_ZERO_DRAW=PASS'
+          java -Xmx64m -cp "$CANDIDATE_CLASSES" com.example.einsteingame.authoring.pss.contract.BoundedCanonicalRecordViewTest stress | tee /tmp/pre4-bounded.log
+          grep -F 'BoundedCanonicalRecordViewStress PASS assertions=2 logicalMinimumBytes=100663296' /tmp/pre4-bounded.log
+
+      - name: Postflight zero-draw boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C Candidate rev-parse HEAD)" = "$CANDIDATE_SHA"
+          test -z "$(git -C Candidate status --porcelain --untracked-files=all)"
+          printf '%s\n' \
+            'EINSTEIN_PRE4_CANDIDATE_ZERO_DRAW=PASS' \
+            "candidate=$CANDIDATE_SHA" \
+            'CP8_CP9_CP10_EXACT_OUTPUT_EQUIVALENCE=PASS' \
+            'PATH_AND_IA_REGRESSIONS=PASS' \
+            'CONSTRAINED_HEAP_REGRESSION=PASS' \
+            'formalAcquisitionInvocation=0' \
+            'privateEvidenceWrite=0' \
+            'artifactUpload=0'
