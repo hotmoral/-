@@ -13,9 +13,10 @@ for(const file of ['config.js','math.js','geometry.js','craft-geometry.js','stat
 const TD=context.window.TwinDock;
 const { normAngle }=TD.MathUtil;
 const EPS=1e-9;
-const expected=['REFERENCE','SIDE_TOP','REFERENCE','SIDE_BOTTOM','REFERENCE'];
-assert.deepEqual(Array.from(TD.Mission.profiles,p=>p.craftId),expected);
-for(let i=1;i<expected.length;i++) assert.notEqual(expected[i]==='REFERENCE',expected[i-1]==='REFERENCE','adjacent stages must alternate front vs side anchor class');
+const expected=['REFERENCE','CARGO_RECT_SIDE','SHUTTLE_TRAPEZOID_FRONT','TUG_TRAPEZOID_CORNER','CARGO_RECT_FRONT'];
+const classes=['FRONT','SIDE','FRONT','CORNER','FRONT'];
+assert.deepEqual(Array.from(TD.Mission.profiles,p=>p.setupId),expected);
+for(let i=1;i<classes.length;i++) assert.notEqual(classes[i]==='FRONT',classes[i-1]==='FRONT','adjacent stages must alternate front vs non-front anchor class');
 
 const sequence=TD.createState();sequence.viewport.W=1000;sequence.viewport.H=600;sequence.ship.x=120;sequence.ship.y=280;sequence.ship.angle=.27;
 let profile=TD.Mission.reset(sequence);assert.equal(sequence.ship.geometryId,expected[0]);
@@ -23,6 +24,7 @@ for(let i=1;i<expected.length;i++){
   profile=TD.Mission.advance(sequence);
   assert.equal(profile,TD.Mission.profiles[i]);
   assert.equal(sequence.ship.geometryId,expected[i]);
+  assert.equal(sequence.ship.anchorClass,classes[i]);
 }
 
 for(let i=0;i<TD.Mission.profiles.length;i++){
@@ -30,11 +32,11 @@ for(let i=0;i<TD.Mission.profiles.length;i++){
   s.viewport.W=1000;s.viewport.H=600;s.ship.x=130;s.ship.y=310;s.ship.angle=.37;s.mission.index=i;
   TD.Mission.placeCurrent(s);
   const target=TD.Geometry.stationDockAnchor(s);
-  const expectedCraft=TD.CraftGeometry.get(expected[i]);
-  assert.equal(s.ship.geometryId,expectedCraft.id);
-  assert.equal(s.ship.dockAnchor.x,expectedCraft.x);
-  assert.equal(s.ship.dockAnchor.y,expectedCraft.y);
-  assert.equal(s.ship.dockAnchor.angle,expectedCraft.angle);
+  const expectedSetup=TD.CraftGeometry.get(expected[i]);
+  assert.equal(s.ship.geometryId,expectedSetup.id);
+  assert.equal(s.ship.dockAnchor.x,expectedSetup.x);
+  assert.equal(s.ship.dockAnchor.y,expectedSetup.y);
+  assert.equal(s.ship.dockAnchor.angle,expectedSetup.angle);
   assert.ok(Math.abs(normAngle(target.angle-(s.ship.angle+s.ship.dockAnchor.angle)))<EPS);
 
   const pose=TD.Geometry.bodyPoseForWorldAnchor(target.x,target.y,target.angle,s.ship.dockAnchor);
@@ -48,8 +50,4 @@ for(let i=0;i<TD.Mission.profiles.length;i++){
   assert.equal(TD.Docking.canDock(m),true,`stage ${i+1} canDock`);
 }
 
-assert.equal(TD.CraftGeometry.get('SIDE_TOP').y,-31);
-assert.equal(TD.CraftGeometry.get('SIDE_TOP').angle,-Math.PI/2);
-assert.equal(TD.CraftGeometry.get('SIDE_BOTTOM').y,31);
-assert.equal(TD.CraftGeometry.get('SIDE_BOTTOM').angle,Math.PI/2);
-console.log('Twin Dock alternating-anchor mission probe tests: PASS');
+console.log('Twin Dock alternating anchor-class mission probe tests: PASS');
