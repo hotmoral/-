@@ -122,7 +122,8 @@ jobs:
         run: |
           set -euo pipefail
           java -Xmx2g -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.PssAhaTest | tee /tmp/einstein-pss-aha.log
-          grep -F 'PssAhaTest PASS' /tmp/einstein-pss-aha.log
+          grep -F 'CP8 STRUCTURAL AHA ANALYZER: PASS; assertions=3511' /tmp/einstein-pss-aha.log
+          grep -F 'Golden=ef1e05b89179ac3ca0025c6a51ea81b092a61a8287a6777c8385f70e893a129f Result=752ffdfac9f83b7e3136f1f48a0ba3ca63aed82da25f71c9c77a3881d1330f3c' /tmp/einstein-pss-aha.log
 
       - name: Run IA regressions
         shell: bash
@@ -157,7 +158,7 @@ jobs:
             "candidate=$CANDIDATE_SHA" \
             'streamingHashLegacyByteEquivalence=PASS' \
             'constrainedHeap96MiBLogicalPayload=204800000' \
-            'PssAha=PASS' \
+            'PssAha=PASS assertions=3511 Golden=PASS Result=PASS' \
             'IA1=PASS IA2=PASS IA3=PASS checkpoint=PASS' \
             'formalAcquisitionInvocation=0' \
             'artifactUpload=0' \
