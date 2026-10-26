@@ -1,0 +1,32 @@
+name: Linkline A3 Public Source Bundle Export
+
+on:
+  push:
+    branches:
+      - linkline/a3-final-catalog-order-v1
+    paths:
+      - .github/workflows/linkline-a3-export-source-bundle.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact public commit
+        uses: actions/checkout@v4
+      - name: Upload already-public deterministic reconstruction source
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkline-a3-public-reconstruction-source
+          path: |
+            linkline/reference/m2_state_model.py
+            linkline/reference/m3_solver.py
+            linkline/analysis/a2_cognitive.py
+            linkline/analysis/a3_structural_features.py
+            linkline/tools/a3_final_candidate_pool_public.py
+            linkline/tools/a3_final_candidate_pool_reuse_v2.py
+          if-no-files-found: error
+          retention-days: 1
