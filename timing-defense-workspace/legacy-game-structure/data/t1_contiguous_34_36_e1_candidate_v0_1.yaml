@@ -1,0 +1,93 @@
+version: t1-contiguous-34-36-e1-candidate-v0.1
+status: BOUNDED_E1_EXACT_AUTHORING_CANDIDATE_NO_ADOPTION_NO_PRODUCTION_OR_NUMERICAL_FREEZE
+
+plan:
+  path: data/t1_contiguous_34_36_e1_authoring_plan_v0_1.yaml
+  gitBlobSha: d9bd6fc2ae9d6246791e8409e809cc818387eaf1
+
+authority:
+  adoptedD1:
+    approval: ../186_T1_STAGE32_EXACT_SPAWN_AUTHORING_BASELINE_USER_APPROVED_V0_1.md
+    approvalGitBlobSha: 51474b47f4ddfb5b91dc95ce1e477ef36fbe1ced
+    candidate: {path: data/t1_contiguous_32_d1_candidate_v0_1.yaml, sha256: 91909c0b9be28003a8fdcbafd3ad65b325ed9b2247524e810f950bd3541d45d8}
+    materializedStage15_33Sha256: 47f02889b659dcad7988645fcc6e11381de38607657bd7751d7387856dba5466
+  anchors:
+    source: data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml
+    sha256: 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36
+    gitBlobSha: 0c3ea19a5b3ccd7eecd76fe221c795fd8f30d90d
+    leftStage: 33
+    rightStage: 37
+
+scope:
+  intendedContiguousWindowAfterFutureAdoption: [15, 37]
+  addedStages: [34, 35, 36]
+  canonicalExactWindowBeforeCandidate: [15, 33]
+  rightExactAnchorStages: [37]
+  allowedMonsters: [GRUNT, RUNNER, BRUTE]
+  physicalSpawnX: 0.92
+  midfieldPopIn: false
+  authored4sNormalMax: 8
+  monsterScalarChange: false
+  classScalarChange: false
+  shopExpPxpChange: false
+  productionGameplayChange: false
+  fullT1ExactRecipeFreeze: false
+  candidateAdopted: false
+
+stageAdditions:
+  - id: T1_S34_REORDER_CONTROL_E1
+    stage: 34
+    archetype: E03+E02
+    componentArchetypes: [E03, E02]
+    formation: F02
+    formationSet: [F02]
+    cadence: CD05
+    complexity: C2
+    pressureTags: [BULWARK]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 550, type: RUNNER, y: 0.42}
+      - {tMs: 1100, type: GRUNT, y: 0.49}
+      - {tMs: 1650, type: RUNNER, y: 0.44}
+      - {tMs: 3300, type: BRUTE, y: 0.46}
+      - {tMs: 3850, type: RUNNER, y: 0.50}
+      - {tMs: 4400, type: GRUNT, y: 0.43}
+      - {tMs: 4950, type: RUNNER, y: 0.48}
+
+  - id: T1_S35_REORDER_RECOVERY_E1
+    stage: 35
+    archetype: E01
+    componentArchetypes: [E01]
+    formation: F04
+    formationSet: [F04]
+    cadence: CD05
+    complexity: C1
+    pressureTags: [BASELINE]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: GRUNT, y: 0.28}
+      - {tMs: 900, type: GRUNT, y: 0.70}
+      - {tMs: 1800, type: GRUNT, y: 0.40}
+      - {tMs: 3600, type: GRUNT, y: 0.66}
+      - {tMs: 4500, type: GRUNT, y: 0.32}
+      - {tMs: 5400, type: GRUNT, y: 0.74}
+
+  - id: T1_S36_HEAVY_LINE_ATTRIBUTION_E1
+    stage: 36
+    archetype: E03
+    componentArchetypes: [E03]
+    formation: F01
+    formationSet: [F01]
+    cadence: CD03
+    complexity: C1
+    pressureTags: [BULWARK]
+    entryBaseX: 0.92
+    spawns:
+      - {tMs: 0, type: BRUTE, y: 0.46}
+      - {tMs: 250, type: GRUNT, y: 0.44}
+      - {tMs: 500, type: GRUNT, y: 0.48}
+      - {tMs: 2800, type: BRUTE, y: 0.46}
+      - {tMs: 3050, type: GRUNT, y: 0.45}
+      - {tMs: 3300, type: GRUNT, y: 0.47}
+      - {tMs: 6000, type: BRUTE, y: 0.46}
