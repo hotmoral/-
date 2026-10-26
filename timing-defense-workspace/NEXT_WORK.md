@@ -3,108 +3,125 @@
 Updated: 2026-10-26 KST
 
 ## Mandatory recovery order
+
 1. fetch live `timing-defense-workspace` HEAD;
 2. read `PROJECT_STATUS.md`;
 3. read `SESSION_HANDOFF.md`;
-4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_56.yaml`;
-5. read `179_T1_WIDER_EXACT_AUTHORING_WAVE_A4_AND_FULL_STATIC_CLOSURE_V0_1.md`;
-6. inspect `data/t1_wider_exact_authoring_wave_a4_candidate_v0_1.yaml`;
-7. read docs178/177/176 and A3/A2/A1 candidates only as needed;
-8. preserve Wave A plan doc175/data plan;
-9. preserve user-approved Stage49-50 baseline doc174 and evidence169-173;
-10. verify production/harness live heads.
+4. read active `legacy-game-structure/data/system_dependency_calibration_order_v0_58.yaml`;
+5. read `181_T1_CONTIGUOUS_15_25_B1_DYNAMIC_ADMISSION_AND_CLOSURE_V0_1.md`;
+6. inspect `data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml` only if exact Stage16/17 details are needed;
+7. preserve Wave A approval `180` and Stage49-50 approval `174`;
+8. verify production/harness live heads.
 
-Do not rerun closed Stage49-50 diagnostics, Wave A plan preflight, or A1-A4 static gates without a concrete trigger.
+Do not rerun closed Stage49-50 evidence, Wave A A1-A4 static gates, or B1 static/dynamic admission without a concrete trigger.
 
 ---
 
-# Current phase
+# Current state
 
 ```text
-Stage49-50 structural authoring baseline = USER APPROVED WITH WATCHES
-Wider T1 Wave A plan = STATIC PREFLIGHT PASS
-A1 [1,4,8] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-A2 [15,19] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-A3 [24,25,29,30,31] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-A4 [33,37,38] = MATERIALIZED / STATIC PASS / NOT ADOPTED
-Full Wave A accumulated materialization = STATIC PASS / NOT ADOPTED
-full 50-Stage exact recipe freeze = DEFERRED
-production gameplay semantics = UNCHANGED / UNAUTHORIZED
-CURRENT = FULL WAVE A STATIC ADOPTION DECISION GATE
+Stage49-50 = USER APPROVED STRUCTURAL AUTHORING BASELINE WITH WATCHES
+Wave A 13 Stages = USER APPROVED EXACT-SPAWN AUTHORING BASELINE WITH WATCHES
+
+B1 Stage16/17 = MATERIALIZED / STATIC PASS
+Stage15-25 = CONTIGUOUS EXACT WINDOW
+B1 persistent dynamic admission = PASS_WITH_WATCHES
+B1 Stage16/17 adoption = NOT YET
+
+full Stage1-50 exact recipe freeze = DEFERRED
+production gameplay = UNCHANGED / UNAUTHORIZED
+CURRENT = T1_B1_STAGE16_17_AUTHORING_ADOPTION_DECISION_GATE
 ```
 
 ---
 
-# Full Wave A exact static evidence
+# B1 evidence to preserve
+
+Candidate:
+`legacy-game-structure/data/t1_contiguous_15_25_b1_stage16_17_candidate_v0_1.yaml`
 
 ```text
-A1 candidate SHA256 = 44616732b4cbba8bc52df294d98e0ab485b400d7ec7e9b9bfdd9f3fe32d2910d
-A2 candidate SHA256 = 2d3bf477e80617c0d26d2c349588caa446195b39c2581df0f11dd29eb1f37f8d
-A3 candidate SHA256 = 30860f1ff0911ff121491e62a5fa2ede84b43c6e4ce9bd7ec5f0f8a68d9592e6
-A4 candidate SHA256 = 93b9c785ca800ad97ad0149e9931e1d43b58328744dbb5867fdc5b9261dfef36
-full accumulated SHA256 = 28b23f1f6332785009028ae9e531912c7dc2fb54da3a3a2db1536569b743774b
+candidate SHA256
+b9abc507c5ccdc20bc19c5681ba92cead920326fa9d04c1acf5b2ed90ff91465
+
+materialized Stage15-25 SHA256
+f769dd79e750882a6b7a75dad18bfdbc514da546b183587ec2ed909e50b2ed0f
 ```
 
-Exact runs:
+Final dynamic evidence:
+
 ```text
-A1 40193818274 / artifact 12599510840 / PASS
-A2 40200875375 / artifact 12601174423 / PASS
-A3 40205404257 / artifact 12603138180 / PASS
-A4 40210214458 / artifact 12605184344 / PASS
+run      40254326926
+artifact 12622340036
+head     e5b12a2c386de719c97dc020aeef9ffdbd9b1b3a
+artifact sha256 2f940ebea4c8b2be008e937d45e46f10595ec106b847f49af5ce1dc1b77b3acf
+
+100/100 cases completed through Stage25
+terminal failures = 0
+persistent continuity = PASS
+deterministic replay = PASS
+settlement/carry invariants = PASS
 ```
 
-A4 final static facts:
+Main interpretation:
+
 ```text
-Stage33 G12 / F03 / CD04 / max4=8 / max6=12 / ySpan=0.07
-Stage37 G4+R4 / F08 / CD04 / max4=8 / two axes
-Stage38 G6+B2 / F02 / CD03 / max4=7 / ySpan=0.06
-Stage39 anchor authored14 / F08 / CD05 / C3 / max4=8 / ySpan=0.22
-Stage40 anchor preserved
+Stage17 recovery = SUPPORTED
+Stage25 wall-pressure relief = SUPPORTED
+Lv16 timing-opportunity collision = RECONFIRMED / KEEP WATCH
+Stage21-24 objective pressure = CLASS-SKEWED / KEEP WATCH
+B1 = PASS_WITH_WATCHES
 ```
 
-A4 first run `40210087895` failed only because validator used equal monster-type cardinality as a false complexity proxy for Stage38 vs Stage39. The candidate did not change; the guard was corrected and final run passed.
-
-All representative base objects and A1-A3 candidate objects were preserved in the cumulative materialization.
+Superseded run `40254173222` failed only because the v0.1 dynamic wrapper had a stale copied materialized byte-SHA guard. Static materialization passed; no balance conclusion is allowed from that run. The candidate and combat/lifecycle semantics were not changed.
 
 ---
 
-# Important lifecycle constraint
+# Progression reach boundary
 
-Do **not** run A1+A2+A3+A4 targets as one persistent-state sequence. They are noncontiguous and skip real stages.
+Do not invent exact unlock Stages.
 
-Dynamic execution remains deferred until either:
-- contiguous authored context is deliberately built; or
-- a separately specified non-persistent diagnostic contract is explicitly authorized.
+Current authority:
+
+```text
+Lv16 Stage18-21 = calibration-candidate reach band
+Lv21 Stage25-28 = calibration-candidate reach band
+```
+
+B1 sensitivity used:
+
+```text
+Lv16 @18 vs @21
+Lv21 ACTIVE at S25 vs AFTER S25
+```
+
+No final EXP semantics or exact thresholds are frozen.
 
 ---
 
 # Exact next decision
 
-User approval is now required before promoting the exact Wave A spawn candidates from evidence to authoring authority.
+The next fresh session should present/resolve only this adoption gate first:
 
-Decision wording:
 ```text
-ADOPT FULL WAVE A EXACT SPAWN CANDIDATES
+ADOPT STAGE16 + STAGE17 EXACT SPAWN CANDIDATES
 AS CANONICAL T1 AUTHORING BASELINE WITH WATCHES
 ```
 
-If approved, the following become authoring baseline only:
-- exact monster counts;
-- exact spawn timestamps;
-- exact Y positions;
-- formation/cadence realization for the 13 Wave A target stages.
+If approved:
+- mark Stage16/17 exact spawn count/timestamp/type/Y as canonical authoring authority;
+- preserve all B1 watches;
+- advance active plan immutably;
+- only then select the next smallest bounded authoring package based on live remaining gaps and lifecycle value.
 
-Approval does **not** mean:
+Approval still does **not** mean:
 - production deployment;
 - class or monster scalar freeze;
-- shop/EXP/P×P change;
-- Archer width freeze;
-- Mage Lv31 numerical freeze;
+- final EXP freeze or exact Lv16/Lv21 unlock Stage;
+- shop/P×P change;
 - full Stage1-50 exact recipe freeze.
 
-After adoption, next work is **not** to fill all remaining stages blindly. First design the smallest bounded contiguous-coverage wave that can eventually support lifecycle-faithful dynamic execution.
-
-If not approved, hold at full Wave A static PASS and revise only against concrete feedback.
+If rejected, preserve all B1 evidence and revise only the specific rejected Stage16/17 authoring detail.
 
 ---
 
@@ -113,13 +130,15 @@ If not approved, hold at full Wave A static PASS and revise only against concret
 ```text
 LIVE REMOTE WINS
 NO REPEAT OF CLOSED WORK WITHOUT TRIGGER
-STAGE49-50 BASELINE USER APPROVED WITH WATCHES
-A1-A4 STATIC PASS / NOT ADOPTED
-FULL WAVE A STATIC MATERIALIZATION PASS
-NO FAKE NONCONTIGUOUS PERSISTENT DYNAMIC CHAIN
+NO FAKE SKIPPED-STAGE PERSISTENT CHAIN
+STAGE_SETTLED REQUIRES DELAYED EVENT QUEUE DRAINAGE
+WAVE A IS USER-APPROVED AUTHORING AUTHORITY
+B1 EVIDENCE PASS_WITH_WATCHES / STAGE16-17 NOT ADOPTED
 NO FULL-50 EXACT AUTHORING YET
-AUTHORED 4s DENSITY <= 8
+AUTHORED 4s NORMAL DENSITY <= 8
 NO CLASS OR MONSTER SCALAR CHANGE
 NO SHOP/EXP/P×P CHANGE
 NO PRODUCTION GAMEPLAY CHANGE WITHOUT APPROVAL
 ```
+
+**This file intentionally stops at the adoption decision gate. Do not start another authoring group in the old session.**
