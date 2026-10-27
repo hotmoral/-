@@ -1,0 +1,502 @@
+[
+  {
+    "chainLength": 10,
+    "difficulty": 1156,
+    "groupToken": "a96bda17b1982785419943c891b46c73e2963036c0810cff30e767cea732747c",
+    "id": "9299be751ec6b1d73e4f3ce5240960b89e5bba2353805dfe2ad827e8c97daa54",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 651,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 703,
+    "groupToken": "fb913998f52debee422f7bc8fd35329f8a737dfca8ba06dbb646b68c48c08056",
+    "id": "c6a25b5e2363946f9924254c4dd3ac9d7e59f7a1d6fdae000f0f9cdbcce4f53f",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 652,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1157,
+    "groupToken": "d4cdbd619eb701c417de2ad35a70a4c6892787f961465ec1ad1a6625f20f97a2",
+    "id": "726c0a8eb1a2356447f99c85da43964328eef63f8871c951cb132730038e352e",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 653,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 703,
+    "groupToken": "e7f67f46172ea0f685a87f55cb8f73addc51380e1ad0d9aeb98cb4d0c3942d8d",
+    "id": "eb7349f93c00ce63fdbeb4a7c7b5290d63976335177daa60ce6a6ee5f2d65c2b",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 654,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1157,
+    "groupToken": "cd54b2b29952eb7d5840999d662c089cae4a9c8c624a0e2c6937aaa69d72fc5e",
+    "id": "f78d6e9a2310bf6f5126d1f9b677d15400f9a4d7495e6ab90e5e52449f98e6d6",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 655,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1159,
+    "groupToken": "8c767f81acb0470851e7f6658ce2c107bced4f630bf145b11e691d356532665e",
+    "id": "17b526343ef1588158ee5ef6e80de615bf232c8f92c90bdb6071f200d33d044a",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 656,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 704,
+    "groupToken": "7c92766914c7ffde919e2a070087d22a39e0e158fb07ed554bfe974ef160a581",
+    "id": "076ea0a1d1970b7dae77a6fd478633381a709ba447129143787b27e4da0a7155",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 657,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1160,
+    "groupToken": "3acfba4e1b7a02baebcfee06d2397e9667179bf728f542d7bcf275417ad1aaa0",
+    "id": "d13d4a7b12d1f528b9cd311c9865c686157be40bbd8d9b1d3c61b1991d9c1a02",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 658,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 706,
+    "groupToken": "c7a46a6a540d0078d51f45db01fcf7e712771df6f5333443534a2b563d185d1d",
+    "id": "b0ac5db3ec1930638b3ba2bd307460dd420dfed7cdb8943beefd254f23d36d89",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 659,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1160,
+    "groupToken": "f128cd8ae35a2a49db65159c197449ce2ccbbc12f81169ae71b142496cd6b706",
+    "id": "e68271d339a969c26493415c178942ff3a24b06fa87ed94e3f2af27c9aeb9586",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 660,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1162,
+    "groupToken": "64057b94e92e89de5216f52adb3aab491b2462939b9688d954610ab4e2a45b8a",
+    "id": "a667024823c86e44a93026cfab7b172f1f46b90865b40d16597788afa49cb2e3",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 661,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 710,
+    "groupToken": "ab837b502d0eab1937fabe59cc586bc01509ee60351a1fa89409717aadfd0ca3",
+    "id": "b5503b8c2b723ccad07c5d0653d65526fa2eb8f018cbea836610820caa185043",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 662,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1162,
+    "groupToken": "2984df5f92a353dd917c8ec52df34fa2f73d1b4eaa9485e04cd3f2b0f23db5e5",
+    "id": "5070bd28751c926a92b752a1c8ef32cfcf80c14530063d27fd646a0797403171",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 663,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 711,
+    "groupToken": "10063d6dd46b8ef0ccbec5c9745b40fffb2c8de7ec20577cb47ad790b471b98b",
+    "id": "14dd977336ba7e7e214990945113e7857aec86f16613c7183e3b9256c564b38a",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 664,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1163,
+    "groupToken": "263e921b29b7040ef7e0772ade15acdddd372a5f5ac7824217fe06c9af440f52",
+    "id": "fac5fbaf43320464e2ce65d10d32f4852cefc9397b24e9701bba26e3f3bdf162",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 665,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1165,
+    "groupToken": "a166b151fa5724d394cf7b0c24c913a73b0357eb2e6ba41f5dffdd2c394a785b",
+    "id": "04e916ee0eff2895fc4dbb75f1247bdd81aaee1d76e8f2d80098afb1350be65c",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 666,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 715,
+    "groupToken": "ed468f072e7a0d7996949d56486bdc91514226947910ec3a261ae19f5cc538fe",
+    "id": "d0687d55b9295eedf7cb6ee2084ce98768e89f87ad0a8bb3d568e4d0c6a31392",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 667,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1169,
+    "groupToken": "22927bf5715e043509b229881d3d155a9dc1e020ece4f4945b55a098aa23c77f",
+    "id": "b13a7f927ac90dd75a44c71fa1603c7ee7a08c8bff60ddf123b11efda500867a",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 668,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 717,
+    "groupToken": "f8d0c1efd74ead5ae1d240c0679c92cc7a8d7e4dc0c7d9256a250f92fbb89bbd",
+    "id": "0755cf0719f896195a631163212db2b985ba56549daf653a8ad3e796646ebcfe",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 669,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1169,
+    "groupToken": "c83a5a8fcb0fc6e78ad7082f02a95357e75efd9a942430775a9538f9218acea0",
+    "id": "2ba149c74e5c4df6c96b7ad235f80e80f6bb4132249dfa9d2af967e97cc0c080",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 670,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1170,
+    "groupToken": "5c4c4e2fc2be02067f3cb1f67dd69ae0ca7bde0d1ba30d125510942c7da26fc3",
+    "id": "2f8bc2333fcd80cb74818ac84bb226611ef0e750962bf062d831b1b014f48df3",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 671,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 718,
+    "groupToken": "06cb81b9ec95d0eef2c272c9255bb4924e0bd0ac84e5ca35e31fcfef41d450b2",
+    "id": "c430814c53e60e9ccccfc2a3ad6aee367bea9f73ca869aa64b1bca2c553359ed",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 672,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1174,
+    "groupToken": "2297ab4ae66b532663dfac2fdb2a6b28a6ef0e0c3f3dc001e2f2b9dc5f35a98e",
+    "id": "6d6bd85080a172167910d0f58d87e004573d406e184e61db51704807b85df144",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 673,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 718,
+    "groupToken": "f96445b1557734b123bfb6af530d057dffa4b86c08b3e777ff971cbe33033b6f",
+    "id": "ef040b643efc531c9b4b67736b4c953c28ae2ff94040f069579a61f27aca2b93",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 674,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1179,
+    "groupToken": "557407af579339b7b533bf916efd5f3447ee593826bb2e038caede51726a25a6",
+    "id": "0eff958d44b4cac7d235eb03d326f876e4ccee3002bf806ca56b0f3dc0d6bf7e",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 675,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1180,
+    "groupToken": "6bf4ad9835a43673d6ea6eae9d7e09babbadeced01b5c549209590bd45af3d29",
+    "id": "04d15b15dffa4dfa6b546735cfc7454d3b7a92872742956e216a4bc81386475a",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 676,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 724,
+    "groupToken": "ec44ceb2c1bfad9d3177eabb15b8f893afbcd950cda0bc829941d740d3478be3",
+    "id": "0e3d08635b865b89c624305b2213c0af9c88e629f007381352ed9c3deae677bf",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 677,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1183,
+    "groupToken": "3c6909900f429e818e9e8374ca022dda52b5efe60ec7fe6bae528513bddc0ff7",
+    "id": "0d1e32eabd74031e319880453a853f8c3bd461f02862aac9631784c46ad7bd19",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 678,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 724,
+    "groupToken": "1b1a519381eb74245cf1625ed146651aae6c9dfc01ec88e4ca1668848e6303db",
+    "id": "c836aa7f2517cabd7c3d041bb251cad616c759ca8c3a9204ba0279eae3bd7eb6",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 679,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1183,
+    "groupToken": "deb3d878786963fe5a442961948baef9953e6957523d1de62ab6172b5e430032",
+    "id": "0f4adf04675d1f12cc2ce534ccd28f758c0e666fec29b74831655c1023a9f8c1",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 680,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1183,
+    "groupToken": "e753d3e952062da537aeb0d27fa49922664b012143caef7a57792a694e21cca9",
+    "id": "1c5d1c573b664d2944774f832fb3670c64bb8886eed5a727a8acb54ddadd12bd",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 681,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 727,
+    "groupToken": "c5c0e284ddff30342a670ef967e098f39aad7abb5c7d7a0e1c5cc514ab25d5c4",
+    "id": "a6964b651e5d4d33bd3f1020c0044843042bb56919744cf11e1f84a25f0cb9a8",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 682,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1183,
+    "groupToken": "48c53e9de3c167c1961f910a4c443e3d0c50cd746c9da6d58c2814cd691f537a",
+    "id": "574e3acadde2457c02609a2096ba48da9f4f01f7f61a9f58151cc87e6e922f62",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 683,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 728,
+    "groupToken": "12a71ea8bd0b1fe6f8f0bf633e4832dc97cfa9444562d67963ed435b1160b4bd",
+    "id": "200f43699b0677fae85dde5a28f6078fb677e3b1bcd4b110502a34b5f0fe1d0e",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 684,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1186,
+    "groupToken": "83b5d5d82fd99931c63db846523b0bc28d3803c60abc7660515a45e18674f6db",
+    "id": "8e84122c45702149172f7e650dad99e114c29855eb34a354240fa0b33f3fc39d",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 685,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1188,
+    "groupToken": "dc97c84974324474be3f7080ce08733d13acba11bfafbe2ec6b38039dd04de0d",
+    "id": "12b0159ef04ef424ff0b5a8dce9605e8beeb7342c57d2700b49ade86265fb131",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 686,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 731,
+    "groupToken": "9d5d5fa71d3a9032b9d5b3dded933607a883604c392c20a2699705e5c8613143",
+    "id": "8a057d78646dfa3016d4aec557616f02430c94eef0b6e6d040f45c56177b95a3",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 687,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1188,
+    "groupToken": "5d7b58f32cd62e116e2e7515271dd0731e8c614bd72504b4f301198a506a40a0",
+    "id": "d830fc720ad1203652635ea1dd6519cc87bd21b18dafff3abb4375c198c96e83",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 688,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 735,
+    "groupToken": "0b10758d5cee9d5ae686b3614efd7fdfea990b4726cc43e67516a441df64b8c1",
+    "id": "05a0d18d6ccc4ec009579f7fb116d641f82cef8c85dc52f6d8afb1bcb2e20537",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 689,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1190,
+    "groupToken": "1f514336544c941d96827d4165373702a22b2f05fdf1fcdfd57e29b2fd45044c",
+    "id": "6ece7b0f807201c4a6f12e9c914f599ff26424ce59e91511434cd95137846f5e",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 690,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1190,
+    "groupToken": "bab92815b5a40f51a0e50f5f89c115984248cac2afee027ee02207791af2e7e3",
+    "id": "8bc555b8ff0dc1d85b0f97b497619d7fe51586ebf76bd9ae1dba1afdfa5c11a3",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 691,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 735,
+    "groupToken": "56a70f9ba944621d4ba181eb6428562e7aa048fd6f9e2af27aba95f97a4aa0ef",
+    "id": "0e08e47680fed8390e460c48bcf27f92cec810b245f8b7844c06c36df7e2a536",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 692,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1193,
+    "groupToken": "41bb46f6e6c7fc0e833406c671f4ba231cd8cb11989f79fb31d46633ea6e0d97",
+    "id": "c164578e7d1a5d5fc8a70231ae364652dad49b31accc9f260df99e93a03202d2",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 693,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 740,
+    "groupToken": "6a1cf5d5c2c74cf51e31d6b31c71ab7868f29f3ab3659cc9ed8fb88a2ee2218a",
+    "id": "3f3dda0917eb4e38c673e75f6bc9f008acac1fa0f66d098e66d44793c8c3b350",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 694,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1198,
+    "groupToken": "9369eccf97ad9932531c27d2cb0a160a758354c0cd5b59030fcf4117d0f64c5f",
+    "id": "ebea8fa50b5b3e426810df8d54c762fe1e044bbbf2186b5f2d163a77261cbac8",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 695,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1200,
+    "groupToken": "abb43a58a3a75bf9aa02dc40036750e11cb4dcaf50d779d89f5fc2ee400dd219",
+    "id": "5edddfa086732bd2b24e99dd83526f4d2d73b91ea26a25b1850016cc3afed182",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 696,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 740,
+    "groupToken": "e92384480e1b842bd9a9b7845c1d6576549e88d15d04eb53bcecd7a43ae00783",
+    "id": "fe1fc552ff592e2b47c27d1268aadabf869246f78a3f141bfa6c9c771b95e3d8",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 697,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1202,
+    "groupToken": "df681d27073897b80c9fbecea2114e3163cfa569a68033afd4463a50748d9a9d",
+    "id": "24b06ad0e9ba4e6f18737a825afc47c5cc1fe8c2126652f8b5c83dbf8c97ec31",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 698,
+    "useIndex": 1
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 740,
+    "groupToken": "0f92a308f1414dda216c94453b45cde08835b16359773aa5b332e03ef4d6bd1b",
+    "id": "9beedc5974da6a76ea96acc2591448daf81739ec048a9f2b9e88be64d7430a72",
+    "n": 5,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 699,
+    "useIndex": 2
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1202,
+    "groupToken": "ed22970eac757e66b0001910019be21c4226e10f0536ee71cbde1b74fc93f3b6",
+    "id": "7690e04c76f018db127fba57af4fa2d073300cfcb92fbcf268406cc30b0d3bff",
+    "n": 6,
+    "sourceKind": "A1_W3_PUBLIC_STATE_EXPANSION_V1",
+    "stage": 700,
+    "useIndex": 1
+  }
+]
