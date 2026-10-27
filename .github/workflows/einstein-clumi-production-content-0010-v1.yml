@@ -1,4 +1,4 @@
-name: Clumi Campaign 0010 Preview APK V1
+name: Clumi Campaign Runtime Binding V1
 
 on:
   push:
@@ -10,20 +10,18 @@ permissions:
   contents: read
 
 concurrency:
-  group: clumi-campaign-0010-preview-apk
+  group: clumi-campaign-runtime-binding-v1
   cancel-in-progress: false
 
 jobs:
-  build-preview-apk:
+  verify-runtime-binding:
     if: >-
-      github.event.head_commit.message == 'build: Clumi campaign 0010 preview APK v1 retry'
+      github.event.head_commit.message == 'verify: Clumi campaign runtime binding v1'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
     env:
-      SOURCE_SHA: b4db1d8308dec7e7a0d84dcc0a7633a41274b163
+      SOURCE_SHA: 6cfbb37666c2baa66838e3cd980a6298d5592cef
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
-      PREVIEW_APP_ID: com.example.einsteingame.preview0010
-      BUILD_TOOLS_VERSION: 34.0.0
 
     steps:
       - name: Require source credential
@@ -32,11 +30,11 @@ jobs:
           set -euo pipefail
           test -n "$READ_TOKEN"
 
-      - name: Checkout exact production content
+      - name: Checkout exact UI source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: b4db1d8308dec7e7a0d84dcc0a7633a41274b163
+          ref: 6cfbb37666c2baa66838e3cd980a6298d5592cef
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           persist-credentials: false
 
@@ -55,7 +53,7 @@ jobs:
           set -euo pipefail
           sdkmanager 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
 
-      - name: Verify campaign snapshot and make side-by-side preview
+      - name: Verify campaign runtime binding contract
         shell: bash
         run: |
           set -euo pipefail
@@ -63,60 +61,30 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
+
+          main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
+          view=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
           pack=json.loads(Path('app/src/main/assets/puzzles/campaign-pack-0010-v1.json').read_text())
-          assert len(pack['puzzles'])==10
-          assert [p['publishedPuzzleId'] for p in pack['puzzles']]==[f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
           cfg=Path('app/src/main/assets/stages/campaign-stage-config-v1.properties').read_text()
+
+          assert len(pack['puzzles']) == 10
+          assert [p['publishedPuzzleId'] for p in pack['puzzles']] == [f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
           assert 'stageCount=10' in cfg
-          gradle=Path('app/build.gradle')
-          s=gradle.read_text()
-          assert s.count("applicationId 'com.example.einsteingame'")==1
-          s=s.replace("applicationId 'com.example.einsteingame'", "applicationId 'com.example.einsteingame.preview0010'", 1)
-          assert s.count("versionName '0.2.7.1'")==1
-          s=s.replace("versionName '0.2.7.1'", "versionName '0.2.7.1-preview0010'", 1)
-          gradle.write_text(s)
-          strings=Path('app/src/main/res/values/strings.xml')
-          t=strings.read_text()
-          assert '<string name="app_name">Clumi</string>' in t
-          t=t.replace('<string name="app_name">Clumi</string>', '<string name="app_name">Clumi Preview 1-10</string>', 1)
-          strings.write_text(t)
+          assert 'GameView next=new GameView(MainActivity.this,pack.get(selected));' in main
+          assert 'GameView next=new GameView(this,pack.get(catalog.stage(stage).pilotIndex(pack)));' in main
+          assert 'public GameView(Context context,PublishedRuntimePuzzleLoader.PublishedPuzzle publishedPuzzle)' in view
+          assert 'state=new GameState(publishedPuzzle.puzzle);' in view
+          assert 'private static PublishedRuntimePuzzleLoader.PublishedPuzzle loadPilot' in view
+          assert 'puzzles/pilot-pack-v1.json' in view
+          assert 'new GameView(MainActivity.this,selected)' not in main
+          assert 'new GameView(this,catalog.stage(stage).pilotIndex(pack))' not in main
+          print('Campaign runtime binding static contract: PASS')
           PY
           git diff --check
 
-      - name: Build standard debug APK
+      - name: Compile app
         shell: bash
         run: |
           set -euo pipefail
           chmod +x gradlew
-          env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD ./gradlew --no-daemon --stacktrace --console=plain :app:assembleDebug
-          test -s app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Verify installable preview APK
-        shell: bash
-        run: |
-          set -euo pipefail
-          APK=app/build/outputs/apk/debug/app-debug.apk
-          TOOLS="$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION"
-          "$TOOLS/aapt" dump badging "$APK" > /tmp/badging.txt
-          grep -q "package: name='$PREVIEW_APP_ID'" /tmp/badging.txt
-          "$TOOLS/apksigner" verify --verbose --print-certs --min-sdk-version 23 "$APK" > /tmp/signing.txt
-          grep -q '^Verified using v2 scheme (APK Signature Scheme v2): true$' /tmp/signing.txt
-          unzip -p "$APK" assets/puzzles/campaign-pack-0010-v1.json > /tmp/campaign.json
-          python3 - <<'PY'
-          import json
-          d=json.load(open('/tmp/campaign.json'))
-          assert [p['publishedPuzzleId'] for p in d['puzzles']]==[f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
-          print('Campaign 0001-0010 APK verification: PASS')
-          PY
-          cp "$APK" app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk
-          sha256sum app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk > app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk.sha256
-
-      - name: Upload preview APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Clumi-Campaign-0010-Preview
-          path: |
-            app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk
-            app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk.sha256
-          if-no-files-found: error
-          retention-days: 14
+          env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
