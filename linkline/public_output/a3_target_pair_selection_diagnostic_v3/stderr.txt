@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_exec_v1.py", line 57, in <module>
+    main()
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_exec_v1.py", line 53, in main
+    planner.main()
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_v1.py", line 484, in main
+    legacy, legacy_diag = select_legacy_pair_complete(frozen_rows)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_v1.py", line 149, in select_legacy_pair_complete
+    raise SelectionError(
+tools.a3_target_pair_selection_plan_v1.SelectionError: frozen product exact-pair coverage N3:8!=36
