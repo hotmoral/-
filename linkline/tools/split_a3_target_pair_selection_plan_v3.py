@@ -7,9 +7,14 @@ selection semantics.
 from __future__ import annotations
 
 import argparse
+import base64
 from collections import defaultdict
+from hashlib import sha256
 import json
 from pathlib import Path
+
+BLOOM_BITS = 32768
+BLOOM_HASHES = 17
 
 
 def write_json(path: Path, value) -> None:
@@ -21,6 +26,14 @@ def clean(value) -> str:
     if value is None:
         return ""
     return str(value).replace("\t", " ").replace("\n", " ")
+
+
+def bloom_positions(identifier: str):
+    digest = sha256(("LINKLINE_A3_SELECTED_BLOOM_V1:" + identifier).encode("ascii")).digest()
+    h1 = int.from_bytes(digest[:16], "big")
+    h2 = int.from_bytes(digest[16:], "big") | 1
+    for index in range(BLOOM_HASHES):
+        yield (h1 + index * h2) % BLOOM_BITS
 
 
 def main() -> None:
@@ -54,6 +67,7 @@ def main() -> None:
         "selectedNibbleDir": "selected_nibble",
         "selectedIdNibbleDir": "selected_id_nibble",
         "repairIdNibbleDir": "repair_id_nibble",
+        "selectedBloom": "selected_bloom.json",
     }
 
     for start in range(0, len(order), args.chunk_size):
@@ -94,6 +108,22 @@ def main() -> None:
         id_path.write_text("\n".join(sorted(row["id"] for row in rows)) + ("\n" if rows else ""), encoding="utf-8")
         write_json(out / "repair_id_nibble" / f"{nibble}.json", repair_nibbles[nibble])
 
+    bits = bytearray(BLOOM_BITS // 8)
+    for row in order:
+        for position in bloom_positions(row["id"]):
+            bits[position >> 3] |= 1 << (position & 7)
+    bloom = {
+        "schema": "LINKLINE_A3_SELECTED_ID_BLOOM_V1",
+        "sourceSelectionFingerprint": plan.get("selectionFingerprint"),
+        "itemCount": len(order),
+        "bitCount": BLOOM_BITS,
+        "hashCount": BLOOM_HASHES,
+        "hashMethod": "sha256-prefix-double-hash",
+        "hashPrefix": "LINKLINE_A3_SELECTED_BLOOM_V1:",
+        "bitsBase64": base64.b64encode(bytes(bits)).decode("ascii"),
+    }
+    write_json(out / "selected_bloom.json", bloom)
+
     write_json(out / "manifest.json", manifest)
     print(json.dumps({
         "status": "PASS",
@@ -103,6 +133,8 @@ def main() -> None:
         "repairChunkCount": len(manifest["repairChunks"]),
         "selectedNibbleCount": sum(len(v) for v in selected_nibbles.values()),
         "repairNibbleCount": sum(len(v) for v in repair_nibbles.values()),
+        "bloomBits": BLOOM_BITS,
+        "bloomHashes": BLOOM_HASHES,
     }, sort_keys=True))
 
 
