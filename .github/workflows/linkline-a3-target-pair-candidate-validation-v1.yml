@@ -1,0 +1,98 @@
+name: Linkline A3 Target-Pair Candidate Validation V1
+
+on:
+  push:
+    branches:
+      - linkline/a3-target-pair-diversity-v1
+    paths:
+      - linkline/tools/a3_target_pair_candidate_validation_v1.py
+      - .github/workflows/linkline-a3-target-pair-candidate-validation-v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-target-pair-candidate-validation-v1
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PYTHONPATH: linkline
+    steps:
+      - name: Fetch exact public commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Preflight validator
+        run: |
+          set -euo pipefail
+          python --version
+          python -m py_compile linkline/tools/a3_target_pair_candidate_validation_v1.py
+
+      - name: Reconstruct and solve all public selected and repair candidates
+        run: |
+          set -euo pipefail
+          dest=linkline/public_output/a3_target_pair_candidate_validation_v1
+          rm -rf "$dest"
+          mkdir -p "$dest"
+          python linkline/tools/a3_target_pair_candidate_validation_v1.py \
+            --plan linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json \
+            --output "$dest/summary.json"
+
+      - name: Enforce public-safe validation contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('linkline/public_output/a3_target_pair_candidate_validation_v1/summary.json')
+          s=json.loads(p.read_text())
+          assert s['schema']=='LINKLINE_A3_TARGET_PAIR_PUBLIC_CANDIDATE_VALIDATION_V1'
+          assert s['status']=='PASS'
+          assert s['sourceSelectionFingerprint']=='1fc7dd15893a113935b0b1b2f5ca636e22669d783e887f90e56203275d3c3131'
+          assert s['sourceSummaryFingerprint']=='d1f3c0e5e7f7542bacba4f08843963cfe4d6169f9f3f941ec88f9db0c4c3a3c9'
+          assert s['selectedRowsValidated']==1300
+          assert s['repairReservoirRowsValidated']==1961
+          assert s['totalRowsValidated']==3261
+          assert s['researchIdentityChecksPassed']==3261
+          assert s['solver']['solved']==3261
+          assert s['solver']['nonSolved']==0
+          assert s['orientedExactPairReplacementChecks']==156
+          assert s['groupTokenPairConsistency']['violations']==0
+          assert s['selectedPairAudit']['3']['uniquePairCount']==36
+          assert s['selectedPairAudit']['3']['maxPairUse']==1
+          assert s['selectedPairAudit']['4']['uniquePairCount']==120
+          assert s['selectedPairAudit']['4']['maxPairUse']==1
+          assert s['selectedPairAudit']['5']['maxPairUse']<=2
+          assert s['selectedPairAudit']['6']['maxPairUse']<=2
+          assert s['privacy']['containsPuzzleGeometry'] is False
+          assert s['privacy']['containsTargetCoordinates'] is False
+          assert s['privacy']['containsPrivateIsolationIds'] is False
+          assert s['boundaries']['productionCatalogModified'] is False
+          print('TARGET_PAIR_PUBLIC_CANDIDATE_VALIDATION_V1_PASS')
+          PY
+
+      - name: Commit public-safe validation summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          dest=linkline/public_output/a3_target_pair_candidate_validation_v1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          if ! git diff --cached --quiet; then
+            git commit -m "Linkline A3: validate public target-pair candidate bank"
+            git push origin HEAD:linkline/a3-target-pair-diversity-v1
+          fi
