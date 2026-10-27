@@ -1,0 +1,76 @@
+name: Linkline A3 Target-Pair Materialization Index V1
+
+on:
+  push:
+    branches:
+      - linkline/a3-target-pair-diversity-v1
+    paths:
+      - linkline/tools/a3_target_pair_materialization_index_v1.py
+      - .github/workflows/linkline-a3-target-pair-materialization-index-v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-target-pair-materialization-index-v1
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Fetch exact public commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Preflight encoder
+        run: |
+          set -euo pipefail
+          python --version
+          python -m py_compile linkline/tools/a3_target_pair_materialization_index_v1.py
+
+      - name: Build public-safe materialization index
+        run: |
+          set -euo pipefail
+          dest=linkline/public_output/a3_target_pair_materialization_index_v1
+          rm -rf "$dest"
+          python linkline/tools/a3_target_pair_materialization_index_v1.py \
+            --plan linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json \
+            --output-dir "$dest"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('linkline/public_output/a3_target_pair_materialization_index_v1/manifest.json')
+          m=json.loads(p.read_text())
+          assert m['schema']=='LINKLINE_A3_TARGET_PAIR_MATERIALIZATION_INDEX_V1'
+          assert m['recordCount']==1300
+          assert m['recordSize']==7
+          assert m['sourceSelectionFingerprint']=='1fc7dd15893a113935b0b1b2f5ca636e22669d783e887f90e56203275d3c3131'
+          assert len(m['parts'])==4
+          assert m['privacy']['containsPuzzleGeometry'] is False
+          assert m['privacy']['containsTargetCoordinates'] is False
+          print('MATERIALIZATION_INDEX_V1_PASS')
+          PY
+
+      - name: Commit public-safe index
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          dest=linkline/public_output/a3_target_pair_materialization_index_v1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          if ! git diff --cached --quiet; then
+            git commit -m "Linkline A3: materialize public-safe source index"
+            git push origin HEAD:linkline/a3-target-pair-diversity-v1
+          fi
