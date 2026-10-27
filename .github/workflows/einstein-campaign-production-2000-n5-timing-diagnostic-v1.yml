@@ -1,0 +1,66 @@
+name: Einstein Campaign Production 2000 N5 Timing Diagnostic V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-production-2000-n5-timing-diagnostic-v1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: einstein-campaign-production-2000
+  cancel-in-progress: false
+
+jobs:
+  fixed-bank-phase-timing:
+    if: >-
+      github.event.head_commit.message == 'diagnostic: run Einstein N5 fixed-bank phase timing v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      DIAGNOSTIC_SHA: 5156005b62e1ac4bb3f7671130ba728d942b40f9
+      BANK_SHA: bbb2f5043b7eda70daaa2328b301a8f3d51c37ec
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+
+    steps:
+      - name: Require private repository read credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$READ_TOKEN"
+
+      - name: Checkout exact private diagnostic source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 5156005b62e1ac4bb3f7671130ba728d942b40f9
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout exact immutable production Bank snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: bbb2f5043b7eda70daaa2328b301a8f3d51c37ec
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run fixed BANKED stage 0004-0006 phase timing diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C EinsteinGame rev-parse HEAD)" = "$DIAGNOSTIC_SHA"
+          test "$(git -C ProductionStore rev-parse HEAD)" = "$BANK_SHA"
+          bash EinsteinGame/tools/campaign-production-2000/run_n5_timing_diagnostic_v1.sh
