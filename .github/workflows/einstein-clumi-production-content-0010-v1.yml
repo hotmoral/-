@@ -1,4 +1,4 @@
-name: Clumi Campaign Runtime Binding V1
+name: Clumi Header Settings Surface V1
 
 on:
   push:
@@ -10,17 +10,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: clumi-campaign-runtime-binding-v1
+  group: clumi-header-settings-surface-v1
   cancel-in-progress: false
 
 jobs:
-  verify-runtime-binding:
+  verify-header-settings-surface:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi campaign runtime binding v1'
+      github.event.head_commit.message == 'verify: Clumi header settings surface v1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 6cfbb37666c2baa66838e3cd980a6298d5592cef
+      SOURCE_SHA: da3f43baef4c9252c9132018b96ab5cee5fea03e
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
 
     steps:
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 6cfbb37666c2baa66838e3cd980a6298d5592cef
+          ref: da3f43baef4c9252c9132018b96ab5cee5fea03e
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           persist-credentials: false
 
@@ -53,32 +53,32 @@ jobs:
           set -euo pipefail
           sdkmanager 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
 
-      - name: Verify campaign runtime binding contract
+      - name: Verify header and Settings surface contract
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           python3 - <<'PY'
-          import json
           from pathlib import Path
 
           main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
+          header=Path('app/src/main/java/com/example/einsteingame/ClumiHeaderBrand.java').read_text()
+          settings=Path('app/src/main/java/com/example/einsteingame/ClumiSettingsScrollPanel.java').read_text()
           view=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
-          pack=json.loads(Path('app/src/main/assets/puzzles/campaign-pack-0010-v1.json').read_text())
-          cfg=Path('app/src/main/assets/stages/campaign-stage-config-v1.properties').read_text()
 
-          assert len(pack['puzzles']) == 10
-          assert [p['publishedPuzzleId'] for p in pack['puzzles']] == [f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
-          assert 'stageCount=10' in cfg
+          assert 'ClumiHeaderBrand.height(this)' in main
+          assert 'new ClumiHeaderBrand(this,title,dark())' in main
+          assert 'headerRatio=' not in main
+          assert '"설정".equals(label)' in header
+          assert 'new DynamicTitle(context,label,dark)' in header
+          assert 'ClumiSettingsScrollPanel.install(this,dark)' in header
+          assert 'setTag("settings-scroll-shell")' in settings
+          assert 'page.removeViewAt(index)' in settings
+          assert 'shell.addView(scroll' in settings
+          assert 'legacyPanel.setBackground(new ColorDrawable(Color.TRANSPARENT))' in settings
           assert 'GameView next=new GameView(MainActivity.this,pack.get(selected));' in main
-          assert 'GameView next=new GameView(this,pack.get(catalog.stage(stage).pilotIndex(pack)));' in main
-          assert 'public GameView(Context context,PublishedRuntimePuzzleLoader.PublishedPuzzle publishedPuzzle)' in view
           assert 'state=new GameState(publishedPuzzle.puzzle);' in view
-          assert 'private static PublishedRuntimePuzzleLoader.PublishedPuzzle loadPilot' in view
-          assert 'puzzles/pilot-pack-v1.json' in view
-          assert 'new GameView(MainActivity.this,selected)' not in main
-          assert 'new GameView(this,catalog.stage(stage).pilotIndex(pack))' not in main
-          print('Campaign runtime binding static contract: PASS')
+          print('Header / Settings surface static contract: PASS')
           PY
           git diff --check
 
