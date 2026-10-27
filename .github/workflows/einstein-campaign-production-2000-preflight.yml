@@ -49,12 +49,37 @@ jobs:
         shell: bash
         run: bash tools/campaign-production-2000/run-preflight.sh
 
-      - name: Run existing Campaign and durability regressions
+      - name: Compile current accepted Campaign source and tests
         shell: bash
         run: |
           set -euo pipefail
-          bash tools/test-campaign-core.sh
-          java -Xmx2g -cp build/campaign-core/core:build/campaign-core/authoring:build/campaign-core/tests com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest
+          out="$PWD/build/campaign-2000-regression"
+          mkdir -p "$out/core" "$out/authoring" "$out/tests"
+          rg --files puzzle-core/src/main/java -g '*.java' | sort > "$out/core-sources.txt"
+          rg --files puzzle-authoring/src/main/java -g '*.java' | sort > "$out/authoring-sources.txt"
+          rg --files puzzle-authoring/src/test/java -g '*.java' | sort > "$out/test-sources.txt"
+          java -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 -source 8 -target 8 -d "$out/core" @"$out/core-sources.txt"
+          java -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 -source 8 -target 8 -cp "$out/core" -d "$out/authoring" @"$out/authoring-sources.txt"
+          java -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 -source 8 -target 8 -cp "$out/core:$out/authoring" -d "$out/tests" @"$out/test-sources.txt"
+
+      - name: Run current accepted Campaign determinism and durability regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="$PWD/build/campaign-2000-regression"
+          cp_path="$out/core:$out/authoring:$out/tests"
+          for seed in 7 23; do
+            PYTHONHASHSEED="$seed" python3 -c 'import json; print(json.dumps({"candidateOrder":list({"A_RARE","B_COMMON","C_FINAL"})},separators=(",",":")))' > "$out/process-order-$seed.json"
+          done
+          cmp -s "$out/process-order-7.json" "$out/process-order-23.json" && exit 1 || true
+          mkdir -p build/campaign-core
+          java -Xmx2g -Dcampaign.inputOrder="$out/process-order-7.json" -cp "$cp_path" com.example.einsteingame.authoring.pss.CampaignCoreTest
+          cp build/campaign-core/golden-summary.json "$out/normal-summary.json"
+          cp build/campaign-core/integration-evidence.json "$out/normal-integration-evidence.json"
+          java -Xmx2g -Dcampaign.inputOrder="$out/process-order-23.json" -cp "$cp_path" com.example.einsteingame.authoring.pss.CampaignCoreTest reverse
+          cmp build/campaign-core/golden-summary.json "$out/normal-summary.json"
+          cmp build/campaign-core/integration-evidence.json "$out/normal-integration-evidence.json"
+          java -Xmx2g -cp "$cp_path" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest
 
       - name: Run Android publication bridge regression
         shell: bash
