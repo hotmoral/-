@@ -1,0 +1,105 @@
+name: Einstein Campaign 2000 Producer Source Pin Repair V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-production-2000-producer-source-pin-repair-v1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: einstein-campaign-production-2000
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: >-
+      github.event.head_commit.message == 'production: repair Einstein producer optimized source pin v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RUNNER_SHA: a0c1f9c282d556a78c6bded46410533188853442
+      OLD_SOURCE: cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
+      NEW_SOURCE: 9d981bc9048bc024c59ee6ede3ae04abe4c833d8
+      RUNNER_BRANCH: campaign-production-2000-run-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact runner
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: a0c1f9c282d556a78c6bded46410533188853442
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Patch only producer source provenance pin
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
+          test "$(git rev-parse origin/$RUNNER_BRANCH)" = "$RUNNER_SHA"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000N5DirectProducerV1.java')
+          s=p.read_text()
+          old='static final String EXPECTED_SOURCE="cdb66a3e0509bfec050a907bb43efb4e01b4ffeb";'
+          new='static final String EXPECTED_SOURCE="9d981bc9048bc024c59ee6ede3ae04abe4c833d8";'
+          if s.count(old)!=1:
+              raise SystemExit('producer source pin anchor mismatch')
+          s=s.replace(old,new)
+          p.write_text(s)
+          PY
+          mapfile -t changed < <(git diff --name-only | sort)
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000N5DirectProducerV1.java'
+          grep -F 'EXPECTED_SOURCE="9d981bc9048bc024c59ee6ede3ae04abe4c833d8"' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000N5DirectProducerV1.java >/dev/null
+          test -z "$(git diff --name-only "$NEW_SOURCE" HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/assets/puzzles)"
+          echo 'PRODUCER_SOURCE_PIN_DIFF_GUARD=PASS'
+
+      - name: Compile exact production and producer sources
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/einstein-producer-pin-classes /tmp/einstein-producer-pin-sources.txt
+          mkdir -p /tmp/einstein-producer-pin-classes
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > /tmp/einstein-producer-pin-sources.txt
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> /tmp/einstein-producer-pin-sources.txt
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java' >> /tmp/einstein-producer-pin-sources.txt
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000N5DirectProducerV1.java' >> /tmp/einstein-producer-pin-sources.txt
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d /tmp/einstein-producer-pin-classes @/tmp/einstein-producer-pin-sources.txt
+          echo 'PRODUCER_SOURCE_PIN_COMPILE=PASS'
+
+      - name: Commit and push adapter-only repair
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          git config user.name 'einstein-production-bot'
+          git config user.email 'einstein-production-bot@users.noreply.github.com'
+          git add puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000N5DirectProducerV1.java
+          test -z "$(git diff --name-only)"
+          git diff --cached --quiet && { echo 'expected producer pin diff missing' >&2; exit 1; } || true
+          git commit -m 'production: align producer with validated optimized source'
+          NEW_RUNNER_SHA="$(git rev-parse HEAD)"
+          git push origin "HEAD:refs/heads/$RUNNER_BRANCH"
+          echo "NEW_RUNNER_SHA=$NEW_RUNNER_SHA"
+          echo 'PRODUCER_SOURCE_PIN_REPAIR=PASS'
