@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      SOURCE_SHA: 8c23ea1e433891f38d3b2a529fe65e845fa0833a
+      SOURCE_SHA: f549e1f6c322495dae969b672805faf69812665b
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
@@ -185,7 +185,7 @@ jobs:
           import json
           from pathlib import Path
           profiles=['360x460','360x640','360x800','412x915']
-          output={'source_sha':'8c23ea1e433891f38d3b2a529fe65e845fa0833a','profiles':{},'status':'PASS'}
+          output={'source_sha':'f549e1f6c322495dae969b672805faf69812665b','profiles':{},'status':'PASS'}
           total=0
           for profile in profiles:
               path=Path('final-regression/evidence')/profile/'summary.json'
