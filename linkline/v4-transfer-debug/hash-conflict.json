@@ -1,0 +1,20 @@
+{
+  "inputSize": 12890,
+  "expectedGitBlobSha": "81458e6ebcc645d22fff597bcffb6294d0f24e76",
+  "expectedSha256": "444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616",
+  "attempts": 1649502,
+  "foundGitMatch": true,
+  "insertPosition": 12886,
+  "insertByte": 93,
+  "insertByteRepr": "']'",
+  "outputSize": 12891,
+  "directGitBlobSha": "81458e6ebcc645d22fff597bcffb6294d0f24e76",
+  "directSha256": "20c2e0112571eb9a9092f252a2ca73bd06dd4247522eea7f56256fadb2ed197e",
+  "gitMatch": true,
+  "sha256Match": false,
+  "parseOk": false,
+  "parseError": "JSONDecodeError(\"Expecting ',' delimiter: line 1 column 12890 (char 12889)\")",
+  "parsedRows": null,
+  "contextUtf8": "],[5,20]],[6,15,[17,11,5,4,10,9,8,14,20,19,25,31,30,24,18],[5,25]]]]}",
+  "contextHex": "5d2c5b352c32305d5d2c5b362c31352c5b31372c31312c352c342c31302c392c382c31342c32302c31392c32352c33312c33302c32342c31385d2c5b352c32355d5d5d5d7d"
+}
