@@ -1,4 +1,5 @@
 name: Clumi Final Responsive Regression V1
+# trigger: corrected Stage Clear runtime structure
 
 on:
   push:
