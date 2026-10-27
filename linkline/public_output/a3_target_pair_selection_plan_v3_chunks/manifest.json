@@ -1,5 +1,7 @@
 {
   "chunkSize": 50,
+  "compactRepair": "repair.tsv",
+  "compactSelected": "selected.tsv",
   "orderChunks": [
     "order_0001_0050.json",
     "order_0051_0100.json",
