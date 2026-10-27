@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Split the already-public A3 target-pair v3 plan into small pretty JSON chunks.
+"""Split/index the already-public A3 target-pair v3 plan.
 
-This is a transport/readability transform only. It adds no private data and does
-not alter selection semantics.
+Transport/readability transform only. It adds no private data and does not alter
+selection semantics.
 """
 from __future__ import annotations
 
@@ -14,6 +14,12 @@ from pathlib import Path
 def write_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def clean(value) -> str:
+    if value is None:
+        return ""
+    return str(value).replace("\t", " ").replace("\n", " ")
 
 
 def main() -> None:
@@ -42,6 +48,8 @@ def main() -> None:
         "chunkSize": args.chunk_size,
         "orderChunks": [],
         "repairChunks": [],
+        "compactSelected": "selected.tsv",
+        "compactRepair": "repair.tsv",
     }
 
     for start in range(0, len(order), args.chunk_size):
@@ -55,6 +63,18 @@ def main() -> None:
         name = f"repair_{start + 1:04d}_{start + len(rows):04d}.json"
         write_json(out / name, rows)
         manifest["repairChunks"].append(name)
+
+    selected_header = ["stage", "id", "n", "chainLength", "orientationTransform", "useIndex", "groupToken", "difficulty"]
+    selected_lines = ["\t".join(selected_header)]
+    for row in order:
+        selected_lines.append("\t".join(clean(row.get(key)) for key in selected_header))
+    (out / "selected.tsv").write_text("\n".join(selected_lines) + "\n", encoding="utf-8")
+
+    repair_header = ["id", "n", "chainLength", "orientationTransform", "groupToken", "purpose", "replacementForId", "difficulty"]
+    repair_lines = ["\t".join(repair_header)]
+    for row in reservoir:
+        repair_lines.append("\t".join(clean(row.get(key)) for key in repair_header))
+    (out / "repair.tsv").write_text("\n".join(repair_lines) + "\n", encoding="utf-8")
 
     write_json(out / "manifest.json", manifest)
     print(json.dumps({
