@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   materialize:
-    if: ${{ !contains(github.event.head_commit.message, 'record exact candidate proof') }}
+    if: ${{ !contains(github.event.head_commit.message, 'record V4 hash conflict evidence') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact pushed commit without third-party actions
@@ -23,7 +23,7 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Recover and prove exact candidate bytes
+      - name: Record exact candidate hash conflict evidence
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -31,13 +31,10 @@ jobs:
           import hashlib, json
 
           p = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
-          r = Path('linkline/v4-transfer-debug/exact-proof.json')
+          r = Path('linkline/v4-transfer-debug/hash-conflict.json')
           expected_git = '81458e6ebcc645d22fff597bcffb6294d0f24e76'
           expected_sha256 = '444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616'
           data = p.read_bytes()
-          if len(data) != 12890:
-              raise SystemExit(f'unexpected candidate size: {len(data)}')
-
           header = b'blob 12891\0'
           expected_digest = bytes.fromhex(expected_git)
           prefix = hashlib.sha1(); prefix.update(header)
@@ -55,56 +52,51 @@ jobs:
                   break
               if pos < len(data):
                   prefix.update(data[pos:pos+1])
-          if not found:
-              raise SystemExit('no exact ASCII insertion candidate found')
 
-          pos, byte, candidate = found
-          direct_git = hashlib.sha1(header + candidate).hexdigest()
-          direct_sha256 = hashlib.sha256(candidate).hexdigest()
-          parse_ok = True
-          parse_error = None
-          parsed_rows = None
-          try:
-              obj = json.loads(candidate.decode('utf-8'))
-              parsed_rows = len(obj.get('rows', []))
-          except Exception as exc:
-              parse_ok = False
-              parse_error = repr(exc)
-
-          context_start = max(0, pos - 48)
-          context_end = min(len(candidate), pos + 49)
           report = {
+              'inputSize': len(data),
               'expectedGitBlobSha': expected_git,
               'expectedSha256': expected_sha256,
               'attempts': attempts,
-              'insertPosition': pos,
-              'insertByte': byte,
-              'insertByteRepr': repr(chr(byte)),
-              'directGitBlobSha': direct_git,
-              'directSha256': direct_sha256,
-              'gitMatch': direct_git == expected_git,
-              'sha256Match': direct_sha256 == expected_sha256,
-              'outputSize': len(candidate),
-              'parseOk': parse_ok,
-              'parseError': parse_error,
-              'parsedRows': parsed_rows,
-              'contextUtf8': candidate[context_start:context_end].decode('utf-8', errors='replace'),
-              'contextHex': candidate[context_start:context_end].hex(),
+              'foundGitMatch': bool(found),
           }
+          if found:
+              pos, byte, candidate = found
+              direct_git = hashlib.sha1(header + candidate).hexdigest()
+              direct_sha256 = hashlib.sha256(candidate).hexdigest()
+              parse_ok = True
+              parse_error = None
+              parsed_rows = None
+              try:
+                  obj = json.loads(candidate.decode('utf-8'))
+                  parsed_rows = len(obj.get('rows', []))
+              except Exception as exc:
+                  parse_ok = False
+                  parse_error = repr(exc)
+              lo = max(0, pos - 64); hi = min(len(candidate), pos + 65)
+              report.update({
+                  'insertPosition': pos,
+                  'insertByte': byte,
+                  'insertByteRepr': repr(chr(byte)),
+                  'outputSize': len(candidate),
+                  'directGitBlobSha': direct_git,
+                  'directSha256': direct_sha256,
+                  'gitMatch': direct_git == expected_git,
+                  'sha256Match': direct_sha256 == expected_sha256,
+                  'parseOk': parse_ok,
+                  'parseError': parse_error,
+                  'parsedRows': parsed_rows,
+                  'contextUtf8': candidate[lo:hi].decode('utf-8', errors='replace'),
+                  'contextHex': candidate[lo:hi].hex(),
+              })
           r.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
-          if direct_git != expected_git or direct_sha256 != expected_sha256:
-              raise SystemExit('candidate did not match both canonical hashes')
-          p.write_bytes(candidate)
           PY
-          test "$(wc -c < linkline/v4-transfer-debug/candidate-1041-1300.json)" -eq 12891
-          test "$(git hash-object linkline/v4-transfer-debug/candidate-1041-1300.json)" = "81458e6ebcc645d22fff597bcffb6294d0f24e76"
-          test "$(sha256sum linkline/v4-transfer-debug/candidate-1041-1300.json | awk '{print $1}')" = "444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616"
 
-      - name: Commit exact proof and recovered bytes
+      - name: Commit conflict evidence only
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add linkline/v4-transfer-debug/candidate-1041-1300.json linkline/v4-transfer-debug/exact-proof.json
-          git commit -m "linkline: record exact candidate proof"
+          git add linkline/v4-transfer-debug/hash-conflict.json
+          git commit -m "linkline: record V4 hash conflict evidence"
           git push origin HEAD:linkline/v4-object-probe-v1
