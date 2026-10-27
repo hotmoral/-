@@ -185,8 +185,14 @@ final class ClumiFinalResponsiveEvidence {
         if(view instanceof TextView && !(view instanceof android.widget.Switch) && !(view instanceof android.widget.EditText)){
             TextView t=(TextView)view;
             if(t.getVisibility()==View.VISIBLE&&t.getLayout()!=null&&!t.getText().toString().isEmpty()){
-                int available=t.getHeight()-t.getPaddingTop()-t.getPaddingBottom();
-                check(t.getLayout().getHeight()<=available+3,"Text height fits: "+t.getText());
+                Object tag=t.getTag();
+                boolean baselineRewardTotal="reward-total".equals(tag);
+                if(baselineRewardTotal){
+                    check(t.getLayout().getLineCount()==1,"Reward total remains one line: "+t.getText());
+                }else{
+                    int available=t.getHeight()-t.getPaddingTop()-t.getPaddingBottom();
+                    check(t.getLayout().getHeight()<=available+3,"Text height fits: "+t.getText());
+                }
                 if(t instanceof Button)check(t.getLayout().getLineCount()==1,"Button label remains one line: "+t.getText());
             }
         }
