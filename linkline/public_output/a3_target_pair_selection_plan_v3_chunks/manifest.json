@@ -76,6 +76,7 @@
   "repairIdNibbleDir": "repair_id_nibble",
   "repairReservoirCount": 1961,
   "schema": "LINKLINE_A3_TARGET_PAIR_1300_PUBLIC_SELECTION_PLAN_V3_CHUNKS",
+  "selectedIdNibbleDir": "selected_id_nibble",
   "selectedNibbleDir": "selected_nibble",
   "sourceSelectionFingerprint": "1fc7dd15893a113935b0b1b2f5ca636e22669d783e887f90e56203275d3c3131",
   "sourceSummaryFingerprint": "d1f3c0e5e7f7542bacba4f08843963cfe4d6169f9f3f941ec88f9db0c4c3a3c9"
