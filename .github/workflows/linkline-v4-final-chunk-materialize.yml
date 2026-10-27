@@ -1,0 +1,51 @@
+name: Linkline V4 final chunk materialize
+
+on:
+  push:
+    branches:
+      - linkline/v4-object-probe-v1
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: ${{ !contains(github.event.head_commit.message, 'materialize exact V4 final chunk') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact pushed commit without third-party actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Restore and verify exact final chunk
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
+          data = p.read_bytes()
+          if len(data) != 12890:
+              raise SystemExit(f'unexpected candidate size: {len(data)}')
+          if data.endswith(b'\n'):
+              raise SystemExit('candidate unexpectedly already newline-terminated')
+          p.write_bytes(data + b'\n')
+          PY
+          test "$(wc -c < linkline/v4-transfer-debug/candidate-1041-1300.json)" -eq 12891
+          ACTUAL="$(git hash-object linkline/v4-transfer-debug/candidate-1041-1300.json)"
+          EXPECTED="81458e6ebcc645d22fff597bcffb6294d0f24e76"
+          test "${ACTUAL}" = "${EXPECTED}"
+
+      - name: Commit exact verified blob
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add linkline/v4-transfer-debug/candidate-1041-1300.json
+          git commit -m "linkline: materialize exact V4 final chunk"
+          git push origin HEAD:linkline/v4-object-probe-v1
