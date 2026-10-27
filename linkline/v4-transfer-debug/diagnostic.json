@@ -1,0 +1,51 @@
+{
+  "expectedGitBlobSha": "81458e6ebcc645d22fff597bcffb6294d0f24e76",
+  "originalSize": 12890,
+  "originalTailHex": "2c32302c31392c32352c33312c33302c32342c31385d2c5b352c32355d5d5d7d",
+  "parsedRows": 260,
+  "variants": [
+    {
+      "name": "original",
+      "size": 12890,
+      "gitBlobSha": "7673279ba09db0af2e4caf4646a5302587641725",
+      "match": false
+    },
+    {
+      "name": "original_lf",
+      "size": 12891,
+      "gitBlobSha": "a50d3992bdd82491c4663cf551fd6d63d07eeb35",
+      "match": false
+    },
+    {
+      "name": "original_cr",
+      "size": 12891,
+      "gitBlobSha": "55af2750bc86d929fd81a2d94998b1d2b8a697a3",
+      "match": false
+    },
+    {
+      "name": "original_crlf",
+      "size": 12892,
+      "gitBlobSha": "5a91a584f4aec6488093b270e8db0374cad83974",
+      "match": false
+    },
+    {
+      "name": "canonical",
+      "size": 12890,
+      "gitBlobSha": "7673279ba09db0af2e4caf4646a5302587641725",
+      "match": false
+    },
+    {
+      "name": "canonical_lf",
+      "size": 12891,
+      "gitBlobSha": "a50d3992bdd82491c4663cf551fd6d63d07eeb35",
+      "match": false
+    },
+    {
+      "name": "canonical_crlf",
+      "size": 12892,
+      "gitBlobSha": "5a91a584f4aec6488093b270e8db0374cad83974",
+      "match": false
+    }
+  ],
+  "matchedVariant": null
+}
