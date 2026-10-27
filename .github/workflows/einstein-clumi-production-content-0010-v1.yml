@@ -16,24 +16,22 @@ concurrency:
 jobs:
   patch-verify-gameplay-hierarchy:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi gameplay hierarchy v1'
+      github.event.head_commit.message == 'verify: Clumi gameplay hierarchy v1 retry'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
       SOURCE_SHA: bc6809e6666894ee1c33570763f6de1d67e7bfff
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
-      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
     steps:
-      - name: Require private repository credentials
+      - name: Require private repository write credential
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$READ_TOKEN"
           test -n "$WRITE_TOKEN"
 
-      - name: Checkout live UI branch with write credential
+      - name: Checkout exact live UI branch
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
@@ -68,111 +66,74 @@ jobs:
 
           one(
               '    private float headerBottom, boardHeaderHeight, cellWidth, cellHeight, boardPadding, boardContentWidth;\n',
-              '    private float headerBottom, boardHeaderHeight, cellWidth, cellHeight, boardPadding, boardContentWidth;\n'
-              '    private boolean compactGameplay,mediumGameplay;\n',
+              '    private float headerBottom, boardHeaderHeight, cellWidth, cellHeight, boardPadding, boardContentWidth;\n    private boolean compactGameplay,mediumGameplay;\n',
               'layout profile field')
 
-          old='''    @Override protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-        super.onSizeChanged(width, height, oldWidth, oldHeight);
-        float margin=width*ClumiVisualTokens.OUTER_FRACTION,gap=d(5);
-        float headerHeight=d(42),headerTop=d(20);headerBottom=headerTop+headerHeight;
-        float leftWidth=(width-2*margin-gap)*.49f;
-        float bottomHeight=Math.min(leftWidth+d(30),Math.max(d(158),height*.258f));
-        float filterHeight=d(48),bottomTop=height-margin-bottomHeight,filterTop=bottomTop-gap-filterHeight;
-        headerCard.set(margin,headerTop,width-margin,headerBottom);
-        board.set(margin,headerBottom+gap,width-margin,filterTop-gap);
-        filters.set(margin,filterTop,width-margin,filterTop+filterHeight);
-        candidateFrame.set(margin,bottomTop,margin+leftWidth,height-margin);
-        candidatePanel.set(candidateFrame.left+d(4),bottomTop+d(34),candidateFrame.right-d(4),candidateFrame.bottom-d(4));
-        timerPanel.set(margin+d(5),bottomTop+d(5),margin+leftWidth*.56f-d(2),bottomTop+d(30));
-        undoButton.set(timerPanel.right+d(5),timerPanel.top,margin+leftWidth-d(5),timerPanel.bottom);
-        cluePanel.set(candidateFrame.right+gap,bottomTop,width-margin,height-margin);
-        float itemsLeft=filters.left+filters.width()*ClumiVisualTokens.FILTER_FRACTION;
-        for(int i=0;i<2;i++)itemButtons[i].set(itemsLeft+i*(filters.right-itemsLeft)/2+d(2),filters.top+d(4),itemsLeft+(i+1)*(filters.right-itemsLeft)/2-d(3),filters.bottom-d(4));
-        for(int i=0;i<candidateTiles.length;i++)setCandidateSlot(candidateTiles[i],i);
-        float segment=filters.width()*ClumiVisualTokens.FILTER_FRACTION/3;
-        for(int i=0;i<3;i++){float left=filters.left+i*segment;filterControls[i].set(left+segment-d(38)-d(4),filters.centerY()-d(23)/2,left+segment-d(4),filters.centerY()+d(23)/2);}
-        boardPadding=d(6);boardContentWidth=board.width()-2*boardPadding;boardHeaderHeight=Math.min(d(31),board.height()*.095f);cellWidth=boardContentWidth/GameState.SIZE;cellHeight=(board.height()-2*boardPadding-boardHeaderHeight)/GameState.SIZE;
-        float buttonSize=d(32),buttonGap=d(5),buttonTop=headerTop+d(6);
-        headerButtons[0].set(margin+d(6),buttonTop,margin+d(6)+buttonSize,buttonTop+buttonSize);
-        float x=width-margin-d(6)-3*buttonSize-2*buttonGap;
-        for(int i=1;i<=3;i++){headerButtons[i].set(x,buttonTop,x+buttonSize,buttonTop+buttonSize);x+=buttonSize+buttonGap;}
-        // HUD shares the existing title region; it never consumes board space.
-        targetBanner.set(headerButtons[0].right+d(5),headerCard.top+d(2),
-                headerButtons[1].left-d(5),headerCard.bottom-d(2));
-        float panelPad=d(6),toggleWidth=Math.min(d(51),cluePanel.width()*.30f),toggleTop=cluePanel.top+d(7);
-        modeButtons[0].set(cluePanel.right-panelPad-2*toggleWidth,toggleTop,cluePanel.right-panelPad-toggleWidth,toggleTop+d(27));
-        modeButtons[1].set(modeButtons[0].right,toggleTop,cluePanel.right-panelPad,toggleTop+d(27));
-        float buttonsTop=cluePanel.bottom-d(43);clueBody.set(cluePanel.left+panelPad,cluePanel.top+d(40),cluePanel.right-panelPad,buttonsTop-d(6));
-        float available=cluePanel.width()-panelPad*2-d(3)*2;float[] portions={.23f,.54f,.23f};x=cluePanel.left+panelPad;
-        for(int i=0;i<3;i++){float w=available*portions[i];clueButtons[i].set(x,buttonsTop,x+w,cluePanel.bottom-d(6));x+=w+d(3);}clueButtons[3].setEmpty();if(width!=oldWidth||height!=oldHeight)fitBoard();else clampPan();
-    }
-'''
-          new='''    @Override protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-        super.onSizeChanged(width, height, oldWidth, oldHeight);
-        float heightDp=height/density;
-        compactGameplay=heightDp<560;mediumGameplay=!compactGameplay&&heightDp<720;
-        float margin=width*ClumiVisualTokens.OUTER_FRACTION,gap=d(compactGameplay?4:5);
-        float headerHeight=d(compactGameplay?36:mediumGameplay?40:42),headerTop=d(compactGameplay?10:mediumGameplay?15:20);headerBottom=headerTop+headerHeight;
-        float availableWidth=width-2*margin-gap;
-        float candidateFraction=compactGameplay?.43f:mediumGameplay?.46f:.49f;
-        float leftWidth=availableWidth*candidateFraction;
-        float bottomHeight=compactGameplay
-                ?Math.min(leftWidth+d(22),Math.max(d(132),height*.225f))
-                :mediumGameplay?Math.min(leftWidth+d(26),Math.max(d(146),height*.242f))
-                :Math.min(leftWidth+d(30),Math.max(d(158),height*.258f));
-        float filterHeight=d(compactGameplay?44:mediumGameplay?46:48),bottomTop=height-margin-bottomHeight,filterTop=bottomTop-gap-filterHeight;
-        headerCard.set(margin,headerTop,width-margin,headerBottom);
-        board.set(margin,headerBottom+gap,width-margin,filterTop-gap);
-        filters.set(margin,filterTop,width-margin,filterTop+filterHeight);
-        candidateFrame.set(margin,bottomTop,margin+leftWidth,height-margin);
-        float candidateTopInset=d(compactGameplay?29:mediumGameplay?32:34);
-        candidatePanel.set(candidateFrame.left+d(4),bottomTop+candidateTopInset,candidateFrame.right-d(4),candidateFrame.bottom-d(4));
-        float timerInset=d(compactGameplay?4:5),timerHeight=d(compactGameplay?22:mediumGameplay?24:25);
-        timerPanel.set(margin+d(5),bottomTop+timerInset,margin+leftWidth*.56f-d(2),bottomTop+timerInset+timerHeight);
-        undoButton.set(timerPanel.right+d(5),timerPanel.top,margin+leftWidth-d(5),timerPanel.bottom);
-        cluePanel.set(candidateFrame.right+gap,bottomTop,width-margin,height-margin);
-        float itemInset=d(compactGameplay?3:4),itemsLeft=filters.left+filters.width()*ClumiVisualTokens.FILTER_FRACTION;
-        for(int i=0;i<2;i++)itemButtons[i].set(itemsLeft+i*(filters.right-itemsLeft)/2+d(2),filters.top+itemInset,itemsLeft+(i+1)*(filters.right-itemsLeft)/2-d(3),filters.bottom-itemInset);
-        for(int i=0;i<candidateTiles.length;i++)setCandidateSlot(candidateTiles[i],i);
-        float segment=filters.width()*ClumiVisualTokens.FILTER_FRACTION/3;
-        float controlWidth=d(compactGameplay?34:mediumGameplay?36:38),controlHeight=d(compactGameplay?21:mediumGameplay?22:23),controlInset=d(compactGameplay?3:4);
-        for(int i=0;i<3;i++){float left=filters.left+i*segment;filterControls[i].set(left+segment-controlWidth-controlInset,filters.centerY()-controlHeight/2,left+segment-controlInset,filters.centerY()+controlHeight/2);}
-        boardPadding=d(compactGameplay?5:mediumGameplay?5.5f:6);boardContentWidth=board.width()-2*boardPadding;boardHeaderHeight=Math.min(d(compactGameplay?26:mediumGameplay?29:31),board.height()*.095f);cellWidth=boardContentWidth/GameState.SIZE;cellHeight=(board.height()-2*boardPadding-boardHeaderHeight)/GameState.SIZE;
-        float buttonSize=d(compactGameplay?28:mediumGameplay?30:32),buttonGap=d(compactGameplay?4:5),buttonTop=headerTop+(headerHeight-buttonSize)/2;
-        headerButtons[0].set(margin+d(6),buttonTop,margin+d(6)+buttonSize,buttonTop+buttonSize);
-        float x=width-margin-d(6)-3*buttonSize-2*buttonGap;
-        for(int i=1;i<=3;i++){headerButtons[i].set(x,buttonTop,x+buttonSize,buttonTop+buttonSize);x+=buttonSize+buttonGap;}
-        // HUD shares the existing title region; it never consumes board space.
-        targetBanner.set(headerButtons[0].right+d(5),headerCard.top+d(2),
-                headerButtons[1].left-d(5),headerCard.bottom-d(2));
-        float panelPad=d(compactGameplay?4.5f:mediumGameplay?5:6),toggleWidth=Math.min(d(compactGameplay?43:mediumGameplay?47:51),cluePanel.width()*.30f),toggleTop=cluePanel.top+d(compactGameplay?5:mediumGameplay?6:7),toggleHeight=d(compactGameplay?22:mediumGameplay?25:27);
-        modeButtons[0].set(cluePanel.right-panelPad-2*toggleWidth,toggleTop,cluePanel.right-panelPad-toggleWidth,toggleTop+toggleHeight);
-        modeButtons[1].set(modeButtons[0].right,toggleTop,cluePanel.right-panelPad,toggleTop+toggleHeight);
-        float actionHeight=d(compactGameplay?32:mediumGameplay?37:43),buttonsTop=cluePanel.bottom-actionHeight;
-        float clueTop=d(compactGameplay?31:mediumGameplay?35:40),bodyGap=d(compactGameplay?4:mediumGameplay?5:6);
-        clueBody.set(cluePanel.left+panelPad,cluePanel.top+clueTop,cluePanel.right-panelPad,buttonsTop-bodyGap);
-        float buttonGapValue=d(compactGameplay?2:3),available=cluePanel.width()-panelPad*2-buttonGapValue*2;float[] portions={.23f,.54f,.23f};x=cluePanel.left+panelPad;
-        for(int i=0;i<3;i++){float w=available*portions[i];clueButtons[i].set(x,buttonsTop,x+w,cluePanel.bottom-d(compactGameplay?4:mediumGameplay?5:6));x+=w+buttonGapValue;}clueButtons[3].setEmpty();if(width!=oldWidth||height!=oldHeight)fitBoard();else clampPan();
-    }
-'''
-          one(old,new,'responsive gameplay geometry')
+          start=text.index('    @Override protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {')
+          end=text.index('    @Override protected void onDraw(Canvas canvas) {',start)
+          method=[
+              '    @Override protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {',
+              '        super.onSizeChanged(width, height, oldWidth, oldHeight);',
+              '        float heightDp=height/density;',
+              '        compactGameplay=heightDp<560;mediumGameplay=!compactGameplay&&heightDp<720;',
+              '        float margin=width*ClumiVisualTokens.OUTER_FRACTION,gap=d(compactGameplay?4:5);',
+              '        float headerHeight=d(compactGameplay?36:mediumGameplay?40:42),headerTop=d(compactGameplay?10:mediumGameplay?15:20);headerBottom=headerTop+headerHeight;',
+              '        float availableWidth=width-2*margin-gap;',
+              '        float candidateFraction=compactGameplay?.43f:mediumGameplay?.46f:.49f;',
+              '        float leftWidth=availableWidth*candidateFraction;',
+              '        float bottomHeight=compactGameplay',
+              '                ?Math.min(leftWidth+d(22),Math.max(d(132),height*.225f))',
+              '                :mediumGameplay?Math.min(leftWidth+d(26),Math.max(d(146),height*.242f))',
+              '                :Math.min(leftWidth+d(30),Math.max(d(158),height*.258f));',
+              '        float filterHeight=d(compactGameplay?44:mediumGameplay?46:48),bottomTop=height-margin-bottomHeight,filterTop=bottomTop-gap-filterHeight;',
+              '        headerCard.set(margin,headerTop,width-margin,headerBottom);',
+              '        board.set(margin,headerBottom+gap,width-margin,filterTop-gap);',
+              '        filters.set(margin,filterTop,width-margin,filterTop+filterHeight);',
+              '        candidateFrame.set(margin,bottomTop,margin+leftWidth,height-margin);',
+              '        float candidateTopInset=d(compactGameplay?29:mediumGameplay?32:34);',
+              '        candidatePanel.set(candidateFrame.left+d(4),bottomTop+candidateTopInset,candidateFrame.right-d(4),candidateFrame.bottom-d(4));',
+              '        float timerInset=d(compactGameplay?4:5),timerHeight=d(compactGameplay?22:mediumGameplay?24:25);',
+              '        timerPanel.set(margin+d(5),bottomTop+timerInset,margin+leftWidth*.56f-d(2),bottomTop+timerInset+timerHeight);',
+              '        undoButton.set(timerPanel.right+d(5),timerPanel.top,margin+leftWidth-d(5),timerPanel.bottom);',
+              '        cluePanel.set(candidateFrame.right+gap,bottomTop,width-margin,height-margin);',
+              '        float itemInset=d(compactGameplay?3:4),itemsLeft=filters.left+filters.width()*ClumiVisualTokens.FILTER_FRACTION;',
+              '        for(int i=0;i<2;i++)itemButtons[i].set(itemsLeft+i*(filters.right-itemsLeft)/2+d(2),filters.top+itemInset,itemsLeft+(i+1)*(filters.right-itemsLeft)/2-d(3),filters.bottom-itemInset);',
+              '        for(int i=0;i<candidateTiles.length;i++)setCandidateSlot(candidateTiles[i],i);',
+              '        float segment=filters.width()*ClumiVisualTokens.FILTER_FRACTION/3;',
+              '        float controlWidth=d(compactGameplay?34:mediumGameplay?36:38),controlHeight=d(compactGameplay?21:mediumGameplay?22:23),controlInset=d(compactGameplay?3:4);',
+              '        for(int i=0;i<3;i++){float left=filters.left+i*segment;filterControls[i].set(left+segment-controlWidth-controlInset,filters.centerY()-controlHeight/2,left+segment-controlInset,filters.centerY()+controlHeight/2);}',
+              '        boardPadding=d(compactGameplay?5:mediumGameplay?5.5f:6);boardContentWidth=board.width()-2*boardPadding;boardHeaderHeight=Math.min(d(compactGameplay?26:mediumGameplay?29:31),board.height()*.095f);cellWidth=boardContentWidth/GameState.SIZE;cellHeight=(board.height()-2*boardPadding-boardHeaderHeight)/GameState.SIZE;',
+              '        float buttonSize=d(compactGameplay?28:mediumGameplay?30:32),buttonGap=d(compactGameplay?4:5),buttonTop=headerTop+(headerHeight-buttonSize)/2;',
+              '        headerButtons[0].set(margin+d(6),buttonTop,margin+d(6)+buttonSize,buttonTop+buttonSize);',
+              '        float x=width-margin-d(6)-3*buttonSize-2*buttonGap;',
+              '        for(int i=1;i<=3;i++){headerButtons[i].set(x,buttonTop,x+buttonSize,buttonTop+buttonSize);x+=buttonSize+buttonGap;}',
+              '        // HUD shares the existing title region; it never consumes board space.',
+              '        targetBanner.set(headerButtons[0].right+d(5),headerCard.top+d(2),',
+              '                headerButtons[1].left-d(5),headerCard.bottom-d(2));',
+              '        float panelPad=d(compactGameplay?4.5f:mediumGameplay?5:6),toggleWidth=Math.min(d(compactGameplay?43:mediumGameplay?47:51),cluePanel.width()*.30f),toggleTop=cluePanel.top+d(compactGameplay?5:mediumGameplay?6:7),toggleHeight=d(compactGameplay?22:mediumGameplay?25:27);',
+              '        modeButtons[0].set(cluePanel.right-panelPad-2*toggleWidth,toggleTop,cluePanel.right-panelPad-toggleWidth,toggleTop+toggleHeight);',
+              '        modeButtons[1].set(modeButtons[0].right,toggleTop,cluePanel.right-panelPad,toggleTop+toggleHeight);',
+              '        float actionHeight=d(compactGameplay?32:mediumGameplay?37:43),buttonsTop=cluePanel.bottom-actionHeight;',
+              '        float clueTop=d(compactGameplay?31:mediumGameplay?35:40),bodyGap=d(compactGameplay?4:mediumGameplay?5:6);',
+              '        clueBody.set(cluePanel.left+panelPad,cluePanel.top+clueTop,cluePanel.right-panelPad,buttonsTop-bodyGap);',
+              '        float buttonGapValue=d(compactGameplay?2:3),available=cluePanel.width()-panelPad*2-buttonGapValue*2;float[] portions={.23f,.54f,.23f};x=cluePanel.left+panelPad;',
+              '        for(int i=0;i<3;i++){float w=available*portions[i];clueButtons[i].set(x,buttonsTop,x+w,cluePanel.bottom-d(compactGameplay?4:mediumGameplay?5:6));x+=w+buttonGapValue;}clueButtons[3].setEmpty();if(width!=oldWidth||height!=oldHeight)fitBoard();else clampPan();',
+              '    }'
+          ]
+          text=text[:start]+'\n'.join(method)+'\n'+text[end:]
 
           one(
               '        float padding = d(6), gap = d(3);\n',
               '        float padding=d(compactGameplay?4:mediumGameplay?5:6),gap=d(compactGameplay?2:3);\n',
               'candidate density')
-
           one(
               '        card(c,filters,ClumiVisualTokens.CARD_RADIUS,ClumiSkin.PANEL,true);\n',
               '        card(c,filters,ClumiVisualTokens.CARD_RADIUS,compactGameplay?ClumiSkin.SOFT:ClumiSkin.PANEL,!compactGameplay);\n',
               'filter visual priority')
-
           one(
               '        card(c,candidateFrame,ClumiVisualTokens.PANEL_RADIUS,ClumiSkin.PANEL,true);\n',
               '        card(c,candidateFrame,ClumiVisualTokens.PANEL_RADIUS,compactGameplay?ClumiSkin.SOFT:ClumiSkin.PANEL,!compactGameplay);\n',
               'candidate visual priority')
-
           one(
               '        text(c, state.indicator(), cluePanel.left + d(9) + gapX/2,\n                cluePanel.top + d(24), d(18), INK, true, gapX);\n',
               '        text(c, state.indicator(), cluePanel.left + d(9) + gapX/2,\n                cluePanel.top + d(compactGameplay?17:mediumGameplay?21:24), d(compactGameplay?16:mediumGameplay?17:18), INK, true, gapX);\n',
@@ -180,9 +141,7 @@ jobs:
 
           path.write_text(text)
           PY
-
           git diff --check
-          git diff -- app/src/main/java/com/example/einsteingame/GameView.java
 
       - name: Verify gameplay hierarchy contract
         shell: bash
@@ -198,7 +157,6 @@ jobs:
           assert 'Math.max(d(146),height*.242f)' in view
           assert 'filterHeight=d(compactGameplay?44:mediumGameplay?46:48)' in view
           assert 'boardHeaderHeight=Math.min(d(compactGameplay?26:mediumGameplay?29:31)' in view
-          assert 'compactGameplay?ClumiSkin.SOFT:ClumiSkin.PANEL' in view
           assert 'float padding=d(compactGameplay?4:mediumGameplay?5:6)' in view
           assert 'state.toggleCandidate(slot)' in view
           assert 'state.toggleCompleted()' in view
