@@ -20,6 +20,7 @@ jobs:
           repository: hotmoral/EinsteinGame
           ref: d1afb1cf049adb3c3e9eb2c0f20976b2ad227e90
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          fetch-depth: 3
           persist-credentials: false
 
       - name: Verify frozen production sources
@@ -27,7 +28,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = 'd1afb1cf049adb3c3e9eb2c0f20976b2ad227e90'
-          git fetch --no-tags origin cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
+          test "$(git rev-parse HEAD~2)" = 'cdb66a3e0509bfec050a907bb43efb4e01b4ffeb'
           test -z "$(git diff --name-only cdb66a3e0509bfec050a907bb43efb4e01b4ffeb HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/java app/src/main/assets)"
 
       - name: Set up JDK 17
