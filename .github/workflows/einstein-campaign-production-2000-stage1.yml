@@ -16,7 +16,7 @@ concurrency:
 jobs:
   produce-stage-0001:
     if: >-
-      github.event.head_commit.message == 'production: start Einstein campaign stage 0001'
+      github.event.head_commit.message == 'production: retry Einstein campaign stage 0001 after cli guard correction'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
@@ -24,7 +24,7 @@ jobs:
       ACCEPTED_SOURCE_SHA: cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
       PLAN_HASH: a403a59aa537052f8a65d8ac335a7c0676d283f8a88f7425b6927143f21ffde5
       BANK_BRANCH: campaign-production-2000-bank-v1
-      EXPECTED_BANK_HEAD: 67888e38ccbb175120d4f3c8ff0e6a6227a51ee2
+      EXPECTED_BANK_HEAD: d4bb694021533fbf0266c2e41fea014d547579aa
       BANK_REMOTE_ROOT: production/campaign-2000-bank-v1
       EVIDENCE_STAGE_ROOT: production/campaign-2000-bank-v1/evidence/stage-0001
       AUTH_TOKEN: START_2000_MAINLINE_PRODUCTION_V1
@@ -71,7 +71,6 @@ jobs:
           test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
           test "$(git merge-base "$ACCEPTED_SOURCE_SHA" HEAD)" = "$ACCEPTED_SOURCE_SHA"
           test -z "$(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/assets/puzzles)"
-          test -f tools/campaign-production-2000/campaign_production_2000.py
           grep -F "AUTH_TOKEN='START_2000_MAINLINE_PRODUCTION_V1'" tools/campaign-production-2000/campaign_production_2000.py
           grep -F 'EXPECTED_SOURCE="cdb66a3e0509bfec050a907bb43efb4e01b4ffeb"' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Stage1ProducerV1.java
           grep -F 'EXPECTED_PLAN_HASH="a403a59aa537052f8a65d8ac335a7c0676d283f8a88f7425b6927143f21ffde5"' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Stage1ProducerV1.java
@@ -81,6 +80,7 @@ jobs:
           test "$(git ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)" = "$EXPECTED_BANK_HEAD"
           test -z "$(git status --porcelain --untracked-files=all)"
           test ! -e "$BANK_REMOTE_ROOT/bank/stages/stage-0001.json"
+          test ! -e "$EVIDENCE_STAGE_ROOT/attempt-draw0.json"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -99,18 +99,14 @@ jobs:
           echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Stage1ProducerV1.java' >> "$SOURCES_FILE"
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES_DIR" "@$SOURCES_FILE"
 
-      - name: Initialize or restore durable bank and materialize stage request
+      - name: Restore durable bank and materialize stage request
         shell: bash
         working-directory: EinsteinGame
         run: |
           set -euo pipefail
           rm -rf "$BANK_DIR" "$EVIDENCE_DIR"
           mkdir -p "$EVIDENCE_DIR"
-          if [ -d "$GITHUB_WORKSPACE/ProductionStore/$BANK_REMOTE_ROOT/bank" ]; then
-            cp -a "$GITHUB_WORKSPACE/ProductionStore/$BANK_REMOTE_ROOT/bank" "$BANK_DIR"
-          else
-            python3 tools/campaign-production-2000/campaign_production_2000.py init "$BANK_DIR"
-          fi
+          cp -a "$GITHUB_WORKSPACE/ProductionStore/$BANK_REMOTE_ROOT/bank" "$BANK_DIR"
           export BANK_DIR
           python3 - <<'PY'
           import importlib.util, os
@@ -222,7 +218,7 @@ jobs:
           SIDECAR_PID=$!
 
           set +e
-          python3 tools/campaign-production-2000/campaign_production_2000.py run "$BANK_DIR" --execute --max-stages 1 -- \
+          python3 tools/campaign-production-2000/campaign_production_2000.py run --execute --max-stages 1 "$BANK_DIR" -- \
             java -Xmx8g -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Stage1ProducerV1 \
             | tee /tmp/einstein-campaign-production-stage1.log
           PROD_STATUS=${PIPESTATUS[0]}
@@ -242,7 +238,7 @@ jobs:
           cp -a "$BANK_DIR" "$TARGET"
           git -C "$STORE" add -- "$BANK_REMOTE_ROOT/bank"
           if ! git -C "$STORE" diff --cached --quiet; then
-            git -C "$STORE" commit -m 'production: bank stage-0001'
+            git -C "$STORE" commit -m 'production: persist stage-0001 bank state'
             COMMIT="$(git -C "$STORE" rev-parse HEAD)"
             git -C "$STORE" push origin "HEAD:refs/heads/$BANK_BRANCH"
             test "$(git -C "$STORE" ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)" = "$COMMIT"
