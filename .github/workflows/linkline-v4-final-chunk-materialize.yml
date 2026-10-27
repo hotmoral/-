@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   materialize:
-    if: ${{ !contains(github.event.head_commit.message, 'record efficient ASCII scan') }}
+    if: ${{ !contains(github.event.head_commit.message, 'record exact candidate proof') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact pushed commit without third-party actions
@@ -23,64 +23,88 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Efficient ASCII insertion scan
+      - name: Recover and prove exact candidate bytes
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib, json, traceback
+          import hashlib, json
 
           p = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
-          r = Path('linkline/v4-transfer-debug/ascii-scan.json')
-          expected = bytes.fromhex('81458e6ebcc645d22fff597bcffb6294d0f24e76')
+          r = Path('linkline/v4-transfer-debug/exact-proof.json')
+          expected_git = '81458e6ebcc645d22fff597bcffb6294d0f24e76'
+          expected_sha256 = '444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616'
           data = p.read_bytes()
-          report = {'inputSize': len(data), 'matched': False}
-          try:
-              if len(data) != 12890:
-                  raise ValueError(f'unexpected candidate size: {len(data)}')
-              header = b'blob 12891\0'
-              prefix_hasher = hashlib.sha1()
-              prefix_hasher.update(header)
-              attempts = 0
-              found = None
-              for pos in range(len(data) + 1):
-                  suffix = data[pos:]
-                  for byte in range(128):
-                      attempts += 1
-                      h = prefix_hasher.copy()
-                      h.update(bytes((byte,)))
-                      h.update(suffix)
-                      if h.digest() == expected:
-                          candidate = data[:pos] + bytes((byte,)) + suffix
-                          found = (pos, byte, candidate)
-                          break
-                  if found:
-                      break
-                  if pos < len(data):
-                      prefix_hasher.update(data[pos:pos+1])
-              report['attempts'] = attempts
-              if found:
-                  pos, byte, candidate = found
-                  obj = json.loads(candidate.decode('utf-8'))
-                  if len(obj.get('rows', [])) != 260:
-                      raise ValueError('recovered JSON row count mismatch')
-                  p.write_bytes(candidate)
-                  report.update({'matched': True, 'insertPosition': pos, 'insertByte': byte, 'insertByteRepr': repr(chr(byte)), 'outputSize': len(candidate), 'parsedRows': 260})
-          except Exception as exc:
-              report['error'] = repr(exc)
-              report['traceback'] = traceback.format_exc()
-          r.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-          PY
+          if len(data) != 12890:
+              raise SystemExit(f'unexpected candidate size: {len(data)}')
 
-      - name: Verify when matched and commit report
+          header = b'blob 12891\0'
+          expected_digest = bytes.fromhex(expected_git)
+          prefix = hashlib.sha1(); prefix.update(header)
+          found = None
+          attempts = 0
+          for pos in range(len(data) + 1):
+              suffix = data[pos:]
+              for byte in range(128):
+                  attempts += 1
+                  h = prefix.copy(); h.update(bytes((byte,))); h.update(suffix)
+                  if h.digest() == expected_digest:
+                      found = (pos, byte, data[:pos] + bytes((byte,)) + suffix)
+                      break
+              if found:
+                  break
+              if pos < len(data):
+                  prefix.update(data[pos:pos+1])
+          if not found:
+              raise SystemExit('no exact ASCII insertion candidate found')
+
+          pos, byte, candidate = found
+          direct_git = hashlib.sha1(header + candidate).hexdigest()
+          direct_sha256 = hashlib.sha256(candidate).hexdigest()
+          parse_ok = True
+          parse_error = None
+          parsed_rows = None
+          try:
+              obj = json.loads(candidate.decode('utf-8'))
+              parsed_rows = len(obj.get('rows', []))
+          except Exception as exc:
+              parse_ok = False
+              parse_error = repr(exc)
+
+          context_start = max(0, pos - 48)
+          context_end = min(len(candidate), pos + 49)
+          report = {
+              'expectedGitBlobSha': expected_git,
+              'expectedSha256': expected_sha256,
+              'attempts': attempts,
+              'insertPosition': pos,
+              'insertByte': byte,
+              'insertByteRepr': repr(chr(byte)),
+              'directGitBlobSha': direct_git,
+              'directSha256': direct_sha256,
+              'gitMatch': direct_git == expected_git,
+              'sha256Match': direct_sha256 == expected_sha256,
+              'outputSize': len(candidate),
+              'parseOk': parse_ok,
+              'parseError': parse_error,
+              'parsedRows': parsed_rows,
+              'contextUtf8': candidate[context_start:context_end].decode('utf-8', errors='replace'),
+              'contextHex': candidate[context_start:context_end].hex(),
+          }
+          r.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          if direct_git != expected_git or direct_sha256 != expected_sha256:
+              raise SystemExit('candidate did not match both canonical hashes')
+          p.write_bytes(candidate)
+          PY
+          test "$(wc -c < linkline/v4-transfer-debug/candidate-1041-1300.json)" -eq 12891
+          test "$(git hash-object linkline/v4-transfer-debug/candidate-1041-1300.json)" = "81458e6ebcc645d22fff597bcffb6294d0f24e76"
+          test "$(sha256sum linkline/v4-transfer-debug/candidate-1041-1300.json | awk '{print $1}')" = "444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616"
+
+      - name: Commit exact proof and recovered bytes
         run: |
           set -euo pipefail
-          MATCHED="$(python3 -c 'import json; print(str(json.load(open("linkline/v4-transfer-debug/ascii-scan.json"))["matched"]).lower())')"
-          if [ "${MATCHED}" = "true" ]; then
-            test "$(git hash-object linkline/v4-transfer-debug/candidate-1041-1300.json)" = "81458e6ebcc645d22fff597bcffb6294d0f24e76"
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add linkline/v4-transfer-debug/candidate-1041-1300.json linkline/v4-transfer-debug/ascii-scan.json
-          git commit -m "linkline: record efficient ASCII scan"
+          git add linkline/v4-transfer-debug/candidate-1041-1300.json linkline/v4-transfer-debug/exact-proof.json
+          git commit -m "linkline: record exact candidate proof"
           git push origin HEAD:linkline/v4-object-probe-v1
