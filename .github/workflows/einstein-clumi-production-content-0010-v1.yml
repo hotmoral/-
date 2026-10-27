@@ -1,4 +1,4 @@
-name: Clumi Clue Completion Feedback V1
+name: Clumi Solve To Clear Bridge V1
 
 on:
   push:
@@ -10,17 +10,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: clumi-clue-completion-feedback-v1
+  group: clumi-solve-to-clear-bridge-v1
   cancel-in-progress: false
 
 jobs:
-  patch-verify-clue-feedback:
+  patch-verify-solve-bridge:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi clue completion feedback v1 retry'
+      github.event.head_commit.message == 'verify: Clumi solve to clear bridge v1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      SOURCE_SHA: 160c1c0f5e67c5d7f67f413a6e0cf41f90ecc325
+      SOURCE_SHA: 7a86254cf3b9d2cb9ae2cfbf8e32a52d1a1be3c0
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -47,91 +47,150 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           test "$(git branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply bounded clue completion feedback patch
+      - name: Apply bounded solve bridge patch
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          path=Path('app/src/main/java/com/example/einsteingame/GameView.java')
-          lines=path.read_text().splitlines()
 
-          needle='    private float impulse(ClumiFeedbackEvent event,int row,int col,int slot){return feel==null?0:feel.impulse(event,row,col,slot);}'
-          if lines.count(needle)!=1:
-              raise SystemExit('impulse helper boundary mismatch')
-          i=lines.index(needle)+1
-          helper=[
-              '    /** Latest active clue lane is presentation-only; completion may advance currentClue when completed clues are hidden. */',
-              '    private int latestClueLane(ClumiFeedbackEvent kind,long now){',
-              '        if(feel==null)return -1;int found=-1;long newest=Long.MIN_VALUE;',
-              '        for(int lane=0;lane<ClumiFeedbackTimeline.CAPACITY;lane++)if(feel.timeline.types[lane]==kind',
-              '                && now<feel.timeline.starts[lane]+kind.duration()&&feel.timeline.starts[lane]>=newest){',
-              '            newest=feel.timeline.starts[lane];found=lane;',
+          # GameView: local solve bridge animation only.
+          gp=Path('app/src/main/java/com/example/einsteingame/GameView.java')
+          gl=gp.read_text().splitlines()
+          field='    private boolean compactGameplay,mediumGameplay;'
+          if gl.count(field)!=1: raise SystemExit('GameView field boundary mismatch')
+          i=gl.index(field)+1
+          gl[i:i]=[
+              '    static final int SOLVE_BRIDGE_MS=520;',
+              '    private long solveBridgeAt=-1;'
+          ]
+
+          anchor='    public GameState gameState(){return state;}'
+          if gl.count(anchor)!=1: raise SystemExit('GameView method boundary mismatch')
+          i=gl.index(anchor)+1
+          bridge=[
+              '    void beginSolveBridge(){',
+              '        if(feel==null||!feel.motion()){solveBridgeAt=-1;return;}',
+              '        solveBridgeAt=SystemClock.elapsedRealtime();postInvalidateOnAnimation();',
+              '    }',
+              '    private float solveBridgeProgress(){',
+              '        if(solveBridgeAt<0||feel==null||!feel.motion())return -1;',
+              '        float phase=(SystemClock.elapsedRealtime()-solveBridgeAt)/(float)SOLVE_BRIDGE_MS;',
+              '        if(phase>=1){solveBridgeAt=-1;return -1;}',
+              '        return ClumiMotionTokens.unit(phase);',
+              '    }',
+              '    private void drawSolveBridge(Canvas canvas,float phase){',
+              '        if(phase<0)return;float elapsed=phase*SOLVE_BRIDGE_MS;',
+              '        canvas.save();canvas.clipRect(board);',
+              '        for(int row=0;row<GameState.SIZE;row++){',
+              '            float local=ClumiMotionTokens.unit((elapsed-row*38f)/220f);',
+              '            float pulse=ClumiMotionTokens.impulse(local);if(pulse<=0)continue;',
+              '            float left=board.left+boardPadding+panX,right=left+boardContentWidth*scale;',
+              '            float top=board.top+boardPadding+panY+(boardHeaderHeight+row*cellHeight)*scale;',
+              '            float bottom=board.top+boardPadding+panY+(boardHeaderHeight+(row+1)*cellHeight)*scale;',
+              '            effectBounds.set(left+d(1),top+d(1),right-d(1),bottom-d(1));',
+              '            effectPaint.reset();effectPaint.setAntiAlias(true);effectPaint.setStyle(Paint.Style.FILL);',
+              '            effectPaint.setColor(Color.argb((int)(24*pulse),25,189,53));canvas.drawRoundRect(effectBounds,d(7),d(7),effectPaint);',
+              '            effectPaint.setStyle(Paint.Style.STROKE);effectPaint.setStrokeWidth(d(1.3f));effectPaint.setColor(Color.argb((int)(155*pulse),25,189,53));',
+              '            canvas.drawRoundRect(effectBounds,d(7),d(7),effectPaint);',
               '        }',
-              '        return found;',
+              '        canvas.restore();postInvalidateOnAnimation();',
               '    }'
           ]
-          lines[i:i]=helper
+          gl[i:i]=bridge
 
-          clue_line='        GameState.Clue clue = state.displayedClue();'
-          if lines.count(clue_line)!=1:
-              raise SystemExit('clue presentation boundary mismatch')
-          j=lines.index(clue_line)
-          expected=[
-              clue_line,
-              '        float clueSettle=impulse(ClumiFeedbackEvent.CLUE_COMPLETED,-1,-1,state.currentClue)+impulse(ClumiFeedbackEvent.CLUE_RESTORED,-1,-1,state.currentClue);if(clueSettle>0)strokeRound(c,clueBody,d(10),Color.argb((int)(90*clueSettle),32,180,234),d(1));',
-              '        clueStrike=clue==null?0:feel==null?(clue.completed?1:0):feel.strike(true,-1,-1,state.currentClue,clue.completed);'
+          old='        canvas.save();if(feel!=null&&feel.motion()){long now=SystemClock.elapsedRealtime();int clear=feel.timeline.find(ClumiFeedbackEvent.STAGE_CLEARED,-1,-1,-1,now);if(clear>=0){float phase=(now-feel.timeline.starts[clear])/(float)ClumiMotionTokens.BOARD_SETTLE,settle=ClumiMotionTokens.impulse(phase);canvas.scale(1-.006f*settle,1-.006f*settle,board.centerX(),board.centerY());}}drawBoard(canvas);canvas.restore();'
+          if gl.count(old)!=1: raise SystemExit('GameView board draw boundary mismatch')
+          j=gl.index(old)
+          gl[j:j+1]=[
+              '        float solvePhase=solveBridgeProgress();',
+              '        canvas.save();if(solvePhase>=0){float settle=ClumiMotionTokens.impulse(Math.min(1,solvePhase*1.55f));canvas.scale(1-.008f*settle,1-.008f*settle,board.centerX(),board.centerY());}drawBoard(canvas);canvas.restore();',
+              '        drawSolveBridge(canvas,solvePhase);'
           ]
-          if lines[j:j+3]!=expected:
-              raise SystemExit('clue presentation source changed')
-          replacement=[
-              clue_line,
-              '        long clueNow=SystemClock.elapsedRealtime();',
-              '        int completedLane=latestClueLane(ClumiFeedbackEvent.CLUE_COMPLETED,clueNow);',
-              '        int restoredLane=latestClueLane(ClumiFeedbackEvent.CLUE_RESTORED,clueNow);',
-              '        float completion=completedLane<0?0:ClumiMotionTokens.impulse(feel.timeline.phase(completedLane,clueNow));',
-              '        float restoration=restoredLane<0?0:ClumiMotionTokens.impulse(feel.timeline.phase(restoredLane,clueNow));',
-              '        float clueSettle=Math.max(completion,restoration);',
-              '        boolean handedOff=completedLane>=0&&feel.timeline.slots[completedLane]!=state.currentClue;',
-              '        if(clueSettle>0)strokeRound(c,clueBody,d(10),Color.argb((int)(90*clueSettle),32,180,234),d(1));',
-              '        if(completion>0){',
-              '            effectPaint.reset();effectPaint.setAntiAlias(true);effectPaint.setStyle(Paint.Style.FILL);',
-              '            if(!handedOff){effectPaint.setColor(Color.argb((int)(35*completion),25,189,53));c.drawRoundRect(clueBody,d(10),d(10),effectPaint);}',
-              '            else strokeRound(c,clueBody,d(10),Color.argb((int)(135*completion),0,163,236),d(1.4f));',
-              '            float badge=d(compactGameplay?17:19),cx=cluePanel.left+d(compactGameplay?10:12)+badge/2,cy=cluePanel.top+d(compactGameplay?7:9)+badge/2;',
-              '            effectPaint.setColor(Color.argb((int)(220*completion),25,189,53));c.drawCircle(cx,cy,badge/2,effectPaint);',
-              '            effectPaint.setStyle(Paint.Style.STROKE);effectPaint.setStrokeCap(Paint.Cap.ROUND);effectPaint.setStrokeJoin(Paint.Join.ROUND);effectPaint.setStrokeWidth(d(2));effectPaint.setColor(Color.argb((int)(255*completion),255,255,255));',
-              '            c.drawLine(cx-badge*.23f,cy,cx-badge*.05f,cy+badge*.18f,effectPaint);c.drawLine(cx-badge*.05f,cy+badge*.18f,cx+badge*.27f,cy-badge*.22f,effectPaint);',
-              '            effectPaint.setStyle(Paint.Style.FILL);',
-              '        }',
-              '        clueStrike=clue==null?0:feel==null?(clue.completed?1:0):feel.strike(true,-1,-1,state.currentClue,clue.completed);'
+          gp.write_text('\n'.join(gl)+'\n')
+
+          # MainActivity: delay result presentation only; completion persistence remains immediate.
+          mp=Path('app/src/main/java/com/example/einsteingame/MainActivity.java')
+          ml=mp.read_text().splitlines()
+          result_field='    private int resultStars,resultPreviousBest;private long resultElapsed;'
+          if ml.count(result_field)!=1: raise SystemExit('MainActivity result field boundary mismatch')
+          i=ml.index(result_field)+1
+          ml[i:i]=[
+              '    private boolean resultPending;',
+              '    private final Runnable revealPendingResult=()->{',
+              '        if(!resultPending)return;',
+              '        if(session==null||completedSession!=session||!"play".equals(screen)){resultPending=false;return;}',
+              '        resultPending=false;showResult(session.stage.number,resultStars,resultElapsed,resultPreviousBest);',
+              '    };'
           ]
-          lines[j:j+3]=replacement
-          path.write_text('\n'.join(lines)+'\n')
+
+          dispatch='    @Override public boolean dispatchTouchEvent(MotionEvent event){'
+          if ml.count(dispatch)!=1: raise SystemExit('dispatch boundary mismatch')
+          i=ml.index(dispatch)+1
+          ml.insert(i,'        if(resultPending)return true;')
+
+          save='        state.putString("clumi.ui.screen",completedSession==session&&session!=null&&lastDialog!=null&&lastDialog.isShowing()?"clear":screen);'
+          if ml.count(save)!=1: raise SystemExit('save boundary mismatch')
+          ml[ml.index(save)]='        state.putString("clumi.ui.screen",completedSession==session&&session!=null&&(resultPending||(lastDialog!=null&&lastDialog.isShowing()))?"clear":screen);'
+
+          resume='    @Override protected void onResume(){super.onResume();resumed=true;updateTimer();if(feel!=null)feel.foreground(true);}'
+          pause='    @Override protected void onPause(){resumed=false;updateTimer();saveAttempt();if(navigation!=null)navigation.snap();if(feel!=null)feel.foreground(false);super.onPause();}'
+          destroy='    @Override protected void onDestroy(){if(navigation!=null)navigation.snap();if(feel!=null)feel.dispose();super.onDestroy();}'
+          if ml.count(resume)!=1 or ml.count(pause)!=1 or ml.count(destroy)!=1: raise SystemExit('lifecycle boundary mismatch')
+          ml[ml.index(resume)]='    @Override protected void onResume(){super.onResume();resumed=true;updateTimer();if(feel!=null)feel.foreground(true);if(resultPending&&game!=null)game.post(revealPendingResult);}'
+          ml[ml.index(pause)]='    @Override protected void onPause(){if(resultPending&&game!=null)game.removeCallbacks(revealPendingResult);resumed=false;updateTimer();saveAttempt();if(navigation!=null)navigation.snap();if(feel!=null)feel.foreground(false);super.onPause();}'
+          ml[ml.index(destroy)]='    @Override protected void onDestroy(){if(game!=null)game.removeCallbacks(revealPendingResult);if(navigation!=null)navigation.snap();if(feel!=null)feel.dispose();super.onDestroy();}'
+
+          back='    @Override public void onBackPressed(){if(lastDialog!=null&&lastDialog.isShowing()){lastDialog.onBackPressed();if(!lastDialog.isShowing())semantic(ClumiHapticPolicy.Control.NAVIGATION);return;}if(navigation!=null){if(navigation.active())return;if("home".equals(screen)&&navigation.recent("home"))return;}backNavigation=true;try{handleBack();}finally{backNavigation=false;}semantic(ClumiHapticPolicy.Control.NAVIGATION);}'
+          if ml.count(back)!=1: raise SystemExit('back boundary mismatch')
+          ml[ml.index(back)]='    @Override public void onBackPressed(){if(resultPending)return;if(lastDialog!=null&&lastDialog.isShowing()){lastDialog.onBackPressed();if(!lastDialog.isShowing())semantic(ClumiHapticPolicy.Control.NAVIGATION);return;}if(navigation!=null){if(navigation.active())return;if("home".equals(screen)&&navigation.recent("home"))return;}backNavigation=true;try{handleBack();}finally{backNavigation=false;}semantic(ClumiHapticPolicy.Control.NAVIGATION);}'
+
+          start=ml.index('    @Override public void completed(){')
+          end=ml.index('    private void showResult(int stage,int stars,long elapsed,int previousBest){',start)
+          completed=[
+              '    @Override public void completed(){',
+              '        if(session==null||completedSession==session||!"play".equals(screen)||!session.board.isSolved())return;',
+              '        completedSession=session;session.timer.pause();int stage=session.stage.number,stars=session.stars(),previousBest=progress.bestStars(stage);',
+              '        long elapsed=session.timer.elapsed();progress.complete(stage,stars,elapsed);persist();',
+              '        resultStars=stars;resultElapsed=elapsed;resultPreviousBest=previousBest;resultActionTaken=false;',
+              '        if(feel!=null)feel.action(game,ClumiFeedbackEvent.STAGE_CLEARED,stars);',
+              '        if(feel!=null&&feel.motion()&&game!=null&&game.isAttachedToWindow()){',
+              '            resultPending=true;game.beginSolveBridge();game.removeCallbacks(revealPendingResult);game.postDelayed(revealPendingResult,GameView.SOLVE_BRIDGE_MS);',
+              '        }else showResult(stage,stars,elapsed,previousBest);',
+              '    }'
+          ]
+          ml[start:end]=completed
+
+          show='    private void showResult(int stage,int stars,long elapsed,int previousBest){'
+          if ml.count(show)!=1: raise SystemExit('show result boundary mismatch')
+          i=ml.index(show)+1
+          ml.insert(i,'        resultPending=false;if(game!=null)game.removeCallbacks(revealPendingResult);')
+          mp.write_text('\n'.join(ml)+'\n')
           PY
           git diff --check
 
-      - name: Verify clue feedback contract
+      - name: Verify solve bridge contract
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
           view=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
-          state=Path('app/src/main/java/com/example/einsteingame/GameState.java').read_text()
-          feedback=Path('app/src/main/java/com/example/einsteingame/ClumiFeedbackController.java').read_text()
-          assert 'latestClueLane(ClumiFeedbackEvent kind,long now)' in view
-          assert 'completedLane=latestClueLane(ClumiFeedbackEvent.CLUE_COMPLETED' in view
-          assert 'handedOff=completedLane>=0&&feel.timeline.slots[completedLane]!=state.currentClue' in view
-          assert 'Color.argb((int)(35*completion),25,189,53)' in view
-          assert 'Color.argb((int)(135*completion),0,163,236)' in view
-          assert 'c.drawCircle(cx,cy,badge/2,effectPaint)' in view
-          assert 'public void toggleCompleted()' in state
-          assert 'displayed.completed = !displayed.completed;' in state
-          assert 'filtersChanged();' in state
-          assert 'void clue(GameView view,ClumiFeedbackEvent event,int index,boolean hidden)' in feedback
-          assert 'state.toggleCompleted();seenItem("clue")' in view
-          print('Clue completion feedback static contract: PASS')
+          main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
+          assert 'static final int SOLVE_BRIDGE_MS=520;' in view
+          assert 'void beginSolveBridge()' in view
+          assert 'drawSolveBridge(Canvas canvas,float phase)' in view
+          assert 'elapsed-row*38f' in view
+          assert 'canvas.scale(1-.008f*settle' in view
+          assert 'private boolean resultPending;' in main
+          assert 'if(resultPending)return true;' in main
+          assert 'resultPending||(lastDialog!=null&&lastDialog.isShowing())' in main
+          assert 'game.postDelayed(revealPendingResult,GameView.SOLVE_BRIDGE_MS)' in main
+          assert 'if(resultPending)return;' in main
+          assert 'progress.complete(stage,stars,elapsed);persist();' in main
+          assert 'feel.action(game,ClumiFeedbackEvent.STAGE_CLEARED,stars)' in main
+          assert 'new GameView(MainActivity.this,pack.get(selected))' in main
+          print('Solve-to-Clear bridge static contract: PASS')
           PY
 
       - name: Set up JDK 17
@@ -156,15 +215,16 @@ jobs:
           chmod +x gradlew
           env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push exact clue feedback patch
+      - name: Commit and push exact solve bridge patch
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
-          test "$(git status --porcelain | wc -l)" -eq 1
+          test "$(git status --porcelain | wc -l)" -eq 2
           git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/GameView.java'
+          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/MainActivity.java'
           git config user.name 'Clumi UI Integration'
           git config user.email 'noreply@localhost'
-          git add app/src/main/java/com/example/einsteingame/GameView.java
-          git commit -m 'ui: strengthen clue completion feedback'
+          git add app/src/main/java/com/example/einsteingame/GameView.java app/src/main/java/com/example/einsteingame/MainActivity.java
+          git commit -m 'ui: bridge solved board into clear result'
           git push origin "HEAD:$SOURCE_BRANCH"
