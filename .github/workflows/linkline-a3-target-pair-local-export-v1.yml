@@ -24,6 +24,7 @@ jobs:
           set -euo pipefail
           test -d linkline/analysis
           test -d linkline/reference
+          test -d linkline/tools
           test -s linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
           test -s linkline/public_output/a3_target_pair_selection_plan_v3/summary.json
           test -s linkline/public_output/a3_target_pair_candidate_validation_v1/summary.json
@@ -35,6 +36,7 @@ jobs:
           path: |
             linkline/analysis
             linkline/reference
+            linkline/tools
             linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
             linkline/public_output/a3_target_pair_selection_plan_v3/summary.json
             linkline/public_output/a3_target_pair_candidate_validation_v1/summary.json
