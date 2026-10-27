@@ -1,0 +1,296 @@
+name: Einstein Campaign Production 2000 Stage 0001 Recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-production-2000-stage1-recovery.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: einstein-campaign-production-2000
+  cancel-in-progress: false
+
+jobs:
+  recover-stage-0001:
+    if: >-
+      github.event.head_commit.message == 'production: recover sealed Einstein campaign stage 0001 without new draw'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      RUNNER_SHA: 6b35074c75be9dc78ab2de5e79fbd653a1eb00a2
+      ACCEPTED_SOURCE_SHA: cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
+      PLAN_HASH: a403a59aa537052f8a65d8ac335a7c0676d283f8a88f7425b6927143f21ffde5
+      BANK_BRANCH: campaign-production-2000-bank-v1
+      EXPECTED_BANK_HEAD: 2ecb1e1a8d5d73491c223f89176ed6136bdbc685
+      BANK_REMOTE_ROOT: production/campaign-2000-bank-v1
+      EVIDENCE_STAGE_ROOT: production/campaign-2000-bank-v1/evidence/stage-0001
+      CLASSES_DIR: /tmp/einstein-campaign-production-recovery-classes
+      SOURCES_FILE: /tmp/einstein-campaign-production-recovery-sources.txt
+      BANK_DIR: /tmp/einstein-campaign-production-bank
+      EVIDENCE_DIR: /tmp/einstein-campaign-production-recovery-evidence
+      RECOVERED_OUTPUT: /tmp/einstein-stage-0001-recovered-acquired.json
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private repository credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$READ_TOKEN"
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact recovery source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 6b35074c75be9dc78ab2de5e79fbd653a1eb00a2
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout durable private production bank
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Guard exact sealed recovery boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          test "$(git rev-parse HEAD)" = "$RUNNER_SHA"
+          test "$(git merge-base "$ACCEPTED_SOURCE_SHA" HEAD)" = "$ACCEPTED_SOURCE_SHA"
+          test -z "$(git diff --name-only "$ACCEPTED_SOURCE_SHA" HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/assets/puzzles)"
+          cd ../ProductionStore
+          test "$(git rev-parse --abbrev-ref HEAD)" = "$BANK_BRANCH"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_BANK_HEAD"
+          test "$(git ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)" = "$EXPECTED_BANK_HEAD"
+          test -f "$EVIDENCE_STAGE_ROOT/attempt-draw0.json"
+          test -f "$BANK_REMOTE_ROOT/bank/failures/stage-0001.json"
+          test -f "$BANK_REMOTE_ROOT/bank/requests/stage-0001.json"
+          test ! -e "$EVIDENCE_STAGE_ROOT/attempt-draw1.json"
+          test ! -e "$BANK_REMOTE_ROOT/bank/stages/stage-0001.json"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ['EVIDENCE_STAGE_ROOT'])/'attempt-draw0.json'
+          x=json.loads(p.read_text())
+          a=x['attempt']
+          assert a['drawIndex']==0
+          assert a['disposition']=='ACQUIRED'
+          assert a['evidence']['generator']['status']=='SUCCESS'
+          assert a['evidence']['canonicalHuman']['status']=='SOLVED'
+          assert a['evidence']['CP12Replay']['status']=='VALID_PREFIX'
+          identity=x['attemptIdentity']
+          assert len(identity)==64
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              f.write('SEALED_ATTEMPT_IDENTITY='+identity+'\n')
+          print('SEALED_STAGE_0001_RECOVERY_GUARD=PASS')
+          print('sealedAttemptIdentity='+identity)
+          print('formalDrawsAlreadyConsumed=1')
+          print('additionalFormalDrawsAuthorized=0')
+          PY
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile accepted engine plus recovery materializer
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          rm -rf "$CLASSES_DIR" "$SOURCES_FILE"
+          mkdir -p "$CLASSES_DIR"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES_FILE"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Stage1RecoveryV1.java' >> "$SOURCES_FILE"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> "$SOURCES_FILE"
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES_DIR" "@$SOURCES_FILE"
+
+      - name: Restore durable bank
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          rm -rf "$BANK_DIR" "$EVIDENCE_DIR" "$RECOVERED_OUTPUT"
+          mkdir -p "$EVIDENCE_DIR"
+          cp -a "$GITHUB_WORKSPACE/ProductionStore/$BANK_REMOTE_ROOT/bank" "$BANK_DIR"
+          python3 tools/campaign-production-2000/campaign_production_2000.py status "$BANK_DIR" > /tmp/pre-recovery-status.json
+          python3 - <<'PY'
+          import json, os
+          x=json.load(open('/tmp/pre-recovery-status.json'))
+          assert x['bankedCount']==0 and x['nextOrdinal']==1 and x['publishedCount']==0, x
+          assert x['failedOrQuarantinedCount']==1, x
+          print('PRE_RECOVERY_BANK_GUARD=PASS')
+          PY
+
+      - name: Replay sealed draw for materialization only and seal compact ACQUIRED result
+        shell: bash
+        working-directory: EinsteinGame
+        env:
+          EINSTEIN_PRODUCTION_PRODUCER_AUTHORIZATION: START_2000_MAINLINE_PRODUCTION_V1
+          EINSTEIN_PRODUCTION_SOURCE_HEAD: cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
+          EINSTEIN_PRODUCTION_PLAN_HASH: a403a59aa537052f8a65d8ac335a7c0676d283f8a88f7425b6927143f21ffde5
+          EINSTEIN_STAGE_REQUEST: ${{ github.workspace }}/ProductionStore/production/campaign-2000-bank-v1/bank/requests/stage-0001.json
+          EINSTEIN_ACQUIRED_OUTPUT: /tmp/einstein-stage-0001-recovered-acquired.json
+          EINSTEIN_PRODUCTION_EVIDENCE_DIR: /tmp/einstein-campaign-production-recovery-evidence
+          EINSTEIN_PRODUCTION_EVIDENCE_BRANCH: campaign-production-2000-bank-v1
+          EINSTEIN_PRODUCTION_REMOTE_EVIDENCE_ROOT: production/campaign-2000-bank-v1/evidence/stage-0001
+          EINSTEIN_SEALED_ATTEMPT_IDENTITY: ${{ env.SEALED_ATTEMPT_IDENTITY }}
+        run: |
+          set -euo pipefail
+          export STORE="$GITHUB_WORKSPACE/ProductionStore"
+          git -C "$STORE" config user.name 'Einstein Campaign Production'
+          git -C "$STORE" config user.email 'noreply@localhost'
+
+          (
+            set -euo pipefail
+            while true; do
+              handled=0
+              for READY in "$EVIDENCE_DIR"/*.ready.json; do
+                [ -e "$READY" ] || continue
+                NAME="$(basename "$READY" .ready.json)"
+                ACK="$EVIDENCE_DIR/$NAME.remote-ack.json"
+                [ -e "$ACK" ] && continue
+                handled=1
+                export READY NAME ACK STORE
+                python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path(os.environ['READY']).read_text())
+          assert r['recordType']=='CampaignProduction2000RemoteSealRequestV1'
+          assert r['stageId']=='stage-0001'
+          assert r['formalProduction'] is False
+          assert r['materializationReplay'] is True
+          assert r['evidenceBranch']==os.environ['BANK_BRANCH']
+          assert r['remoteRoot']==os.environ['EVIDENCE_STAGE_ROOT']
+          assert r['remotePath']==os.environ['EVIDENCE_STAGE_ROOT']+'/'+os.environ['NAME']
+          assert len(r['sha256'])==64
+          PY
+                SHA="$(python3 -c 'import json,os;print(json.load(open(os.environ["READY"]))["sha256"])')"
+                SOURCE="$EVIDENCE_DIR/$NAME"
+                test -f "$SOURCE"
+                test "$(sha256sum "$SOURCE" | awk '{print $1}')" = "$SHA"
+                TARGET="$STORE/$EVIDENCE_STAGE_ROOT/$NAME"
+                mkdir -p "$(dirname "$TARGET")"
+                test ! -e "$TARGET"
+                REMOTE_BEFORE="$(git -C "$STORE" ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)"
+                test "$REMOTE_BEFORE" = "$(git -C "$STORE" rev-parse HEAD)"
+                cp "$SOURCE" "$TARGET"
+                git -C "$STORE" add -- "$EVIDENCE_STAGE_ROOT/$NAME"
+                git -C "$STORE" commit -m "evidence: recover production stage-0001 $NAME"
+                COMMIT="$(git -C "$STORE" rev-parse HEAD)"
+                git -C "$STORE" push origin "HEAD:refs/heads/$BANK_BRANCH"
+                test "$(git -C "$STORE" ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)" = "$COMMIT"
+                export SHA COMMIT
+                python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          ack={
+            'status':'REMOTE_SEAL_PASS',
+            'sha256':os.environ['SHA'],
+            'evidenceBranch':os.environ['BANK_BRANCH'],
+            'remoteRoot':os.environ['EVIDENCE_STAGE_ROOT'],
+            'remotePath':os.environ['EVIDENCE_STAGE_ROOT']+'/'+os.environ['NAME'],
+            'remoteCommitSha':os.environ['COMMIT']
+          }
+          with Path(os.environ['ACK']).open('x') as f:
+            json.dump(ack,f,separators=(',',':'),sort_keys=True);f.write('\n')
+          PY
+              done
+              [ "$handled" -eq 0 ] && sleep 0.1
+            done
+          ) &
+          SIDECAR_PID=$!
+
+          set +e
+          java -Xmx8g -cp "$CLASSES_DIR" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Stage1RecoveryV1 \
+            | tee /tmp/einstein-stage1-recovery.log
+          RECOVERY_STATUS=${PIPESTATUS[0]}
+          set -e
+          kill "$SIDECAR_PID" 2>/dev/null || true
+          wait "$SIDECAR_PID" 2>/dev/null || true
+          exit "$RECOVERY_STATUS"
+
+      - name: Validate recovered payload and promote ACQUIRED to BANKED
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          test -f "$RECOVERED_OUTPUT"
+          export RECOVERED_OUTPUT SEALED_ATTEMPT_IDENTITY
+          python3 - <<'PY'
+          import json, os
+          x=json.load(open(os.environ['RECOVERED_OUTPUT']))
+          assert x['state']=='ACQUIRED'
+          assert x['stageId']=='stage-0001' and x['ordinal']==1
+          assert x['publishedPuzzleId']=='PZ_CAMPAIGN_000001'
+          assert len(x['contentFingerprint'])==64
+          assert x['validationRefs']['sealedAttemptIdentity']==os.environ['SEALED_ATTEMPT_IDENTITY']
+          assert x['validationRefs']['cp12ReplayStatus']=='VALID_PREFIX'
+          assert x['validationRefs']['materializationReplayAdditionalFormalDraws']==0
+          assert x['sourceProvenance']['formalDrawsConsumedAdditional']==0
+          assert x['curriculumMetadataIdentity']==x['validationRefs']['metadataIdentity']
+          assert x['runtimeEntry']['publishedPuzzleId']=='PZ_CAMPAIGN_000001'
+          print('RECOVERED_ACQUIRED_PAYLOAD=PASS')
+          PY
+          python3 tools/campaign-production-2000/campaign_production_2000.py record-acquired "$BANK_DIR" "$RECOVERED_OUTPUT"
+          python3 tools/campaign-production-2000/campaign_production_2000.py commit-acquired "$BANK_DIR" --ordinal 1 > /tmp/stage1-banked.json
+
+      - name: Persist recovered BANKED stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          STORE="$GITHUB_WORKSPACE/ProductionStore"
+          TARGET="$STORE/$BANK_REMOTE_ROOT/bank"
+          rm -rf "$TARGET"
+          cp -a "$BANK_DIR" "$TARGET"
+          git -C "$STORE" add -- "$BANK_REMOTE_ROOT/bank"
+          git -C "$STORE" commit -m 'production: recover and bank stage-0001 from sealed draw0'
+          COMMIT="$(git -C "$STORE" rev-parse HEAD)"
+          git -C "$STORE" push origin "HEAD:refs/heads/$BANK_BRANCH"
+          test "$(git -C "$STORE" ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)" = "$COMMIT"
+
+      - name: Recovery terminal acceptance
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          python3 tools/campaign-production-2000/campaign_production_2000.py status "$BANK_DIR" | tee /tmp/stage1-recovered-status.json
+          export BANK_DIR SEALED_ATTEMPT_IDENTITY
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['BANK_DIR'])
+          m=json.loads((root/'manifest.json').read_text())
+          s=json.loads((root/'stages/stage-0001.json').read_text())
+          assert m['bankedCount']==1 and m['publishedCount']==0 and m['nextOrdinal']==2, m
+          assert m['failedOrQuarantinedCount']==1, m
+          assert s['state']=='BANKED' and s['stageId']=='stage-0001' and s['ordinal']==1
+          assert s['validationRefs']['sealedAttemptIdentity']==os.environ['SEALED_ATTEMPT_IDENTITY']
+          assert s['sourceProvenance']['formalDrawsConsumedAdditional']==0
+          assert len(s['contentFingerprint'])==64
+          print('EINSTEIN_CAMPAIGN_PRODUCTION_STAGE_0001_RECOVERY_TERMINAL=PASS')
+          print('bankedCount=1')
+          print('publishedCount=0')
+          print('nextOrdinal=2')
+          print('historicalWrapperFailureCount=1')
+          print('formalProductionDrawsTotal=1')
+          print('recoveryAdditionalFormalDraws=0')
+          print('contentFingerprint='+s['contentFingerprint'])
+          PY
+          test ! -e "$GITHUB_WORKSPACE/ProductionStore/$EVIDENCE_STAGE_ROOT/attempt-draw1.json"
+          test -z "$(git -C "$GITHUB_WORKSPACE/ProductionStore" status --porcelain --untracked-files=all)"
+          test "$(git -C "$GITHUB_WORKSPACE/ProductionStore" ls-remote origin "refs/heads/$BANK_BRANCH" | cut -f1)" = "$(git -C "$GITHUB_WORKSPACE/ProductionStore" rev-parse HEAD)"
