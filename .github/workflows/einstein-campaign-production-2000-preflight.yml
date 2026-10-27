@@ -1,0 +1,63 @@
+name: Einstein Campaign Production 2000 Preflight
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-production-2000-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact private infrastructure commit
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: d1afb1cf049adb3c3e9eb2c0f20976b2ad227e90
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          persist-credentials: false
+
+      - name: Verify frozen production sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'd1afb1cf049adb3c3e9eb2c0f20976b2ad227e90'
+          git fetch --no-tags origin cdb66a3e0509bfec050a907bb43efb4e01b4ffeb
+          test -z "$(git diff --name-only cdb66a3e0509bfec050a907bb43efb4e01b4ffeb HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/java app/src/main/assets)"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run synthetic infrastructure preflight
+        shell: bash
+        run: bash tools/campaign-production-2000/run-preflight.sh
+
+      - name: Run existing Campaign and durability regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/test-campaign-core.sh
+          java -Xmx2g -cp build/campaign-core/core:build/campaign-core/authoring:build/campaign-core/tests com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest
+
+      - name: Run Android publication bridge regression
+        shell: bash
+        run: bash tools/test-phase-e13.sh
+
+      - name: Terminal boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo 'NEW_PRODUCTION_PUZZLES=0'
+          echo 'NEW_FORMAL_DRAWS=0'
+          echo 'NEW_BANKED_PRODUCTION_STAGES=0'
+          echo 'NEW_PUBLISHED_PRODUCTION_STAGES=0'
+          echo 'READY_FOR_PRODUCTION_START_INSTRUCTION'
