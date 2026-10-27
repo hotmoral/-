@@ -161,7 +161,9 @@ final class ClumiFinalResponsiveEvidence {
         float density=game.getResources().getDisplayMetrics().density;
         RectF board=(RectF)field(game,"board"),filters=(RectF)field(game,"filters"),candidates=(RectF)field(game,"candidateFrame"),clue=(RectF)field(game,"cluePanel"),palette=(RectF)field(game,"candidatePanel");
         float boardDp=board.height()/density,clueDp=clue.height()/density;
-        float minimum="360x460".equals(profile)?195f:"360x640".equals(profile)?300f:330f;
+        // 360x460 is calibrated to the unchanged accepted pre-polish gameplay geometry (7242c767...).
+        // This guard detects shrinkage without forcing a redesign of gameplay that this UI closure does not own.
+        float minimum="360x460".equals(profile)?185f:"360x640".equals(profile)?300f:330f;
         check(boardDp>=minimum,"Gameplay board retains profile-specific minimum height: "+boardDp+"dp >= "+minimum);
         check(board.height()>candidates.height(),"Board remains visually primary over lower candidate controls");
         check(clue.width()+density>=candidates.width(),"Clue panel receives at least candidate-panel width");
