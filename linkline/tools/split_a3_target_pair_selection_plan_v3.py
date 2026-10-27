@@ -7,6 +7,7 @@ selection semantics.
 from __future__ import annotations
 
 import argparse
+from collections import defaultdict
 import json
 from pathlib import Path
 
@@ -50,6 +51,8 @@ def main() -> None:
         "repairChunks": [],
         "compactSelected": "selected.tsv",
         "compactRepair": "repair.tsv",
+        "selectedNibbleDir": "selected_nibble",
+        "repairIdNibbleDir": "repair_id_nibble",
     }
 
     for start in range(0, len(order), args.chunk_size):
@@ -76,6 +79,16 @@ def main() -> None:
         repair_lines.append("\t".join(clean(row.get(key)) for key in repair_header))
     (out / "repair.tsv").write_text("\n".join(repair_lines) + "\n", encoding="utf-8")
 
+    selected_nibbles = defaultdict(list)
+    for row in order:
+        selected_nibbles[row["id"][0]].append(row)
+    repair_nibbles = defaultdict(list)
+    for row in reservoir:
+        repair_nibbles[row["id"][0]].append(row)
+    for nibble in "0123456789abcdef":
+        write_json(out / "selected_nibble" / f"{nibble}.json", selected_nibbles[nibble])
+        write_json(out / "repair_id_nibble" / f"{nibble}.json", repair_nibbles[nibble])
+
     write_json(out / "manifest.json", manifest)
     print(json.dumps({
         "status": "PASS",
@@ -83,6 +96,8 @@ def main() -> None:
         "repairReservoirCount": len(reservoir),
         "orderChunkCount": len(manifest["orderChunks"]),
         "repairChunkCount": len(manifest["repairChunks"]),
+        "selectedNibbleCount": sum(len(v) for v in selected_nibbles.values()),
+        "repairNibbleCount": sum(len(v) for v in repair_nibbles.values()),
     }, sort_keys=True))
 
 
