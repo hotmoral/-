@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   materialize:
-    if: ${{ !contains(github.event.head_commit.message, 'materialize exact V4 final chunk') }}
+    if: ${{ !contains(github.event.head_commit.message, 'record V4 chunk diagnostics') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact pushed commit without third-party actions
@@ -23,29 +23,60 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Restore and verify exact final chunk
+      - name: Diagnose and materialize exact final chunk if possible
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
-          data = p.read_bytes()
-          if len(data) != 12890:
-              raise SystemExit(f'unexpected candidate size: {len(data)}')
-          if data.endswith(b'\n'):
-              raise SystemExit('candidate unexpectedly already newline-terminated')
-          p.write_bytes(data + b'\n')
-          PY
-          test "$(wc -c < linkline/v4-transfer-debug/candidate-1041-1300.json)" -eq 12891
-          ACTUAL="$(git hash-object linkline/v4-transfer-debug/candidate-1041-1300.json)"
-          EXPECTED="81458e6ebcc645d22fff597bcffb6294d0f24e76"
-          test "${ACTUAL}" = "${EXPECTED}"
+          import hashlib, json
 
-      - name: Commit exact verified blob
+          p = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
+          d = Path('linkline/v4-transfer-debug/diagnostic.json')
+          expected = '81458e6ebcc645d22fff597bcffb6294d0f24e76'
+          data = p.read_bytes()
+          obj = json.loads(data.decode('utf-8'))
+          canonical = json.dumps(obj, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+
+          variants = {
+              'original': data,
+              'original_lf': data + b'\n',
+              'original_cr': data + b'\r',
+              'original_crlf': data + b'\r\n',
+              'canonical': canonical,
+              'canonical_lf': canonical + b'\n',
+              'canonical_crlf': canonical + b'\r\n',
+          }
+
+          def git_blob_sha(content: bytes) -> str:
+              header = f'blob {len(content)}\0'.encode('ascii')
+              return hashlib.sha1(header + content).hexdigest()
+
+          rows = []
+          match = None
+          for name, content in variants.items():
+              sha = git_blob_sha(content)
+              rows.append({'name': name, 'size': len(content), 'gitBlobSha': sha, 'match': sha == expected})
+              if sha == expected and match is None:
+                  match = (name, content)
+
+          report = {
+              'expectedGitBlobSha': expected,
+              'originalSize': len(data),
+              'originalTailHex': data[-32:].hex(),
+              'parsedRows': len(obj.get('rows', [])),
+              'variants': rows,
+              'matchedVariant': match[0] if match else None,
+          }
+          d.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+          if match:
+              p.write_bytes(match[1])
+          PY
+
+      - name: Commit diagnostic and exact blob when matched
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add linkline/v4-transfer-debug/candidate-1041-1300.json
-          git commit -m "linkline: materialize exact V4 final chunk"
+          git add linkline/v4-transfer-debug/candidate-1041-1300.json linkline/v4-transfer-debug/diagnostic.json
+          git commit -m "linkline: record V4 chunk diagnostics"
           git push origin HEAD:linkline/v4-object-probe-v1
