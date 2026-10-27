@@ -16,7 +16,7 @@ concurrency:
 jobs:
   patch-verify-solve-bridge:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi solve to clear bridge v1'
+      github.event.head_commit.message == 'verify: Clumi solve to clear bridge v1 retry'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -117,11 +117,18 @@ jobs:
           i=ml.index(result_field)+1
           ml[i:i]=[
               '    private boolean resultPending;',
-              '    private final Runnable revealPendingResult=()->{',
+              '    private final Runnable revealPendingResult=this::revealPendingResultNow;'
+          ]
+
+          save_attempt='    private void saveAttempt(){if(session!=null&&!session.board.isSolved()){progress.saveAttempt(session.stage.number,session.encode());persist();}}'
+          if ml.count(save_attempt)!=1: raise SystemExit('saveAttempt boundary mismatch')
+          i=ml.index(save_attempt)+1
+          ml[i:i]=[
+              '    private void revealPendingResultNow(){',
               '        if(!resultPending)return;',
               '        if(session==null||completedSession!=session||!"play".equals(screen)){resultPending=false;return;}',
               '        resultPending=false;showResult(session.stage.number,resultStars,resultElapsed,resultPreviousBest);',
-              '    };'
+              '    }'
           ]
 
           dispatch='    @Override public boolean dispatchTouchEvent(MotionEvent event){'
@@ -183,6 +190,8 @@ jobs:
           assert 'elapsed-row*38f' in view
           assert 'canvas.scale(1-.008f*settle' in view
           assert 'private boolean resultPending;' in main
+          assert 'private final Runnable revealPendingResult=this::revealPendingResultNow;' in main
+          assert 'private void revealPendingResultNow()' in main
           assert 'if(resultPending)return true;' in main
           assert 'resultPending||(lastDialog!=null&&lastDialog.isShowing())' in main
           assert 'game.postDelayed(revealPendingResult,GameView.SOLVE_BRIDGE_MS)' in main
