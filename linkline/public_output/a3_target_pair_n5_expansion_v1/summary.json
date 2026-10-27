@@ -1,0 +1,55 @@
+{
+  "boundaries": {
+    "finalSelectionPerformed": false,
+    "privateIsolationApplied": false,
+    "productionCatalogModified": false
+  },
+  "byN": {
+    "5": {
+      "exactPairCount": 297,
+      "maxCandidatesForOnePair": 52,
+      "pairsWithAtLeastTwo": 279,
+      "provisionalTarget": 514,
+      "rawMarginOverProvisionalTarget": 62,
+      "rowCount": 2513,
+      "selectableCapacityUnderCap": 576
+    }
+  },
+  "byNL": {
+    "N5L10": {
+      "exactPairCount": 133,
+      "maxCandidatesForOnePairWithinNL": 15,
+      "pairsWithAtLeastTwoWithinNL": 96,
+      "rowCount": 465
+    },
+    "N5L6": {
+      "exactPairCount": 140,
+      "maxCandidatesForOnePairWithinNL": 10,
+      "pairsWithAtLeastTwoWithinNL": 114,
+      "rowCount": 550
+    },
+    "N5L7": {
+      "exactPairCount": 129,
+      "maxCandidatesForOnePairWithinNL": 26,
+      "pairsWithAtLeastTwoWithinNL": 107,
+      "rowCount": 564
+    },
+    "N5L8": {
+      "exactPairCount": 131,
+      "maxCandidatesForOnePairWithinNL": 19,
+      "pairsWithAtLeastTwoWithinNL": 100,
+      "rowCount": 472
+    },
+    "N5L9": {
+      "exactPairCount": 111,
+      "maxCandidatesForOnePairWithinNL": 52,
+      "pairsWithAtLeastTwoWithinNL": 71,
+      "rowCount": 462
+    }
+  },
+  "identityFingerprint": "d8164fda5a2ca04db46d5e70bee1e77d6b7cac6dc61330fb01ac0ce1d27e4607",
+  "schema": "LINKLINE_A3_TARGET_PAIR_N5_EXPANSION_PUBLIC_POOL_SUMMARY",
+  "stateCount": 96,
+  "summaryFingerprint": "6a37be77f66be8ecee6c0dfe44ea8a5c616ea69104a9e69b2e687283890a12b3",
+  "version": "1.0.0"
+}
