@@ -121,8 +121,10 @@ final class ClumiFinalResponsiveEvidence {
             View clearStars=tagged(decor,"b3-clear-stars");
             partlyVisible(clearStage,"Stage Clear stage heading");
             partlyVisible(clearStars,"Stage Clear earned stars");
-            ScrollView clearViewport=findType(decor,ScrollView.class);
-            check(clearViewport!=null&&clearViewport.getHeight()>dp(clearViewport,36),"Stage Clear retains usable internal viewport");
+            ScrollView clearViewport=findAncestor(clearStage,ScrollView.class);
+            check(clearViewport!=null,"Stage Clear result viewport exists");
+            check(findAncestor(clearStars,ScrollView.class)==clearViewport,"Stage Clear hero and heading share the result viewport");
+            check(clearViewport.getHeight()>dp(clearViewport,36),"Stage Clear retains usable internal viewport");
             check(clearViewport.getChildCount()==1,"Stage Clear content is hosted by its viewport");
             Button clearHome=findButton(decor,"홈"),clearNext=findButton(decor,"다음 스테이지");
             check(clearHome!=null&&clearNext!=null,"Stage Clear actions exist");
@@ -157,6 +159,7 @@ final class ClumiFinalResponsiveEvidence {
     private void back(){ui(activity::onBackPressed);settle();}
     private View tagged(View root,String tag){View v=root.findViewWithTag(tag);check(v!=null,"Tagged component exists: "+tag);return v;}
     private <T extends View>T findType(View root,Class<T> type){if(root==null)return null;if(type.isInstance(root))return type.cast(root);if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++){T v=findType(g.getChildAt(i),type);if(v!=null)return v;}}return null;}
+    private <T extends View>T findAncestor(View child,Class<T> type){android.view.ViewParent parent=child==null?null:child.getParent();while(parent instanceof View){if(type.isInstance(parent))return type.cast(parent);parent=parent.getParent();}return null;}
     private Button findButton(View root,String text){if(root instanceof Button&&text.contentEquals(((Button)root).getText()))return (Button)root;if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++){Button v=findButton(g.getChildAt(i),text);if(v!=null)return v;}}return null;}
     private View findByDescription(View root,String description){if(root==null)return null;CharSequence d=root.getContentDescription();if(d!=null&&description.contentEquals(d))return root;if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++){View v=findByDescription(g.getChildAt(i),description);if(v!=null)return v;}}return null;}
     private void click(View view,String label){check(view!=null,label+" control exists");ui(view::performClick);settle();}
