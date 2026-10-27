@@ -244,6 +244,26 @@ jobs:
             -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
             -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
             ./gradlew --no-daemon --stacktrace --console=plain :app:assembleDebug
+          test -s app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Stage Preview APK for delivery
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p final-regression/apk
+          cp source/app/build/outputs/apk/debug/app-debug.apk final-regression/apk/Clumi-Preview-1-10-UI.apk
+          test -s final-regression/apk/Clumi-Preview-1-10-UI.apk
+          sha256sum final-regression/apk/Clumi-Preview-1-10-UI.apk | tee final-regression/apk/Clumi-Preview-1-10-UI.apk.sha256
+
+      - name: Upload Preview APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Preview-1-10-UI-APK
+          path: |
+            final-regression/apk/Clumi-Preview-1-10-UI.apk
+            final-regression/apk/Clumi-Preview-1-10-UI.apk.sha256
+          retention-days: 14
+          if-no-files-found: error
 
       - name: Upload final responsive regression evidence
         uses: actions/upload-artifact@v4
@@ -262,6 +282,7 @@ jobs:
           set -euo pipefail
           test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
           test -s final-regression/summary.json
+          test -s final-regression/apk/Clumi-Preview-1-10-UI.apk
           python3 - <<'PY'
           import json
           from pathlib import Path
