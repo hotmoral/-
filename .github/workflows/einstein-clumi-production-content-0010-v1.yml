@@ -1,4 +1,4 @@
-name: Clumi Solve To Clear Bridge V1
+name: Clumi Arrival CTA Hierarchy V1
 
 on:
   push:
@@ -10,17 +10,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: clumi-solve-to-clear-bridge-v1
+  group: clumi-arrival-cta-hierarchy-v1
   cancel-in-progress: false
 
 jobs:
-  patch-verify-solve-bridge:
+  patch-verify-arrival-cta:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi solve to clear bridge v1 retry'
+      github.event.head_commit.message == 'verify: Clumi arrival CTA hierarchy v1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      SOURCE_SHA: 7a86254cf3b9d2cb9ae2cfbf8e32a52d1a1be3c0
+      SOURCE_SHA: 767a915f484230de7e259675ad49386366e16b92
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -47,159 +47,134 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           test "$(git branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply bounded solve bridge patch
+      - name: Apply bounded arrival and CTA patch
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
 
-          # GameView: local solve bridge animation only.
-          gp=Path('app/src/main/java/com/example/einsteingame/GameView.java')
-          gl=gp.read_text().splitlines()
-          field='    private boolean compactGameplay,mediumGameplay;'
-          if gl.count(field)!=1: raise SystemExit('GameView field boundary mismatch')
-          i=gl.index(field)+1
-          gl[i:i]=[
-              '    static final int SOLVE_BRIDGE_MS=520;',
-              '    private long solveBridgeAt=-1;'
-          ]
+          # Shared post-mosaic arrival grammar. Stage Start remains the stronger variant.
+          ap=Path('app/src/main/java/com/example/einsteingame/ClumiStageArrival.java')
+          ap.write_text('\n'.join([
+              'package com.example.einsteingame;',
+              'import android.view.View;',
+              '/** Post-transition arrival grammar. Mosaic remains authoritative; transforms start only after a canonical live frame. */',
+              'final class ClumiStageArrival {',
+              '    static ClumiSceneMotion common(View root,ClumiFeedbackController feel,ClumiSceneMotion.Gate valid,ClumiSceneMotion.Gate ready){',
+              '        return build(root,feel,valid,ready,false);',
+              '    }',
+              '    static ClumiSceneMotion start(View root,ClumiFeedbackController feel,ClumiSceneMotion.Gate valid,ClumiSceneMotion.Gate ready){',
+              '        return build(root,feel,valid,ready,true);',
+              '    }',
+              '    private static ClumiSceneMotion build(View root,ClumiFeedbackController feel,ClumiSceneMotion.Gate valid,ClumiSceneMotion.Gate ready,boolean strong){',
+              '        ClumiSceneMotion motion=new ClumiSceneMotion(root,feel,valid,ready);',
+              '        View header=root.findViewWithTag("brand-header");if(header==null)header=root.findViewWithTag("home-logo");',
+              '        motion.add(header,0,strong?190:170,ClumiSceneMotion.emphasis(strong?.003f:.005f,ClumiUi.dp(root.getContext(),strong?.7f:1f)));',
+              '        if(strong)for(String tag:new String[]{"hero-clumi","b3-art-title-start"})',
+              '            motion.add(root.findViewWithTag(tag),20,240,ClumiSceneMotion.emphasis(.009f,0));',
+              '        motion.start();return motion;',
+              '    }',
+              '    private ClumiStageArrival(){}',
+              '}',
+              ''
+          ]))
 
-          anchor='    public GameState gameState(){return state;}'
-          if gl.count(anchor)!=1: raise SystemExit('GameView method boundary mismatch')
-          i=gl.index(anchor)+1
-          bridge=[
-              '    void beginSolveBridge(){',
-              '        if(feel==null||!feel.motion()){solveBridgeAt=-1;return;}',
-              '        solveBridgeAt=SystemClock.elapsedRealtime();postInvalidateOnAnimation();',
-              '    }',
-              '    private float solveBridgeProgress(){',
-              '        if(solveBridgeAt<0||feel==null||!feel.motion())return -1;',
-              '        float phase=(SystemClock.elapsedRealtime()-solveBridgeAt)/(float)SOLVE_BRIDGE_MS;',
-              '        if(phase>=1){solveBridgeAt=-1;return -1;}',
-              '        return ClumiMotionTokens.unit(phase);',
-              '    }',
-              '    private void drawSolveBridge(Canvas canvas,float phase){',
-              '        if(phase<0)return;float elapsed=phase*SOLVE_BRIDGE_MS;',
-              '        canvas.save();canvas.clipRect(board);',
-              '        for(int row=0;row<GameState.SIZE;row++){',
-              '            float local=ClumiMotionTokens.unit((elapsed-row*38f)/220f);',
-              '            float pulse=ClumiMotionTokens.impulse(local);if(pulse<=0)continue;',
-              '            float left=board.left+boardPadding+panX,right=left+boardContentWidth*scale;',
-              '            float top=board.top+boardPadding+panY+(boardHeaderHeight+row*cellHeight)*scale;',
-              '            float bottom=board.top+boardPadding+panY+(boardHeaderHeight+(row+1)*cellHeight)*scale;',
-              '            effectBounds.set(left+d(1),top+d(1),right-d(1),bottom-d(1));',
-              '            effectPaint.reset();effectPaint.setAntiAlias(true);effectPaint.setStyle(Paint.Style.FILL);',
-              '            effectPaint.setColor(Color.argb((int)(24*pulse),25,189,53));canvas.drawRoundRect(effectBounds,d(7),d(7),effectPaint);',
-              '            effectPaint.setStyle(Paint.Style.STROKE);effectPaint.setStrokeWidth(d(1.3f));effectPaint.setColor(Color.argb((int)(155*pulse),25,189,53));',
-              '            canvas.drawRoundRect(effectBounds,d(7),d(7),effectPaint);',
-              '        }',
-              '        canvas.restore();postInvalidateOnAnimation();',
+          # Dynamic Hero CTA treatment for primary progression buttons that cannot use fixed-text raster artwork.
+          up=Path('app/src/main/java/com/example/einsteingame/ClumiUi.java')
+          ul=up.read_text().splitlines()
+          button_index=next((i for i,line in enumerate(ul) if line.startswith('    static Button button(Context c,String value,boolean blue,boolean dark){')),None)
+          if button_index is None: raise SystemExit('ClumiUi button boundary mismatch')
+          hero=[
+              '    static void heroButton(Button button,boolean dark){',
+              '        Context c=button.getContext();',
+              '        button.setTextSize(20);button.setTextColor(Color.WHITE);',
+              '        button.setBackground(surface(c,ClumiSkin.PRIMARY,dark,34));',
+              '        button.setShadowLayer(dp(c,.9f),0,dp(c,1.2f),0x9a0648a8);',
+              '        button.setPadding(dp(c,24),dp(c,3),dp(c,20),dp(c,6));',
               '    }'
           ]
-          gl[i:i]=bridge
+          ul[button_index+1:button_index+1]=hero
+          up.write_text('\n'.join(ul)+'\n')
 
-          old='        canvas.save();if(feel!=null&&feel.motion()){long now=SystemClock.elapsedRealtime();int clear=feel.timeline.find(ClumiFeedbackEvent.STAGE_CLEARED,-1,-1,-1,now);if(clear>=0){float phase=(now-feel.timeline.starts[clear])/(float)ClumiMotionTokens.BOARD_SETTLE,settle=ClumiMotionTokens.impulse(phase);canvas.scale(1-.006f*settle,1-.006f*settle,board.centerX(),board.centerY());}}drawBoard(canvas);canvas.restore();'
-          if gl.count(old)!=1: raise SystemExit('GameView board draw boundary mismatch')
-          j=gl.index(old)
-          gl[j:j+1]=[
-              '        float solvePhase=solveBridgeProgress();',
-              '        canvas.save();if(solvePhase>=0){float settle=ClumiMotionTokens.impulse(Math.min(1,solvePhase*1.55f));canvas.scale(1-.008f*settle,1-.008f*settle,board.centerX(),board.centerY());}drawBoard(canvas);canvas.restore();',
-              '        drawSolveBridge(canvas,solvePhase);'
-          ]
-          gp.write_text('\n'.join(gl)+'\n')
-
-          # MainActivity: delay result presentation only; completion persistence remains immediate.
+          # Wire common arrivals only at actual navigation/restore boundaries; rerenders from Settings/Rewards state changes do not replay arrival.
           mp=Path('app/src/main/java/com/example/einsteingame/MainActivity.java')
           ml=mp.read_text().splitlines()
-          result_field='    private int resultStars,resultPreviousBest;private long resultElapsed;'
-          if ml.count(result_field)!=1: raise SystemExit('MainActivity result field boundary mismatch')
-          i=ml.index(result_field)+1
-          ml[i:i]=[
-              '    private boolean resultPending;',
-              '    private final Runnable revealPendingResult=this::revealPendingResultNow;'
-          ]
 
-          save_attempt='    private void saveAttempt(){if(session!=null&&!session.board.isSolved()){progress.saveAttempt(session.stage.number,session.encode());persist();}}'
-          if ml.count(save_attempt)!=1: raise SystemExit('saveAttempt boundary mismatch')
-          i=ml.index(save_attempt)+1
-          ml[i:i]=[
-              '    private void revealPendingResultNow(){',
-              '        if(!resultPending)return;',
-              '        if(session==null||completedSession!=session||!"play".equals(screen)){resultPending=false;return;}',
-              '        resultPending=false;showResult(session.stage.number,resultStars,resultElapsed,resultPreviousBest);',
+          scroll_index=next((i for i,line in enumerate(ml) if line.startswith('    private LinearLayout scrollBody(LinearLayout page){')),None)
+          if scroll_index is None: raise SystemExit('scrollBody boundary mismatch')
+          arrive=[
+              '    private void arrive(String expected){',
+              '        ClumiSceneReady arrivalScene=scene;',
+              '        ClumiStageArrival.common(arrivalScene.root,feel,()->expected.equals(screen)&&scene==arrivalScene,()->(navigation==null||!navigation.active())&&arrivalScene.complete());',
               '    }'
           ]
+          ml[scroll_index+1:scroll_index+1]=arrive
 
-          dispatch='    @Override public boolean dispatchTouchEvent(MotionEvent event){'
-          if ml.count(dispatch)!=1: raise SystemExit('dispatch boundary mismatch')
-          i=ml.index(dispatch)+1
-          ml.insert(i,'        if(resultPending)return true;')
+          def replace_one(old,new,label):
+              matches=[i for i,line in enumerate(ml) if line==old]
+              if len(matches)!=1: raise SystemExit(f'{label}: expected 1 exact line, got {len(matches)}')
+              ml[matches[0]]=new
 
-          save='        state.putString("clumi.ui.screen",completedSession==session&&session!=null&&lastDialog!=null&&lastDialog.isShowing()?"clear":screen);'
-          if ml.count(save)!=1: raise SystemExit('save boundary mismatch')
-          ml[ml.index(save)]='        state.putString("clumi.ui.screen",completedSession==session&&session!=null&&(resultPending||(lastDialog!=null&&lastDialog.isShowing()))?"clear":screen);'
+          replace_one('            case "rewards":renderRewards(rewardScroll);break;',
+                      '            case "rewards":renderRewards(rewardScroll);arrive("rewards");break;',
+                      'restore rewards arrival')
+          replace_one('            case "settings":enter("settings");renderSettings();break;',
+                      '            case "settings":enter("settings");renderSettings();arrive("settings");break;',
+                      'restore settings arrival')
 
-          resume='    @Override protected void onResume(){super.onResume();resumed=true;updateTimer();if(feel!=null)feel.foreground(true);}'
-          pause='    @Override protected void onPause(){resumed=false;updateTimer();saveAttempt();if(navigation!=null)navigation.snap();if(feel!=null)feel.foreground(false);super.onPause();}'
-          destroy='    @Override protected void onDestroy(){if(navigation!=null)navigation.snap();if(feel!=null)feel.dispose();super.onDestroy();}'
-          if ml.count(resume)!=1 or ml.count(pause)!=1 or ml.count(destroy)!=1: raise SystemExit('lifecycle boundary mismatch')
-          ml[ml.index(resume)]='    @Override protected void onResume(){super.onResume();resumed=true;updateTimer();if(feel!=null)feel.foreground(true);if(resultPending&&game!=null)game.post(revealPendingResult);}'
-          ml[ml.index(pause)]='    @Override protected void onPause(){if(resultPending&&game!=null)game.removeCallbacks(revealPendingResult);resumed=false;updateTimer();saveAttempt();if(navigation!=null)navigation.snap();if(feel!=null)feel.foreground(false);super.onPause();}'
-          ml[ml.index(destroy)]='    @Override protected void onDestroy(){if(game!=null)game.removeCallbacks(revealPendingResult);if(navigation!=null)navigation.snap();if(feel!=null)feel.dispose();super.onDestroy();}'
+          for marker,target in [('scene.require("home-logo"','home'),('scene.require("stage-panel"','stages')]:
+              matches=[i for i,line in enumerate(ml) if marker in line]
+              if len(matches)!=1: raise SystemExit(f'{target} arrival boundary mismatch')
+              idx=matches[0]
+              if 'scene.bindComplete();' not in ml[idx]: raise SystemExit(f'{target} scene completion missing')
+              ml[idx]=ml[idx].replace('scene.bindComplete();',f'scene.bindComplete();arrive("{target}");',1)
 
-          back='    @Override public void onBackPressed(){if(lastDialog!=null&&lastDialog.isShowing()){lastDialog.onBackPressed();if(!lastDialog.isShowing())semantic(ClumiHapticPolicy.Control.NAVIGATION);return;}if(navigation!=null){if(navigation.active())return;if("home".equals(screen)&&navigation.recent("home"))return;}backNavigation=true;try{handleBack();}finally{backNavigation=false;}semantic(ClumiHapticPolicy.Control.NAVIGATION);}'
-          if ml.count(back)!=1: raise SystemExit('back boundary mismatch')
-          ml[ml.index(back)]='    @Override public void onBackPressed(){if(resultPending)return;if(lastDialog!=null&&lastDialog.isShowing()){lastDialog.onBackPressed();if(!lastDialog.isShowing())semantic(ClumiHapticPolicy.Control.NAVIGATION);return;}if(navigation!=null){if(navigation.active())return;if("home".equals(screen)&&navigation.recent("home"))return;}backNavigation=true;try{handleBack();}finally{backNavigation=false;}semantic(ClumiHapticPolicy.Control.NAVIGATION);}'
+          old='    private void showRewards(int scrollY){route("rewards",backNavigation,()->renderRewards(scrollY));}'
+          new='    private void showRewards(int scrollY){route("rewards",backNavigation,()->{renderRewards(scrollY);arrive("rewards");});}'
+          replace_one(old,new,'showRewards arrival boundary')
 
-          start=ml.index('    @Override public void completed(){')
-          end=ml.index('    private void showResult(int stage,int stars,long elapsed,int previousBest){',start)
-          completed=[
-              '    @Override public void completed(){',
-              '        if(session==null||completedSession==session||!"play".equals(screen)||!session.board.isSolved())return;',
-              '        completedSession=session;session.timer.pause();int stage=session.stage.number,stars=session.stars(),previousBest=progress.bestStars(stage);',
-              '        long elapsed=session.timer.elapsed();progress.complete(stage,stars,elapsed);persist();',
-              '        resultStars=stars;resultElapsed=elapsed;resultPreviousBest=previousBest;resultActionTaken=false;',
-              '        if(feel!=null)feel.action(game,ClumiFeedbackEvent.STAGE_CLEARED,stars);',
-              '        if(feel!=null&&feel.motion()&&game!=null&&game.isAttachedToWindow()){',
-              '            resultPending=true;game.beginSolveBridge();game.removeCallbacks(revealPendingResult);game.postDelayed(revealPendingResult,GameView.SOLVE_BRIDGE_MS);',
-              '        }else showResult(stage,stars,elapsed,previousBest);',
-              '    }'
-          ]
-          ml[start:end]=completed
+          old='    private void showSettings(){String previous=screen;route("settings",false,()->{settingsReturn=previous;enter("settings");renderSettings();});}'
+          new='    private void showSettings(){String previous=screen;route("settings",false,()->{settingsReturn=previous;enter("settings");renderSettings();arrive("settings");});}'
+          replace_one(old,new,'showSettings arrival boundary')
 
-          show='    private void showResult(int stage,int stars,long elapsed,int previousBest){'
-          if ml.count(show)!=1: raise SystemExit('show result boundary mismatch')
-          i=ml.index(show)+1
-          ml.insert(i,'        resultPending=false;if(game!=null)game.removeCallbacks(revealPendingResult);')
+          stage_lines=[i for i,line in enumerate(ml) if 'Button start=button(ClumiStagePresentation.action' in line]
+          if len(stage_lines)!=1: raise SystemExit('Stage Start CTA boundary mismatch')
+          idx=stage_lines[0]
+          old_fragment='start.setTag("stage-cta");ClumiUi.actionIcon(start,"play",true);'
+          new_fragment='start.setTag("stage-cta");ClumiUi.heroButton(start,dark());ClumiUi.actionIcon(start,"play",true);'
+          if old_fragment not in ml[idx]: raise SystemExit('Stage Start CTA fragment changed')
+          ml[idx]=ml[idx].replace(old_fragment,new_fragment,1)
+
           mp.write_text('\n'.join(ml)+'\n')
           PY
           git diff --check
 
-      - name: Verify solve bridge contract
+      - name: Verify arrival and CTA contract
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          view=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
           main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
-          assert 'static final int SOLVE_BRIDGE_MS=520;' in view
-          assert 'void beginSolveBridge()' in view
-          assert 'drawSolveBridge(Canvas canvas,float phase)' in view
-          assert 'elapsed-row*38f' in view
-          assert 'canvas.scale(1-.008f*settle' in view
-          assert 'private boolean resultPending;' in main
-          assert 'private final Runnable revealPendingResult=this::revealPendingResultNow;' in main
-          assert 'private void revealPendingResultNow()' in main
-          assert 'if(resultPending)return true;' in main
-          assert 'resultPending||(lastDialog!=null&&lastDialog.isShowing())' in main
-          assert 'game.postDelayed(revealPendingResult,GameView.SOLVE_BRIDGE_MS)' in main
-          assert 'if(resultPending)return;' in main
-          assert 'progress.complete(stage,stars,elapsed);persist();' in main
-          assert 'feel.action(game,ClumiFeedbackEvent.STAGE_CLEARED,stars)' in main
-          assert 'new GameView(MainActivity.this,pack.get(selected))' in main
-          print('Solve-to-Clear bridge static contract: PASS')
+          arrival=Path('app/src/main/java/com/example/einsteingame/ClumiStageArrival.java').read_text()
+          ui=Path('app/src/main/java/com/example/einsteingame/ClumiUi.java').read_text()
+          assert 'static ClumiSceneMotion common(' in arrival
+          assert 'root.findViewWithTag("brand-header")' in arrival
+          assert 'root.findViewWithTag("home-logo")' in arrival
+          assert 'strong?190:170' in arrival
+          assert '"hero-clumi","b3-art-title-start"' in arrival
+          assert 'private void arrive(String expected)' in main
+          assert 'scene.bindComplete();arrive("home");' in main
+          assert 'scene.bindComplete();arrive("stages");' in main
+          assert 'renderRewards(scrollY);arrive("rewards");' in main
+          assert 'renderSettings();arrive("settings");' in main
+          assert 'ClumiStageArrival.start(arrivalScene.root' in main
+          assert 'static void heroButton(Button button,boolean dark)' in ui
+          assert 'ClumiUi.heroButton(start,dark());ClumiUi.actionIcon(start,"play",true);' in main
+          assert 'ClumiVisualAssets.buttonArt(play,' in main
+          assert 'ClumiVisualAssets.buttonArt(current,"cta_current_stage")' in main
+          print('Arrival / CTA hierarchy static contract: PASS')
           PY
 
       - name: Set up JDK 17
@@ -224,16 +199,17 @@ jobs:
           chmod +x gradlew
           env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push exact solve bridge patch
+      - name: Commit and push exact arrival and CTA patch
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
-          test "$(git status --porcelain | wc -l)" -eq 2
-          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/GameView.java'
+          test "$(git status --porcelain | wc -l)" -eq 3
           git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/MainActivity.java'
+          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/ClumiStageArrival.java'
+          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/ClumiUi.java'
           git config user.name 'Clumi UI Integration'
           git config user.email 'noreply@localhost'
-          git add app/src/main/java/com/example/einsteingame/GameView.java app/src/main/java/com/example/einsteingame/MainActivity.java
-          git commit -m 'ui: bridge solved board into clear result'
+          git add app/src/main/java/com/example/einsteingame/MainActivity.java app/src/main/java/com/example/einsteingame/ClumiStageArrival.java app/src/main/java/com/example/einsteingame/ClumiUi.java
+          git commit -m 'ui: unify screen arrival and hero CTA grammar'
           git push origin "HEAD:$SOURCE_BRANCH"
