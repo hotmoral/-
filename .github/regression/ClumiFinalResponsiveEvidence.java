@@ -119,12 +119,16 @@ final class ClumiFinalResponsiveEvidence {
             View decor=dialog.getWindow().getDecorView();
             View clearStage=tagged(decor,"b3-clear-stage");
             View clearStars=tagged(decor,"b3-clear-stars");
-            visible(clearStage,"Stage Clear stage heading");
-            visible(clearStars,"Stage Clear earned stars");
+            partlyVisible(clearStage,"Stage Clear stage heading");
+            partlyVisible(clearStars,"Stage Clear earned stars");
             ScrollView clearViewport=findType(decor,ScrollView.class);
             check(clearViewport!=null&&clearViewport.getHeight()>dp(clearViewport,36),"Stage Clear retains usable internal viewport");
-            visible(findButton(decor,"홈"),"Clear Home action");
-            visible(findButton(decor,"다음 스테이지"),"Clear Next action");
+            check(clearViewport.getChildCount()==1,"Stage Clear content is hosted by its viewport");
+            Button clearHome=findButton(decor,"홈"),clearNext=findButton(decor,"다음 스테이지");
+            check(clearHome!=null&&clearNext!=null,"Stage Clear actions exist");
+            ui(()->clearViewport.fullScroll(View.FOCUS_DOWN));settleShort();
+            visible(clearHome,"Clear Home action after scroll");
+            visible(clearNext,"Clear Next action after scroll");
             textFits(decor);shot("08_clear_dark");
             ui(dialog::dismiss);
 
@@ -163,6 +167,13 @@ final class ClumiFinalResponsiveEvidence {
         check(r.width()+2>=view.getWidth()&&r.height()+2>=view.getHeight(),label+" is fully visible, not clipped");
         Bitmap b=host.getUiAutomation().takeScreenshot();
         check(r.left>=0&&r.top>=0&&r.right<=b.getWidth()&&r.bottom<=b.getHeight(),label+" stays inside physical screen");b.recycle();
+    }
+
+    private void partlyVisible(View view,String label){
+        check(view!=null&&view.isShown(),label+" shown");
+        Rect r=new Rect();check(view.getGlobalVisibleRect(r)&&r.width()>0&&r.height()>0,label+" intersects visible viewport");
+        Bitmap b=host.getUiAutomation().takeScreenshot();
+        check(r.left>=0&&r.top>=0&&r.right<=b.getWidth()&&r.bottom<=b.getHeight(),label+" visible portion stays inside physical screen");b.recycle();
     }
 
     private Object field(Object target,String name)throws Exception{Field f=target.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(target);}
