@@ -20,6 +20,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      PYTHONPATH: linkline
     steps:
       - name: Fetch exact public commit
         env:
