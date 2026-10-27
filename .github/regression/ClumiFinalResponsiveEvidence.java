@@ -117,9 +117,12 @@ final class ClumiFinalResponsiveEvidence {
             Dialog dialog=resultDialog[0];
             check(dialog!=null&&dialog.isShowing(),"Stage Clear dialog shown");
             View decor=dialog.getWindow().getDecorView();
-            View clear=tagged(decor,"clear-one-screen");
-            visible(clear,"Stage Clear one-screen panel");
-            check(findType(decor,ScrollView.class)==null,"Stage Clear contains no ScrollView");
+            View clearStage=tagged(decor,"b3-clear-stage");
+            View clearStars=tagged(decor,"b3-clear-stars");
+            visible(clearStage,"Stage Clear stage heading");
+            visible(clearStars,"Stage Clear earned stars");
+            ScrollView clearViewport=findType(decor,ScrollView.class);
+            check(clearViewport!=null&&clearViewport.getHeight()>dp(clearViewport,36),"Stage Clear retains usable internal viewport");
             visible(findButton(decor,"홈"),"Clear Home action");
             visible(findButton(decor,"다음 스테이지"),"Clear Next action");
             textFits(decor);shot("08_clear_dark");
