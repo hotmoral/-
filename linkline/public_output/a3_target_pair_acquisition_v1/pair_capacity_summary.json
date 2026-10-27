@@ -1,0 +1,115 @@
+{
+  "boundary": {
+    "finalSelectionPerformed": false,
+    "privateIsolationApplied": false,
+    "productionCatalogModified": false
+  },
+  "byN": {
+    "5": {
+      "exactPairCount": 274,
+      "maxCandidatesForOnePair": 26,
+      "pairsWithAtLeastTwo": 223,
+      "provisionalTarget": 514,
+      "rawMarginOverProvisionalTarget": -17,
+      "rowCount": 1256,
+      "selectableCapacityUnderCap": 497
+    },
+    "6": {
+      "exactPairCount": 518,
+      "maxCandidatesForOnePair": 71,
+      "pairsWithAtLeastTwo": 378,
+      "provisionalTarget": 630,
+      "rawMarginOverProvisionalTarget": 266,
+      "rowCount": 1893,
+      "selectableCapacityUnderCap": 896
+    }
+  },
+  "byNL": {
+    "N5L10": {
+      "exactPairCount": 101,
+      "maxCandidatesForOnePairWithinNL": 8,
+      "pairsWithAtLeastTwoWithinNL": 57,
+      "rowCount": 229
+    },
+    "N5L6": {
+      "exactPairCount": 116,
+      "maxCandidatesForOnePairWithinNL": 6,
+      "pairsWithAtLeastTwoWithinNL": 78,
+      "rowCount": 276
+    },
+    "N5L7": {
+      "exactPairCount": 111,
+      "maxCandidatesForOnePairWithinNL": 14,
+      "pairsWithAtLeastTwoWithinNL": 66,
+      "rowCount": 284
+    },
+    "N5L8": {
+      "exactPairCount": 98,
+      "maxCandidatesForOnePairWithinNL": 10,
+      "pairsWithAtLeastTwoWithinNL": 62,
+      "rowCount": 236
+    },
+    "N5L9": {
+      "exactPairCount": 82,
+      "maxCandidatesForOnePairWithinNL": 26,
+      "pairsWithAtLeastTwoWithinNL": 44,
+      "rowCount": 231
+    },
+    "N6L10": {
+      "exactPairCount": 134,
+      "maxCandidatesForOnePairWithinNL": 10,
+      "pairsWithAtLeastTwoWithinNL": 43,
+      "rowCount": 217
+    },
+    "N6L11": {
+      "exactPairCount": 135,
+      "maxCandidatesForOnePairWithinNL": 25,
+      "pairsWithAtLeastTwoWithinNL": 43,
+      "rowCount": 231
+    },
+    "N6L12": {
+      "exactPairCount": 129,
+      "maxCandidatesForOnePairWithinNL": 8,
+      "pairsWithAtLeastTwoWithinNL": 45,
+      "rowCount": 215
+    },
+    "N6L13": {
+      "exactPairCount": 131,
+      "maxCandidatesForOnePairWithinNL": 25,
+      "pairsWithAtLeastTwoWithinNL": 41,
+      "rowCount": 225
+    },
+    "N6L14": {
+      "exactPairCount": 129,
+      "maxCandidatesForOnePairWithinNL": 9,
+      "pairsWithAtLeastTwoWithinNL": 41,
+      "rowCount": 207
+    },
+    "N6L15": {
+      "exactPairCount": 132,
+      "maxCandidatesForOnePairWithinNL": 24,
+      "pairsWithAtLeastTwoWithinNL": 37,
+      "rowCount": 232
+    },
+    "N6L8": {
+      "exactPairCount": 156,
+      "maxCandidatesForOnePairWithinNL": 7,
+      "pairsWithAtLeastTwoWithinNL": 72,
+      "rowCount": 279
+    },
+    "N6L9": {
+      "exactPairCount": 147,
+      "maxCandidatesForOnePairWithinNL": 18,
+      "pairsWithAtLeastTwoWithinNL": 58,
+      "rowCount": 287
+    }
+  },
+  "privacy": {
+    "containsPrivateIsolationIds": false,
+    "containsPuzzleGeometry": false,
+    "containsTargetPairKeys": false
+  },
+  "schema": "LINKLINE_A3_TARGET_PAIR_PUBLIC_CAPACITY_SUMMARY",
+  "stateCount": 48,
+  "version": "1.0.0"
+}
