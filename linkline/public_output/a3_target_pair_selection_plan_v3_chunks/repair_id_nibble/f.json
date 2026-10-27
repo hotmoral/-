@@ -1,0 +1,967 @@
+[
+  {
+    "chainLength": 5,
+    "difficulty": 526,
+    "id": "f66a9b21c5f554c2cc1e376dfcd41ae0cbf91067a7c1686acb15962431845466",
+    "n": 3,
+    "orientationTransform": 2,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "190f2ce46ce6901894a2919e466dd7a1a09b422cfec2f6f87dab5dcc2e5f373f"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 812,
+    "id": "fd0dea5ab946eab7309216acd463c577c2a721de12533a4fab64bd0e1451d15f",
+    "n": 3,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "108ecc765d82750b5d2a99b1d01b23ee02fcfb3b5d25c70f5b45617f546ffda6"
+  },
+  {
+    "chainLength": 5,
+    "difficulty": 519,
+    "id": "f820f605b1936340de571e41a37931ca3b2dcd75f1ea6ef90f54e9626fe5ef65",
+    "n": 3,
+    "orientationTransform": 2,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "6296b342de47c6c370ffe69dc9410813b6dc16db5d3a03fd7d33e723e7a65161"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 497,
+    "id": "fa4a197a39de1f212f56e9a70290fe9d24b46f71f5c27ff3c836fdc7669ce980",
+    "n": 4,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "4455eacec98e6677d6b6e950ab98689947ca9b64e4f6340156de72f9514ae265"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 726,
+    "id": "f166a26c20cc7b8827a5b7e5a25ec001fca6eebbbc13a1f9a8c8d4a1f1f2aed0",
+    "n": 4,
+    "orientationTransform": 4,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "f613038f7e7f633fa4a58d56029c68650190357158084175adc3b6faf338600b"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 626,
+    "id": "f3ff0bd8ce55fedb137270d1b6acc58f570401d480cbf5ce47b0b85f96e9797f",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "06d07d927118d9534b06877dc406eefc55fb7092b098f198724b1f91a68280d9"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1031,
+    "id": "fe48183e8eedc734783d28f62e3fff5054e5ed3b5f69b6231d8c40e4c45902b8",
+    "n": 4,
+    "orientationTransform": 5,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "6df876ef899fb3d6b25f566f24a98811949c77697a34a29999e3cfb9b3cfd424"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 683,
+    "id": "f97a1cebdeea0e5afc2c97fb1c8e87b1130ff9b95d7e8a61696a3587aed48df4",
+    "n": 4,
+    "orientationTransform": 2,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "706471e61d14d11abc6cbad02b2d14ed4a68cec957ac8dc2dab42a7d5574f7ca"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 826,
+    "id": "f55284d8caacd70c139aa3512597bcae6ce2b3eeaac8059fff0ab80a637070a4",
+    "n": 4,
+    "orientationTransform": 4,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "823586e9b747b84f0acae7c58a917df70f79adf46d07d74ebbef17bed75ef907"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1019,
+    "id": "f4ac045650911ee2c4415362591faf96b08c1a1edd95def598d8534d59044d54",
+    "n": 4,
+    "orientationTransform": 5,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "345b04e489b3db63bdf8a985545510e14e861abb40a87491e5e7577bad235f83"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1033,
+    "id": "f228f688d77a040c2649d39ee695d8f3ec25fc5dd9017b25571bbcb1e851473f",
+    "n": 4,
+    "orientationTransform": 5,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "bd029072d5ae685d336e13df2c00493a6321a1e3d10b174e40a7ad3dee3eac7b"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1035,
+    "id": "fa583578c84d988948371b7c8579df5b559600c76c257d5a679ef19b26ebe72d",
+    "n": 4,
+    "orientationTransform": 1,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "5efffaae9f82f9d19d1d89792c301b87394580129f340707dce8a0c718bfabf7"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1035,
+    "id": "f6b96c262a55a52fcda0f32fcdcc161bf0de05f6b60f36d284509305b5464936",
+    "n": 4,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "e30e228e83ddfa030d64359c102cc14bb40251745f0c9d64acb94d0dd3457196"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 649,
+    "groupToken": "d2b280fcbf8342de0c5e20bd839e1c1b7e770df0be693c17257e4677eb28f6de",
+    "id": "f6c553e8a30cd307f5ee92b7f6e761e14f4d79c04df246a448058d851f69920b",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 719,
+    "groupToken": "300be6da1b013e53ce0a726a1d3a976da731bf7136b0df5f2d9275bd84c633b0",
+    "id": "fa5477f72d102b38bce10f46ce2bebedd66c293f51ab68a44fea02349c390291",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 694,
+    "groupToken": "5124d3953d8178a8fca9e169421cb45f3d35c6bb91ca12d6aa01033b50e1b201",
+    "id": "f4e832b54b3967bb33c3b9426056ce0befe4df4ab4f9fe68b09ae37462774528",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 829,
+    "groupToken": "f3c2999363ef27c475d8b69c76ea8f55182c8ed720da85f21f13821e5adfe438",
+    "id": "f9130b796ed111ba85a3563950e7082b8c834167ad4de1d78f5ac120ad5755c3",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 817,
+    "groupToken": "8bc76620089da43e6e78f472dc06260d5e29d35756fd4c38174d93677f12c7d9",
+    "id": "fee97a0309b0e1bf28620f4c08f70c2ad2381749f289b07661f88801396f02ef",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 779,
+    "groupToken": "a5bb6ba34a224a521445062aea96eb658b0c0c2ba314f409d41cb6c429da6eff",
+    "id": "f0d8e8e591c50e2afa5aaca1aca1d0ce5763643d57fbf4f4046654f712e01805",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 651,
+    "groupToken": "d048794dc470dda8bfbfa8e926da54fbcb3381a09357e03656b2b50a16a5ab84",
+    "id": "fa6e7b0bd18bb6573246bb54d8a940cdbf2cc681643050448c25c7f24c857819",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 681,
+    "groupToken": "3a81a7af9d05d96596daa32919430d9b72af1b6e9cd7d837b52ad5b70f2128f4",
+    "id": "ff97952810f28c8a1cd70ecd073a299457d83e0d43a57b34ef43f5c2b58f8928",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 790,
+    "groupToken": "0aa49961c0b68ad611ec53ed0c03843c459fc4982c10571047bf9036b509a676",
+    "id": "f0f9a72870dc8956712c8995ceba503ba6b15060629db8d9dc9368c82c96c176",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 808,
+    "groupToken": "0aa49961c0b68ad611ec53ed0c03843c459fc4982c10571047bf9036b509a676",
+    "id": "fc20f9fef6cbcc32e725965ff03e49f1501e7157892a5b6c2a793aef81ce4ab1",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 790,
+    "groupToken": "0aa49961c0b68ad611ec53ed0c03843c459fc4982c10571047bf9036b509a676",
+    "id": "f0f9a72870dc8956712c8995ceba503ba6b15060629db8d9dc9368c82c96c176",
+    "n": 5,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 711,
+    "groupToken": "85937b30b96850bfd3108b10ddc6817f300532d0f60d52dfcf7be3ef691bfb39",
+    "id": "fb182e82ee0ef7df83c2f4c1ecd64d3011763187415817b09f0e0c593dc04279",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 967,
+    "groupToken": "9701b1aa0579e864ff458953d325eb9dac483a707f110a9ce0b3559fd6feea93",
+    "id": "f59360a9fbeab999279171c23daa9fa872f89efe9b9f65d80e75be4969ea1072",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 867,
+    "groupToken": "6b5e5f8c6cb636186c00bcfea44b2d6c6eacabd5ab35a60467a3a99bb3cccd1f",
+    "id": "f4771b831c1bb7a8b844630080879630e75010a4da8042de40cd2e27af153030",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 711,
+    "groupToken": "f8d0c1efd74ead5ae1d240c0679c92cc7a8d7e4dc0c7d9256a250f92fbb89bbd",
+    "id": "fa7862e8407464e7ddef7b198d960397e33c5f3081fe6c3015f783cdef532bd5",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 795,
+    "groupToken": "6d29cc1010326210b96579582c20112acccb87fea6219e9666d866fbd40f57dc",
+    "id": "f19e2327b57326556874a54faad18688e83e3e2a049849789de8c93cec714246",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 798,
+    "groupToken": "c59e7af72fb56d5e0254ce626572caf360865c6857d8a411f689df49f052d863",
+    "id": "fbfa96d47baa3a3da317af0cf1df9c4335fb74e08e2ec64f63642e68de2aa2c2",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1183,
+    "groupToken": "ed468f072e7a0d7996949d56486bdc91514226947910ec3a261ae19f5cc538fe",
+    "id": "f22f5372f634a66f70c017a062e6bb578a7fa06238b404be8a2ca2dbb16af7b9",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 811,
+    "groupToken": "32908871625d0afcf21ea766b070d31e2812390d4cf09658ae694ce49a4f5805",
+    "id": "fa8ca67c1e3996750bcb983a601b7b7f4e323925fc0af9e34c509190fe1d64de",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 796,
+    "groupToken": "fa92b8e57345b8dab8114897f31c7df7fd4cc11303b6d5b68c8c91f2559e3e81",
+    "id": "f86794ab37f47fa6b89adff633921eba1067a3e62a6449fd0bd41d02a627175f",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 720,
+    "groupToken": "db99ea000f5602c5460c7624fcb6f398de021e27af9137883f9ee02a42767ded",
+    "id": "f75448160f049ccf2970ac09dd688d1e38e620e88e46f5f3143ac97ea4ff48de",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 720,
+    "groupToken": "983738124611fbd29b8c7a2827f71326db08947fabb4f143ac7c9e53d1290785",
+    "id": "f3f39d5f30192b4de30e65abbc793b5c3a7be66874c6154b761b3c728a79db7f",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 939,
+    "groupToken": "f96445b1557734b123bfb6af530d057dffa4b86c08b3e777ff971cbe33033b6f",
+    "id": "fa2bbed32f2bebe93e437c144512f1ca875cdc2d013dff692d914e6d66a7da14",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 800,
+    "groupToken": "a4545acd5de0fd423c6f6ce94641b65b87c89be5ea60d18b62d9bfa22c9f965a",
+    "id": "f4dcb3122783303d4860815c0e0a6272099ba5854fcac82140343a306f063348",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1445,
+    "groupToken": "313330869c36b88fff9c433dd8d4f6fd30d1c5ad901f4b20acfad88803810f74",
+    "id": "f5ea7ed3b077c41a713e1a52dd93c0c33c89eda368d165b8de3706fc1fdd54e4",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 7,
+    "difficulty": 831,
+    "groupToken": "7c5ae95c34c6057fba6b3cbc469d61dea50ba1d701f1ee42636c8b2063138428",
+    "id": "fc05063b31f8a522b6cb727ae18b97f25dbb376235459b5abfdb1f9a98deadc4",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 657,
+    "groupToken": "bdc53c2d7a705c06a1843838fd09db9efe0bc269e9ccc36523a2bcd70db60c18",
+    "id": "fe6e4074aa157f556c3939824ce268a2f458526a43ff60070456009b765ef99c",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 696,
+    "groupToken": "1e24707be4aa1c31220056e790edef112602bb7414c827f66755db5e9beddc63",
+    "id": "f0704324316e1b45aab0faf79578a02ffb1be9ffb09d7fce96888787fba6a8d4",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 658,
+    "groupToken": "06cb81b9ec95d0eef2c272c9255bb4924e0bd0ac84e5ca35e31fcfef41d450b2",
+    "id": "f743167f6d09d8fd47cea9043fd66f1952506159977986ff06abdec665d506d5",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 672,
+    "groupToken": "a2a66ecda7e1f3c7d4febcd07c846cc9666631a8017bddf947786a7a2571e2ae",
+    "id": "f8d6b94c111877ec26660d9f844e3c57fc2c9d5ff745e9ce61d98f1f0ea868cc",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1042,
+    "groupToken": "b89dddea0c3102ca8832468ea3722dc5781188234f139953f210fe9917d5a1e9",
+    "id": "fbbc00d063f4d49edea795a7f6be9b317ad0e8631b60685645da0fa919c81a48",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 656,
+    "groupToken": "635ee3912456e48adfae60f65a21507d0f97eb1970b19f0b6324fe150e9897a4",
+    "id": "f762c88239677722f95e2937c4d8837df1aff63d17933bd729b73b3aa0d34990",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 704,
+    "groupToken": "50504e74017d03c43dde1dbb01ec7cfaab5cd79d142c925353d1c31622d01ceb",
+    "id": "ff2d4558b3e87f59eebfac4b2523df29058bff0ffbba9f2f7476a5cf92c1e56e",
+    "n": 5,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 704,
+    "groupToken": "50504e74017d03c43dde1dbb01ec7cfaab5cd79d142c925353d1c31622d01ceb",
+    "id": "ff2d4558b3e87f59eebfac4b2523df29058bff0ffbba9f2f7476a5cf92c1e56e",
+    "n": 5,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 993,
+    "groupToken": "b8f9a3d103ad63a610b764b5ea95c9fdd567e71d4292e357d1d155869e3de8ec",
+    "id": "f534e79b825d53ea0cc47f2ecbf6fc4b1cc9f48a5a77ce7f99ceef49b0c0d3c0",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 14,
+    "difficulty": 1550,
+    "groupToken": "4654468c14ec2ea5fcf81ba3dc973669e19f9c4a022574a1fc2e28b14ceda0ba",
+    "id": "f387162560773239c3877dfcb7bcdf9dfd28b54b57d6161bb79582e6693166b4",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 939,
+    "groupToken": "1f828bdcc49ece6a57fe5becf3d43c94c4bb9c83bc95f8ed9920f935d2de2a2f",
+    "id": "f65e6b48ccde2c02b2d6e07d3a865a3627fc32be863b6a0442411c7e6216a29b",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1041,
+    "groupToken": "bab92815b5a40f51a0e50f5f89c115984248cac2afee027ee02207791af2e7e3",
+    "id": "f6861183f55e78ebd3a8bd9252b2c7860a5e31112de4674451e43bc61762daab",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 990,
+    "groupToken": "2a2810f5d58112a36aa33a314c29102409efa56ab65d28f2f45282ffc437b682",
+    "id": "fa7a22a3a4b701f1895dbba9240c8c76d9047427e0c64df93622482da91509af",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 990,
+    "groupToken": "2a2810f5d58112a36aa33a314c29102409efa56ab65d28f2f45282ffc437b682",
+    "id": "fa7a22a3a4b701f1895dbba9240c8c76d9047427e0c64df93622482da91509af",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1157,
+    "groupToken": "77005a10a848a78a2f94b48f54fa1e2173c550566f4ab66daac864ce8887fd7e",
+    "id": "f3992f98eb2935130e5327111c6b7e3058f5e89fe677a488b856a00927833d89",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1196,
+    "groupToken": "e31df5252d478cda38fb9a41c7dd5dbdffe52423a7254b4d662e365317f0ebfe",
+    "id": "f0297360ffca381379c79758c3293c4a33eb872f89c5a0021f602d3b295fc9a9",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1196,
+    "groupToken": "e31df5252d478cda38fb9a41c7dd5dbdffe52423a7254b4d662e365317f0ebfe",
+    "id": "f0297360ffca381379c79758c3293c4a33eb872f89c5a0021f602d3b295fc9a9",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 878,
+    "groupToken": "ccf0447ac0850a4a0bd70188caf810cf4d90a3451e2e7c62cd0073c4f4339a2e",
+    "id": "f18ac800770b5e9d3fa26af8e4a0191c5411ff5f2b8b63427941e0c350d0c7c5",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1065,
+    "groupToken": "cee6149c6d52c2b7a514ca9c5b64dd342b0933c594def85ecfc792ea8051dc71",
+    "id": "f0df585c2467ab6a0e833031c60e96a2f844c45f11cb813d80de453816804798",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1241,
+    "groupToken": "cee6149c6d52c2b7a514ca9c5b64dd342b0933c594def85ecfc792ea8051dc71",
+    "id": "fe7fa3cfb40591d1e3fc87c7712a8d560b7716ec739dffdee8ad5f394d3a929c",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1065,
+    "groupToken": "cee6149c6d52c2b7a514ca9c5b64dd342b0933c594def85ecfc792ea8051dc71",
+    "id": "f0df585c2467ab6a0e833031c60e96a2f844c45f11cb813d80de453816804798",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 917,
+    "groupToken": "6d3d2c0aaf86d29b8577ad3f99da554a0a1b603fba6d0d42e69de0c82efcfa37",
+    "id": "f12afe25e17ef8f30b1fcaaaeb71cf90e0633ba212f7579e7cd9e1ac26ff21dd",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 963,
+    "groupToken": "7e60b7f239c0e7407bf9b1b556f6c49ed9d772513ea2f9bf83ffc28b726718bc",
+    "id": "f8641818d9a06b303f2e164de3bfb94808d739897f4e47b96b893aa8c1ae78c1",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1210,
+    "groupToken": "b226108b024bed7bf42793576ee7de6f87ca30c3fff2c4f09d42b4a1d8f035e8",
+    "id": "f903f182fe88549acced3bd7ab58430aa6a4081155fbbf905ed9596e04b3859b",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1044,
+    "groupToken": "9cef5f559b9f8e3a8b095f0b2e30a66c47ad55fe1bdba1e4cd1ed8029e83999f",
+    "id": "fba25090bff44b57a097056d07a2416a1a0ad3de899a27b74592a422145b536f",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1044,
+    "groupToken": "9cef5f559b9f8e3a8b095f0b2e30a66c47ad55fe1bdba1e4cd1ed8029e83999f",
+    "id": "fba25090bff44b57a097056d07a2416a1a0ad3de899a27b74592a422145b536f",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 981,
+    "groupToken": "a39bb0c67da8328f4dd626cfd2b850a4c0c69ad2a21c44a65578d41ee05b9ed6",
+    "id": "f193996024ed1871d8e6aaed3453ba8ae0086570f7501d77f39e44a53fe6c7a2",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1014,
+    "groupToken": "65e60eb87ebd5e5d90634922ce85608b17a1f91f36d480fce0618fe219b5d3cc",
+    "id": "ff9cbc8b6d4362de53370d0cf74a3cff1aeb7543193a73421f566194534c51ef",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1020,
+    "groupToken": "65e60eb87ebd5e5d90634922ce85608b17a1f91f36d480fce0618fe219b5d3cc",
+    "id": "f429d9bfb51136a43483aea03dd36931f4c15a5bb23a4f1857c172aa9c64b831",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1256,
+    "groupToken": "9c78845515a99c7e82900647af17e29f4c6a42ed6d8cfc83e06e056971420df4",
+    "id": "f9d62b2529f130cd9439251a07fb567d1f6ddd2486fc0fe6ee32aa54072e32a4",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 12,
+    "difficulty": 1281,
+    "groupToken": "72be942807dcee44bfa9eb56a357edcee87ae8b0e8dc8b155f1708e7fc60f1be",
+    "id": "fde1d4d694e9c238a325524f075026087521e71f0913eebd75f9c3420a010ffb",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 12,
+    "difficulty": 1281,
+    "groupToken": "72be942807dcee44bfa9eb56a357edcee87ae8b0e8dc8b155f1708e7fc60f1be",
+    "id": "fde1d4d694e9c238a325524f075026087521e71f0913eebd75f9c3420a010ffb",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 13,
+    "difficulty": 1452,
+    "groupToken": "f8bc02cc83b7c52c86cc8bd7de4daaf44bc03cfb62d34e3521c6e127d9a18b20",
+    "id": "f187c340364ae5430f5d2c68d0a82be5c46cdb128c4811a075a06270b66a3f57",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 13,
+    "difficulty": 1452,
+    "groupToken": "f8bc02cc83b7c52c86cc8bd7de4daaf44bc03cfb62d34e3521c6e127d9a18b20",
+    "id": "f187c340364ae5430f5d2c68d0a82be5c46cdb128c4811a075a06270b66a3f57",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 14,
+    "difficulty": 1610,
+    "groupToken": "9a142e03276b8c38e51dfd5d07f8180bf29ce188b2f60306cf7a211342c51f45",
+    "id": "f8b5049e00e06f6d1acf0c7a8fbf8b54e04f98cd93b708266fae445c37556e5a",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1092,
+    "groupToken": "867fca2f54f032c4ff80cfa6630d941f4e990a090d70722d12dd03c3704d9f05",
+    "id": "f0e07cfcefb88276282e1f5cea518c31dd35ff6ca4787f60756c20dc3dea7b01",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 988,
+    "groupToken": "1a5df53ad89f007a16fa0dd86f0848b26a7703253543e81f10bf41a3997da33c",
+    "id": "f2a15600aa12b73ffbcf1a43409814493cddd6109fd22e9f4d34d86c5557750a",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 15,
+    "difficulty": 1670,
+    "groupToken": "7916b77f7a6e770debf8b17f9ec7656d04e241f47e48442b1c13eb03a57b4b5e",
+    "id": "fc302852f319be736b1d513543d7e243def41daaa462c195870b3bca91458b5c",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 15,
+    "difficulty": 1670,
+    "groupToken": "7916b77f7a6e770debf8b17f9ec7656d04e241f47e48442b1c13eb03a57b4b5e",
+    "id": "fc302852f319be736b1d513543d7e243def41daaa462c195870b3bca91458b5c",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 15,
+    "difficulty": 1697,
+    "groupToken": "8368b380c4c81239a5eba73aa0d55438c0981f095f5c41e4ff81ab22444a27dc",
+    "id": "ff8f4f586600c6ddf3c82e62b6907a78ff378fb97dc1793ed84fd8e9b30344c0",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 15,
+    "difficulty": 1697,
+    "groupToken": "8368b380c4c81239a5eba73aa0d55438c0981f095f5c41e4ff81ab22444a27dc",
+    "id": "ff8f4f586600c6ddf3c82e62b6907a78ff378fb97dc1793ed84fd8e9b30344c0",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 13,
+    "difficulty": 1379,
+    "groupToken": "f3a57ac6d59be6a1434ed1d1fca531b92fe2658c0b4300172278e81636fced5e",
+    "id": "f8a5d2aec73ae6b4adfbe78aa5c2455305dafef630e507e244618b6234c41503",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 15,
+    "difficulty": 1650,
+    "groupToken": "f3a57ac6d59be6a1434ed1d1fca531b92fe2658c0b4300172278e81636fced5e",
+    "id": "f79ff6959081f5beb10ccc471422d50de03f5cb044e29febeac416e1d63c3740",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1171,
+    "groupToken": "263e921b29b7040ef7e0772ade15acdddd372a5f5ac7824217fe06c9af440f52",
+    "id": "f39049028141fece82e6549d01718fec02dfa612454bede99a4f0c44f361c48b",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1171,
+    "groupToken": "263e921b29b7040ef7e0772ade15acdddd372a5f5ac7824217fe06c9af440f52",
+    "id": "f39049028141fece82e6549d01718fec02dfa612454bede99a4f0c44f361c48b",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 986,
+    "groupToken": "9f467a57cf03187e2f7cc097dc6e181eff5b1d6ee5734d09868fc64fc43711e1",
+    "id": "fe14ce0fe2a467662a62191fb990424770fc0b0b39132b9f097cf447a5216137",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 955,
+    "groupToken": "074538a8104448b0379f109584c1c81bad16d012f252dfd0687cab53b170af30",
+    "id": "f85012bbcd6a7ff23d8af0c9f7ad5fc9d70cbd9c5d368b2ff86369d8ef62daf1",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 955,
+    "groupToken": "074538a8104448b0379f109584c1c81bad16d012f252dfd0687cab53b170af30",
+    "id": "f85012bbcd6a7ff23d8af0c9f7ad5fc9d70cbd9c5d368b2ff86369d8ef62daf1",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 998,
+    "groupToken": "90c3519d5ed126a1a903cfa8b10f60f2c763d4b64d3cb81706d7a877817df018",
+    "id": "f3dc6077be0fec9cd8985010b28fcba636789bcd47d21d6990df1fae4cddc7c2",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 998,
+    "groupToken": "90c3519d5ed126a1a903cfa8b10f60f2c763d4b64d3cb81706d7a877817df018",
+    "id": "f3dc6077be0fec9cd8985010b28fcba636789bcd47d21d6990df1fae4cddc7c2",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1114,
+    "groupToken": "f4f5bffeb2da44aeb48642352f4dc076fdd59f7bf5aff5e38f0404d95c00240d",
+    "id": "fdd1cd55794381ee70fdf0ba6a8e543d76b7a165161b766f3cec6bbcc79fa98c",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1114,
+    "groupToken": "f4f5bffeb2da44aeb48642352f4dc076fdd59f7bf5aff5e38f0404d95c00240d",
+    "id": "fdd1cd55794381ee70fdf0ba6a8e543d76b7a165161b766f3cec6bbcc79fa98c",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 860,
+    "groupToken": "3485a1a059bfd78280bf4e83a505cd8da17b23026f941d38e2b237f897c198b3",
+    "id": "fc9f81d5028c26e5483ce7bf68f33ec54a5d588b2b5e0f3c31195a4c09e4744f",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1311,
+    "groupToken": "557407af579339b7b533bf916efd5f3447ee593826bb2e038caede51726a25a6",
+    "id": "f08b8175102f2608835a175dbcc1e699157ccb43bfbe3fefcef2a7893b26031d",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 960,
+    "groupToken": "e02c63997c71cff7f6e27019dbfd6e0dffd649f1a6e4c0c71927776fdcb3ff7b",
+    "id": "fe713adeccdede6d0aaac8d7deaeedf8c652baa09b0a51c8b1fc006292679665",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 960,
+    "groupToken": "e02c63997c71cff7f6e27019dbfd6e0dffd649f1a6e4c0c71927776fdcb3ff7b",
+    "id": "fe713adeccdede6d0aaac8d7deaeedf8c652baa09b0a51c8b1fc006292679665",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1237,
+    "groupToken": "54bece95328e5e81448afd80c791edd3beec3ba012fcd2ac75c7262eba6088e7",
+    "id": "f2bdf75a32a9f2f907b81cc7454d3dc79cd827a5d313ad4aa01240271e601e6d",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 12,
+    "difficulty": 1281,
+    "groupToken": "822fcafb0141762048d7165753e257369c582361cd22ae6f6a10b0a894612245",
+    "id": "f9281ffd5099643a8028ae3242d5c0973938ce493a5497f87a33bc761a72deb0",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 9,
+    "difficulty": 1061,
+    "groupToken": "423bdd264f98198631bc13554bc42468c366d4e138c8a7549c749fd63343ee7f",
+    "id": "f6e6ff16e3f0d0962a3be11bc376aaf5803bbd6b6478de6f913db5968378b8d8",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 912,
+    "groupToken": "c249ef8af8d437911e19a47fcdbd0899f6f94422d6d20c61e9195dfc5e6e1b81",
+    "id": "f3913dd2c0af61d59a2e4fc44a05351fa47145188da39971692085bd790f55bf",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 912,
+    "groupToken": "c249ef8af8d437911e19a47fcdbd0899f6f94422d6d20c61e9195dfc5e6e1b81",
+    "id": "f3913dd2c0af61d59a2e4fc44a05351fa47145188da39971692085bd790f55bf",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1214,
+    "groupToken": "85ea1e27a00ef9d97a6410c68ecf15ab3a4d8f4541c348fef676e49beb8b26d9",
+    "id": "ff67d0d03fe121eb0b376b905529a313e530c1f68f259be8c7574f79898ac5de",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 13,
+    "difficulty": 1355,
+    "groupToken": "3583b490942368b12c97ac2c9ef8ea9176548ab9d09caff3adf5962625f580a5",
+    "id": "f40586cca87d2d0c79cc6235569dbf8c98b474c9bbee54a040cd3916b84967bb",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 13,
+    "difficulty": 1355,
+    "groupToken": "3583b490942368b12c97ac2c9ef8ea9176548ab9d09caff3adf5962625f580a5",
+    "id": "f40586cca87d2d0c79cc6235569dbf8c98b474c9bbee54a040cd3916b84967bb",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 11,
+    "difficulty": 1267,
+    "groupToken": "dae4d3af707809d6f78a703aa66e336b29dc70e3d226b4cb0838d687e74e949b",
+    "id": "ff8f5b54973fa9d8553f6c167201420d2028c64f9ce9af67e211dfccfd7f707b",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 956,
+    "groupToken": "7ebac0af0df2005159fe1319e30acf6aaaa3ca84d41e61b02f0f8b712888e630",
+    "id": "f3cc73b86f3344d73bd8980f01321253212a37763a32d369b9f38a04b9af0aa8",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 10,
+    "difficulty": 1179,
+    "groupToken": "b0bebb6f04bec26412e6a4a3ee50c57aba589cd2325c3d26cb66d6ad5c51fbb3",
+    "id": "fa7a0aa236129304bca916794d50d18df41144899c317f28093ea6b3150d12c8",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 915,
+    "groupToken": "837a09ac697e757256075fd572b4df5b337c97ffe141880aa8415d7adfaafc5e",
+    "id": "f2c8900173fc095f6d9333f9ae9af6a47cfd7648a9c5f9ec1e6b748d40f4745e",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 915,
+    "groupToken": "837a09ac697e757256075fd572b4df5b337c97ffe141880aa8415d7adfaafc5e",
+    "id": "f2c8900173fc095f6d9333f9ae9af6a47cfd7648a9c5f9ec1e6b748d40f4745e",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 943,
+    "groupToken": "fe990937687cf1096183afe9571d7fd52f0898ccfc86c299978797d10208531a",
+    "id": "f31d9914167e37141c198e20a61455eb785bf863736e53444b91cd581177408c",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 883,
+    "groupToken": "9f86c773d347ba3821564b5e8785270c897292544066948dbb861cd93dc60727",
+    "id": "f514e26b0241aadb32bbc1b14a423a6d69a309b22b97844357a4e757efc8579e",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 883,
+    "groupToken": "9f86c773d347ba3821564b5e8785270c897292544066948dbb861cd93dc60727",
+    "id": "f514e26b0241aadb32bbc1b14a423a6d69a309b22b97844357a4e757efc8579e",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 12,
+    "difficulty": 1419,
+    "groupToken": "430e796e40e387c64a56e92e3e567dfa0e100d4631c3d0ace4aec350cc03740d",
+    "id": "f9b2a961bcd058d105f147b14fb581cbcc363df76c832f931ecc3875326e5188",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 995,
+    "groupToken": "9d7c16ce6925979aa3e3d27f426a9fd0853b3489735db2e74d9cd5502ab860e8",
+    "id": "f956598c641f0d0516c451703985434940155b6abe90a0d3edb8429e249f1bd3",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 995,
+    "groupToken": "9d7c16ce6925979aa3e3d27f426a9fd0853b3489735db2e74d9cd5502ab860e8",
+    "id": "f956598c641f0d0516c451703985434940155b6abe90a0d3edb8429e249f1bd3",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 953,
+    "groupToken": "6227df07a1b5afbe18360d1a50b53ee698e2f2ab82fd3fa33c4016256df942bf",
+    "id": "f29a056c0ef5b7872f4cc32a86a3a342c7cd7e6a11ef6844dce627e4fc8098a7",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 953,
+    "groupToken": "6227df07a1b5afbe18360d1a50b53ee698e2f2ab82fd3fa33c4016256df942bf",
+    "id": "f29a056c0ef5b7872f4cc32a86a3a342c7cd7e6a11ef6844dce627e4fc8098a7",
+    "n": 6,
+    "purpose": "SECOND_USE_RESERVE"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 902,
+    "groupToken": "f57b931c1f88365334e4c54eed1c13127f0a8062ddab5ebc95e9f096a599a1c2",
+    "id": "f3778367b4dcab244e3a4060e87a41580560967b5799422b03013f4e480c73f1",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 15,
+    "difficulty": 1543,
+    "groupToken": "b1fd16b7a9f682d108f8330e1bb4fbaf94e395bb611d7747b458bd525f58ebeb",
+    "id": "f69fbf787884e4b2d66349d5be96101bd8bab6bf0721a71e55f3ea12ac63ad11",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 932,
+    "groupToken": "f64e4ec0ac71c3ff44d71c8385c222e34c8dac86b5592678cfb1c5821a13bf3c",
+    "id": "faebacad36eec6122c7a527ddf4bb43aba421d75f4296a2a5a02bc0e8900618d",
+    "n": 6,
+    "purpose": "SAME_PAIR_REPLACEMENT"
+  }
+]
