@@ -52,6 +52,7 @@ def main() -> None:
         "compactSelected": "selected.tsv",
         "compactRepair": "repair.tsv",
         "selectedNibbleDir": "selected_nibble",
+        "selectedIdNibbleDir": "selected_id_nibble",
         "repairIdNibbleDir": "repair_id_nibble",
     }
 
@@ -86,7 +87,11 @@ def main() -> None:
     for row in reservoir:
         repair_nibbles[row["id"][0]].append(row)
     for nibble in "0123456789abcdef":
-        write_json(out / "selected_nibble" / f"{nibble}.json", selected_nibbles[nibble])
+        rows = selected_nibbles[nibble]
+        write_json(out / "selected_nibble" / f"{nibble}.json", rows)
+        id_path = out / "selected_id_nibble" / f"{nibble}.txt"
+        id_path.parent.mkdir(parents=True, exist_ok=True)
+        id_path.write_text("\n".join(sorted(row["id"] for row in rows)) + ("\n" if rows else ""), encoding="utf-8")
         write_json(out / "repair_id_nibble" / f"{nibble}.json", repair_nibbles[nibble])
 
     write_json(out / "manifest.json", manifest)
