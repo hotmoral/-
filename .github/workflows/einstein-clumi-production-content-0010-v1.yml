@@ -1,4 +1,4 @@
-name: Einstein Clumi Production Content 0010 V1
+name: Clumi Campaign 0010 Preview APK V1
 
 on:
   push:
@@ -10,38 +10,34 @@ permissions:
   contents: read
 
 concurrency:
-  group: einstein-clumi-app-content
+  group: clumi-campaign-0010-preview-apk
   cancel-in-progress: false
 
 jobs:
-  integrate-campaign-content:
-    if: >-
-      github.event.head_commit.message == 'integration: validate Clumi campaign snapshot 0001-0010'
+  build-preview-apk:
+    if: github.event.head_commit.message == 'build: Clumi campaign 0010 preview APK v1'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
     env:
-      BASE_SHA: a8284031a0828430bcddddecf591a71eeb15f90c
-      TARGET_BRANCH: clumi-production-content-0010-v1
-      BANK_BRANCH: campaign-production-2000-bank-v1
+      SOURCE_SHA: b4db1d8308dec7e7a0d84dcc0a7633a41274b163
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
-      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+      PREVIEW_APP_ID: com.example.einsteingame.preview0010
+      BUILD_TOOLS_VERSION: 34.0.0
 
     steps:
-      - name: Require private repository credentials
+      - name: Require source credential
         shell: bash
         run: |
           set -euo pipefail
           test -n "$READ_TOKEN"
-          test -n "$WRITE_TOKEN"
 
-      - name: Checkout integration branch
+      - name: Checkout exact production content
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: clumi-production-content-0010-v1
-          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
-          fetch-depth: 0
-          persist-credentials: true
+          ref: b4db1d8308dec7e7a0d84dcc0a7633a41274b163
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          persist-credentials: false
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -51,142 +47,74 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
-        with:
-          cmdline-tools-version: '12266719'
-          accept-android-sdk-licenses: 'true'
-          log-accepted-android-sdk-licenses: 'false'
-          packages: ''
 
-      - name: Install Android platform 34
+      - name: Install Android SDK 34
         shell: bash
         run: |
           set -euo pipefail
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" >/dev/null
+          sdkmanager 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
 
-      - name: Materialize immutable BANKED runtime snapshot
+      - name: Verify campaign snapshot and make side-by-side preview
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$BASE_SHA"
-          git fetch origin "$BANK_BRANCH"
-          mkdir -p /tmp/clumi-campaign-0010
-          for i in $(seq 1 10); do
-            n=$(printf '%04d' "$i")
-            id=$(printf 'PZ_CAMPAIGN_%06d' "$i")
-            file="/tmp/clumi-campaign-0010/stage-${n}.json"
-            git show "origin/${BANK_BRANCH}:production/campaign-2000-bank-v1/bank/stages/stage-${n}.json" > "$file"
-            jq -e --argjson ordinal "$i" --arg id "$id" '
-              .state == "BANKED" and
-              .ordinal == $ordinal and
-              .publishedPuzzleId == $id and
-              .runtimeEntry.publishedPuzzleId == $id and
-              .runtimeEntry.revision == 1 and
-              .runtimeEntry.runtimeSchemaVersion == "published-runtime-puzzle-v1" and
-              .validationRefs.cp12ReplayStatus == "VALID_PREFIX" and
-              .validationRefs.cp12MetadataProjectionReplayStatus == "VALID_PREFIX"
-            ' "$file" >/dev/null
-          done
-          jq -s '{runtimeSchemaVersion:"published-runtime-puzzle-v1",packId:"campaign-pack-0010-v1",puzzles:map(.runtimeEntry)}' \
-            /tmp/clumi-campaign-0010/stage-*.json \
-            > app/src/main/assets/puzzles/campaign-pack-0010-v1.json
-
-      - name: Create campaign stage configuration
-        shell: bash
-        run: |
-          set -euo pipefail
-          cp app/src/main/assets/stages/pilot-stage-config.properties \
-             app/src/main/assets/stages/campaign-stage-config-v1.properties
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('app/src/main/assets/stages/campaign-stage-config-v1.properties')
-          s=p.read_text()
-          s=s.replace('# Pilot QA fixture tuning; existing Stage identities and reward IDs remain stable.\n',
-                      '# Production campaign snapshot 0001-0010; gameplay thresholds preserved from the validated pilot tuning.\n')
-          s=s.replace('configVersion=clumi-pilot-stage-v1','configVersion=clumi-campaign-stage-v1')
-          s=s.replace('temporary=true','temporary=false')
-          s='\n'.join(line for line in s.splitlines() if not line.startswith('qaFixtureVersion='))+'\n'
-          s=s.replace('PZ_PILOT_','PZ_CAMPAIGN_')
-          p.write_text(s)
-          PY
-
-      - name: Separate campaign progress from pilot progress
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-
-          main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java')
-          s=main.read_text()
-          anchor='public final class MainActivity extends Activity implements GameView.StageListener {\n'
-          assert s.count(anchor)==1
-          s=s.replace(anchor,anchor+'    private static final String CAMPAIGN_PROGRESS_KEY="campaign_document_v1";\n',1)
-          replacements={
-              'stages/pilot-stage-config.properties':'stages/campaign-stage-config-v1.properties',
-              'puzzles/pilot-pack-v1.json':'puzzles/campaign-pack-0010-v1.json',
-              'progress=new StageProgress(catalog,preferences.getString("document",null));productionProgress=progress;if(qaRuntimeActive())progress=qa.attach(catalog);':
-                  'String savedCampaign=preferences.getString(CAMPAIGN_PROGRESS_KEY,null);if(savedCampaign==null)savedCampaign=StageProgress.migrateSettingsOnly(catalog,preferences.getString("document",null));progress=new StageProgress(catalog,savedCampaign);productionProgress=progress;if(qaRuntimeActive())progress=qa.attach(catalog);',
-              '.putString("document",progress.encode())':'.putString(CAMPAIGN_PROGRESS_KEY,progress.encode())',
-          }
-          for old,new in replacements.items():
-              assert s.count(old)==1, old
-              s=s.replace(old,new,1)
-          main.write_text(s)
-
-          progress=Path('app/src/main/java/com/example/einsteingame/StageProgress.java')
-          s=progress.read_text()
-          anchor='    private int number(String key,int fallback){'
-          assert s.count(anchor)==1
-          helper='''    /** Starts a new campaign namespace while carrying only user settings from legacy pilot progress. */\n    public static String migrateSettingsOnly(StageCatalog catalog,String saved) {\n        StageProgress migrated=new StageProgress(catalog,null);\n        if(saved==null)return migrated.encode();\n        Properties source=new Properties();\n        try{source.load(new StringReader(saved));}catch(IOException e){throw new IllegalArgumentException(e);}\n        for(String key:source.stringPropertyNames())\n            if(key.startsWith("setting."))migrated.values.setProperty(key,source.getProperty(key));\n        return migrated.encode();\n    }\n'''
-          s=s.replace(anchor,helper+anchor,1)
-          progress.write_text(s)
-          PY
-
-      - name: Validate snapshot and regression boundaries
-        shell: bash
-        run: |
-          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           python3 - <<'PY'
           import json
           from pathlib import Path
           pack=json.loads(Path('app/src/main/assets/puzzles/campaign-pack-0010-v1.json').read_text())
-          assert pack['runtimeSchemaVersion']=='published-runtime-puzzle-v1'
-          assert pack['packId']=='campaign-pack-0010-v1'
           assert len(pack['puzzles'])==10
-          expected=[f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
-          assert [p['publishedPuzzleId'] for p in pack['puzzles']]==expected
-          assert all(p['puzzle']['puzzleId']==p['publishedPuzzleId'] for p in pack['puzzles'])
-          assert all(p['revision']==1 and p['puzzle']['puzzleRevision']==1 for p in pack['puzzles'])
+          assert [p['publishedPuzzleId'] for p in pack['puzzles']]==[f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
+          cfg=Path('app/src/main/assets/stages/campaign-stage-config-v1.properties').read_text()
+          assert 'stageCount=10' in cfg
+          gradle=Path('app/build.gradle')
+          s=gradle.read_text()
+          assert s.count("applicationId 'com.example.einsteingame'")==1
+          s=s.replace("applicationId 'com.example.einsteingame'", "applicationId 'com.example.einsteingame.preview0010'", 1)
+          assert s.count("versionName '0.2.7.1'")==1
+          s=s.replace("versionName '0.2.7.1'", "versionName '0.2.7.1-preview0010'", 1)
+          gradle.write_text(s)
+          strings=Path('app/src/main/res/values/strings.xml')
+          t=strings.read_text()
+          t=t.replace('<string name="app_name">Clumi</string>', '<string name="app_name">Clumi Preview 1-10</string>', 1)
+          strings.write_text(t)
           PY
-          grep -qx 'configVersion=clumi-campaign-stage-v1' app/src/main/assets/stages/campaign-stage-config-v1.properties
-          grep -qx 'temporary=false' app/src/main/assets/stages/campaign-stage-config-v1.properties
-          grep -qx 'stageCount=10' app/src/main/assets/stages/campaign-stage-config-v1.properties
-          ! grep -q 'PZ_PILOT_' app/src/main/assets/stages/campaign-stage-config-v1.properties
-          grep -q 'PZ_CAMPAIGN_000001' app/src/main/assets/stages/campaign-stage-config-v1.properties
-          grep -q 'PZ_CAMPAIGN_000010' app/src/main/assets/stages/campaign-stage-config-v1.properties
-          git diff --quiet "$BASE_SHA" -- app/src/main/assets/puzzles/pilot-pack-v1.json
-          git diff --quiet "$BASE_SHA" -- app/src/main/assets/stages/pilot-stage-config.properties
           git diff --check
 
-      - name: Compile Android sources without package signing
+      - name: Build standard debug APK
         shell: bash
         run: |
           set -euo pipefail
           chmod +x gradlew
-          env -u GITHUB_ACTIONS -u CI ./gradlew :app:compileDebugJavaWithJavac --no-daemon --stacktrace --console=plain
+          env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD ./gradlew --no-daemon --stacktrace --console=plain :app:assembleDebug
+          test -s app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Commit verified production snapshot
+      - name: Verify installable preview APK
         shell: bash
         run: |
           set -euo pipefail
-          git status --short
-          git add \
-            app/src/main/assets/puzzles/campaign-pack-0010-v1.json \
-            app/src/main/assets/stages/campaign-stage-config-v1.properties \
-            app/src/main/java/com/example/einsteingame/MainActivity.java \
-            app/src/main/java/com/example/einsteingame/StageProgress.java
-          test "$(git diff --cached --name-only | wc -l)" -eq 4
-          git config user.name 'Einstein Clumi Integration'
-          git config user.email 'noreply@localhost'
-          git commit -m 'content: integrate BANKED campaign stages 0001-0010'
-          git push origin "HEAD:${TARGET_BRANCH}"
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          TOOLS="$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION"
+          "$TOOLS/aapt" dump badging "$APK" > /tmp/badging.txt
+          grep -q "package: name='$PREVIEW_APP_ID'" /tmp/badging.txt
+          "$TOOLS/apksigner" verify --verbose --print-certs --min-sdk-version 23 "$APK" > /tmp/signing.txt
+          grep -q '^Verified using v2 scheme (APK Signature Scheme v2): true$' /tmp/signing.txt
+          unzip -p "$APK" assets/puzzles/campaign-pack-0010-v1.json > /tmp/campaign.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/campaign.json'))
+          assert [p['publishedPuzzleId'] for p in d['puzzles']]==[f'PZ_CAMPAIGN_{i:06d}' for i in range(1,11)]
+          print('Campaign 0001-0010 APK verification: PASS')
+          PY
+          cp "$APK" app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk
+          sha256sum app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk > app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk.sha256
+
+      - name: Upload preview APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Campaign-0010-Preview
+          path: |
+            app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk
+            app/build/outputs/apk/debug/Clumi-Campaign-0010-Preview.apk.sha256
+          if-no-files-found: error
+          retention-days: 14
