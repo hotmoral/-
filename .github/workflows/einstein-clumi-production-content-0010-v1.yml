@@ -1,4 +1,4 @@
-name: Clumi Arrival CTA Hierarchy V1
+name: Clumi Toast Notice Dark Mode V1
 
 on:
   push:
@@ -10,17 +10,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: clumi-arrival-cta-hierarchy-v1
+  group: clumi-toast-notice-dark-mode-v1
   cancel-in-progress: false
 
 jobs:
-  patch-verify-arrival-cta:
+  patch-verify-toast-consistency:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi arrival CTA hierarchy v1'
+      github.event.head_commit.message == 'verify: Clumi toast notice dark mode v1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      SOURCE_SHA: 767a915f484230de7e259675ad49386366e16b92
+      SOURCE_SHA: eb0337ff56d5f4fa68bf1136cc2a3538abfb942d
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -47,134 +47,79 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           test "$(git branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply bounded arrival and CTA patch
+      - name: Apply bounded toast consistency patch
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
 
-          # Shared post-mosaic arrival grammar. Stage Start remains the stronger variant.
-          ap=Path('app/src/main/java/com/example/einsteingame/ClumiStageArrival.java')
-          ap.write_text('\n'.join([
-              'package com.example.einsteingame;',
-              'import android.view.View;',
-              '/** Post-transition arrival grammar. Mosaic remains authoritative; transforms start only after a canonical live frame. */',
-              'final class ClumiStageArrival {',
-              '    static ClumiSceneMotion common(View root,ClumiFeedbackController feel,ClumiSceneMotion.Gate valid,ClumiSceneMotion.Gate ready){',
-              '        return build(root,feel,valid,ready,false);',
-              '    }',
-              '    static ClumiSceneMotion start(View root,ClumiFeedbackController feel,ClumiSceneMotion.Gate valid,ClumiSceneMotion.Gate ready){',
-              '        return build(root,feel,valid,ready,true);',
-              '    }',
-              '    private static ClumiSceneMotion build(View root,ClumiFeedbackController feel,ClumiSceneMotion.Gate valid,ClumiSceneMotion.Gate ready,boolean strong){',
-              '        ClumiSceneMotion motion=new ClumiSceneMotion(root,feel,valid,ready);',
-              '        View header=root.findViewWithTag("brand-header");if(header==null)header=root.findViewWithTag("home-logo");',
-              '        motion.add(header,0,strong?190:170,ClumiSceneMotion.emphasis(strong?.003f:.005f,ClumiUi.dp(root.getContext(),strong?.7f:1f)));',
-              '        if(strong)for(String tag:new String[]{"hero-clumi","b3-art-title-start"})',
-              '            motion.add(root.findViewWithTag(tag),20,240,ClumiSceneMotion.emphasis(.009f,0));',
-              '        motion.start();return motion;',
-              '    }',
-              '    private ClumiStageArrival(){}',
-              '}',
-              ''
-          ]))
-
-          # Dynamic Hero CTA treatment for primary progression buttons that cannot use fixed-text raster artwork.
+          # Shared toast surface: caller must provide the active theme; duration remains explicit for system failures.
           up=Path('app/src/main/java/com/example/einsteingame/ClumiUi.java')
           ul=up.read_text().splitlines()
-          button_index=next((i for i,line in enumerate(ul) if line.startswith('    static Button button(Context c,String value,boolean blue,boolean dark){')),None)
-          if button_index is None: raise SystemExit('ClumiUi button boundary mismatch')
-          hero=[
-              '    static void heroButton(Button button,boolean dark){',
-              '        Context c=button.getContext();',
-              '        button.setTextSize(20);button.setTextColor(Color.WHITE);',
-              '        button.setBackground(surface(c,ClumiSkin.PRIMARY,dark,34));',
-              '        button.setShadowLayer(dp(c,.9f),0,dp(c,1.2f),0x9a0648a8);',
-              '        button.setPadding(dp(c,24),dp(c,3),dp(c,20),dp(c,6));',
+          indexes=[i for i,line in enumerate(ul) if line.startswith('    static void toast(Context c,String message){')]
+          if len(indexes)!=1: raise SystemExit('ClumiUi toast boundary mismatch')
+          i=indexes[0]
+          ul[i:i+1]=[
+              '    static void toast(Context c,String message,boolean dark){toast(c,message,dark,Toast.LENGTH_SHORT);}',
+              '    static void toast(Context c,String message,boolean dark,int duration){',
+              '        TextView view=text(c,message,14,true,dark);view.setPadding(dp(c,18),dp(c,12),dp(c,18),dp(c,14));',
+              '        view.setBackground(surface(c,ClumiSkin.FROST,dark,18));software(view);',
+              '        Toast toast=new Toast(c);toast.setView(view);toast.setDuration(duration);toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,dp(c,34));toast.show();',
               '    }'
           ]
-          ul[button_index+1:button_index+1]=hero
           up.write_text('\n'.join(ul)+'\n')
 
-          # Wire common arrivals only at actual navigation/restore boundaries; rerenders from Settings/Rewards state changes do not replay arrival.
           mp=Path('app/src/main/java/com/example/einsteingame/MainActivity.java')
-          ml=mp.read_text().splitlines()
+          main=mp.read_text()
+          old='Toast.makeText(this,"진행을 저장하지 못했습니다.\\n저장 공간을 확인해 주세요.",Toast.LENGTH_LONG).show()'
+          new='ClumiUi.toast(this,"진행을 저장하지 못했습니다.\\n저장 공간을 확인해 주세요.",dark(),Toast.LENGTH_LONG)'
+          if main.count(old)!=1: raise SystemExit('persist Toast boundary mismatch')
+          main=main.replace(old,new,1)
+          old='ClumiUi.toast(this,"이전 스테이지를 먼저 완료하세요.");'
+          new='ClumiUi.toast(this,"이전 스테이지를 먼저 완료하세요.",dark());'
+          if main.count(old)!=1: raise SystemExit('stage-lock toast boundary mismatch')
+          main=main.replace(old,new,1)
+          mp.write_text(main)
 
-          scroll_index=next((i for i,line in enumerate(ml) if line.startswith('    private LinearLayout scrollBody(LinearLayout page){')),None)
-          if scroll_index is None: raise SystemExit('scrollBody boundary mismatch')
-          arrive=[
-              '    private void arrive(String expected){',
-              '        ClumiSceneReady arrivalScene=scene;',
-              '        ClumiStageArrival.common(arrivalScene.root,feel,()->expected.equals(screen)&&scene==arrivalScene,()->(navigation==null||!navigation.active())&&arrivalScene.complete());',
-              '    }'
-          ]
-          ml[scroll_index+1:scroll_index+1]=arrive
-
-          def replace_one(old,new,label):
-              matches=[i for i,line in enumerate(ml) if line==old]
-              if len(matches)!=1: raise SystemExit(f'{label}: expected 1 exact line, got {len(matches)}')
-              ml[matches[0]]=new
-
-          replace_one('            case "rewards":renderRewards(rewardScroll);break;',
-                      '            case "rewards":renderRewards(rewardScroll);arrive("rewards");break;',
-                      'restore rewards arrival')
-          replace_one('            case "settings":enter("settings");renderSettings();break;',
-                      '            case "settings":enter("settings");renderSettings();arrive("settings");break;',
-                      'restore settings arrival')
-
-          for marker,target in [('scene.require("home-logo"','home'),('scene.require("stage-panel"','stages')]:
-              matches=[i for i,line in enumerate(ml) if marker in line]
-              if len(matches)!=1: raise SystemExit(f'{target} arrival boundary mismatch')
-              idx=matches[0]
-              if 'scene.bindComplete();' not in ml[idx]: raise SystemExit(f'{target} scene completion missing')
-              ml[idx]=ml[idx].replace('scene.bindComplete();',f'scene.bindComplete();arrive("{target}");',1)
-
-          old='    private void showRewards(int scrollY){route("rewards",backNavigation,()->renderRewards(scrollY));}'
-          new='    private void showRewards(int scrollY){route("rewards",backNavigation,()->{renderRewards(scrollY);arrive("rewards");});}'
-          replace_one(old,new,'showRewards arrival boundary')
-
-          old='    private void showSettings(){String previous=screen;route("settings",false,()->{settingsReturn=previous;enter("settings");renderSettings();});}'
-          new='    private void showSettings(){String previous=screen;route("settings",false,()->{settingsReturn=previous;enter("settings");renderSettings();arrive("settings");});}'
-          replace_one(old,new,'showSettings arrival boundary')
-
-          stage_lines=[i for i,line in enumerate(ml) if 'Button start=button(ClumiStagePresentation.action' in line]
-          if len(stage_lines)!=1: raise SystemExit('Stage Start CTA boundary mismatch')
-          idx=stage_lines[0]
-          old_fragment='start.setTag("stage-cta");ClumiUi.actionIcon(start,"play",true);'
-          new_fragment='start.setTag("stage-cta");ClumiUi.heroButton(start,dark());ClumiUi.actionIcon(start,"play",true);'
-          if old_fragment not in ml[idx]: raise SystemExit('Stage Start CTA fragment changed')
-          ml[idx]=ml[idx].replace(old_fragment,new_fragment,1)
-
-          mp.write_text('\n'.join(ml)+'\n')
+          gp=Path('app/src/main/java/com/example/einsteingame/GameView.java')
+          game=gp.read_text()
+          game=game.replace('import android.widget.Toast;\n','')
+          old='ClumiUi.toast(getContext(),state.singleCandidateSlot(row,col)>=0?"미확정 칸을 선택하세요.":"후보와 단서를 확인한 뒤 다시 선택하세요.");'
+          new='ClumiUi.toast(getContext(),state.singleCandidateSlot(row,col)>=0?"미확정 칸을 선택하세요.":"후보와 단서를 확인한 뒤 다시 선택하세요.",dark);'
+          if game.count(old)!=1: raise SystemExit('target rejection toast boundary mismatch')
+          game=game.replace(old,new,1)
+          old='ClumiUi.toast(getContext(),"아이템이 없어요.");'
+          if game.count(old)!=2: raise SystemExit('item toast boundary mismatch')
+          game=game.replace(old,'ClumiUi.toast(getContext(),"아이템이 없어요.",dark);')
+          gp.write_text(game)
           PY
           git diff --check
 
-      - name: Verify arrival and CTA contract
+      - name: Verify toast notice dark-mode contract
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
-          arrival=Path('app/src/main/java/com/example/einsteingame/ClumiStageArrival.java').read_text()
-          ui=Path('app/src/main/java/com/example/einsteingame/ClumiUi.java').read_text()
-          assert 'static ClumiSceneMotion common(' in arrival
-          assert 'root.findViewWithTag("brand-header")' in arrival
-          assert 'root.findViewWithTag("home-logo")' in arrival
-          assert 'strong?190:170' in arrival
-          assert '"hero-clumi","b3-art-title-start"' in arrival
-          assert 'private void arrive(String expected)' in main
-          assert 'scene.bindComplete();arrive("home");' in main
-          assert 'scene.bindComplete();arrive("stages");' in main
-          assert 'renderRewards(scrollY);arrive("rewards");' in main
-          assert 'renderSettings();arrive("settings");' in main
-          assert 'ClumiStageArrival.start(arrivalScene.root' in main
-          assert 'static void heroButton(Button button,boolean dark)' in ui
-          assert 'ClumiUi.heroButton(start,dark());ClumiUi.actionIcon(start,"play",true);' in main
-          assert 'ClumiVisualAssets.buttonArt(play,' in main
-          assert 'ClumiVisualAssets.buttonArt(current,"cta_current_stage")' in main
-          print('Arrival / CTA hierarchy static contract: PASS')
+          root=Path('app/src/main/java/com/example/einsteingame')
+          ui=(root/'ClumiUi.java').read_text()
+          main=(root/'MainActivity.java').read_text()
+          game=(root/'GameView.java').read_text()
+          assert 'static void toast(Context c,String message,boolean dark)' in ui
+          assert 'static void toast(Context c,String message,boolean dark,int duration)' in ui
+          assert 'surface(c,ClumiSkin.FROST,dark,18)' in ui
+          assert 'toast.setDuration(duration)' in ui
+          assert 'ClumiUi.toast(this,"진행을 저장하지 못했습니다.\\n저장 공간을 확인해 주세요.",dark(),Toast.LENGTH_LONG)' in main
+          assert 'ClumiUi.toast(this,"이전 스테이지를 먼저 완료하세요.",dark())' in main
+          assert 'ClumiUi.toast(getContext(),"아이템이 없어요.",dark)' in game
+          assert 'android.widget.Toast' not in game
+          assert 'private void notice(String title,String message){lastDialog=ClumiUi.dialog(this,title,message,"확인",null,null,null,true,dark());}' in main
+          for path in root.glob('*.java'):
+              text=path.read_text()
+              if path.name!='ClumiUi.java':
+                  assert 'Toast.makeText' not in text, f'Android default Toast remains in {path.name}'
+          print('Toast / notice / dark-mode static contract: PASS')
           PY
 
       - name: Set up JDK 17
@@ -199,17 +144,17 @@ jobs:
           chmod +x gradlew
           env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push exact arrival and CTA patch
+      - name: Commit and push exact toast consistency patch
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           test "$(git status --porcelain | wc -l)" -eq 3
-          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/MainActivity.java'
-          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/ClumiStageArrival.java'
           git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/ClumiUi.java'
+          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/MainActivity.java'
+          git status --porcelain | grep -F 'app/src/main/java/com/example/einsteingame/GameView.java'
           git config user.name 'Clumi UI Integration'
           git config user.email 'noreply@localhost'
-          git add app/src/main/java/com/example/einsteingame/MainActivity.java app/src/main/java/com/example/einsteingame/ClumiStageArrival.java app/src/main/java/com/example/einsteingame/ClumiUi.java
-          git commit -m 'ui: unify screen arrival and hero CTA grammar'
+          git add app/src/main/java/com/example/einsteingame/ClumiUi.java app/src/main/java/com/example/einsteingame/MainActivity.java app/src/main/java/com/example/einsteingame/GameView.java
+          git commit -m 'ui: unify transient notices across themes'
           git push origin "HEAD:$SOURCE_BRANCH"
