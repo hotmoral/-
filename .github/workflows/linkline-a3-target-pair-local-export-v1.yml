@@ -1,0 +1,42 @@
+name: Linkline A3 Target-Pair Local Materialization Export V1
+
+on:
+  push:
+    branches:
+      - linkline/a3-target-pair-diversity-v1
+    paths:
+      - .github/workflows/linkline-a3-target-pair-local-export-v1.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact public commit
+        uses: actions/checkout@v4
+
+      - name: Verify public-safe source set
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d linkline/analysis
+          test -d linkline/reference
+          test -s linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
+          test -s linkline/public_output/a3_target_pair_selection_plan_v3/summary.json
+          test -s linkline/public_output/a3_target_pair_candidate_validation_v1/summary.json
+
+      - name: Upload public-safe local materialization source
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkline-a3-target-pair-local-materialization-source-v1
+          path: |
+            linkline/analysis
+            linkline/reference
+            linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
+            linkline/public_output/a3_target_pair_selection_plan_v3/summary.json
+            linkline/public_output/a3_target_pair_candidate_validation_v1/summary.json
+          if-no-files-found: error
+          retention-days: 1
