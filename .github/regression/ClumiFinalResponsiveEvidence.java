@@ -1,6 +1,7 @@
 package com.example.einsteingame;
 
 import android.app.Dialog;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -25,13 +26,13 @@ import org.json.JSONObject;
 
 /** Final production-screen responsive regression. Test-only, injected by public harness. */
 final class ClumiFinalResponsiveEvidence {
-    private final ClumiUiTestRunner host;
+    private final Instrumentation host;
     private MainActivity activity;
     private int assertions;
     private final String profile;
     private final JSONObject report=new JSONObject();
 
-    ClumiFinalResponsiveEvidence(ClumiUiTestRunner host,Bundle args){
+    ClumiFinalResponsiveEvidence(Instrumentation host,Bundle args){
         this.host=host;this.profile=args.getString("profile","360x640");
     }
 
