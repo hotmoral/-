@@ -1,0 +1,68 @@
+name: Linkline A3 Target-Pair Plan V3 Chunks
+
+on:
+  push:
+    branches:
+      - linkline/a3-target-pair-diversity-v1
+    paths:
+      - linkline/tools/split_a3_target_pair_selection_plan_v3.py
+      - .github/workflows/linkline-a3-target-pair-plan-v3-chunks.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-target-pair-plan-v3-chunks
+  cancel-in-progress: true
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch exact public commit without external actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Split already-public plan into readable chunks
+        run: |
+          set -euo pipefail
+          src=linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
+          dest=linkline/public_output/a3_target_pair_selection_plan_v3_chunks
+          test -s "$src"
+          rm -rf "$dest"
+          python linkline/tools/split_a3_target_pair_selection_plan_v3.py \
+            --plan "$src" \
+            --output-dir "$dest" \
+            --chunk-size 50
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('linkline/public_output/a3_target_pair_selection_plan_v3_chunks/manifest.json')
+          m = json.loads(p.read_text())
+          assert m['orderCount'] == 1300
+          assert m['sourceSelectionFingerprint'] == '1fc7dd15893a113935b0b1b2f5ca636e22669d783e887f90e56203275d3c3131'
+          print('PUBLIC_V3_CHUNK_PASS')
+          PY
+
+      - name: Commit chunk files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          dest=linkline/public_output/a3_target_pair_selection_plan_v3_chunks
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          if ! git diff --cached --quiet; then
+            git commit -m "Linkline A3: materialize public-safe v3 plan chunks"
+            git push origin HEAD:linkline/a3-target-pair-diversity-v1
+          fi
