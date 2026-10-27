@@ -67,6 +67,7 @@ def main() -> None:
         "selectedNibbleDir": "selected_nibble",
         "selectedIdNibbleDir": "selected_id_nibble",
         "repairIdNibbleDir": "repair_id_nibble",
+        "repairDomainDir": "repair_domain",
         "selectedBloom": "selected_bloom.json",
     }
 
@@ -98,8 +99,10 @@ def main() -> None:
     for row in order:
         selected_nibbles[row["id"][0]].append(row)
     repair_nibbles = defaultdict(list)
+    repair_domains = defaultdict(list)
     for row in reservoir:
         repair_nibbles[row["id"][0]].append(row)
+        repair_domains[(row["n"], row["chainLength"])].append(row)
     for nibble in "0123456789abcdef":
         rows = selected_nibbles[nibble]
         write_json(out / "selected_nibble" / f"{nibble}.json", rows)
@@ -107,6 +110,8 @@ def main() -> None:
         id_path.parent.mkdir(parents=True, exist_ok=True)
         id_path.write_text("\n".join(sorted(row["id"] for row in rows)) + ("\n" if rows else ""), encoding="utf-8")
         write_json(out / "repair_id_nibble" / f"{nibble}.json", repair_nibbles[nibble])
+    for (n, length), rows in sorted(repair_domains.items()):
+        write_json(out / "repair_domain" / f"N{n}_L{length}.json", rows)
 
     bits = bytearray(BLOOM_BITS // 8)
     for row in order:
@@ -133,6 +138,7 @@ def main() -> None:
         "repairChunkCount": len(manifest["repairChunks"]),
         "selectedNibbleCount": sum(len(v) for v in selected_nibbles.values()),
         "repairNibbleCount": sum(len(v) for v in repair_nibbles.values()),
+        "repairDomainCount": len(repair_domains),
         "bloomBits": BLOOM_BITS,
         "bloomHashes": BLOOM_HASHES,
     }, sort_keys=True))
