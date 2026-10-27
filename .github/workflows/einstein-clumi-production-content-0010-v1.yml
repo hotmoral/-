@@ -16,7 +16,7 @@ concurrency:
 jobs:
   final-responsive-regression:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi final responsive regression v1'
+      github.event.head_commit.message == 'verify: Clumi final responsive regression v1 isolated runner'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -56,38 +56,26 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Inject final responsive route and quarantine stale GameFeel evidence
+      - name: Install isolated test-only responsive runner
         shell: bash
         run: |
           set -euo pipefail
+          test -s harness/.github/regression/ClumiFinalResponsiveRunner.java
           test -s harness/.github/regression/ClumiFinalResponsiveEvidence.java
-          cp harness/.github/regression/ClumiFinalResponsiveEvidence.java \
-            source/app/src/androidTest/java/com/example/einsteingame/ClumiFinalResponsiveEvidence.java
+          rm -rf source/app/src/androidTest/java/com/example/einsteingame
+          mkdir -p source/app/src/androidTest/java/com/example/einsteingame
+          cp harness/.github/regression/ClumiFinalResponsiveRunner.java source/app/src/androidTest/java/com/example/einsteingame/
+          cp harness/.github/regression/ClumiFinalResponsiveEvidence.java source/app/src/androidTest/java/com/example/einsteingame/
           python3 - <<'PY'
           from pathlib import Path
-          runner=Path('source/app/src/androidTest/java/com/example/einsteingame/ClumiUiTestRunner.java')
-          text=runner.read_text()
-          old='private Bundle feelArgs,transitionArgs,destinationArgs,mosaicArgs,visualB0Args;'
-          new='private Bundle feelArgs,transitionArgs,destinationArgs,mosaicArgs,visualB0Args,finalResponsiveArgs;'
-          if text.count(old)!=1: raise SystemExit('Runner field boundary changed')
-          text=text.replace(old,new,1)
-          old='@Override public void onCreate(Bundle args){super.onCreate(args);if(args.containsKey("b0visual"))visualB0Args=args;'
-          new='@Override public void onCreate(Bundle args){super.onCreate(args);if(args.containsKey("finalresponsive"))finalResponsiveArgs=args;if(args.containsKey("b0visual"))visualB0Args=args;'
-          if text.count(old)!=1: raise SystemExit('Runner onCreate boundary changed')
-          text=text.replace(old,new,1)
-          old='@Override public void onStart(){if(visualB0Args!=null)'
-          new='@Override public void onStart(){if(finalResponsiveArgs!=null){new ClumiFinalResponsiveEvidence(this,finalResponsiveArgs).run();return;}if(visualB0Args!=null)'
-          if text.count(old)!=1: raise SystemExit('Runner onStart boundary changed')
-          text=text.replace(old,new,1)
-          runner.write_text(text)
-
-          legacy=Path('source/app/src/androidTest/java/com/example/einsteingame/ClumiGameFeelEvidence.java')
-          if not legacy.exists(): raise SystemExit('Legacy GameFeel evidence missing')
-          legacy.write_text('''package com.example.einsteingame;\n\nimport android.os.Bundle;\n\n/** Runner-only quarantine: historical GameFeel evidence targets a retired haptic test API. */\nfinal class ClumiGameFeelEvidence {\n    ClumiGameFeelEvidence(ClumiUiTestRunner host, Bundle args) {}\n    void run() { throw new AssertionError("Legacy GameFeel evidence is quarantined in final-responsive regression"); }\n}\n''')
+          p=Path('source/app/build.gradle')
+          text=p.read_text()
+          old="testInstrumentationRunner 'com.example.einsteingame.ClumiUiTestRunner'"
+          new="testInstrumentationRunner 'com.example.einsteingame.ClumiFinalResponsiveRunner'"
+          assert text.count(old)==1
+          p.write_text(text.replace(old,new,1))
           PY
           git -C source diff --check
-          git -C source diff --quiet -- app/src/main
-          test "$(git -C source status --porcelain | wc -l)" -eq 3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -98,7 +86,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android build, emulator and API 34 system image
+      - name: Install Android build, emulator and API 34 image
         shell: bash
         run: |
           set -euo pipefail
@@ -110,10 +98,10 @@ jobs:
             'system-images;android-34;google_apis;x86_64' >/dev/null
           echo no | avdmanager create avd --force \
             --name "$AVD_NAME" \
-            --package 'system-images;android-34;google_apis;x86_64' >/dev/null
-          test -f "$HOME/.android/avd/$AVD_NAME.ini"
+            --package 'system-images;android-34;google_apis;x86_64' \
+            --device 'pixel_6' >/dev/null
 
-      - name: Build debug app and Android instrumentation APK
+      - name: Build debug app and isolated instrumentation APK
         working-directory: source
         shell: bash
         run: |
@@ -150,7 +138,7 @@ jobs:
           set -euo pipefail
           adb install -r source/app/build/outputs/apk/debug/app-debug.apk
           adb install -r source/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-          adb shell pm list instrumentation | grep -F 'com.example.einsteingame.ClumiUiTestRunner'
+          adb shell pm list instrumentation | grep -F 'com.example.einsteingame.ClumiFinalResponsiveRunner'
 
       - name: Run four-profile real-render regression
         shell: bash
@@ -170,9 +158,8 @@ jobs:
             mkdir -p "final-regression/evidence/$profile"
             set +e
             adb shell am instrument -w -r \
-              -e finalresponsive 1 \
               -e profile "$profile" \
-              com.example.einsteingame.test/com.example.einsteingame.ClumiUiTestRunner \
+              com.example.einsteingame.test/com.example.einsteingame.ClumiFinalResponsiveRunner \
               | tee "final-regression/evidence/$profile/instrumentation.log"
             code=${PIPESTATUS[0]}
             set -e
@@ -184,6 +171,7 @@ jobs:
             test -s "final-regression/evidence/$profile/summary.json"
             for screen in 01_home 02_stage_select 03_stage_start 04_gameplay 05_rewards 06_settings_light 07_settings_dark 08_clear_dark; do
               test -s "final-regression/evidence/$profile/$screen.png"
+              test -s "final-regression/evidence/$profile/$screen-bounds.json"
             done
           done
           adb shell wm size reset || true
@@ -212,6 +200,14 @@ jobs:
           Path('final-regression/summary.json').write_text(json.dumps(output,indent=2)+'\n')
           print(json.dumps(output,indent=2))
           PY
+
+      - name: Restore source workspace after test-only instrumentation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C source restore app/build.gradle app/src/androidTest
+          test -z "$(git -C source status --porcelain)"
+          test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
 
       - name: Build fresh Preview 1-10 APK from accepted UI HEAD
         working-directory: source
@@ -268,7 +264,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Clumi-UI-Final-Responsive-Regression-V1
-          path: final-regression/evidence
+          path: |
+            final-regression/evidence
+            final-regression/summary.json
+            final-regression/emulator.log
           retention-days: 14
           if-no-files-found: error
 
