@@ -1,0 +1,48 @@
+{
+  "expandedIndexMeaning": "rank in sorted deterministic reconstruct_geometry_index IDs for the row N/L",
+  "legacyIndexMeaning": "sourceUniverseIndex from the already-public oriented v3 selection",
+  "orientationSentinelExpanded": 255,
+  "parts": [
+    {
+      "endStage": 325,
+      "path": "part_01_0001_0325.b64",
+      "recordCount": 325,
+      "sha256": "c86b60d080d1ca9941eeadd08b10f0cd1ff8fabe18be482f2889cd410dff4bc5",
+      "startStage": 1
+    },
+    {
+      "endStage": 650,
+      "path": "part_02_0326_0650.b64",
+      "recordCount": 325,
+      "sha256": "21d25727da42372be46d36e579b01303c9e11defc2020ec4f7159e7dfeb9941d",
+      "startStage": 326
+    },
+    {
+      "endStage": 975,
+      "path": "part_03_0651_0975.b64",
+      "recordCount": 325,
+      "sha256": "d7650ba68fbdf18432beea43ead9f9afe88ed1449531dc0d1f0b980ea514b5fd",
+      "startStage": 651
+    },
+    {
+      "endStage": 1300,
+      "path": "part_04_0976_1300.b64",
+      "recordCount": 325,
+      "sha256": "f64458c3a8580e458c887fd6d87b3ce1b1936e8f3268ee007f8a81993efd7638",
+      "startStage": 976
+    }
+  ],
+  "payloadSha256": "48f33042047ada51c5fc729c086dbe6176d52bafccddfae3fad621383beda787",
+  "privacy": {
+    "containsHumanOrSelfTestData": false,
+    "containsPrivateIsolationIds": false,
+    "containsPuzzleGeometry": false,
+    "containsTargetCoordinates": false
+  },
+  "recordCount": 1300,
+  "recordSize": 7,
+  "recordStruct": ">BBIB",
+  "schema": "LINKLINE_A3_TARGET_PAIR_MATERIALIZATION_INDEX_V1",
+  "sourceSelectionFingerprint": "1fc7dd15893a113935b0b1b2f5ca636e22669d783e887f90e56203275d3c3131",
+  "version": "1.0.0"
+}
