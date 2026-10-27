@@ -73,6 +73,7 @@
     "repair_1901_1950.json",
     "repair_1951_1961.json"
   ],
+  "repairDomainDir": "repair_domain",
   "repairIdNibbleDir": "repair_id_nibble",
   "repairReservoirCount": 1961,
   "schema": "LINKLINE_A3_TARGET_PAIR_1300_PUBLIC_SELECTION_PLAN_V3_CHUNKS",

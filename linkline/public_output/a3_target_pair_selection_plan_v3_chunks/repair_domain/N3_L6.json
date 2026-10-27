@@ -1,0 +1,74 @@
+[
+  {
+    "chainLength": 6,
+    "difficulty": 635,
+    "id": "1cf92b3f133cff898e7b729051c2aea2e2feffa3ced9ef68669d762cff6aa1d2",
+    "n": 3,
+    "orientationTransform": 7,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "b4de978dc9a8a7d55ff752b3cd5302f6b2cf765f00e6a9167b795761c9d03b0c"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 612,
+    "id": "70a9ab49de8e506f15a6640e0068fe025cdaa3ef76862d8708d5b8d7849f771e",
+    "n": 3,
+    "orientationTransform": 7,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "64b9b792ef8fb22c4fb355503e29338d54dfdf729746c31a403f9e6a368406f2"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 619,
+    "id": "a3eb8a50ed992ad3cc09040e21b59d742e8412e4edf583dc2f3bfcce9a04a377",
+    "n": 3,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "8205923b71faf6257dfdc3e88e44cb941eb328cdefc467641468f53d0df955ef"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 619,
+    "id": "df0301aa9d9bc67d54ab1cf0fe58a6da79d4410ec78acb69bc473aaacca18c30",
+    "n": 3,
+    "orientationTransform": 5,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "a89c1826f620b628d8e9916159fc596b0467366e6108ed2ca745d79819ccfb8b"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 626,
+    "id": "08f9d76a256cbd1b8735342f34da6cf0fcf38b70d90a3f2ec49a721a6a54f710",
+    "n": 3,
+    "orientationTransform": 1,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "e600a7ae442cdec9c2b2f1662b53e70e8a5c9621fe552364056f548f5402f51b"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 626,
+    "id": "aa35fc6248eb91b4fa1c2b68af2acb9abacf8a324a060cacea2a3888833f10a7",
+    "n": 3,
+    "orientationTransform": 6,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "9ea56e083139b53fb97368a72604eef95fd05094910197a868f7dfbb277006de"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 739,
+    "id": "dc895b843b847b76440b15cd43d410086e84aa0cd126b9be920cba76e9289bfb",
+    "n": 3,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "53194f18876e293690110aaae090d1aec656ab561820e01576bc24fb235fec34"
+  },
+  {
+    "chainLength": 6,
+    "difficulty": 626,
+    "id": "b67e166c8ba2fac70fdcf3dac182711fdde7a8a782fbc03fef189d9b70ef768c",
+    "n": 3,
+    "orientationTransform": 1,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "a3b09bb1fadb2118dbaa37d52b4e4084db1561c133c2475dc4741b37f805793c"
+  }
+]

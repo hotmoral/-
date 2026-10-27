@@ -1,0 +1,56 @@
+[
+  {
+    "chainLength": 3,
+    "difficulty": 348,
+    "id": "48c54279681829a3183285f5b10ce9ea8c9f64aa0937eb57135101a4209871af",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "6c8635d76558392cb8655a76fea39c9231815e677064eb1c0fe74cb447cc77ce"
+  },
+  {
+    "chainLength": 3,
+    "difficulty": 362,
+    "id": "56fda8a60776db5817d63f7d7ebb276cc8a259847b68e62a4fa57ff6f2b9cac1",
+    "n": 4,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "2749834e4e813e065e7160cf5b461161d9395b0915a56c38a74f590bf2028ef8"
+  },
+  {
+    "chainLength": 3,
+    "difficulty": 372,
+    "id": "96d83e9f0d046713508579722b1d3c622be19b1e7478839bf13a96777a04ff49",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "fd3d3e1829920b7bb1044a231c745ab4201758f4cbae797fe00801ed12fdcff3"
+  },
+  {
+    "chainLength": 3,
+    "difficulty": 333,
+    "id": "8094822af615ecd26e51af36af389ac812178705a8662c0d7b504a4a994b59e4",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "d9fffc8cea44f59d790aa0d818dd426c4005fe60e033991d61529346d19ce544"
+  },
+  {
+    "chainLength": 3,
+    "difficulty": 352,
+    "id": "7e65a818f22d0de9ce7987f57569a49992b2f33075a18454451d3818e871cad3",
+    "n": 4,
+    "orientationTransform": 4,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "3f5325b701d577391fe8b941aafb8e099f62b8aa9c5afd1da8c7d620dfe1cff7"
+  },
+  {
+    "chainLength": 3,
+    "difficulty": 365,
+    "id": "d2f095056620b2bea48bc84f38c8625cd0bf17afb2c651b15092d31f6c069cf7",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "27b6397c37a9fc2b417c21fb5067f7ccc0d2023b459757f61cf1abc3404a9118"
+  }
+]

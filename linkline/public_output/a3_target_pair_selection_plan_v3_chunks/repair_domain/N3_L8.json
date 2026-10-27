@@ -1,0 +1,20 @@
+[
+  {
+    "chainLength": 8,
+    "difficulty": 812,
+    "id": "d0eb1b7d9cff792e800604c73b65c6532c7ba7626de4369913e8e47e0ad4c863",
+    "n": 3,
+    "orientationTransform": 4,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "5dda76bde84fceb430abdb188e64d4591ac50c0ac2e2848428a997fd25d6fdbd"
+  },
+  {
+    "chainLength": 8,
+    "difficulty": 812,
+    "id": "fd0dea5ab946eab7309216acd463c577c2a721de12533a4fab64bd0e1451d15f",
+    "n": 3,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "108ecc765d82750b5d2a99b1d01b23ee02fcfb3b5d25c70f5b45617f546ffda6"
+  }
+]

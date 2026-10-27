@@ -1,0 +1,137 @@
+[
+  {
+    "chainLength": 4,
+    "difficulty": 492,
+    "id": "d9b58cdf461c02608473c981190eecce8fb813a624530fe478ad178fa2f58924",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "28c9cabca0adc5efb67cbc5cdad324aaa4fa051ae017cfc832ab2660b5d262a9"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 497,
+    "id": "fa4a197a39de1f212f56e9a70290fe9d24b46f71f5c27ff3c836fdc7669ce980",
+    "n": 4,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "4455eacec98e6677d6b6e950ab98689947ca9b64e4f6340156de72f9514ae265"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 474,
+    "id": "a2cb167e8785162cd7ccbb0f0682c58a65b8b819b0dcba466dbeb82bb3cd4869",
+    "n": 4,
+    "orientationTransform": 1,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "31027a99a45f895252edf55d6b1bf51070558167b45edd7ae6f727153f3b782b"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 440,
+    "id": "e8916fac8aa56681cf64e93649469f300e72dd0516b4062ee17271ec11a686b6",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "45080324d8a305dc57bb83b09282d3181050ab3019d213820138db538c71f830"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 449,
+    "id": "9e434e4c586dad86e96f2dc92c792ccb722653653977294de65b1a5e3b288bd7",
+    "n": 4,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "57b47c1954b78245a8e8bb2e2a9691010e4ade0750b58fa6d4ed80a40333aace"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 466,
+    "id": "8cbcdfa79b1e71304c2ef2155f7e7c6bc8be15b480077688734cbc515967988a",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "3a861bf9f8e16dd6db2e0c5420d66d6c4941d9c990669e2b2eee1b0f9871c4ac"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 504,
+    "id": "1968af7ba702386de1a11b74bb50229d6f4df90af48f1a1994d220d4513b98a6",
+    "n": 4,
+    "orientationTransform": 3,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "1a1081895f9ef410378df3b34ed0973d8846b379b24be4ddb24740c41a46d2f6"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 466,
+    "id": "48266c33b91c5ff9ca9d2592ea7d69f62318d7a55995f731326e7d9117a5a4a9",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "b8d8e9f84d2252d8c0b6cf0f47fec73f646bdd28fc51a8469ee0cfb0fad8d9a4"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 472,
+    "id": "e872dc678b63b1f6116c6515f15769f8cc3006bebdbffae12d097b8ea9ef12a7",
+    "n": 4,
+    "orientationTransform": 4,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "1b97ad9763d8c16b428acf43b8b0bc33ef38db8c02088c324bdc281f509e95d0"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 450,
+    "id": "1e2f871b47f7d45dcb2206d8d7ffeddc914030e75b3114d3ede9effc584a5367",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "8e7775456cb6504b4fc8313b06009d53c77e7301056df0a014b3804392cd4ed3"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 488,
+    "id": "acf53e7d63ae8503dc62f91da990bd2449ab75a8cc53e264c6c380d3ce71b0b9",
+    "n": 4,
+    "orientationTransform": 7,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "acdbbb27f36b55f79e63659adad5a9021dc8331a51eb6bda28c7c6f101abef17"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 447,
+    "id": "a4ea53fe8488e27b249f08f615a5a76c0b4abb80e0f1c7b8399a400165e1272e",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "3aa4e7c0a3285c3875985782d6355484e542d47d355ba36c3bd51acc27d49e3d"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 500,
+    "id": "2ec7a25c26ac0aeef9d8230cb65f329761f5a22e6dc2ae0cb852800a21003dcb",
+    "n": 4,
+    "orientationTransform": 2,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "cd6d632a11dd16db3d88662cff9b09c249e5cf213e6efcc2be1d74f4efb5a9ef"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 493,
+    "id": "46da815226281b8cbd8d6a29da9ebb1d75fbfeeadb0cbab55543a2d4d45a64ab",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "2689005d99aa85d6a8330dda9bd56d7c46415049f4a4766fbcb15173e2491eb3"
+  },
+  {
+    "chainLength": 4,
+    "difficulty": 440,
+    "id": "c58899200f1235a4e4993efb34157b168bce84c4c80972c1ea217b1d3b89b4d0",
+    "n": 4,
+    "orientationTransform": 0,
+    "purpose": "ORIENTED_SAME_EXACT_PAIR_REPLACEMENT",
+    "replacementForId": "dd2456011274f25bddbd29047dae36f01f8799cdfa713b96fc0a501d4f610572"
+  }
+]
