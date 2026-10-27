@@ -77,12 +77,12 @@ jobs:
           p.write_text(s)
           PY
 
-          mapfile -t changed < <(git diff --name-only | sort)
+          mapfile -t changed < <(git diff --name-only HEAD | sort)
           test "${#changed[@]}" -eq 3
           test "${changed[0]}" = 'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/curriculum/CurriculumMetadataBuilder.java'
           test "${changed[1]}" = 'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java'
           test "${changed[2]}" = 'tools/campaign-production-2000/run_compact_n5_batch.sh'
-          test -z "$(git diff --name-only "$NEW_SOURCE_SHA" -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/assets/puzzles)"
+          test -z "$(git diff --cached --name-only "$NEW_SOURCE_SHA" -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/assets/puzzles)"
           grep -F "SOURCE_SHA='$NEW_SOURCE_SHA'" tools/campaign-production-2000/run_compact_n5_batch.sh >/dev/null
           grep -F 'git cat-file -e "$SOURCE_SHA^{commit}"' tools/campaign-production-2000/run_compact_n5_batch.sh >/dev/null
           echo "OLD_RUNNER_SHA=$OLD_RUNNER_SHA"
