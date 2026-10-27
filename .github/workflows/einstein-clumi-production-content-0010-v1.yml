@@ -16,7 +16,7 @@ concurrency:
 jobs:
   patch-verify-clue-feedback:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi clue completion feedback v1'
+      github.event.head_commit.message == 'verify: Clumi clue completion feedback v1 retry'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -54,57 +54,60 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           path=Path('app/src/main/java/com/example/einsteingame/GameView.java')
-          text=path.read_text()
+          lines=path.read_text().splitlines()
 
-          def one(old,new,label):
-              global text
-              count=text.count(old)
-              if count != 1:
-                  raise SystemExit(f'{label}: expected 1 match, got {count}')
-              text=text.replace(old,new,1)
+          needle='    private float impulse(ClumiFeedbackEvent event,int row,int col,int slot){return feel==null?0:feel.impulse(event,row,col,slot);}'
+          if lines.count(needle)!=1:
+              raise SystemExit('impulse helper boundary mismatch')
+          i=lines.index(needle)+1
+          helper=[
+              '    /** Latest active clue lane is presentation-only; completion may advance currentClue when completed clues are hidden. */',
+              '    private int latestClueLane(ClumiFeedbackEvent kind,long now){',
+              '        if(feel==null)return -1;int found=-1;long newest=Long.MIN_VALUE;',
+              '        for(int lane=0;lane<ClumiFeedbackTimeline.CAPACITY;lane++)if(feel.timeline.types[lane]==kind',
+              '                && now<feel.timeline.starts[lane]+kind.duration()&&feel.timeline.starts[lane]>=newest){',
+              '            newest=feel.timeline.starts[lane];found=lane;',
+              '        }',
+              '        return found;',
+              '    }'
+          ]
+          lines[i:i]=helper
 
-          old='    private float impulse(ClumiFeedbackEvent event,int row,int col,int slot){return feel==null?0:feel.impulse(event,row,col,slot);}\n'
-          new='''    private float impulse(ClumiFeedbackEvent event,int row,int col,int slot){return feel==null?0:feel.impulse(event,row,col,slot);}
-    /** Latest active clue lane is presentation-only; completion may advance currentClue when completed clues are hidden. */
-    private int latestClueLane(ClumiFeedbackEvent kind,long now){
-        if(feel==null)return -1;int found=-1;long newest=Long.MIN_VALUE;
-        for(int i=0;i<ClumiFeedbackTimeline.CAPACITY;i++)if(feel.timeline.types[i]==kind
-                && now<feel.timeline.starts[i]+kind.duration()&&feel.timeline.starts[i]>=newest){
-            newest=feel.timeline.starts[i];found=i;
-        }
-        return found;
-    }
-'''
-          one(old,new,'active clue lane helper')
-
-          old='''        GameState.Clue clue = state.displayedClue();
-        float clueSettle=impulse(ClumiFeedbackEvent.CLUE_COMPLETED,-1,-1,state.currentClue)+impulse(ClumiFeedbackEvent.CLUE_RESTORED,-1,-1,state.currentClue);if(clueSettle>0)strokeRound(c,clueBody,d(10),Color.argb((int)(90*clueSettle),32,180,234),d(1));
-        clueStrike=clue==null?0:feel==null?(clue.completed?1:0):feel.strike(true,-1,-1,state.currentClue,clue.completed);
-'''
-          new='''        GameState.Clue clue = state.displayedClue();
-        long clueNow=SystemClock.elapsedRealtime();
-        int completedLane=latestClueLane(ClumiFeedbackEvent.CLUE_COMPLETED,clueNow);
-        int restoredLane=latestClueLane(ClumiFeedbackEvent.CLUE_RESTORED,clueNow);
-        float completion=completedLane<0?0:ClumiMotionTokens.impulse(feel.timeline.phase(completedLane,clueNow));
-        float restoration=restoredLane<0?0:ClumiMotionTokens.impulse(feel.timeline.phase(restoredLane,clueNow));
-        float clueSettle=Math.max(completion,restoration);
-        boolean handedOff=completedLane>=0&&feel.timeline.slots[completedLane]!=state.currentClue;
-        if(clueSettle>0)strokeRound(c,clueBody,d(10),Color.argb((int)(90*clueSettle),32,180,234),d(1));
-        if(completion>0){
-            effectPaint.reset();effectPaint.setAntiAlias(true);effectPaint.setStyle(Paint.Style.FILL);
-            if(!handedOff){effectPaint.setColor(Color.argb((int)(35*completion),25,189,53));c.drawRoundRect(clueBody,d(10),d(10),effectPaint);}
-            else strokeRound(c,clueBody,d(10),Color.argb((int)(135*completion),0,163,236),d(1.4f));
-            float badge=d(compactGameplay?17:19),cx=cluePanel.left+d(compactGameplay?10:12)+badge/2,cy=cluePanel.top+d(compactGameplay?7:9)+badge/2;
-            effectPaint.setColor(Color.argb((int)(220*completion),25,189,53));c.drawCircle(cx,cy,badge/2,effectPaint);
-            effectPaint.setStyle(Paint.Style.STROKE);effectPaint.setStrokeCap(Paint.Cap.ROUND);effectPaint.setStrokeJoin(Paint.Join.ROUND);effectPaint.setStrokeWidth(d(2));effectPaint.setColor(Color.argb((int)(255*completion),255,255,255));
-            c.drawLine(cx-badge*.23f,cy,cx-badge*.05f,cy+badge*.18f,effectPaint);c.drawLine(cx-badge*.05f,cy+badge*.18f,cx+badge*.27f,cy-badge*.22f,effectPaint);
-            effectPaint.setStyle(Paint.Style.FILL);
-        }
-        clueStrike=clue==null?0:feel==null?(clue.completed?1:0):feel.strike(true,-1,-1,state.currentClue,clue.completed);
-'''
-          one(old,new,'clue completion presentation')
-
-          path.write_text(text)
+          clue_line='        GameState.Clue clue = state.displayedClue();'
+          if lines.count(clue_line)!=1:
+              raise SystemExit('clue presentation boundary mismatch')
+          j=lines.index(clue_line)
+          expected=[
+              clue_line,
+              '        float clueSettle=impulse(ClumiFeedbackEvent.CLUE_COMPLETED,-1,-1,state.currentClue)+impulse(ClumiFeedbackEvent.CLUE_RESTORED,-1,-1,state.currentClue);if(clueSettle>0)strokeRound(c,clueBody,d(10),Color.argb((int)(90*clueSettle),32,180,234),d(1));',
+              '        clueStrike=clue==null?0:feel==null?(clue.completed?1:0):feel.strike(true,-1,-1,state.currentClue,clue.completed);'
+          ]
+          if lines[j:j+3]!=expected:
+              raise SystemExit('clue presentation source changed')
+          replacement=[
+              clue_line,
+              '        long clueNow=SystemClock.elapsedRealtime();',
+              '        int completedLane=latestClueLane(ClumiFeedbackEvent.CLUE_COMPLETED,clueNow);',
+              '        int restoredLane=latestClueLane(ClumiFeedbackEvent.CLUE_RESTORED,clueNow);',
+              '        float completion=completedLane<0?0:ClumiMotionTokens.impulse(feel.timeline.phase(completedLane,clueNow));',
+              '        float restoration=restoredLane<0?0:ClumiMotionTokens.impulse(feel.timeline.phase(restoredLane,clueNow));',
+              '        float clueSettle=Math.max(completion,restoration);',
+              '        boolean handedOff=completedLane>=0&&feel.timeline.slots[completedLane]!=state.currentClue;',
+              '        if(clueSettle>0)strokeRound(c,clueBody,d(10),Color.argb((int)(90*clueSettle),32,180,234),d(1));',
+              '        if(completion>0){',
+              '            effectPaint.reset();effectPaint.setAntiAlias(true);effectPaint.setStyle(Paint.Style.FILL);',
+              '            if(!handedOff){effectPaint.setColor(Color.argb((int)(35*completion),25,189,53));c.drawRoundRect(clueBody,d(10),d(10),effectPaint);}',
+              '            else strokeRound(c,clueBody,d(10),Color.argb((int)(135*completion),0,163,236),d(1.4f));',
+              '            float badge=d(compactGameplay?17:19),cx=cluePanel.left+d(compactGameplay?10:12)+badge/2,cy=cluePanel.top+d(compactGameplay?7:9)+badge/2;',
+              '            effectPaint.setColor(Color.argb((int)(220*completion),25,189,53));c.drawCircle(cx,cy,badge/2,effectPaint);',
+              '            effectPaint.setStyle(Paint.Style.STROKE);effectPaint.setStrokeCap(Paint.Cap.ROUND);effectPaint.setStrokeJoin(Paint.Join.ROUND);effectPaint.setStrokeWidth(d(2));effectPaint.setColor(Color.argb((int)(255*completion),255,255,255));',
+              '            c.drawLine(cx-badge*.23f,cy,cx-badge*.05f,cy+badge*.18f,effectPaint);c.drawLine(cx-badge*.05f,cy+badge*.18f,cx+badge*.27f,cy-badge*.22f,effectPaint);',
+              '            effectPaint.setStyle(Paint.Style.FILL);',
+              '        }',
+              '        clueStrike=clue==null?0:feel==null?(clue.completed?1:0):feel.strike(true,-1,-1,state.currentClue,clue.completed);'
+          ]
+          lines[j:j+3]=replacement
+          path.write_text('\n'.join(lines)+'\n')
           PY
           git diff --check
 
