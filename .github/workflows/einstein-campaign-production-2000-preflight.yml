@@ -79,7 +79,7 @@ jobs:
           java -Xmx2g -Dcampaign.inputOrder="$out/process-order-23.json" -cp "$cp_path" com.example.einsteingame.authoring.pss.CampaignCoreTest reverse
           cmp build/campaign-core/golden-summary.json "$out/normal-summary.json"
           cmp build/campaign-core/integration-evidence.json "$out/normal-integration-evidence.json"
-          java -Xmx2g -cp "$cp_path" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest
+          (cd puzzle-authoring && java -Xmx2g -cp "$cp_path" com.example.einsteingame.authoring.pss.acquisition.IntentAcquisitionCheckpointTest)
 
       - name: Run Android publication bridge regression
         shell: bash
