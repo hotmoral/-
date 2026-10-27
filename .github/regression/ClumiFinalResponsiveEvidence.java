@@ -139,7 +139,13 @@ final class ClumiFinalResponsiveEvidence {
     private void check(boolean value,String message){assertions++;if(!value)throw new AssertionError(message);}
     private void ui(Runnable action){Throwable[] failure=new Throwable[1];host.runOnMainSync(()->{try{action.run();}catch(Throwable t){failure[0]=t;}});if(failure[0]!=null)throw new AssertionError("Android UI action failed",failure[0]);}
     private void frame(){CountDownLatch latch=new CountDownLatch(1);ui(()->Choreographer.getInstance().postFrameCallback(t->latch.countDown()));try{check(latch.await(3,TimeUnit.SECONDS),"Android frame completed");}catch(InterruptedException e){Thread.currentThread().interrupt();throw new AssertionError(e);}}
-    private void settle(){frame();SystemClock.sleep(720);ui(()->{});}
+    private void settle(){
+        frame();
+        long deadline=SystemClock.elapsedRealtime()+8000;
+        while(activity!=null&&activity.navigationInProgress()&&SystemClock.elapsedRealtime()<deadline){SystemClock.sleep(40);ui(()->{});}
+        check(activity==null||!activity.navigationInProgress(),"Navigation presentation completed");
+        frame();SystemClock.sleep(90);ui(()->{});
+    }
     private void settleShort(){frame();SystemClock.sleep(320);ui(()->{});}
     private void back(){ui(activity::onBackPressed);settle();}
     private View tagged(View root,String tag){View v=root.findViewWithTag(tag);check(v!=null,"Tagged component exists: "+tag);return v;}
