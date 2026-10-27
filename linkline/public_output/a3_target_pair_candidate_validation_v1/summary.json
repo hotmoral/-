@@ -1,0 +1,58 @@
+{
+  "boundaries": {
+    "privateIsolationApplied": false,
+    "privateRepairApplied": false,
+    "productionCatalogModified": false
+  },
+  "groupTokenPairConsistency": {
+    "groupsChecked": 815,
+    "violations": 0
+  },
+  "orientedExactPairReplacementChecks": 156,
+  "privacy": {
+    "containsExactTargetPairCoordinateKeys": false,
+    "containsHumanOrSelfTestData": false,
+    "containsPrivateIsolationIds": false,
+    "containsPuzzleGeometry": false,
+    "containsTargetCoordinates": false
+  },
+  "repairReservoirRowsValidated": 1961,
+  "researchIdentityChecksPassed": 3261,
+  "schema": "LINKLINE_A3_TARGET_PAIR_PUBLIC_CANDIDATE_VALIDATION_V1",
+  "selectedPairAudit": {
+    "3": {
+      "maxPairUse": 1,
+      "pairCap": 1,
+      "uniquePairCount": 36
+    },
+    "4": {
+      "maxPairUse": 1,
+      "pairCap": 1,
+      "uniquePairCount": 120
+    },
+    "5": {
+      "maxPairUse": 2,
+      "pairCap": 2,
+      "uniquePairCount": 297
+    },
+    "6": {
+      "maxPairUse": 2,
+      "pairCap": 2,
+      "uniquePairCount": 518
+    }
+  },
+  "selectedRowsValidated": 1300,
+  "solver": {
+    "aggregateExpandedStates": 2786970,
+    "maxShortestDistance": 20,
+    "nonSolved": 0,
+    "solved": 3261
+  },
+  "sourceSelectionFingerprint": "1fc7dd15893a113935b0b1b2f5ca636e22669d783e887f90e56203275d3c3131",
+  "sourceSummaryFingerprint": "d1f3c0e5e7f7542bacba4f08843963cfe4d6169f9f3f941ec88f9db0c4c3a3c9",
+  "status": "PASS",
+  "summaryFingerprint": "bde1fc26cba3d779e11e6322399b482f369689830a4b58c0b96b2e177df2cb8c",
+  "totalRowsValidated": 3261,
+  "validationFingerprint": "c8ad8ede6b991501201635ed522868edc33753fcddb96e2ff2a40b8c6d9a43d8",
+  "version": "1.0.0"
+}
