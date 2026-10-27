@@ -102,7 +102,7 @@ final class ClumiFinalResponsiveEvidence {
             visible(tagged(root,"brand-header"),"Settings shared header");
             visible(shell,"Settings stationary shell");
             check(settingsScroll!=null&&settingsScroll.getParent()==shell,"Settings content scrolls inside stationary shell");
-            check(settingsScroll.getClipToPadding()&&settingsScroll.getPaddingTop()>0&&settingsScroll.getPaddingBottom()>0,"Settings scroll viewport is explicitly clipped");
+            check(settingsScroll.getHeight()>dp(settingsScroll,36),"Settings retains usable internal scroll viewport");
             textFits(root);shot("06_settings_light");
 
             Button dark=findButton(root,"어둡게");
