@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_exec_v1.py", line 27, in <module>
+    main()
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_exec_v1.py", line 23, in main
+    planner.main()
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_v1.py", line 483, in main
+    frozen_rows, frozen_source = fetch_frozen_product_rows()
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/-/-/repo/linkline/tools/a3_target_pair_selection_plan_v1.py", line 98, in fetch_frozen_product_rows
+    raise SelectionError(f"unexpected product chunk contract:{name}")
+tools.a3_target_pair_selection_plan_v1.SelectionError: unexpected product chunk contract:campaign-0261-0520.chunk.json
