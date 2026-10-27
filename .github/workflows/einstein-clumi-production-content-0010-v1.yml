@@ -22,6 +22,7 @@ jobs:
     env:
       SOURCE_SHA: 251d6c64bb21f3a62708020a49bf717309a19500
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
+      REGRESSION_BASELINE_SHA: 7242c767d025c73b7c2892685df74ad5b97a033b
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
       AVD_NAME: clumi-final-regression
