@@ -89,7 +89,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -z "$(git status --porcelain --untracked-files=all)"
+          echo 'TEST_OUTPUT_STATUS_BEGIN'
+          git status --porcelain --untracked-files=all || true
+          echo 'TEST_OUTPUT_STATUS_END'
+          git diff --quiet HEAD --
+          test -z "$(git diff --cached --name-only)"
+          test -z "$(git diff --name-only cdb66a3e0509bfec050a907bb43efb4e01b4ffeb HEAD -- puzzle-core/src/main/java puzzle-authoring/src/main/java app/src/main/java app/src/main/assets)"
           echo 'NEW_PRODUCTION_PUZZLES=0'
           echo 'NEW_FORMAL_DRAWS=0'
           echo 'NEW_BANKED_PRODUCTION_STAGES=0'
