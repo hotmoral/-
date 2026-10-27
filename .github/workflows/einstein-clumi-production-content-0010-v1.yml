@@ -1,4 +1,4 @@
-name: Clumi Stage Start One Screen V1
+name: Clumi Stage Clear One Screen V1
 
 on:
   push:
@@ -10,17 +10,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: clumi-stage-start-one-screen-v1
+  group: clumi-stage-clear-one-screen-v1
   cancel-in-progress: false
 
 jobs:
-  verify-stage-start-one-screen:
+  verify-stage-clear-one-screen:
     if: >-
-      github.event.head_commit.message == 'verify: Clumi Stage Start one screen v1'
+      github.event.head_commit.message == 'verify: Clumi Stage Clear one screen v1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 607bc2a975346a4321ab2199aef13c108e4fa0cc
+      SOURCE_SHA: bc6809e6666894ee1c33570763f6de1d67e7bfff
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
 
     steps:
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 607bc2a975346a4321ab2199aef13c108e4fa0cc
+          ref: bc6809e6666894ee1c33570763f6de1d67e7bfff
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           persist-credentials: false
 
@@ -53,7 +53,7 @@ jobs:
           set -euo pipefail
           sdkmanager 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
 
-      - name: Verify Stage Start one-screen contract
+      - name: Verify Stage Clear one-screen contract
         shell: bash
         run: |
           set -euo pipefail
@@ -61,25 +61,25 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
-          header=Path('app/src/main/java/com/example/einsteingame/ClumiHeaderBrand.java').read_text()
+          clear=Path('app/src/main/java/com/example/einsteingame/ClumiClearOneScreen.java').read_text()
+          hero=Path('app/src/main/java/com/example/einsteingame/ClumiClearHero.java').read_text()
+          seq=Path('app/src/main/java/com/example/einsteingame/ClumiResultSequence.java').read_text()
           start=Path('app/src/main/java/com/example/einsteingame/ClumiStageStartOneScreen.java').read_text()
-          settings=Path('app/src/main/java/com/example/einsteingame/ClumiSettingsScrollPanel.java').read_text()
+          main=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
           view=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
 
-          assert '"스테이지 시작".equals(label)' in header
-          assert 'ClumiStageStartOneScreen.install(this)' in header
-          assert 'scroll.removeView(body)' in start
-          assert 'page.removeViewAt(index)' in start
-          assert 'page.addView(body,index,bodyParams)' in start
-          assert 'setTag("start-one-screen-body")' in start
-          assert 'height<560' in start and 'height<720' in start
-          assert 'compact((LinearLayout)panel,cta' in start
-          assert 'ClumiSettingsScrollPanel.install(this,dark)' in header
-          assert 'setTag("settings-scroll-shell")' in settings
+          assert 'ClumiClearOneScreen.install(dialog,panel,records,actions);' in seq
+          assert 'parent instanceof ScrollView' in clear
+          assert 'dialog.setContentView(content)' in clear
+          assert 'setTag("clear-one-screen")' in clear
+          assert 'height<560' in clear and 'height<720' in clear
+          assert 'size(hero,165' in clear and 'size(hero,210' in clear
+          assert 'Math.min(w*.75f,h*.76f)' in hero
+          assert 'Math.min(w*.47f,h*.56f)' in hero
+          assert 'ClumiStageStartOneScreen' in start
           assert 'GameView next=new GameView(MainActivity.this,pack.get(selected));' in main
           assert 'state=new GameState(publishedPuzzle.puzzle);' in view
-          print('Stage Start one-screen static contract: PASS')
+          print('Stage Clear one-screen static contract: PASS')
           PY
           git diff --check
 
