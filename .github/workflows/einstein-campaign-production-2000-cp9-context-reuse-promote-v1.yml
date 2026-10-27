@@ -1,0 +1,87 @@
+name: Einstein Campaign 2000 CP9 Context Reuse Promote V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-production-2000-cp9-context-reuse-promote-v1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: einstein-campaign-production-2000
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: >-
+      github.event.head_commit.message == 'optimization: promote Einstein CP9 context reuse v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE_SHA: c40b923744653d3d02b5c02ea6d5cc114edea019
+      BRANCH: campaign-production-2000-cp9-context-reuse-optimization-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact private optimization branch
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: c40b923744653d3d02b5c02ea6d5cc114edea019
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Apply exact validated CP9 context reuse patch
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse origin/$BRANCH)" = "$SOURCE_SHA"
+          python3 tools/campaign-production-2000/apply_cp9_context_reuse_v1.py
+          mapfile -t changed < <(git diff --name-only | sort)
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = 'puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java'
+          echo 'CP9_CONTEXT_REUSE_PROMOTION_DIFF_GUARD=PASS'
+
+      - name: Compile production Java source
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/einstein-promote-classes /tmp/einstein-promote-sources.txt
+          mkdir -p /tmp/einstein-promote-classes
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > /tmp/einstein-promote-sources.txt
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d /tmp/einstein-promote-classes @/tmp/einstein-promote-sources.txt
+          echo 'CP9_CONTEXT_REUSE_PROMOTION_COMPILE=PASS'
+
+      - name: Commit and push exact source change
+        shell: bash
+        working-directory: EinsteinGame
+        run: |
+          set -euo pipefail
+          git config user.name 'einstein-production-bot'
+          git config user.email 'einstein-production-bot@users.noreply.github.com'
+          git add puzzle-authoring/src/main/java/com/example/einsteingame/authoring/pss/difficulty/StaticDifficultyAnalyzer.java
+          test -z "$(git diff --name-only)"
+          git diff --cached --quiet && { echo 'expected staged source diff missing' >&2; exit 1; } || true
+          git commit -m 'optimization: reuse exact CP9 requiredness context'
+          NEW_SHA="$(git rev-parse HEAD)"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "PROMOTED_SOURCE_SHA=$NEW_SHA"
+          echo 'CP9_CONTEXT_REUSE_PROMOTION=PASS'
