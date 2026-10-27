@@ -1,0 +1,113 @@
+{
+  "boundaries": {
+    "privateIsolationApplied": false,
+    "productionCatalogModified": false,
+    "replacementCatalogSelected": false,
+    "targetPairCapacityMeasured": false
+  },
+  "domains": [
+    {
+      "chainLength": 6,
+      "identityFingerprint": "e8765457e6faac06097ba49b71a35bc5e9b6947ae7097fcdc2c1521adb1a65db",
+      "n": 5,
+      "rowCount": 276
+    },
+    {
+      "chainLength": 7,
+      "identityFingerprint": "65141bbef98e1d989e4bc1c325d598052f6713f8dd6775719fa352002b347b9b",
+      "n": 5,
+      "rowCount": 284
+    },
+    {
+      "chainLength": 8,
+      "identityFingerprint": "d9648840f6c9a70a26816776721be0023543c27710874dfe9caf29b35c1d484a",
+      "n": 5,
+      "rowCount": 236
+    },
+    {
+      "chainLength": 9,
+      "identityFingerprint": "42180c55c9a9c67937175eb7da5ae319ffa78acf4c50d12556ecb591a0642621",
+      "n": 5,
+      "rowCount": 231
+    },
+    {
+      "chainLength": 10,
+      "identityFingerprint": "11b9b1095f593758761ab0ffacd7b123baf068d5a7255b11e007b56af5f3ebea",
+      "n": 5,
+      "rowCount": 229
+    },
+    {
+      "chainLength": 8,
+      "identityFingerprint": "a620d31593a0a74180fd8a6b19a99543c267d2c7a7bcc38f2b804020cb6a8a14",
+      "n": 6,
+      "rowCount": 279
+    },
+    {
+      "chainLength": 9,
+      "identityFingerprint": "b59e16dca9920722d5aca55df82f084a7775f76463522a4b909850a1c786825c",
+      "n": 6,
+      "rowCount": 287
+    },
+    {
+      "chainLength": 10,
+      "identityFingerprint": "5ac65c087a66e3ae0d814c73136db39ce604f4a67fad902bf0663fe8e693b1dc",
+      "n": 6,
+      "rowCount": 217
+    },
+    {
+      "chainLength": 11,
+      "identityFingerprint": "5862d193320e7ed4ab00db0badc2295e4048a6c08fd126cab913b29779e77a26",
+      "n": 6,
+      "rowCount": 231
+    },
+    {
+      "chainLength": 12,
+      "identityFingerprint": "e3ae1a3af75996c37e59f1cb9c97c2e1426829e43663fb01e6c5acb3753b7fef",
+      "n": 6,
+      "rowCount": 215
+    },
+    {
+      "chainLength": 13,
+      "identityFingerprint": "7d1d2272da8ed5807e262fec346d2a79925f71023d26a5a7e9ff324052e733ba",
+      "n": 6,
+      "rowCount": 225
+    },
+    {
+      "chainLength": 14,
+      "identityFingerprint": "ac08d0e4b7d8435d1b05e8ec1cf063a3fa5fd063153ba6c87d7e017e024aa053",
+      "n": 6,
+      "rowCount": 207
+    },
+    {
+      "chainLength": 15,
+      "identityFingerprint": "a6a4b9589870e4e60179786431e82f4767e46b6712359dccb42dd51f025450ca",
+      "n": 6,
+      "rowCount": 232
+    }
+  ],
+  "identityFingerprint": "8e0843e22b584beeeabdf35427282369b8bcc5d6a4d53dc520238d34ab581aa7",
+  "nCounts": {
+    "5": 1256,
+    "6": 1893
+  },
+  "nlCounts": {
+    "N5L10": 229,
+    "N5L6": 276,
+    "N5L7": 284,
+    "N5L8": 236,
+    "N5L9": 231,
+    "N6L10": 217,
+    "N6L11": 231,
+    "N6L12": 215,
+    "N6L13": 225,
+    "N6L14": 207,
+    "N6L15": 232,
+    "N6L8": 279,
+    "N6L9": 287
+  },
+  "rowCount": 3149,
+  "schema": "LINKLINE_A3_TARGET_PAIR_ACQUISITION_PUBLIC_POOL_SUMMARY",
+  "stateCount": 48,
+  "summaryFingerprint": "a990aba2e21ae8d3703c709d8509d77b340431f00cd106589021d2d500180dec",
+  "version": "1.0.0"
+}
