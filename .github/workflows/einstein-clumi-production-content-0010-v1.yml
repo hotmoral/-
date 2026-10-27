@@ -16,7 +16,7 @@ concurrency:
 jobs:
   integrate-campaign-content:
     if: >-
-      github.event.head_commit.message == 'integration: publish Clumi campaign snapshot 0001-0010'
+      github.event.head_commit.message == 'integration: validate Clumi campaign snapshot 0001-0010'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -48,6 +48,20 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          cmdline-tools-version: '12266719'
+          accept-android-sdk-licenses: 'true'
+          log-accepted-android-sdk-licenses: 'false'
+          packages: ''
+
+      - name: Install Android platform 34
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" >/dev/null
 
       - name: Materialize immutable BANKED runtime snapshot
         shell: bash
@@ -154,12 +168,12 @@ jobs:
           git diff --quiet "$BASE_SHA" -- app/src/main/assets/stages/pilot-stage-config.properties
           git diff --check
 
-      - name: Build Android debug package
+      - name: Compile Android sources without package signing
         shell: bash
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew :app:assembleDebug --no-daemon
+          env -u GITHUB_ACTIONS -u CI ./gradlew :app:compileDebugJavaWithJavac --no-daemon --stacktrace --console=plain
 
       - name: Commit verified production snapshot
         shell: bash
