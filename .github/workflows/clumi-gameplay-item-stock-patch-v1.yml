@@ -1,0 +1,107 @@
+name: Clumi Gameplay Item Stock Patch V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/clumi-gameplay-item-stock-patch-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  patch-gameplay-item-stock:
+    if: >-
+      github.event.head_commit.message == 'ui: patch gameplay item stock presentation v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED_HEAD: 99a22fd8960b5cd5896e3ce01876cac2e2a06fe2
+      TARGET_BRANCH: clumi-ui-presentation-polish-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact UI branch
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: clumi-ui-presentation-polish-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          fetch-depth: 1
+          persist-credentials: true
+
+      - name: Require expected live HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test "$(git branch --show-current)" = "$TARGET_BRANCH"
+
+      - name: Patch gameplay item presentation only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path=Path('app/src/main/java/com/example/einsteingame/GameView.java')
+          text=path.read_text()
+          start=text.index('    private void drawItemButton(Canvas c,int index){')
+          end=text.index('    String filterState(int index)',start)
+          old=text[start:end]
+          new='''    private void drawItemButton(Canvas c,int index){
+              RectF r=itemButtons[index];int count=progress.inventory(index==0?StageCatalog.Item.UNDO_BOOST:StageCatalog.Item.CONFIRM_CELL);boolean enabled=itemEnabled(index),targeting=index==1&&session.targeting();
+              beginControl(c,r);
+              card(c,r,ClumiVisualTokens.CONTROL_RADIUS,enabled?ClumiSkin.SOFT:ClumiSkin.MUTED,false);
+              strokeRound(c,r,d(ClumiVisualTokens.CONTROL_RADIUS),enabled?ClumiVisualTokens.BLUE_MID:ClumiVisualTokens.MUTED_FILL,d(enabled?1.3f:.7f));
+              if(targeting)strokeRound(c,r,d(ClumiVisualTokens.CONTROL_RADIUS),ORANGE,d(2));
+              if(enabled)c.save();else{disabledItemPaint.setColorFilter(grayscale);disabledItemPaint.setAlpha(120);c.saveLayer(r,disabledItemPaint);}
+              float stockWidth=d(count<10?17:count<100?21:25);
+              float artSize=Math.min(r.height()-d(2),r.width()-stockWidth-d(5));
+              float artLeft=r.left+d(2),artTop=r.centerY()-artSize/2;
+              effectBounds.set(artLeft,artTop,artLeft+artSize,artTop+artSize);
+              ClumiGlyph.draw(c,index==0?"undo_boost":"bulb",effectBounds,BLUE);
+              c.restore();
+              text(c,"×"+count,r.right-stockWidth/2-d(1),r.centerY(),d(compactGameplay?9.5f:10.5f),enabled?ClumiVisualTokens.BLUE_STROKE:MUTED,true,stockWidth-d(1));
+              endControl(c);
+          }
+'''
+          assert 'count+"개"' in old
+          assert 'text(c,"확정"' in old
+          text=text[:start]+new+text[end:]
+          old_tutorial='이 아이템을 사용하면 실행취소 횟수가 3번 늘어나요. 아래 숫자는 남은 아이템 수량이에요'
+          new_tutorial='이 아이템을 사용하면 실행취소 횟수가 3번 늘어나요. 오른쪽의 ×숫자는 남은 아이템 수량이에요'
+          assert text.count(old_tutorial)==1
+          text=text.replace(old_tutorial,new_tutorial,1)
+          path.write_text(text)
+          PY
+          git diff --check
+          test "$(git diff --name-only)" = 'app/src/main/java/com/example/einsteingame/GameView.java'
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
+          start=text.index('    private void drawItemButton(Canvas c,int index){')
+          end=text.index('    String filterState(int index)',start)
+          method=text[start:end]
+          assert 'count+"개"' not in method
+          assert 'text(c,"확정"' not in method
+          assert 'text(c,"×"+count' in method
+          assert '"undo_boost":"bulb"' in method
+          PY
+
+      - name: Commit and push exact patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'hotmoral'
+          git config user.email 'sktjsek@gmail.com'
+          git add app/src/main/java/com/example/einsteingame/GameView.java
+          git commit -m 'ui: redesign gameplay item stock display'
+          git push origin "HEAD:$TARGET_BRANCH"
+          git rev-parse HEAD
