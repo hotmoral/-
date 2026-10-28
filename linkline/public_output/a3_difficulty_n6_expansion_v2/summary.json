@@ -1,0 +1,74 @@
+{
+  "boundaries": {
+    "finalSelectionPerformed": false,
+    "privateIsolationApplied": false,
+    "productionCatalogModified": false
+  },
+  "byN": {
+    "6": {
+      "exactPairCount": 614,
+      "maxCandidatesForOnePair": 196,
+      "pairsWithAtLeastTwo": 564,
+      "rawMarginOverTarget": 548,
+      "requiredSecondUsesIfUniquePairFirst": 16,
+      "rowCount": 5175,
+      "selectableCapacityUnderCap": 1178,
+      "target": 630
+    }
+  },
+  "byNL": {
+    "N6L10": {
+      "exactPairCount": 237,
+      "maxCandidatesForOnePairWithinNL": 23,
+      "pairsWithAtLeastTwoWithinNL": 154,
+      "rowCount": 609
+    },
+    "N6L11": {
+      "exactPairCount": 222,
+      "maxCandidatesForOnePairWithinNL": 67,
+      "pairsWithAtLeastTwoWithinNL": 139,
+      "rowCount": 624
+    },
+    "N6L12": {
+      "exactPairCount": 228,
+      "maxCandidatesForOnePairWithinNL": 21,
+      "pairsWithAtLeastTwoWithinNL": 141,
+      "rowCount": 602
+    },
+    "N6L13": {
+      "exactPairCount": 218,
+      "maxCandidatesForOnePairWithinNL": 66,
+      "pairsWithAtLeastTwoWithinNL": 132,
+      "rowCount": 609
+    },
+    "N6L14": {
+      "exactPairCount": 232,
+      "maxCandidatesForOnePairWithinNL": 28,
+      "pairsWithAtLeastTwoWithinNL": 135,
+      "rowCount": 583
+    },
+    "N6L15": {
+      "exactPairCount": 219,
+      "maxCandidatesForOnePairWithinNL": 64,
+      "pairsWithAtLeastTwoWithinNL": 131,
+      "rowCount": 626
+    },
+    "N6L8": {
+      "exactPairCount": 242,
+      "maxCandidatesForOnePairWithinNL": 11,
+      "pairsWithAtLeastTwoWithinNL": 170,
+      "rowCount": 757
+    },
+    "N6L9": {
+      "exactPairCount": 217,
+      "maxCandidatesForOnePairWithinNL": 36,
+      "pairsWithAtLeastTwoWithinNL": 142,
+      "rowCount": 765
+    }
+  },
+  "identityFingerprint": "d39c5ce161d191223a5aa2380b46ca769a8f56cb089bdc3c3d284f76669cbe25",
+  "schema": "LINKLINE_A3_TARGET_PAIR_N6_DIFFICULTY_EXPANSION_PUBLIC_POOL_SUMMARY",
+  "stateCount": 128,
+  "summaryFingerprint": "f682d978fb36b0e5c836f073253d1b68df7bd95ba4eb3098660e2e3a6d896f5d",
+  "version": "2.0.0"
+}
