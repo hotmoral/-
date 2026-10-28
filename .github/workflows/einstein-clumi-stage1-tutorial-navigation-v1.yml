@@ -1,4 +1,4 @@
-name: Clumi Confirm Item Reference Match
+name: Clumi Confirm Item Exact Asset Repair
 
 on:
   push:
@@ -9,68 +9,72 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: clumi-ui-tutorial-edit
+  cancel-in-progress: false
+
 jobs:
-  verify-reference-prefix:
+  repair-confirm-item:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     env:
       EXPECTED_SOURCE_SHA: 4847229b6509d0686d6e7b19cafbc842c2fc0366
+      SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       EXPECTED_TOP213_RGBA_SHA256: 45362585aab4c81a0f32b4ef7267e365fe00d03c0af1e331dce62e68a1420b5c
-      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      EXPECTED_FULL_RGBA_SHA256: 2485a667e93aab8102e467436665f5d807f3591ae9a90513e1c276f4c1794eed
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+      BOTTOM43_ZLIB_B64: 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
     steps:
-      - name: Require credential
+      - name: Require private write credential
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$READ_TOKEN"
+          test -n "$WRITE_TOKEN"
 
       - name: Checkout exact private UI branch
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
           ref: clumi-ui-presentation-polish-v1
-          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
           path: source
-          fetch-depth: 1
-          persist-credentials: false
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Require exact source HEAD
         shell: bash
         run: |
           set -euo pipefail
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Prove intact prefix matches approved 256 reference
+      - name: Restore exact approved confirm-cell pixels
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import struct,zlib,hashlib,os
-          data=Path('source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png').read_bytes()
-          assert data[:8]==b'\x89PNG\r\n\x1a\n'
+          import base64,hashlib,os,struct,zlib
+          path=Path('source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png')
+          data=path.read_bytes(); assert data[:8]==b'\x89PNG\r\n\x1a\n'
           pos=8; meta={}
           for expected in (b'IHDR',b'PLTE',b'tRNS'):
-              n=struct.unpack('>I',data[pos:pos+4])[0]; kind=data[pos+4:pos+8]
-              assert kind==expected
+              n=struct.unpack('>I',data[pos:pos+4])[0]; kind=data[pos+4:pos+8]; assert kind==expected
               payload=data[pos+8:pos+8+n]
-              stored=struct.unpack('>I',data[pos+8+n:pos+12+n])[0]
-              assert stored==(zlib.crc32(kind+payload)&0xffffffff)
+              assert struct.unpack('>I',data[pos+8+n:pos+12+n])[0]==(zlib.crc32(kind+payload)&0xffffffff)
               meta[kind]=payload; pos+=12+n
           w,h,depth,ctype,comp,filt,interlace=struct.unpack('>IIBBBBB',meta[b'IHDR'])
           assert (w,h,depth,ctype,comp,filt,interlace)==(256,256,8,3,0,0,0)
           palette=meta[b'PLTE']; alpha=meta[b'tRNS']; palette_count=len(palette)//3
           marker=data.find(b'IDAT',pos); assert marker>=0
-          rows_to_check=213; expected_raw=rows_to_check*(w+1)
-          inflater=zlib.decompressobj(); raw=inflater.decompress(data[marker+4:],expected_raw)
-          assert len(raw)==expected_raw
-          prev=bytearray(w); cursor=0; rgba=bytearray(); filters=[]
+          rows=213; raw=zlib.decompressobj().decompress(data[marker+4:],rows*(w+1)); assert len(raw)==rows*(w+1)
+          prev=bytearray(w); cur=0; top=bytearray()
           def paeth(a,b,c):
               p=a+b-c; pa=abs(p-a); pb=abs(p-b); pc=abs(p-c)
               return a if pa<=pb and pa<=pc else b if pb<=pc else c
-          for y in range(rows_to_check):
-              f=raw[cursor]; cursor+=1; filters.append(f); assert f in (0,1,2,3,4),(y,f)
-              src=raw[cursor:cursor+w]; cursor+=w; row=bytearray(w)
+          for y in range(rows):
+              f=raw[cur]; cur+=1; assert f in (0,1,2,3,4)
+              src=raw[cur:cur+w]; cur+=w; row=bytearray(w)
               for x,v in enumerate(src):
                   a=row[x-1] if x else 0; b=prev[x]; c=prev[x-1] if x else 0
                   if f==0: val=v
@@ -78,14 +82,74 @@ jobs:
                   elif f==2: val=(v+b)&255
                   elif f==3: val=(v+((a+b)//2))&255
                   else: val=(v+paeth(a,b,c))&255
-                  assert val<palette_count,(y,x,val,palette_count)
-                  row[x]=val
-                  base=val*3
-                  rgba.extend((palette[base],palette[base+1],palette[base+2],alpha[val] if val<len(alpha) else 255))
+                  assert val<palette_count; row[x]=val
+                  p=val*3; top.extend((palette[p],palette[p+1],palette[p+2],alpha[val] if val<len(alpha) else 255))
               prev=row
-          digest=hashlib.sha256(bytes(rgba)).hexdigest()
-          expected=os.environ['EXPECTED_TOP213_RGBA_SHA256']
-          print('rows=',rows_to_check,'filters=',sorted(set(filters)),'rgba_sha256=',digest)
-          assert digest==expected,(digest,expected)
-          print('REFERENCE_PREFIX_MATCH=PASS')
+          assert hashlib.sha256(top).hexdigest()==os.environ['EXPECTED_TOP213_RGBA_SHA256']
+          bottom=zlib.decompress(base64.b64decode(os.environ['BOTTOM43_ZLIB_B64']))
+          assert len(bottom)==43*w*4
+          rgba=bytes(top)+bottom
+          assert len(rgba)==w*h*4
+          assert hashlib.sha256(rgba).hexdigest()==os.environ['EXPECTED_FULL_RGBA_SHA256']
+          scan=bytearray()
+          for y in range(h): scan.append(0); scan.extend(rgba[y*w*4:(y+1)*w*4])
+          def chunk(kind,payload):
+              return struct.pack('>I',len(payload))+kind+payload+struct.pack('>I',zlib.crc32(kind+payload)&0xffffffff)
+          out=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(bytes(scan),9))+chunk(b'IEND',b'')
+          path.write_bytes(out)
+          print('RESTORED_FULL_RGBA_SHA256='+hashlib.sha256(rgba).hexdigest())
+          print('RESTORED_PNG_SHA256='+hashlib.sha256(out).hexdigest())
           PY
+          file source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F 'RGBA'
+          identify source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F '256x256'
+          identify source/app/src/main/assets/ui/b3-r5/item_undo.png | grep -F '256x256'
+          git -C source diff --check
+          test "$(git -C source status --porcelain | wc -l)" -eq 1
+          test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Build debug APK with restored artwork
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
+            -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            ./gradlew --no-daemon --stacktrace --console=plain :app:assembleDebug
+          test -s app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Commit and push exact asset repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source status --porcelain | wc -l)" -eq 1
+          test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
+          git -C source config user.name 'hotmoral'
+          git -C source config user.email 'sktjsek@gmail.com'
+          git -C source add app/src/main/assets/ui/b3-r5/item_confirm_cell.png
+          git -C source commit -m 'fix: restore confirm-cell item PNG'
+          git -C source push origin "HEAD:$SOURCE_BRANCH"
+          echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Report source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "private_source_sha=$PRIVATE_SOURCE_SHA"
