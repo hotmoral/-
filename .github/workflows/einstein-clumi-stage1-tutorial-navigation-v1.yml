@@ -1,4 +1,4 @@
-name: Clumi Confirm Item Fingerprint
+name: Clumi Confirm Item Exact Stream Repair
 
 on:
   push:
@@ -9,48 +9,197 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: clumi-ui-tutorial-edit
+  cancel-in-progress: false
+
 jobs:
-  fingerprint:
+  repair-confirm-item:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     env:
       EXPECTED_SOURCE_SHA: 4847229b6509d0686d6e7b19cafbc842c2fc0366
-      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      SOURCE_BRANCH: clumi-ui-presentation-polish-v1
+      EXPECTED_SUFFIX_SHA256: 0580dfcb759b3e93d1adb5eba9b91be6a138db2f8ab01051ae2d660923e0ecea
+      EXPECTED_PLTE_SHA256: ed963bd7a2a812ac492356c0c3b8ca4c9dbac857bed7e9d20deda3b5ea833f16
+      EXPECTED_TRNS_SHA256: d5717e10b21d0b365ec4414735fa01df70af7208b09ae92a8d6a09e30404f61f
+      EXPECTED_IDAT_PREFIX_SHA256: 916362d83f1979db1f4a0512e8069445c3fc2bbe8aa87ae3395f8a755a68e6f5
+      EXPECTED_IDAT_SHA256: 4e194624c7b892758dea364ca3ed70674db933f72e25d5d424be1bb1ca27a096
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
     steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout public repair fixture
+        uses: actions/checkout@v4
+        with:
+          path: harness
+          fetch-depth: 1
+          persist-credentials: false
+
       - name: Checkout exact private UI branch
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
           ref: clumi-ui-presentation-polish-v1
-          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
           path: source
-          fetch-depth: 1
-          persist-credentials: false
+          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Require exact source HEAD and fingerprint PNG
+      - name: Require exact source HEAD
         shell: bash
         run: |
           set -euo pipefail
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
+
+      - name: Repair exact corrupted IDAT suffix
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib,struct,zlib
-          p=Path('source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png')
-          d=p.read_bytes(); assert d[:8]==b'\x89PNG\r\n\x1a\n'
-          pos=8; chunks={}
+          import hashlib, os, struct, zlib
+
+          suffix_hex=''.join(Path('harness/.github/regression/clumi_confirm_idat_suffix.hex').read_text().split())
+          suffix=bytes.fromhex(suffix_hex)
+          assert len(suffix)==1613,len(suffix)
+          assert hashlib.sha256(suffix).hexdigest()==os.environ['EXPECTED_SUFFIX_SHA256']
+
+          path=Path('source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png')
+          data=path.read_bytes()
+          assert data[:8]==b'\x89PNG\r\n\x1a\n'
+
+          pos=8; stored_chunks=[]; payloads={}
           for expected in (b'IHDR',b'PLTE',b'tRNS'):
-              n=struct.unpack('>I',d[pos:pos+4])[0]; kind=d[pos+4:pos+8]; assert kind==expected
-              payload=d[pos+8:pos+8+n]
-              assert struct.unpack('>I',d[pos+8+n:pos+12+n])[0]==(zlib.crc32(kind+payload)&0xffffffff)
-              chunks[kind]=payload; pos+=12+n
-          marker=d.find(b'IDAT',pos); assert marker>=0
-          declared=struct.unpack('>I',d[marker-4:marker])[0]
-          payload=d[marker+4:marker+4+declared]
-          print('file_bytes',len(d),'idat_marker',marker,'declared',declared)
-          for kind in (b'PLTE',b'tRNS'):
-              print(kind.decode(),'len',len(chunks[kind]),'sha256',hashlib.sha256(chunks[kind]).hexdigest())
-          for n in (64,128,256,512,1024,2048,4096,8192,declared):
-              if n<=len(payload): print('IDAT_PREFIX',n,hashlib.sha256(payload[:n]).hexdigest())
-          print('IDAT_CRC_STORED',struct.unpack('>I',d[marker+4+declared:marker+8+declared])[0] if marker+8+declared<=len(d) else None)
-          print('IDAT_CRC_ACTUAL',zlib.crc32(b'IDAT'+payload)&0xffffffff)
+              start=pos
+              n=struct.unpack('>I',data[pos:pos+4])[0]
+              kind=data[pos+4:pos+8]
+              assert kind==expected,(kind,expected)
+              payload=data[pos+8:pos+8+n]
+              stored=struct.unpack('>I',data[pos+8+n:pos+12+n])[0]
+              assert stored==(zlib.crc32(kind+payload)&0xffffffff),(kind,stored)
+              stored_chunks.append(data[start:pos+12+n])
+              payloads[kind]=payload
+              pos+=12+n
+
+          w,h,depth,ctype,comp,filt,interlace=struct.unpack('>IIBBBBB',payloads[b'IHDR'])
+          assert (w,h,depth,ctype,comp,filt,interlace)==(256,256,8,3,0,0,0)
+          assert hashlib.sha256(payloads[b'PLTE']).hexdigest()==os.environ['EXPECTED_PLTE_SHA256']
+          assert hashlib.sha256(payloads[b'tRNS']).hexdigest()==os.environ['EXPECTED_TRNS_SHA256']
+
+          marker=data.find(b'IDAT',pos)
+          assert marker==pos+4,(marker,pos)
+          declared=struct.unpack('>I',data[marker-4:marker])[0]
+          assert declared==9805,declared
+          old_payload=data[marker+4:marker+4+declared]
+          assert len(old_payload)==declared
+          prefix=old_payload[:8192]
+          assert hashlib.sha256(prefix).hexdigest()==os.environ['EXPECTED_IDAT_PREFIX_SHA256']
+          repaired=prefix+suffix
+          assert len(repaired)==declared
+          assert hashlib.sha256(repaired).hexdigest()==os.environ['EXPECTED_IDAT_SHA256']
+
+          raw=zlib.decompress(repaired)
+          assert len(raw)==h*(w+1),(len(raw),h*(w+1))
+          palette_count=len(payloads[b'PLTE'])//3
+          prev=bytearray(w); p=0; filters=[]; max_index=0
+          def paeth(a,b,c):
+              q=a+b-c; pa=abs(q-a); pb=abs(q-b); pc=abs(q-c)
+              return a if pa<=pb and pa<=pc else b if pb<=pc else c
+          for y in range(h):
+              f=raw[p]; p+=1; filters.append(f); assert f in (0,1,2,3,4),(y,f)
+              src=raw[p:p+w]; p+=w; row=bytearray(w)
+              for x,v in enumerate(src):
+                  a=row[x-1] if x else 0; b=prev[x]; c=prev[x-1] if x else 0
+                  if f==0: val=v
+                  elif f==1: val=(v+a)&255
+                  elif f==2: val=(v+b)&255
+                  elif f==3: val=(v+((a+b)//2))&255
+                  else: val=(v+paeth(a,b,c))&255
+                  assert val<palette_count,(y,x,val,palette_count)
+                  row[x]=val; max_index=max(max_index,val)
+              prev=row
+          assert p==len(raw)
+
+          def chunk(kind,payload):
+              return struct.pack('>I',len(payload))+kind+payload+struct.pack('>I',zlib.crc32(kind+payload)&0xffffffff)
+          out=b'\x89PNG\r\n\x1a\n'+b''.join(stored_chunks)+chunk(b'IDAT',repaired)+chunk(b'IEND',b'')
+
+          q=8; seen=[]; idats=[]
+          while q<len(out):
+              n=struct.unpack('>I',out[q:q+4])[0]; kind=out[q+4:q+8]; payload=out[q+8:q+8+n]
+              stored=struct.unpack('>I',out[q+8+n:q+12+n])[0]
+              assert stored==(zlib.crc32(kind+payload)&0xffffffff)
+              seen.append(kind)
+              if kind==b'IDAT': idats.append(payload)
+              q+=12+n
+              if kind==b'IEND': break
+          assert q==len(out)
+          assert seen==[b'IHDR',b'PLTE',b'tRNS',b'IDAT',b'IEND'],seen
+          assert hashlib.sha256(b''.join(idats)).hexdigest()==os.environ['EXPECTED_IDAT_SHA256']
+          assert zlib.decompress(b''.join(idats))==raw
+
+          path.write_bytes(out)
+          print('REPAIR_VALID=PASS')
+          print('filters=',sorted(set(filters)),'palette_count=',palette_count,'max_index=',max_index)
+          print('png_sha256=',hashlib.sha256(out).hexdigest(),'bytes=',len(out))
           PY
+          file source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F 'PNG image data, 256 x 256'
+          identify source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F '256x256'
+          identify source/app/src/main/assets/ui/b3-r5/item_undo.png | grep -F '256x256'
+          git -C source diff --check
+          test "$(git -C source status --porcelain | wc -l)" -eq 1
+          test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Build debug APK with repaired artwork
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
+            -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            ./gradlew --no-daemon --stacktrace --console=plain :app:assembleDebug
+          test -s app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Commit and push exact stream repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source status --porcelain | wc -l)" -eq 1
+          test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
+          git -C source config user.name 'hotmoral'
+          git -C source config user.email 'sktjsek@gmail.com'
+          git -C source add app/src/main/assets/ui/b3-r5/item_confirm_cell.png
+          git -C source commit -m 'fix: repair confirm-cell item PNG stream'
+          git -C source push origin "HEAD:$SOURCE_BRANCH"
+          echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Report source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "private_source_sha=$PRIVATE_SOURCE_SHA"
