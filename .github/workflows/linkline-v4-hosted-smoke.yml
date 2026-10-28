@@ -68,7 +68,12 @@ jobs:
           mkdir -p /tmp/hosted
           for rel in "${files[@]}"; do
             mkdir -p "/tmp/hosted/$(dirname "$rel")"
-            curl -fsS --max-time 15 "$PREVIEW_URL/$rel" -o "/tmp/hosted/$rel"
+            if [ "$rel" = "index.html" ]; then
+              url="$PREVIEW_URL/"
+            else
+              url="$PREVIEW_URL/$rel"
+            fi
+            curl -fsS --max-time 15 "$url" -o "/tmp/hosted/$rel"
             cmp "$APP_DIR/$rel" "/tmp/hosted/$rel"
           done
           echo "Exact-byte parity PASS for ${#files[@]} hosted runtime/data files"
