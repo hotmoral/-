@@ -19,7 +19,7 @@ import tools.a3_target_pair_selection_plan_v1 as v1
 import tools.a3_target_pair_selection_plan_v3 as v3
 
 SCHEMA = "LINKLINE_A3_DIFFICULTY_TARGET_PAIR_CAPACITY_V1"
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 THRESHOLDS = tuple(range(2, 9))
 
 
@@ -39,6 +39,14 @@ def distance(row: dict) -> int:
 def compact_hist(values) -> dict:
     counts = Counter(values)
     return {str(k): counts[k] for k in sorted(counts)}
+
+
+def pool_state_count(path: Path) -> int:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    value = payload.get("samplingContract", {}).get("stateCount")
+    if type(value) is not int or value < 1:
+        raise v1.SelectionError(f"invalid stateCount contract:{path}")
+    return value
 
 
 def legacy_orbit_supply(rows: list[dict]):
@@ -182,21 +190,28 @@ def main() -> None:
     parser.add_argument("--legacy-pool", type=Path, required=True)
     parser.add_argument("--n5-pool", type=Path, required=True)
     parser.add_argument("--n6-pool", type=Path, required=True)
+    parser.add_argument("--current-n6-pool", type=Path)
     parser.add_argument("--selection-plan", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
     legacy_rows, _legacy_source = v3.load_legacy_pool(args.legacy_pool)
-    n5_rows = v1.public_pool_rows(args.n5_pool, 5, v1.STATE_COUNTS[5])
-    n6_rows = v1.public_pool_rows(args.n6_pool, 6, v1.STATE_COUNTS[6])
+    n5_state_count = pool_state_count(args.n5_pool)
+    n6_state_count = pool_state_count(args.n6_pool)
+    n5_rows = v1.public_pool_rows(args.n5_pool, 5, n5_state_count)
+    n6_rows = v1.public_pool_rows(args.n6_pool, 6, n6_state_count)
+
+    current_n6_path = args.current_n6_pool or args.n6_pool
+    current_n6_state_count = pool_state_count(current_n6_path)
+    current_n6_rows = v1.public_pool_rows(current_n6_path, 6, current_n6_state_count)
     plan = json.loads(args.selection_plan.read_text(encoding="utf-8"))
 
     domains = {
         "3_4": legacy_orbit_supply(legacy_rows),
-        "5": expanded_pair_supply(n5_rows, 5, v1.STATE_COUNTS[5], v1.N5_DOMAINS),
-        "6": expanded_pair_supply(n6_rows, 6, v1.STATE_COUNTS[6], v1.N6_DOMAINS),
+        "5": expanded_pair_supply(n5_rows, 5, n5_state_count, v1.N5_DOMAINS),
+        "6": expanded_pair_supply(n6_rows, 6, n6_state_count, v1.N6_DOMAINS),
     }
-    current = current_selection_distribution(plan, [legacy_rows, n5_rows, n6_rows])
+    current = current_selection_distribution(plan, [legacy_rows, n5_rows, current_n6_rows])
 
     aggregate = {}
     for threshold in THRESHOLDS:
@@ -223,6 +238,11 @@ def main() -> None:
             "pairCapsRemainHard": {str(n): cap for n, cap in sorted(v1.PAIR_CAPS.items())},
             "allAvailableExactPairsUsedBeforeAnySecondUse": True,
             "pairDiversityPrecedesDifficultyOptimization": True,
+        },
+        "sourceStateCounts": {
+            "n5CapacityPool": n5_state_count,
+            "n6CapacityPool": n6_state_count,
+            "n6CurrentSelectionLookupPool": current_n6_state_count,
         },
         "currentSelection": current,
         "capacity": domains,
