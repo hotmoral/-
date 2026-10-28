@@ -151,8 +151,7 @@ jobs:
           print('png_sha256=',hashlib.sha256(out).hexdigest(),'bytes=',len(out))
           PY
           file source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F 'PNG image data, 256 x 256'
-          identify source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F '256x256'
-          identify source/app/src/main/assets/ui/b3-r5/item_undo.png | grep -F '256x256'
+          file source/app/src/main/assets/ui/b3-r5/item_undo.png | grep -F 'PNG image data, 256 x 256'
           git -C source diff --check
           test "$(git -C source status --porcelain | wc -l)" -eq 1
           test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
