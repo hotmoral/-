@@ -56,122 +56,143 @@ jobs:
           p=Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
           text=p.read_text()
 
-          old='            else if(!policy.seenBefore("stage1.candidate.remove"))tutorialStep=4;\n            else return;'
-          new='            else if(!policy.seenBefore("stage1.candidate.remove"))tutorialStep=4;\n            else if(!policy.seenBefore("stage1.clue1.apply"))tutorialStep=5;\n            else return;'
+          old="\n".join([
+              '            else if(!policy.seenBefore("stage1.candidate.remove"))tutorialStep=4;',
+              '            else return;'
+          ])
+          new="\n".join([
+              '            else if(!policy.seenBefore("stage1.candidate.remove"))tutorialStep=4;',
+              '            else if(!policy.seenBefore("stage1.clue1.apply"))tutorialStep=5;',
+              '            else return;'
+          ])
           assert text.count(old)==1, 'resume anchor mismatch'
           text=text.replace(old,new,1)
 
-          old='''    private int tutorialCheeseSlot(){
-        for(int slot=0;slot<GameState.SIZE;slot++){
-            String id=state.itemId(0,slot);
-            if(id!=null&&id.endsWith(".cheese"))return slot;
-        }
-        return -1;
-    }
-    private void showTutorialStep(){'''
-          new='''    private int tutorialCheeseSlot(){
-        for(int slot=0;slot<GameState.SIZE;slot++){
-            String id=state.itemId(0,slot);
-            if(id!=null&&id.endsWith(".cheese"))return slot;
-        }
-        return -1;
-    }
-    private int[] tutorialItemLocation(String suffix){
-        for(int row=0;row<GameState.SIZE;row++)for(int slot=0;slot<GameState.SIZE;slot++){
-            String id=state.itemId(row,slot);
-            if(id!=null&&id.endsWith(suffix))return new int[]{row,slot};
-        }
-        return null;
-    }
-    private void showTutorialStep(){'''
+          old="\n".join([
+              '    private int tutorialCheeseSlot(){',
+              '        for(int slot=0;slot<GameState.SIZE;slot++){',
+              '            String id=state.itemId(0,slot);',
+              '            if(id!=null&&id.endsWith(".cheese"))return slot;',
+              '        }',
+              '        return -1;',
+              '    }',
+              '    private void showTutorialStep(){'
+          ])
+          new="\n".join([
+              '    private int tutorialCheeseSlot(){',
+              '        for(int slot=0;slot<GameState.SIZE;slot++){',
+              '            String id=state.itemId(0,slot);',
+              '            if(id!=null&&id.endsWith(".cheese"))return slot;',
+              '        }',
+              '        return -1;',
+              '    }',
+              '    private int[] tutorialItemLocation(String suffix){',
+              '        for(int row=0;row<GameState.SIZE;row++)for(int slot=0;slot<GameState.SIZE;slot++){',
+              '            String id=state.itemId(row,slot);',
+              '            if(id!=null&&id.endsWith(suffix))return new int[]{row,slot};',
+              '        }',
+              '        return null;',
+              '    }',
+              '    private void showTutorialStep(){'
+          ])
           assert text.count(old)==1, 'helper anchor mismatch'
           text=text.replace(old,new,1)
 
-          old='''        if(tutorialStep==4){
-            state.select(0,2);
-            int cheese=tutorialCheeseSlot();
-            if(cheese<0||!state.isUserCandidatePresent(0,2,cheese)){
-                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;
-            }
-            if(state.singleCandidateSlot(0,2)==cheese){
-                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;
-            }
-            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 3번은 치즈로 정하고 나머지를 지워보세요",true,false);
-        }
-    }
-    private void moveTutorial(int direction){
-        if(direction<0){if(tutorialStep>0)tutorialStep--;}
-        else if(tutorialStep<4)tutorialStep++;
-        else return;
-        post(this::showTutorialStep);
-    }'''
-          new='''        if(tutorialStep==4){
-            state.select(0,2);
-            int cheese=tutorialCheeseSlot();
-            if(cheese<0||!state.isUserCandidatePresent(0,2,cheese)){
-                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;
-            }
-            if(state.singleCandidateSlot(0,2)==cheese){
-                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=5;post(this::showTutorialStep);return;
-            }
-            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 3번은 치즈로 정하고 나머지를 지워보세요",true,false);return;
-        }
-        if(tutorialStep==5){
-            int[] basketball=tutorialItemLocation(".basketball");
-            if(basketball==null){tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=-2;return;}
-            state.select(basketball[0],2);invalidate();
-            if(!state.isUserCandidatePresent(basketball[0],2,basketball[1])){
-                tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=-2;return;
-            }
-            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 치즈와 농구공은 다른 번호예요. 농구공을 지워보세요",false,false);
-        }
-    }
-    private void moveTutorial(int direction){
-        if(direction<0){if(tutorialStep>0)tutorialStep--;}
-        else if(tutorialStep<5)tutorialStep++;
-        else return;
-        post(this::showTutorialStep);
-    }'''
+          old="\n".join([
+              '        if(tutorialStep==4){',
+              '            state.select(0,2);',
+              '            int cheese=tutorialCheeseSlot();',
+              '            if(cheese<0||!state.isUserCandidatePresent(0,2,cheese)){',
+              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;',
+              '            }',
+              '            if(state.singleCandidateSlot(0,2)==cheese){',
+              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;',
+              '            }',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 3번은 치즈로 정하고 나머지를 지워보세요",true,false);',
+              '        }',
+              '    }',
+              '    private void moveTutorial(int direction){',
+              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
+              '        else if(tutorialStep<4)tutorialStep++;',
+              '        else return;',
+              '        post(this::showTutorialStep);',
+              '    }'
+          ])
+          new="\n".join([
+              '        if(tutorialStep==4){',
+              '            state.select(0,2);',
+              '            int cheese=tutorialCheeseSlot();',
+              '            if(cheese<0||!state.isUserCandidatePresent(0,2,cheese)){',
+              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;',
+              '            }',
+              '            if(state.singleCandidateSlot(0,2)==cheese){',
+              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=5;post(this::showTutorialStep);return;',
+              '            }',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 3번은 치즈로 정하고 나머지를 지워보세요",true,false);return;',
+              '        }',
+              '        if(tutorialStep==5){',
+              '            int[] basketball=tutorialItemLocation(".basketball");',
+              '            if(basketball==null){tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=-2;return;}',
+              '            state.select(basketball[0],2);invalidate();',
+              '            if(!state.isUserCandidatePresent(basketball[0],2,basketball[1])){',
+              '                tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=-2;return;',
+              '            }',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 치즈와 농구공은 다른 번호예요. 농구공을 지워보세요",false,false);',
+              '        }',
+              '    }',
+              '    private void moveTutorial(int direction){',
+              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
+              '        else if(tutorialStep<5)tutorialStep++;',
+              '        else return;',
+              '        post(this::showTutorialStep);',
+              '    }'
+          ])
           assert text.count(old)==1, 'tutorial step anchor mismatch'
           text=text.replace(old,new,1)
 
-          old='''                        if(state.singleCandidateSlot(state.selectedRow,state.selectedColumn)==cheese){
-                            if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.candidate.remove");
-                            tutorialStep=-2;
-                        }else post(this::showTutorialStep);'''
-          new='''                        if(state.singleCandidateSlot(state.selectedRow,state.selectedColumn)==cheese){
-                            if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.candidate.remove");
-                            tutorialStep=5;post(this::showTutorialStep);
-                        }else post(this::showTutorialStep);'''
+          old="\n".join([
+              '                        if(state.singleCandidateSlot(state.selectedRow,state.selectedColumn)==cheese){',
+              '                            if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.candidate.remove");',
+              '                            tutorialStep=-2;',
+              '                        }else post(this::showTutorialStep);'
+          ])
+          new="\n".join([
+              '                        if(state.singleCandidateSlot(state.selectedRow,state.selectedColumn)==cheese){',
+              '                            if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.candidate.remove");',
+              '                            tutorialStep=5;post(this::showTutorialStep);',
+              '                        }else post(this::showTutorialStep);'
+          ])
           assert text.count(old)==1, 'candidate completion anchor mismatch'
           text=text.replace(old,new,1)
 
-          anchor='''            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){'''
-          insert='''            if(tutorialStep==5){
-                int[] basketball=tutorialItemLocation(".basketball");
-                if(basketball==null){
-                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");
-                    tutorialCueShowing=false;tutorialStep=-2;return true;
-                }
-                state.select(basketball[0],2);
-                for(int slot=0;slot<GameState.SIZE;slot++)if(candidateSlot(slot).contains(x,y)){
-                    if(slot!=basketball[1]||!state.isUserCandidatePresent(basketball[0],2,slot))return true;
-                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();
-                    trace.capture(state);captureRaw();
-                    boolean wasContradictory=state.hasPlacementContradiction();
-                    boolean present=state.isCandidatePresent(basketball[0],2,slot);
-                    if(state.toggleCandidate(slot)){
-                        if(feel!=null)feel.emit(this,present?ClumiFeedbackEvent.CANDIDATE_REMOVED:ClumiFeedbackEvent.CANDIDATE_RESTORED,basketball[0],2,slot);
-                        presentMutation(false);onCandidateChanged(wasContradictory);
-                        if(listener!=null)listener.changed();
-                        if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");
-                        tutorialStep=-2;invalidate();
-                    }else post(this::showTutorialStep);
-                    return true;
-                }
-                return true;
-            }
-''' + anchor
+          anchor='            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){'
+          insert="\n".join([
+              '            if(tutorialStep==5){',
+              '                int[] basketball=tutorialItemLocation(".basketball");',
+              '                if(basketball==null){',
+              '                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");',
+              '                    tutorialCueShowing=false;tutorialStep=-2;return true;',
+              '                }',
+              '                state.select(basketball[0],2);',
+              '                for(int slot=0;slot<GameState.SIZE;slot++)if(candidateSlot(slot).contains(x,y)){',
+              '                    if(slot!=basketball[1]||!state.isUserCandidatePresent(basketball[0],2,slot))return true;',
+              '                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();',
+              '                    trace.capture(state);captureRaw();',
+              '                    boolean wasContradictory=state.hasPlacementContradiction();',
+              '                    boolean present=state.isCandidatePresent(basketball[0],2,slot);',
+              '                    if(state.toggleCandidate(slot)){',
+              '                        if(feel!=null)feel.emit(this,present?ClumiFeedbackEvent.CANDIDATE_REMOVED:ClumiFeedbackEvent.CANDIDATE_RESTORED,basketball[0],2,slot);',
+              '                        presentMutation(false);onCandidateChanged(wasContradictory);',
+              '                        if(listener!=null)listener.changed();',
+              '                        if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");',
+              '                        tutorialStep=-2;invalidate();',
+              '                    }else post(this::showTutorialStep);',
+              '                    return true;',
+              '                }',
+              '                return true;',
+              '            }',
+              anchor
+          ])
           assert text.count(anchor)==1, 'touch anchor mismatch'
           text=text.replace(anchor,insert,1)
 
