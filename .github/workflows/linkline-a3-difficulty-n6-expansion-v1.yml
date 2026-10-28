@@ -6,6 +6,7 @@ on:
       - linkline/difficulty-rebalance-v1
     paths:
       - linkline/tools/a3_target_pair_n6_expansion_v1.py
+      - linkline/difficulty-rebalance-v1/EXPOSURE_APPROVAL.md
       - .github/workflows/linkline-a3-difficulty-n6-expansion-v1.yml
 
 permissions:
@@ -45,6 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s linkline/a3-target-pair-diversity-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/difficulty-rebalance-v1/EXPOSURE_APPROVAL.md
           test "$(git hash-object linkline/reference/m2_state_model.py)" = "c2bf85974d317eb18a8b02a1ac4ee7eb244fcb77"
           test "$(git hash-object linkline/reference/m3_solver.py)" = "16b170656bbdffa8e836a891ffbf221de6c2935f"
           test "$(git hash-object linkline/analysis/a3_structural_features.py)" = "35a6b997816ee3608d4d8064febd059159030796"
