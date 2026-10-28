@@ -56,50 +56,62 @@ jobs:
           p=Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
           text=p.read_text()
 
-          old='''            else if(!policy.seenBefore("stage1.cellselect"))tutorialStep=2;
-            else return;
-'''
-          new='''            else if(!policy.seenBefore("stage1.cellselect"))tutorialStep=2;
-            else if(!policy.seenBefore("stage1.candidates"))tutorialStep=3;
-            else return;
-'''
+          old="\n".join([
+              '            else if(!policy.seenBefore("stage1.cellselect"))tutorialStep=2;',
+              '            else return;',
+              ''
+          ])
+          new="\n".join([
+              '            else if(!policy.seenBefore("stage1.cellselect"))tutorialStep=2;',
+              '            else if(!policy.seenBefore("stage1.candidates"))tutorialStep=3;',
+              '            else return;',
+              ''
+          ])
           assert text.count(old)==1, 'resume anchor mismatch'
           text=text.replace(old,new,1)
 
-          old='''        if(tutorialStep==2){
-            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialCellBounds(),null,"확인하고 싶은 칸을 눌러보세요",true,false);
-        }
-    }
-    private void moveTutorial(int direction){
-        if(direction<0){if(tutorialStep>0)tutorialStep--;}
-        else if(tutorialStep<2)tutorialStep++;
-        else return;
-        post(this::showTutorialStep);
-    }
-'''
-          new='''        if(tutorialStep==2){
-            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialCellBounds(),null,"확인하고 싶은 칸을 눌러보세요",true,false);return;
-        }
-        if(tutorialStep==3){
-            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,"stage1.candidates","이 칸에 들어갈 수 있는 후보들이에요",true,true);
-        }
-    }
-    private void moveTutorial(int direction){
-        if(direction<0){if(tutorialStep>0)tutorialStep--;}
-        else if(tutorialStep<3)tutorialStep++;
-        else {tutorialCueShowing=false;tutorialStep=-2;return;}
-        post(this::showTutorialStep);
-    }
-'''
+          old="\n".join([
+              '        if(tutorialStep==2){',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialCellBounds(),null,"확인하고 싶은 칸을 눌러보세요",true,false);',
+              '        }',
+              '    }',
+              '    private void moveTutorial(int direction){',
+              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
+              '        else if(tutorialStep<2)tutorialStep++;',
+              '        else return;',
+              '        post(this::showTutorialStep);',
+              '    }',
+              ''
+          ])
+          new="\n".join([
+              '        if(tutorialStep==2){',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialCellBounds(),null,"확인하고 싶은 칸을 눌러보세요",true,false);return;',
+              '        }',
+              '        if(tutorialStep==3){',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,"stage1.candidates","이 칸에 들어갈 수 있는 후보들이에요",true,true);',
+              '        }',
+              '    }',
+              '    private void moveTutorial(int direction){',
+              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
+              '        else if(tutorialStep<3)tutorialStep++;',
+              '        else {tutorialCueShowing=false;tutorialStep=-2;return;}',
+              '        post(this::showTutorialStep);',
+              '    }',
+              ''
+          ])
           assert text.count(old)==1, 'tutorial step anchor mismatch'
           text=text.replace(old,new,1)
 
-          old='''                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.cellselect");
-                    tutorialStep=-2;if(listener!=null)listener.changed();invalidate();
-'''
-          new='''                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.cellselect");
-                    tutorialStep=3;if(listener!=null)listener.changed();invalidate();post(this::showTutorialStep);
-'''
+          old="\n".join([
+              '                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.cellselect");',
+              '                    tutorialStep=-2;if(listener!=null)listener.changed();invalidate();',
+              ''
+          ])
+          new="\n".join([
+              '                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.cellselect");',
+              '                    tutorialStep=3;if(listener!=null)listener.changed();invalidate();post(this::showTutorialStep);',
+              ''
+          ])
           assert text.count(old)==1, 'cell completion anchor mismatch'
           text=text.replace(old,new,1)
 
