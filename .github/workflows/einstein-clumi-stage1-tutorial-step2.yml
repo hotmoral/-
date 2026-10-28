@@ -16,7 +16,7 @@ concurrency:
 jobs:
   apply-stage1-column-rule:
     if: >-
-      github.event.head_commit.message == 'ui: Clumi Stage 1 tutorial column rule step'
+      github.event.head_commit.message == 'ui: Clumi Stage 1 tutorial column rule step retry'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -52,61 +52,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          game = Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
-          text = game.read_text()
-
-          old = '''    private final RectF[] clueButtons = {new RectF(), new RectF(), new RectF(), new RectF()};
-
-    private float headerBottom, boardHeaderHeight, cellWidth, cellHeight, boardPadding, boardContentWidth;
-'''
-          new = '''    private final RectF[] clueButtons = {new RectF(), new RectF(), new RectF(), new RectF()};
-    private ClumiSpotlightPolicy tutorialPolicy;
-    private boolean tutorialCueShowing,tutorialTapConsumed;
-
-    private float headerBottom, boardHeaderHeight, cellWidth, cellHeight, boardPadding, boardContentWidth;
-'''
-          assert text.count(old) == 1, 'tutorial field anchor mismatch'
-          text = text.replace(old, new, 1)
-
-          old = '''    void spotlight(ClumiSpotlightPolicy policy){
-    if(policy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
-    policy.showTutorial(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요");
-}
-'''
-          new = '''    void spotlight(ClumiSpotlightPolicy policy){
-        tutorialPolicy=policy;tutorialCueShowing=false;
-        if(policy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
-        if(policy.showTutorial(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요")){tutorialCueShowing=true;return;}
-        int col=state.selectedColumn;
-        RectF column=new RectF(board.left+boardPadding+panX+col*cellWidth*scale,
-                board.top+boardPadding+panY,
-                board.left+boardPadding+panX+(col+1)*cellWidth*scale,
-                board.top+boardPadding+panY+(boardHeaderHeight+GameState.SIZE*cellHeight)*scale);
-        if(policy.showTutorial(this,column,"stage1.column","위 숫자와 같은 세로칸은 같은 번호예요"))tutorialCueShowing=true;
-    }
-'''
-          assert text.count(old) == 1, 'spotlight block mismatch'
-          text = text.replace(old, new, 1)
-
-          old = '''    @Override public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX(), y = event.getY();
-        switch (event.getActionMasked()) {
-'''
-          new = '''    @Override public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX(), y = event.getY();int action=event.getActionMasked();
-        if(tutorialTapConsumed){if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL)tutorialTapConsumed=false;return true;}
-        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
-            tutorialCueShowing=false;tutorialTapConsumed=true;downArea=Area.NONE;
-            if(feel!=null)feel.beginInput();post(()->spotlight(tutorialPolicy));return true;
-        }
-        switch (action) {
-'''
-          assert text.count(old) == 1, 'touch gate anchor mismatch'
-          text = text.replace(old, new, 1)
-          game.write_text(text)
-          PY
+          printf '%s' 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmdhbWUgPSBQYXRoKCJzb3VyY2UvYXBwL3NyYy9tYWluL2phdmEvY29tL2V4YW1wbGUvZWluc3RlaW5nYW1lL0dhbWVWaWV3LmphdmEiKQp0ZXh0ID0gZ2FtZS5yZWFkX3RleHQoKQoKb2xkID0gIiIiICAgIHByaXZhdGUgZmluYWwgUmVjdEZbXSBjbHVlQnV0dG9ucyA9IHtuZXcgUmVjdEYoKSwgbmV3IFJlY3RGKCksIG5ldyBSZWN0RigpLCBuZXcgUmVjdEYoKX07CgogICAgcHJpdmF0ZSBmbG9hdCBoZWFkZXJCb3R0b20sIGJvYXJkSGVhZGVySGVpZ2h0LCBjZWxsV2lkdGgsIGNlbGxIZWlnaHQsIGJvYXJkUGFkZGluZywgYm9hcmRDb250ZW50V2lkdGg7CiIiIgpuZXcgPSAiIiIgICAgcHJpdmF0ZSBmaW5hbCBSZWN0RltdIGNsdWVCdXR0b25zID0ge25ldyBSZWN0RigpLCBuZXcgUmVjdEYoKSwgbmV3IFJlY3RGKCksIG5ldyBSZWN0RigpfTsKICAgIHByaXZhdGUgQ2x1bWlTcG90bGlnaHRQb2xpY3kgdHV0b3JpYWxQb2xpY3k7CiAgICBwcml2YXRlIGJvb2xlYW4gdHV0b3JpYWxDdWVTaG93aW5nLHR1dG9yaWFsVGFwQ29uc3VtZWQ7CgogICAgcHJpdmF0ZSBmbG9hdCBoZWFkZXJCb3R0b20sIGJvYXJkSGVhZGVySGVpZ2h0LCBjZWxsV2lkdGgsIGNlbGxIZWlnaHQsIGJvYXJkUGFkZGluZywgYm9hcmRDb250ZW50V2lkdGg7CiIiIgphc3NlcnQgdGV4dC5jb3VudChvbGQpID09IDEsICJ0dXRvcmlhbCBmaWVsZCBhbmNob3IgbWlzbWF0Y2giCnRleHQgPSB0ZXh0LnJlcGxhY2Uob2xkLCBuZXcsIDEpCgpvbGQgPSAiIiIgICAgdm9pZCBzcG90bGlnaHQoQ2x1bWlTcG90bGlnaHRQb2xpY3kgcG9saWN5KXsKICAgIGlmKHBvbGljeT09bnVsbHx8c2Vzc2lvbj09bnVsbHx8c2Vzc2lvbi5zdGFnZS5udW1iZXIhPTF8fHN0YXRlLmN1cnJlbnRDbHVlIT0wKXJldHVybjsKICAgIHBvbGljeS5zaG93VHV0b3JpYWwodGhpcyxjbHVlQm9keSwic3RhZ2UxLmNsdWUxIiwiw5cgPSDshJzroZwg64uk66W4IOuyiO2YuOyYiOyalCIpOwp9CiIiIgpuZXcgPSAiIiIgICAgdm9pZCBzcG90bGlnaHQoQ2x1bWlTcG90bGlnaHRQb2xpY3kgcG9saWN5KXsKICAgICAgICB0dXRvcmlhbFBvbGljeT1wb2xpY3k7dHV0b3JpYWxDdWVTaG93aW5nPWZhbHNlOwogICAgICAgIGlmKHBvbGljeT09bnVsbHx8c2Vzc2lvbj09bnVsbHx8c2Vzc2lvbi5zdGFnZS5udW1iZXIhPTF8fHN0YXRlLmN1cnJlbnRDbHVlIT0wKXJldHVybjsKICAgICAgICBpZihwb2xpY3kuc2hvd1R1dG9yaWFsKHRoaXMsY2x1ZUJvZHksInN0YWdlMS5jbHVlMSIsIsOXID0g7ISc66GcIOuLpOuluCDrsojtmLjsmIjsmpQiKSl7dHV0b3JpYWxDdWVTaG93aW5nPXRydWU7cmV0dXJuO30KICAgICAgICBpbnQgY29sPXN0YXRlLnNlbGVjdGVkQ29sdW1uOwogICAgICAgIFJlY3RGIGNvbHVtbj1uZXcgUmVjdEYoYm9hcmQubGVmdCtib2FyZFBhZGRpbmcrcGFuWCtjb2wqY2VsbFdpZHRoKnNjYWxlLAogICAgICAgICAgICAgICAgYm9hcmQudG9wK2JvYXJkUGFkZGluZytwYW5ZLAogICAgICAgICAgICAgICAgYm9hcmQubGVmdCtib2FyZFBhZGRpbmcrcGFuWCsoY29sKzEpKmNlbGxXaWR0aCpzY2FsZSwKICAgICAgICAgICAgICAgIGJvYXJkLnRvcCtib2FyZFBhZGRpbmcrcGFuWSsoYm9hcmRIZWFkZXJIZWlnaHQrR2FtZVN0YXRlLlNJWkUqY2VsbEhlaWdodCkqc2NhbGUpOwogICAgICAgIGlmKHBvbGljeS5zaG93VHV0b3JpYWwodGhpcyxjb2x1bW4sInN0YWdlMS5jb2x1bW4iLCLsnIQg7Iir7J6Q7JmAIOqwmeydgCDshLjroZzsubjsnYAg6rCZ7J2AIOuyiO2YuOyYiOyalCIpKXR1dG9yaWFsQ3VlU2hvd2luZz10cnVlOwogICAgfQoiIiIKYXNzZXJ0IHRleHQuY291bnQob2xkKSA9PSAxLCAic3BvdGxpZ2h0IGJsb2NrIG1pc21hdGNoIgp0ZXh0ID0gdGV4dC5yZXBsYWNlKG9sZCwgbmV3LCAxKQoKb2xkID0gIiIiICAgIEBPdmVycmlkZSBwdWJsaWMgYm9vbGVhbiBvblRvdWNoRXZlbnQoTW90aW9uRXZlbnQgZXZlbnQpIHsKICAgICAgICBmbG9hdCB4ID0gZXZlbnQuZ2V0WCgpLCB5ID0gZXZlbnQuZ2V0WSgpOwogICAgICAgIHN3aXRjaCAoZXZlbnQuZ2V0QWN0aW9uTWFza2VkKCkpIHsKIiIiCm5ldyA9ICIiIiAgICBAT3ZlcnJpZGUgcHVibGljIGJvb2xlYW4gb25Ub3VjaEV2ZW50KE1vdGlvbkV2ZW50IGV2ZW50KSB7CiAgICAgICAgZmxvYXQgeCA9IGV2ZW50LmdldFgoKSwgeSA9IGV2ZW50LmdldFkoKTtpbnQgYWN0aW9uPWV2ZW50LmdldEFjdGlvbk1hc2tlZCgpOwogICAgICAgIGlmKHR1dG9yaWFsVGFwQ29uc3VtZWQpe2lmKGFjdGlvbj09TW90aW9uRXZlbnQuQUNUSU9OX1VQfHxhY3Rpb249PU1vdGlvbkV2ZW50LkFDVElPTl9DQU5DRUwpdHV0b3JpYWxUYXBDb25zdW1lZD1mYWxzZTtyZXR1cm4gdHJ1ZTt9CiAgICAgICAgaWYoYWN0aW9uPT1Nb3Rpb25FdmVudC5BQ1RJT05fRE9XTiYmdHV0b3JpYWxDdWVTaG93aW5nKXsKICAgICAgICAgICAgdHV0b3JpYWxDdWVTaG93aW5nPWZhbHNlO3R1dG9yaWFsVGFwQ29uc3VtZWQ9dHJ1ZTtkb3duQXJlYT1BcmVhLk5PTkU7CiAgICAgICAgICAgIGlmKGZlZWwhPW51bGwpZmVlbC5iZWdpbklucHV0KCk7cG9zdCgoKS0+c3BvdGxpZ2h0KHR1dG9yaWFsUG9saWN5KSk7cmV0dXJuIHRydWU7CiAgICAgICAgfQogICAgICAgIHN3aXRjaCAoYWN0aW9uKSB7CiIiIgphc3NlcnQgdGV4dC5jb3VudChvbGQpID09IDEsICJ0b3VjaCBnYXRlIGFuY2hvciBtaXNtYXRjaCIKdGV4dCA9IHRleHQucmVwbGFjZShvbGQsIG5ldywgMSkKCmdhbWUud3JpdGVfdGV4dCh0ZXh0KQo=' | base64 -d | python3 -
           git -C source diff --check
           test "$(git -C source status --porcelain | wc -l)" -eq 1
           grep -F 'stage1.column' source/app/src/main/java/com/example/einsteingame/GameView.java
