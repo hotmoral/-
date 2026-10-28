@@ -1,0 +1,15 @@
+{
+  "payloadSha256": "3873994364f417a5c180a17582bfb2f5b88578e87afcdc5086c10d4963e0ddad",
+  "privacy": {
+    "containsHumanOrSelfTestData": false,
+    "containsPrivateIsolationIds": false,
+    "containsPuzzleGeometry": false,
+    "containsTargetCoordinates": false
+  },
+  "recordCount": 156,
+  "recordSize": 11,
+  "recordStruct": ">HBBIHB",
+  "schema": "LINKLINE_A3_DIFFICULTY_LEGACY_DIRECT_INDEX_V1",
+  "sourceSelectionFingerprint": "ae1af8798d71a1bd7bf487f382f5cb9ec82ba04b469dd67bd325c11a32b8f802",
+  "version": "1.0.0"
+}
