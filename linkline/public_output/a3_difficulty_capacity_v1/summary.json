@@ -1,32 +1,32 @@
 {
   "aggregateThresholdCapacity": {
     "2": {
-      "forcedBelowThreshold": 0,
-      "hardCapacity": 1300
+      "forcedBelowThreshold": 2,
+      "hardCapacity": 1298
     },
     "3": {
-      "forcedBelowThreshold": 0,
-      "hardCapacity": 1300
+      "forcedBelowThreshold": 12,
+      "hardCapacity": 1288
     },
     "4": {
-      "forcedBelowThreshold": 1,
-      "hardCapacity": 1299
+      "forcedBelowThreshold": 24,
+      "hardCapacity": 1276
     },
     "5": {
-      "forcedBelowThreshold": 9,
-      "hardCapacity": 1291
+      "forcedBelowThreshold": 52,
+      "hardCapacity": 1248
     },
     "6": {
-      "forcedBelowThreshold": 58,
-      "hardCapacity": 1242
+      "forcedBelowThreshold": 112,
+      "hardCapacity": 1188
     },
     "7": {
-      "forcedBelowThreshold": 146,
-      "hardCapacity": 1154
+      "forcedBelowThreshold": 231,
+      "hardCapacity": 1069
     },
     "8": {
-      "forcedBelowThreshold": 329,
-      "hardCapacity": 971
+      "forcedBelowThreshold": 411,
+      "hardCapacity": 889
     }
   },
   "capacity": {
@@ -174,44 +174,67 @@
         "8": 243,
         "9": 141
       },
+      "requiredSecondUses": 217,
       "targetCount": 514,
       "thresholdCapacity": {
         "2": {
           "forcedBelowThreshold": 0,
           "hardCapacity": 514,
-          "pairGroupsWithNoHardCandidate": 0
+          "hardSecondUseCapacity": 217,
+          "pairGroupsWithNoHardCandidate": 0,
+          "pairGroupsWithTwoHardCandidates": 276,
+          "requiredSecondUses": 217
         },
         "3": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 514,
-          "pairGroupsWithNoHardCandidate": 3
+          "forcedBelowThreshold": 3,
+          "hardCapacity": 511,
+          "hardSecondUseCapacity": 217,
+          "pairGroupsWithNoHardCandidate": 3,
+          "pairGroupsWithTwoHardCandidates": 274,
+          "requiredSecondUses": 217
         },
         "4": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 514,
-          "pairGroupsWithNoHardCandidate": 7
+          "forcedBelowThreshold": 7,
+          "hardCapacity": 507,
+          "hardSecondUseCapacity": 217,
+          "pairGroupsWithNoHardCandidate": 7,
+          "pairGroupsWithTwoHardCandidates": 269,
+          "requiredSecondUses": 217
         },
         "5": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 514,
-          "pairGroupsWithNoHardCandidate": 17
+          "forcedBelowThreshold": 17,
+          "hardCapacity": 497,
+          "hardSecondUseCapacity": 217,
+          "pairGroupsWithNoHardCandidate": 17,
+          "pairGroupsWithTwoHardCandidates": 251,
+          "requiredSecondUses": 217
         },
         "6": {
           "forcedBelowThreshold": 41,
           "hardCapacity": 473,
-          "pairGroupsWithNoHardCandidate": 36
+          "hardSecondUseCapacity": 212,
+          "pairGroupsWithNoHardCandidate": 36,
+          "pairGroupsWithTwoHardCandidates": 212,
+          "requiredSecondUses": 217
         },
         "7": {
           "forcedBelowThreshold": 120,
           "hardCapacity": 394,
-          "pairGroupsWithNoHardCandidate": 69
+          "hardSecondUseCapacity": 166,
+          "pairGroupsWithNoHardCandidate": 69,
+          "pairGroupsWithTwoHardCandidates": 166,
+          "requiredSecondUses": 217
         },
         "8": {
           "forcedBelowThreshold": 224,
           "hardCapacity": 290,
-          "pairGroupsWithNoHardCandidate": 114
+          "hardSecondUseCapacity": 107,
+          "pairGroupsWithNoHardCandidate": 114,
+          "pairGroupsWithTwoHardCandidates": 107,
+          "requiredSecondUses": 217
         }
-      }
+      },
+      "uniquePairFirst": true
     },
     "6": {
       "candidateRows": 1893,
@@ -235,44 +258,67 @@
         "8": 239,
         "9": 219
       },
+      "requiredSecondUses": 112,
       "targetCount": 630,
       "thresholdCapacity": {
         "2": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 630,
-          "pairGroupsWithNoHardCandidate": 2
+          "forcedBelowThreshold": 2,
+          "hardCapacity": 628,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 2,
+          "pairGroupsWithTwoHardCandidates": 374,
+          "requiredSecondUses": 112
         },
         "3": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 630,
-          "pairGroupsWithNoHardCandidate": 9
+          "forcedBelowThreshold": 9,
+          "hardCapacity": 621,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 9,
+          "pairGroupsWithTwoHardCandidates": 367,
+          "requiredSecondUses": 112
         },
         "4": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 630,
-          "pairGroupsWithNoHardCandidate": 16
+          "forcedBelowThreshold": 16,
+          "hardCapacity": 614,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 16,
+          "pairGroupsWithTwoHardCandidates": 358,
+          "requiredSecondUses": 112
         },
         "5": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 630,
-          "pairGroupsWithNoHardCandidate": 26
+          "forcedBelowThreshold": 26,
+          "hardCapacity": 604,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 26,
+          "pairGroupsWithTwoHardCandidates": 334,
+          "requiredSecondUses": 112
         },
         "6": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 630,
-          "pairGroupsWithNoHardCandidate": 54
+          "forcedBelowThreshold": 54,
+          "hardCapacity": 576,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 54,
+          "pairGroupsWithTwoHardCandidates": 303,
+          "requiredSecondUses": 112
         },
         "7": {
-          "forcedBelowThreshold": 0,
-          "hardCapacity": 630,
-          "pairGroupsWithNoHardCandidate": 85
+          "forcedBelowThreshold": 85,
+          "hardCapacity": 545,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 85,
+          "pairGroupsWithTwoHardCandidates": 254,
+          "requiredSecondUses": 112
         },
         "8": {
-          "forcedBelowThreshold": 60,
-          "hardCapacity": 570,
-          "pairGroupsWithNoHardCandidate": 142
+          "forcedBelowThreshold": 142,
+          "hardCapacity": 488,
+          "hardSecondUseCapacity": 112,
+          "pairGroupsWithNoHardCandidate": 142,
+          "pairGroupsWithTwoHardCandidates": 194,
+          "requiredSecondUses": 112
         }
-      }
+      },
+      "uniquePairFirst": true
     }
   },
   "currentSelection": {
@@ -507,6 +553,7 @@
     }
   },
   "policyContext": {
+    "allAvailableExactPairsUsedBeforeAnySecondUse": true,
     "distance1ForbiddenAfterStage5": true,
     "distance2And3MustBeRare": true,
     "pairCapsRemainHard": {
@@ -527,6 +574,6 @@
   },
   "schema": "LINKLINE_A3_DIFFICULTY_TARGET_PAIR_CAPACITY_V1",
   "status": "PASS",
-  "summaryFingerprint": "209e18ff0c26758632131e398b5f5f42b1cfe70649530d1439897071fcdc2aa0",
-  "version": "1.0.0"
+  "summaryFingerprint": "a1981209ee09375f81e5057251a036be5ff48fc0d3d2723b34f4dc918b666b14",
+  "version": "1.1.0"
 }
