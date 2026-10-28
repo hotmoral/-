@@ -1,4 +1,4 @@
-name: Clumi Tutorial Timer Step
+name: Clumi Tutorial Undo Boost Step
 
 on:
   push:
@@ -14,11 +14,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  apply-timer-step:
+  apply-undo-boost-step:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      EXPECTED_SOURCE_SHA: 307212032aa590d71666da359cba443f351e25a8
+      EXPECTED_SOURCE_SHA: 9dc6cc0659da87b206b87fa5f19ae81542d5841b
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -46,7 +46,7 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply Stage 1 timer tutorial only
+      - name: Apply Stage 1 undo-boost tutorial only
         shell: bash
         run: |
           set -euo pipefail
@@ -56,13 +56,13 @@ jobs:
           p=Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
           text=p.read_text()
 
-          old='            else if(!policy.seenBefore("stage1.filters.completed"))tutorialStep=10;\n            else return;'
-          new='            else if(!policy.seenBefore("stage1.filters.completed"))tutorialStep=10;\n            else if(!policy.seenBefore("stage1.timer"))tutorialStep=11;\n            else return;'
+          old='            else if(!policy.seenBefore("stage1.timer"))tutorialStep=11;\n            else return;'
+          new='            else if(!policy.seenBefore("stage1.timer"))tutorialStep=11;\n            else if(!policy.seenBefore("stage1.item.undo_boost"))tutorialStep=12;\n            else return;'
           assert text.count(old)==1, 'resume anchor mismatch'
           text=text.replace(old,new,1)
 
-          old='        if(tutorialStep==10){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(2),"stage1.filters.completed","완료: 사용완료한 단서를 숨기거나 다시 보여줘요",true,true);\n        }\n    }\n    private void moveTutorial(int direction){\n        if(direction<0){if(tutorialStep>0)tutorialStep--;}\n        else if(tutorialStep<10)tutorialStep++;\n        else {tutorialCueShowing=false;tutorialStep=-2;return;}\n        post(this::showTutorialStep);\n    }'
-          new='        if(tutorialStep==10){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(2),"stage1.filters.completed","완료: 사용완료한 단서를 숨기거나 다시 보여줘요",true,true);return;\n        }\n        if(tutorialStep==11){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,timerPanel,"stage1.timer","여기에서 현재 플레이 시간을 확인할 수 있어요",true,true);\n        }\n    }\n    private void moveTutorial(int direction){\n        if(direction<0){if(tutorialStep>0)tutorialStep--;}\n        else if(tutorialStep<11)tutorialStep++;\n        else {tutorialCueShowing=false;tutorialStep=-2;return;}\n        post(this::showTutorialStep);\n    }'
+          old='        if(tutorialStep==11){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,timerPanel,"stage1.timer","여기에서 현재 플레이 시간을 확인할 수 있어요",true,true);\n        }\n    }\n    private void moveTutorial(int direction){\n        if(direction<0){if(tutorialStep>0)tutorialStep--;}\n        else if(tutorialStep<11)tutorialStep++;\n        else {tutorialCueShowing=false;tutorialStep=-2;return;}\n        post(this::showTutorialStep);\n    }'
+          new='        if(tutorialStep==11){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,timerPanel,"stage1.timer","여기에서 현재 플레이 시간을 확인할 수 있어요",true,true);return;\n        }\n        if(tutorialStep==12){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,itemButtons[0],"stage1.item.undo_boost","이 아이템을 사용하면 실행취소 횟수가 3번 늘어나요. 아래 숫자는 남은 아이템 수량이에요",true,true);\n        }\n    }\n    private void moveTutorial(int direction){\n        if(direction<0){if(tutorialStep>0)tutorialStep--;}\n        else if(tutorialStep<12)tutorialStep++;\n        else {tutorialCueShowing=false;tutorialStep=-2;return;}\n        post(this::showTutorialStep);\n    }'
           assert text.count(old)==1, 'tutorial step anchor mismatch'
           text=text.replace(old,new,1)
 
@@ -71,8 +71,9 @@ jobs:
 
           git -C source diff --check
           test "$(git -C source status --porcelain | wc -l)" -eq 1
-          grep -F 'stage1.timer' source/app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F '여기에서 현재 플레이 시간을 확인할 수 있어요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'stage1.item.undo_boost' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '실행취소 횟수가 3번 늘어나요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'itemButtons[0]' source/app/src/main/java/com/example/einsteingame/GameView.java
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -100,7 +101,7 @@ jobs:
             -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
             ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push timer tutorial step
+      - name: Commit and push undo-boost tutorial step
         shell: bash
         run: |
           set -euo pipefail
@@ -109,7 +110,7 @@ jobs:
           git -C source config user.name 'hotmoral'
           git -C source config user.email 'sktjsek@gmail.com'
           git -C source add app/src/main/java/com/example/einsteingame/GameView.java
-          git -C source commit -m 'ui: explain Stage 1 timer in tutorial'
+          git -C source commit -m 'ui: explain Stage 1 undo boost item in tutorial'
           git -C source push origin "HEAD:$SOURCE_BRANCH"
           echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
 
