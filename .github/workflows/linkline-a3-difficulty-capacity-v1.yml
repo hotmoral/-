@@ -39,9 +39,11 @@ jobs:
         run: |
           set -euo pipefail
           test -s linkline/a3-target-pair-diversity-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/difficulty-rebalance-v1/EXPOSURE_APPROVAL.md
           test -s linkline/public_output/a3_final_candidate_pool_v2/candidate_pool.json
           test -s linkline/public_output/a3_target_pair_n5_expansion_v1/candidate_pool.json
           test -s linkline/public_output/a3_target_pair_acquisition_v1/candidate_pool.json
+          test -s linkline/public_output/a3_difficulty_n6_expansion_v1/candidate_pool.json
           test -s linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
           test "$(git hash-object linkline/tools/a3_target_pair_selection_plan_v1.py)" = "c18401c08c0d0f96d5790ba83124d9a948b72137"
           test "$(git hash-object linkline/tools/a3_target_pair_selection_plan_v3.py)" = "2e4cf415b7032312fd0b2a1e926918b963a1bf4a"
@@ -66,7 +68,8 @@ jobs:
           python tools/a3_difficulty_capacity_v1.py \
             --legacy-pool public_output/a3_final_candidate_pool_v2/candidate_pool.json \
             --n5-pool public_output/a3_target_pair_n5_expansion_v1/candidate_pool.json \
-            --n6-pool public_output/a3_target_pair_acquisition_v1/candidate_pool.json \
+            --n6-pool public_output/a3_difficulty_n6_expansion_v1/candidate_pool.json \
+            --current-n6-pool public_output/a3_target_pair_acquisition_v1/candidate_pool.json \
             --selection-plan public_output/a3_target_pair_selection_plan_v3/selection_plan.json \
             --output public_output/a3_difficulty_capacity_v1/summary.json
           test -s public_output/a3_difficulty_capacity_v1/summary.json
@@ -86,5 +89,5 @@ jobs:
             echo "No generated changes"
             exit 0
           fi
-          git commit -m "Linkline A3: record difficulty capacity under pair caps"
+          git commit -m "Linkline A3: record expanded-N6 difficulty capacity"
           git push origin HEAD:linkline/difficulty-rebalance-v1
