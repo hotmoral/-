@@ -1,0 +1,36 @@
+name: Linkline V4 first chunk diagnostic export
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-product-v4-smoke-v1
+
+permissions:
+  contents: read
+
+jobs:
+  export-first-chunk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+      - name: Stage already-public chunk for diagnostic artifact
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/linkline-first-chunk
+          cp timing-defense-skilled-v2-harness/public/data/campaign-0001-0260.chunk.json /tmp/linkline-first-chunk/
+          sha256sum /tmp/linkline-first-chunk/campaign-0001-0260.chunk.json
+      - name: Upload diagnostic artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkline-v4-current-first-chunk
+          path: /tmp/linkline-first-chunk/campaign-0001-0260.chunk.json
+          if-no-files-found: error
+          retention-days: 1
