@@ -1,0 +1,46 @@
+name: Linkline A3 Difficulty Materialization Index v1
+on:
+  push:
+    branches: [linkline/difficulty-selector-v2]
+permissions:
+  contents: write
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact public commit
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          set -euo pipefail
+          git init repo && cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Verify public-safe inputs
+        working-directory: repo/linkline
+        run: |
+          set -euo pipefail
+          test -s public_output/a3_difficulty_selection_v4_final128/selection_plan.json
+          test -s tools/a3_difficulty_materialization_index_v1.py
+          python -m py_compile tools/a3_difficulty_materialization_index_v1.py
+      - name: Build public-safe source index
+        working-directory: repo/linkline
+        env: { PYTHONDONTWRITEBYTECODE: "1", PYTHONHASHSEED: "1" }
+        run: |
+          set -euo pipefail
+          rm -rf public_output/a3_difficulty_materialization_index_v1
+          python tools/a3_difficulty_materialization_index_v1.py \
+            --plan public_output/a3_difficulty_selection_v4_final128/selection_plan.json \
+            --output-dir public_output/a3_difficulty_materialization_index_v1
+          cat public_output/a3_difficulty_materialization_index_v1/manifest.json
+      - name: Commit public-safe source index
+        working-directory: repo
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add linkline/public_output/a3_difficulty_materialization_index_v1
+          git commit -m "Linkline A3: materialize difficulty source index"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:linkline/difficulty-selector-v2
