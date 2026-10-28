@@ -25,21 +25,22 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Wait for this commit to reach the stable Preview URL
+      - name: Wait for corrected campaign bytes to reach the stable Preview URL
         run: |
           set -euo pipefail
-          expected="$(sha256sum "$APP_DIR/index.html" | awk '{print $1}')"
-          for attempt in $(seq 1 45); do
-            if curl -fsS --max-time 10 "$PREVIEW_URL/" -o /tmp/index.html; then
-              actual="$(sha256sum /tmp/index.html | awk '{print $1}')"
+          rel="data/campaign-0001-0260.chunk.json"
+          expected="$(sha256sum "$APP_DIR/$rel" | awk '{print $1}')"
+          for attempt in $(seq 1 90); do
+            if curl -fsS --max-time 10 "$PREVIEW_URL/$rel" -o /tmp/convergence.chunk.json; then
+              actual="$(sha256sum /tmp/convergence.chunk.json | awk '{print $1}')"
               if [ "$actual" = "$expected" ]; then
-                echo "Preview serves this commit on attempt $attempt"
+                echo "Preview serves corrected campaign bytes on attempt $attempt"
                 exit 0
               fi
             fi
             sleep 2
           done
-          echo "Preview did not converge to this commit" >&2
+          echo "Preview did not converge to corrected campaign bytes" >&2
           exit 1
 
       - name: Verify hosted runtime and data exact-byte parity
