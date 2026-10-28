@@ -1,0 +1,90 @@
+name: Linkline A3 Difficulty Capacity v1
+
+on:
+  push:
+    branches:
+      - linkline/difficulty-rebalance-v1
+    paths:
+      - linkline/tools/a3_difficulty_capacity_v1.py
+      - .github/workflows/linkline-a3-difficulty-capacity-v1.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-difficulty-capacity-v1
+  cancel-in-progress: true
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Verify approved public source closure
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          test -s linkline/a3-target-pair-diversity-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/public_output/a3_final_candidate_pool_v2/candidate_pool.json
+          test -s linkline/public_output/a3_target_pair_n5_expansion_v1/candidate_pool.json
+          test -s linkline/public_output/a3_target_pair_acquisition_v1/candidate_pool.json
+          test -s linkline/public_output/a3_target_pair_selection_plan_v3/selection_plan.json
+          test "$(git hash-object linkline/tools/a3_target_pair_selection_plan_v1.py)" = "c18401c08c0d0f96d5790ba83124d9a948b72137"
+          test "$(git hash-object linkline/tools/a3_target_pair_selection_plan_v3.py)" = "2e4cf415b7032312fd0b2a1e926918b963a1bf4a"
+
+      - name: Syntax check
+        shell: bash
+        working-directory: repo/linkline
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/a3_difficulty_capacity_v1.py
+
+      - name: Measure difficulty supply under target-pair caps
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+          PYTHONPATH: "."
+        run: |
+          set -euo pipefail
+          rm -rf public_output/a3_difficulty_capacity_v1
+          python tools/a3_difficulty_capacity_v1.py \
+            --legacy-pool public_output/a3_final_candidate_pool_v2/candidate_pool.json \
+            --n5-pool public_output/a3_target_pair_n5_expansion_v1/candidate_pool.json \
+            --n6-pool public_output/a3_target_pair_acquisition_v1/candidate_pool.json \
+            --selection-plan public_output/a3_target_pair_selection_plan_v3/selection_plan.json \
+            --output public_output/a3_difficulty_capacity_v1/summary.json
+          test -s public_output/a3_difficulty_capacity_v1/summary.json
+          sha256sum public_output/a3_difficulty_capacity_v1/summary.json
+
+      - name: Commit public-safe aggregate summary
+        shell: bash
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add linkline/public_output/a3_difficulty_capacity_v1/summary.json
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "Linkline A3: record difficulty capacity under pair caps"
+          git push origin HEAD:linkline/difficulty-rebalance-v1
