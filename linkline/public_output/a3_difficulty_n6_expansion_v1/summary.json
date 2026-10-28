@@ -1,0 +1,74 @@
+{
+  "boundaries": {
+    "finalSelectionPerformed": false,
+    "privateIsolationApplied": false,
+    "productionCatalogModified": false
+  },
+  "byN": {
+    "6": {
+      "exactPairCount": 594,
+      "maxCandidatesForOnePair": 145,
+      "pairsWithAtLeastTwo": 524,
+      "rawMarginOverTarget": 488,
+      "requiredSecondUsesIfUniquePairFirst": 36,
+      "rowCount": 3862,
+      "selectableCapacityUnderCap": 1118,
+      "target": 630
+    }
+  },
+  "byNL": {
+    "N6L10": {
+      "exactPairCount": 202,
+      "maxCandidatesForOnePairWithinNL": 16,
+      "pairsWithAtLeastTwoWithinNL": 111,
+      "rowCount": 453
+    },
+    "N6L11": {
+      "exactPairCount": 198,
+      "maxCandidatesForOnePairWithinNL": 50,
+      "pairsWithAtLeastTwoWithinNL": 108,
+      "rowCount": 467
+    },
+    "N6L12": {
+      "exactPairCount": 198,
+      "maxCandidatesForOnePairWithinNL": 17,
+      "pairsWithAtLeastTwoWithinNL": 111,
+      "rowCount": 449
+    },
+    "N6L13": {
+      "exactPairCount": 193,
+      "maxCandidatesForOnePairWithinNL": 48,
+      "pairsWithAtLeastTwoWithinNL": 102,
+      "rowCount": 453
+    },
+    "N6L14": {
+      "exactPairCount": 203,
+      "maxCandidatesForOnePairWithinNL": 19,
+      "pairsWithAtLeastTwoWithinNL": 99,
+      "rowCount": 431
+    },
+    "N6L15": {
+      "exactPairCount": 190,
+      "maxCandidatesForOnePairWithinNL": 48,
+      "pairsWithAtLeastTwoWithinNL": 104,
+      "rowCount": 468
+    },
+    "N6L8": {
+      "exactPairCount": 220,
+      "maxCandidatesForOnePairWithinNL": 11,
+      "pairsWithAtLeastTwoWithinNL": 140,
+      "rowCount": 567
+    },
+    "N6L9": {
+      "exactPairCount": 198,
+      "maxCandidatesForOnePairWithinNL": 31,
+      "pairsWithAtLeastTwoWithinNL": 115,
+      "rowCount": 574
+    }
+  },
+  "identityFingerprint": "ea8abb8f2ce79e777632c67cb0369be46c2d877e1642900f9877be677ff72f87",
+  "schema": "LINKLINE_A3_TARGET_PAIR_N6_DIFFICULTY_EXPANSION_PUBLIC_POOL_SUMMARY",
+  "stateCount": 96,
+  "summaryFingerprint": "fc110c79a03f46dc23164d0b957983bd6ff9882d1d29240d62dce50b091cd447",
+  "version": "1.0.0"
+}
