@@ -1,0 +1,271 @@
+name: Clumi Tutorial Navigation Controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-clumi-stage1-tutorial-navigation-v1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clumi-ui-tutorial-edit
+  cancel-in-progress: false
+
+jobs:
+  apply-tutorial-navigation:
+    if: >-
+      github.event.head_commit.message == 'ui: Clumi tutorial navigation controls step'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EXPECTED_SOURCE_SHA: 9e0ea3f449054863653ca2c52a9584f186fc8272
+      SOURCE_BRANCH: clumi-ui-presentation-polish-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact private UI branch
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: clumi-ui-presentation-polish-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Require exact source HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
+
+      - name: Apply tutorial navigation controls only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('source/app/src/main/java/com/example/einsteingame')
+
+          # 1) Focus layer: visible previous/next controls and tap cue.
+          p = root/'ClumiFocusLayer.java'
+          text = p.read_text()
+          old = '    private final RectF focus=new RectF(),icon=new RectF(),destination=new RectF(),drawBox=new RectF();\n    private String glyph,label;private int quantity;private long start;private boolean tutorial,running;private Runnable end;\n'
+          new = '    private final RectF focus=new RectF(),icon=new RectF(),destination=new RectF(),drawBox=new RectF(),previousButton=new RectF(),nextButton=new RectF();\n    private String glyph,label;private int quantity;private long start;private boolean tutorial,running,tutorialPrevious,tutorialNext;private Runnable end;\n'
+          assert text.count(old) == 1, 'focus fields anchor mismatch'
+          text = text.replace(old,new,1)
+          old = '    void spotlight(RectF target,String label,Runnable end){focus.set(target);this.label=label;this.end=end;tutorial=true;running=true;start=0;invalidate();}\n'
+          new = '''    void spotlight(RectF target,String label,boolean previous,boolean next,Runnable end){focus.set(target);this.label=label;this.end=end;tutorialPrevious=previous;tutorialNext=next;tutorial=true;running=true;start=0;invalidate();}
+    boolean tutorialMessageContains(float x,float y){return tutorial&&running&&drawBox.contains(x,y);}
+    boolean tutorialPreviousContains(float x,float y){return tutorial&&running&&tutorialPrevious&&previousButton.contains(x,y);}
+    boolean tutorialNextContains(float x,float y){return tutorial&&running&&tutorialNext&&nextButton.contains(x,y);}
+'''
+          assert text.count(old) == 1, 'focus spotlight anchor mismatch'
+          text = text.replace(old,new,1)
+          pattern = r'        if\(tutorial\)\{.*?if\(p<1\)postInvalidateOnAnimation\(\);return;\}\n        float transfer='
+          replacement = '''        if(tutorial){
+            float side=42*d,gap=8*d,edge=16*d+side+gap;
+            float available=Math.max(160*d,getWidth()-edge*2),w=Math.min(238*d,available),h=64*d;
+            float minX=edge,maxX=Math.max(minX,getWidth()-edge-w);
+            float x=Math.max(minX,Math.min(maxX,focus.centerX()-w/2));
+            float y=focus.top-h-8*d;if(y<16*d)y=Math.min(getHeight()-h-16*d,focus.bottom+8*d);
+            drawBox.set(x,y,x+w,y+h);
+            float ay=drawBox.centerY()-side/2;
+            previousButton.set(drawBox.left-gap-side,ay,drawBox.left-gap,ay+side);
+            nextButton.set(drawBox.right+gap,ay,drawBox.right+gap+side,ay+side);
+            ClumiSkin.card(canvas,drawBox,12*d,ClumiSkin.PANEL,false,d,true);
+            ClumiSkin.card(canvas,previousButton,side/2,tutorialPrevious?ClumiSkin.PRIMARY:ClumiSkin.MUTED,false,d,true);
+            ClumiSkin.card(canvas,nextButton,side/2,tutorialNext?ClumiSkin.PRIMARY:ClumiSkin.MUTED,false,d,true);
+            RectF arrow=new RectF(previousButton);arrow.inset(10*d,10*d);
+            ClumiGlyph.draw(canvas,"back",arrow,tutorialPrevious?Color.WHITE:ClumiVisualTokens.MUTED);
+            arrow.set(nextButton);arrow.inset(10*d,10*d);
+            ClumiGlyph.draw(canvas,"next",arrow,tutorialNext?Color.WHITE:ClumiVisualTokens.MUTED);
+            paint.setStyle(Paint.Style.FILL);paint.setColor(ClumiVisualTokens.NAVY);paint.setTypeface(ClumiTypography.STRONG);paint.setTextAlign(Paint.Align.CENTER);
+            float labelSize=12*d;paint.setTextSize(labelSize);float maxLabel=drawBox.width()-20*d;
+            if(paint.measureText(label)>maxLabel){labelSize*=maxLabel/paint.measureText(label);paint.setTextSize(labelSize);}
+            canvas.drawText(label,drawBox.centerX(),drawBox.top+25*d-(paint.ascent()+paint.descent())/2,paint);
+            float cueY=drawBox.bottom-15*d,cueX=drawBox.centerX()-43*d;
+            paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(1.35f*d);paint.setColor(ClumiVisualTokens.BLUE_STROKE);
+            canvas.drawCircle(cueX,cueY,6*d,paint);canvas.drawCircle(cueX,cueY,2.2f*d,paint);
+            paint.setStyle(Paint.Style.FILL);paint.setTypeface(ClumiTypography.BODY);paint.setTextSize(10*d);paint.setTextAlign(Paint.Align.LEFT);paint.setColor(ClumiVisualTokens.MUTED);
+            canvas.drawText("탭해서 계속",cueX+10*d,cueY-(paint.ascent()+paint.descent())/2,paint);
+            if(p<1)postInvalidateOnAnimation();return;
+        }
+        float transfer='''
+          text2,n = re.subn(pattern,replacement,text,count=1,flags=re.S)
+          assert n == 1, 'focus tutorial draw block mismatch'
+          p.write_text(text2)
+
+          # 2) Feedback controller: expose tutorial navigation hit testing in window coordinates.
+          p = root/'ClumiFeedbackController.java'
+          text = p.read_text()
+          old = '    interface Presentation { void finish(); }\n'
+          new = '    interface Presentation { void finish(); }\n    enum TutorialNav { NONE, PREVIOUS, NEXT, MESSAGE }\n'
+          assert text.count(old) == 1, 'feedback enum anchor mismatch'
+          text = text.replace(old,new,1)
+          old = '    void spotlight(View view,RectF local,String label){if(!motion())return;RectF target=bounds(view);if(local!=null)target.set(target.left+local.left,target.top+local.top,target.left+local.right,target.top+local.bottom);focus().spotlight(target,label,this::clearFocus);}\n'
+          new = '''    void spotlight(View view,RectF local,String label){spotlight(view,local,label,false,true);}
+    void spotlight(View view,RectF local,String label,boolean previous,boolean next){if(!motion())return;RectF target=bounds(view);if(local!=null)target.set(target.left+local.left,target.top+local.top,target.left+local.right,target.top+local.bottom);focus().spotlight(target,label,previous,next,this::clearFocus);}
+    TutorialNav tutorialNav(View view,float localX,float localY){
+        if(focusLayer==null)return TutorialNav.NONE;RectF origin=bounds(view);float x=origin.left+localX,y=origin.top+localY;
+        if(focusLayer.tutorialPreviousContains(x,y))return TutorialNav.PREVIOUS;
+        if(focusLayer.tutorialNextContains(x,y))return TutorialNav.NEXT;
+        if(focusLayer.tutorialMessageContains(x,y))return TutorialNav.MESSAGE;
+        return TutorialNav.NONE;
+    }
+'''
+          assert text.count(old) == 1, 'feedback spotlight anchor mismatch'
+          p.write_text(text.replace(old,new,1))
+
+          # 3) Spotlight policy: replayable pages, while preserving first-use gating for tutorial start.
+          p = root/'ClumiSpotlightPolicy.java'
+          text = p.read_text()
+          old = '''    boolean showTutorial(View view,RectF target,String key,String label){
+        if(feel==null||!feel.motion()||seenBefore(key)||!view.isAttachedToWindow())return false;
+        seen(key);feel.spotlight(view,target,label);return true;
+    }
+'''
+          new = '''    boolean showTutorial(View view,RectF target,String key,String label){
+        if(feel==null||!feel.motion()||seenBefore(key)||!view.isAttachedToWindow())return false;
+        seen(key);feel.spotlight(view,target,label,false,true);return true;
+    }
+    boolean showTutorialPage(View view,RectF target,String key,String label,boolean previous,boolean next){
+        if(feel==null||!feel.motion()||!view.isAttachedToWindow())return false;
+        if(key!=null&&!seenBefore(key))seen(key);feel.spotlight(view,target,label,previous,next);return true;
+    }
+'''
+          assert text.count(old) == 1, 'policy tutorial anchor mismatch'
+          p.write_text(text.replace(old,new,1))
+
+          # 4) Game view: two-page navigation state; message or next advances, previous replays.
+          p = root/'GameView.java'
+          text = p.read_text()
+          old = '    private ClumiSpotlightPolicy tutorialPolicy;\n    private boolean tutorialCueShowing,tutorialTapConsumed;\n'
+          new = '    private ClumiSpotlightPolicy tutorialPolicy;\n    private boolean tutorialCueShowing,tutorialTapConsumed;\n    private int tutorialStep=-1;\n'
+          assert text.count(old) == 1, 'game tutorial fields anchor mismatch'
+          text = text.replace(old,new,1)
+
+          pattern = r'    void spotlight\(ClumiSpotlightPolicy policy\)\{\n        tutorialPolicy=policy;tutorialCueShowing=false;.*?\n    \}\n    private void seenItem'
+          replacement = '''    void spotlight(ClumiSpotlightPolicy policy){
+        tutorialPolicy=policy;tutorialCueShowing=false;
+        if(policy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
+        if(tutorialStep<0){
+            if(!policy.seenBefore("stage1.clue1"))tutorialStep=0;
+            else if(!policy.seenBefore("stage1.column"))tutorialStep=1;
+            else return;
+        }
+        showTutorialStep();
+    }
+    private void showTutorialStep(){
+        tutorialCueShowing=false;
+        if(tutorialPolicy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
+        if(tutorialStep==0){
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요",false,true);return;
+        }
+        if(tutorialStep==1){
+            int col=state.selectedColumn;
+            RectF column=new RectF(board.left+boardPadding+panX+col*cellWidth*scale,
+                    board.top+boardPadding+panY,
+                    board.left+boardPadding+panX+(col+1)*cellWidth*scale,
+                    board.top+boardPadding+panY+(boardHeaderHeight+GameState.SIZE*cellHeight)*scale);
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,column,"stage1.column","위 숫자와 같은 세로칸은 같은 번호예요",true,true);
+        }
+    }
+    private void moveTutorial(int direction){
+        if(direction<0){if(tutorialStep>0)tutorialStep--;}
+        else if(tutorialStep<1)tutorialStep++;
+        else {tutorialCueShowing=false;tutorialStep=-2;return;}
+        post(this::showTutorialStep);
+    }
+    private void seenItem'''
+          text2,n = re.subn(pattern,replacement,text,count=1,flags=re.S)
+          assert n == 1, 'game spotlight block mismatch'
+          text = text2
+
+          old = '''        if(tutorialTapConsumed){if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL)tutorialTapConsumed=false;return true;}
+        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
+            tutorialCueShowing=false;tutorialTapConsumed=true;downArea=Area.NONE;
+            if(feel!=null)feel.beginInput();post(()->spotlight(tutorialPolicy));return true;
+        }
+'''
+          new = '''        if(tutorialTapConsumed){if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL)tutorialTapConsumed=false;return true;}
+        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
+            tutorialTapConsumed=true;downArea=Area.NONE;
+            ClumiFeedbackController.TutorialNav nav=feel==null?ClumiFeedbackController.TutorialNav.NONE:feel.tutorialNav(this,x,y);
+            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){
+                tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                moveTutorial(nav==ClumiFeedbackController.TutorialNav.PREVIOUS?-1:1);
+            }
+            return true;
+        }
+'''
+          assert text.count(old) == 1, 'game tutorial touch gate mismatch'
+          p.write_text(text.replace(old,new,1))
+          PY
+
+          git -C source diff --check
+          test "$(git -C source status --porcelain | wc -l)" -eq 4
+          grep -F '탭해서 계속' source/app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java
+          grep -F 'TutorialNav { NONE, PREVIOUS, NEXT, MESSAGE }' source/app/src/main/java/com/example/einsteingame/ClumiFeedbackController.java
+          grep -F 'showTutorialPage' source/app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java
+          grep -F 'moveTutorial' source/app/src/main/java/com/example/einsteingame/GameView.java
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android compile dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Compile debug Java
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
+            -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
+
+      - name: Commit and push tutorial navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source status --porcelain | wc -l)" -eq 4
+          git -C source config user.name 'hotmoral'
+          git -C source config user.email 'sktjsek@gmail.com'
+          git -C source add \
+            app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java \
+            app/src/main/java/com/example/einsteingame/ClumiFeedbackController.java \
+            app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java \
+            app/src/main/java/com/example/einsteingame/GameView.java
+          git -C source commit -m 'ui: add tutorial previous next navigation'
+          git -C source push origin "HEAD:$SOURCE_BRANCH"
+          echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Report source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "private_source_sha=$PRIVATE_SOURCE_SHA"
