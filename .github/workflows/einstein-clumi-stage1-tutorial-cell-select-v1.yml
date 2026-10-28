@@ -1,0 +1,210 @@
+name: Clumi Stage 1 Tutorial Cell Select
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-clumi-stage1-tutorial-cell-select-v1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clumi-ui-tutorial-edit
+  cancel-in-progress: false
+
+jobs:
+  apply-stage1-cell-select:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EXPECTED_SOURCE_SHA: 8ebcd59cb7b1b0f9846876be6c2fe584705c383d
+      SOURCE_BRANCH: clumi-ui-presentation-polish-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact private UI branch
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: clumi-ui-presentation-polish-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Require exact source HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
+
+      - name: Apply Stage 1 cell-selection tutorial only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('source/app/src/main/java/com/example/einsteingame')
+
+          focus = root/'ClumiFocusLayer.java'
+          text = focus.read_text()
+          old = '            canvas.drawText("탭해서 계속",cueX+10*d,cueY-(paint.ascent()+paint.descent())/2,paint);\n'
+          new = '            canvas.drawText(tutorialNext?"탭해서 계속":"강조된 칸을 터치",cueX+10*d,cueY-(paint.ascent()+paint.descent())/2,paint);\n'
+          assert text.count(old) == 1, 'focus cue anchor mismatch'
+          focus.write_text(text.replace(old,new,1))
+
+          game = root/'GameView.java'
+          text = game.read_text()
+
+          old = '''        if(tutorialStep<0){
+            if(!policy.seenBefore("stage1.clue1"))tutorialStep=0;
+            else if(!policy.seenBefore("stage1.column"))tutorialStep=1;
+            else return;
+        }
+'''
+          new = '''        if(tutorialStep<0){
+            if(!policy.seenBefore("stage1.clue1"))tutorialStep=0;
+            else if(!policy.seenBefore("stage1.column"))tutorialStep=1;
+            else if(!policy.seenBefore("stage1.cellselect"))tutorialStep=2;
+            else return;
+        }
+'''
+          assert text.count(old) == 1, 'tutorial resume anchor mismatch'
+          text = text.replace(old,new,1)
+
+          pattern = r'''    private void showTutorialStep\(\)\{.*?\n    \}\n    private void moveTutorial\(int direction\)\{.*?\n    \}\n    private void seenItem'''
+          replacement = '''    private RectF tutorialCellBounds(){
+        int row=state.selectedRow,col=state.selectedColumn;
+        return new RectF(board.left+boardPadding+panX+col*cellWidth*scale,
+                board.top+boardPadding+panY+(boardHeaderHeight+row*cellHeight)*scale,
+                board.left+boardPadding+panX+(col+1)*cellWidth*scale,
+                board.top+boardPadding+panY+(boardHeaderHeight+(row+1)*cellHeight)*scale);
+    }
+    private void showTutorialStep(){
+        tutorialCueShowing=false;
+        if(tutorialPolicy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
+        if(tutorialStep==0){
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요",false,true);return;
+        }
+        if(tutorialStep==1){
+            int col=state.selectedColumn;
+            RectF column=new RectF(board.left+boardPadding+panX+col*cellWidth*scale,
+                    board.top+boardPadding+panY,
+                    board.left+boardPadding+panX+(col+1)*cellWidth*scale,
+                    board.top+boardPadding+panY+(boardHeaderHeight+GameState.SIZE*cellHeight)*scale);
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,column,"stage1.column","위 숫자와 같은 세로칸은 같은 번호예요",true,true);return;
+        }
+        if(tutorialStep==2){
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialCellBounds(),null,"확인하고 싶은 칸을 눌러보세요",true,false);
+        }
+    }
+    private void moveTutorial(int direction){
+        if(direction<0){if(tutorialStep>0)tutorialStep--;}
+        else if(tutorialStep<2)tutorialStep++;
+        else return;
+        post(this::showTutorialStep);
+    }
+    private void seenItem'''
+          text2,n = re.subn(pattern,replacement,text,count=1,flags=re.S)
+          assert n == 1, 'tutorial step block mismatch'
+          text = text2
+
+          old = '''        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
+            tutorialTapConsumed=true;downArea=Area.NONE;
+            ClumiFeedbackController.TutorialNav nav=feel==null?ClumiFeedbackController.TutorialNav.NONE:feel.tutorialNav(this,x,y);
+            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){
+                tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                moveTutorial(nav==ClumiFeedbackController.TutorialNav.PREVIOUS?-1:1);
+            }
+            return true;
+        }
+'''
+          new = '''        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
+            tutorialTapConsumed=true;downArea=Area.NONE;
+            ClumiFeedbackController.TutorialNav nav=feel==null?ClumiFeedbackController.TutorialNav.NONE:feel.tutorialNav(this,x,y);
+            if(tutorialStep==2){
+                if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS){
+                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();moveTutorial(-1);return true;
+                }
+                if(tutorialCellBounds().contains(x,y)){
+                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                    state.select(state.selectedRow,state.selectedColumn);
+                    if(feel!=null)feel.emit(this,ClumiFeedbackEvent.CELL_SELECTED,state.selectedRow,state.selectedColumn,-1);
+                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.cellselect");
+                    tutorialStep=-2;if(listener!=null)listener.changed();invalidate();
+                }
+                return true;
+            }
+            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){
+                tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                moveTutorial(nav==ClumiFeedbackController.TutorialNav.PREVIOUS?-1:1);
+            }
+            return true;
+        }
+'''
+          assert text.count(old) == 1, 'tutorial touch gate mismatch'
+          game.write_text(text.replace(old,new,1))
+          PY
+
+          git -C source diff --check
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
+          grep -F 'stage1.cellselect' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '확인하고 싶은 칸을 눌러보세요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '강조된 칸을 터치' source/app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android compile dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Compile debug Java
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
+            -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
+
+      - name: Commit and push exact tutorial step
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
+          git -C source config user.name 'hotmoral'
+          git -C source config user.email 'sktjsek@gmail.com'
+          git -C source add \
+            app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java \
+            app/src/main/java/com/example/einsteingame/GameView.java
+          git -C source commit -m 'ui: add Stage 1 cell selection tutorial step'
+          git -C source push origin "HEAD:$SOURCE_BRANCH"
+          echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Report source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "private_source_sha=$PRIVATE_SOURCE_SHA"
