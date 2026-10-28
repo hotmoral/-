@@ -4,5 +4,6 @@ Purpose: generate a pull-request synchronize event after the V4 head is already 
 
 - PR: #12
 - Scope: DRAFT / DO NOT MERGE hosted-smoke preview only
-- Runtime/data bytes: unchanged by this marker
+- Runtime/data bytes: canonical first + final chunks repaired and hash-pinned
+- Validation phase: rerun 5/5 chunk SHA + hosted 1300-stage assembly
 - Production: unchanged
