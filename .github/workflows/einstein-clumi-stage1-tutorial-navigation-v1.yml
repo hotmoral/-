@@ -16,11 +16,11 @@ concurrency:
 jobs:
   apply-tutorial-navigation:
     if: >-
-      github.event.head_commit.message == 'ui: Clumi tutorial navigation controls step retry'
+      github.event.head_commit.message == 'ui: Clumi Stage 1 cell selection tutorial retry'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      EXPECTED_SOURCE_SHA: 9e0ea3f449054863653ca2c52a9584f186fc8272
+      EXPECTED_SOURCE_SHA: 8ebcd59cb7b1b0f9846876be6c2fe584705c383d
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -48,18 +48,119 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply tutorial navigation controls only
+      - name: Apply Stage 1 cell-selection tutorial only
         shell: bash
         run: |
           set -euo pipefail
-          printf '%s' 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCByZQoKcm9vdCA9IFBhdGgoJ3NvdXJjZS9hcHAvc3JjL21haW4vamF2YS9jb20vZXhhbXBsZS9laW5zdGVpbmdhbWUnKQoKIyAxKSBGb2N1cyBsYXllcjogdmlzaWJsZSBwcmV2aW91cy9uZXh0IGNvbnRyb2xzIGFuZCB0YXAgY3VlLgpwID0gcm9vdC8nQ2x1bWlGb2N1c0xheWVyLmphdmEnCnRleHQgPSBwLnJlYWRfdGV4dCgpCm9sZCA9ICcgICAgcHJpdmF0ZSBmaW5hbCBSZWN0RiBmb2N1cz1uZXcgUmVjdEYoKSxpY29uPW5ldyBSZWN0RigpLGRlc3RpbmF0aW9uPW5ldyBSZWN0RigpLGRyYXdCb3g9bmV3IFJlY3RGKCk7XG4gICAgcHJpdmF0ZSBTdHJpbmcgZ2x5cGgsbGFiZWw7cHJpdmF0ZSBpbnQgcXVhbnRpdHk7cHJpdmF0ZSBsb25nIHN0YXJ0O3ByaXZhdGUgYm9vbGVhbiB0dXRvcmlhbCxydW5uaW5nO3ByaXZhdGUgUnVubmFibGUgZW5kO1xuJwpuZXcgPSAnICAgIHByaXZhdGUgZmluYWwgUmVjdEYgZm9jdXM9bmV3IFJlY3RGKCksaWNvbj1uZXcgUmVjdEYoKSxkZXN0aW5hdGlvbj1uZXcgUmVjdEYoKSxkcmF3Qm94PW5ldyBSZWN0RigpLHByZXZpb3VzQnV0dG9uPW5ldyBSZWN0RigpLG5leHRCdXR0b249bmV3IFJlY3RGKCk7XG4gICAgcHJpdmF0ZSBTdHJpbmcgZ2x5cGgsbGFiZWw7cHJpdmF0ZSBpbnQgcXVhbnRpdHk7cHJpdmF0ZSBsb25nIHN0YXJ0O3ByaXZhdGUgYm9vbGVhbiB0dXRvcmlhbCxydW5uaW5nLHR1dG9yaWFsUHJldmlvdXMsdHV0b3JpYWxOZXh0O3ByaXZhdGUgUnVubmFibGUgZW5kO1xuJwphc3NlcnQgdGV4dC5jb3VudChvbGQpID09IDEsICdmb2N1cyBmaWVsZHMgYW5jaG9yIG1pc21hdGNoJwp0ZXh0ID0gdGV4dC5yZXBsYWNlKG9sZCxuZXcsMSkKb2xkID0gJyAgICB2b2lkIHNwb3RsaWdodChSZWN0RiB0YXJnZXQsU3RyaW5nIGxhYmVsLFJ1bm5hYmxlIGVuZCl7Zm9jdXMuc2V0KHRhcmdldCk7dGhpcy5sYWJlbD1sYWJlbDt0aGlzLmVuZD1lbmQ7dHV0b3JpYWw9dHJ1ZTtydW5uaW5nPXRydWU7c3RhcnQ9MDtpbnZhbGlkYXRlKCk7fVxuJwpuZXcgPSAnJycgICAgdm9pZCBzcG90bGlnaHQoUmVjdEYgdGFyZ2V0LFN0cmluZyBsYWJlbCxib29sZWFuIHByZXZpb3VzLGJvb2xlYW4gbmV4dCxSdW5uYWJsZSBlbmQpe2ZvY3VzLnNldCh0YXJnZXQpO3RoaXMubGFiZWw9bGFiZWw7dGhpcy5lbmQ9ZW5kO3R1dG9yaWFsUHJldmlvdXM9cHJldmlvdXM7dHV0b3JpYWxOZXh0PW5leHQ7dHV0b3JpYWw9dHJ1ZTtydW5uaW5nPXRydWU7c3RhcnQ9MDtpbnZhbGlkYXRlKCk7fQogICAgYm9vbGVhbiB0dXRvcmlhbE1lc3NhZ2VDb250YWlucyhmbG9hdCB4LGZsb2F0IHkpe3JldHVybiB0dXRvcmlhbCYmcnVubmluZyYmZHJhd0JveC5jb250YWlucyh4LHkpO30KICAgIGJvb2xlYW4gdHV0b3JpYWxQcmV2aW91c0NvbnRhaW5zKGZsb2F0IHgsZmxvYXQgeSl7cmV0dXJuIHR1dG9yaWFsJiZydW5uaW5nJiZ0dXRvcmlhbFByZXZpb3VzJiZwcmV2aW91c0J1dHRvbi5jb250YWlucyh4LHkpO30KICAgIGJvb2xlYW4gdHV0b3JpYWxOZXh0Q29udGFpbnMoZmxvYXQgeCxmbG9hdCB5KXtyZXR1cm4gdHV0b3JpYWwmJnJ1bm5pbmcmJnR1dG9yaWFsTmV4dCYmbmV4dEJ1dHRvbi5jb250YWlucyh4LHkpO30KJycnCmFzc2VydCB0ZXh0LmNvdW50KG9sZCkgPT0gMSwgJ2ZvY3VzIHNwb3RsaWdodCBhbmNob3IgbWlzbWF0Y2gnCnRleHQgPSB0ZXh0LnJlcGxhY2Uob2xkLG5ldywxKQpwYXR0ZXJuID0gcicgICAgICAgIGlmXCh0dXRvcmlhbFwpXHsuKj9pZlwocDwxXClwb3N0SW52YWxpZGF0ZU9uQW5pbWF0aW9uXChcKTtyZXR1cm47XH1cbiAgICAgICAgZmxvYXQgdHJhbnNmZXI9JwpyZXBsYWNlbWVudCA9ICcnJyAgICAgICAgaWYodHV0b3JpYWwpewogICAgICAgICAgICBmbG9hdCBzaWRlPTQyKmQsZ2FwPTgqZCxlZGdlPTE2KmQrc2lkZStnYXA7CiAgICAgICAgICAgIGZsb2F0IGF2YWlsYWJsZT1NYXRoLm1heCgxNjAqZCxnZXRXaWR0aCgpLWVkZ2UqMiksdz1NYXRoLm1pbigyMzgqZCxhdmFpbGFibGUpLGg9NjQqZDsKICAgICAgICAgICAgZmxvYXQgbWluWD1lZGdlLG1heFg9TWF0aC5tYXgobWluWCxnZXRXaWR0aCgpLWVkZ2Utdyk7CiAgICAgICAgICAgIGZsb2F0IHg9TWF0aC5tYXgobWluWCxNYXRoLm1pbihtYXhYLGZvY3VzLmNlbnRlclgoKS13LzIpKTsKICAgICAgICAgICAgZmxvYXQgeT1mb2N1cy50b3AtaC04KmQ7aWYoeTwxNipkKXk9TWF0aC5taW4oZ2V0SGVpZ2h0KCktaC0xNipkLGZvY3VzLmJvdHRvbSs4KmQpOwogICAgICAgICAgICBkcmF3Qm94LnNldCh4LHkseCt3LHkraCk7CiAgICAgICAgICAgIGZsb2F0IGF5PWRyYXdCb3guY2VudGVyWSgpLXNpZGUvMjsKICAgICAgICAgICAgcHJldmlvdXNCdXR0b24uc2V0KGRyYXdCb3gubGVmdC1nYXAtc2lkZSxheSxkcmF3Qm94LmxlZnQtZ2FwLGF5K3NpZGUpOwogICAgICAgICAgICBuZXh0QnV0dG9uLnNldChkcmF3Qm94LnJpZ2h0K2dhcCxheSxkcmF3Qm94LnJpZ2h0K2dhcCtzaWRlLGF5K3NpZGUpOwogICAgICAgICAgICBDbHVtaVNraW4uY2FyZChjYW52YXMsZHJhd0JveCwxMipkLENsdW1pU2tpbi5QQU5FTCxmYWxzZSxkLHRydWUpOwogICAgICAgICAgICBDbHVtaVNraW4uY2FyZChjYW52YXMscHJldmlvdXNCdXR0b24sc2lkZS8yLHR1dG9yaWFsUHJldmlvdXM/Q2x1bWlTa2luLlBSSU1BUlk6Q2x1bWlTa2luLk1VVEVELGZhbHNlLGQsdHJ1ZSk7CiAgICAgICAgICAgIENsdW1pU2tpbi5jYXJkKGNhbnZhcyxuZXh0QnV0dG9uLHNpZGUvMix0dXRvcmlhbE5leHQ/Q2x1bWlTa2luLlBSSU1BUlk6Q2x1bWlTa2luLk1VVEVELGZhbHNlLGQsdHJ1ZSk7CiAgICAgICAgICAgIFJlY3RGIGFycm93PW5ldyBSZWN0RihwcmV2aW91c0J1dHRvbik7YXJyb3cuaW5zZXQoMTAqZCwxMCpkKTsKICAgICAgICAgICAgQ2x1bWlHbHlwaC5kcmF3KGNhbnZhcywiYmFjayIsYXJyb3csdHV0b3JpYWxQcmV2aW91cz9Db2xvci5XSElURTpDbHVtaVZpc3VhbFRva2Vucy5NVVRFRCk7CiAgICAgICAgICAgIGFycm93LnNldChuZXh0QnV0dG9uKTthcnJvdy5pbnNldCgxMCpkLDEwKmQpOwogICAgICAgICAgICBDbHVtaUdseXBoLmRyYXcoY2FudmFzLCJuZXh0IixhcnJvdyx0dXRvcmlhbE5leHQ/Q29sb3IuV0hJVEU6Q2x1bWlWaXN1YWxUb2tlbnMuTVVURUQpOwogICAgICAgICAgICBwYWludC5zZXRTdHlsZShQYWludC5TdHlsZS5GSUxMKTtwYWludC5zZXRDb2xvcihDbHVtaVZpc3VhbFRva2Vucy5OQVZZKTtwYWludC5zZXRUeXBlZmFjZShDbHVtaVR5cG9ncmFwaHkuU1RST05HKTtwYWludC5zZXRUZXh0QWxpZ24oUGFpbnQuQWxpZ24uQ0VOVEVSKTsKICAgICAgICAgICAgZmxvYXQgbGFiZWxTaXplPTEyKmQ7cGFpbnQuc2V0VGV4dFNpemUobGFiZWxTaXplKTtmbG9hdCBtYXhMYWJlbD1kcmF3Qm94LndpZHRoKCktMjAqZDsKICAgICAgICAgICAgaWYocGFpbnQubWVhc3VyZVRleHQobGFiZWwpPm1heExhYmVsKXtsYWJlbFNpemUqPW1heExhYmVsL3BhaW50Lm1lYXN1cmVUZXh0KGxhYmVsKTtwYWludC5zZXRUZXh0U2l6ZShsYWJlbFNpemUpO30KICAgICAgICAgICAgY2FudmFzLmRyYXdUZXh0KGxhYmVsLGRyYXdCb3guY2VudGVyWCgpLGRyYXdCb3gudG9wKzI1KmQtKHBhaW50LmFzY2VudCgpK3BhaW50LmRlc2NlbnQoKSkvMixwYWludCk7CiAgICAgICAgICAgIGZsb2F0IGN1ZVk9ZHJhd0JveC5ib3R0b20tMTUqZCxjdWVYPWRyYXdCb3guY2VudGVyWCgpLTQzKmQ7CiAgICAgICAgICAgIHBhaW50LnNldFN0eWxlKFBhaW50LlN0eWxlLlNUUk9LRSk7cGFpbnQuc2V0U3Ryb2tlV2lkdGgoMS4zNWYqZCk7cGFpbnQuc2V0Q29sb3IoQ2x1bWlWaXN1YWxUb2tlbnMuQkxVRV9TVFJPS0UpOwogICAgICAgICAgICBjYW52YXMuZHJhd0NpcmNsZShjdWVYLGN1ZVksNipkLHBhaW50KTtjYW52YXMuZHJhd0NpcmNsZShjdWVYLGN1ZVksMi4yZipkLHBhaW50KTsKICAgICAgICAgICAgcGFpbnQuc2V0U3R5bGUoUGFpbnQuU3R5bGUuRklMTCk7cGFpbnQuc2V0VHlwZWZhY2UoQ2x1bWlUeXBvZ3JhcGh5LkJPRFkpO3BhaW50LnNldFRleHRTaXplKDEwKmQpO3BhaW50LnNldFRleHRBbGlnbihQYWludC5BbGlnbi5MRUZUKTtwYWludC5zZXRDb2xvcihDbHVtaVZpc3VhbFRva2Vucy5NVVRFRCk7CiAgICAgICAgICAgIGNhbnZhcy5kcmF3VGV4dCgi7YOt7ZW07IScIOqzhOyGjSIsY3VlWCsxMCpkLGN1ZVktKHBhaW50LmFzY2VudCgpK3BhaW50LmRlc2NlbnQoKSkvMixwYWludCk7CiAgICAgICAgICAgIGlmKHA8MSlwb3N0SW52YWxpZGF0ZU9uQW5pbWF0aW9uKCk7cmV0dXJuOwogICAgICAgIH0KICAgICAgICBmbG9hdCB0cmFuc2Zlcj0nJycKdGV4dDIsbiA9IHJlLnN1Ym4ocGF0dGVybixyZXBsYWNlbWVudCx0ZXh0LGNvdW50PTEsZmxhZ3M9cmUuUykKYXNzZXJ0IG4gPT0gMSwgJ2ZvY3VzIHR1dG9yaWFsIGRyYXcgYmxvY2sgbWlzbWF0Y2gnCnAud3JpdGVfdGV4dCh0ZXh0MikKCiMgMikgRmVlZGJhY2sgY29udHJvbGxlcjogZXhwb3NlIHR1dG9yaWFsIG5hdmlnYXRpb24gaGl0IHRlc3RpbmcgaW4gd2luZG93IGNvb3JkaW5hdGVzLgpwID0gcm9vdC8nQ2x1bWlGZWVkYmFja0NvbnRyb2xsZXIuamF2YScKdGV4dCA9IHAucmVhZF90ZXh0KCkKb2xkID0gJyAgICBpbnRlcmZhY2UgUHJlc2VudGF0aW9uIHsgdm9pZCBmaW5pc2goKTsgfVxuJwpuZXcgPSAnICAgIGludGVyZmFjZSBQcmVzZW50YXRpb24geyB2b2lkIGZpbmlzaCgpOyB9XG4gICAgZW51bSBUdXRvcmlhbE5hdiB7IE5PTkUsIFBSRVZJT1VTLCBORVhULCBNRVNTQUdFIH1cbicKYXNzZXJ0IHRleHQuY291bnQob2xkKSA9PSAxLCAnZmVlZGJhY2sgZW51bSBhbmNob3IgbWlzbWF0Y2gnCnRleHQgPSB0ZXh0LnJlcGxhY2Uob2xkLG5ldywxKQpvbGQgPSAnICAgIHZvaWQgc3BvdGxpZ2h0KFZpZXcgdmlldyxSZWN0RiBsb2NhbCxTdHJpbmcgbGFiZWwpe2lmKCFtb3Rpb24oKSlyZXR1cm47UmVjdEYgdGFyZ2V0PWJvdW5kcyh2aWV3KTtpZihsb2NhbCE9bnVsbCl0YXJnZXQuc2V0KHRhcmdldC5sZWZ0K2xvY2FsLmxlZnQsdGFyZ2V0LnRvcCtsb2NhbC50b3AsdGFyZ2V0LmxlZnQrbG9jYWwucmlnaHQsdGFyZ2V0LnRvcCtsb2NhbC5ib3R0b20pO2ZvY3VzKCkuc3BvdGxpZ2h0KHRhcmdldCxsYWJlbCx0aGlzOjpjbGVhckZvY3VzKTt9XG4nCm5ldyA9ICcnJyAgICB2b2lkIHNwb3RsaWdodChWaWV3IHZpZXcsUmVjdEYgbG9jYWwsU3RyaW5nIGxhYmVsKXtzcG90bGlnaHQodmlldyxsb2NhbCxsYWJlbCxmYWxzZSx0cnVlKTt9CiAgICB2b2lkIHNwb3RsaWdodChWaWV3IHZpZXcsUmVjdEYgbG9jYWwsU3RyaW5nIGxhYmVsLGJvb2xlYW4gcHJldmlvdXMsYm9vbGVhbiBuZXh0KXtpZighbW90aW9uKCkpcmV0dXJuO1JlY3RGIHRhcmdldD1ib3VuZHModmlldyk7aWYobG9jYWwhPW51bGwpdGFyZ2V0LnNldCh0YXJnZXQubGVmdCtsb2NhbC5sZWZ0LHRhcmdldC50b3ArbG9jYWwudG9wLHRhcmdldC5sZWZ0K2xvY2FsLnJpZ2h0LHRhcmdldC50b3ArbG9jYWwuYm90dG9tKTtmb2N1cygpLnNwb3RsaWdodCh0YXJnZXQsbGFiZWwscHJldmlvdXMsbmV4dCx0aGlzOjpjbGVhckZvY3VzKTt9CiAgICBUdXRvcmlhbE5hdiB0dXRvcmlhbE5hdihWaWV3IHZpZXcsZmxvYXQgbG9jYWxYLGZsb2F0IGxvY2FsWSl7CiAgICAgICAgaWYoZm9jdXNMYXllcj09bnVsbClyZXR1cm4gVHV0b3JpYWxOYXYuTk9ORTtSZWN0RiBvcmlnaW49Ym91bmRzKHZpZXcpO2Zsb2F0IHg9b3JpZ2luLmxlZnQrbG9jYWxYLHk9b3JpZ2luLnRvcCtsb2NhbFk7CiAgICAgICAgaWYoZm9jdXNMYXllci50dXRvcmlhbFByZXZpb3VzQ29udGFpbnMoeCx5KSlyZXR1cm4gVHV0b3JpYWxOYXYuUFJFVklPVVM7CiAgICAgICAgaWYoZm9jdXNMYXllci50dXRvcmlhbE5leHRDb250YWlucyh4LHkpKXJldHVybiBUdXRvcmlhbE5hdi5ORVhUOwogICAgICAgIGlmKGZvY3VzTGF5ZXIudHV0b3JpYWxNZXNzYWdlQ29udGFpbnMoeCx5KSlyZXR1cm4gVHV0b3JpYWxOYXYuTUVTU0FHRTsKICAgICAgICByZXR1cm4gVHV0b3JpYWxOYXYuTk9ORTsKICAgIH0KJycnCmFzc2VydCB0ZXh0LmNvdW50KG9sZCkgPT0gMSwgJ2ZlZWRiYWNrIHNwb3RsaWdodCBhbmNob3IgbWlzbWF0Y2gnCnAud3JpdGVfdGV4dCh0ZXh0LnJlcGxhY2Uob2xkLG5ldywxKSkKCiMgMykgU3BvdGxpZ2h0IHBvbGljeTogcmVwbGF5YWJsZSBwYWdlcywgd2hpbGUgcHJlc2VydmluZyBmaXJzdC11c2UgZ2F0aW5nIGZvciB0dXRvcmlhbCBzdGFydC4KcCA9IHJvb3QvJ0NsdW1pU3BvdGxpZ2h0UG9saWN5LmphdmEnCnRleHQgPSBwLnJlYWRfdGV4dCgpCm9sZCA9ICcnJyAgICBib29sZWFuIHNob3dUdXRvcmlhbChWaWV3IHZpZXcsUmVjdEYgdGFyZ2V0LFN0cmluZyBrZXksU3RyaW5nIGxhYmVsKXsKICAgICAgICBpZihmZWVsPT1udWxsfHwhZmVlbC5tb3Rpb24oKXx8c2VlbkJlZm9yZShrZXkpfHwhdmlldy5pc0F0dGFjaGVkVG9XaW5kb3coKSlyZXR1cm4gZmFsc2U7CiAgICAgICAgc2VlbihrZXkpO2ZlZWwuc3BvdGxpZ2h0KHZpZXcsdGFyZ2V0LGxhYmVsKTtyZXR1cm4gdHJ1ZTsKICAgIH0KJycnCm5ldyA9ICcnJyAgICBib29sZWFuIHNob3dUdXRvcmlhbChWaWV3IHZpZXcsUmVjdEYgdGFyZ2V0LFN0cmluZyBrZXksU3RyaW5nIGxhYmVsKXsKICAgICAgICBpZihmZWVsPT1udWxsfHwhZmVlbC5tb3Rpb24oKXx8c2VlbkJlZm9yZShrZXkpfHwhdmlldy5pc0F0dGFjaGVkVG9XaW5kb3coKSlyZXR1cm4gZmFsc2U7CiAgICAgICAgc2VlbihrZXkpO2ZlZWwuc3BvdGxpZ2h0KHZpZXcsdGFyZ2V0LGxhYmVsLGZhbHNlLHRydWUpO3JldHVybiB0cnVlOwogICAgfQogICAgYm9vbGVhbiBzaG93VHV0b3JpYWxQYWdlKFZpZXcgdmlldyxSZWN0RiB0YXJnZXQsU3RyaW5nIGtleSxTdHJpbmcgbGFiZWwsYm9vbGVhbiBwcmV2aW91cyxib29sZWFuIG5leHQpewogICAgICAgIGlmKGZlZWw9PW51bGx8fCFmZWVsLm1vdGlvbigpfHwhdmlldy5pc0F0dGFjaGVkVG9XaW5kb3coKSlyZXR1cm4gZmFsc2U7CiAgICAgICAgaWYoa2V5IT1udWxsJiYhc2VlbkJlZm9yZShrZXkpKXNlZW4oa2V5KTtmZWVsLnNwb3RsaWdodCh2aWV3LHRhcmdldCxsYWJlbCxwcmV2aW91cyxuZXh0KTtyZXR1cm4gdHJ1ZTsKICAgIH0KJycnCmFzc2VydCB0ZXh0LmNvdW50KG9sZCkgPT0gMSwgJ3BvbGljeSB0dXRvcmlhbCBhbmNob3IgbWlzbWF0Y2gnCnAud3JpdGVfdGV4dCh0ZXh0LnJlcGxhY2Uob2xkLG5ldywxKSkKCiMgNCkgR2FtZSB2aWV3OiB0d28tcGFnZSBuYXZpZ2F0aW9uIHN0YXRlOyBtZXNzYWdlIG9yIG5leHQgYWR2YW5jZXMsIHByZXZpb3VzIHJlcGxheXMuCnAgPSByb290LydHYW1lVmlldy5qYXZhJwp0ZXh0ID0gcC5yZWFkX3RleHQoKQpvbGQgPSAnICAgIHByaXZhdGUgQ2x1bWlTcG90bGlnaHRQb2xpY3kgdHV0b3JpYWxQb2xpY3k7XG4gICAgcHJpdmF0ZSBib29sZWFuIHR1dG9yaWFsQ3VlU2hvd2luZyx0dXRvcmlhbFRhcENvbnN1bWVkO1xuJwpuZXcgPSAnICAgIHByaXZhdGUgQ2x1bWlTcG90bGlnaHRQb2xpY3kgdHV0b3JpYWxQb2xpY3k7XG4gICAgcHJpdmF0ZSBib29sZWFuIHR1dG9yaWFsQ3VlU2hvd2luZyx0dXRvcmlhbFRhcENvbnN1bWVkO1xuICAgIHByaXZhdGUgaW50IHR1dG9yaWFsU3RlcD0tMTtcbicKYXNzZXJ0IHRleHQuY291bnQob2xkKSA9PSAxLCAnZ2FtZSB0dXRvcmlhbCBmaWVsZHMgYW5jaG9yIG1pc21hdGNoJwp0ZXh0ID0gdGV4dC5yZXBsYWNlKG9sZCxuZXcsMSkKCnBhdHRlcm4gPSByJyAgICB2b2lkIHNwb3RsaWdodFwoQ2x1bWlTcG90bGlnaHRQb2xpY3kgcG9saWN5XClce1xuICAgICAgICB0dXRvcmlhbFBvbGljeT1wb2xpY3k7dHV0b3JpYWxDdWVTaG93aW5nPWZhbHNlOy4qP1xuICAgIFx9XG4gICAgcHJpdmF0ZSB2b2lkIHNlZW5JdGVtJwpyZXBsYWNlbWVudCA9ICcnJyAgICB2b2lkIHNwb3RsaWdodChDbHVtaVNwb3RsaWdodFBvbGljeSBwb2xpY3kpewogICAgICAgIHR1dG9yaWFsUG9saWN5PXBvbGljeTt0dXRvcmlhbEN1ZVNob3dpbmc9ZmFsc2U7CiAgICAgICAgaWYocG9saWN5PT1udWxsfHxzZXNzaW9uPT1udWxsfHxzZXNzaW9uLnN0YWdlLm51bWJlciE9MXx8c3RhdGUuY3VycmVudENsdWUhPTApcmV0dXJuOwogICAgICAgIGlmKHR1dG9yaWFsU3RlcDwwKXsKICAgICAgICAgICAgaWYoIXBvbGljeS5zZWVuQmVmb3JlKCJzdGFnZTEuY2x1ZTEiKSl0dXRvcmlhbFN0ZXA9MDsKICAgICAgICAgICAgZWxzZSBpZighcG9saWN5LnNlZW5CZWZvcmUoInN0YWdlMS5jb2x1bW4iKSl0dXRvcmlhbFN0ZXA9MTsKICAgICAgICAgICAgZWxzZSByZXR1cm47CiAgICAgICAgfQogICAgICAgIHNob3dUdXRvcmlhbFN0ZXAoKTsKICAgIH0KICAgIHByaXZhdGUgdm9pZCBzaG93VHV0b3JpYWxTdGVwKCl7CiAgICAgICAgdHV0b3JpYWxDdWVTaG93aW5nPWZhbHNlOwogICAgICAgIGlmKHR1dG9yaWFsUG9saWN5PT1udWxsfHxzZXNzaW9uPT1udWxsfHxzZXNzaW9uLnN0YWdlLm51bWJlciE9MXx8c3RhdGUuY3VycmVudENsdWUhPTApcmV0dXJuOwogICAgICAgIGlmKHR1dG9yaWFsU3RlcD09MCl7CiAgICAgICAgICAgIHR1dG9yaWFsQ3VlU2hvd2luZz10dXRvcmlhbFBvbGljeS5zaG93VHV0b3JpYWxQYWdlKHRoaXMsY2x1ZUJvZHksInN0YWdlMS5jbHVlMSIsIsOXID0g7ISc66GcIOuLpOuluCDrsojtmLjsmIjsmpQiLGZhbHNlLHRydWUpO3JldHVybjsKICAgICAgICB9CiAgICAgICAgaWYodHV0b3JpYWxTdGVwPT0xKXsKICAgICAgICAgICAgaW50IGNvbD1zdGF0ZS5zZWxlY3RlZENvbHVtbjsKICAgICAgICAgICAgUmVjdEYgY29sdW1uPW5ldyBSZWN0Rihib2FyZC5sZWZ0K2JvYXJkUGFkZGluZytwYW5YK2NvbCpjZWxsV2lkdGgqc2NhbGUsCiAgICAgICAgICAgICAgICAgICAgYm9hcmQudG9wK2JvYXJkUGFkZGluZytwYW5ZLAogICAgICAgICAgICAgICAgICAgIGJvYXJkLmxlZnQrYm9hcmRQYWRkaW5nK3BhblgrKGNvbCsxKSpjZWxsV2lkdGgqc2NhbGUsCiAgICAgICAgICAgICAgICAgICAgYm9hcmQudG9wK2JvYXJkUGFkZGluZytwYW5ZKyhib2FyZEhlYWRlckhlaWdodCtHYW1lU3RhdGUuU0laRSpjZWxsSGVpZ2h0KSpzY2FsZSk7CiAgICAgICAgICAgIHR1dG9yaWFsQ3VlU2hvd2luZz10dXRvcmlhbFBvbGljeS5zaG93VHV0b3JpYWxQYWdlKHRoaXMsY29sdW1uLCJzdGFnZTEuY29sdW1uIiwi7JyEIOyIq+yekOyZgCDqsJnsnYAg7IS466Gc7Lm47J2AIOqwmeydgCDrsojtmLjsmIjsmpQiLHRydWUsdHJ1ZSk7CiAgICAgICAgfQogICAgfQogICAgcHJpdmF0ZSB2b2lkIG1vdmVUdXRvcmlhbChpbnQgZGlyZWN0aW9uKXsKICAgICAgICBpZihkaXJlY3Rpb248MCl7aWYodHV0b3JpYWxTdGVwPjApdHV0b3JpYWxTdGVwLS07fQogICAgICAgIGVsc2UgaWYodHV0b3JpYWxTdGVwPDEpdHV0b3JpYWxTdGVwKys7CiAgICAgICAgZWxzZSB7dHV0b3JpYWxDdWVTaG93aW5nPWZhbHNlO3R1dG9yaWFsU3RlcD0tMjtyZXR1cm47fQogICAgICAgIHBvc3QodGhpczo6c2hvd1R1dG9yaWFsU3RlcCk7CiAgICB9CiAgICBwcml2YXRlIHZvaWQgc2Vlbkl0ZW0nJycKdGV4dDIsbiA9IHJlLnN1Ym4ocGF0dGVybixyZXBsYWNlbWVudCx0ZXh0LGNvdW50PTEsZmxhZ3M9cmUuUykKYXNzZXJ0IG4gPT0gMSwgJ2dhbWUgc3BvdGxpZ2h0IGJsb2NrIG1pc21hdGNoJwp0ZXh0ID0gdGV4dDIKCm9sZCA9ICcnJyAgICAgICAgaWYodHV0b3JpYWxUYXBDb25zdW1lZCl7aWYoYWN0aW9uPT1Nb3Rpb25FdmVudC5BQ1RJT05fVVB8fGFjdGlvbj09TW90aW9uRXZlbnQuQUNUSU9OX0NBTkNFTCl0dXRvcmlhbFRhcENvbnN1bWVkPWZhbHNlO3JldHVybiB0cnVlO30KICAgICAgICBpZihhY3Rpb249PU1vdGlvbkV2ZW50LkFDVElPTl9ET1dOJiZ0dXRvcmlhbEN1ZVNob3dpbmcpewogICAgICAgICAgICB0dXRvcmlhbEN1ZVNob3dpbmc9ZmFsc2U7dHV0b3JpYWxUYXBDb25zdW1lZD10cnVlO2Rvd25BcmVhPUFyZWEuTk9ORTsKICAgICAgICAgICAgaWYoZmVlbCE9bnVsbClmZWVsLmJlZ2luSW5wdXQoKTtwb3N0KCgpLT5zcG90bGlnaHQodHV0b3JpYWxQb2xpY3kpKTtyZXR1cm4gdHJ1ZTsKICAgICAgICB9CicnJwpuZXcgPSAnJycgICAgICAgIGlmKHR1dG9yaWFsVGFwQ29uc3VtZWQpe2lmKGFjdGlvbj09TW90aW9uRXZlbnQuQUNUSU9OX1VQfHxhY3Rpb249PU1vdGlvbkV2ZW50LkFDVElPTl9DQU5DRUwpdHV0b3JpYWxUYXBDb25zdW1lZD1mYWxzZTtyZXR1cm4gdHJ1ZTt9CiAgICAgICAgaWYoYWN0aW9uPT1Nb3Rpb25FdmVudC5BQ1RJT05fRE9XTiYmdHV0b3JpYWxDdWVTaG93aW5nKXsKICAgICAgICAgICAgdHV0b3JpYWxUYXBDb25zdW1lZD10cnVlO2Rvd25BcmVhPUFyZWEuTk9ORTsKICAgICAgICAgICAgQ2x1bWlGZWVkYmFja0NvbnRyb2xsZXIuVHV0b3JpYWxOYXYgbmF2PWZlZWw9PW51bGw/Q2x1bWlGZWVkYmFja0NvbnRyb2xsZXIuVHV0b3JpYWxOYXYuTk9ORTpmZWVsLnR1dG9yaWFsTmF2KHRoaXMseCx5KTsKICAgICAgICAgICAgaWYobmF2PT1DbHVtaUZlZWRiYWNrQ29udHJvbGxlci5UdXRvcmlhbE5hdi5QUkVWSU9VU3x8bmF2PT1DbHVtaUZlZWRiYWNrQ29udHJvbGxlci5UdXRvcmlhbE5hdi5ORVhUfHxuYXY9PUNsdW1pRmVlZGJhY2tDb250cm9sbGVyLlR1dG9yaWFsTmF2Lk1FU1NBR0UpewogICAgICAgICAgICAgICAgdHV0b3JpYWxDdWVTaG93aW5nPWZhbHNlO2lmKGZlZWwhPW51bGwpZmVlbC5iZWdpbklucHV0KCk7CiAgICAgICAgICAgICAgICBtb3ZlVHV0b3JpYWwobmF2PT1DbHVtaUZlZWRiYWNrQ29udHJvbGxlci5UdXRvcmlhbE5hdi5QUkVWSU9VUz8tMToxKTsKICAgICAgICAgICAgfQogICAgICAgICAgICByZXR1cm4gdHJ1ZTsKICAgICAgICB9CicnJwphc3NlcnQgdGV4dC5jb3VudChvbGQpID09IDEsICdnYW1lIHR1dG9yaWFsIHRvdWNoIGdhdGUgbWlzbWF0Y2gnCnAud3JpdGVfdGV4dCh0ZXh0LnJlcGxhY2Uob2xkLG5ldywxKSkK' | base64 -d > /tmp/clumi_tutorial_nav_patch.py
-          python3 /tmp/clumi_tutorial_nav_patch.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('source/app/src/main/java/com/example/einsteingame')
+
+          focus = root/'ClumiFocusLayer.java'
+          text = focus.read_text()
+          old = '            canvas.drawText("탭해서 계속",cueX+10*d,cueY-(paint.ascent()+paint.descent())/2,paint);\n'
+          new = '            canvas.drawText(tutorialNext?"탭해서 계속":"강조된 칸을 터치",cueX+10*d,cueY-(paint.ascent()+paint.descent())/2,paint);\n'
+          assert text.count(old) == 1, 'focus cue anchor mismatch'
+          focus.write_text(text.replace(old,new,1))
+
+          game = root/'GameView.java'
+          text = game.read_text()
+          old = '''        if(tutorialStep<0){
+            if(!policy.seenBefore("stage1.clue1"))tutorialStep=0;
+            else if(!policy.seenBefore("stage1.column"))tutorialStep=1;
+            else return;
+        }
+'''
+          new = '''        if(tutorialStep<0){
+            if(!policy.seenBefore("stage1.clue1"))tutorialStep=0;
+            else if(!policy.seenBefore("stage1.column"))tutorialStep=1;
+            else if(!policy.seenBefore("stage1.cellselect"))tutorialStep=2;
+            else return;
+        }
+'''
+          assert text.count(old) == 1, 'tutorial resume anchor mismatch'
+          text = text.replace(old,new,1)
+
+          pattern = r'''    private void showTutorialStep\(\)\{.*?\n    \}\n    private void moveTutorial\(int direction\)\{.*?\n    \}\n    private void seenItem'''
+          replacement = '''    private RectF tutorialCellBounds(){
+        int row=state.selectedRow,col=state.selectedColumn;
+        return new RectF(board.left+boardPadding+panX+col*cellWidth*scale,
+                board.top+boardPadding+panY+(boardHeaderHeight+row*cellHeight)*scale,
+                board.left+boardPadding+panX+(col+1)*cellWidth*scale,
+                board.top+boardPadding+panY+(boardHeaderHeight+(row+1)*cellHeight)*scale);
+    }
+    private void showTutorialStep(){
+        tutorialCueShowing=false;
+        if(tutorialPolicy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
+        if(tutorialStep==0){
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요",false,true);return;
+        }
+        if(tutorialStep==1){
+            int col=state.selectedColumn;
+            RectF column=new RectF(board.left+boardPadding+panX+col*cellWidth*scale,
+                    board.top+boardPadding+panY,
+                    board.left+boardPadding+panX+(col+1)*cellWidth*scale,
+                    board.top+boardPadding+panY+(boardHeaderHeight+GameState.SIZE*cellHeight)*scale);
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,column,"stage1.column","위 숫자와 같은 세로칸은 같은 번호예요",true,true);return;
+        }
+        if(tutorialStep==2){
+            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialCellBounds(),null,"확인하고 싶은 칸을 눌러보세요",true,false);
+        }
+    }
+    private void moveTutorial(int direction){
+        if(direction<0){if(tutorialStep>0)tutorialStep--;}
+        else if(tutorialStep<2)tutorialStep++;
+        else return;
+        post(this::showTutorialStep);
+    }
+    private void seenItem'''
+          text,n = re.subn(pattern,replacement,text,count=1,flags=re.S)
+          assert n == 1, 'tutorial step block mismatch'
+
+          old = '''        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
+            tutorialTapConsumed=true;downArea=Area.NONE;
+            ClumiFeedbackController.TutorialNav nav=feel==null?ClumiFeedbackController.TutorialNav.NONE:feel.tutorialNav(this,x,y);
+            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){
+                tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                moveTutorial(nav==ClumiFeedbackController.TutorialNav.PREVIOUS?-1:1);
+            }
+            return true;
+        }
+'''
+          new = '''        if(action==MotionEvent.ACTION_DOWN&&tutorialCueShowing){
+            tutorialTapConsumed=true;downArea=Area.NONE;
+            ClumiFeedbackController.TutorialNav nav=feel==null?ClumiFeedbackController.TutorialNav.NONE:feel.tutorialNav(this,x,y);
+            if(tutorialStep==2){
+                if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS){
+                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();moveTutorial(-1);return true;
+                }
+                if(tutorialCellBounds().contains(x,y)){
+                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                    state.select(state.selectedRow,state.selectedColumn);
+                    if(feel!=null)feel.emit(this,ClumiFeedbackEvent.CELL_SELECTED,state.selectedRow,state.selectedColumn,-1);
+                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.cellselect");
+                    tutorialStep=-2;if(listener!=null)listener.changed();invalidate();
+                }
+                return true;
+            }
+            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){
+                tutorialCueShowing=false;if(feel!=null)feel.beginInput();
+                moveTutorial(nav==ClumiFeedbackController.TutorialNav.PREVIOUS?-1:1);
+            }
+            return true;
+        }
+'''
+          assert text.count(old) == 1, 'tutorial touch gate mismatch'
+          game.write_text(text.replace(old,new,1))
+          PY
+
           git -C source diff --check
-          test "$(git -C source status --porcelain | wc -l)" -eq 4
-          grep -F '탭해서 계속' source/app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java
-          grep -F 'TutorialNav { NONE, PREVIOUS, NEXT, MESSAGE }' source/app/src/main/java/com/example/einsteingame/ClumiFeedbackController.java
-          grep -F 'showTutorialPage' source/app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java
-          grep -F 'moveTutorial' source/app/src/main/java/com/example/einsteingame/GameView.java
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
+          grep -F 'stage1.cellselect' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '확인하고 싶은 칸을 눌러보세요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '강조된 칸을 터치' source/app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -87,16 +188,16 @@ jobs:
             -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
             ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push tutorial navigation
+      - name: Commit and push tutorial cell selection
         shell: bash
         run: |
           set -euo pipefail
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
-          test "$(git -C source status --porcelain | wc -l)" -eq 4
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
           git -C source config user.name 'hotmoral'
           git -C source config user.email 'sktjsek@gmail.com'
-          git -C source add app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java app/src/main/java/com/example/einsteingame/ClumiFeedbackController.java app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java app/src/main/java/com/example/einsteingame/GameView.java
-          git -C source commit -m 'ui: add tutorial previous next navigation'
+          git -C source add app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java app/src/main/java/com/example/einsteingame/GameView.java
+          git -C source commit -m 'ui: add Stage 1 cell selection tutorial step'
           git -C source push origin "HEAD:$SOURCE_BRANCH"
           echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
 
