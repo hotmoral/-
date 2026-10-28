@@ -1,0 +1,41 @@
+name: Linkline V4 chunk SHA diagnostic
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-product-v4-smoke-v1
+
+permissions:
+  contents: read
+
+jobs:
+  chunk-sha:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+      - name: Report all chunk raw SHA-256 values
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          root=Path('timing-defense-skilled-v2-harness/public/data')
+          manifest=json.loads((root/'campaign-0001-1300.json').read_text())
+          mismatches=[]
+          for d in manifest['chunks']:
+              raw=(root/d['path']).read_bytes()
+              actual=hashlib.sha256(raw).hexdigest()
+              expected=d['sha256']
+              print(f"{d['fromPosition']}..{d['throughPosition']} size={len(raw)} actual={actual} expected={expected} match={actual==expected}")
+              if actual != expected: mismatches.append(d['path'])
+          if mismatches:
+              raise SystemExit('RAW_SHA_MISMATCH:'+','.join(mismatches))
+          PY
