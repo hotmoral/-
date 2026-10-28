@@ -1,4 +1,5 @@
 name: Clumi Tutorial Navigation Controls
+# retrigger: cell-selection-v2
 
 on:
   push:
