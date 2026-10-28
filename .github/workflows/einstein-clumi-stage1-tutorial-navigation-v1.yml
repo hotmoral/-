@@ -58,47 +58,36 @@ jobs:
           original=path.read_bytes()
           assert original[:8]==b'\x89PNG\r\n\x1a\n'
 
-          # The first three chunks are structurally valid and contain all palette metadata.
           pos=8; metadata={}
           for expected in (b'IHDR',b'PLTE',b'tRNS'):
-              n=struct.unpack('>I',original[pos:pos+4])[0]
-              kind=original[pos+4:pos+8]
+              n=struct.unpack('>I',original[pos:pos+4])[0]; kind=original[pos+4:pos+8]
               assert kind==expected,(pos,kind,expected)
               data=original[pos+8:pos+8+n]
               stored=struct.unpack('>I',original[pos+8+n:pos+12+n])[0]
-              actual=zlib.crc32(kind+data)&0xffffffff
-              assert stored==actual,(kind,stored,actual)
-              metadata[kind]=data
-              pos+=12+n
+              assert stored==(zlib.crc32(kind+data)&0xffffffff),(kind,stored,zlib.crc32(kind+data)&0xffffffff)
+              metadata[kind]=data; pos+=12+n
 
           width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',metadata[b'IHDR'])
           assert (width,height,depth,color_type,compression,filter_method,interlace)==(256,256,8,3,0,0,0)
           palette=metadata[b'PLTE']; transparency=metadata[b'tRNS']
 
-          # Recover every real IDAT independently instead of trusting the damaged sequential chunk walk.
-          idats=[]; scans=[]; cursor=0
-          while True:
-              marker=original.find(b'IDAT',cursor)
-              if marker<0: break
-              cursor=marker+4
-              if marker<4: continue
-              n=struct.unpack('>I',original[marker-4:marker])[0]
-              data_start=marker+4; data_end=data_start+n
-              if n<=0 or data_end+4>len(original):
-                  scans.append((marker,n,'out-of-range')); continue
-              data=original[data_start:data_end]
-              stored=struct.unpack('>I',original[data_end:data_end+4])[0]
-              actual=zlib.crc32(b'IDAT'+data)&0xffffffff
-              ok=stored==actual
-              scans.append((marker,n,'crc-ok' if ok else 'crc-bad'))
-              if ok: idats.append((marker,data))
-          print('file_bytes=',len(original),'idat_scan=',scans,'iend_at=',original.rfind(b'IEND'))
-          assert idats, 'no valid IDAT chunks recovered'
-          idats.sort()
-          compressed=b''.join(data for _,data in idats)
-          raw=zlib.decompress(compressed)
+          marker=original.find(b'IDAT',pos)
+          assert marker>=pos and marker>=4
+          declared=struct.unpack('>I',original[marker-4:marker])[0]
+          data_start=marker+4; data_end=data_start+declared
+          assert declared>0 and data_end<=len(original),(marker,declared,len(original))
+          damaged_idat=original[data_start:data_end]
+          stored_crc=struct.unpack('>I',original[data_end:data_end+4])[0] if data_end+4<=len(original) else None
+          actual_crc=zlib.crc32(b'IDAT'+damaged_idat)&0xffffffff
+
+          inflater=zlib.decompressobj()
+          raw=inflater.decompress(damaged_idat)+inflater.flush()
+          print('file_bytes=',len(original),'idat_marker=',marker,'declared=',declared,
+                'stored_crc=',stored_crc,'actual_crc=',actual_crc,'zlib_eof=',inflater.eof,
+                'unused_bytes=',len(inflater.unused_data),'iend_at=',original.rfind(b'IEND'))
           stride=width
-          assert len(raw)==height*(stride+1),(len(raw),height*(stride+1),scans)
+          assert inflater.eof,'IDAT zlib stream did not terminate'
+          assert len(raw)==height*(stride+1),(len(raw),height*(stride+1))
 
           rows=[]; prev=bytearray(stride); p=0
           def paeth(a,b,c):
@@ -135,7 +124,6 @@ jobs:
           out+=chunk(b'IEND',b'')
           assert out!=original
 
-          # Validate the newly written container and payload without an image library.
           q=8; out_idat=[]; seen=[]
           while q<len(out):
               n=struct.unpack('>I',out[q:q+4])[0]; kind=out[q+4:q+8]; data=out[q+8:q+8+n]
