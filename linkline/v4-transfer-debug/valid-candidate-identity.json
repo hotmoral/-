@@ -1,0 +1,11 @@
+{
+  "size": 12890,
+  "gitBlobSha": "7673279ba09db0af2e4caf4646a5302587641725",
+  "sha256": "1666f8f722c1a50d60f7fd5e3cbebea04dad2c7b01229951037732cc9a14d8ab",
+  "parsedRows": 260,
+  "schema": "LINKLINE_PRODUCT_CAMPAIGN_CHUNK",
+  "fromPosition": 1041,
+  "throughPosition": 1300,
+  "expectedDescriptorSha256": "444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616",
+  "descriptorSha256Match": false
+}
