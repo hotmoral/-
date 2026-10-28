@@ -1,0 +1,83 @@
+name: Linkline V4 exact first chunk repair
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-product-v4-smoke-v1
+
+permissions:
+  contents: write
+
+jobs:
+  repair-first-chunk:
+    if: ${{ !contains(github.event.head_commit.message, 'repair exact V4 first chunk') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact pushed commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Recover exact first chunk by SHA-256 oracle
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+
+          p=Path('timing-defense-skilled-v2-harness/public/data/campaign-0001-0260.chunk.json')
+          expected='241e711a70f928f7de6aabd6b3f1167709d42d57e546d5d44067e92c2104d362'
+          data=bytearray(p.read_bytes())
+          current=hashlib.sha256(data).hexdigest()
+          print('current', len(data), current)
+          if current == expected:
+              print('already exact')
+              raise SystemExit(0)
+
+          found=None
+          # Same-size corruption is the leading hypothesis. Search every printable ASCII substitution.
+          for i,old in enumerate(data):
+              for new in range(32,127):
+                  if new == old:
+                      continue
+                  data[i]=new
+                  if hashlib.sha256(data).hexdigest() == expected:
+                      found=(i,old,new,bytes(data))
+                      break
+              data[i]=old
+              if found:
+                  break
+
+          if not found:
+              raise SystemExit('NO_SINGLE_PRINTABLE_SUBSTITUTION_MATCH')
+
+          i,old,new,repaired=found
+          obj=json.loads(repaired.decode('utf-8'))
+          assert obj['fromPosition']==1 and obj['throughPosition']==260
+          assert obj['rowEncoding']==['n','length','initial','targets']
+          assert len(obj['rows'])==260
+          assert hashlib.sha256(repaired).hexdigest()==expected
+          git_sha=hashlib.sha1(f'blob {len(repaired)}\0'.encode()+repaired).hexdigest()
+          print(f'FOUND offset={i} old={chr(old)!r} new={chr(new)!r} size={len(repaired)} gitBlobSha={git_sha}')
+          p.write_bytes(repaired)
+          PY
+
+      - name: Commit exact first chunk only
+        run: |
+          set -euo pipefail
+          expected=241e711a70f928f7de6aabd6b3f1167709d42d57e546d5d44067e92c2104d362
+          test "$(sha256sum timing-defense-skilled-v2-harness/public/data/campaign-0001-0260.chunk.json | awk '{print $1}')" = "$expected"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add timing-defense-skilled-v2-harness/public/data/campaign-0001-0260.chunk.json
+          if git diff --cached --quiet; then
+            echo 'No repair commit required'
+            exit 0
+          fi
+          git commit -m "linkline: repair exact V4 first chunk"
+          git push origin HEAD:linkline/cloudflare-product-v4-smoke-v1
