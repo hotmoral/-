@@ -1,0 +1,107 @@
+name: Linkline A3 Difficulty Selection v4 Final128
+
+on:
+  push:
+    branches:
+      - linkline/difficulty-selector-v2
+    paths:
+      - .github/workflows/linkline-a3-difficulty-selection-v4-final128.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-difficulty-selection-v4-final128
+  cancel-in-progress: true
+
+jobs:
+  select:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Fetch exact selector commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Fetch pinned 128-state N6 pool
+        shell: bash
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+          N6_SOURCE_COMMIT: 389a75aa1378bcf0aa9f4f8817ecefa9761c6f63
+          N6_SOURCE_BLOB: 0e3388a2ccf18edb5431f6f257e1a8d5a62df7c5
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin "${N6_SOURCE_COMMIT}"
+          test "$(git rev-parse FETCH_HEAD)" = "${N6_SOURCE_COMMIT}"
+          mkdir -p /tmp/linkline-final128
+          git show "${N6_SOURCE_COMMIT}:linkline/public_output/a3_difficulty_n6_expansion_v2/candidate_pool.json" > /tmp/linkline-final128/n6-candidate-pool.json
+          test "$(git hash-object /tmp/linkline-final128/n6-candidate-pool.json)" = "${N6_SOURCE_BLOB}"
+
+      - name: Verify approved public closure
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          test -s linkline/a3-target-pair-diversity-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/difficulty-rebalance-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/public_output/a3_final_candidate_pool_v2/candidate_pool.json
+          test -s linkline/public_output/a3_difficulty_n5_expansion_v2/candidate_pool.json
+          test "$(git hash-object linkline/public_output/a3_difficulty_n5_expansion_v2/candidate_pool.json)" = "24a604cfdfd56818b2580ef7382f9a9231cf9e94"
+          test "$(git hash-object linkline/tools/a3_difficulty_selection_plan_v2.py)" = "acf196f896b4f77a3d47a2228e4b508d9df49e79"
+          test "$(git hash-object linkline/tools/a3_difficulty_selection_plan_v4.py)" = "da38fc407aa9619ce5cf55c8b6a49138d3617915"
+
+      - name: Syntax check
+        shell: bash
+        working-directory: repo/linkline
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/a3_difficulty_selection_plan_v2.py \
+            tools/a3_difficulty_selection_plan_v4.py
+
+      - name: Build final 128-state progressive selection
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+          PYTHONPATH: "."
+        run: |
+          set -euo pipefail
+          rm -rf public_output/a3_difficulty_selection_v4_final128
+          python tools/a3_difficulty_selection_plan_v4.py \
+            --legacy-pool public_output/a3_final_candidate_pool_v2/candidate_pool.json \
+            --n5-pool public_output/a3_difficulty_n5_expansion_v2/candidate_pool.json \
+            --n6-pool /tmp/linkline-final128/n6-candidate-pool.json \
+            --output-dir public_output/a3_difficulty_selection_v4_final128
+          test -s public_output/a3_difficulty_selection_v4_final128/selection_plan.json
+          test -s public_output/a3_difficulty_selection_v4_final128/summary.json
+          cat public_output/a3_difficulty_selection_v4_final128/summary.json
+          sha256sum public_output/a3_difficulty_selection_v4_final128/*.json
+
+      - name: Commit public-safe final128 plan
+        shell: bash
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add linkline/public_output/a3_difficulty_selection_v4_final128
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "Linkline A3: materialize difficulty selection v4 final128"
+          git push origin HEAD:linkline/difficulty-selector-v2
