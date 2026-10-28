@@ -1,0 +1,148 @@
+name: Linkline A3 Difficulty N6 Expansion v2
+
+on:
+  push:
+    branches:
+      - linkline/difficulty-rebalance-v1
+    paths:
+      - linkline/tools/a3_target_pair_n6_expansion_v2.py
+      - .github/workflows/linkline-a3-difficulty-n6-expansion-v2.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-difficulty-n6-expansion-v2
+  cancel-in-progress: true
+
+jobs:
+  profile-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        length: [8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Verify public source closure
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          test -s linkline/a3-target-pair-diversity-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/difficulty-rebalance-v1/EXPOSURE_APPROVAL.md
+          test "$(git hash-object linkline/reference/m2_state_model.py)" = "c2bf85974d317eb18a8b02a1ac4ee7eb244fcb77"
+          test "$(git hash-object linkline/reference/m3_solver.py)" = "16b170656bbdffa8e836a891ffbf221de6c2935f"
+          test "$(git hash-object linkline/analysis/a3_structural_features.py)" = "35a6b997816ee3608d4d8064febd059159030796"
+          test "$(git hash-object linkline/tools/a3_final_candidate_pool_public.py)" = "86635edf7266f2f2524ed031467cf4e3045c69c9"
+          test "$(git hash-object linkline/tools/a3_target_pair_acquisition_v1.py)" = "74ad9981f6a3985c0d775f2e6a1e157045f5ad8f"
+          test "$(git hash-object linkline/tools/a3_target_pair_n6_expansion_v2.py)" = "c07402714fa125d8debdf3808fe19d6e73b50271"
+
+      - name: Syntax check
+        shell: bash
+        working-directory: repo/linkline
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/a3_target_pair_acquisition_v1.py tools/a3_target_pair_n6_expansion_v2.py
+
+      - name: Profile deterministic 128-state N6 domain
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+          PYTHONPATH: "."
+        run: |
+          set -euo pipefail
+          out="output/difficulty-n6-128/N6L${{ matrix.length }}"
+          rm -rf "$out"
+          python tools/a3_target_pair_acquisition_v1.py \
+            --n 6 \
+            --length "${{ matrix.length }}" \
+            --state-count 128 \
+            --output-dir "$out"
+          test -s "$out/N6L${{ matrix.length }}.candidates.json"
+          test -s "$out/N6L${{ matrix.length }}.summary.json"
+          sha256sum "$out"/*.json
+
+      - name: Upload public-safe N6 shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkline-a3-difficulty-n6-128-L${{ matrix.length }}
+          path: repo/linkline/output/difficulty-n6-128/N6L${{ matrix.length }}/*.json
+          if-no-files-found: error
+          retention-days: 7
+
+  combine:
+    needs: profile-domain
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Download all N6 shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: linkline-a3-difficulty-n6-128-*
+          path: shards
+          merge-multiple: true
+
+      - name: Combine 128-state N6 public pool
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+          PYTHONPATH: "."
+        run: |
+          set -euo pipefail
+          rm -rf public_output/a3_difficulty_n6_expansion_v2
+          python tools/a3_target_pair_n6_expansion_v2.py \
+            --input-dir ../../shards \
+            --output-dir public_output/a3_difficulty_n6_expansion_v2
+          test -s public_output/a3_difficulty_n6_expansion_v2/candidate_pool.json
+          test -s public_output/a3_difficulty_n6_expansion_v2/summary.json
+          cat public_output/a3_difficulty_n6_expansion_v2/summary.json
+          sha256sum public_output/a3_difficulty_n6_expansion_v2/*.json
+
+      - name: Commit public-safe N6 expansion
+        shell: bash
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add linkline/public_output/a3_difficulty_n6_expansion_v2
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "Linkline A3: materialize 128-state N6 difficulty pool"
+          git push origin HEAD:linkline/difficulty-rebalance-v1
