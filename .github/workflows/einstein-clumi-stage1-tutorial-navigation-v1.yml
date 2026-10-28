@@ -1,4 +1,4 @@
-name: Clumi Tutorial Clue Application Step
+name: Clumi Tutorial Clue Completion Step
 
 on:
   push:
@@ -14,11 +14,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  apply-clue-application-step:
+  apply-clue-completion-step:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      EXPECTED_SOURCE_SHA: cd6084944ada6599bab90140f4cd4e5422ee6beb
+      EXPECTED_SOURCE_SHA: f60a1ff5a35e7a3f60a7a4f0a057f7e9edd330fb
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -46,94 +46,30 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply Stage 1 clue-application tutorial only
+      - name: Apply Stage 1 clue-completion tutorial only
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
 
-          p=Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
-          text=p.read_text()
+          root=Path('source/app/src/main/java/com/example/einsteingame')
+          game=root/'GameView.java'
+          text=game.read_text()
 
           old="\n".join([
-              '            else if(!policy.seenBefore("stage1.candidate.remove"))tutorialStep=4;',
+              '            else if(!policy.seenBefore("stage1.clue1.apply"))tutorialStep=5;',
               '            else return;'
           ])
           new="\n".join([
-              '            else if(!policy.seenBefore("stage1.candidate.remove"))tutorialStep=4;',
               '            else if(!policy.seenBefore("stage1.clue1.apply"))tutorialStep=5;',
+              '            else if(!policy.seenBefore("stage1.clue1.complete"))tutorialStep=6;',
               '            else return;'
           ])
           assert text.count(old)==1, 'resume anchor mismatch'
           text=text.replace(old,new,1)
 
           old="\n".join([
-              '    private int tutorialCheeseSlot(){',
-              '        for(int slot=0;slot<GameState.SIZE;slot++){',
-              '            String id=state.itemId(0,slot);',
-              '            if(id!=null&&id.endsWith(".cheese"))return slot;',
-              '        }',
-              '        return -1;',
-              '    }',
-              '    private void showTutorialStep(){'
-          ])
-          new="\n".join([
-              '    private int tutorialCheeseSlot(){',
-              '        for(int slot=0;slot<GameState.SIZE;slot++){',
-              '            String id=state.itemId(0,slot);',
-              '            if(id!=null&&id.endsWith(".cheese"))return slot;',
-              '        }',
-              '        return -1;',
-              '    }',
-              '    private int[] tutorialItemLocation(String suffix){',
-              '        for(int row=0;row<GameState.SIZE;row++)for(int slot=0;slot<GameState.SIZE;slot++){',
-              '            String id=state.itemId(row,slot);',
-              '            if(id!=null&&id.endsWith(suffix))return new int[]{row,slot};',
-              '        }',
-              '        return null;',
-              '    }',
-              '    private void showTutorialStep(){'
-          ])
-          assert text.count(old)==1, 'helper anchor mismatch'
-          text=text.replace(old,new,1)
-
-          old="\n".join([
-              '        if(tutorialStep==4){',
-              '            state.select(0,2);',
-              '            int cheese=tutorialCheeseSlot();',
-              '            if(cheese<0||!state.isUserCandidatePresent(0,2,cheese)){',
-              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;',
-              '            }',
-              '            if(state.singleCandidateSlot(0,2)==cheese){',
-              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;',
-              '            }',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 3번은 치즈로 정하고 나머지를 지워보세요",true,false);',
-              '        }',
-              '    }',
-              '    private void moveTutorial(int direction){',
-              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
-              '        else if(tutorialStep<4)tutorialStep++;',
-              '        else return;',
-              '        post(this::showTutorialStep);',
-              '    }'
-          ])
-          new="\n".join([
-              '        if(tutorialStep==4){',
-              '            state.select(0,2);',
-              '            int cheese=tutorialCheeseSlot();',
-              '            if(cheese<0||!state.isUserCandidatePresent(0,2,cheese)){',
-              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=-2;return;',
-              '            }',
-              '            if(state.singleCandidateSlot(0,2)==cheese){',
-              '                tutorialPolicy.seen("stage1.candidate.remove");tutorialStep=5;post(this::showTutorialStep);return;',
-              '            }',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 3번은 치즈로 정하고 나머지를 지워보세요",true,false);return;',
-              '        }',
-              '        if(tutorialStep==5){',
-              '            int[] basketball=tutorialItemLocation(".basketball");',
-              '            if(basketball==null){tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=-2;return;}',
-              '            state.select(basketball[0],2);invalidate();',
               '            if(!state.isUserCandidatePresent(basketball[0],2,basketball[1])){',
               '                tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=-2;return;',
               '            }',
@@ -147,47 +83,51 @@ jobs:
               '        post(this::showTutorialStep);',
               '    }'
           ])
+          new="\n".join([
+              '            if(!state.isUserCandidatePresent(basketball[0],2,basketball[1])){',
+              '                tutorialPolicy.seen("stage1.clue1.apply");tutorialStep=6;post(this::showTutorialStep);return;',
+              '            }',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,candidatePanel,null,"연습: 치즈와 농구공은 다른 번호예요. 농구공을 지워보세요",false,false);return;',
+              '        }',
+              '        if(tutorialStep==6){',
+              '            GameState.Clue clue=state.displayedClue();',
+              '            if(clue==null||clue.completed){tutorialPolicy.seen("stage1.clue1.complete");tutorialStep=-2;return;}',
+              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,clueButtons[1],null,"단서를 다 활용했다면 사용완료를 눌러 표시해두세요",false,false);',
+              '        }',
+              '    }',
+              '    private void moveTutorial(int direction){',
+              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
+              '        else if(tutorialStep<6)tutorialStep++;',
+              '        else return;',
+              '        post(this::showTutorialStep);',
+              '    }'
+          ])
           assert text.count(old)==1, 'tutorial step anchor mismatch'
           text=text.replace(old,new,1)
 
           old="\n".join([
-              '                        if(state.singleCandidateSlot(state.selectedRow,state.selectedColumn)==cheese){',
-              '                            if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.candidate.remove");',
-              '                            tutorialStep=-2;',
-              '                        }else post(this::showTutorialStep);'
+              '                        if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");',
+              '                        tutorialStep=-2;invalidate();'
           ])
           new="\n".join([
-              '                        if(state.singleCandidateSlot(state.selectedRow,state.selectedColumn)==cheese){',
-              '                            if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.candidate.remove");',
-              '                            tutorialStep=5;post(this::showTutorialStep);',
-              '                        }else post(this::showTutorialStep);'
+              '                        if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");',
+              '                        tutorialStep=6;invalidate();post(this::showTutorialStep);'
           ])
-          assert text.count(old)==1, 'candidate completion anchor mismatch'
+          assert text.count(old)==1, 'clue application completion anchor mismatch'
           text=text.replace(old,new,1)
 
           anchor='            if(nav==ClumiFeedbackController.TutorialNav.PREVIOUS||nav==ClumiFeedbackController.TutorialNav.NEXT||nav==ClumiFeedbackController.TutorialNav.MESSAGE){'
           insert="\n".join([
-              '            if(tutorialStep==5){',
-              '                int[] basketball=tutorialItemLocation(".basketball");',
-              '                if(basketball==null){',
-              '                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");',
-              '                    tutorialCueShowing=false;tutorialStep=-2;return true;',
-              '                }',
-              '                state.select(basketball[0],2);',
-              '                for(int slot=0;slot<GameState.SIZE;slot++)if(candidateSlot(slot).contains(x,y)){',
-              '                    if(slot!=basketball[1]||!state.isUserCandidatePresent(basketball[0],2,slot))return true;',
+              '            if(tutorialStep==6){',
+              '                if(clueButtons[1].contains(x,y)){',
               '                    tutorialCueShowing=false;if(feel!=null)feel.beginInput();',
-              '                    trace.capture(state);captureRaw();',
-              '                    boolean wasContradictory=state.hasPlacementContradiction();',
-              '                    boolean present=state.isCandidatePresent(basketball[0],2,slot);',
-              '                    if(state.toggleCandidate(slot)){',
-              '                        if(feel!=null)feel.emit(this,present?ClumiFeedbackEvent.CANDIDATE_REMOVED:ClumiFeedbackEvent.CANDIDATE_RESTORED,basketball[0],2,slot);',
-              '                        presentMutation(false);onCandidateChanged(wasContradictory);',
-              '                        if(listener!=null)listener.changed();',
-              '                        if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.apply");',
-              '                        tutorialStep=-2;invalidate();',
-              '                    }else post(this::showTutorialStep);',
-              '                    return true;',
+              '                    GameState.Clue before=state.displayedClue();int clueIndex=state.currentClue;',
+              '                    if(before!=null&&!before.completed){',
+              '                        state.toggleCompleted();seenItem("clue");',
+              '                        if(feel!=null)feel.clue(this,before.completed?ClumiFeedbackEvent.CLUE_COMPLETED:ClumiFeedbackEvent.CLUE_RESTORED,clueIndex,state.hideCompleted&&before.completed);',
+              '                    }',
+              '                    if(tutorialPolicy!=null)tutorialPolicy.seen("stage1.clue1.complete");',
+              '                    tutorialStep=-2;if(listener!=null)listener.changed();invalidate();return true;',
               '                }',
               '                return true;',
               '            }',
@@ -195,15 +135,21 @@ jobs:
           ])
           assert text.count(anchor)==1, 'touch anchor mismatch'
           text=text.replace(anchor,insert,1)
+          game.write_text(text)
 
-          p.write_text(text)
+          focus=root/'ClumiFocusLayer.java'
+          text=focus.read_text()
+          old='            String tutorialCue=tutorialNext?"탭해서 계속":(label!=null&&label.startsWith("연습:")?"후보를 터치":"강조된 칸을 터치");'
+          new='            String tutorialCue=tutorialNext?"탭해서 계속":(label!=null&&label.startsWith("연습:")?"후보를 터치":label!=null&&label.contains("사용완료")?"버튼을 터치":"강조된 칸을 터치");'
+          assert text.count(old)==1, 'focus cue anchor mismatch'
+          focus.write_text(text.replace(old,new,1))
           PY
 
           git -C source diff --check
-          test "$(git -C source status --porcelain | wc -l)" -eq 1
-          grep -F 'stage1.clue1.apply' source/app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F 'tutorialItemLocation(".basketball")' source/app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F '연습: 치즈와 농구공은 다른 번호예요. 농구공을 지워보세요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
+          grep -F 'stage1.clue1.complete' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '단서를 다 활용했다면 사용완료를 눌러 표시해두세요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '"버튼을 터치"' source/app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -231,16 +177,18 @@ jobs:
             -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
             ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push clue-application tutorial step
+      - name: Commit and push clue-completion tutorial step
         shell: bash
         run: |
           set -euo pipefail
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
-          test "$(git -C source status --porcelain | wc -l)" -eq 1
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
           git -C source config user.name 'hotmoral'
           git -C source config user.email 'sktjsek@gmail.com'
-          git -C source add app/src/main/java/com/example/einsteingame/GameView.java
-          git -C source commit -m 'ui: apply Stage 1 first clue in tutorial'
+          git -C source add \
+            app/src/main/java/com/example/einsteingame/GameView.java \
+            app/src/main/java/com/example/einsteingame/ClumiFocusLayer.java
+          git -C source commit -m 'ui: add Stage 1 clue completion tutorial step'
           git -C source push origin "HEAD:$SOURCE_BRANCH"
           echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
 
