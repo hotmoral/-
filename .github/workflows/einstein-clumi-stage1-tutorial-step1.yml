@@ -1,0 +1,135 @@
+name: Clumi Stage 1 Tutorial Step 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-clumi-stage1-tutorial-step1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clumi-ui-tutorial-edit
+  cancel-in-progress: false
+
+jobs:
+  apply-stage1-clue-intro:
+    if: >-
+      github.event.head_commit.message == 'ui: Clumi Stage 1 tutorial clue intro step'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EXPECTED_SOURCE_SHA: 333fe2b431b7cec131bf56ee4044d5894e9ec9bc
+      SOURCE_BRANCH: clumi-ui-presentation-polish-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact private UI branch
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: clumi-ui-presentation-polish-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Require exact source HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
+
+      - name: Apply Stage 1 clue tutorial intro only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          policy = Path('source/app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java')
+          text = policy.read_text()
+          old = '''    /** Legacy gameplay-entry prompts are retired; Stage 1 tutorial owns onboarding. */
+              boolean show(View view,RectF target,String key,String label){return false;}
+          '''
+          old = old.replace('              boolean', '    boolean')
+          new = '''    /** Legacy gameplay-entry prompts are retired; Stage 1 tutorial owns onboarding. */
+              boolean show(View view,RectF target,String key,String label){return false;}
+              boolean showTutorial(View view,RectF target,String key,String label){
+                  if(feel==null||!feel.motion()||seenBefore(key)||!view.isAttachedToWindow())return false;
+                  seen(key);feel.spotlight(view,target,label);return true;
+              }
+          '''
+          new = new.replace('              boolean', '    boolean').replace('                  if', '        if').replace('                  seen', '        seen').replace('              }', '    }')
+          assert text.count(old) == 1, 'ClumiSpotlightPolicy expected block mismatch'
+          policy.write_text(text.replace(old, new, 1))
+
+          game = Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
+          text = game.read_text()
+          old = '''    void spotlight(ClumiSpotlightPolicy policy){if(policy==null)return;for(GameState.Clue clue:state.clues)if(clue.completed){policy.seen("clue");break;}if(itemEnabled(0)&&policy.show(this,itemButtons[0],"UNDO_BOOST","+3으로 실행취소를 늘리세요"))return;if(itemEnabled(1)&&policy.show(this,itemButtons[1],"CONFIRM_CELL","아이템을 누른 뒤 칸을 선택하세요"))return;policy.show(this,clueButtons[1],"clue","확인한 단서는 사용완료를 누르세요");}
+          '''
+          new = '''    void spotlight(ClumiSpotlightPolicy policy){
+              if(policy==null||session==null||session.stage.number!=1||state.currentClue!=0)return;
+              policy.showTutorial(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요");
+          }
+          '''
+          new = new.replace('              if', '        if').replace('              policy', '        policy').replace('          }', '    }')
+          assert text.count(old) == 1, 'GameView spotlight expected block mismatch'
+          game.write_text(text.replace(old, new, 1))
+          PY
+          git -C source diff --check
+          git -C source diff -- app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'showTutorial(this,clueBody,"stage1.clue1","× = 서로 다른 번호예요")' source/app/src/main/java/com/example/einsteingame/GameView.java
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android compile dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Compile debug Java
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
+            -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
+
+      - name: Commit and push exact tutorial step
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
+          test "$(git -C source status --porcelain | wc -l)" -eq 2
+          git -C source config user.name 'hotmoral'
+          git -C source config user.email 'sktjsek@gmail.com'
+          git -C source add app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java app/src/main/java/com/example/einsteingame/GameView.java
+          git -C source commit -m 'ui: add Stage 1 clue tutorial intro'
+          git -C source push origin "HEAD:$SOURCE_BRANCH"
+          echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Report source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "private_source_sha=$PRIVATE_SOURCE_SHA"
