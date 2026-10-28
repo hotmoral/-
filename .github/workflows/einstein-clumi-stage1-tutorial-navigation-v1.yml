@@ -1,4 +1,4 @@
-name: Clumi Tutorial Clue Filter Step
+name: Clumi Tutorial Timer Step
 
 on:
   push:
@@ -14,11 +14,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  apply-clue-filter-step:
+  apply-timer-step:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      EXPECTED_SOURCE_SHA: 7892ba608dc8e71c2e67808d118950b93e62d65c
+      EXPECTED_SOURCE_SHA: 307212032aa590d71666da359cba443f351e25a8
       SOURCE_BRANCH: clumi-ui-presentation-polish-v1
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -46,7 +46,7 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Apply Stage 1 clue-filter tutorial only
+      - name: Apply Stage 1 timer tutorial only
         shell: bash
         run: |
           set -euo pipefail
@@ -56,70 +56,14 @@ jobs:
           p=Path('source/app/src/main/java/com/example/einsteingame/GameView.java')
           text=p.read_text()
 
-          old='            else if(!policy.seenBefore("stage1.clue1.complete"))tutorialStep=6;\n            else return;'
-          new='            else if(!policy.seenBefore("stage1.clue1.complete"))tutorialStep=6;\n            else if(!policy.seenBefore("stage1.filters.overview"))tutorialStep=7;\n            else if(!policy.seenBefore("stage1.filters.positive"))tutorialStep=8;\n            else if(!policy.seenBefore("stage1.filters.negative"))tutorialStep=9;\n            else if(!policy.seenBefore("stage1.filters.completed"))tutorialStep=10;\n            else return;'
+          old='            else if(!policy.seenBefore("stage1.filters.completed"))tutorialStep=10;\n            else return;'
+          new='            else if(!policy.seenBefore("stage1.filters.completed"))tutorialStep=10;\n            else if(!policy.seenBefore("stage1.timer"))tutorialStep=11;\n            else return;'
           assert text.count(old)==1, 'resume anchor mismatch'
           text=text.replace(old,new,1)
 
-          anchor='    private void showTutorialStep(){'
-          helper='\n'.join([
-              '    private RectF tutorialFilterBounds(int index){',
-              '        float width=filters.width()*ClumiVisualTokens.FILTER_FRACTION;',
-              '        if(index<0)return new RectF(filters.left,filters.top,filters.left+width,filters.bottom);',
-              '        float segment=width/3f;',
-              '        return new RectF(filters.left+index*segment,filters.top,filters.left+(index+1)*segment,filters.bottom);',
-              '    }',
-              anchor
-          ])
-          assert text.count(anchor)==1, 'show helper anchor mismatch'
-          text=text.replace(anchor,helper,1)
-
-          old='\n'.join([
-              '        if(tutorialStep==6){',
-              '            GameState.Clue clue=state.displayedClue();',
-              '            if(clue==null||clue.completed){tutorialPolicy.seen("stage1.clue1.complete");tutorialStep=-2;return;}',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,clueButtons[1],null,"단서를 다 활용했다면 사용완료를 눌러 표시해두세요",false,false);',
-              '        }',
-              '    }',
-              '    private void moveTutorial(int direction){',
-              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
-              '        else if(tutorialStep<6)tutorialStep++;',
-              '        else return;',
-              '        post(this::showTutorialStep);',
-              '    }'
-          ])
-          new='\n'.join([
-              '        if(tutorialStep==6){',
-              '            GameState.Clue clue=state.displayedClue();',
-              '            if(clue==null||clue.completed){tutorialPolicy.seen("stage1.clue1.complete");tutorialStep=7;post(this::showTutorialStep);return;}',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,clueButtons[1],null,"단서를 다 활용했다면 사용완료를 눌러 표시해두세요",false,false);return;',
-              '        }',
-              '        if(tutorialStep==7){',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(-1),"stage1.filters.overview","단서가 많아지면 필요한 종류만 골라 볼 수 있어요",false,true);return;',
-              '        }',
-              '        if(tutorialStep==8){',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(0),"stage1.filters.positive","긍정: 같은 번호 단서를 숨기거나 다시 보여줘요",true,true);return;',
-              '        }',
-              '        if(tutorialStep==9){',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(1),"stage1.filters.negative","부정: 다른 번호 단서를 숨기거나 다시 보여줘요",true,true);return;',
-              '        }',
-              '        if(tutorialStep==10){',
-              '            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(2),"stage1.filters.completed","완료: 사용완료한 단서를 숨기거나 다시 보여줘요",true,true);',
-              '        }',
-              '    }',
-              '    private void moveTutorial(int direction){',
-              '        if(direction<0){if(tutorialStep>0)tutorialStep--;}',
-              '        else if(tutorialStep<10)tutorialStep++;',
-              '        else {tutorialCueShowing=false;tutorialStep=-2;return;}',
-              '        post(this::showTutorialStep);',
-              '    }'
-          ])
+          old='        if(tutorialStep==10){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(2),"stage1.filters.completed","완료: 사용완료한 단서를 숨기거나 다시 보여줘요",true,true);\n        }\n    }\n    private void moveTutorial(int direction){\n        if(direction<0){if(tutorialStep>0)tutorialStep--;}\n        else if(tutorialStep<10)tutorialStep++;\n        else {tutorialCueShowing=false;tutorialStep=-2;return;}\n        post(this::showTutorialStep);\n    }'
+          new='        if(tutorialStep==10){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,tutorialFilterBounds(2),"stage1.filters.completed","완료: 사용완료한 단서를 숨기거나 다시 보여줘요",true,true);return;\n        }\n        if(tutorialStep==11){\n            tutorialCueShowing=tutorialPolicy.showTutorialPage(this,timerPanel,"stage1.timer","여기에서 현재 플레이 시간을 확인할 수 있어요",true,true);\n        }\n    }\n    private void moveTutorial(int direction){\n        if(direction<0){if(tutorialStep>0)tutorialStep--;}\n        else if(tutorialStep<11)tutorialStep++;\n        else {tutorialCueShowing=false;tutorialStep=-2;return;}\n        post(this::showTutorialStep);\n    }'
           assert text.count(old)==1, 'tutorial step anchor mismatch'
-          text=text.replace(old,new,1)
-
-          old='                    tutorialStep=-2;if(listener!=null)listener.changed();invalidate();return true;'
-          new='                    tutorialStep=7;if(listener!=null)listener.changed();invalidate();post(this::showTutorialStep);return true;'
-          assert text.count(old)==1, 'clue completion transition anchor mismatch'
           text=text.replace(old,new,1)
 
           p.write_text(text)
@@ -127,10 +71,8 @@ jobs:
 
           git -C source diff --check
           test "$(git -C source status --porcelain | wc -l)" -eq 1
-          grep -F 'stage1.filters.overview' source/app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F '긍정: 같은 번호 단서를 숨기거나 다시 보여줘요' source/app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F '부정: 다른 번호 단서를 숨기거나 다시 보여줘요' source/app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F '완료: 사용완료한 단서를 숨기거나 다시 보여줘요' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'stage1.timer' source/app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F '여기에서 현재 플레이 시간을 확인할 수 있어요' source/app/src/main/java/com/example/einsteingame/GameView.java
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -158,7 +100,7 @@ jobs:
             -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
             ./gradlew --no-daemon --stacktrace --console=plain :app:compileDebugJavaWithJavac
 
-      - name: Commit and push clue-filter tutorial step
+      - name: Commit and push timer tutorial step
         shell: bash
         run: |
           set -euo pipefail
@@ -167,7 +109,7 @@ jobs:
           git -C source config user.name 'hotmoral'
           git -C source config user.email 'sktjsek@gmail.com'
           git -C source add app/src/main/java/com/example/einsteingame/GameView.java
-          git -C source commit -m 'ui: explain Stage 1 clue filters in tutorial'
+          git -C source commit -m 'ui: explain Stage 1 timer in tutorial'
           git -C source push origin "HEAD:$SOURCE_BRANCH"
           echo "PRIVATE_SOURCE_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
 
