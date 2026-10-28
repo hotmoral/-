@@ -19,6 +19,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
       - name: Verify public-safe inputs
         working-directory: repo/linkline
+        env: { PYTHONPATH: "." }
         run: |
           set -euo pipefail
           test -s public_output/a3_difficulty_selection_v4_final128/selection_plan.json
@@ -26,7 +27,7 @@ jobs:
           python -m py_compile tools/a3_difficulty_materialization_index_v1.py
       - name: Build public-safe source index
         working-directory: repo/linkline
-        env: { PYTHONDONTWRITEBYTECODE: "1", PYTHONHASHSEED: "1" }
+        env: { PYTHONDONTWRITEBYTECODE: "1", PYTHONHASHSEED: "1", PYTHONPATH: "." }
         run: |
           set -euo pipefail
           rm -rf public_output/a3_difficulty_materialization_index_v1
