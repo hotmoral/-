@@ -1,0 +1,90 @@
+name: Linkline A3 Difficulty Selection v2 Preview96
+
+on:
+  push:
+    branches:
+      - linkline/difficulty-selector-v2
+    paths:
+      - linkline/tools/a3_difficulty_selection_plan_v2.py
+      - .github/workflows/linkline-a3-difficulty-selection-v2-preview96.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linkline-a3-difficulty-selection-v2-preview96
+  cancel-in-progress: true
+
+jobs:
+  select:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Fetch exact public commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Verify public source closure
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          test -s linkline/a3-target-pair-diversity-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/difficulty-rebalance-v1/EXPOSURE_APPROVAL.md
+          test -s linkline/public_output/a3_final_candidate_pool_v2/candidate_pool.json
+          test -s linkline/public_output/a3_difficulty_n5_expansion_v2/candidate_pool.json
+          test -s linkline/public_output/a3_difficulty_n6_expansion_v1/candidate_pool.json
+          test "$(git hash-object linkline/tools/a3_difficulty_selection_plan_v2.py)" = "acf196f896b4f77a3d47a2228e4b508d9df49e79"
+
+      - name: Syntax check
+        shell: bash
+        working-directory: repo/linkline
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/a3_difficulty_selection_plan_v2.py
+
+      - name: Build progressive public selection preview
+        shell: bash
+        working-directory: repo/linkline
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "1"
+          PYTHONPATH: "."
+        run: |
+          set -euo pipefail
+          rm -rf public_output/a3_difficulty_selection_v2_preview96
+          python tools/a3_difficulty_selection_plan_v2.py \
+            --legacy-pool public_output/a3_final_candidate_pool_v2/candidate_pool.json \
+            --n5-pool public_output/a3_difficulty_n5_expansion_v2/candidate_pool.json \
+            --n6-pool public_output/a3_difficulty_n6_expansion_v1/candidate_pool.json \
+            --output-dir public_output/a3_difficulty_selection_v2_preview96
+          test -s public_output/a3_difficulty_selection_v2_preview96/selection_plan.json
+          test -s public_output/a3_difficulty_selection_v2_preview96/summary.json
+          cat public_output/a3_difficulty_selection_v2_preview96/summary.json
+          sha256sum public_output/a3_difficulty_selection_v2_preview96/*.json
+
+      - name: Commit public-safe preview summary and plan
+        shell: bash
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add linkline/public_output/a3_difficulty_selection_v2_preview96
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "Linkline A3: materialize difficulty selection v2 preview96"
+          git push origin HEAD:linkline/difficulty-selector-v2
