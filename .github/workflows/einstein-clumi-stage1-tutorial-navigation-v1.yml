@@ -46,7 +46,7 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Recover complete pixels and rebuild confirm-cell artwork as RGBA PNG
+      - name: Recover exact 256 rows and rebuild confirm-cell artwork as RGBA PNG
         shell: bash
         run: |
           set -euo pipefail
@@ -61,89 +61,100 @@ jobs:
           pos=8; meta={}
           for expected in (b'IHDR',b'PLTE',b'tRNS'):
               n=struct.unpack('>I',original[pos:pos+4])[0]
-              kind=original[pos+4:pos+8]; assert kind==expected,(pos,kind,expected)
+              kind=original[pos+4:pos+8]
+              assert kind==expected,(pos,kind,expected)
               data=original[pos+8:pos+8+n]
               stored=struct.unpack('>I',original[pos+8+n:pos+12+n])[0]
-              assert stored==(zlib.crc32(kind+data)&0xffffffff),(kind,stored,zlib.crc32(kind+data)&0xffffffff)
+              actual=zlib.crc32(kind+data)&0xffffffff
+              assert stored==actual,(kind,stored,actual)
               meta[kind]=data; pos+=12+n
 
           width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',meta[b'IHDR'])
           assert (width,height,depth,color_type,compression,filter_method,interlace)==(256,256,8,3,0,0,0)
           palette=meta[b'PLTE']; transparency=meta[b'tRNS']
-          marker=original.find(b'IDAT',pos); assert marker>=pos
+          palette_count=len(palette)//3
+          assert 1<=palette_count<=256 and len(palette)%3==0
+
+          marker=original.find(b'IDAT',pos)
+          assert marker>=pos and marker>=4
           declared=struct.unpack('>I',original[marker-4:marker])[0]
           data_start=marker+4
-
-          # The chunk boundary/CRC is damaged. Recover from the zlib stream itself.
           stream_tail=original[data_start:]
-          inflater=zlib.decompressobj()
-          try:
-              raw=inflater.decompress(stream_tail)+inflater.flush()
-          except zlib.error as error:
-              print('zlib_error=',repr(error),'file_bytes=',len(original),'declared=',declared,'tail_bytes=',len(stream_tail))
-              raise
           expected_raw=height*(width+1)
-          print('file_bytes=',len(original),'idat_marker=',marker,'declared=',declared,
-                'tail_bytes=',len(stream_tail),'raw_bytes=',len(raw),'expected_raw=',expected_raw,
-                'zlib_eof=',inflater.eof,'unused_bytes=',len(inflater.unused_data),'iend_at=',original.rfind(b'IEND'))
-          # Full scanlines are sufficient to preserve every source pixel even if the zlib trailer is absent.
-          assert len(raw)==expected_raw,(len(raw),expected_raw)
 
-          rows=[]; prev=bytearray(width); p=0
+          # Stop decompression exactly at the byte count implied by the trusted IHDR.
+          inflater=zlib.decompressobj()
+          raw=inflater.decompress(stream_tail,expected_raw)
+          assert len(raw)==expected_raw,(len(raw),expected_raw)
+          consumed=len(stream_tail)-len(inflater.unconsumed_tail)-len(inflater.unused_data)
+          print('file_bytes=',len(original),'idat_marker=',marker,'declared=',declared,
+                'tail_bytes=',len(stream_tail),'raw_bytes=',len(raw),'consumed_input=',consumed,
+                'unconsumed_tail=',len(inflater.unconsumed_tail),'zlib_eof=',inflater.eof,
+                'iend_at=',original.rfind(b'IEND'))
+          assert consumed>0 and len(inflater.unconsumed_tail)>0
+
+          # Prove that all 256 complete scanlines are structurally valid indexed-PNG rows.
+          rows=[]; prev=bytearray(width); p=0; filters=[]; max_index=0
           def paeth(a,b,c):
               q=a+b-c; pa=abs(q-a); pb=abs(q-b); pc=abs(q-c)
               return a if pa<=pb and pa<=pc else b if pb<=pc else c
-          filters=[]
           for y in range(height):
               f=raw[p]; p+=1; filters.append(f)
-              src=raw[p:p+width]; p+=width; row=bytearray(width)
+              assert f in (0,1,2,3,4),('filter',f,y)
+              src=raw[p:p+width]; p+=width
+              assert len(src)==width
+              row=bytearray(width)
               for x,v in enumerate(src):
                   a=row[x-1] if x else 0; b=prev[x]; c=prev[x-1] if x else 0
                   if f==0: val=v
                   elif f==1: val=(v+a)&255
                   elif f==2: val=(v+b)&255
                   elif f==3: val=(v+((a+b)//2))&255
-                  elif f==4: val=(v+paeth(a,b,c))&255
-                  else: raise AssertionError(('filter',f,y))
-                  row[x]=val
+                  else: val=(v+paeth(a,b,c))&255
+                  assert val<palette_count,('palette-index',val,y,x,palette_count)
+                  max_index=max(max_index,val); row[x]=val
               rows.append(row); prev=row
+          assert p==expected_raw and len(rows)==height
+          print('filters=',sorted(set(filters)),'palette_count=',palette_count,'max_index=',max_index)
 
-          palette_count=len(palette)//3
-          rgba=bytearray(); scanlines=bytearray(); max_index=0
+          rgba=bytearray(); rgba_scanlines=bytearray()
           for row in rows:
-              scanlines.append(0)
+              rgba_scanlines.append(0)
               for idx in row:
-                  max_index=max(max_index,idx); assert idx<palette_count,(idx,palette_count)
                   b=idx*3
                   px=bytes((palette[b],palette[b+1],palette[b+2],transparency[idx] if idx<len(transparency) else 255))
-                  rgba.extend(px); scanlines.extend(px)
-          print('filters=',sorted(set(filters)),'palette_count=',palette_count,'max_index=',max_index)
+                  rgba.extend(px); rgba_scanlines.extend(px)
+          assert len(rgba)==width*height*4
 
           def chunk(kind,data):
               return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
-          out=b'\x89PNG\r\n\x1a\n'
-          out+=chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))
-          out+=chunk(b'IDAT',zlib.compress(bytes(scanlines),9))
-          out+=chunk(b'IEND',b'')
-          assert out!=original
+          rebuilt=b'\x89PNG\r\n\x1a\n'
+          rebuilt+=chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))
+          rebuilt+=chunk(b'IDAT',zlib.compress(bytes(rgba_scanlines),9))
+          rebuilt+=chunk(b'IEND',b'')
+          assert rebuilt!=original
 
-          q=8; out_idat=[]; seen=[]
-          while q<len(out):
-              n=struct.unpack('>I',out[q:q+4])[0]; kind=out[q+4:q+8]; data=out[q+8:q+8+n]
-              stored=struct.unpack('>I',out[q+8+n:q+12+n])[0]
+          # Self-validate every output chunk and exact RGBA scanline payload.
+          q=8; seen=[]; output_idat=[]
+          while q<len(rebuilt):
+              n=struct.unpack('>I',rebuilt[q:q+4])[0]; kind=rebuilt[q+4:q+8]
+              data=rebuilt[q+8:q+8+n]
+              stored=struct.unpack('>I',rebuilt[q+8+n:q+12+n])[0]
               assert stored==(zlib.crc32(kind+data)&0xffffffff)
               seen.append(kind)
-              if kind==b'IDAT': out_idat.append(data)
+              if kind==b'IDAT': output_idat.append(data)
               q+=12+n
               if kind==b'IEND': break
-          assert q==len(out) and seen==[b'IHDR',b'IDAT',b'IEND']
-          assert zlib.decompress(b''.join(out_idat))==bytes(scanlines)
+          assert q==len(rebuilt)
+          assert seen==[b'IHDR',b'IDAT',b'IEND']
+          assert zlib.decompress(b''.join(output_idat))==bytes(rgba_scanlines)
 
-          path.write_bytes(out)
+          path.write_bytes(rebuilt)
           print('rgba_sha256=',hashlib.sha256(bytes(rgba)).hexdigest())
-          print('old_bytes=',len(original),'new_bytes=',len(out))
+          print('old_bytes=',len(original),'new_bytes=',len(rebuilt))
           PY
           file source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F 'RGBA'
+          identify source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F '256x256'
           git -C source diff --check
           test "$(git -C source status --porcelain | wc -l)" -eq 1
           test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
@@ -163,7 +174,7 @@ jobs:
           set -euo pipefail
           sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
 
-      - name: Build fresh debug APK with re-encoded artwork
+      - name: Build fresh debug APK with recovered artwork
         working-directory: source
         shell: bash
         run: |
