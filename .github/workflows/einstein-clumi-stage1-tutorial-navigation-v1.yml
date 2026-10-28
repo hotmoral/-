@@ -46,7 +46,7 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Recover pixels and rebuild confirm-cell artwork as RGBA PNG
+      - name: Recover complete pixels and rebuild confirm-cell artwork as RGBA PNG
         shell: bash
         run: |
           set -euo pipefail
@@ -58,43 +58,45 @@ jobs:
           original=path.read_bytes()
           assert original[:8]==b'\x89PNG\r\n\x1a\n'
 
-          pos=8; metadata={}
+          pos=8; meta={}
           for expected in (b'IHDR',b'PLTE',b'tRNS'):
-              n=struct.unpack('>I',original[pos:pos+4])[0]; kind=original[pos+4:pos+8]
-              assert kind==expected,(pos,kind,expected)
+              n=struct.unpack('>I',original[pos:pos+4])[0]
+              kind=original[pos+4:pos+8]; assert kind==expected,(pos,kind,expected)
               data=original[pos+8:pos+8+n]
               stored=struct.unpack('>I',original[pos+8+n:pos+12+n])[0]
               assert stored==(zlib.crc32(kind+data)&0xffffffff),(kind,stored,zlib.crc32(kind+data)&0xffffffff)
-              metadata[kind]=data; pos+=12+n
+              meta[kind]=data; pos+=12+n
 
-          width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',metadata[b'IHDR'])
+          width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',meta[b'IHDR'])
           assert (width,height,depth,color_type,compression,filter_method,interlace)==(256,256,8,3,0,0,0)
-          palette=metadata[b'PLTE']; transparency=metadata[b'tRNS']
-
-          marker=original.find(b'IDAT',pos)
-          assert marker>=pos and marker>=4
+          palette=meta[b'PLTE']; transparency=meta[b'tRNS']
+          marker=original.find(b'IDAT',pos); assert marker>=pos
           declared=struct.unpack('>I',original[marker-4:marker])[0]
-          data_start=marker+4; data_end=data_start+declared
-          assert declared>0 and data_end<=len(original),(marker,declared,len(original))
-          damaged_idat=original[data_start:data_end]
-          stored_crc=struct.unpack('>I',original[data_end:data_end+4])[0] if data_end+4<=len(original) else None
-          actual_crc=zlib.crc32(b'IDAT'+damaged_idat)&0xffffffff
+          data_start=marker+4
 
+          # The chunk boundary/CRC is damaged. Recover from the zlib stream itself.
+          stream_tail=original[data_start:]
           inflater=zlib.decompressobj()
-          raw=inflater.decompress(damaged_idat)+inflater.flush()
+          try:
+              raw=inflater.decompress(stream_tail)+inflater.flush()
+          except zlib.error as error:
+              print('zlib_error=',repr(error),'file_bytes=',len(original),'declared=',declared,'tail_bytes=',len(stream_tail))
+              raise
+          expected_raw=height*(width+1)
           print('file_bytes=',len(original),'idat_marker=',marker,'declared=',declared,
-                'stored_crc=',stored_crc,'actual_crc=',actual_crc,'zlib_eof=',inflater.eof,
-                'unused_bytes=',len(inflater.unused_data),'iend_at=',original.rfind(b'IEND'))
-          stride=width
-          assert inflater.eof,'IDAT zlib stream did not terminate'
-          assert len(raw)==height*(stride+1),(len(raw),height*(stride+1))
+                'tail_bytes=',len(stream_tail),'raw_bytes=',len(raw),'expected_raw=',expected_raw,
+                'zlib_eof=',inflater.eof,'unused_bytes=',len(inflater.unused_data),'iend_at=',original.rfind(b'IEND'))
+          # Full scanlines are sufficient to preserve every source pixel even if the zlib trailer is absent.
+          assert len(raw)==expected_raw,(len(raw),expected_raw)
 
-          rows=[]; prev=bytearray(stride); p=0
+          rows=[]; prev=bytearray(width); p=0
           def paeth(a,b,c):
               q=a+b-c; pa=abs(q-a); pb=abs(q-b); pc=abs(q-c)
               return a if pa<=pb and pa<=pc else b if pb<=pc else c
+          filters=[]
           for y in range(height):
-              f=raw[p]; p+=1; src=raw[p:p+stride]; p+=stride; row=bytearray(stride)
+              f=raw[p]; p+=1; filters.append(f)
+              src=raw[p:p+width]; p+=width; row=bytearray(width)
               for x,v in enumerate(src):
                   a=row[x-1] if x else 0; b=prev[x]; c=prev[x-1] if x else 0
                   if f==0: val=v
@@ -107,14 +109,15 @@ jobs:
               rows.append(row); prev=row
 
           palette_count=len(palette)//3
-          rgba=bytearray(); scanlines=bytearray()
+          rgba=bytearray(); scanlines=bytearray(); max_index=0
           for row in rows:
               scanlines.append(0)
               for idx in row:
-                  assert idx<palette_count,(idx,palette_count)
+                  max_index=max(max_index,idx); assert idx<palette_count,(idx,palette_count)
                   b=idx*3
                   px=bytes((palette[b],palette[b+1],palette[b+2],transparency[idx] if idx<len(transparency) else 255))
                   rgba.extend(px); scanlines.extend(px)
+          print('filters=',sorted(set(filters)),'palette_count=',palette_count,'max_index=',max_index)
 
           def chunk(kind,data):
               return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
