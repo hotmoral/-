@@ -1,32 +1,32 @@
 {
   "aggregateThresholdCapacity": {
     "2": {
-      "forcedBelowThreshold": 2,
-      "hardCapacity": 1298
+      "forcedBelowThreshold": 0,
+      "hardCapacity": 1300
     },
     "3": {
-      "forcedBelowThreshold": 12,
-      "hardCapacity": 1288
+      "forcedBelowThreshold": 4,
+      "hardCapacity": 1296
     },
     "4": {
-      "forcedBelowThreshold": 24,
-      "hardCapacity": 1276
+      "forcedBelowThreshold": 15,
+      "hardCapacity": 1285
     },
     "5": {
-      "forcedBelowThreshold": 52,
-      "hardCapacity": 1248
+      "forcedBelowThreshold": 39,
+      "hardCapacity": 1261
     },
     "6": {
-      "forcedBelowThreshold": 112,
-      "hardCapacity": 1188
+      "forcedBelowThreshold": 90,
+      "hardCapacity": 1210
     },
     "7": {
-      "forcedBelowThreshold": 231,
-      "hardCapacity": 1069
+      "forcedBelowThreshold": 203,
+      "hardCapacity": 1097
     },
     "8": {
-      "forcedBelowThreshold": 411,
-      "hardCapacity": 889
+      "forcedBelowThreshold": 376,
+      "hardCapacity": 924
     }
   },
   "capacity": {
@@ -237,85 +237,85 @@
       "uniquePairFirst": true
     },
     "6": {
-      "candidateRows": 1893,
+      "candidateRows": 3862,
       "pairCap": 2,
-      "pairGroupCount": 518,
+      "pairGroupCount": 594,
       "rawDistanceCounts": {
-        "1": 20,
-        "10": 171,
-        "11": 121,
-        "12": 81,
-        "13": 47,
-        "14": 14,
-        "15": 9,
+        "1": 31,
+        "10": 353,
+        "11": 232,
+        "12": 144,
+        "13": 79,
+        "14": 31,
+        "15": 10,
         "16": 1,
-        "2": 39,
-        "3": 67,
-        "4": 141,
-        "5": 191,
-        "6": 226,
-        "7": 307,
-        "8": 239,
-        "9": 219
+        "2": 84,
+        "3": 164,
+        "4": 290,
+        "5": 424,
+        "6": 489,
+        "7": 587,
+        "8": 493,
+        "9": 450
       },
-      "requiredSecondUses": 112,
+      "requiredSecondUses": 36,
       "targetCount": 630,
       "thresholdCapacity": {
         "2": {
-          "forcedBelowThreshold": 2,
-          "hardCapacity": 628,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 2,
-          "pairGroupsWithTwoHardCandidates": 374,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 0,
+          "hardCapacity": 630,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 0,
+          "pairGroupsWithTwoHardCandidates": 523,
+          "requiredSecondUses": 36
         },
         "3": {
-          "forcedBelowThreshold": 9,
-          "hardCapacity": 621,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 9,
-          "pairGroupsWithTwoHardCandidates": 367,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 1,
+          "hardCapacity": 629,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 1,
+          "pairGroupsWithTwoHardCandidates": 513,
+          "requiredSecondUses": 36
         },
         "4": {
-          "forcedBelowThreshold": 16,
-          "hardCapacity": 614,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 16,
-          "pairGroupsWithTwoHardCandidates": 358,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 7,
+          "hardCapacity": 623,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 7,
+          "pairGroupsWithTwoHardCandidates": 501,
+          "requiredSecondUses": 36
         },
         "5": {
-          "forcedBelowThreshold": 26,
-          "hardCapacity": 604,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 26,
-          "pairGroupsWithTwoHardCandidates": 334,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 13,
+          "hardCapacity": 617,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 13,
+          "pairGroupsWithTwoHardCandidates": 481,
+          "requiredSecondUses": 36
         },
         "6": {
-          "forcedBelowThreshold": 54,
-          "hardCapacity": 576,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 54,
-          "pairGroupsWithTwoHardCandidates": 303,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 32,
+          "hardCapacity": 598,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 32,
+          "pairGroupsWithTwoHardCandidates": 446,
+          "requiredSecondUses": 36
         },
         "7": {
-          "forcedBelowThreshold": 85,
-          "hardCapacity": 545,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 85,
-          "pairGroupsWithTwoHardCandidates": 254,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 57,
+          "hardCapacity": 573,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 57,
+          "pairGroupsWithTwoHardCandidates": 401,
+          "requiredSecondUses": 36
         },
         "8": {
-          "forcedBelowThreshold": 142,
-          "hardCapacity": 488,
-          "hardSecondUseCapacity": 112,
-          "pairGroupsWithNoHardCandidate": 142,
-          "pairGroupsWithTwoHardCandidates": 194,
-          "requiredSecondUses": 112
+          "forcedBelowThreshold": 107,
+          "hardCapacity": 523,
+          "hardSecondUseCapacity": 36,
+          "pairGroupsWithNoHardCandidate": 107,
+          "pairGroupsWithTwoHardCandidates": 342,
+          "requiredSecondUses": 36
         }
       },
       "uniquePairFirst": true
@@ -573,7 +573,12 @@
     "containsResearchIds": false
   },
   "schema": "LINKLINE_A3_DIFFICULTY_TARGET_PAIR_CAPACITY_V1",
+  "sourceStateCounts": {
+    "n5CapacityPool": 96,
+    "n6CapacityPool": 96,
+    "n6CurrentSelectionLookupPool": 48
+  },
   "status": "PASS",
-  "summaryFingerprint": "a1981209ee09375f81e5057251a036be5ff48fc0d3d2723b34f4dc918b666b14",
-  "version": "1.1.0"
+  "summaryFingerprint": "4b39b9ddfa68b1b723d0f37284ab4030f42abff7c877b6a108e2d6ca40c77c6b",
+  "version": "1.2.0"
 }
