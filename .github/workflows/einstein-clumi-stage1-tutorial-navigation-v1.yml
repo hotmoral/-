@@ -46,26 +46,107 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Re-encode confirm-cell artwork as standard RGBA PNG
+      - name: Rebuild confirm-cell artwork as pixel-identical RGBA PNG
         shell: bash
         run: |
           set -euo pipefail
-          input='source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
-          output='/tmp/item_confirm_cell-rgba.png'
-          test -s "$input"
-          command -v convert >/dev/null
-          command -v compare >/dev/null
-          identify "$input"
-          convert "$input" -alpha on -define png:color-type=6 "PNG32:$output"
-          test -s "$output"
-          identify "$output"
-          test "$(identify -format '%wx%h' "$input")" = '256x256'
-          test "$(identify -format '%wx%h' "$output")" = '256x256'
-          metric="$(compare -metric AE "$input" "$output" null: 2>&1 || true)"
-          test "$metric" = '0'
-          cmp -s "$input" "$output" && { echo 'Expected codec-only byte change'; exit 1; } || true
-          cp "$output" "$input"
-          file "$input" | grep -F 'RGBA'
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct, zlib, hashlib
+
+          path=Path('source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png')
+          original=path.read_bytes()
+          assert original[:8]==b'\x89PNG\r\n\x1a\n'
+
+          chunks=[]
+          pos=8
+          crc_bad=[]
+          while pos<len(original):
+              length=struct.unpack('>I',original[pos:pos+4])[0]
+              kind=original[pos+4:pos+8]
+              data=original[pos+8:pos+8+length]
+              stored=struct.unpack('>I',original[pos+8+length:pos+12+length])[0]
+              actual=zlib.crc32(kind+data)&0xffffffff
+              if stored!=actual:
+                  crc_bad.append((kind.decode('ascii','replace'),stored,actual))
+              chunks.append((kind,data))
+              pos+=12+length
+              if kind==b'IEND': break
+          assert pos==len(original), (pos,len(original))
+
+          ihdr=next(data for kind,data in chunks if kind==b'IHDR')
+          width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',ihdr)
+          assert (width,height,depth,color_type,compression,filter_method,interlace)==(256,256,8,3,0,0,0), (width,height,depth,color_type,compression,filter_method,interlace)
+          palette=next(data for kind,data in chunks if kind==b'PLTE')
+          transparency=next((data for kind,data in chunks if kind==b'tRNS'),b'')
+          assert len(palette)%3==0 and 1<=len(palette)//3<=256
+          compressed=b''.join(data for kind,data in chunks if kind==b'IDAT')
+          raw=zlib.decompress(compressed)
+          stride=width
+          assert len(raw)==height*(stride+1), (len(raw),height*(stride+1))
+
+          rows=[]
+          prev=bytearray(stride)
+          cursor=0
+          def paeth(a,b,c):
+              p=a+b-c; pa=abs(p-a); pb=abs(p-b); pc=abs(p-c)
+              return a if pa<=pb and pa<=pc else b if pb<=pc else c
+          for y in range(height):
+              f=raw[cursor]; cursor+=1
+              src=raw[cursor:cursor+stride]; cursor+=stride
+              row=bytearray(stride)
+              for x,v in enumerate(src):
+                  a=row[x-1] if x else 0
+                  b=prev[x]
+                  c=prev[x-1] if x else 0
+                  if f==0: val=v
+                  elif f==1: val=(v+a)&255
+                  elif f==2: val=(v+b)&255
+                  elif f==3: val=(v+((a+b)//2))&255
+                  elif f==4: val=(v+paeth(a,b,c))&255
+                  else: raise AssertionError(('filter',f,y))
+                  row[x]=val
+              rows.append(row); prev=row
+
+          palette_count=len(palette)//3
+          rgba=bytearray()
+          rgba_scanlines=bytearray()
+          for row in rows:
+              rgba_scanlines.append(0)
+              for idx in row:
+                  assert idx<palette_count, (idx,palette_count)
+                  base=idx*3
+                  pixel=bytes((palette[base],palette[base+1],palette[base+2],transparency[idx] if idx<len(transparency) else 255))
+                  rgba.extend(pixel); rgba_scanlines.extend(pixel)
+
+          def chunk(kind,data):
+              return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
+          new_ihdr=struct.pack('>IIBBBBB',width,height,8,6,0,0,0)
+          rebuilt=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',new_ihdr)+chunk(b'IDAT',zlib.compress(bytes(rgba_scanlines),9))+chunk(b'IEND',b'')
+
+          # Re-read the output container and prove the RGBA payload is byte-identical
+          # to the pixels reconstructed from the source palette image.
+          p=8; out_idat=[]; out_ihdr=None
+          while p<len(rebuilt):
+              n=struct.unpack('>I',rebuilt[p:p+4])[0]; k=rebuilt[p+4:p+8]; d=rebuilt[p+8:p+8+n]
+              stored=struct.unpack('>I',rebuilt[p+8+n:p+12+n])[0]
+              assert stored==(zlib.crc32(k+d)&0xffffffff)
+              if k==b'IHDR': out_ihdr=d
+              if k==b'IDAT': out_idat.append(d)
+              p+=12+n
+              if k==b'IEND': break
+          assert struct.unpack('>IIBBBBB',out_ihdr)==(256,256,8,6,0,0,0)
+          out_raw=zlib.decompress(b''.join(out_idat))
+          assert out_raw==bytes(rgba_scanlines)
+          assert rebuilt!=original
+
+          path.write_bytes(rebuilt)
+          print('source_chunks=',[k.decode('ascii') for k,_ in chunks])
+          print('source_crc_mismatches=',crc_bad)
+          print('rgba_sha256=',hashlib.sha256(bytes(rgba)).hexdigest())
+          print('old_bytes=',len(original),'new_bytes=',len(rebuilt))
+          PY
+          file source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F 'RGBA'
           git -C source diff --check
           test "$(git -C source status --porcelain | wc -l)" -eq 1
           test "$(git -C source status --porcelain | sed 's/^...//')" = 'app/src/main/assets/ui/b3-r5/item_confirm_cell.png'
