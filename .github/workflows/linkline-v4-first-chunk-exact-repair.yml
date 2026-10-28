@@ -32,38 +32,47 @@ jobs:
 
           p=Path('timing-defense-skilled-v2-harness/public/data/campaign-0001-0260.chunk.json')
           expected='241e711a70f928f7de6aabd6b3f1167709d42d57e546d5d44067e92c2104d362'
-          data=bytearray(p.read_bytes())
-          current=hashlib.sha256(data).hexdigest()
-          print('current', len(data), current)
+          raw=p.read_bytes()
+          current=hashlib.sha256(raw).hexdigest()
+          print('current', len(raw), current)
           if current == expected:
               print('already exact')
               raise SystemExit(0)
 
           found=None
-          # Same-size corruption is the leading hypothesis. Search every printable ASCII substitution.
-          for i,old in enumerate(data):
-              for new in range(32,127):
-                  if new == old:
-                      continue
-                  data[i]=new
-                  if hashlib.sha256(data).hexdigest() == expected:
-                      found=(i,old,new,bytes(data))
-                      break
-              data[i]=old
-              if found:
+
+          # Case A: current file has one extra byte.
+          for i in range(len(raw)):
+              candidate=raw[:i]+raw[i+1:]
+              if hashlib.sha256(candidate).hexdigest()==expected:
+                  found=('delete',i,raw[i],None,candidate)
                   break
 
+          # Case B: current file is missing one decimal digit. This mirrors the
+          # already-proven transfer defect on the 1041..1300 chunk.
           if not found:
-              raise SystemExit('NO_SINGLE_PRINTABLE_SUBSTITUTION_MATCH')
+              digits=b'0123456789'
+              for i in range(len(raw)+1):
+                  prefix=raw[:i]; suffix=raw[i:]
+                  for new in digits:
+                      candidate=prefix+bytes((new,))+suffix
+                      if hashlib.sha256(candidate).hexdigest()==expected:
+                          found=('insert-digit',i,None,new,candidate)
+                          break
+                  if found:
+                      break
 
-          i,old,new,repaired=found
+          if not found:
+              raise SystemExit('NO_SINGLE_DELETE_OR_DIGIT_INSERT_MATCH')
+
+          kind,i,old,new,repaired=found
           obj=json.loads(repaired.decode('utf-8'))
           assert obj['fromPosition']==1 and obj['throughPosition']==260
           assert obj['rowEncoding']==['n','length','initial','targets']
           assert len(obj['rows'])==260
           assert hashlib.sha256(repaired).hexdigest()==expected
           git_sha=hashlib.sha1(f'blob {len(repaired)}\0'.encode()+repaired).hexdigest()
-          print(f'FOUND offset={i} old={chr(old)!r} new={chr(new)!r} size={len(repaired)} gitBlobSha={git_sha}')
+          print(f'FOUND kind={kind} offset={i} old={old!r} new={new!r} size={len(repaired)} gitBlobSha={git_sha}')
           p.write_bytes(repaired)
           PY
 
