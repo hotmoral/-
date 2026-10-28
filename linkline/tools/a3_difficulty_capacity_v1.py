@@ -2,9 +2,9 @@
 """Public-safe capacity diagnostic for Linkline A3 difficulty rebalance.
 
 This reads only already-public candidate pools and the public V3 selection plan.
-It emits aggregate shortest-distance counts and pair-cap-constrained hard-supply
-capacity. No puzzle geometry, exact pair coordinates, research IDs, isolation
-membership, or private evidence are written to output.
+It emits aggregate shortest-distance counts and pair-diversity-constrained hard
+supply capacity. No puzzle geometry, exact pair coordinates, research IDs,
+isolation membership, or private evidence are written to output.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ import tools.a3_target_pair_selection_plan_v1 as v1
 import tools.a3_target_pair_selection_plan_v3 as v3
 
 SCHEMA = "LINKLINE_A3_DIFFICULTY_TARGET_PAIR_CAPACITY_V1"
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 THRESHOLDS = tuple(range(2, 9))
 
 
@@ -104,32 +104,38 @@ def expanded_pair_supply(rows: list[dict], n: int, state_count: int, domains):
     groups = v1.group_candidates(rows, n, state_count, domains)
     target = v1.TARGET_COUNTS[n]
     cap = v1.PAIR_CAPS[n]
-    if len(groups) > target:
+    pair_count = len(groups)
+    if pair_count > target:
         raise v1.SelectionError(f"N{n} unique pair groups exceed target")
-    if len(groups) * cap < target:
+    if pair_count * cap < target:
         raise v1.SelectionError(f"N{n} pair-cap supply below target")
+    second_use_required = target - pair_count
 
     threshold_rows = {}
     for threshold in THRESHOLDS:
-        hard_capacity = sum(
-            min(cap, sum(distance(row) >= threshold for row in candidates))
-            for candidates in groups.values()
-        )
-        hard_capacity = min(target, hard_capacity)
-        zero_hard_groups = sum(
-            not any(distance(row) >= threshold for row in candidates)
-            for candidates in groups.values()
-        )
+        hard_counts = {
+            key: sum(distance(row) >= threshold for row in candidates)
+            for key, candidates in groups.items()
+        }
+        hard_primary = sum(count >= 1 for count in hard_counts.values())
+        hard_second_groups = sum(count >= 2 for count in hard_counts.values())
+        hard_second = min(second_use_required, hard_second_groups)
+        hard_capacity = hard_primary + hard_second
         threshold_rows[str(threshold)] = {
             "hardCapacity": hard_capacity,
             "forcedBelowThreshold": target - hard_capacity,
-            "pairGroupsWithNoHardCandidate": zero_hard_groups,
+            "pairGroupsWithNoHardCandidate": pair_count - hard_primary,
+            "pairGroupsWithTwoHardCandidates": hard_second_groups,
+            "requiredSecondUses": second_use_required,
+            "hardSecondUseCapacity": hard_second,
         }
     return {
         "candidateRows": len(rows),
-        "pairGroupCount": len(groups),
+        "pairGroupCount": pair_count,
         "pairCap": cap,
         "targetCount": target,
+        "uniquePairFirst": True,
+        "requiredSecondUses": second_use_required,
         "rawDistanceCounts": compact_hist(distance(row) for row in rows),
         "thresholdCapacity": threshold_rows,
     }
@@ -215,6 +221,7 @@ def main() -> None:
             "distance1ForbiddenAfterStage5": True,
             "distance2And3MustBeRare": True,
             "pairCapsRemainHard": {str(n): cap for n, cap in sorted(v1.PAIR_CAPS.items())},
+            "allAvailableExactPairsUsedBeforeAnySecondUse": True,
             "pairDiversityPrecedesDifficultyOptimization": True,
         },
         "currentSelection": current,
