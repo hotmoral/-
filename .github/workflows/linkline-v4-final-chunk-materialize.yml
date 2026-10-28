@@ -1,4 +1,4 @@
-name: Linkline V4 final chunk materialize
+name: Linkline V4 final chunk identity check
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  materialize:
-    if: ${{ !contains(github.event.head_commit.message, 'record V4 hash conflict evidence') }}
+  identity:
+    if: ${{ !contains(github.event.head_commit.message, 'record V4 valid-candidate identity') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact pushed commit without third-party actions
@@ -23,80 +23,35 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Record exact candidate hash conflict evidence
+      - name: Verify valid candidate identity
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
           import hashlib, json
-
-          p = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
-          r = Path('linkline/v4-transfer-debug/hash-conflict.json')
-          expected_git = '81458e6ebcc645d22fff597bcffb6294d0f24e76'
-          expected_sha256 = '444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616'
-          data = p.read_bytes()
-          header = b'blob 12891\0'
-          expected_digest = bytes.fromhex(expected_git)
-          prefix = hashlib.sha1(); prefix.update(header)
-          found = None
-          attempts = 0
-          for pos in range(len(data) + 1):
-              suffix = data[pos:]
-              for byte in range(128):
-                  attempts += 1
-                  h = prefix.copy(); h.update(bytes((byte,))); h.update(suffix)
-                  if h.digest() == expected_digest:
-                      found = (pos, byte, data[:pos] + bytes((byte,)) + suffix)
-                      break
-              if found:
-                  break
-              if pos < len(data):
-                  prefix.update(data[pos:pos+1])
-
-          report = {
-              'inputSize': len(data),
-              'expectedGitBlobSha': expected_git,
-              'expectedSha256': expected_sha256,
-              'attempts': attempts,
-              'foundGitMatch': bool(found),
+          p=Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
+          out=Path('linkline/v4-transfer-debug/valid-candidate-identity.json')
+          data=p.read_bytes()
+          obj=json.loads(data.decode('utf-8'))
+          report={
+            'size':len(data),
+            'gitBlobSha':hashlib.sha1(f'blob {len(data)}\0'.encode()+data).hexdigest(),
+            'sha256':hashlib.sha256(data).hexdigest(),
+            'parsedRows':len(obj.get('rows',[])),
+            'schema':obj.get('schema'),
+            'fromPosition':obj.get('fromPosition'),
+            'throughPosition':obj.get('throughPosition'),
+            'expectedDescriptorSha256':'444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616'
           }
-          if found:
-              pos, byte, candidate = found
-              direct_git = hashlib.sha1(header + candidate).hexdigest()
-              direct_sha256 = hashlib.sha256(candidate).hexdigest()
-              parse_ok = True
-              parse_error = None
-              parsed_rows = None
-              try:
-                  obj = json.loads(candidate.decode('utf-8'))
-                  parsed_rows = len(obj.get('rows', []))
-              except Exception as exc:
-                  parse_ok = False
-                  parse_error = repr(exc)
-              lo = max(0, pos - 64); hi = min(len(candidate), pos + 65)
-              report.update({
-                  'insertPosition': pos,
-                  'insertByte': byte,
-                  'insertByteRepr': repr(chr(byte)),
-                  'outputSize': len(candidate),
-                  'directGitBlobSha': direct_git,
-                  'directSha256': direct_sha256,
-                  'gitMatch': direct_git == expected_git,
-                  'sha256Match': direct_sha256 == expected_sha256,
-                  'parseOk': parse_ok,
-                  'parseError': parse_error,
-                  'parsedRows': parsed_rows,
-                  'contextUtf8': candidate[lo:hi].decode('utf-8', errors='replace'),
-                  'contextHex': candidate[lo:hi].hex(),
-              })
-          r.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          report['descriptorSha256Match']=report['sha256']==report['expectedDescriptorSha256']
+          out.write_text(json.dumps(report,indent=2)+'\n')
           PY
 
-      - name: Commit conflict evidence only
+      - name: Commit identity evidence
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add linkline/v4-transfer-debug/hash-conflict.json
-          git commit -m "linkline: record V4 hash conflict evidence"
+          git add linkline/v4-transfer-debug/valid-candidate-identity.json
+          git commit -m "linkline: record V4 valid-candidate identity"
           git push origin HEAD:linkline/v4-object-probe-v1
