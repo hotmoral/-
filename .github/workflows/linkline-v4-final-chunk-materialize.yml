@@ -1,4 +1,4 @@
-name: Linkline V4 final chunk identity check
+name: Linkline V4 exact final chunk materialization
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  identity:
-    if: ${{ !contains(github.event.head_commit.message, 'record V4 valid-candidate identity') }}
+  materialize:
+    if: ${{ !contains(github.event.head_commit.message, 'materialize exact V4 final chunk') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact pushed commit without third-party actions
@@ -23,35 +23,41 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Verify valid candidate identity
+      - name: Repair one missing byte and verify exact identities
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
           import hashlib, json
-          p=Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
-          out=Path('linkline/v4-transfer-debug/valid-candidate-identity.json')
-          data=p.read_bytes()
-          obj=json.loads(data.decode('utf-8'))
-          report={
-            'size':len(data),
-            'gitBlobSha':hashlib.sha1(f'blob {len(data)}\0'.encode()+data).hexdigest(),
-            'sha256':hashlib.sha256(data).hexdigest(),
-            'parsedRows':len(obj.get('rows',[])),
-            'schema':obj.get('schema'),
-            'fromPosition':obj.get('fromPosition'),
-            'throughPosition':obj.get('throughPosition'),
-            'expectedDescriptorSha256':'444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616'
-          }
-          report['descriptorSha256Match']=report['sha256']==report['expectedDescriptorSha256']
-          out.write_text(json.dumps(report,indent=2)+'\n')
+
+          src = Path('linkline/v4-transfer-debug/candidate-1041-1300.json')
+          dst = Path('linkline/v4-transfer-debug/exact-1041-1300.json')
+          data = src.read_bytes()
+          bad = b'[6,8,[1,0,6,2,18,19,25,24],[0,1]]'
+          good = b'[6,8,[1,0,6,12,18,19,25,24],[0,1]]'
+          if data.count(bad) != 1:
+              raise SystemExit('EXPECTED_SINGLE_MISSING_BYTE_PATTERN_NOT_FOUND')
+          repaired = data.replace(bad, good, 1)
+          sha256 = hashlib.sha256(repaired).hexdigest()
+          git_sha = hashlib.sha1(f'blob {len(repaired)}\0'.encode() + repaired).hexdigest()
+          obj = json.loads(repaired.decode('utf-8'))
+          if len(repaired) != 12891:
+              raise SystemExit(f'BAD_SIZE:{len(repaired)}')
+          if sha256 != '444385bce60499b32c1bf8aea05a0e2eec32ac77743c0ab08b1296ccff86b616':
+              raise SystemExit(f'BAD_SHA256:{sha256}')
+          if git_sha != '45b9d71fc48e94c687c343cefcd36b5c29b0044f':
+              raise SystemExit(f'BAD_GIT_SHA:{git_sha}')
+          if obj.get('fromPosition') != 1041 or obj.get('throughPosition') != 1300 or len(obj.get('rows', [])) != 260:
+              raise SystemExit('BAD_CHUNK_STRUCTURE')
+          dst.write_bytes(repaired)
           PY
 
-      - name: Commit identity evidence
+      - name: Commit exact chunk object
         run: |
           set -euo pipefail
+          test "$(git hash-object linkline/v4-transfer-debug/exact-1041-1300.json)" = "45b9d71fc48e94c687c343cefcd36b5c29b0044f"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add linkline/v4-transfer-debug/valid-candidate-identity.json
-          git commit -m "linkline: record V4 valid-candidate identity"
+          git add linkline/v4-transfer-debug/exact-1041-1300.json
+          git commit -m "linkline: materialize exact V4 final chunk"
           git push origin HEAD:linkline/v4-object-probe-v1
