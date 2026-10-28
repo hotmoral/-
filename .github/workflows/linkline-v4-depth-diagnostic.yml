@@ -1,0 +1,115 @@
+name: Linkline V4 depth diagnostic
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-product-v4-smoke-v1
+    paths:
+      - .github/workflows/linkline-v4-depth-diagnostic.yml
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Analyze current 1300 campaign shortest depth through 2
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {
+            canonicalPath,
+            enumerateActions,
+            applyMove,
+            isSolved,
+          } from './timing-defense-skilled-v2-harness/public/src/mechanic.mjs';
+
+          const base = './timing-defense-skilled-v2-harness/public/data';
+          const files = [
+            'campaign-0001-0260.chunk.json',
+            'campaign-0261-0520.chunk.json',
+            'campaign-0521-0780.chunk.json',
+            'campaign-0781-1040.chunk.json',
+            'campaign-1041-1300.chunk.json',
+          ];
+          const rows = [];
+          for (const file of files) {
+            const chunk = JSON.parse(fs.readFileSync(`${base}/${file}`, 'utf8'));
+            for (const row of chunk.rows) {
+              const [n,length,initial,targets] = row;
+              rows.push({n,length,initial,targets});
+            }
+          }
+          if (rows.length !== 1300) throw new Error(`row count ${rows.length}`);
+
+          const key = p => p.join(',');
+          function shortestThrough2(p) {
+            const root = canonicalPath(p.initial);
+            if (isSolved(root,p.targets)) return 0;
+            const seen = new Set([key(root)]);
+            let frontier = [root];
+            for (let d=1; d<=2; d++) {
+              const next = [];
+              for (const state of frontier) {
+                for (const action of enumerateActions(p.n,state)) {
+                  const successor = applyMove(p.n,state,action.endpointIndex,action.destination);
+                  const k = key(successor);
+                  if (seen.has(k)) continue;
+                  seen.add(k);
+                  if (isSolved(successor,p.targets)) return d;
+                  next.push(successor);
+                }
+              }
+              frontier = next;
+            }
+            return 3; // exact statement: shortest distance > 2
+          }
+
+          const analyzed = rows.map((p,i)=>({...p, position:i+1, depthClass:shortestThrough2(p)}));
+          const summarize = subset => {
+            const count = subset.length;
+            const d0 = subset.filter(x=>x.depthClass===0).length;
+            const d1 = subset.filter(x=>x.depthClass===1).length;
+            const d2 = subset.filter(x=>x.depthClass===2).length;
+            const gt2 = subset.filter(x=>x.depthClass===3).length;
+            return {count,d0,d1,d2,gt2,le2:d0+d1+d2,le2Pct:+(((d0+d1+d2)*100/count)||0).toFixed(2),d2Pct:+((d2*100/count)||0).toFixed(2)};
+          };
+
+          const byN = {};
+          for (const n of [3,4,5,6]) byN[`N${n}`] = summarize(analyzed.filter(x=>x.n===n));
+          const first50 = summarize(analyzed.slice(0,50));
+          const first60 = summarize(analyzed.slice(0,60));
+          const first100 = summarize(analyzed.slice(0,100));
+          const chunks = [];
+          for (let start=1; start<=1300; start+=50) {
+            const end = Math.min(start+49,1300);
+            const s = summarize(analyzed.slice(start-1,end));
+            chunks.push({range:`${start}-${end}`,...s});
+          }
+          const byNL = {};
+          for (const x of analyzed) {
+            const k = `N${x.n}L${x.length}`;
+            (byNL[k] ??= []).push(x);
+          }
+          for (const k of Object.keys(byNL)) byNL[k] = summarize(byNL[k]);
+
+          const result = {
+            schema:'LINKLINE_V4_SHORTEST_DEPTH_THROUGH_2_DIAGNOSTIC',
+            rowCount: analyzed.length,
+            overall:summarize(analyzed),
+            first50, first60, first100,
+            byN,
+            byNL:Object.fromEntries(Object.entries(byNL).sort()),
+            blocks50:chunks,
+            first100Rows: analyzed.slice(0,100).map(x=>({position:x.position,n:x.n,length:x.length,depth:x.depthClass===3?'>2':x.depthClass})),
+          };
+          console.log('LINKLINE_DEPTH_DIAGNOSTIC_BEGIN');
+          console.log(JSON.stringify(result));
+          console.log('LINKLINE_DEPTH_DIAGNOSTIC_END');
+          NODE
