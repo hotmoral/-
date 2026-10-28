@@ -1,0 +1,372 @@
+{
+  "blockDistanceSummary": [
+    {
+      "endStage": 100,
+      "max": 10,
+      "median": 7,
+      "min": 1,
+      "startStage": 1
+    },
+    {
+      "endStage": 200,
+      "max": 15,
+      "median": 7,
+      "min": 4,
+      "startStage": 101
+    },
+    {
+      "endStage": 300,
+      "max": 24,
+      "median": 4,
+      "min": 4,
+      "startStage": 201
+    },
+    {
+      "endStage": 400,
+      "max": 5,
+      "median": 5,
+      "min": 4,
+      "startStage": 301
+    },
+    {
+      "endStage": 500,
+      "max": 7,
+      "median": 5,
+      "min": 4,
+      "startStage": 401
+    },
+    {
+      "endStage": 600,
+      "max": 11,
+      "median": 5,
+      "min": 4,
+      "startStage": 501
+    },
+    {
+      "endStage": 700,
+      "max": 15,
+      "median": 5,
+      "min": 5,
+      "startStage": 601
+    },
+    {
+      "endStage": 800,
+      "max": 8,
+      "median": 6,
+      "min": 5,
+      "startStage": 701
+    },
+    {
+      "endStage": 900,
+      "max": 9,
+      "median": 6,
+      "min": 6,
+      "startStage": 801
+    },
+    {
+      "endStage": 1000,
+      "max": 9,
+      "median": 7,
+      "min": 7,
+      "startStage": 901
+    },
+    {
+      "endStage": 1100,
+      "max": 10,
+      "median": 8,
+      "min": 7,
+      "startStage": 1001
+    },
+    {
+      "endStage": 1200,
+      "max": 11,
+      "median": 9,
+      "min": 9,
+      "startStage": 1101
+    },
+    {
+      "endStage": 1300,
+      "max": 20,
+      "median": 13,
+      "min": 10,
+      "startStage": 1201
+    }
+  ],
+  "boundaries": {
+    "geometryMaterialized": false,
+    "privateIsolationApplied": false,
+    "privateRepairApplied": false,
+    "productionCatalogModified": false
+  },
+  "distanceCounts": {
+    "1": 5,
+    "10": 92,
+    "11": 44,
+    "12": 15,
+    "13": 30,
+    "14": 27,
+    "15": 15,
+    "16": 5,
+    "17": 5,
+    "18": 1,
+    "2": 3,
+    "20": 8,
+    "23": 1,
+    "24": 1,
+    "3": 3,
+    "4": 245,
+    "5": 208,
+    "6": 162,
+    "7": 151,
+    "8": 138,
+    "9": 141
+  },
+  "legacy": {
+    "3": {
+      "distanceCounts": {
+        "1": 2,
+        "3": 1,
+        "4": 6,
+        "5": 8,
+        "6": 6,
+        "7": 8,
+        "8": 4,
+        "9": 1
+      },
+      "exactPairCount": 36,
+      "pairCap": 1,
+      "repairRows": 35,
+      "selected": 36,
+      "selectedLengthCounts": {
+        "3": 2,
+        "4": 10,
+        "5": 6,
+        "6": 10,
+        "7": 8
+      }
+    },
+    "4": {
+      "distanceCounts": {
+        "1": 3,
+        "10": 18,
+        "11": 11,
+        "12": 3,
+        "13": 8,
+        "14": 6,
+        "15": 4,
+        "16": 3,
+        "17": 4,
+        "18": 1,
+        "2": 3,
+        "20": 7,
+        "23": 1,
+        "24": 1,
+        "3": 2,
+        "7": 6,
+        "8": 17,
+        "9": 22
+      },
+      "exactPairCount": 120,
+      "pairCap": 1,
+      "repairRows": 120,
+      "selected": 120,
+      "selectedLengthCounts": {
+        "10": 61,
+        "3": 2,
+        "5": 6,
+        "7": 3,
+        "8": 3,
+        "9": 45
+      }
+    }
+  },
+  "lowDistancePolicy": {
+    "distance1Stages": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "distance2And3Count": 6,
+    "distance2And3Share": 0.004615384615384616,
+    "distance2Stages": [
+      6,
+      7,
+      8
+    ],
+    "distance3Stages": [
+      9,
+      10,
+      11
+    ],
+    "minimumDistanceFromStage12": 4
+  },
+  "n5": {
+    "allSelectedRowsAtLeast4Moves": true,
+    "distanceCounts": {
+      "10": 46,
+      "11": 15,
+      "12": 3,
+      "13": 3,
+      "14": 2,
+      "15": 2,
+      "16": 1,
+      "17": 1,
+      "20": 1,
+      "4": 139,
+      "5": 79,
+      "6": 49,
+      "7": 41,
+      "8": 69,
+      "9": 63
+    },
+    "eligibleDistinctPairCount": 296,
+    "excludedLowOnlyPairGroups": 3,
+    "lengthTargetDeviation": {
+      "10": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0
+    },
+    "maxAbsLengthTargetDeviation": 0,
+    "pairCap": 2,
+    "repairReservoirRows": 747,
+    "secondUseCount": 218,
+    "selectedCount": 514,
+    "selectedLengthCounts": {
+      "10": 101,
+      "6": 103,
+      "7": 104,
+      "8": 102,
+      "9": 104
+    }
+  },
+  "n6": {
+    "allSelectedRowsAtLeast4Moves": true,
+    "distanceCounts": {
+      "10": 28,
+      "11": 18,
+      "12": 9,
+      "13": 19,
+      "14": 19,
+      "15": 9,
+      "16": 1,
+      "4": 100,
+      "5": 121,
+      "6": 107,
+      "7": 96,
+      "8": 48,
+      "9": 55
+    },
+    "eligibleDistinctPairCount": 587,
+    "excludedLowOnlyPairGroups": 7,
+    "lengthTargetDeviation": {
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0,
+      "8": 0,
+      "9": 0
+    },
+    "maxAbsLengthTargetDeviation": 0,
+    "pairCap": 2,
+    "repairReservoirRows": 1248,
+    "secondUseCount": 43,
+    "selectedCount": 630,
+    "selectedLengthCounts": {
+      "10": 79,
+      "11": 79,
+      "12": 79,
+      "13": 79,
+      "14": 79,
+      "15": 79,
+      "8": 78,
+      "9": 78
+    }
+  },
+  "nCounts": {
+    "3": 36,
+    "4": 120,
+    "5": 514,
+    "6": 630
+  },
+  "nlCounts": {
+    "N3L3": 2,
+    "N3L4": 10,
+    "N3L5": 6,
+    "N3L6": 10,
+    "N3L7": 8,
+    "N4L10": 61,
+    "N4L3": 2,
+    "N4L5": 6,
+    "N4L7": 3,
+    "N4L8": 3,
+    "N4L9": 45,
+    "N5L10": 101,
+    "N5L6": 103,
+    "N5L7": 104,
+    "N5L8": 102,
+    "N5L9": 104,
+    "N6L10": 79,
+    "N6L11": 79,
+    "N6L12": 79,
+    "N6L13": 79,
+    "N6L14": 79,
+    "N6L15": 79,
+    "N6L8": 78,
+    "N6L9": 78
+  },
+  "privacy": {
+    "containsExactTargetPairCoordinateKeys": false,
+    "containsHumanOrSelfTestExport": false,
+    "containsPrivateIsolationIds": false,
+    "containsPuzzleGeometry": false,
+    "containsTargetCoordinates": false
+  },
+  "schema": "LINKLINE_A3_DIFFICULTY_REBALANCED_1300_PUBLIC_SELECTION_PLAN_V2_SUMMARY",
+  "selectionFingerprint": "708ee7e4c8bcba89025d267972c16a5f96e315444e3b76867caca90b0108acad",
+  "sequence": {
+    "firstN5Stage": 62,
+    "firstN6Stage": 302,
+    "maxSameLengthRun": 4,
+    "maxSameNRun": 4
+  },
+  "source": {
+    "legacyReusePool": {
+      "identityFingerprint": "4376153736124b951f8982c8bee606021070f8fcdc1153653e0817e8b10af87e",
+      "rowCount": 2270,
+      "schema": "LINKLINE_A3_PUBLIC_FINAL_CANDIDATE_POOL_REUSE_FIRST",
+      "version": "2.0.0"
+    },
+    "n5PoolIdentityFingerprint": "c5bd127bc995b2b23cd488c083d2a74add3c12edcaf1bcd50655a71e27bdbd7e",
+    "n5StateCount": 128,
+    "n6PoolIdentityFingerprint": "68de0580cd9efa49bb8f8a12afd1157b62ae3ba0ca0e75ba100dfd0b5c9ce29d",
+    "n6StateCount": 96
+  },
+  "status": "PASS",
+  "summaryFingerprint": "b4339bece58ec9357d085d344151da62b23c0c87f3805c41a7598bb6dfa8f99a",
+  "targetPairPolicy": {
+    "firstSecondUseStage": {
+      "5": 607,
+      "6": 1247
+    },
+    "lastPrimaryUseStage": {
+      "5": 604,
+      "6": 1246
+    },
+    "n3n4ExactPairSingleUse": true,
+    "n5n6DistinctHardPairsMaximized": true,
+    "pairCaps": {
+      "3": 1,
+      "4": 1,
+      "5": 2,
+      "6": 2
+    }
+  },
+  "total": 1300,
+  "version": "2.0.0"
+}
