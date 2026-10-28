@@ -46,7 +46,7 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
 
-      - name: Rebuild confirm-cell artwork as pixel-identical RGBA PNG
+      - name: Recover pixels and rebuild confirm-cell artwork as RGBA PNG
         shell: bash
         run: |
           set -euo pipefail
@@ -58,47 +58,56 @@ jobs:
           original=path.read_bytes()
           assert original[:8]==b'\x89PNG\r\n\x1a\n'
 
-          chunks=[]
-          pos=8
-          crc_bad=[]
-          while pos<len(original):
-              length=struct.unpack('>I',original[pos:pos+4])[0]
+          # The first three chunks are structurally valid and contain all palette metadata.
+          pos=8; metadata={}
+          for expected in (b'IHDR',b'PLTE',b'tRNS'):
+              n=struct.unpack('>I',original[pos:pos+4])[0]
               kind=original[pos+4:pos+8]
-              data=original[pos+8:pos+8+length]
-              stored=struct.unpack('>I',original[pos+8+length:pos+12+length])[0]
+              assert kind==expected,(pos,kind,expected)
+              data=original[pos+8:pos+8+n]
+              stored=struct.unpack('>I',original[pos+8+n:pos+12+n])[0]
               actual=zlib.crc32(kind+data)&0xffffffff
-              if stored!=actual:
-                  crc_bad.append((kind.decode('ascii','replace'),stored,actual))
-              chunks.append((kind,data))
-              pos+=12+length
-              if kind==b'IEND': break
-          assert pos==len(original), (pos,len(original))
+              assert stored==actual,(kind,stored,actual)
+              metadata[kind]=data
+              pos+=12+n
 
-          ihdr=next(data for kind,data in chunks if kind==b'IHDR')
-          width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',ihdr)
-          assert (width,height,depth,color_type,compression,filter_method,interlace)==(256,256,8,3,0,0,0), (width,height,depth,color_type,compression,filter_method,interlace)
-          palette=next(data for kind,data in chunks if kind==b'PLTE')
-          transparency=next((data for kind,data in chunks if kind==b'tRNS'),b'')
-          assert len(palette)%3==0 and 1<=len(palette)//3<=256
-          compressed=b''.join(data for kind,data in chunks if kind==b'IDAT')
+          width,height,depth,color_type,compression,filter_method,interlace=struct.unpack('>IIBBBBB',metadata[b'IHDR'])
+          assert (width,height,depth,color_type,compression,filter_method,interlace)==(256,256,8,3,0,0,0)
+          palette=metadata[b'PLTE']; transparency=metadata[b'tRNS']
+
+          # Recover every real IDAT independently instead of trusting the damaged sequential chunk walk.
+          idats=[]; scans=[]; cursor=0
+          while True:
+              marker=original.find(b'IDAT',cursor)
+              if marker<0: break
+              cursor=marker+4
+              if marker<4: continue
+              n=struct.unpack('>I',original[marker-4:marker])[0]
+              data_start=marker+4; data_end=data_start+n
+              if n<=0 or data_end+4>len(original):
+                  scans.append((marker,n,'out-of-range')); continue
+              data=original[data_start:data_end]
+              stored=struct.unpack('>I',original[data_end:data_end+4])[0]
+              actual=zlib.crc32(b'IDAT'+data)&0xffffffff
+              ok=stored==actual
+              scans.append((marker,n,'crc-ok' if ok else 'crc-bad'))
+              if ok: idats.append((marker,data))
+          print('file_bytes=',len(original),'idat_scan=',scans,'iend_at=',original.rfind(b'IEND'))
+          assert idats, 'no valid IDAT chunks recovered'
+          idats.sort()
+          compressed=b''.join(data for _,data in idats)
           raw=zlib.decompress(compressed)
           stride=width
-          assert len(raw)==height*(stride+1), (len(raw),height*(stride+1))
+          assert len(raw)==height*(stride+1),(len(raw),height*(stride+1),scans)
 
-          rows=[]
-          prev=bytearray(stride)
-          cursor=0
+          rows=[]; prev=bytearray(stride); p=0
           def paeth(a,b,c):
-              p=a+b-c; pa=abs(p-a); pb=abs(p-b); pc=abs(p-c)
+              q=a+b-c; pa=abs(q-a); pb=abs(q-b); pc=abs(q-c)
               return a if pa<=pb and pa<=pc else b if pb<=pc else c
           for y in range(height):
-              f=raw[cursor]; cursor+=1
-              src=raw[cursor:cursor+stride]; cursor+=stride
-              row=bytearray(stride)
+              f=raw[p]; p+=1; src=raw[p:p+stride]; p+=stride; row=bytearray(stride)
               for x,v in enumerate(src):
-                  a=row[x-1] if x else 0
-                  b=prev[x]
-                  c=prev[x-1] if x else 0
+                  a=row[x-1] if x else 0; b=prev[x]; c=prev[x-1] if x else 0
                   if f==0: val=v
                   elif f==1: val=(v+a)&255
                   elif f==2: val=(v+b)&255
@@ -109,42 +118,39 @@ jobs:
               rows.append(row); prev=row
 
           palette_count=len(palette)//3
-          rgba=bytearray()
-          rgba_scanlines=bytearray()
+          rgba=bytearray(); scanlines=bytearray()
           for row in rows:
-              rgba_scanlines.append(0)
+              scanlines.append(0)
               for idx in row:
-                  assert idx<palette_count, (idx,palette_count)
-                  base=idx*3
-                  pixel=bytes((palette[base],palette[base+1],palette[base+2],transparency[idx] if idx<len(transparency) else 255))
-                  rgba.extend(pixel); rgba_scanlines.extend(pixel)
+                  assert idx<palette_count,(idx,palette_count)
+                  b=idx*3
+                  px=bytes((palette[b],palette[b+1],palette[b+2],transparency[idx] if idx<len(transparency) else 255))
+                  rgba.extend(px); scanlines.extend(px)
 
           def chunk(kind,data):
               return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
-          new_ihdr=struct.pack('>IIBBBBB',width,height,8,6,0,0,0)
-          rebuilt=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',new_ihdr)+chunk(b'IDAT',zlib.compress(bytes(rgba_scanlines),9))+chunk(b'IEND',b'')
+          out=b'\x89PNG\r\n\x1a\n'
+          out+=chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))
+          out+=chunk(b'IDAT',zlib.compress(bytes(scanlines),9))
+          out+=chunk(b'IEND',b'')
+          assert out!=original
 
-          # Re-read the output container and prove the RGBA payload is byte-identical
-          # to the pixels reconstructed from the source palette image.
-          p=8; out_idat=[]; out_ihdr=None
-          while p<len(rebuilt):
-              n=struct.unpack('>I',rebuilt[p:p+4])[0]; k=rebuilt[p+4:p+8]; d=rebuilt[p+8:p+8+n]
-              stored=struct.unpack('>I',rebuilt[p+8+n:p+12+n])[0]
-              assert stored==(zlib.crc32(k+d)&0xffffffff)
-              if k==b'IHDR': out_ihdr=d
-              if k==b'IDAT': out_idat.append(d)
-              p+=12+n
-              if k==b'IEND': break
-          assert struct.unpack('>IIBBBBB',out_ihdr)==(256,256,8,6,0,0,0)
-          out_raw=zlib.decompress(b''.join(out_idat))
-          assert out_raw==bytes(rgba_scanlines)
-          assert rebuilt!=original
+          # Validate the newly written container and payload without an image library.
+          q=8; out_idat=[]; seen=[]
+          while q<len(out):
+              n=struct.unpack('>I',out[q:q+4])[0]; kind=out[q+4:q+8]; data=out[q+8:q+8+n]
+              stored=struct.unpack('>I',out[q+8+n:q+12+n])[0]
+              assert stored==(zlib.crc32(kind+data)&0xffffffff)
+              seen.append(kind)
+              if kind==b'IDAT': out_idat.append(data)
+              q+=12+n
+              if kind==b'IEND': break
+          assert q==len(out) and seen==[b'IHDR',b'IDAT',b'IEND']
+          assert zlib.decompress(b''.join(out_idat))==bytes(scanlines)
 
-          path.write_bytes(rebuilt)
-          print('source_chunks=',[k.decode('ascii') for k,_ in chunks])
-          print('source_crc_mismatches=',crc_bad)
+          path.write_bytes(out)
           print('rgba_sha256=',hashlib.sha256(bytes(rgba)).hexdigest())
-          print('old_bytes=',len(original),'new_bytes=',len(rebuilt))
+          print('old_bytes=',len(original),'new_bytes=',len(out))
           PY
           file source/app/src/main/assets/ui/b3-r5/item_confirm_cell.png | grep -F 'RGBA'
           git -C source diff --check
