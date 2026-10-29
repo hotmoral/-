@@ -1,0 +1,110 @@
+  if (isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
+  if (!syncActiveBoard()) {
+    cleanupSlideState();
+    return;
+  }
+
+  const info = boardInfo(slideState.board);
+  const intent = slideState.intent;
+  const pointer = clientToBoard(intent?.clientX, intent?.clientY, info);
+  if (!intent || !pointer) return;
+  const trail = intentTrail(intent, pointer);
+  if (!trail?.samples?.length) return;
+
+  const segment = sampleRange(trail.samples, trail.offset, slideState.chainLength);
+  if (!segment.points?.length) return;
+  slideState.renderPoints = segment.points;
+  updateOverlayGeometry(slideState.overlay, slideState.renderPoints);
+}
+
+function settleTargetPoints() {
+  if (!slideState) return null;
+  return authoritativeGeometry(slideState.chainCells, slideState.n)?.points ?? null;
+}
+
+function renderSlideFrame(now) {
+  if (!slideState) return;
+  slideState.raf = 0;
+
+  if (isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
+  if (!syncActiveBoard()) {
+    cleanupSlideState();
+    return;
+  }
+
+  if (!slideState.finishing) {
+    renderSharedIntent();
+    return;
+  }
+
+  const target = settleTargetPoints();
+  if (!target?.length) {
+    cleanupSlideState();
+    return;
+  }
+  if (!slideState.settleFrom?.length) {
+    slideState.settleFrom = slideState.renderPoints.map((point) => ({ ...point }));
+    slideState.settleStartedAt = now;
+  }
+  const duration = reducedMotion ? 0 : SETTLE_MS;
+  const t = duration === 0 ? 1 : Math.min(1, Math.max(0, (now - slideState.settleStartedAt) / duration));
+  slideState.renderPoints = target.map((point, index) => lerpPoint(slideState.settleFrom[index] ?? point, point, t));
+  updateOverlayGeometry(slideState.overlay, slideState.renderPoints);
+  if (t < 1) ensureFrame();
+  else cleanupSlideState();
+}
+
+function ensureFrame() {
+  if (!slideState || slideState.raf) return;
+  slideState.raf = requestAnimationFrame(renderSlideFrame);
+}
+
+function stopFrame() {
+  if (slideState?.raf) cancelAnimationFrame(slideState.raf);
+  if (slideState) slideState.raf = 0;
+}
+
+function cleanupSlideState() {
+  if (!slideState) return;
+  stopFrame();
+  slideState.board?.classList.remove('visual-slide-active');
+  slideState.overlay?.svg?.remove();
+  slideState = null;
+}
+
+function beginSharedIntent(intent) {
+  cleanupSlideState();
+  if (!screen?.classList.contains('view-game') || isSolvedView()) return;
+
+  const board = screen.querySelector('.board-wrap:not(.linkline-board-ghost)');
+  const info = boardInfo(board);
+  const source = sourcePathSamples(board);
+  if (!info || !source) return;
+
+  decorateBoard(board);
+  const ordered = orderChainCellsBySource(board, info.n, source.points, intent.endpointCell);
+  if (!ordered?.length) return;
+  const geometry = authoritativeGeometry(ordered, info.n);
+  if (!geometry?.metrics?.total) return;
+
+  slideState = {
+    pointerId: intent.pointerId,
+    stageKey: stageLabel?.textContent?.trim() || '',
+    board,
+    n: info.n,
+    authoritativeHeadCell: intent.endpointCell,
+    chainCells: ordered,
+    chainLength: geometry.metrics.total,
+    intent,
+    renderPoints: geometry.points,
+    overlay: null,
+    raf: 0,
+    finishing: false,
+    settleFrom: null,
+    settleStartedAt: 0,
