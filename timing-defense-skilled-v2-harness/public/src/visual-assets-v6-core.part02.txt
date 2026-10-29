@@ -1,9 +1,3 @@
-  const steps = Math.max(1, Math.ceil(length / ROUTE_LINE_STEP));
-  for (let step = 1; step <= steps; step++) out.push(lerpPoint(from, to, step / steps));
-}
-
-function appendQuadraticSamples(out, from, control, to) {
-  for (let step = 1; step <= ROUTE_CURVE_STEPS; step++) {
     const t = step / ROUTE_CURVE_STEPS;
     const mt = 1 - t;
     out.push({
@@ -16,7 +10,6 @@ function appendQuadraticSamples(out, from, control, to) {
 function roundedPolylineSamples(controls, radius) {
   if (!controls?.length) return [];
   if (controls.length === 1) return [{ ...controls[0] }];
-
   const out = [{ ...controls[0] }];
   let cursor = controls[0];
   for (let index = 1; index < controls.length - 1; index++) {
@@ -28,13 +21,11 @@ function roundedPolylineSamples(controls, radius) {
     const incomingLength = Math.hypot(incoming.x, incoming.y);
     const outgoingLength = Math.hypot(outgoing.x, outgoing.y);
     const cross = incoming.x * outgoing.y - incoming.y * outgoing.x;
-
     if (!incomingLength || !outgoingLength || Math.abs(cross) < 1e-8) {
       appendLineSamples(out, cursor, current);
       cursor = current;
       continue;
     }
-
     const cornerRadius = Math.min(radius, incomingLength / 2, outgoingLength / 2);
     const entry = {
       x: current.x - incoming.x / incomingLength * cornerRadius,
@@ -68,9 +59,7 @@ function projectPointToSamples(point, samples, maxDistance = Infinity) {
     const along = metrics.cumulative[index - 1] + Math.sqrt(len2) * t;
     if (along > maxDistance + 1e-6) continue;
     const d2 = distanceSquared(point, projected);
-    if (!best || d2 < best.distanceSquared) {
-      best = { point: projected, distance: along, distanceSquared: d2 };
-    }
+    if (!best || d2 < best.distanceSquared) best = { point: projected, distance: along, distanceSquared: d2 };
   }
   return best;
 }
@@ -83,20 +72,15 @@ function boardInfo(board = null) {
   const cells = grid?.querySelectorAll('.cell');
   const n = cells?.length ? Math.round(Math.sqrt(cells.length)) : 0;
   if (!activeBoard || !grid || !n || n * n !== cells.length) return null;
-  const rect = grid.getBoundingClientRect();
-  return { board: activeBoard, grid, n, rect };
+  return { board: activeBoard, grid, n, rect: grid.getBoundingClientRect() };
+}
+
+function currentBoard() {
+  return screen?.querySelector('.board-wrap:not(.linkline-board-ghost)') ?? null;
 }
 
 function isSolvedView() {
   return Boolean(screen?.querySelector('.success-panel') || screen?.classList.contains('polish-success'));
-}
-
-function clientToBoard(clientX, clientY, info) {
-  if (!info?.rect?.width || !info.rect.height) return null;
-  return {
-    x: ((clientX - info.rect.left) / info.rect.width) * 100,
-    y: ((clientY - info.rect.top) / info.rect.height) * 100,
-  };
 }
 
 function sourcePathSamples(board, count = 192) {
@@ -107,4 +91,20 @@ function sourcePathSamples(board, count = 192) {
   if (!Number.isFinite(total) || total <= 0) return null;
   const points = [];
   for (let index = 0; index < count; index++) {
-    const ratio = count === 1 ? 0 : index / (count - 1);
+    const point = sourcePath.getPointAtLength(total * index / (count - 1));
+    points.push({ x: point.x, y: point.y });
+  }
+  return { points, total };
+}
+
+function orderChainCellsBySource(board, n, sourcePoints, draggedCell) {
+  const entries = [];
+  for (const cell of board.querySelectorAll('.cell.chain')) {
+    const number = cellNumber(cell);
+    const point = cellCenterFromNumber(number, n);
+    if (!Number.isInteger(number) || !point) continue;
+    let bestIndex = 0;
+    let bestDistance = Infinity;
+    for (let index = 0; index < sourcePoints.length; index++) {
+      const d2 = distanceSquared(point, sourcePoints[index]);
+      if (d2 < bestDistance) {
