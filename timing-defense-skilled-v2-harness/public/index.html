@@ -49,11 +49,34 @@
     const CELL='.cell', BOARD='.board-wrap';
     const FIRST_RETRY_MS=52, RETRY_MS=8, MAX_RETRIES=24;
     const SAMPLE_RATIO=.12, MIN_SAMPLE_PX=3, MAX_SAMPLE_PX=8;
+    const DRAG_INTENT_EVENT='linkline:drag-intent-v1';
     let drag=null, suppressTrustedClickUntil=0;
 
     const style=document.createElement('style');
     style.textContent='.board-wrap,.board,.cell{touch-action:none;-webkit-user-select:none;user-select:none}.board-wrap.dragging .cell.endpoint{filter:brightness(.96)}';
     document.head.append(style);
+
+    function publishDragIntent(phase){
+      if(!drag){
+        document.dispatchEvent(new CustomEvent(DRAG_INTENT_EVENT,{detail:{version:1,phase,active:false}}));
+        return;
+      }
+      document.dispatchEvent(new CustomEvent(DRAG_INTENT_EVENT,{detail:{
+        version:1,
+        phase,
+        active:true,
+        pointerId:drag.pointerId,
+        endpointCell:drag.endpointCell,
+        traceCell:drag.traceCell,
+        queue:[...drag.queue],
+        waiting:drag.waiting,
+        moved:drag.moved,
+        released:drag.released,
+        headingAxis:drag.headingAxis,
+        clientX:drag.lastX,
+        clientY:drag.lastY,
+      }}));
+    }
 
     function cellNumber(cell){
       const data=Number(cell?.dataset?.cell);
@@ -124,18 +147,37 @@
       if(!drag||!drag.released||drag.waiting||drag.queue.length)return;
       suppressTrustedClickUntil=performance.now()+350;
       document.querySelectorAll(`${BOARD}.dragging`).forEach(node=>node.classList.remove('dragging'));
+      publishDragIntent('finish');
       drag=null;
     }
     function reselect(attempt=0){
       if(!drag)return;
       const endpoint=currentCell(drag.endpointCell);
-      if(!endpoint){drag.waiting=false;drag.queue.length=0;maybeFinish();return;}
-      if(endpoint.classList.contains('selected')){drag.waiting=false;pumpQueue();return;}
+      if(!endpoint){
+        drag.waiting=false;
+        drag.queue.length=0;
+        publishDragIntent('abort');
+        maybeFinish();
+        return;
+      }
+      if(endpoint.classList.contains('selected')){
+        drag.waiting=false;
+        publishDragIntent('reselected');
+        pumpQueue();
+        return;
+      }
       endpoint.click();
+      publishDragIntent('reselect');
       const fresh=currentCell(drag.endpointCell);
-      if(fresh?.classList.contains('selected')){drag.waiting=false;pumpQueue();return;}
+      if(fresh?.classList.contains('selected')){
+        drag.waiting=false;
+        publishDragIntent('reselected');
+        pumpQueue();
+        return;
+      }
       if(attempt<MAX_RETRIES){setTimeout(()=>reselect(attempt+1),RETRY_MS);return;}
       drag.waiting=false;
+      publishDragIntent('retry-exhausted');
       pumpQueue();
     }
     function pumpQueue(){
@@ -144,13 +186,19 @@
         const number=drag.queue[0];
         if(number===drag.endpointCell){drag.queue.shift();continue;}
         const endpoint=currentCell(drag.endpointCell);
-        if(!endpoint){drag.queue.length=0;maybeFinish();return;}
+        if(!endpoint){
+          drag.queue.length=0;
+          publishDragIntent('abort');
+          maybeFinish();
+          return;
+        }
         if(!endpoint.classList.contains('selected')){reselect();return;}
         const cell=currentCell(number);
         if(!cell){drag.queue.shift();continue;}
         if(!cell.classList.contains('legal')){
           drag.queue.length=0;
           drag.traceCell=gridCellAt(drag.lastX,drag.lastY);
+          publishDragIntent('blocked');
           maybeFinish();
           return;
         }
@@ -159,6 +207,7 @@
         drag.moved=true;
         drag.endpointCell=number;
         cell.click();
+        publishDragIntent('commit');
         setTimeout(()=>reselect(),FIRST_RETRY_MS);
         return;
       }
@@ -171,6 +220,7 @@
       const stream=points.length?points:[event];
       for(const point of stream)sampleTo(point.clientX,point.clientY);
       if(stream.at(-1)!==event)sampleTo(event.clientX,event.clientY);
+      publishDragIntent('trace');
       pumpQueue();
     }
     function releaseDrag(event){
@@ -178,6 +228,7 @@
       event.preventDefault();
       if(Number.isFinite(event.clientX)&&Number.isFinite(event.clientY))sampleTo(event.clientX,event.clientY);
       drag.released=true;
+      publishDragIntent('release');
       try{document.documentElement.releasePointerCapture(event.pointerId);}catch{}
       pumpQueue();
       maybeFinish();
@@ -195,6 +246,7 @@
       board.classList.add('dragging');
       try{document.documentElement.setPointerCapture(event.pointerId);}catch{}
       cell.click();
+      publishDragIntent('start');
     },{capture:true,passive:false});
 
     document.addEventListener('pointermove',updatePointer,{capture:true,passive:false});
