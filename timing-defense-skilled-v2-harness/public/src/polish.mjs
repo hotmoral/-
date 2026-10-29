@@ -177,6 +177,7 @@ function revealMeta() {
     campaignLabel?.classList.remove('linkline-meta-in');
   }, META_CLEANUP_MS);
 }
+
 function prepareIncomingBoard() {
   const board = screen?.querySelector('.board-wrap');
   if (!board || screen?.querySelector('.success-panel')) return null;
