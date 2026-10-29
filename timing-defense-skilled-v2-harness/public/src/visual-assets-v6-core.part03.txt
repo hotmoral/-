@@ -1,20 +1,3 @@
-    const point = sourcePath.getPointAtLength(total * ratio);
-    points.push({ x: point.x, y: point.y });
-  }
-  return { points, total };
-}
-
-function orderChainCellsBySource(board, n, sourcePoints, draggedCell) {
-  const entries = [];
-  for (const cell of board.querySelectorAll('.cell.chain')) {
-    const number = cellNumber(cell);
-    const point = cellCenter(cell, n);
-    if (!Number.isInteger(number) || !point) continue;
-    let bestIndex = 0;
-    let bestDistance = Infinity;
-    for (let index = 0; index < sourcePoints.length; index++) {
-      const d2 = distanceSquared(point, sourcePoints[index]);
-      if (d2 < bestDistance) {
         bestDistance = d2;
         bestIndex = index;
       }
@@ -24,8 +7,21 @@ function orderChainCellsBySource(board, n, sourcePoints, draggedCell) {
   entries.sort((a, b) => a.bestIndex - b.bestIndex);
   let ordered = entries.map((entry) => entry.number);
   if (ordered.at(-1) === draggedCell) ordered = ordered.reverse();
-  if (ordered[0] !== draggedCell) return null;
-  return ordered;
+  return ordered[0] === draggedCell ? ordered : null;
+}
+
+function chainCellNumbers(board) {
+  return [...board.querySelectorAll('.cell.chain')].map(cellNumber).filter(Number.isInteger);
+}
+
+function sameCellSet(a, b) {
+  if (a.length !== b.length) return false;
+  const set = new Set(a);
+  return b.every((cell) => set.has(cell));
+}
+
+function isEndpointCell(board, number) {
+  return [...board.querySelectorAll('.cell.endpoint')].some((cell) => cellNumber(cell) === number);
 }
 
 function visualMetrics(n) {
@@ -75,8 +71,7 @@ function sourceNodePoints(board, chainCellCount) {
 function createStaticChain(board, n) {
   const sourcePath = board.querySelector(':scope > .links .chain-path');
   const d = sourcePath?.getAttribute('d');
-  const chainCellCount = board.querySelectorAll('.cell.chain').length;
-  const nodePoints = sourceNodePoints(board, chainCellCount);
+  const nodePoints = sourceNodePoints(board, board.querySelectorAll('.cell.chain').length);
   if (!d || !nodePoints?.length) return null;
   const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-chain-overlay');
   svg.append(
@@ -95,16 +90,21 @@ function createStaticMarks(board, n) {
   const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-board-assets');
   const metrics = visualMetrics(n);
   for (const cell of board.querySelectorAll('.cell.target')) {
-    const point = cellCenter(cell, n);
+    const point = cellCenterFromNumber(cellNumber(cell), n);
     if (point) appendTarget(svg, point, metrics, cell.classList.contains('endpoint'));
   }
   for (const cell of board.querySelectorAll('.cell.endpoint')) {
-    const point = cellCenter(cell, n);
-    if (!point) continue;
-    appendEndpoint(svg, point, metrics, cell.classList.contains('selected'), cell.classList.contains('target'));
+    const point = cellCenterFromNumber(cellNumber(cell), n);
+    if (point) appendEndpoint(svg, point, metrics, cell.classList.contains('selected'), cell.classList.contains('target'));
   }
   return svg;
 }
 
-function createSlideOverlay(n, chainCellCount) {
-  const metrics = visualMetrics(n);
+function decorateBoard(board) {
+  if (!board || board.classList.contains('visual-assets-v5') || board.classList.contains('linkline-board-ghost')) return;
+  const info = boardInfo(board);
+  if (!info) return;
+  const chain = createStaticChain(board, info.n);
+  if (!chain) return;
+  const marks = createStaticMarks(board, info.n);
+  board.classList.add('visual-assets-v5');
