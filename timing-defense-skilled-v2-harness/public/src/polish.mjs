@@ -1,3 +1,5 @@
+import './visual-assets.mjs';
+
 const body = document.body;
 const screen = document.querySelector('#screen');
 const splash = document.querySelector('#boot-splash');
@@ -20,6 +22,8 @@ let forwarding = false;
 let pendingForward = null;
 let stageSwipe = null;
 let suppressStageMapClickUntil = 0;
+let clearCelebrationTimer = null;
+let activeClearCelebration = null;
 
 const celebrationStyle = document.createElement('style');
 celebrationStyle.textContent = `
@@ -28,16 +32,16 @@ celebrationStyle.textContent = `
 .clear-celebration::before{content:"";position:absolute;left:50%;top:50%;width:26%;aspect-ratio:1;border:3px solid rgba(18,104,255,.78);border-radius:50%;box-shadow:0 0 28px rgba(18,104,255,.32);transform:translate(-50%,-50%);animation:linklineClearRing .68s cubic-bezier(.12,.72,.18,1) both}
 .clear-celebration::after{content:"";position:absolute;inset:-8%;border-radius:28px;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.90) 0 5%,rgba(18,104,255,.20) 17%,rgba(18,104,255,.07) 36%,transparent 62%);animation:linklineClearFlash .46s ease-out both}
 .clear-spark{position:absolute;left:50%;top:50%;width:5px;height:20px;margin:-10px 0 0 -2.5px;border-radius:999px;background:var(--blue);box-shadow:0 0 10px rgba(18,104,255,.52);opacity:0;transform-origin:50% 50%;animation:linklineClearSpark .62s cubic-bezier(.12,.74,.18,1) both}
-.screen.polish-success.clear-celebrating .success-kicker{animation:linklineClearKicker .48s .08s cubic-bezier(.16,.82,.2,1) both}
-.screen.polish-success.clear-celebrating .success-title{animation:linklineClearTitle .56s .11s cubic-bezier(.16,.82,.2,1) both}
-.screen.polish-success.clear-celebrating .success-actions{animation:successActionReveal .28s .34s cubic-bezier(.22,.72,.22,1) both}
+.screen.polish-success .success-kicker{animation:linklineClearKicker .42s .04s cubic-bezier(.16,.82,.2,1) both}
+.screen.polish-success .success-title{animation:linklineClearTitle .46s .06s cubic-bezier(.16,.82,.2,1) both}
+.screen.polish-success .success-actions{animation:successActionReveal .20s .08s cubic-bezier(.22,.72,.22,1) both;pointer-events:auto}
 @keyframes linklineClearImpact{0%{transform:scale(1);box-shadow:var(--shadow)}18%{transform:scale(.988);box-shadow:0 12px 38px rgba(18,104,255,.08)}46%{transform:scale(1.018);box-shadow:0 20px 62px rgba(18,104,255,.22)}100%{transform:scale(1);box-shadow:var(--shadow)}}
 @keyframes linklineClearRing{0%{opacity:0;transform:translate(-50%,-50%) scale(.38)}16%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)}}
 @keyframes linklineClearFlash{0%{opacity:0;transform:scale(.92)}20%{opacity:1}100%{opacity:0;transform:scale(1.08)}}
 @keyframes linklineClearSpark{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(var(--rot))}16%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(.18) rotate(var(--rot))}}
 @keyframes linklineClearKicker{0%{opacity:0;transform:translateY(8px) scale(.92);letter-spacing:.08em}55%{opacity:1;transform:translateY(-2px) scale(1.08);letter-spacing:.19em}100%{opacity:1;transform:translateY(0) scale(1);letter-spacing:normal}}
 @keyframes linklineClearTitle{0%{opacity:0;transform:translateY(10px) scale(.94)}52%{opacity:1;transform:translateY(-2px) scale(1.045)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@media (prefers-reduced-motion:reduce){.board-wrap.clear-impact,.clear-celebration,.clear-spark,.screen.polish-success.clear-celebrating .success-kicker,.screen.polish-success.clear-celebrating .success-title{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.board-wrap.clear-impact,.clear-celebration,.clear-spark,.screen.polish-success .success-kicker,.screen.polish-success .success-title{animation:none!important}}
 `;
 document.head.append(celebrationStyle);
 
@@ -71,7 +75,19 @@ function playCompletionSignal(board) {
   return clonePathPulse(board, 'completion-pulse');
 }
 
+function cleanupClearCelebration() {
+  if (clearCelebrationTimer !== null) {
+    clearTimeout(clearCelebrationTimer);
+    clearCelebrationTimer = null;
+  }
+  activeClearCelebration?.burst?.remove();
+  activeClearCelebration?.board?.classList.remove('clear-impact');
+  activeClearCelebration = null;
+  screen?.classList.remove('clear-celebrating');
+}
+
 function playClearCelebration(board) {
+  cleanupClearCelebration();
   if (!board || reducedMotion) return;
   board.querySelector('.clear-celebration')?.remove();
   board.classList.remove('clear-impact');
@@ -94,16 +110,13 @@ function playClearCelebration(board) {
     burst.append(spark);
   }
   board.append(burst);
+  activeClearCelebration = { board, burst };
 
   if (document.visibilityState !== 'hidden') {
     try { globalThis.navigator?.vibrate?.([20, 26, 36]); } catch {}
   }
 
-  setTimeout(() => {
-    burst.remove();
-    board.classList.remove('clear-impact');
-    screen?.classList.remove('clear-celebrating');
-  }, CLEAR_CELEBRATION_MS);
+  clearCelebrationTimer = setTimeout(cleanupClearCelebration, CLEAR_CELEBRATION_MS);
 }
 
 function decorateSolvedBoard() {
@@ -164,7 +177,6 @@ function revealMeta() {
     campaignLabel?.classList.remove('linkline-meta-in');
   }, META_CLEANUP_MS);
 }
-
 function prepareIncomingBoard() {
   const board = screen?.querySelector('.board-wrap');
   if (!board || screen?.querySelector('.success-panel')) return null;
@@ -283,6 +295,7 @@ document.addEventListener('click', (event) => {
     return;
   }
 
+  cleanupClearCelebration();
   forwarding = true;
   screen.classList.add('linkline-forwarding');
   prepareMetaExit();
@@ -308,4 +321,4 @@ document.addEventListener('click', (event) => {
   setTimeout(() => finishForwardVisual(pending, incomingBoard), remaining);
 }, false);
 
-// Linkline polish v4 clear-impact celebration + native NEXT + stage-select swipe production build marker.
+// Linkline polish v4.1 one-shot clear celebration + immediate native NEXT + stage-select swipe production build marker.
