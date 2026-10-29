@@ -32,10 +32,6 @@ function cellCenterFromNumber(number, n) {
   return { x: (col + 0.5) * step, y: (row + 0.5) * step };
 }
 
-function cellCenter(cell, n) {
-  return cellCenterFromNumber(cellNumber(cell), n);
-}
-
 function distanceSquared(a, b) {
   const dx = a.x - b.x;
   const dy = a.y - b.y;
@@ -78,7 +74,6 @@ function pointAtDistance(points, metrics, target) {
   if (!points.length) return null;
   if (target <= 0) return { ...points[0] };
   if (target >= metrics.total) return { ...points.at(-1) };
-
   let low = 1;
   let high = metrics.cumulative.length - 1;
   while (low < high) {
@@ -86,7 +81,6 @@ function pointAtDistance(points, metrics, target) {
     if (metrics.cumulative[mid] < target) low = mid + 1;
     else high = mid;
   }
-
   const index = low;
   const before = metrics.cumulative[index - 1];
   const after = metrics.cumulative[index];
@@ -108,3 +102,9 @@ function sampleRange(points, fromDistance, length, count = RENDER_SAMPLE_COUNT) 
 
 function appendLineSamples(out, from, to) {
   const length = distance(from, to);
+  const steps = Math.max(1, Math.ceil(length / ROUTE_LINE_STEP));
+  for (let step = 1; step <= steps; step++) out.push(lerpPoint(from, to, step / steps));
+}
+
+function appendQuadraticSamples(out, from, control, to) {
+  for (let step = 1; step <= ROUTE_CURVE_STEPS; step++) {
