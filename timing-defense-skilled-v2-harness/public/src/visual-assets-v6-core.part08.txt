@@ -1,0 +1,20 @@
+function scan() {
+  if (!screen) return;
+  if (!screen.classList.contains('view-game')) {
+    cleanupSlideState();
+    return;
+  }
+  if (slideState && isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
+  for (const board of screen.querySelectorAll('.board-wrap:not(.linkline-board-ghost)')) decorateBoard(board);
+}
+
+const observer = new MutationObserver(scan);
+if (screen) observer.observe(screen, { childList: true, subtree: true });
+queueMicrotask(scan);
+document.addEventListener(DRAG_INTENT_EVENT, receiveDragIntent, { capture: true });
+
+// Linkline visual asset system v6.1: persistent drag overlay is independent from runtime board replacement cadence.
+// Active geometry is a direct function of the latest shared pointer/queue snapshot; no spring, easing, inertia, or catch-up is applied.
