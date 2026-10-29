@@ -1,4 +1,19 @@
-  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-slide-overlay');
+  board.insertBefore(chain, info.grid);
+  board.insertBefore(marks, info.grid);
+}
+
+function authoritativeGeometry(cells, n) {
+  const controls = cells.map((cell) => cellCenterFromNumber(cell, n)).filter(Boolean);
+  if (controls.length < 2) return null;
+  const samples = roundedPolylineSamples(controls, (100 / n) * ROUTE_RADIUS_RATIO);
+  const metrics = pathMetrics(samples);
+  return { samples, metrics, points: sampleRange(samples, 0, metrics.total).points };
+}
+
+function createPersistentOverlay(n, chainCellCount) {
+  const metrics = visualMetrics(n);
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-slide-overlay visual-slide-overlay-v61');
+  svg.style.cssText = 'position:fixed;pointer-events:none;overflow:visible;z-index:30;';
   const shadow = svgNode('path', { d: '' }, 'slide-chain-shadow');
   const body = svgNode('path', { d: '' }, 'slide-chain-body');
   svg.append(shadow, body);
@@ -11,10 +26,22 @@
     if (!endpoint) svg.append(node);
     nodes.push(node);
   }
+  document.body.append(svg);
   return { svg, paths: [shadow, body], nodes };
 }
 
-function updateOverlayGeometry(overlay, points) {
+function positionPersistentOverlay(rect) {
+  if (!slideState?.overlay?.svg || !rect?.width || !rect.height) return;
+  slideState.boardRect = rect;
+  const style = slideState.overlay.svg.style;
+  style.left = `${rect.left}px`;
+  style.top = `${rect.top}px`;
+  style.width = `${rect.width}px`;
+  style.height = `${rect.height}px`;
+}
+
+function updateOverlayGeometry(points) {
+  const overlay = slideState?.overlay;
   if (!overlay || !points?.length) return;
   const d = pointsToPath(points);
   for (const path of overlay.paths) path.setAttribute('d', d);
@@ -27,61 +54,13 @@ function updateOverlayGeometry(overlay, points) {
   }
 }
 
-function chainCellNumbers(board) {
-  return [...board.querySelectorAll('.cell.chain')].map(cellNumber).filter(Number.isInteger);
-}
-
-function sameCellSet(a, b) {
-  if (a.length !== b.length) return false;
-  const set = new Set(a);
-  return b.every((cell) => set.has(cell));
-}
-
-function authoritativeGeometry(cells, n) {
-  const controls = cells.map((cell) => cellCenterFromNumber(cell, n)).filter(Boolean);
-  if (controls.length < 2) return null;
-  const radius = (100 / n) * ROUTE_RADIUS_RATIO;
-  const samples = roundedPolylineSamples(controls, radius);
-  const metrics = pathMetrics(samples);
+function clientToBoard(clientX, clientY) {
+  const rect = slideState?.boardRect;
+  if (!rect?.width || !rect.height) return null;
   return {
-    samples,
-    metrics,
-    points: sampleRange(samples, 0, metrics.total).points,
+    x: ((clientX - rect.left) / rect.width) * 100,
+    y: ((clientY - rect.top) / rect.height) * 100,
   };
-}
-
-function isEndpointCell(board, number) {
-  return [...board.querySelectorAll('.cell.endpoint')].some((cell) => cellNumber(cell) === number);
-}
-
-function syncSlideToAuthoritativeBoard(board) {
-  if (!slideState || !board?.isConnected) return false;
-  const info = boardInfo(board);
-  const source = sourcePathSamples(board);
-  const actualCells = chainCellNumbers(board);
-  if (!info || !source || actualCells.length !== slideState.chainCells.length) return false;
-
-  const changed = !sameCellSet(slideState.chainCells, actualCells);
-  let head = slideState.authoritativeHeadCell;
-
-  if (changed) {
-    const previous = new Set(slideState.chainCells);
-    const next = new Set(actualCells);
-    const added = actualCells.filter((cell) => !previous.has(cell));
-    const removed = slideState.chainCells.filter((cell) => !next.has(cell));
-    if (added.length !== 1 || removed.length !== 1) return false;
-    head = added[0];
-  }
-
-  if (!Number.isInteger(head) || !isEndpointCell(board, head)) return false;
-  const ordered = orderChainCellsBySource(board, info.n, source.points, head);
-  if (!ordered?.length) return false;
-
-  slideState.board = board;
-  slideState.n = info.n;
-  slideState.chainCells = ordered;
-  slideState.authoritativeHeadCell = head;
-  return true;
 }
 
 function copyIntent(detail) {
@@ -104,7 +83,28 @@ function copyIntent(detail) {
   };
 }
 
-function simulateQueuedIntent(intent) {
+function applyCommittedHead(nextHead) {
+  if (!slideState || !Number.isInteger(nextHead)) return false;
+  if (nextHead === slideState.authoritativeHeadCell) return true;
   const chain = [...slideState.chainCells];
-  const futureCells = [];
-  for (const cell of intent.queue) {
+  const head = chain[0];
+  if (!neighbors(slideState.n, head).includes(nextHead) || chain.includes(nextHead)) return false;
+  chain.unshift(nextHead);
+  chain.pop();
+  slideState.chainCells = chain;
+  slideState.authoritativeHeadCell = nextHead;
+  return true;
+}
+
+function reconcileFromBoard(board) {
+  if (!slideState || !board?.isConnected) return false;
+  const info = boardInfo(board);
+  if (!info || info.n !== slideState.n) return false;
+  decorateBoard(board);
+  positionPersistentOverlay(info.rect);
+  const actualCells = chainCellNumbers(board);
+  if (!sameCellSet(actualCells, slideState.chainCells)) return false;
+  if (!isEndpointCell(board, slideState.authoritativeHeadCell)) return false;
+  const source = sourcePathSamples(board);
+  const ordered = source && orderChainCellsBySource(board, info.n, source.points, slideState.authoritativeHeadCell);
+  if (!ordered?.length) return false;
