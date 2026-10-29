@@ -1,6 +1,6 @@
 export const PROGRESS_SCHEMA = 'LINKLINE_PRODUCT_PROGRESS';
-export const PROGRESS_VERSION = 1;
-export const PROGRESS_STORAGE_KEY = 'linkline.product.progress.v1';
+export const PROGRESS_VERSION = 2;
+export const PROGRESS_STORAGE_KEY = 'linkline.product.progress.v2';
 
 export function initialProgress(campaignId) {
   return {
