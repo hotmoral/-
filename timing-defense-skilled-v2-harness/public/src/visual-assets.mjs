@@ -12,6 +12,8 @@ const END_GRACE_MS = 520;
 const SAMPLE_RATIO = 0.12;
 const MIN_SAMPLE_PX = 3;
 const MAX_SAMPLE_PX = 8;
+const SELF_CONTACT_CLEARANCE_RATIO = 0.035;
+const SELF_CONTACT_INFLUENCE_RATIO = 1.05;
 
 let slideState = null;
 
@@ -395,25 +397,82 @@ function updateOverlayGeometry(overlay, points) {
   }
 }
 
+function projectionTowardCell(pointerPoint, cell) {
+  if (!slideState || !pointerPoint || !Number.isInteger(cell)) return 0;
+  const headPoint = cellCenterFromNumber(slideState.chainCells[0], slideState.n);
+  const target = cellCenterFromNumber(cell, slideState.n);
+  if (!headPoint || !target) return 0;
+  const vx = target.x - headPoint.x;
+  const vy = target.y - headPoint.y;
+  const length = Math.hypot(vx, vy);
+  if (!length) return 0;
+  return ((pointerPoint.x - headPoint.x) * vx + (pointerPoint.y - headPoint.y) * vy) / length;
+}
+
 function currentCandidateCell(pointerPoint) {
   if (!slideState || !pointerPoint) return null;
   const head = slideState.chainCells[0];
-  const headPoint = cellCenterFromNumber(head, slideState.n);
   const occupied = new Set(slideState.chainCells);
   let best = null;
 
   for (const candidate of neighbors(slideState.n, head)) {
     if (occupied.has(candidate)) continue;
-    const target = cellCenterFromNumber(candidate, slideState.n);
-    const vx = target.x - headPoint.x;
-    const vy = target.y - headPoint.y;
-    const length = Math.hypot(vx, vy);
-    if (!length) continue;
-    const projection = ((pointerPoint.x - headPoint.x) * vx + (pointerPoint.y - headPoint.y) * vy) / length;
+    const projection = projectionTowardCell(pointerPoint, candidate);
     if (projection <= 0) continue;
     if (!best || projection > best.projection) best = { cell: candidate, projection };
   }
   return best?.cell ?? null;
+}
+
+function currentSelfBlock(pointerPoint) {
+  if (!slideState || !pointerPoint || slideState.chainCells.length < 3) return null;
+  const head = slideState.chainCells[0];
+  const occupiedBody = new Set(slideState.chainCells.slice(2));
+  let best = null;
+
+  for (const candidate of neighbors(slideState.n, head)) {
+    if (!occupiedBody.has(candidate)) continue;
+    const projection = projectionTowardCell(pointerPoint, candidate);
+    if (projection <= 0) continue;
+    if (!best || projection > best.projection) best = { cell: candidate, projection };
+  }
+  return best;
+}
+
+function applySelfContact(points, contact, scale = 1) {
+  if (!slideState || !contact || !points?.length || scale <= 0) return points;
+  const head = cellCenterFromNumber(slideState.chainCells[0], slideState.n);
+  const blocker = cellCenterFromNumber(contact.cell, slideState.n);
+  if (!head || !blocker) return points;
+
+  const dx = blocker.x - head.x;
+  const dy = blocker.y - head.y;
+  const directionLength = Math.hypot(dx, dy);
+  if (!directionLength) return points;
+
+  const step = 100 / slideState.n;
+  const metrics = visualMetrics(slideState.n);
+  const bodyRadius = Math.max(metrics.jointRadius, 2.85 / 2);
+  const gap = step * SELF_CONTACT_CLEARANCE_RATIO;
+  const maxAdvance = Math.max(0, step - metrics.endpointRadius - bodyRadius - gap);
+  const advance = Math.min(maxAdvance, Math.max(0, contact.projection)) * scale;
+  if (advance <= 1e-6) return points;
+
+  const ux = dx / directionLength;
+  const uy = dy / directionLength;
+  const path = pathMetrics(points);
+  const influence = Math.min(path.total, step * SELF_CONTACT_INFLUENCE_RATIO);
+  if (influence <= 1e-6) return points;
+
+  return points.map((point, index) => {
+    const along = path.cumulative[index];
+    if (along >= influence) return { ...point };
+    const weight = 1 - along / influence;
+    return {
+      x: point.x + ux * advance * weight,
+      y: point.y + uy * advance * weight,
+    };
+  });
 }
 
 function routeControls(candidateCell = null) {
@@ -478,8 +537,12 @@ function renderActiveSlide() {
   if (!pointer) return;
 
   const candidate = currentCandidateCell(pointer);
-  slideState.candidateCell = candidate;
-  const trail = fullTrail(candidate);
+  const selfBlock = currentSelfBlock(pointer);
+  const candidateProjection = Number.isInteger(candidate) ? projectionTowardCell(pointer, candidate) : 0;
+  const contact = selfBlock && selfBlock.projection > candidateProjection ? selfBlock : null;
+  const visualCandidate = contact ? null : candidate;
+  slideState.candidateCell = visualCandidate;
+  const trail = fullTrail(visualCandidate);
   if (!trail?.samples?.length) return;
 
   const step = 100 / slideState.n;
@@ -499,7 +562,20 @@ function renderActiveSlide() {
   slideState.headOffset = Math.max(0, trail.routeLimit - forwardProgress);
   const segment = sampleRange(trail.samples, slideState.headOffset, slideState.chainLength);
   if (!segment.points?.length) return;
-  slideState.renderPoints = segment.points;
+
+  let renderPoints = segment.points;
+  if (contact) {
+    const previousContact = slideState.selfContact;
+    const projection = previousContact?.cell === contact.cell
+      ? Math.max(previousContact.projection, contact.projection)
+      : contact.projection;
+    slideState.selfContact = { cell: contact.cell, projection };
+    renderPoints = applySelfContact(renderPoints, slideState.selfContact);
+  } else {
+    slideState.selfContact = null;
+  }
+
+  slideState.renderPoints = renderPoints;
   updateOverlayGeometry(slideState.overlay, slideState.renderPoints);
 }
 
@@ -523,7 +599,9 @@ function renderSlideFrame(now) {
   const t = duration === 0 ? 1 : Math.min(1, Math.max(0, (now - settle.startedAt) / duration));
   slideState.headOffset = settle.from + (settle.to - settle.from) * t;
   const segment = sampleRange(settle.trail.samples, slideState.headOffset, slideState.chainLength);
-  slideState.renderPoints = segment.points;
+  slideState.renderPoints = settle.selfContact
+    ? applySelfContact(segment.points, settle.selfContact, 1 - t)
+    : segment.points;
   updateOverlayGeometry(slideState.overlay, slideState.renderPoints);
 
   if (t < 1) {
@@ -679,6 +757,7 @@ function startSlide(event) {
     headOffset: null,
     maxForwardProgress: 0,
     candidateCell: null,
+    selfContact: null,
     headingAxis: null,
     renderPoints,
     overlay: null,
@@ -717,6 +796,7 @@ function finishSlide(event) {
   if (!slideState) return;
   slideState.ending = true;
   const releaseCandidate = slideState.candidateCell;
+  const releaseContact = slideState.selfContact;
   const trail = fullTrail(releaseCandidate);
   if (!trail?.samples?.length) {
     cleanupSlideState();
@@ -727,7 +807,7 @@ function finishSlide(event) {
   const committedProjection = projectPointToSamples(committedHead, trail.samples, trail.routeLimit + 1e-6);
   const from = Number.isFinite(slideState.headOffset) ? slideState.headOffset : (committedProjection?.distance ?? 0);
   const to = committedProjection?.distance ?? from;
-  slideState.settle = { trail, from, to, startedAt: performance.now() };
+  slideState.settle = { trail, from, to, selfContact: releaseContact, startedAt: performance.now() };
   ensureFrame();
 }
 
@@ -802,4 +882,4 @@ document.addEventListener('pointermove', updateSlide, { capture: true, passive: 
 document.addEventListener('pointerup', finishSlide, { capture: true, passive: true });
 document.addEventListener('pointercancel', finishSlide, { capture: true, passive: true });
 
-// Linkline visual asset system v5.2: direct 1:1 fixed-length forward-only chain slide with heavier chain/node visual weight; clear state terminates the visual drag immediately.
+// Linkline visual asset system v5.3: direct 1:1 fixed-length forward-only chain slide with self-body contact press; clear state terminates the visual drag immediately.
