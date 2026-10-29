@@ -1,0 +1,110 @@
+    const point = sourcePath.getPointAtLength(total * ratio);
+    points.push({ x: point.x, y: point.y });
+  }
+  return { points, total };
+}
+
+function orderChainCellsBySource(board, n, sourcePoints, draggedCell) {
+  const entries = [];
+  for (const cell of board.querySelectorAll('.cell.chain')) {
+    const number = cellNumber(cell);
+    const point = cellCenter(cell, n);
+    if (!Number.isInteger(number) || !point) continue;
+    let bestIndex = 0;
+    let bestDistance = Infinity;
+    for (let index = 0; index < sourcePoints.length; index++) {
+      const d2 = distanceSquared(point, sourcePoints[index]);
+      if (d2 < bestDistance) {
+        bestDistance = d2;
+        bestIndex = index;
+      }
+    }
+    entries.push({ number, bestIndex });
+  }
+  entries.sort((a, b) => a.bestIndex - b.bestIndex);
+  let ordered = entries.map((entry) => entry.number);
+  if (ordered.at(-1) === draggedCell) ordered = ordered.reverse();
+  if (ordered[0] !== draggedCell) return null;
+  return ordered;
+}
+
+function visualMetrics(n) {
+  const step = 100 / n;
+  const endpointRadius = Math.min(5.0, Math.max(3.3, step * 0.19));
+  return {
+    endpointRadius,
+    targetRadius: endpointRadius * 1.42,
+    targetCoreRadius: Math.max(0.48, endpointRadius * 0.16),
+    jointRadius: Math.min(1.75, Math.max(1.1, step * 0.07)),
+  };
+}
+
+function appendTarget(svg, point, metrics, docked) {
+  const group = svgNode('g', {}, `target-mark${docked ? ' is-docked' : ''}`);
+  group.append(
+    svgNode('circle', { cx: point.x, cy: point.y, r: metrics.targetRadius }, 'target-ring'),
+    svgNode('circle', { cx: point.x, cy: point.y, r: metrics.targetCoreRadius }, 'target-core'),
+  );
+  svg.append(group);
+}
+
+function appendEndpoint(svg, point, metrics, selected, docked, className = '') {
+  const node = svgNode('circle', {
+    cx: point.x,
+    cy: point.y,
+    r: metrics.endpointRadius,
+  }, `endpoint-dot${selected ? ' is-selected' : ''}${docked ? ' is-docked' : ''}${className ? ` ${className}` : ''}`);
+  svg.append(node);
+  return node;
+}
+
+function sourceNodePoints(board, chainCellCount) {
+  const sourcePath = board.querySelector(':scope > .links .chain-path');
+  if (!sourcePath?.getTotalLength || !sourcePath?.getPointAtLength || chainCellCount < 2) return null;
+  let total;
+  try { total = sourcePath.getTotalLength(); } catch { return null; }
+  if (!Number.isFinite(total) || total <= 0) return null;
+  const points = [];
+  for (let index = 0; index < chainCellCount; index++) {
+    const point = sourcePath.getPointAtLength(total * index / (chainCellCount - 1));
+    points.push({ x: point.x, y: point.y });
+  }
+  return points;
+}
+
+function createStaticChain(board, n) {
+  const sourcePath = board.querySelector(':scope > .links .chain-path');
+  const d = sourcePath?.getAttribute('d');
+  const chainCellCount = board.querySelectorAll('.cell.chain').length;
+  const nodePoints = sourceNodePoints(board, chainCellCount);
+  if (!d || !nodePoints?.length) return null;
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-chain-overlay');
+  svg.append(
+    svgNode('path', { d }, 'visual-chain-shadow'),
+    svgNode('path', { d }, 'visual-chain-body'),
+  );
+  const metrics = visualMetrics(n);
+  for (let index = 1; index < nodePoints.length - 1; index++) {
+    const point = nodePoints[index];
+    svg.append(svgNode('circle', { cx: point.x, cy: point.y, r: metrics.jointRadius }, 'visual-chain-joint'));
+  }
+  return svg;
+}
+
+function createStaticMarks(board, n) {
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-board-assets');
+  const metrics = visualMetrics(n);
+  for (const cell of board.querySelectorAll('.cell.target')) {
+    const point = cellCenter(cell, n);
+    if (point) appendTarget(svg, point, metrics, cell.classList.contains('endpoint'));
+  }
+  for (const cell of board.querySelectorAll('.cell.endpoint')) {
+    const point = cellCenter(cell, n);
+    if (!point) continue;
+    appendEndpoint(svg, point, metrics, cell.classList.contains('selected'), cell.classList.contains('target'));
+  }
+  return svg;
+}
+
+function createSlideOverlay(n, chainCellCount) {
+  const metrics = visualMetrics(n);
