@@ -6,9 +6,9 @@ export const CAMPAIGN_CHUNK_SCHEMA = 'LINKLINE_PRODUCT_CAMPAIGN_CHUNK';
 export const CAMPAIGN_SCHEMA_VERSION = '1.1.0';
 export const FROZEN_CAMPAIGN_ID = 'LINKLINE-LAUNCH-1300-V1';
 export const FROZEN_LAUNCH_TOTAL = 1300;
-export const FROZEN_CATALOG_FINGERPRINT = '4212b80ab7f04ea186525108e847a3433708b84ef29cf72b0273a611806a7a1c';
+export const FROZEN_CATALOG_FINGERPRINT = '2780ffd37952ea27f396ce5f152bfda5530537a83c33711e79a496136b8207d7';
 export const CANONICAL_V4_CATALOG_FINGERPRINT = '78f5fcf54f0a825d702e0a9b988233622cc4a5cd272e382891ee6c002fce6efe';
-export const FROZEN_ORDER_FINGERPRINT = 'b6e3cf0aee04d48419e0bbb95acf6570fb3af16898c325f9974c3a162bc61be9';
+export const FROZEN_ORDER_FINGERPRINT = '8766908f3774754ec9384c4531cb8ca8fbe81ed404a8829bb585d25ee3a65f65';
 export const IDENTITY_DERIVATION = 'LINKLINE_A3_RESEARCH_EQ_D4_SHA256_V1';
 
 function compareArrays(a, b) {
@@ -85,7 +85,6 @@ export function validateCampaign(campaign) {
   if (typeof campaign.campaignId !== 'string' || !campaign.campaignId) throw new Error('CAMPAIGN_ID');
   if (!Number.isInteger(campaign.launchTotal) || campaign.launchTotal < 1) throw new Error('CAMPAIGN_LAUNCH_TOTAL');
   if (!Array.isArray(campaign.puzzles) || campaign.puzzles.length < 1) throw new Error('CAMPAIGN_EMPTY');
-
   const ids = new Set();
   for (let i = 0; i < campaign.puzzles.length; i++) {
     const row = campaign.puzzles[i];
@@ -113,7 +112,6 @@ export async function assembleChunkedCampaign(manifest, chunks) {
   if (manifest.identityDerivation !== IDENTITY_DERIVATION) throw new Error('CAMPAIGN_IDENTITY_DERIVATION');
   if (!Array.isArray(manifest.chunks) || manifest.chunks.length < 1) throw new Error('CAMPAIGN_MANIFEST_EMPTY');
   if (!Array.isArray(chunks) || chunks.length !== manifest.chunks.length) throw new Error('CAMPAIGN_CHUNK_COUNT');
-
   const puzzles = [];
   let expectedFrom = 1;
   for (let i = 0; i < manifest.chunks.length; i++) {
@@ -124,7 +122,6 @@ export async function assembleChunkedCampaign(manifest, chunks) {
     if (chunk.fromPosition !== descriptor.fromPosition || chunk.throughPosition !== descriptor.throughPosition) throw new Error('CAMPAIGN_CHUNK_RANGE');
     if (!Array.isArray(chunk.rows) || chunk.rows.length !== descriptor.throughPosition - descriptor.fromPosition + 1) throw new Error('CAMPAIGN_CHUNK_ROWS');
     if (JSON.stringify(chunk.rowEncoding) !== JSON.stringify(['n','length','initial','targets'])) throw new Error('CAMPAIGN_CHUNK_ENCODING');
-
     const pending = chunk.rows.map(async (values, rowIndex) => {
       if (!Array.isArray(values) || values.length !== 4) throw new Error('CAMPAIGN_CHUNK_ROW');
       const [n, length, initial, targets] = values;
@@ -136,7 +133,6 @@ export async function assembleChunkedCampaign(manifest, chunks) {
     expectedFrom = descriptor.throughPosition + 1;
   }
   if (expectedFrom !== manifest.materializedThroughPosition + 1) throw new Error('CAMPAIGN_MANIFEST_RANGE');
-
   const { chunks: _descriptors, identityDerivation: _identityDerivation, ...metadata } = manifest;
   const campaign = { ...metadata, schema: CAMPAIGN_SCHEMA, puzzles };
   validateCampaign(campaign);
