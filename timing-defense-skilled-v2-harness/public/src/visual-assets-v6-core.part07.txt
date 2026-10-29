@@ -1,53 +1,3 @@
-  };
-  attachSlideOverlay(board, info.n);
-  ensureFrame();
-}
-
-function receiveDragIntent(event) {
-  const detail = event?.detail;
-  if (detail?.version !== 1) return;
-
-  if (detail.active !== true) {
-    if (slideState) {
-      slideState.finishing = true;
-      slideState.settleFrom = slideState.renderPoints.map((point) => ({ ...point }));
-      slideState.settleStartedAt = performance.now();
-      ensureFrame();
-    }
-    return;
-  }
-
-  const intent = copyIntent(detail);
-  if (!intent) return;
-
-  if (intent.phase === 'start') {
-    beginSharedIntent(intent);
-    return;
-  }
-
-  if (!slideState || intent.pointerId !== slideState.pointerId) return;
-  slideState.intent = intent;
-
-  if (intent.phase === 'finish') {
-    slideState.finishing = true;
-    slideState.settleFrom = slideState.renderPoints.map((point) => ({ ...point }));
-    slideState.settleStartedAt = performance.now();
-  }
-
-  ensureFrame();
-}
-
-const style = document.createElement('style');
-style.dataset.linklineVisualAssets = 'v6';
-style.textContent = `
-.board-wrap.visual-assets-v5 > .links:not(.completion-pulse):not(.handoff-pulse):not(.arrival-pulse){opacity:0}
-.board-wrap.visual-assets-v5 .cell.target::before,.board-wrap.visual-assets-v5 .cell.chain::after{opacity:0!important}
-.board-wrap.visual-assets-v5 .cell.selected{box-shadow:none}
-.visual-chain-overlay,.visual-board-assets,.visual-slide-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.visual-chain-overlay{z-index:4}
-.visual-board-assets{z-index:5}
-.visual-slide-overlay{z-index:7}
-.visual-chain-shadow,.visual-chain-body,.slide-chain-shadow,.slide-chain-body{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .visual-chain-shadow,.slide-chain-shadow{stroke:rgba(23,23,22,.13);stroke-width:3.95;filter:drop-shadow(0 1.2px 1.4px rgba(23,23,22,.10))}
 .visual-chain-body,.slide-chain-body{stroke:#1d1d1b;stroke-width:2.85}
 .visual-chain-joint,.slide-chain-joint{fill:#1d1d1b}
@@ -58,57 +8,10 @@ style.textContent = `
 .target-core{fill:rgba(18,104,255,.30)}
 .target-mark.is-docked .target-ring{stroke-opacity:.42}
 .target-mark.is-docked .target-core{opacity:0}
-.board-wrap.visual-slide-active .visual-chain-overlay,
-.board-wrap.visual-slide-active .visual-board-assets .endpoint-dot{opacity:0}
-.board-wrap.visual-slide-active .target-ring{stroke-width:1.26;filter:drop-shadow(0 0 1.6px rgba(18,104,255,.16))}
-@media (prefers-reduced-motion:reduce){.board-wrap.visual-slide-active .target-ring{filter:none}}
+.linkline-v61-drag .board-wrap.visual-assets-v5 .visual-chain-overlay,
+.linkline-v61-drag .board-wrap.visual-assets-v5 .visual-board-assets .endpoint-dot{opacity:0}
+.linkline-v61-drag .board-wrap.visual-assets-v5 .target-ring{stroke-width:1.26;filter:drop-shadow(0 0 1.6px rgba(18,104,255,.16))}
+@media (prefers-reduced-motion:reduce){.linkline-v61-drag .board-wrap.visual-assets-v5 .target-ring{filter:none}}
 `;
 document.head.append(style);
 
-function decorateBoard(board) {
-  if (!board || board.classList.contains('visual-assets-v5') || board.classList.contains('linkline-board-ghost')) return;
-  const info = boardInfo(board);
-  if (!info) return;
-  const chain = createStaticChain(board, info.n);
-  if (!chain) return;
-  const marks = createStaticMarks(board, info.n);
-  board.classList.add('visual-assets-v5');
-  board.insertBefore(chain, info.grid);
-  board.insertBefore(marks, info.grid);
-}
-
-function scan() {
-  if (!screen) return;
-  if (!screen.classList.contains('view-game')) {
-    cleanupSlideState();
-    return;
-  }
-  if (slideState && isSolvedView()) {
-    cleanupSlideState();
-    return;
-  }
-  const stageKey = stageLabel?.textContent?.trim() || '';
-  if (slideState && slideState.stageKey !== stageKey) {
-    cleanupSlideState();
-    return;
-  }
-
-  const boards = [...screen.querySelectorAll('.board-wrap:not(.linkline-board-ghost)')];
-  for (const board of boards) decorateBoard(board);
-
-  if (slideState) {
-    if (!syncActiveBoard()) {
-      cleanupSlideState();
-      return;
-    }
-    ensureFrame();
-  }
-}
-
-const observer = new MutationObserver(scan);
-if (screen) observer.observe(screen, { childList: true, subtree: true });
-queueMicrotask(scan);
-document.addEventListener(DRAG_INTENT_EVENT, receiveDragIntent, { capture: true });
-
-// Linkline visual asset system v6: renderer consumes the exact sampled drag queue/trace from the frozen input pipeline.
-// Slow and fast drags share one intent geometry path; runtime DOM remains the sole logical authority and reconciliation source.
