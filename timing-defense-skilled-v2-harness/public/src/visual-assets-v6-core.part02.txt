@@ -1,0 +1,110 @@
+  const steps = Math.max(1, Math.ceil(length / ROUTE_LINE_STEP));
+  for (let step = 1; step <= steps; step++) out.push(lerpPoint(from, to, step / steps));
+}
+
+function appendQuadraticSamples(out, from, control, to) {
+  for (let step = 1; step <= ROUTE_CURVE_STEPS; step++) {
+    const t = step / ROUTE_CURVE_STEPS;
+    const mt = 1 - t;
+    out.push({
+      x: mt * mt * from.x + 2 * mt * t * control.x + t * t * to.x,
+      y: mt * mt * from.y + 2 * mt * t * control.y + t * t * to.y,
+    });
+  }
+}
+
+function roundedPolylineSamples(controls, radius) {
+  if (!controls?.length) return [];
+  if (controls.length === 1) return [{ ...controls[0] }];
+
+  const out = [{ ...controls[0] }];
+  let cursor = controls[0];
+  for (let index = 1; index < controls.length - 1; index++) {
+    const previous = controls[index - 1];
+    const current = controls[index];
+    const next = controls[index + 1];
+    const incoming = { x: current.x - previous.x, y: current.y - previous.y };
+    const outgoing = { x: next.x - current.x, y: next.y - current.y };
+    const incomingLength = Math.hypot(incoming.x, incoming.y);
+    const outgoingLength = Math.hypot(outgoing.x, outgoing.y);
+    const cross = incoming.x * outgoing.y - incoming.y * outgoing.x;
+
+    if (!incomingLength || !outgoingLength || Math.abs(cross) < 1e-8) {
+      appendLineSamples(out, cursor, current);
+      cursor = current;
+      continue;
+    }
+
+    const cornerRadius = Math.min(radius, incomingLength / 2, outgoingLength / 2);
+    const entry = {
+      x: current.x - incoming.x / incomingLength * cornerRadius,
+      y: current.y - incoming.y / incomingLength * cornerRadius,
+    };
+    const exit = {
+      x: current.x + outgoing.x / outgoingLength * cornerRadius,
+      y: current.y + outgoing.y / outgoingLength * cornerRadius,
+    };
+    appendLineSamples(out, cursor, entry);
+    appendQuadraticSamples(out, entry, current, exit);
+    cursor = exit;
+  }
+  appendLineSamples(out, cursor, controls.at(-1));
+  return out;
+}
+
+function projectPointToSamples(point, samples, maxDistance = Infinity) {
+  if (!point || samples.length < 2) return null;
+  const metrics = pathMetrics(samples);
+  let best = null;
+  for (let index = 1; index < samples.length; index++) {
+    const a = samples[index - 1];
+    const b = samples[index];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len2 = dx * dx + dy * dy;
+    if (len2 <= 1e-12) continue;
+    const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / len2));
+    const projected = { x: a.x + dx * t, y: a.y + dy * t };
+    const along = metrics.cumulative[index - 1] + Math.sqrt(len2) * t;
+    if (along > maxDistance + 1e-6) continue;
+    const d2 = distanceSquared(point, projected);
+    if (!best || d2 < best.distanceSquared) {
+      best = { point: projected, distance: along, distanceSquared: d2 };
+    }
+  }
+  return best;
+}
+
+function boardInfo(board = null) {
+  const activeBoard = board?.isConnected
+    ? board
+    : screen?.querySelector('.board-wrap:not(.linkline-board-ghost)');
+  const grid = activeBoard?.querySelector(':scope > .board');
+  const cells = grid?.querySelectorAll('.cell');
+  const n = cells?.length ? Math.round(Math.sqrt(cells.length)) : 0;
+  if (!activeBoard || !grid || !n || n * n !== cells.length) return null;
+  const rect = grid.getBoundingClientRect();
+  return { board: activeBoard, grid, n, rect };
+}
+
+function isSolvedView() {
+  return Boolean(screen?.querySelector('.success-panel') || screen?.classList.contains('polish-success'));
+}
+
+function clientToBoard(clientX, clientY, info) {
+  if (!info?.rect?.width || !info.rect.height) return null;
+  return {
+    x: ((clientX - info.rect.left) / info.rect.width) * 100,
+    y: ((clientY - info.rect.top) / info.rect.height) * 100,
+  };
+}
+
+function sourcePathSamples(board, count = 192) {
+  const sourcePath = board.querySelector(':scope > .links .chain-path');
+  if (!sourcePath?.getTotalLength || !sourcePath?.getPointAtLength) return null;
+  let total;
+  try { total = sourcePath.getTotalLength(); } catch { return null; }
+  if (!Number.isFinite(total) || total <= 0) return null;
+  const points = [];
+  for (let index = 0; index < count; index++) {
+    const ratio = count === 1 ? 0 : index / (count - 1);
