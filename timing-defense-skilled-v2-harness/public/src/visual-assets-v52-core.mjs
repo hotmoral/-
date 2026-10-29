@@ -194,7 +194,13 @@ function projectPointToSamples(point, samples, maxDistance = Infinity, previousD
   }
 
   if (!best && previousDistance !== null) {
-    return projectPointToSamples(point, samples, maxDistance, null, Infinity);
+    const holdDistance = Math.max(0, Math.min(metrics.total, maxDistance, previousDistance));
+    const heldPoint = pointAtDistance(samples, metrics, holdDistance);
+    return heldPoint ? {
+      point: heldPoint,
+      distance: holdDistance,
+      distanceSquared: distanceSquared(point, heldPoint),
+    } : null;
   }
   return best;
 }
@@ -802,4 +808,4 @@ document.addEventListener('pointermove', updateSlide, { capture: true, passive: 
 document.addEventListener('pointerup', finishSlide, { capture: true, passive: true });
 document.addEventListener('pointercancel', finishSlide, { capture: true, passive: true });
 
-// Linkline visual asset system v5.2: direct 1:1 fixed-length forward-only chain slide with heavier chain/node visual weight; clear state terminates the visual drag immediately.
+// Linkline visual asset system v5.5: v5.2 direct fixed-length forward-only slide with local projection hold; accumulated route history can no longer steal projection when the local corridor misses.
