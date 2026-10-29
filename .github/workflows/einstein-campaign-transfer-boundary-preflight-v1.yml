@@ -1,0 +1,83 @@
+name: Einstein Campaign Transfer Boundary Preflight V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-transfer-boundary-preflight-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-transfer-boundary:
+    if: >-
+      github.event.head_commit.message == 'verify: inspect Einstein campaign transfer boundary v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+    steps:
+      - name: Require private repository credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$READ_TOKEN"
+
+      - name: Checkout proven runner source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: c4b591918072a09eb62c9f80f85a5df6b924c785
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout production bank read-only
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Print exact campaign boundary rows
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('ProductionStore/production/campaign-2000-bank-v1/bank/plan.json')
+          data=json.loads(p.read_text())
+          def rows(x):
+              if isinstance(x,list):
+                  for y in x: yield from rows(y)
+              elif isinstance(x,dict):
+                  if any(k in x for k in ('ordinal','stageOrdinal')):
+                      yield x
+                  for y in x.values(): yield from rows(y)
+          all_rows=list(rows(data))
+          print('PLAN_TOP_KEYS', sorted(data.keys()) if isinstance(data,dict) else type(data).__name__)
+          for target in (120,121,122,123,240,241):
+              found=[]
+              for r in all_rows:
+                  v=r.get('ordinal',r.get('stageOrdinal'))
+                  try: v=int(v)
+                  except Exception: continue
+                  if v==target: found.append(r)
+              print('PLAN_ROW',target,json.dumps(found,sort_keys=True,separators=(',',':')))
+          PY
+
+      - name: Print existing transfer intent fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          echo '=== TransferContext references ==='
+          grep -RIn --include='*.java' -E 'TransferContext|Role\.TRANSFER|LearningIntent|learningIntent|TRANSFER' puzzle-authoring/src/main puzzle-authoring/src/test | head -n 500 || true
+          echo '=== Direct producer intent block ==='
+          grep -n -A20 -B10 'IntentSpec intent' puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000N5DirectProducerV1.java || true
