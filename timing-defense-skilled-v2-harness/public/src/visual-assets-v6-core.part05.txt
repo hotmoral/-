@@ -1,3 +1,12 @@
+  slideState.chainCells = ordered;
+  slideState.lastBoard = board;
+  return true;
+}
+
+function simulateQueuedIntent(intent) {
+  const chain = [...slideState.chainCells];
+  const futureCells = [];
+  for (const cell of intent.queue) {
     const head = chain[0];
     if (cell === head) continue;
     if (!neighbors(slideState.n, head).includes(cell)) break;
@@ -10,31 +19,25 @@
 }
 
 function leadCandidate(pointer, intent, futureCells, predictedChain) {
-  if (!pointer) return null;
+  if (!pointer || intent.phase === 'blocked') return null;
   const head = predictedChain[0];
   const center = cellCenterFromNumber(head, slideState.n);
   if (!center) return null;
-
   const dx = pointer.x - center.x;
   const dy = pointer.y - center.y;
   const absX = Math.abs(dx);
   const absY = Math.abs(dy);
   const step = 100 / slideState.n;
   if (Math.max(absX, absY) < step * 0.015) return null;
-
   let axis;
   if (absX > absY * 1.08) axis = 'H';
   else if (absY > absX * 1.08) axis = 'V';
   else if (intent.headingAxis) axis = intent.headingAxis;
   else if (futureCells.length) {
-    const previous = futureCells.length > 1
-      ? futureCells.at(-2)
-      : slideState.authoritativeHeadCell;
+    const previous = futureCells.length > 1 ? futureCells.at(-2) : slideState.authoritativeHeadCell;
     const previousPoint = cellCenterFromNumber(previous, slideState.n);
     axis = previousPoint && Math.abs(center.x - previousPoint.x) > Math.abs(center.y - previousPoint.y) ? 'H' : 'V';
-  } else {
-    axis = absX >= absY ? 'H' : 'V';
-  }
+  } else axis = absX >= absY ? 'H' : 'V';
 
   const row = Math.floor(head / slideState.n);
   const col = head % slideState.n;
@@ -43,24 +46,17 @@ function leadCandidate(pointer, intent, futureCells, predictedChain) {
   if (axis === 'H' && dx < 0 && col > 0) candidate = head - 1;
   if (axis === 'V' && dy > 0 && row + 1 < slideState.n) candidate = head + slideState.n;
   if (axis === 'V' && dy < 0 && row > 0) candidate = head - slideState.n;
-  if (!Number.isInteger(candidate)) return null;
-  if (predictedChain.includes(candidate)) return null;
+  if (!Number.isInteger(candidate) || predictedChain.includes(candidate)) return null;
   return candidate;
 }
 
 function intentTrail(intent, pointer) {
-  if (!slideState || !intent) return null;
   const { futureCells, predictedChain } = simulateQueuedIntent(intent);
   const lead = leadCandidate(pointer, intent, futureCells, predictedChain);
-
   const controls = [];
   if (Number.isInteger(lead)) controls.push(cellCenterFromNumber(lead, slideState.n));
-  for (let index = futureCells.length - 1; index >= 0; index--) {
-    controls.push(cellCenterFromNumber(futureCells[index], slideState.n));
-  }
-  for (const cell of slideState.chainCells) {
-    controls.push(cellCenterFromNumber(cell, slideState.n));
-  }
+  for (let index = futureCells.length - 1; index >= 0; index--) controls.push(cellCenterFromNumber(futureCells[index], slideState.n));
+  for (const cell of slideState.chainCells) controls.push(cellCenterFromNumber(cell, slideState.n));
 
   const compact = [];
   for (const point of controls.filter(Boolean)) {
@@ -68,43 +64,47 @@ function intentTrail(intent, pointer) {
     if (!last || distanceSquared(last, point) > 1e-8) compact.push(point);
   }
   if (compact.length < 2) return null;
-
-  const radius = (100 / slideState.n) * ROUTE_RADIUS_RATIO;
-  const samples = roundedPolylineSamples(compact, radius);
+  const samples = roundedPolylineSamples(compact, (100 / slideState.n) * ROUTE_RADIUS_RATIO);
   const step = 100 / slideState.n;
-
   let offset = 0;
   if (Number.isInteger(lead) || futureCells.length) {
     const projection = projectPointToSamples(pointer, samples, step * 1.45);
     if (projection) offset = projection.distance;
   }
-
-  return { samples, offset, futureCells, lead };
+  return { samples, offset };
 }
 
-function attachSlideOverlay(board, n) {
-  if (!slideState || !board?.isConnected) return;
-  if (slideState.board === board && slideState.overlay?.svg?.isConnected) return;
+function renderActiveFrame() {
+  const intent = slideState?.intent;
+  if (!intent) return;
+  const pointer = clientToBoard(intent.clientX, intent.clientY);
+  if (!pointer) return;
+  const trail = intentTrail(intent, pointer);
+  if (!trail?.samples?.length) return;
+  const segment = sampleRange(trail.samples, trail.offset, slideState.chainLength);
+  if (!segment.points?.length) return;
+  slideState.renderPoints = segment.points;
+  updateOverlayGeometry(slideState.renderPoints);
+}
+
+function settleTargetPoints() {
+  return slideState ? authoritativeGeometry(slideState.chainCells, slideState.n)?.points ?? null : null;
+}
+
+function ensureFrame() {
+  if (!slideState || slideState.raf) return;
+  slideState.raf = requestAnimationFrame(renderFrame);
+}
+
+function cleanupSlideState() {
+  if (!slideState) return;
+  if (slideState.raf) cancelAnimationFrame(slideState.raf);
   slideState.overlay?.svg?.remove();
-  const overlay = createSlideOverlay(n, slideState.chainCells.length);
-  slideState.board = board;
-  slideState.overlay = overlay;
-  board.classList.add('visual-slide-active');
-  board.append(overlay.svg);
-  updateOverlayGeometry(overlay, slideState.renderPoints);
+  document.documentElement.classList.remove('linkline-v61-drag');
+  slideState = null;
 }
 
-function syncActiveBoard() {
-  if (!slideState) return false;
-  const activeBoard = screen?.querySelector('.board-wrap:not(.linkline-board-ghost)');
-  if (!activeBoard) return false;
-  if (activeBoard !== slideState.board) {
-    if (!syncSlideToAuthoritativeBoard(activeBoard)) return false;
-  }
-  decorateBoard(activeBoard);
-  attachSlideOverlay(activeBoard, slideState.n);
-  return true;
-}
-
-function renderSharedIntent() {
-  if (!slideState || slideState.finishing) return;
+function renderFrame(now) {
+  if (!slideState) return;
+  slideState.raf = 0;
+  if (isSolvedView()) {
