@@ -217,6 +217,10 @@ function boardInfo(board = slideState?.board) {
   };
 }
 
+function isSolvedView() {
+  return Boolean(screen?.querySelector('.success-panel') || screen?.classList.contains('polish-success'));
+}
+
 function clientToBoard(clientX, clientY, info = boardInfo()) {
   if (!info?.rect?.width || !info.rect.height) return null;
   return {
@@ -277,12 +281,12 @@ function orderChainCellsBySource(board, n, sourcePoints, draggedCell) {
 
 function visualMetrics(n) {
   const step = 100 / n;
-  const endpointRadius = Math.min(4.2, Math.max(2.8, step * 0.16));
+  const endpointRadius = Math.min(5.0, Math.max(3.3, step * 0.19));
   return {
     endpointRadius,
     targetRadius: endpointRadius * 1.42,
     targetCoreRadius: Math.max(0.48, endpointRadius * 0.16),
-    jointRadius: Math.min(1.4, Math.max(0.9, step * 0.055)),
+    jointRadius: Math.min(1.75, Math.max(1.1, step * 0.07)),
   };
 }
 
@@ -465,6 +469,10 @@ function attachSlideOverlay(board, n) {
 
 function renderActiveSlide() {
   if (!slideState || slideState.ending) return;
+  if (isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
   const info = boardInfo();
   const pointer = clientToBoard(slideState.clientX, slideState.clientY, info);
   if (!pointer) return;
@@ -485,7 +493,10 @@ function renderActiveSlide() {
   );
   if (!projected) return;
 
-  slideState.headOffset = projected.distance;
+  const rawProgress = Math.max(0, trail.routeLimit - projected.distance);
+  slideState.maxForwardProgress = Math.max(slideState.maxForwardProgress, rawProgress);
+  const forwardProgress = Math.min(trail.routeLimit, slideState.maxForwardProgress);
+  slideState.headOffset = Math.max(0, trail.routeLimit - forwardProgress);
   const segment = sampleRange(trail.samples, slideState.headOffset, slideState.chainLength);
   if (!segment.points?.length) return;
   slideState.renderPoints = segment.points;
@@ -581,6 +592,10 @@ function appendTraceCellVisual(number, segDx, segDy) {
 
 function samplePointerTo(clientX, clientY) {
   if (!slideState || slideState.ending) return;
+  if (isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
   const info = boardInfo();
   if (!info) return;
 
@@ -628,7 +643,7 @@ function scheduleEndCleanup() {
 function startSlide(event) {
   const cell = event.target.closest?.('.cell.endpoint');
   const board = cell?.closest?.('.board-wrap.visual-assets-v5');
-  if (!board) return;
+  if (!board || isSolvedView()) return;
 
   cleanupSlideState();
 
@@ -662,6 +677,7 @@ function startSlide(event) {
     lastX: event.clientX,
     lastY: event.clientY,
     headOffset: null,
+    maxForwardProgress: 0,
     candidateCell: null,
     headingAxis: null,
     renderPoints,
@@ -679,6 +695,10 @@ function startSlide(event) {
 
 function updateSlide(event) {
   if (!slideState || event.pointerId !== slideState.pointerId || slideState.ending) return;
+  if (isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
   const points = typeof event.getCoalescedEvents === 'function' ? event.getCoalescedEvents() : [];
   const stream = points.length ? points : [event];
   for (const point of stream) samplePointerTo(point.clientX, point.clientY);
@@ -687,9 +707,14 @@ function updateSlide(event) {
 
 function finishSlide(event) {
   if (!slideState || (event?.pointerId !== undefined && event.pointerId !== slideState.pointerId)) return;
+  if (isSolvedView()) {
+    cleanupSlideState();
+    return;
+  }
   if (Number.isFinite(event.clientX) && Number.isFinite(event.clientY)) samplePointerTo(event.clientX, event.clientY);
 
   renderActiveSlide();
+  if (!slideState) return;
   slideState.ending = true;
   const releaseCandidate = slideState.candidateCell;
   const trail = fullTrail(releaseCandidate);
@@ -717,19 +742,19 @@ style.textContent = `
 .visual-board-assets{z-index:5}
 .visual-slide-overlay{z-index:7}
 .visual-chain-shadow,.visual-chain-body,.slide-chain-shadow,.slide-chain-body{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.visual-chain-shadow,.slide-chain-shadow{stroke:rgba(23,23,22,.13);stroke-width:3.25;filter:drop-shadow(0 1.2px 1.4px rgba(23,23,22,.10))}
-.visual-chain-body,.slide-chain-body{stroke:#1d1d1b;stroke-width:2.30}
+.visual-chain-shadow,.slide-chain-shadow{stroke:rgba(23,23,22,.13);stroke-width:3.95;filter:drop-shadow(0 1.2px 1.4px rgba(23,23,22,.10))}
+.visual-chain-body,.slide-chain-body{stroke:#1d1d1b;stroke-width:2.85}
 .visual-chain-joint,.slide-chain-joint{fill:#1d1d1b}
-.endpoint-dot{fill:#1d1d1b;stroke:rgba(255,255,255,.88);stroke-width:.34}
-.endpoint-dot.is-selected{stroke:#1268ff;stroke-width:.78}
-.endpoint-dot.is-docked{fill:#1268ff;stroke:#fff;stroke-width:.46}
-.target-ring{fill:rgba(18,104,255,.025);stroke:#1268ff;stroke-width:1.05}
+.endpoint-dot{fill:#1d1d1b;stroke:rgba(255,255,255,.88);stroke-width:.40}
+.endpoint-dot.is-selected{stroke:#1268ff;stroke-width:.88}
+.endpoint-dot.is-docked{fill:#1268ff;stroke:#fff;stroke-width:.54}
+.target-ring{fill:rgba(18,104,255,.025);stroke:#1268ff;stroke-width:1.12}
 .target-core{fill:rgba(18,104,255,.30)}
 .target-mark.is-docked .target-ring{stroke-opacity:.42}
 .target-mark.is-docked .target-core{opacity:0}
 .board-wrap.visual-slide-active .visual-chain-overlay,
 .board-wrap.visual-slide-active .visual-board-assets .endpoint-dot{opacity:0}
-.board-wrap.visual-slide-active .target-ring{stroke-width:1.18;filter:drop-shadow(0 0 1.6px rgba(18,104,255,.16))}
+.board-wrap.visual-slide-active .target-ring{stroke-width:1.26;filter:drop-shadow(0 0 1.6px rgba(18,104,255,.16))}
 @media (prefers-reduced-motion:reduce){.board-wrap.visual-slide-active .target-ring{filter:none}}
 `;
 document.head.append(style);
@@ -758,6 +783,8 @@ function scan() {
     return;
   }
 
+  if (slideState && isSolvedView()) cleanupSlideState();
+
   const stageKey = stageLabel?.textContent?.trim() || '';
   if (slideState && slideState.stageKey !== stageKey) cleanupSlideState();
 
@@ -775,4 +802,4 @@ document.addEventListener('pointermove', updateSlide, { capture: true, passive: 
 document.addEventListener('pointerup', finishSlide, { capture: true, passive: true });
 document.addEventListener('pointercancel', finishSlide, { capture: true, passive: true });
 
-// Linkline visual asset system v5: direct 1:1 fixed-length chain slide along the dragged route; no spring or time-based drag morph.
+// Linkline visual asset system v5.2: direct 1:1 fixed-length forward-only chain slide with heavier chain/node visual weight; clear state terminates the visual drag immediately.
