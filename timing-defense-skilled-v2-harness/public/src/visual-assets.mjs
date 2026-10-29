@@ -3,12 +3,17 @@ const screen = document.querySelector('#screen');
 const stageLabel = document.querySelector('#stage-label');
 const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
-const MORPH_DURATION_MS = 76;
-const MORPH_SAMPLE_COUNT = 48;
-const DRAG_END_GRACE_MS = 280;
-const MORPH_EPSILON = 0.018;
+const ROUTE_RADIUS_RATIO = 0.22;
+const ROUTE_LINE_STEP = 0.72;
+const ROUTE_CURVE_STEPS = 8;
+const RENDER_SAMPLE_COUNT = 128;
+const SETTLE_MS = 84;
+const END_GRACE_MS = 520;
+const SAMPLE_RATIO = 0.12;
+const MIN_SAMPLE_PX = 3;
+const MAX_SAMPLE_PX = 8;
 
-let dragState = null;
+let slideState = null;
 
 function svgNode(tag, attrs = {}, className = '') {
   const node = document.createElementNS(SVG_NS, tag);
@@ -22,8 +27,7 @@ function cellNumber(cell) {
   return Number.isInteger(value) ? value : null;
 }
 
-function cellCenter(cell, n) {
-  const number = cellNumber(cell);
+function cellCenterFromNumber(number, n) {
   if (!Number.isInteger(number)) return null;
   const row = Math.floor(number / n);
   const col = number % n;
@@ -31,10 +35,22 @@ function cellCenter(cell, n) {
   return { x: (col + 0.5) * step, y: (row + 0.5) * step };
 }
 
+function cellCenter(cell, n) {
+  return cellCenterFromNumber(cellNumber(cell), n);
+}
+
 function distanceSquared(a, b) {
   const dx = a.x - b.x;
   const dy = a.y - b.y;
   return dx * dx + dy * dy;
+}
+
+function distance(a, b) {
+  return Math.sqrt(distanceSquared(a, b));
+}
+
+function lerpPoint(a, b, t) {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
 }
 
 function pointsToPath(points) {
@@ -44,39 +60,219 @@ function pointsToPath(points) {
   ).join(' ');
 }
 
-function sampleSourcePath(board, sampleCount = MORPH_SAMPLE_COUNT) {
+function neighbors(n, cell) {
+  const row = Math.floor(cell / n);
+  const col = cell % n;
+  const out = [];
+  if (row > 0) out.push(cell - n);
+  if (row + 1 < n) out.push(cell + n);
+  if (col > 0) out.push(cell - 1);
+  if (col + 1 < n) out.push(cell + 1);
+  return out;
+}
+
+function pathMetrics(points) {
+  const cumulative = [0];
+  for (let index = 1; index < points.length; index++) {
+    cumulative.push(cumulative.at(-1) + distance(points[index - 1], points[index]));
+  }
+  return { cumulative, total: cumulative.at(-1) || 0 };
+}
+
+function pointAtDistance(points, metrics, target) {
+  if (!points.length) return null;
+  if (target <= 0) return { ...points[0] };
+  if (target >= metrics.total) return { ...points.at(-1) };
+
+  let low = 1;
+  let high = metrics.cumulative.length - 1;
+  while (low < high) {
+    const mid = (low + high) >> 1;
+    if (metrics.cumulative[mid] < target) low = mid + 1;
+    else high = mid;
+  }
+
+  const index = low;
+  const before = metrics.cumulative[index - 1];
+  const after = metrics.cumulative[index];
+  const span = Math.max(1e-9, after - before);
+  return lerpPoint(points[index - 1], points[index], (target - before) / span);
+}
+
+function sampleRange(points, fromDistance, length, count = RENDER_SAMPLE_COUNT) {
+  const metrics = pathMetrics(points);
+  const from = Math.max(0, Math.min(metrics.total, fromDistance));
+  const usable = Math.max(0, Math.min(length, metrics.total - from));
+  const out = [];
+  for (let index = 0; index < count; index++) {
+    const ratio = count === 1 ? 0 : index / (count - 1);
+    out.push(pointAtDistance(points, metrics, from + usable * ratio));
+  }
+  return { points: out, usableLength: usable, metrics };
+}
+
+function appendLineSamples(out, from, to) {
+  const length = distance(from, to);
+  const steps = Math.max(1, Math.ceil(length / ROUTE_LINE_STEP));
+  for (let step = 1; step <= steps; step++) out.push(lerpPoint(from, to, step / steps));
+}
+
+function appendQuadraticSamples(out, from, control, to) {
+  for (let step = 1; step <= ROUTE_CURVE_STEPS; step++) {
+    const t = step / ROUTE_CURVE_STEPS;
+    const mt = 1 - t;
+    out.push({
+      x: mt * mt * from.x + 2 * mt * t * control.x + t * t * to.x,
+      y: mt * mt * from.y + 2 * mt * t * control.y + t * t * to.y,
+    });
+  }
+}
+
+function roundedPolylineSamples(controls, radius) {
+  if (!controls?.length) return [];
+  if (controls.length === 1) return [{ ...controls[0] }];
+
+  const out = [{ ...controls[0] }];
+  let cursor = controls[0];
+
+  for (let index = 1; index < controls.length - 1; index++) {
+    const previous = controls[index - 1];
+    const current = controls[index];
+    const next = controls[index + 1];
+    const incoming = { x: current.x - previous.x, y: current.y - previous.y };
+    const outgoing = { x: next.x - current.x, y: next.y - current.y };
+    const incomingLength = Math.hypot(incoming.x, incoming.y);
+    const outgoingLength = Math.hypot(outgoing.x, outgoing.y);
+    const cross = incoming.x * outgoing.y - incoming.y * outgoing.x;
+
+    if (!incomingLength || !outgoingLength || Math.abs(cross) < 1e-8) {
+      appendLineSamples(out, cursor, current);
+      cursor = current;
+      continue;
+    }
+
+    const cornerRadius = Math.min(radius, incomingLength / 2, outgoingLength / 2);
+    const entry = {
+      x: current.x - incoming.x / incomingLength * cornerRadius,
+      y: current.y - incoming.y / incomingLength * cornerRadius,
+    };
+    const exit = {
+      x: current.x + outgoing.x / outgoingLength * cornerRadius,
+      y: current.y + outgoing.y / outgoingLength * cornerRadius,
+    };
+
+    appendLineSamples(out, cursor, entry);
+    appendQuadraticSamples(out, entry, current, exit);
+    cursor = exit;
+  }
+
+  appendLineSamples(out, cursor, controls.at(-1));
+  return out;
+}
+
+function projectPointToSamples(point, samples, maxDistance = Infinity, previousDistance = null, span = Infinity) {
+  if (!point || samples.length < 2) return null;
+  const metrics = pathMetrics(samples);
+  let best = null;
+
+  for (let index = 1; index < samples.length; index++) {
+    const a = samples[index - 1];
+    const b = samples[index];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len2 = dx * dx + dy * dy;
+    if (len2 <= 1e-12) continue;
+
+    const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / len2));
+    const projected = { x: a.x + dx * t, y: a.y + dy * t };
+    const along = metrics.cumulative[index - 1] + Math.sqrt(len2) * t;
+    if (along > maxDistance + 1e-6) continue;
+    if (previousDistance !== null && Math.abs(along - previousDistance) > span) continue;
+
+    const d2 = distanceSquared(point, projected);
+    if (!best || d2 < best.distanceSquared) best = { point: projected, distance: along, distanceSquared: d2 };
+  }
+
+  if (!best && previousDistance !== null) {
+    return projectPointToSamples(point, samples, maxDistance, null, Infinity);
+  }
+  return best;
+}
+
+function boardInfo(board = slideState?.board) {
+  const activeBoard = board?.isConnected ? board : screen?.querySelector('.board-wrap');
+  const grid = activeBoard?.querySelector(':scope > .board');
+  const cells = grid?.querySelectorAll('.cell');
+  const n = cells?.length ? Math.round(Math.sqrt(cells.length)) : 0;
+  if (!activeBoard || !grid || !n || n * n !== cells.length) return null;
+  const rect = grid.getBoundingClientRect();
+  return {
+    board: activeBoard,
+    grid,
+    n,
+    rect,
+    cellW: rect.width / n,
+    cellH: rect.height / n,
+    cellSize: Math.min(rect.width / n, rect.height / n),
+  };
+}
+
+function clientToBoard(clientX, clientY, info = boardInfo()) {
+  if (!info?.rect?.width || !info.rect.height) return null;
+  return {
+    x: ((clientX - info.rect.left) / info.rect.width) * 100,
+    y: ((clientY - info.rect.top) / info.rect.height) * 100,
+  };
+}
+
+function gridCellAt(clientX, clientY, info = boardInfo()) {
+  if (!info) return null;
+  const { rect, n, cellW, cellH } = info;
+  if (clientX < rect.left || clientX >= rect.right || clientY < rect.top || clientY >= rect.bottom) return null;
+  const col = Math.max(0, Math.min(n - 1, Math.floor((clientX - rect.left) / cellW)));
+  const row = Math.max(0, Math.min(n - 1, Math.floor((clientY - rect.top) / cellH)));
+  return row * n + col;
+}
+
+function sourcePathSamples(board, count = 192) {
   const sourcePath = board.querySelector(':scope > .links .chain-path');
   if (!sourcePath?.getTotalLength || !sourcePath?.getPointAtLength) return null;
-
-  let length;
-  try { length = sourcePath.getTotalLength(); } catch { return null; }
-  if (!Number.isFinite(length) || length <= 0) return null;
+  let total;
+  try { total = sourcePath.getTotalLength(); } catch { return null; }
+  if (!Number.isFinite(total) || total <= 0) return null;
 
   const points = [];
-  for (let index = 0; index < sampleCount; index++) {
-    const ratio = sampleCount === 1 ? 0 : index / (sampleCount - 1);
-    const point = sourcePath.getPointAtLength(length * ratio);
+  for (let index = 0; index < count; index++) {
+    const ratio = count === 1 ? 0 : index / (count - 1);
+    const point = sourcePath.getPointAtLength(total * ratio);
     points.push({ x: point.x, y: point.y });
   }
-  return points;
+  return { points, total };
 }
 
-function orientToEndpoint(points, endpointPoint) {
-  if (!points?.length || !endpointPoint) return points;
-  return distanceSquared(points[0], endpointPoint) <= distanceSquared(points.at(-1), endpointPoint)
-    ? points
-    : [...points].reverse();
-}
+function orderChainCellsBySource(board, n, sourcePoints, draggedCell) {
+  const entries = [];
+  for (const cell of board.querySelectorAll('.cell.chain')) {
+    const number = cellNumber(cell);
+    const point = cellCenter(cell, n);
+    if (!Number.isInteger(number) || !point) continue;
+    let bestIndex = 0;
+    let bestDistance = Infinity;
+    for (let index = 0; index < sourcePoints.length; index++) {
+      const d2 = distanceSquared(point, sourcePoints[index]);
+      if (d2 < bestDistance) {
+        bestDistance = d2;
+        bestIndex = index;
+      }
+    }
+    entries.push({ number, bestIndex });
+  }
 
-function orientToPrevious(points, previous) {
-  if (!points?.length || !previous?.length) return points;
-  const direct =
-    distanceSquared(points[0], previous[0]) +
-    distanceSquared(points.at(-1), previous.at(-1));
-  const reversed =
-    distanceSquared(points.at(-1), previous[0]) +
-    distanceSquared(points[0], previous.at(-1));
-  return reversed < direct ? [...points].reverse() : points;
+  entries.sort((a, b) => a.bestIndex - b.bestIndex);
+  let ordered = entries.map((entry) => entry.number);
+  if (ordered.at(-1) === draggedCell) ordered = ordered.reverse();
+  if (ordered[0] !== draggedCell) return null;
+  return ordered;
 }
 
 function visualMetrics(n) {
@@ -93,64 +289,60 @@ function visualMetrics(n) {
 function appendTarget(svg, point, metrics, docked) {
   const group = svgNode('g', {}, `target-mark${docked ? ' is-docked' : ''}`);
   group.append(
-    svgNode('circle', {
-      cx: point.x,
-      cy: point.y,
-      r: metrics.targetRadius,
-    }, 'target-ring'),
-    svgNode('circle', {
-      cx: point.x,
-      cy: point.y,
-      r: metrics.targetCoreRadius,
-    }, 'target-core'),
+    svgNode('circle', { cx: point.x, cy: point.y, r: metrics.targetRadius }, 'target-ring'),
+    svgNode('circle', { cx: point.x, cy: point.y, r: metrics.targetCoreRadius }, 'target-core'),
   );
   svg.append(group);
 }
 
-function appendEndpoint(svg, point, metrics, selected, docked) {
+function appendEndpoint(svg, point, metrics, selected, docked, className = '') {
   const node = svgNode('circle', {
     cx: point.x,
     cy: point.y,
     r: metrics.endpointRadius,
-  }, `endpoint-dot${selected ? ' is-selected' : ''}${docked ? ' is-docked' : ''}`);
+  }, `endpoint-dot${selected ? ' is-selected' : ''}${docked ? ' is-docked' : ''}${className ? ` ${className}` : ''}`);
   svg.append(node);
   return node;
+}
+
+function sourceNodePoints(board, chainCellCount) {
+  const sourcePath = board.querySelector(':scope > .links .chain-path');
+  if (!sourcePath?.getTotalLength || !sourcePath?.getPointAtLength || chainCellCount < 2) return null;
+  let total;
+  try { total = sourcePath.getTotalLength(); } catch { return null; }
+  if (!Number.isFinite(total) || total <= 0) return null;
+
+  const points = [];
+  for (let index = 0; index < chainCellCount; index++) {
+    const point = sourcePath.getPointAtLength(total * index / (chainCellCount - 1));
+    points.push({ x: point.x, y: point.y });
+  }
+  return points;
 }
 
 function createStaticChain(board, n) {
   const sourcePath = board.querySelector(':scope > .links .chain-path');
   const d = sourcePath?.getAttribute('d');
-  if (!d) return null;
+  const chainCellCount = board.querySelectorAll('.cell.chain').length;
+  const nodePoints = sourceNodePoints(board, chainCellCount);
+  if (!d || !nodePoints?.length) return null;
 
   const metrics = visualMetrics(n);
-  const svg = svgNode('svg', {
-    viewBox: '0 0 100 100',
-    'aria-hidden': 'true',
-  }, 'visual-chain-overlay');
-
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-chain-overlay');
   svg.append(
     svgNode('path', { d }, 'visual-chain-shadow'),
     svgNode('path', { d }, 'visual-chain-body'),
   );
 
-  for (const cell of board.querySelectorAll('.cell.chain:not(.endpoint)')) {
-    const point = cellCenter(cell, n);
-    if (point) {
-      svg.append(svgNode('circle', {
-        cx: point.x,
-        cy: point.y,
-        r: metrics.jointRadius,
-      }, 'visual-chain-joint'));
-    }
+  for (let index = 1; index < nodePoints.length - 1; index++) {
+    const point = nodePoints[index];
+    svg.append(svgNode('circle', { cx: point.x, cy: point.y, r: metrics.jointRadius }, 'visual-chain-joint'));
   }
-  return svg;
+  return { svg, nodePoints };
 }
 
 function createStaticMarks(board, n) {
-  const svg = svgNode('svg', {
-    viewBox: '0 0 100 100',
-    'aria-hidden': 'true',
-  }, 'visual-board-assets');
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-board-assets');
   const metrics = visualMetrics(n);
 
   for (const cell of board.querySelectorAll('.cell.target')) {
@@ -161,253 +353,373 @@ function createStaticMarks(board, n) {
   for (const cell of board.querySelectorAll('.cell.endpoint')) {
     const point = cellCenter(cell, n);
     if (!point) continue;
-    appendEndpoint(
-      svg,
-      point,
-      metrics,
-      cell.classList.contains('selected'),
-      cell.classList.contains('target'),
-    );
+    appendEndpoint(svg, point, metrics, cell.classList.contains('selected'), cell.classList.contains('target'));
   }
   return svg;
 }
 
-function createMorphOverlay(n, points, chainCellCount) {
+function createSlideOverlay(n, chainCellCount) {
   const metrics = visualMetrics(n);
-  const svg = svgNode('svg', {
-    viewBox: '0 0 100 100',
-    'aria-hidden': 'true',
-  }, 'visual-morph-overlay');
-  const d = pointsToPath(points);
-
-  const shadow = svgNode('path', { d }, 'morph-chain-shadow');
-  const body = svgNode('path', { d }, 'morph-chain-body');
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-slide-overlay');
+  const shadow = svgNode('path', { d: '' }, 'slide-chain-shadow');
+  const body = svgNode('path', { d: '' }, 'slide-chain-body');
   svg.append(shadow, body);
 
-  const joints = [];
-  for (let index = 1; index < chainCellCount - 1; index++) {
-    const sampleIndex = Math.round((index / (chainCellCount - 1)) * (points.length - 1));
-    const point = points[sampleIndex];
-    const node = svgNode('circle', {
-      cx: point.x,
-      cy: point.y,
-      r: metrics.jointRadius,
-    }, 'morph-chain-joint');
-    joints.push({ node, sampleIndex });
-    svg.append(node);
+  const nodes = [];
+  for (let index = 0; index < chainCellCount; index++) {
+    const endpoint = index === 0 || index === chainCellCount - 1;
+    const node = endpoint
+      ? appendEndpoint(svg, { x: 0, y: 0 }, metrics, index === 0, false, 'slide-node')
+      : svgNode('circle', { cx: 0, cy: 0, r: metrics.jointRadius }, 'slide-chain-joint slide-node');
+    if (!endpoint) svg.append(node);
+    nodes.push(node);
   }
-
-  const startEndpoint = appendEndpoint(svg, points[0], metrics, true, false);
-  const endEndpoint = appendEndpoint(svg, points.at(-1), metrics, false, false);
-  startEndpoint.classList.add('morph-endpoint');
-  endEndpoint.classList.add('morph-endpoint');
-
-  return {
-    svg,
-    paths: [shadow, body],
-    joints,
-    endpoints: [startEndpoint, endEndpoint],
-  };
+  return { svg, paths: [shadow, body], nodes };
 }
 
-function maxDelta(a, b) {
-  let max = 0;
-  for (let index = 0; index < Math.min(a.length, b.length); index++) {
-    max = Math.max(max, Math.sqrt(distanceSquared(a[index], b[index])));
-  }
-  return max;
-}
-
-function stopMorph() {
-  const morph = dragState?.morph;
-  if (!morph) return;
-  if (morph.raf) cancelAnimationFrame(morph.raf);
-  morph.board?.classList.remove('is-chain-morphing');
-  morph.svg?.remove();
-  dragState.morph = null;
-}
-
-function updateMorphOverlay(morph, points) {
+function updateOverlayGeometry(overlay, points) {
+  if (!overlay || !points?.length) return;
   const d = pointsToPath(points);
-  for (const path of morph.paths) path.setAttribute('d', d);
+  for (const path of overlay.paths) path.setAttribute('d', d);
 
-  for (const joint of morph.joints) {
-    const point = points[joint.sampleIndex];
-    joint.node.setAttribute('cx', point.x);
-    joint.node.setAttribute('cy', point.y);
+  const denominator = Math.max(1, overlay.nodes.length - 1);
+  for (let index = 0; index < overlay.nodes.length; index++) {
+    const sampleIndex = Math.round((index / denominator) * (points.length - 1));
+    const point = points[sampleIndex];
+    overlay.nodes[index].setAttribute('cx', point.x);
+    overlay.nodes[index].setAttribute('cy', point.y);
   }
-
-  const first = points[0];
-  const last = points.at(-1);
-  morph.endpoints[0].setAttribute('cx', first.x);
-  morph.endpoints[0].setAttribute('cy', first.y);
-  morph.endpoints[1].setAttribute('cx', last.x);
-  morph.endpoints[1].setAttribute('cy', last.y);
 }
 
-function cleanupDragState() {
-  if (!dragState) return;
-  if (dragState.endTimer !== null) clearTimeout(dragState.endTimer);
-  stopMorph();
-  dragState.board?.classList.remove('visual-drag-active');
-  dragState = null;
+function currentCandidateCell(pointerPoint) {
+  if (!slideState || !pointerPoint) return null;
+  const head = slideState.chainCells[0];
+  const headPoint = cellCenterFromNumber(head, slideState.n);
+  const occupied = new Set(slideState.chainCells);
+  let best = null;
+
+  for (const candidate of neighbors(slideState.n, head)) {
+    if (occupied.has(candidate)) continue;
+    const target = cellCenterFromNumber(candidate, slideState.n);
+    const vx = target.x - headPoint.x;
+    const vy = target.y - headPoint.y;
+    const length = Math.hypot(vx, vy);
+    if (!length) continue;
+    const projection = ((pointerPoint.x - headPoint.x) * vx + (pointerPoint.y - headPoint.y) * vy) / length;
+    if (projection <= 0) continue;
+    if (!best || projection > best.projection) best = { cell: candidate, projection };
+  }
+  return best?.cell ?? null;
 }
 
-function scheduleDragCleanup() {
-  if (!dragState) return;
-  if (dragState.endTimer !== null) clearTimeout(dragState.endTimer);
-  dragState.endTimer = setTimeout(cleanupDragState, reducedMotion ? 0 : DRAG_END_GRACE_MS);
+function routeControls(candidateCell = null) {
+  if (!slideState) return [];
+  const controls = slideState.routeCells.map((cell) => cellCenterFromNumber(cell, slideState.n));
+  if (Number.isInteger(candidateCell) && candidateCell !== slideState.routeCells.at(-1)) {
+    controls.push(cellCenterFromNumber(candidateCell, slideState.n));
+  }
+  return controls.filter(Boolean);
 }
 
-function runMorphFrame(now) {
-  const state = dragState;
-  const morph = state?.morph;
-  if (!state || !morph) return;
-
-  if (!morph.board?.isConnected || !morph.svg?.isConnected) {
-    morph.raf = 0;
-    return;
-  }
-
-  const duration = reducedMotion ? 0 : MORPH_DURATION_MS;
-  const raw = duration === 0 ? 1 : Math.min(1, Math.max(0, (now - morph.startedAt) / duration));
-  const eased = 1 - Math.pow(1 - raw, 3);
-
-  for (let index = 0; index < state.renderPoints.length; index++) {
-    const from = morph.fromPoints[index];
-    const to = morph.toPoints[index];
-    state.renderPoints[index] = {
-      x: from.x + (to.x - from.x) * eased,
-      y: from.y + (to.y - from.y) * eased,
-    };
-  }
-
-  updateMorphOverlay(morph, state.renderPoints);
-
-  if (raw < 1) {
-    morph.raf = requestAnimationFrame(runMorphFrame);
-    return;
-  }
-
-  state.renderPoints = morph.toPoints.map((point) => ({ ...point }));
-  morph.board.classList.remove('is-chain-morphing');
-  morph.svg.remove();
-  state.morph = null;
-
-  if (state.ending) scheduleDragCleanup();
-}
-
-function beginMorph(board, n) {
-  if (!dragState || dragState.stageKey !== stageLabel?.textContent?.trim()) return;
-
-  let targetPoints = sampleSourcePath(board);
-  if (!targetPoints?.length) return;
-  targetPoints = orientToPrevious(targetPoints, dragState.renderPoints);
-
-  const previous = dragState.renderPoints?.length === targetPoints.length
-    ? dragState.renderPoints.map((point) => ({ ...point }))
-    : targetPoints.map((point) => ({ ...point }));
-
-  stopMorph();
-  if (dragState.endTimer !== null) {
-    clearTimeout(dragState.endTimer);
-    dragState.endTimer = null;
-  }
-  dragState.board?.classList.remove('visual-drag-active');
-  dragState.board = board;
-  board.classList.add('visual-drag-active');
-
-  if (maxDelta(previous, targetPoints) <= MORPH_EPSILON) {
-    dragState.renderPoints = targetPoints.map((point) => ({ ...point }));
-    if (dragState.ending) scheduleDragCleanup();
-    return;
-  }
-
-  dragState.renderPoints = previous.map((point) => ({ ...point }));
-  const chainCellCount = board.querySelectorAll('.cell.chain').length;
-  const overlay = createMorphOverlay(n, dragState.renderPoints, chainCellCount);
-
-  board.classList.add('is-chain-morphing');
-  board.append(overlay.svg);
-
-  dragState.morph = {
-    ...overlay,
-    board,
-    fromPoints: previous,
-    toPoints: targetPoints.map((point) => ({ ...point })),
-    startedAt: performance.now(),
-    raf: requestAnimationFrame(runMorphFrame),
+function fullTrail(candidateCell = null) {
+  if (!slideState) return null;
+  const forwardControls = routeControls(candidateCell);
+  const chainControls = slideState.initialChainCells
+    .slice(1)
+    .map((cell) => cellCenterFromNumber(cell, slideState.n));
+  const controls = [...forwardControls].reverse().concat(chainControls).filter(Boolean);
+  if (controls.length < 2) return null;
+  const radius = (100 / slideState.n) * ROUTE_RADIUS_RATIO;
+  const samples = roundedPolylineSamples(controls, radius);
+  const routeEnd = cellCenterFromNumber(slideState.routeCells[0], slideState.n);
+  const routeProjection = projectPointToSamples(routeEnd, samples);
+  return {
+    samples,
+    metrics: pathMetrics(samples),
+    routeLimit: routeProjection?.distance ?? 0,
+    controls,
   };
 }
 
-function decorateBoard(board) {
-  if (!board || board.classList.contains('visual-assets-v4') || board.classList.contains('linkline-board-ghost')) return;
-
-  const grid = board.querySelector(':scope > .board');
-  const cells = grid?.querySelectorAll('.cell');
-  const n = cells?.length ? Math.round(Math.sqrt(cells.length)) : 0;
-  if (!grid || !n || n * n !== cells.length) return;
-
-  const chain = createStaticChain(board, n);
-  if (!chain) return;
-  const marks = createStaticMarks(board, n);
-
-  board.classList.add('visual-assets-v4');
-  board.insertBefore(chain, grid);
-  board.insertBefore(marks, grid);
-
-  if (dragState) beginMorph(board, n);
+function expectedBoardMatches(board) {
+  if (!slideState || !board?.isConnected) return false;
+  const actual = new Set([...board.querySelectorAll('.cell.chain')].map(cellNumber).filter(Number.isInteger));
+  if (actual.size !== slideState.chainCells.length) return false;
+  return slideState.chainCells.every((cell) => actual.has(cell));
 }
 
-function startDrag(event) {
+function attachSlideOverlay(board, n) {
+  if (!slideState || !board?.isConnected) return;
+  if (slideState.board === board && slideState.overlay?.svg?.isConnected) return;
+
+  slideState.board?.classList.remove('visual-slide-active');
+  slideState.overlay?.svg?.remove();
+
+  const overlay = createSlideOverlay(n, slideState.initialChainCells.length);
+  slideState.board = board;
+  slideState.overlay = overlay;
+  board.classList.add('visual-slide-active');
+  board.append(overlay.svg);
+  updateOverlayGeometry(overlay, slideState.renderPoints);
+}
+
+function renderActiveSlide() {
+  if (!slideState || slideState.ending) return;
+  const info = boardInfo();
+  const pointer = clientToBoard(slideState.clientX, slideState.clientY, info);
+  if (!pointer) return;
+
+  const candidate = currentCandidateCell(pointer);
+  slideState.candidateCell = candidate;
+  const trail = fullTrail(candidate);
+  if (!trail?.samples?.length) return;
+
+  const step = 100 / slideState.n;
+  const previous = slideState.headOffset;
+  const projected = projectPointToSamples(
+    pointer,
+    trail.samples,
+    trail.routeLimit + 1e-6,
+    Number.isFinite(previous) ? previous : null,
+    step * 1.35,
+  );
+  if (!projected) return;
+
+  slideState.headOffset = projected.distance;
+  const segment = sampleRange(trail.samples, slideState.headOffset, slideState.chainLength);
+  if (!segment.points?.length) return;
+  slideState.renderPoints = segment.points;
+  updateOverlayGeometry(slideState.overlay, slideState.renderPoints);
+}
+
+function renderSlideFrame(now) {
+  if (!slideState) return;
+  slideState.raf = 0;
+
+  if (!slideState.board?.isConnected) {
+    const currentBoard = screen?.querySelector('.board-wrap.visual-assets-v5');
+    if (currentBoard) attachSlideOverlay(currentBoard, slideState.n);
+  }
+
+  if (!slideState.ending) {
+    renderActiveSlide();
+    return;
+  }
+
+  const settle = slideState.settle;
+  if (!settle) return;
+  const duration = reducedMotion ? 0 : SETTLE_MS;
+  const t = duration === 0 ? 1 : Math.min(1, Math.max(0, (now - settle.startedAt) / duration));
+  slideState.headOffset = settle.from + (settle.to - settle.from) * t;
+  const segment = sampleRange(settle.trail.samples, slideState.headOffset, slideState.chainLength);
+  slideState.renderPoints = segment.points;
+  updateOverlayGeometry(slideState.overlay, slideState.renderPoints);
+
+  if (t < 1) {
+    ensureFrame();
+    return;
+  }
+
+  slideState.settled = true;
+  if (expectedBoardMatches(slideState.board)) cleanupSlideState();
+  else scheduleEndCleanup();
+}
+
+function ensureFrame() {
+  if (!slideState || slideState.raf) return;
+  slideState.raf = requestAnimationFrame(renderSlideFrame);
+}
+
+function commitVisualCell(cell) {
+  if (!slideState || !Number.isInteger(cell)) return false;
+  const head = slideState.chainCells[0];
+  if (cell === head) return true;
+  const occupied = new Set(slideState.chainCells);
+  if (occupied.has(cell) || !neighbors(slideState.n, head).includes(cell)) return false;
+
+  slideState.routeCells.push(cell);
+  slideState.chainCells = [cell, ...slideState.chainCells.slice(0, -1)];
+  return true;
+}
+
+function appendTraceCellVisual(number, segDx, segDy) {
+  if (!slideState || number === null || number === slideState.traceCell) return;
+  const from = slideState.traceCell;
+  if (!Number.isInteger(from)) {
+    slideState.traceCell = number;
+    return;
+  }
+
+  let fromRow = Math.floor(from / slideState.n);
+  let fromCol = from % slideState.n;
+  const toRow = Math.floor(number / slideState.n);
+  const toCol = number % slideState.n;
+
+  while (fromRow !== toRow || fromCol !== toCol) {
+    if (fromRow !== toRow && fromCol !== toCol) {
+      const axis = slideState.headingAxis || (Math.abs(segDx) > Math.abs(segDy) ? 'H' : 'V');
+      if (axis === 'H') {
+        fromCol += Math.sign(toCol - fromCol);
+        slideState.headingAxis = 'H';
+      } else {
+        fromRow += Math.sign(toRow - fromRow);
+        slideState.headingAxis = 'V';
+      }
+    } else if (fromRow !== toRow) {
+      fromRow += Math.sign(toRow - fromRow);
+      slideState.headingAxis = 'V';
+    } else {
+      fromCol += Math.sign(toCol - fromCol);
+      slideState.headingAxis = 'H';
+    }
+
+    const accepted = commitVisualCell(fromRow * slideState.n + fromCol);
+    if (!accepted) break;
+  }
+  slideState.traceCell = number;
+}
+
+function samplePointerTo(clientX, clientY) {
+  if (!slideState || slideState.ending) return;
+  const info = boardInfo();
+  if (!info) return;
+
+  const x0 = slideState.lastX;
+  const y0 = slideState.lastY;
+  const dx = clientX - x0;
+  const dy = clientY - y0;
+  const length = Math.hypot(dx, dy);
+  const step = Math.max(MIN_SAMPLE_PX, Math.min(MAX_SAMPLE_PX, info.cellSize * SAMPLE_RATIO));
+  const count = Math.max(1, Math.ceil(length / step));
+
+  for (let index = 1; index <= count; index++) {
+    const t = index / count;
+    const cell = gridCellAt(x0 + dx * t, y0 + dy * t, info);
+    appendTraceCellVisual(cell, dx, dy);
+  }
+
+  slideState.lastX = clientX;
+  slideState.lastY = clientY;
+  slideState.clientX = clientX;
+  slideState.clientY = clientY;
+  ensureFrame();
+}
+
+function stopFrame() {
+  if (slideState?.raf) cancelAnimationFrame(slideState.raf);
+  if (slideState) slideState.raf = 0;
+}
+
+function cleanupSlideState() {
+  if (!slideState) return;
+  stopFrame();
+  if (slideState.endTimer !== null) clearTimeout(slideState.endTimer);
+  slideState.board?.classList.remove('visual-slide-active');
+  slideState.overlay?.svg?.remove();
+  slideState = null;
+}
+
+function scheduleEndCleanup() {
+  if (!slideState) return;
+  if (slideState.endTimer !== null) clearTimeout(slideState.endTimer);
+  slideState.endTimer = setTimeout(cleanupSlideState, reducedMotion ? 0 : END_GRACE_MS);
+}
+
+function startSlide(event) {
   const cell = event.target.closest?.('.cell.endpoint');
-  const board = cell?.closest?.('.board-wrap.visual-assets-v4');
+  const board = cell?.closest?.('.board-wrap.visual-assets-v5');
   if (!board) return;
 
-  cleanupDragState();
+  cleanupSlideState();
 
-  const grid = board.querySelector(':scope > .board');
-  const count = grid?.querySelectorAll('.cell')?.length ?? 0;
-  const n = count ? Math.round(Math.sqrt(count)) : 0;
-  if (!n || n * n !== count) return;
+  const info = boardInfo(board);
+  const draggedCell = cellNumber(cell);
+  const source = sourcePathSamples(board);
+  if (!info || !Number.isInteger(draggedCell) || !source) return;
 
-  const endpointPoint = cellCenter(cell, n);
-  let points = sampleSourcePath(board);
-  if (!points?.length || !endpointPoint) return;
-  points = orientToEndpoint(points, endpointPoint);
+  const ordered = orderChainCellsBySource(board, info.n, source.points, draggedCell);
+  if (!ordered?.length) return;
 
-  dragState = {
+  const initialControls = ordered.map((number) => cellCenterFromNumber(number, info.n));
+  const radius = (100 / info.n) * ROUTE_RADIUS_RATIO;
+  const initialSamples = roundedPolylineSamples(initialControls, radius);
+  const initialMetrics = pathMetrics(initialSamples);
+  if (!initialMetrics.total) return;
+
+  const renderPoints = sampleRange(initialSamples, 0, initialMetrics.total).points;
+  slideState = {
     pointerId: event.pointerId,
     stageKey: stageLabel?.textContent?.trim() || '',
     board,
-    renderPoints: points.map((point) => ({ ...point })),
-    morph: null,
+    n: info.n,
+    initialChainCells: [...ordered],
+    chainCells: [...ordered],
+    routeCells: [draggedCell],
+    traceCell: draggedCell,
+    chainLength: initialMetrics.total,
+    clientX: event.clientX,
+    clientY: event.clientY,
+    lastX: event.clientX,
+    lastY: event.clientY,
+    headOffset: null,
+    candidateCell: null,
+    headingAxis: null,
+    renderPoints,
+    overlay: null,
+    raf: 0,
     ending: false,
+    settled: false,
+    settle: null,
     endTimer: null,
   };
-  board.classList.add('visual-drag-active');
+
+  attachSlideOverlay(board, info.n);
+  ensureFrame();
 }
 
-function finishDrag(event) {
-  if (!dragState || (event?.pointerId !== undefined && event.pointerId !== dragState.pointerId)) return;
-  dragState.ending = true;
-  scheduleDragCleanup();
+function updateSlide(event) {
+  if (!slideState || event.pointerId !== slideState.pointerId || slideState.ending) return;
+  const points = typeof event.getCoalescedEvents === 'function' ? event.getCoalescedEvents() : [];
+  const stream = points.length ? points : [event];
+  for (const point of stream) samplePointerTo(point.clientX, point.clientY);
+  if (stream.at(-1) !== event) samplePointerTo(event.clientX, event.clientY);
+}
+
+function finishSlide(event) {
+  if (!slideState || (event?.pointerId !== undefined && event.pointerId !== slideState.pointerId)) return;
+  if (Number.isFinite(event.clientX) && Number.isFinite(event.clientY)) samplePointerTo(event.clientX, event.clientY);
+
+  renderActiveSlide();
+  slideState.ending = true;
+  const releaseCandidate = slideState.candidateCell;
+  const trail = fullTrail(releaseCandidate);
+  if (!trail?.samples?.length) {
+    cleanupSlideState();
+    return;
+  }
+
+  const committedHead = cellCenterFromNumber(slideState.chainCells[0], slideState.n);
+  const committedProjection = projectPointToSamples(committedHead, trail.samples, trail.routeLimit + 1e-6);
+  const from = Number.isFinite(slideState.headOffset) ? slideState.headOffset : (committedProjection?.distance ?? 0);
+  const to = committedProjection?.distance ?? from;
+  slideState.settle = { trail, from, to, startedAt: performance.now() };
+  ensureFrame();
 }
 
 const style = document.createElement('style');
-style.dataset.linklineVisualAssets = 'v4';
+style.dataset.linklineVisualAssets = 'v5';
 style.textContent = `
-.board-wrap.visual-assets-v4 > .links:not(.completion-pulse):not(.handoff-pulse):not(.arrival-pulse){opacity:0}
-.board-wrap.visual-assets-v4 .cell.target::before,.board-wrap.visual-assets-v4 .cell.chain::after{opacity:0!important}
-.board-wrap.visual-assets-v4 .cell.selected{box-shadow:none}
-.visual-chain-overlay,.visual-board-assets,.visual-morph-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.board-wrap.visual-assets-v5 > .links:not(.completion-pulse):not(.handoff-pulse):not(.arrival-pulse){opacity:0}
+.board-wrap.visual-assets-v5 .cell.target::before,.board-wrap.visual-assets-v5 .cell.chain::after{opacity:0!important}
+.board-wrap.visual-assets-v5 .cell.selected{box-shadow:none}
+.visual-chain-overlay,.visual-board-assets,.visual-slide-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .visual-chain-overlay{z-index:4}
 .visual-board-assets{z-index:5}
-.visual-morph-overlay{z-index:7}
-.visual-chain-shadow,.visual-chain-body,.morph-chain-shadow,.morph-chain-body{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.visual-chain-shadow,.morph-chain-shadow{stroke:rgba(23,23,22,.13);stroke-width:3.25;filter:drop-shadow(0 1.2px 1.4px rgba(23,23,22,.10))}
-.visual-chain-body,.morph-chain-body{stroke:#1d1d1b;stroke-width:2.30}
-.visual-chain-joint,.morph-chain-joint{fill:#1d1d1b}
+.visual-slide-overlay{z-index:7}
+.visual-chain-shadow,.visual-chain-body,.slide-chain-shadow,.slide-chain-body{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.visual-chain-shadow,.slide-chain-shadow{stroke:rgba(23,23,22,.13);stroke-width:3.25;filter:drop-shadow(0 1.2px 1.4px rgba(23,23,22,.10))}
+.visual-chain-body,.slide-chain-body{stroke:#1d1d1b;stroke-width:2.30}
+.visual-chain-joint,.slide-chain-joint{fill:#1d1d1b}
 .endpoint-dot{fill:#1d1d1b;stroke:rgba(255,255,255,.88);stroke-width:.34}
 .endpoint-dot.is-selected{stroke:#1268ff;stroke-width:.78}
 .endpoint-dot.is-docked{fill:#1268ff;stroke:#fff;stroke-width:.46}
@@ -415,33 +727,52 @@ style.textContent = `
 .target-core{fill:rgba(18,104,255,.30)}
 .target-mark.is-docked .target-ring{stroke-opacity:.42}
 .target-mark.is-docked .target-core{opacity:0}
-.board-wrap.visual-drag-active .target-ring{stroke-width:1.22;filter:drop-shadow(0 0 1.8px rgba(18,104,255,.18))}
-.board-wrap.is-chain-morphing .visual-chain-overlay,
-.board-wrap.is-chain-morphing .visual-board-assets .endpoint-dot{opacity:0}
-@media (prefers-reduced-motion:reduce){.board-wrap.visual-drag-active .target-ring{filter:none}}
+.board-wrap.visual-slide-active .visual-chain-overlay,
+.board-wrap.visual-slide-active .visual-board-assets .endpoint-dot{opacity:0}
+.board-wrap.visual-slide-active .target-ring{stroke-width:1.18;filter:drop-shadow(0 0 1.6px rgba(18,104,255,.16))}
+@media (prefers-reduced-motion:reduce){.board-wrap.visual-slide-active .target-ring{filter:none}}
 `;
 document.head.append(style);
+
+function decorateBoard(board) {
+  if (!board || board.classList.contains('visual-assets-v5') || board.classList.contains('linkline-board-ghost')) return;
+  const info = boardInfo(board);
+  if (!info) return;
+
+  const chain = createStaticChain(board, info.n);
+  if (!chain) return;
+  const marks = createStaticMarks(board, info.n);
+
+  board.classList.add('visual-assets-v5');
+  board.insertBefore(chain.svg, info.grid);
+  board.insertBefore(marks, info.grid);
+
+  if (slideState) attachSlideOverlay(board, info.n);
+}
 
 function scan() {
   if (!screen) return;
 
   if (!screen.classList.contains('view-game')) {
-    cleanupDragState();
+    cleanupSlideState();
     return;
   }
 
   const stageKey = stageLabel?.textContent?.trim() || '';
-  if (dragState && dragState.stageKey !== stageKey) cleanupDragState();
+  if (slideState && slideState.stageKey !== stageKey) cleanupSlideState();
 
   for (const board of screen.querySelectorAll('.board-wrap')) decorateBoard(board);
+
+  if (slideState?.ending && slideState.settled && expectedBoardMatches(slideState.board)) cleanupSlideState();
 }
 
 const observer = new MutationObserver(scan);
 if (screen) observer.observe(screen, { childList: true, subtree: true });
 queueMicrotask(scan);
 
-document.addEventListener('pointerdown', startDrag, { capture: true, passive: true });
-document.addEventListener('pointerup', finishDrag, { capture: true, passive: true });
-document.addEventListener('pointercancel', finishDrag, { capture: true, passive: true });
+document.addEventListener('pointerdown', startSlide, { capture: true, passive: true });
+document.addEventListener('pointermove', updateSlide, { capture: true, passive: true });
+document.addEventListener('pointerup', finishSlide, { capture: true, passive: true });
+document.addEventListener('pointercancel', finishSlide, { capture: true, passive: true });
 
-// Linkline visual asset system v4: minimal chain/endpoints/targets + short state-to-state morph only.
+// Linkline visual asset system v5: direct 1:1 fixed-length chain slide along the dragged route; no spring or time-based drag morph.
