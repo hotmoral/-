@@ -138,12 +138,12 @@ jobs:
       - name: Commit baseline result
         shell: bash
         run: |
-          if git diff --quiet -- timing-defense-skilled-v2-harness/public/data/performance-baseline-v1.json; then
+          git add timing-defense-skilled-v2-harness/public/data/performance-baseline-v1.json
+          if git diff --cached --quiet; then
             echo 'No baseline change to commit.'
             exit 0
           fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add timing-defense-skilled-v2-harness/public/data/performance-baseline-v1.json
           git commit -m 'Linkline: materialize Performance Baseline v1'
           git push origin HEAD:linkline/performance-baseline-v1-calc
