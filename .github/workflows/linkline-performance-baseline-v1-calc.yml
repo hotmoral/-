@@ -1,0 +1,149 @@
+name: Linkline Performance Baseline v1 Calc
+
+on:
+  push:
+    branches:
+      - linkline/performance-baseline-v1-calc
+    paths-ignore:
+      - timing-defense-skilled-v2-harness/public/data/performance-baseline-v1.json
+
+permissions:
+  contents: write
+
+jobs:
+  calculate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: linkline/performance-baseline-v1-calc
+      - name: Calculate exact shortest distances
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from collections import Counter, deque
+          from pathlib import Path
+
+          ROOT = Path('timing-defense-skilled-v2-harness/public/data')
+          MANIFEST = ROOT / 'campaign-0001-1300.json'
+          OUTPUT = ROOT / 'performance-baseline-v1.json'
+
+          manifest = json.loads(MANIFEST.read_text())
+          assert manifest['schema'] == 'LINKLINE_PRODUCT_CAMPAIGN_CHUNKED'
+          assert manifest['version'] == '1.1.0'
+          assert manifest['campaignId'] == 'LINKLINE-LAUNCH-1300-V1'
+          assert manifest['launchTotal'] == 1300
+
+          def canonical(path):
+              path = tuple(path)
+              rev = path[::-1]
+              return path if path <= rev else rev
+
+          def neighbors(n, cell):
+              r, c = divmod(cell, n)
+              out = []
+              if r > 0: out.append((r - 1) * n + c)
+              if r + 1 < n: out.append((r + 1) * n + c)
+              if c > 0: out.append(r * n + c - 1)
+              if c + 1 < n: out.append(r * n + c + 1)
+              return tuple(sorted(out))
+
+          def solved(path, targets):
+              return frozenset((path[0], path[-1])) == frozenset(targets)
+
+          def shortest_distance(n, length, initial, targets):
+              initial = canonical(initial)
+              assert len(initial) == length
+              if solved(initial, targets):
+                  return 0
+              seen = {initial}
+              q = deque(((initial, 0),))
+              while q:
+                  path, depth = q.popleft()
+                  occupied = set(path)
+                  endpoints = tuple(sorted((path[0], path[-1])))
+                  for source in endpoints:
+                      for dest in neighbors(n, source):
+                          if dest in occupied:
+                              continue
+                          temporary = path if source == path[0] else path[::-1]
+                          nxt = canonical((dest,) + temporary[:-1])
+                          if nxt in seen:
+                              continue
+                          seen.add(nxt)
+                          if solved(nxt, targets):
+                              return depth + 1
+                          q.append((nxt, depth + 1))
+              raise RuntimeError(f'UNSOLVABLE n={n} length={length} initial={initial} targets={targets}')
+
+          rows = []
+          position = 0
+          for chunk_meta in manifest['chunks']:
+              path = ROOT / chunk_meta['path']
+              raw = path.read_bytes()
+              assert hashlib.sha256(raw).hexdigest() == chunk_meta['sha256']
+              chunk = json.loads(raw)
+              assert chunk['schema'] == 'LINKLINE_PRODUCT_CAMPAIGN_CHUNK'
+              assert chunk['version'] == '1.1.0'
+              assert chunk['rowEncoding'] == ['n','length','initial','targets']
+              assert chunk['fromPosition'] == position + 1
+              for n, length, initial, targets in chunk['rows']:
+                  position += 1
+                  distance = shortest_distance(n, length, initial, targets)
+                  rows.append([position, distance])
+              assert chunk['throughPosition'] == position
+
+          assert position == 1300
+          distances = [distance for _, distance in rows]
+          assert distances[0:5] == [1,1,1,1,1]
+          assert distances[5:8] == [2,2,2]
+          assert distances[8:11] == [3,3,3]
+          assert all(distance >= 4 for distance in distances[11:])
+
+          source = manifest['source']
+          baseline = {
+              'schema': 'LINKLINE_PERFORMANCE_BASELINE',
+              'version': '1.0.0',
+              'campaignId': manifest['campaignId'],
+              'launchTotal': 1300,
+              'metric': 'M3_V1_SHORTEST_DISTANCE',
+              'moveUnit': 'accepted authoritative one-cell M2 action',
+              'source': {
+                  'catalogFingerprint': source['catalogFingerprint'],
+                  'canonicalV4CatalogFingerprint': source['canonicalV4CatalogFingerprint'],
+                  'orderFingerprint': source['orderFingerprint'],
+                  'chunks': [
+                      {'fromPosition': c['fromPosition'], 'throughPosition': c['throughPosition'], 'sha256': c['sha256']}
+                      for c in manifest['chunks']
+                  ],
+              },
+              'solver': {
+                  'stateKernel': 'M2 V1 canonical unoriented chain',
+                  'algorithm': 'M3 V1 FIFO BFS exact shortest distance',
+              },
+              'rowEncoding': ['position','shortestDistance'],
+              'rows': rows,
+          }
+          canonical_json = json.dumps(baseline, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n'
+          OUTPUT.write_text(canonical_json)
+          digest = hashlib.sha256(canonical_json.encode()).hexdigest()
+          counts = dict(sorted(Counter(distances).items()))
+          print(f'BASELINE_SHA256={digest}')
+          print(f'COUNT={len(rows)} MIN={min(distances)} MAX={max(distances)}')
+          print(f'DISTRIBUTION={json.dumps(counts, separators=(",",":"))}')
+          print('BOUNDARY_CHECKS=PASS')
+          PY
+      - name: Commit baseline result
+        shell: bash
+        run: |
+          if git diff --quiet -- timing-defense-skilled-v2-harness/public/data/performance-baseline-v1.json; then
+            echo 'No baseline change to commit.'
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add timing-defense-skilled-v2-harness/public/data/performance-baseline-v1.json
+          git commit -m 'Linkline: materialize Performance Baseline v1'
+          git push origin HEAD:linkline/performance-baseline-v1-calc
