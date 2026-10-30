@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Case8 Top3 Bridge Replay ReadOnly V1
+name: Einstein Phase2 Stage125 Case8 Relation Gap ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 8205a577e6cc2dded476acb367ebd6140947a925
+      SOURCE_SHA: c76ba228cf628cbbf9da142ee7050495345c4368
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 8205a577e6cc2dded476acb367ebd6140947a925
+          ref: c76ba228cf628cbbf9da142ee7050495345c4368
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and replay top3 bridge clues
+      - name: Compile and diagnose Case8 relation gap
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-case8-top3-bridge-classes
-          SOURCES=/tmp/einstein-stage125-case8-top3-bridge-sources.txt
+          CLASSES=/tmp/einstein-stage125-case8-relation-gap-classes
+          SOURCES=/tmp/einstein-stage125-case8-relation-gap-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -76,10 +76,10 @@ jobs:
           cat >> "$SOURCES" <<'EOF'
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8Top3BridgeReplayReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8RelationGapReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_CASE8_TOP3_BRIDGE_REPLAY_COMPILE=PASS
+          echo STAGE125_CASE8_RELATION_GAP_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_CASE8_TOP3_BRIDGE_REPLAY_READONLY=true
-          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8Top3BridgeReplayReadOnlyV1
+          export EINSTEIN_PHASE2_STAGE125_CASE8_RELATION_GAP_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8RelationGapReadOnlyV1
