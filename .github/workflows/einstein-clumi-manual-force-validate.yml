@@ -54,6 +54,16 @@ jobs:
           grep -F 'String[] glyphs={"back","reset","minus","fit","plus"};' app/src/main/java/com/example/einsteingame/GameView.java
           grep -F '칸 확정 효과도 사라지며 이미 사용한 아이템은 돌아오지 않습니다.' app/src/main/java/com/example/einsteingame/MainActivity.java
 
+      - name: Inspect board rendering implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -R -n -E 'GpuBoardCells|RenderNode|Picture|recording' source/app/src/main/java/com/example/einsteingame > board-render-grep.txt || true
+          FILE=$(grep -R -l 'class GpuBoardCells' source/app/src/main/java/com/example/einsteingame | head -n1 || true)
+          echo "GPU_FILE=$FILE" | tee board-render-file.txt
+          if [ -n "$FILE" ]; then sed -n '1,320p' "$FILE" > gpu-board-cells.txt; fi
+          grep -n -E 'onAttachedToWindow|onDetachedFromWindow|onWindowFocusChanged|boardCells|drawBoard\(' source/app/src/main/java/com/example/einsteingame/GameView.java > gameview-render-lifecycle.txt || true
+
       - name: Add behavior probe
         shell: bash
         run: |
@@ -156,5 +166,9 @@ jobs:
           path: |
             manual-force-reset-probe.txt
             manual-force-reset-changed-files.txt
+            board-render-grep.txt
+            board-render-file.txt
+            gpu-board-cells.txt
+            gameview-render-lifecycle.txt
           retention-days: 3
           if-no-files-found: error
