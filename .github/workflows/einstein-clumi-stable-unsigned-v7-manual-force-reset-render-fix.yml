@@ -67,8 +67,8 @@ jobs:
           grep -F 'public boolean forceCandidate(int slot)' app/src/main/java/com/example/einsteingame/GameState.java
           grep -F 'public boolean resetBoardPreservingResources()' app/src/main/java/com/example/einsteingame/GameState.java
           grep -F 'String[] glyphs={"back","reset","minus","fit","plus"};' app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F 'void invalidateCache(){java.util.Arrays.fill(keys,-1);}' app/src/main/java/com/example/einsteingame/GameView.java
-          grep -F 'if(hasWindowFocus()&&boardCells!=null){boardCells.invalidateCache();invalidate();}' app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'private void invalidateGpuBoardCache() { boardCells=null; }' app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'if(hasWindowFocus){invalidateGpuBoardCache();postInvalidateOnAnimation();}' app/src/main/java/com/example/einsteingame/GameView.java
           test "$(git diff --name-only | sort)" = $'app/src/main/java/com/example/einsteingame/GameState.java\napp/src/main/java/com/example/einsteingame/GameView.java\napp/src/main/java/com/example/einsteingame/MainActivity.java\napp/src/main/java/com/example/einsteingame/StageSession.java'
 
       - name: Materialize exact 1-120 runtime pack and stage catalog
@@ -218,5 +218,3 @@ jobs:
             signing-tools
           retention-days: 3
           if-no-files-found: error
-
-# trigger
