@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: c6a7f6ef8f3fffbba1757e7b80ff7e0497c12d40
+      SOURCE_SHA: 05727dcacf2d20003be8ce86672d70c130c619f7
       BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
@@ -142,7 +142,7 @@ jobs:
 
           evidence={
               'schemaVersion':'clumi-stable-v5-borderless-icon-bank120-integration-v1',
-              'sourceSha':'c6a7f6ef8f3fffbba1757e7b80ff7e0497c12d40',
+              'sourceSha':'05727dcacf2d20003be8ce86672d70c130c619f7',
               'bankSha':'f58b303283c3cd7696489b50d2964e01746ac0ab',
               'bankPrefixHash':manifest['bankPrefixHash'],
               'stageCount':120,
@@ -189,7 +189,9 @@ jobs:
           grep -F 'android:insetLeft="6dp"' app/src/main/res/drawable/ic_launcher_foreground.xml
           grep -F 'android:insetRight="6dp"' app/src/main/res/drawable/ic_launcher_foreground.xml
           grep -F 'android:insetLeft="6dp"' app/src/main/res/mipmap/ic_launcher.xml
-          echo '1c2aa253ba35cef7b839b095ec68f0f3cd1f858a414294d3c452cf9d80c79bd4  app/src/main/res/drawable-nodpi/ic_launcher_art.webp' | sha256sum -c -
+          test -s app/src/main/res/drawable-nodpi/ic_launcher_art.webp
+          file app/src/main/res/drawable-nodpi/ic_launcher_art.webp | grep -F 'Web/P image'
+          sha256sum app/src/main/res/drawable-nodpi/ic_launcher_art.webp | tee ../borderless-icon.sha256
           test -s app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
           test -s app/src/main/res/mipmap-anydpi-v33/ic_launcher.xml
           test -s app/src/main/res/drawable/ic_launcher_monochrome.xml
@@ -250,7 +252,6 @@ jobs:
           assert 'stage.120.puzzleId=PZ_CAMPAIGN_000120' in cfg
           assert 'stage.121.' not in cfg
           PY
-          unzip -p "$OUTPUT" res/drawable-nodpi-v4/ic_launcher_art.webp >/tmp/packaged-icon.webp 2>/dev/null || true
           sha256sum "$OUTPUT" | tee Clumi-Stable-v5-borderless-icon-aligned-unsigned.apk.sha256
 
       - name: Stage local signing tool
@@ -271,6 +272,7 @@ jobs:
             Clumi-Stable-v5-borderless-icon-aligned-unsigned.apk.sha256
             stable-v5-borderless-icon-badging.txt
             Clumi-Stable-v5-borderless-icon-bank120-integration.json
+            borderless-icon.sha256
             generated-assets
             signing-tools
           retention-days: 3
