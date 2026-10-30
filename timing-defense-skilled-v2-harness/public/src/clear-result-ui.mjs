@@ -1,8 +1,8 @@
 const CLEAR_RESULT_EVENT = 'linkline:clear-result-v1';
 const STAMP_ASSETS = Object.freeze({
-  'S+': './assets/performance-stamps/s-plus-approved.png',
-  'A+': './assets/performance-stamps/a-plus-approved.png',
-  'B+': './assets/performance-stamps/b-plus-approved.png',
+  'S+': './assets/performance-stamps/s-plus.png',
+  'A+': './assets/performance-stamps/a-plus.png',
+  'B+': './assets/performance-stamps/b-plus.png',
 });
 
 let pendingSnapshot = null;
@@ -101,7 +101,6 @@ function createRetryControl(snapshot) {
   const retry = document.createElement('button');
   retry.type = 'button';
   retry.className = 'secondary round-action performance-retry';
-  retry.textContent = '↻';
   retry.setAttribute('aria-label', `Stage ${snapshot.position} 다시 도전`);
   retry.addEventListener('click', () => retryCurrentStage(snapshot.position));
 
@@ -167,14 +166,14 @@ function installStyles() {
 .performance-stat.current .performance-stat-value{color:var(--blue)}
 .performance-stat-unit{color:#8f8b84;font-size:7px;font-weight:620;letter-spacing:.18em}
 .performance-retry-wrap{position:absolute;z-index:12;left:50%;transform:translateX(-50%);gap:5px;pointer-events:auto}
-.performance-retry{width:54px;height:54px;min-width:54px;min-height:54px;font-size:25px;line-height:1}
+.performance-retry{width:54px;height:54px;min-width:54px;min-height:54px;line-height:1}
 .performance-retry-wrap .round-action-label{font-size:8px;letter-spacing:.19em}
 .screen.polish-success .performance-result{animation:performanceOverlayReveal .26s .06s ease-out both}
 .screen.polish-success .performance-retry-wrap{animation:performanceRetryReveal .22s .16s ease-out both}
 @keyframes performanceOverlayReveal{from{opacity:0;transform:scale(.992)}to{opacity:1;transform:scale(1)}}
 @keyframes performanceRetryReveal{from{opacity:0;transform:translate(-50%,4px)}to{opacity:1;transform:translate(-50%,0)}}
-@media(max-width:370px){.performance-result{padding:7% 5.5% 5.5%}.performance-frame-title{font-size:18px;transform:translateY(9px)}.performance-rank{width:min(31%,110px)}.performance-stats{min-height:76px;padding-left:3px;padding-right:3px}.performance-stat{padding:0 4px}.performance-stat-label{font-size:8px;letter-spacing:.05em}.performance-stat-value{font-size:26px}.performance-retry{width:50px;height:50px;min-width:50px;min-height:50px;font-size:23px}}
-@media(max-height:680px){.performance-result{padding:6% 5.5% 5%}.performance-frame-title{font-size:16px;transform:translateY(7px)}.performance-rank{width:min(29%,96px)}.performance-stats{min-height:66px;padding-top:5px;padding-bottom:5px}.performance-stat-label{font-size:8px}.performance-stat-value{font-size:23px}.performance-stat-unit{font-size:6.5px}.performance-retry{width:46px;height:46px;min-width:46px;min-height:46px;font-size:21px}}
+@media(max-width:370px){.performance-result{padding:7% 5.5% 5.5%}.performance-frame-title{font-size:18px;transform:translateY(9px)}.performance-rank{width:min(31%,110px)}.performance-stats{min-height:76px;padding-left:3px;padding-right:3px}.performance-stat{padding:0 4px}.performance-stat-label{font-size:8px;letter-spacing:.05em}.performance-stat-value{font-size:26px}.performance-retry{width:50px;height:50px;min-width:50px;min-height:50px}}
+@media(max-height:680px){.performance-result{padding:6% 5.5% 5%}.performance-frame-title{font-size:16px;transform:translateY(7px)}.performance-rank{width:min(29%,96px)}.performance-stats{min-height:66px;padding-top:5px;padding-bottom:5px}.performance-stat-label{font-size:8px}.performance-stat-value{font-size:23px}.performance-stat-unit{font-size:6.5px}.performance-retry{width:46px;height:46px;min-width:46px;min-height:46px}}
 @media(prefers-reduced-motion:reduce){.screen.polish-success .performance-result,.screen.polish-success .performance-retry-wrap{animation:none}.board-wrap.performance-clear-active>.board,.board-wrap.performance-clear-active>.links{transition:none}}
 `;
   document.head.append(style);
