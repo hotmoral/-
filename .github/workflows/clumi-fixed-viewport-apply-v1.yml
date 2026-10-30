@@ -1,0 +1,89 @@
+name: Clumi Fixed Viewport Apply V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/clumi-fixed-viewport-apply-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  apply-fixed-viewport:
+    if: >-
+      github.event.head_commit.message == 'ui: apply clumi fixed viewport v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED_HEAD: b3533afda5f95d42a91deaf5647e8072fbaf8951
+      BASE_HEAD: d967f98ab7bd10c4b3aefa6bbc5ea53220420d8d
+      TARGET_BRANCH: clumi-fixed-viewport-v1
+      WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+
+    steps:
+      - name: Require private write credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WRITE_TOKEN"
+
+      - name: Checkout exact private branch
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: clumi-fixed-viewport-v1
+          token: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
+          fetch-depth: 2
+          persist-credentials: true
+
+      - name: Require expected live HEAD and restore clean transform base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test "$(git rev-parse HEAD^)" = "$BASE_HEAD"
+          test "$(git branch --show-current)" = "$TARGET_BRANCH"
+          git reset --hard "$BASE_HEAD"
+          test "$(git status --porcelain)" = ''
+
+      - name: Apply existing bounded viewport transform
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dev/fixed-viewport-v1.py
+          output="$(python3 dev/fixed-viewport-v1.py)"
+          test "$output" = 'CLUMI_FIXED_VIEWPORT_V1_TRANSFORM_PASS'
+          git diff --check
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+              ' M app/src/main/java/com/example/einsteingame/ClumiUi.java',
+              ' M app/src/main/java/com/example/einsteingame/MainActivity.java',
+              ' M app/src/main/java/com/example/einsteingame/ClumiSceneReady.java',
+              '?? app/src/main/java/com/example/einsteingame/ClumiFixedViewport.java',
+          }
+          actual = set(subprocess.check_output(['git','status','--porcelain'], text=True).splitlines())
+          if actual != expected:
+              raise SystemExit('Unexpected transform scope: ' + repr(sorted(actual)))
+          PY
+          grep -F 'DESIGN_WIDTH_DP=360, DESIGN_HEIGHT_DP=800' app/src/main/java/com/example/einsteingame/ClumiUi.java
+          grep -F 'setContentView(new ClumiFixedViewport(this,frame))' app/src/main/java/com/example/einsteingame/MainActivity.java
+          grep -F 'root instanceof ClumiFixedViewport' app/src/main/java/com/example/einsteingame/ClumiSceneReady.java
+
+      - name: Commit exact four-file transform
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'hotmoral'
+          git config user.email 'sktjsek@gmail.com'
+          git add \
+            app/src/main/java/com/example/einsteingame/ClumiUi.java \
+            app/src/main/java/com/example/einsteingame/MainActivity.java \
+            app/src/main/java/com/example/einsteingame/ClumiSceneReady.java \
+            app/src/main/java/com/example/einsteingame/ClumiFixedViewport.java
+          test "$(git diff --cached --name-only | wc -l)" -eq 4
+          git commit -m 'feat: apply fixed 360x800 viewport'
+          NEW_HEAD="$(git rev-parse HEAD)"
+          git push --force-with-lease="refs/heads/$TARGET_BRANCH:$EXPECTED_HEAD" origin "HEAD:$TARGET_BRANCH"
+          echo "NEW_HEAD=$NEW_HEAD"
