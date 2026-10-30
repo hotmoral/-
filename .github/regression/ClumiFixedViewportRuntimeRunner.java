@@ -5,6 +5,7 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,6 +22,10 @@ import java.io.PrintWriter;
 public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
     private int assertions;
     private String profile;
+    private float lastTapMatrixX = Float.NaN;
+    private float lastTapMatrixY = Float.NaN;
+    private float lastTapRectX = Float.NaN;
+    private float lastTapRectY = Float.NaN;
 
     @Override public void onCreate(Bundle args) {
         super.onCreate(args);
@@ -149,18 +154,34 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
 
     private void physicalTap(View target) {
         Rect rect = new Rect();
-        ui(() -> check(target.getGlobalVisibleRect(rect) && rect.width() > 0 && rect.height() > 0,
-                "Home CTA has transformed physical bounds"));
-        float x = rect.exactCenterX();
-        float y = rect.exactCenterY();
-        System.out.println("CLUMI_PHYSICAL_TAP x=" + x + " y=" + y + " profile=" + profile);
+        float[] point = new float[2];
+        ui(() -> {
+            check(target.isShown() && target.getWidth() > 0 && target.getHeight() > 0,
+                    "Home CTA is visible with local bounds");
+            check(target.getGlobalVisibleRect(rect) && rect.width() > 0 && rect.height() > 0,
+                    "Home CTA has global visible bounds");
+            lastTapRectX = rect.exactCenterX();
+            lastTapRectY = rect.exactCenterY();
+            point[0] = target.getWidth() * 0.5f;
+            point[1] = target.getHeight() * 0.5f;
+            Matrix global = new Matrix();
+            target.transformMatrixToGlobal(global);
+            global.mapPoints(point);
+            lastTapMatrixX = point[0];
+            lastTapMatrixY = point[1];
+        });
+        System.out.println("CLUMI_PHYSICAL_TAP profile=" + profile
+                + " matrix=" + lastTapMatrixX + "," + lastTapMatrixY
+                + " rect=" + lastTapRectX + "," + lastTapRectY);
         long downTime = SystemClock.uptimeMillis();
-        MotionEvent down = MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
+        MotionEvent down = MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN,
+                lastTapMatrixX, lastTapMatrixY, 0);
         down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
         check(getUiAutomation().injectInputEvent(down, true), "Physical ACTION_DOWN injected");
         down.recycle();
         long upTime = SystemClock.uptimeMillis();
-        MotionEvent up = MotionEvent.obtain(downTime, upTime, MotionEvent.ACTION_UP, x, y, 0);
+        MotionEvent up = MotionEvent.obtain(downTime, upTime, MotionEvent.ACTION_UP,
+                lastTapMatrixX, lastTapMatrixY, 0);
         up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
         check(getUiAutomation().injectInputEvent(up, true), "Physical ACTION_UP injected");
         up.recycle();
@@ -178,6 +199,8 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             out.println("home_translation_px=" + home.translationX + "," + home.translationY);
             out.println("start_scale=" + start.scale);
             out.println("start_translation_px=" + start.translationX + "," + start.translationY);
+            out.println("tap_matrix_px=" + lastTapMatrixX + "," + lastTapMatrixY);
+            out.println("tap_rect_px=" + lastTapRectX + "," + lastTapRectY);
             out.println("touch=PASS");
             out.println("black_bars=PASS_BY_VIEW_CONTRACT_AND_SCREENSHOT_EVIDENCE");
         }
@@ -213,12 +236,16 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
                     "Screen transition preserves viewport centering");
             writeSummary(home, start);
             result.putString("stream", "CLUMI_FIXED_VIEWPORT_STATUS=PASS profile=" + profile
-                    + " assertions=" + assertions + "\n");
+                    + " assertions=" + assertions
+                    + " tap_matrix=" + lastTapMatrixX + "," + lastTapMatrixY
+                    + " tap_rect=" + lastTapRectX + "," + lastTapRectY + "\n");
             finish(Activity.RESULT_OK, result);
         } catch (Throwable failure) {
             failure.printStackTrace();
             result.putString("stream", "CLUMI_FIXED_VIEWPORT_STATUS=FAIL profile=" + profile
-                    + " error=" + failure + "\n");
+                    + " error=" + failure
+                    + " tap_matrix=" + lastTapMatrixX + "," + lastTapMatrixY
+                    + " tap_rect=" + lastTapRectX + "," + lastTapRectY + "\n");
             finish(Activity.RESULT_CANCELED, result);
         }
     }
