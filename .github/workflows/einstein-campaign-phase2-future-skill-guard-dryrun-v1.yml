@@ -1,0 +1,83 @@
+name: Einstein Campaign Phase2 Future Skill Guard DryRun V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-phase2-future-skill-guard-dryrun-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  phase2-future-skill-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SOURCE_SHA: 200db13019f7f201ca57d61221a29654336ff4b5
+      BANK_BRANCH: campaign-production-2000-bank-v1
+    steps:
+      - name: Checkout exact guarded Phase 2 source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 200db13019f7f201ca57d61221a29654336ff4b5
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout live Bank read-only
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run guarded 121-122 continuation dry-run
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE/EinsteinGame"
+          echo "liveBankHead=$(git -C "$GITHUB_WORKSPACE/ProductionStore" rev-parse HEAD)"
+
+          CLASSES=/tmp/einstein-phase2-guard-classes
+          SOURCES=/tmp/einstein-phase2-guard-sources.txt
+          SCRATCH=/tmp/einstein-phase2-guard-bank
+          rm -rf "$CLASSES" "$SOURCES" "$SCRATCH"
+          mkdir -p "$CLASSES"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2ProducerV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2FutureSkillGuardDryRunV1.java' >> "$SOURCES"
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
+          echo PHASE2_FUTURE_SKILL_GUARD_COMPILE=PASS
+
+          python3 - <<'PY'
+          import importlib.util, json
+          p='tools/campaign-production-2000/campaign_production_2000.py'
+          spec=importlib.util.spec_from_file_location('cp2000',p)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          for n in (121,122):
+              with open(f'/tmp/einstein-stage-{n:04d}.json','w',encoding='utf-8') as f:
+                  json.dump(m.stage_plan(n),f,sort_keys=True,separators=(',',':')); f.write('\n')
+          PY
+
+          cp -a "$GITHUB_WORKSPACE/ProductionStore/production/campaign-2000-bank-v1/bank" "$SCRATCH"
+          touch "$SCRATCH/.phase2-dryrun-scratch"
+          export EINSTEIN_PHASE2_DRYRUN=true
+          export EINSTEIN_PRODUCTION_BANK_ROOT="$SCRATCH"
+          export EINSTEIN_STAGE_121_REQUEST=/tmp/einstein-stage-0121.json
+          export EINSTEIN_STAGE_122_REQUEST=/tmp/einstein-stage-0122.json
+
+          java -Xmx8g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2FutureSkillGuardDryRunV1
