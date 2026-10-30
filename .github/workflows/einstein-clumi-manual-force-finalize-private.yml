@@ -1,0 +1,70 @@
+name: Finalize Clumi Manual Force Source
+
+on:
+  push:
+    branches:
+      - clumi/manual-force-longpress-dev
+    paths:
+      - '.github/workflows/einstein-clumi-manual-force-finalize-private.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  finalize-private:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FEATURE_SHA: 7f8bc5a62ebd9b071e678e3a86d93c1710c40721
+      EXPECTED_GAMESTATE_SHA256: b53e620b50457c7a8c1c7d75a5a99c19a850099b7561c6b57d092cb9bdc3b9a7
+      EXPECTED_GAMEVIEW_SHA256: a457a4e794df921750c685fbc7fb4addfc81b48353b1d7919016b9fdc5ada8a0
+    steps:
+      - name: Checkout exact private feature checkpoint with push credential
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.FEATURE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 2
+          persist-credentials: true
+
+      - name: Verify branch lease and apply validated patch
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FEATURE_SHA"
+          git fetch origin refs/heads/clumi-manual-force-longpress
+          test "$(git rev-parse FETCH_HEAD)" = "$FEATURE_SHA"
+          git apply --check dev/manual-force-longpress.patch
+          git apply dev/manual-force-longpress.patch
+          echo "$EXPECTED_GAMESTATE_SHA256  app/src/main/java/com/example/einsteingame/GameState.java" | sha256sum -c -
+          echo "$EXPECTED_GAMEVIEW_SHA256  app/src/main/java/com/example/einsteingame/GameView.java" | sha256sum -c -
+          rm dev/manual-force-longpress.patch
+          git diff --check
+
+      - name: Commit exact validated source scope
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add app/src/main/java/com/example/einsteingame/GameState.java \
+                  app/src/main/java/com/example/einsteingame/GameView.java \
+                  dev/manual-force-longpress.patch
+          git diff --cached --name-status | tee /tmp/final-scope.txt
+          test "$(cat /tmp/final-scope.txt)" = $'M\tapp/src/main/java/com/example/einsteingame/GameState.java\nM\tapp/src/main/java/com/example/einsteingame/GameView.java\nD\tdev/manual-force-longpress.patch'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: add manual force candidate long-press'
+          echo "FINAL_SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Re-check remote lease and push fast-forward only
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin refs/heads/clumi-manual-force-longpress
+          test "$(git rev-parse FETCH_HEAD)" = "$FEATURE_SHA"
+          git push origin HEAD:refs/heads/clumi-manual-force-longpress
+          echo "final_source_sha=$FINAL_SOURCE_SHA"
