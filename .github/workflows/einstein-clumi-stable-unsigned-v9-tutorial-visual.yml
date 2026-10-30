@@ -1,0 +1,240 @@
+name: Clumi Stable Unsigned V9 Tutorial Visual
+
+on:
+  push:
+    branches:
+      - clumi/stable-v9-tutorial-visual-build
+    paths:
+      - '.github/workflows/einstein-clumi-stable-unsigned-v9-tutorial-visual.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-v9:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_SHA: fbbecb2a6bc5d8951d3e39b9da5aadeb6dcf63b4
+      BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      BUILD_TOOLS: '34.0.0'
+      ICON_SHA256: 22cb92d4f9583d6b2f804ddfafbdddc5cc0bbe4303374985838c2826c47c8878
+      TUTORIAL_CTA_SHA256: 3979153f9753c02fbcb89dfd75dbe092d61c5a2e3178c087e2a4eceeb4766528
+
+    steps:
+      - name: Require private source credential
+        run: test -n "$READ_TOKEN"
+
+      - name: Checkout exact v9 feature checkpoint
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.SOURCE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout exact Bank 1-120 snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.BANK_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: bank
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Apply validated gameplay tutorial and visual transforms
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          git apply --check dev/manual-force-longpress.patch
+          git apply dev/manual-force-longpress.patch
+          python3 dev/board-reset-preserve-resources.py
+          python3 dev/board-render-resume-fix.py
+          python3 dev/tutorial-choice-onboarding-v2.py
+          python3 dev/tutorial-button-visual-v1.py
+          git diff --check
+          echo "$TUTORIAL_CTA_SHA256  app/src/main/assets/ui/b3-r5/cta_tutorial.png" | sha256sum -c -
+
+      - name: Verify v9 tutorial visual and cold-home contract
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          ma=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
+          va=Path('app/src/main/java/com/example/einsteingame/ClumiVisualAssets.java').read_text()
+          ar=Path('app/src/main/java/com/example/einsteingame/ClumiStageArrival.java').read_text()
+          cc=Path('app/src/main/java/com/example/einsteingame/ClumiConditionCard.java').read_text()
+          art=Path('app/src/main/assets/ui/b3-r5/cta_tutorial.png').read_bytes()
+          assert art[:8] == b'\x89PNG\r\n\x1a\n'
+          w,h,bit_depth,color_type = struct.unpack('>IIBB', art[16:26])
+          assert (w,h,bit_depth,color_type) == (480,160,8,6)
+          assert 'FILES.put("cta-tutorial","cta_tutorial")' in va
+          assert 'if(file.equals("cta_tutorial"))return 1;' in va
+          assert 'ClumiVisualAssets.buttonArt(tutorial,"cta-tutorial")' in ma
+          assert 'ClumiUi.actionIcon(tutorial,"help",true)' not in ma
+          assert 'View tutorial=root.findViewWithTag("home-tutorial")' in ar
+          assert 'laidOut(root,homeLogo,settings,tutorial,play,stages,rewards)' in ar
+          assert ar.index('motion.add(tutorial,480') < ar.index('motion.add(play,690') < ar.index('motion.add(stages,910')
+          assert 'if(tutorial!=null)tutorial.setEnabled(false);' in ar
+          assert '"CLEAR","GREAT","PERFECT"' in cc
+          print('V9_TUTORIAL_VISUAL_CONTRACT_PASS')
+          PY
+
+      - name: Materialize exact 1-120 runtime pack and stage catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          source=Path('source'); bank=Path('bank/production/campaign-2000-bank-v1/bank')
+          manifest=json.loads((bank/'manifest.json').read_text())
+          assert manifest['schemaVersion']=='campaign-problem-bank-v1'
+          assert manifest['bankedCount']==120 and manifest['nextOrdinal']==121
+          assert manifest['failedOrQuarantinedCount']==0 and manifest['acquiredPending']==[]
+          stages=bank/'stages'; assert not (stages/'stage-0121.json').exists()
+          entries=[]
+          for n in range(1,121):
+              r=json.loads((stages/f'stage-{n:04d}.json').read_text())
+              assert r['state']=='BANKED' and r['ordinal']==n
+              expected=f'PZ_CAMPAIGN_{n:06d}'
+              assert r['publishedPuzzleId']==expected
+              e=r['runtimeEntry']; assert e['publishedPuzzleId']==expected and e['puzzle']['puzzleId']==expected
+              entries.append(e)
+          old=source/'app/src/main/assets/puzzles/campaign-pack-0010-v1.json'
+          old_pack=json.loads(old.read_text()); assert len(old_pack['puzzles'])==10
+          for i in range(10): assert old_pack['puzzles'][i]==entries[i]
+          pack={'runtimeSchemaVersion':'published-runtime-puzzle-v1','packId':'campaign-pack-0120-v9-tutorial-visual','puzzles':entries}
+          pack_bytes=(json.dumps(pack,separators=(',',':'),ensure_ascii=False)+'\n').encode(); old.write_bytes(pack_bytes)
+          cfgp=source/'app/src/main/assets/stages/campaign-stage-config-v1.properties'; cfg=cfgp.read_text()
+          assert 'stageCount=10' in cfg and cfg.count('starterUndoBoost=2')==1
+          prefix,rewards=cfg.split('starterUndoBoost=2',1); prefix=prefix.replace('stageCount=10','stageCount=120',1)
+          lines=[prefix.rstrip()]
+          for n in range(11,121):
+              lines += [f'stage.{n}.puzzleId=PZ_CAMPAIGN_{n:06d}',f'stage.{n}.revision={entries[n-1]["revision"]}',f'stage.{n}.referenceTime=300',f'stage.{n}.undoLimit=4',f'stage.{n}.threeStarTime=300',f'stage.{n}.threeStarUndo=1',f'stage.{n}.twoStarTime=420',f'stage.{n}.twoStarUndo=2',f'stage.{n}.oneStarTime=540',f'stage.{n}.oneStarUndo=4']
+          cfg_new='\n'.join(lines)+'\n'+'starterUndoBoost=2'+rewards; cfgp.write_text(cfg_new)
+          Path('generated-assets').mkdir(); (Path('generated-assets')/'campaign-pack-0010-v1.json').write_bytes(pack_bytes); (Path('generated-assets')/'campaign-stage-config-v1.properties').write_text(cfg_new)
+          evidence={'sourceSha':'fbbecb2a6bc5d8951d3e39b9da5aadeb6dcf63b4','bankSha':'f58b303283c3cd7696489b50d2964e01746ac0ab','stageCount':120,'excludedStage121':True,'runtimePackSha256':hashlib.sha256(pack_bytes).hexdigest(),'stageConfigSha256':hashlib.sha256(cfg_new.encode()).hexdigest(),'tutorialCtaSha256':hashlib.sha256((source/'app/src/main/assets/ui/b3-r5/cta_tutorial.png').read_bytes()).hexdigest(),'releaseChange':'Stable v8 feature set + visual-asset tutorial CTA + cold-home tutorial reveal'}
+          Path('Clumi-Stable-v9-bank120-integration.json').write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
+
+      - name: Prepare Stable v9 identity
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('app/build.gradle'); t=p.read_text()
+          assert t.count("applicationId 'com.example.einsteingame'")==1
+          assert t.count('versionCode 13')==1
+          assert t.count("versionName '0.2.7.1'")==1
+          t=t.replace("applicationId 'com.example.einsteingame'","applicationId 'com.hotmoral.clumi'",1)
+          t=t.replace('versionCode 13','versionCode 9',1)
+          t=t.replace("versionName '0.2.7.1'","versionName '1.0.8'",1)
+          p.write_text(t)
+          PY
+          git diff --check
+
+      - name: Verify frozen launcher and tutorial CTA bytes
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y webp >/dev/null
+          grep -F 'android:insetLeft="20dp"' app/src/main/res/drawable/ic_launcher_foreground.xml
+          grep -F 'android:insetLeft="20dp"' app/src/main/res/mipmap/ic_launcher.xml
+          grep -F '#001452' app/src/main/res/values/icon_colors.xml
+          echo "$ICON_SHA256  app/src/main/res/drawable-nodpi/ic_launcher_art.webp" | sha256sum -c -
+          echo "$TUTORIAL_CTA_SHA256  app/src/main/assets/ui/b3-r5/cta_tutorial.png" | sha256sum -c -
+          dwebp app/src/main/res/drawable-nodpi/ic_launcher_art.webp -o /tmp/source-icon.ppm >/dev/null
+          test -s /tmp/source-icon.ppm
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android build tools
+        run: sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Build and align Stable v9
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD ./gradlew --no-daemon --console=plain :app:assembleRelease -x :app:lintVitalRelease
+          test -s app/build/outputs/apk/release/app-release-unsigned.apk
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/zipalign" -f -p 4 app/build/outputs/apk/release/app-release-unsigned.apk ../Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk
+
+      - name: Verify packaged identity campaign icon and tutorial CTA
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/zipalign" -c -v 4 "$APK" >/dev/null
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt" dump badging "$APK" | tee stable-v9-badging.txt
+          grep -F "package: name='com.hotmoral.clumi' versionCode='9' versionName='1.0.8'" stable-v9-badging.txt
+          unzip -p "$APK" assets/puzzles/campaign-pack-0010-v1.json > packaged-runtime.json
+          unzip -p "$APK" assets/stages/campaign-stage-config-v1.properties > packaged-stage-config.properties
+          unzip -p "$APK" assets/ui/b3-r5/cta_tutorial.png > packaged-cta-tutorial.png
+          cmp packaged-runtime.json generated-assets/campaign-pack-0010-v1.json
+          cmp packaged-stage-config.properties generated-assets/campaign-stage-config-v1.properties
+          echo "$TUTORIAL_CTA_SHA256  packaged-cta-tutorial.png" | sha256sum -c -
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          apk='Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk'; wanted=os.environ['ICON_SHA256']; found=[]
+          with zipfile.ZipFile(apk) as z:
+              for n in z.namelist():
+                  if n.startswith('res/') and n.endswith('.webp'):
+                      b=z.read(n)
+                      if hashlib.sha256(b).hexdigest()==wanted: found.append((n,b))
+          assert len(found)==1
+          open('packaged-icon.webp','wb').write(found[0][1])
+          p=json.load(open('packaged-runtime.json')); assert len(p['puzzles'])==120 and p['puzzles'][-1]['publishedPuzzleId']=='PZ_CAMPAIGN_000120'
+          assert all(x['publishedPuzzleId']!='PZ_CAMPAIGN_000121' for x in p['puzzles'])
+          cfg=open('packaged-stage-config.properties').read(); assert 'stageCount=120' in cfg and 'stage.121.' not in cfg
+          print('matched packaged icon',found[0][0])
+          PY
+          dwebp packaged-icon.webp -o /tmp/packaged-icon.ppm >/dev/null
+          test -s /tmp/packaged-icon.ppm
+          sha256sum "$APK" | tee Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk.sha256
+
+      - name: Stage local signing tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p signing-tools/lib
+          cp "$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" signing-tools/apksigner
+          cp "$ANDROID_HOME/build-tools/$BUILD_TOOLS/lib/apksigner.jar" signing-tools/lib/apksigner.jar
+          chmod +x signing-tools/apksigner
+
+      - name: Upload Stable v9 unsigned candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Stable-v9-tutorial-visual-unsigned
+          path: |
+            Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk
+            Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk.sha256
+            stable-v9-badging.txt
+            Clumi-Stable-v9-bank120-integration.json
+            packaged-icon.webp
+            packaged-cta-tutorial.png
+            generated-assets
+            signing-tools
+          retention-days: 3
+          if-no-files-found: error
