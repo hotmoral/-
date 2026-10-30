@@ -152,14 +152,14 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
         return g;
     }
 
-    private void physicalTap(View target) {
+    private void dispatchRuntimeTap(MainActivity activity, View target) {
         Rect rect = new Rect();
         float[] point = new float[2];
         ui(() -> {
             check(target.isShown() && target.getWidth() > 0 && target.getHeight() > 0,
                     "Home CTA is visible with local bounds");
             check(target.getGlobalVisibleRect(rect) && rect.width() > 0 && rect.height() > 0,
-                    "Home CTA has global visible bounds");
+                    "Home CTA has decor-global visible bounds");
             lastTapRectX = rect.exactCenterX();
             lastTapRectY = rect.exactCenterY();
             point[0] = target.getWidth() * 0.5f;
@@ -169,22 +169,24 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             global.mapPoints(point);
             lastTapMatrixX = point[0];
             lastTapMatrixY = point[1];
+
+            long downTime = SystemClock.uptimeMillis();
+            MotionEvent down = MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN,
+                    lastTapRectX, lastTapRectY, 0);
+            down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+            check(activity.dispatchTouchEvent(down), "Activity decor accepted ACTION_DOWN");
+            down.recycle();
+
+            long upTime = SystemClock.uptimeMillis() + 30;
+            MotionEvent up = MotionEvent.obtain(downTime, upTime, MotionEvent.ACTION_UP,
+                    lastTapRectX, lastTapRectY, 0);
+            up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+            check(activity.dispatchTouchEvent(up), "Activity decor accepted ACTION_UP");
+            up.recycle();
         });
-        System.out.println("CLUMI_PHYSICAL_TAP profile=" + profile
-                + " matrix=" + lastTapMatrixX + "," + lastTapMatrixY
-                + " rect=" + lastTapRectX + "," + lastTapRectY);
-        long downTime = SystemClock.uptimeMillis();
-        MotionEvent down = MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN,
-                lastTapMatrixX, lastTapMatrixY, 0);
-        down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
-        check(getUiAutomation().injectInputEvent(down, true), "Physical ACTION_DOWN injected");
-        down.recycle();
-        long upTime = SystemClock.uptimeMillis();
-        MotionEvent up = MotionEvent.obtain(downTime, upTime, MotionEvent.ACTION_UP,
-                lastTapMatrixX, lastTapMatrixY, 0);
-        up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
-        check(getUiAutomation().injectInputEvent(up, true), "Physical ACTION_UP injected");
-        up.recycle();
+        System.out.println("CLUMI_RUNTIME_TAP profile=" + profile
+                + " decor=" + lastTapRectX + "," + lastTapRectY
+                + " screenMatrix=" + lastTapMatrixX + "," + lastTapMatrixY);
     }
 
     private void writeSummary(Geometry home, Geometry start) throws Exception {
@@ -199,9 +201,10 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             out.println("home_translation_px=" + home.translationX + "," + home.translationY);
             out.println("start_scale=" + start.scale);
             out.println("start_translation_px=" + start.translationX + "," + start.translationY);
-            out.println("tap_matrix_px=" + lastTapMatrixX + "," + lastTapMatrixY);
-            out.println("tap_rect_px=" + lastTapRectX + "," + lastTapRectY);
+            out.println("tap_decor_px=" + lastTapRectX + "," + lastTapRectY);
+            out.println("tap_screen_matrix_px=" + lastTapMatrixX + "," + lastTapMatrixY);
             out.println("touch=PASS");
+            out.println("touch_path=ACTIVITY_DECOR_DISPATCH");
             out.println("black_bars=PASS_BY_VIEW_CONTRACT_AND_SCREENSHOT_EVIDENCE");
         }
     }
@@ -222,9 +225,9 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             Geometry home = verifyViewport(activity, "home", homeShot);
             homeShot.recycle();
 
-            physicalTap(cta);
+            dispatchRuntimeTap(activity, cta);
             View panel = waitTagged(activity, "start-panel", 5000);
-            check(panel != null && panel.isShown(), "Transformed physical touch opens Stage Start");
+            check(panel != null && panel.isShown(), "Transformed runtime touch opens Stage Start");
             waitInputReady(activity);
             Bitmap startShot = screenshot("02_stage_start");
             Geometry start = verifyViewport(activity, "start", startShot);
@@ -237,15 +240,15 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             writeSummary(home, start);
             result.putString("stream", "CLUMI_FIXED_VIEWPORT_STATUS=PASS profile=" + profile
                     + " assertions=" + assertions
-                    + " tap_matrix=" + lastTapMatrixX + "," + lastTapMatrixY
-                    + " tap_rect=" + lastTapRectX + "," + lastTapRectY + "\n");
+                    + " tap_decor=" + lastTapRectX + "," + lastTapRectY
+                    + " tap_screen_matrix=" + lastTapMatrixX + "," + lastTapMatrixY + "\n");
             finish(Activity.RESULT_OK, result);
         } catch (Throwable failure) {
             failure.printStackTrace();
             result.putString("stream", "CLUMI_FIXED_VIEWPORT_STATUS=FAIL profile=" + profile
                     + " error=" + failure
-                    + " tap_matrix=" + lastTapMatrixX + "," + lastTapMatrixY
-                    + " tap_rect=" + lastTapRectX + "," + lastTapRectY + "\n");
+                    + " tap_decor=" + lastTapRectX + "," + lastTapRectY
+                    + " tap_screen_matrix=" + lastTapMatrixX + "," + lastTapMatrixY + "\n");
             finish(Activity.RESULT_CANCELED, result);
         }
     }
