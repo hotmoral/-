@@ -7,8 +7,8 @@ const stageLabel = document.querySelector('#stage-label');
 const campaignLabel = document.querySelector('#campaign-label');
 
 const BOOT_MIN_MS = 220;
-const HANDOFF_SWAP_MS = 180;
-const HANDOFF_CLEANUP_MS = 380;
+const HANDOFF_SWAP_MS = 90;
+const HANDOFF_CLEANUP_MS = 340;
 const META_CLEANUP_MS = 240;
 const STAGE_SWIPE_MIN_PX = 48;
 const STAGE_SWIPE_AXIS_RATIO = 1.2;
@@ -35,12 +35,20 @@ celebrationStyle.textContent = `
 .screen.polish-success .success-kicker{animation:linklineClearKicker .42s .04s cubic-bezier(.16,.82,.2,1) both}
 .screen.polish-success .success-title{animation:linklineClearTitle .46s .06s cubic-bezier(.16,.82,.2,1) both}
 .screen.polish-success .success-actions{animation:successActionReveal .20s .08s cubic-bezier(.22,.72,.22,1) both;pointer-events:auto}
+.linkline-board-ghost .performance-result{transition:opacity .18s ease,transform .22s cubic-bezier(.22,.72,.22,1)}
+.linkline-board-ghost.is-leaving .performance-result{opacity:0;transform:scale(.985)}
+.linkline-board-ghost.is-leaving{animation:linklineGhostLeaveSmooth .30s cubic-bezier(.22,.72,.22,1) both}
+.board-wrap.linkline-incoming-board{opacity:0;transform:scale(.994);filter:blur(.35px);will-change:opacity,transform,filter}
+.board-wrap.linkline-incoming-board.is-visible{opacity:1;transform:scale(1);filter:blur(0);transition:opacity .28s ease,transform .30s cubic-bezier(.18,.76,.22,1),filter .24s ease}
+.linkline-incoming-ui{opacity:0;transform:translateY(4px);pointer-events:none;will-change:opacity,transform}
+.linkline-incoming-ui.is-visible{opacity:1;transform:translateY(0);pointer-events:auto;transition:opacity .22s .04s ease,transform .26s .04s cubic-bezier(.18,.76,.22,1)}
 @keyframes linklineClearImpact{0%{transform:scale(1);box-shadow:var(--shadow)}18%{transform:scale(.988);box-shadow:0 12px 38px rgba(18,104,255,.08)}46%{transform:scale(1.018);box-shadow:0 20px 62px rgba(18,104,255,.22)}100%{transform:scale(1);box-shadow:var(--shadow)}}
 @keyframes linklineClearRing{0%{opacity:0;transform:translate(-50%,-50%) scale(.38)}16%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)}}
 @keyframes linklineClearFlash{0%{opacity:0;transform:scale(.92)}20%{opacity:1}100%{opacity:0;transform:scale(1.08)}}
 @keyframes linklineClearSpark{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(var(--rot))}16%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(.18) rotate(var(--rot))}}
 @keyframes linklineClearKicker{0%{opacity:0;transform:translateY(8px) scale(.92);letter-spacing:.08em}55%{opacity:1;transform:translateY(-2px) scale(1.08);letter-spacing:.19em}100%{opacity:1;transform:translateY(0) scale(1);letter-spacing:normal}}
 @keyframes linklineClearTitle{0%{opacity:0;transform:translateY(10px) scale(.94)}52%{opacity:1;transform:translateY(-2px) scale(1.045)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes linklineGhostLeaveSmooth{0%{opacity:1;transform:scale(1);filter:blur(0)}100%{opacity:0;transform:scale(.992);filter:blur(.45px)}}
 @media (prefers-reduced-motion:reduce){.board-wrap.clear-impact,.clear-celebration,.clear-spark,.screen.polish-success .success-kicker,.screen.polish-success .success-title{animation:none!important}}
 `;
 document.head.append(celebrationStyle);
@@ -178,17 +186,19 @@ function revealMeta() {
   }, META_CLEANUP_MS);
 }
 
-function prepareIncomingBoard() {
+function prepareIncomingScene() {
   const board = screen?.querySelector('.board-wrap');
   if (!board || screen?.querySelector('.success-panel')) return null;
   board.classList.add('linkline-incoming-board');
-  return board;
+  const ui = [...screen.querySelectorAll('.play-hint, .round-action-wrap')];
+  ui.forEach((node) => node.classList.add('linkline-incoming-ui'));
+  return { board, ui };
 }
 
-function finishForwardVisual(pending, incomingBoard) {
+function finishForwardVisual(pending, incoming) {
   if (!pending) return;
   const { ghost } = pending;
-  if (!incomingBoard) {
+  if (!incoming?.board) {
     ghost?.remove();
     screen?.classList.remove('linkline-forwarding');
     revealMeta();
@@ -196,14 +206,16 @@ function finishForwardVisual(pending, incomingBoard) {
     return;
   }
 
-  incomingBoard.classList.add('is-visible');
+  incoming.board.classList.add('is-visible');
+  incoming.ui.forEach((node) => node.classList.add('is-visible'));
   revealMeta();
   ghost?.classList.add('is-leaving');
 
   setTimeout(() => {
     ghost?.remove();
     screen?.classList.remove('linkline-forwarding');
-    incomingBoard.classList.remove('linkline-incoming-board', 'is-visible');
+    incoming.board.classList.remove('linkline-incoming-board', 'is-visible');
+    incoming.ui.forEach((node) => node.classList.remove('linkline-incoming-ui', 'is-visible'));
     forwarding = false;
   }, HANDOFF_CLEANUP_MS);
 }
@@ -307,8 +319,8 @@ document.addEventListener('click', (event) => {
   };
 }, true);
 
-// This bubble listener runs after the button's native openStage handler. The new board is hidden
-// before the browser can paint, then revealed on the original 180 ms visual boundary.
+// This bubble listener runs after the button's native openStage handler. The next board and its
+// lower play controls are hidden before paint, then crossfade together against the old board ghost.
 document.addEventListener('click', (event) => {
   if (!pendingForward) return;
   const next = event.target.closest?.('.success-actions .primary');
@@ -316,10 +328,11 @@ document.addEventListener('click', (event) => {
 
   const pending = pendingForward;
   pendingForward = null;
-  const incomingBoard = prepareIncomingBoard();
+  screen.classList.add('linkline-forwarding');
+  const incoming = prepareIncomingScene();
   const elapsed = performance.now() - pending.startedAt;
   const remaining = Math.max(0, HANDOFF_SWAP_MS - elapsed);
-  setTimeout(() => finishForwardVisual(pending, incomingBoard), remaining);
+  setTimeout(() => finishForwardVisual(pending, incoming), remaining);
 }, false);
 
-// Linkline polish v4.1 one-shot clear celebration + immediate native NEXT + stage-select swipe production build marker.
+// Linkline polish v4.2 smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.
