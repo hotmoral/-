@@ -8,8 +8,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import java.io.File;
@@ -146,15 +146,18 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
         return g;
     }
 
-    private void physicalTap(View target) {
+    private void physicalTap(View target) throws Exception {
         Rect rect = new Rect();
         ui(() -> check(target.getGlobalVisibleRect(rect) && rect.width() > 0 && rect.height() > 0,
                 "Home CTA has transformed physical bounds"));
-        float x = rect.exactCenterX();
-        float y = rect.exactCenterY();
-        long now = SystemClock.uptimeMillis();
-        sendPointerSync(MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 0));
-        sendPointerSync(MotionEvent.obtain(now, now + 30, MotionEvent.ACTION_UP, x, y, 0));
+        int x = Math.round(rect.exactCenterX());
+        int y = Math.round(rect.exactCenterY());
+        ParcelFileDescriptor command = getUiAutomation().executeShellCommand("input tap " + x + " " + y);
+        try (ParcelFileDescriptor.AutoCloseInputStream input =
+                     new ParcelFileDescriptor.AutoCloseInputStream(command)) {
+            byte[] buffer = new byte[128];
+            while (input.read(buffer) != -1) { }
+        }
     }
 
     private void writeSummary(Geometry home, Geometry start) throws Exception {
