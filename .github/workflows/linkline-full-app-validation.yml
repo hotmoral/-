@@ -37,95 +37,12 @@ jobs:
           cp linkline-full-validation/assets/s-plus-approved.svg "$APP/assets/performance-stamps/s-plus-approved.svg"
           cp linkline-full-validation/assets/a-plus-approved.svg "$APP/assets/performance-stamps/a-plus-approved.svg"
           cp linkline-full-validation/assets/b-plus-approved.svg "$APP/assets/performance-stamps/b-plus-approved.svg"
-
-          APP="$APP" python3 - <<'PY'
-          from pathlib import Path
-          import hashlib, os
-
-          app = Path(os.environ['APP'])
-
-          def git_blob_sha(data: bytes) -> str:
-              return hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
-
-          part1 = Path('linkline-full-validation/chunks/clear-result-ui.01').read_bytes()
-          part2 = Path('linkline-full-validation/chunks/clear-result-ui.02').read_bytes()
-          expected_clear = 'c9235254d396661d26fc793e74c1d68282af2790'
-          candidates = [part1 + b'\n' + part2, part1 + b'\n' + part2 + b'\n', part1 + part2, part1 + part2 + b'\n']
-          for candidate in candidates:
-              if git_blob_sha(candidate) == expected_clear:
-                  (app / 'src/clear-result-ui.mjs').write_bytes(candidate)
-                  break
-          else:
-              raise SystemExit('CLEAR_RESULT_RECONSTRUCTION_SHA_MISMATCH')
-
-          p = app / 'src/app.mjs'
-          text = p.read_text(encoding='utf-8')
-          old = 'let stagePageAnchor = 1;\n'
-          new = 'let stagePageAnchor = 1;\nlet persistentRetry = null;\n'
-          if text.count(old) != 1:
-              raise SystemExit('APP_STAGE_ANCHOR_REPLACEMENT_COUNT')
-          text = text.replace(old, new, 1)
-
-          anchor = "function resetPuzzle() {\n  runtime = createPuzzleRuntime(current);\n  renderGame();\n}\n\n"
-          helper = "function gameRetryControl() {\n  if (persistentRetry) return persistentRetry;\n  const retry = button('secondary round-action', '↻', resetPuzzle);\n  retry.setAttribute('aria-label', '현재 스테이지 다시 도전');\n  const label = el('span', 'round-action-label', 'RETRY');\n  const wrap = el('div', 'game-retry-control');\n  Object.assign(wrap.style, {\n    display: 'flex',\n    flexDirection: 'column',\n    alignItems: 'center',\n    gap: '8px',\n  });\n  wrap.append(retry, label);\n  persistentRetry = wrap;\n  return persistentRetry;\n}\n\n"
-          if text.count(anchor) != 1:
-              raise SystemExit('APP_RETRY_ANCHOR_REPLACEMENT_COUNT')
-          text = text.replace(anchor, anchor + helper, 1)
-
-          old = '  screen.append(nav, renderBoard());'
-          new = '  screen.append(nav, renderBoard(), gameRetryControl());'
-          if text.count(old) != 1:
-              raise SystemExit('APP_RENDER_GAME_REPLACEMENT_COUNT')
-          text = text.replace(old, new, 1)
-
-          old = "  const hint = el('div', 'play-hint', '끝점을 끌어 두 목표에 연결하세요.');\n  const restart = button('secondary round-action', '↻', resetPuzzle);\n  const label = el('span', 'round-action-label', 'RESTART');\n  const restartWrap = el('div', 'round-action-wrap');\n  restartWrap.append(restart, label);\n  screen.append(hint, restartWrap);"
-          new = "  screen.append(el('div', 'play-hint', '끝점을 끌어 두 목표에 연결하세요.'));"
-          if text.count(old) != 1:
-              raise SystemExit('APP_RESTART_BLOCK_REPLACEMENT_COUNT')
-          text = text.replace(old, new, 1)
-          p.write_text(text, encoding='utf-8')
-
-          p = app / 'src/polish.mjs'
-          text = p.read_text(encoding='utf-8')
-          old = '.linkline-incoming-ui{opacity:0;transform:translateY(4px);pointer-events:none;will-change:opacity,transform}\n.linkline-incoming-ui.is-visible{opacity:1;transform:translateY(0);pointer-events:auto;transition:opacity .22s .04s ease,transform .26s .04s cubic-bezier(.18,.76,.22,1)}'
-          new = '.linkline-incoming-ui{opacity:0;pointer-events:none;will-change:opacity}\n.linkline-incoming-ui.is-visible{opacity:1;pointer-events:auto;transition:opacity .22s .04s ease}'
-          if text.count(old) != 1:
-              raise SystemExit('POLISH_UI_REPLACEMENT_COUNT')
-          text = text.replace(old, new, 1)
-          old = '// Linkline polish v4.3 Stage Select grade rings + smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.'
-          new = '// Linkline polish v4.4 fixed-position lower UI fade + Stage Select grade rings + smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.'
-          if text.count(old) != 1:
-              raise SystemExit('POLISH_VERSION_REPLACEMENT_COUNT')
-          text = text.replace(old, new, 1)
-          p.write_text(text, encoding='utf-8')
-          PY
+          APP="$APP" python3 linkline-full-validation/reconstruct.py
 
       - name: Verify exact private-source identity
         shell: bash
         run: |
-          set -euo pipefail
-          APP="$RUNNER_TEMP/linkline-app"
-          check() { actual="$(git hash-object "$APP/$1")"; test "$actual" = "$2" || { echo "$1 $actual != $2"; exit 1; }; }
-          check package.json b0f0d0f19540ab16f3818df62de30e113b0147c7
-          check src/app.mjs f13819f925add4eb52f464ff58a626c4d438d9e6
-          check src/clear-result-ui.mjs c9235254d396661d26fc793e74c1d68282af2790
-          check src/polish.mjs d9efb1a0640fd9dc9a879462dc66ede216f8ff0f
-          check src/visual-assets.mjs 667ef92c5268cf684d187dd335877083efbffa2a
-          check src/settings-preferences.mjs 22450f785bdbd3b29bbe87b0ef93ced054898b45
-          check src/settings-about.mjs 3c59b9e6a16d3b904221a89218748bf887516d27
-          check assets/performance-stamps/s-plus-approved.svg 20b99b53cc61ec63b40e9c9d6dc0555a52c5d7c6
-          check assets/performance-stamps/a-plus-approved.svg 1c298ff9dcee1ec4e28cbb583ce7ef7000d171f8
-          check assets/performance-stamps/b-plus-approved.svg fdf0fd885b4effa92c94260bb9f9bce3b1258b5a
-          check tests/foundation.test.mjs c0ecbe79cd32f8c178edc4010e61331c21822c4f
-          check tests/progress-reset.test.mjs b92979e9f83260b834fe4bc7fc0b269a71497da8
-          check tests/settings-preferences.test.mjs a40813a76229ad398e5b6af1d5caf39dd872ee49
-          check tests/settings-about.test.mjs 459328837383fba4fd98b460226c264be72f21df
-          check tests/performance-stamp.test.mjs 0819d510082f855eb2663c84d10443aa75954111
-          check tests/clear-outcome.test.mjs d61d43822c57378ac4ae58bbeb017ebb771d68ee
-          check tests/runtime.test.mjs 251f703a6fe8771dd294cf6d372ffd32922b8dcd
-          check tests/navigation.test.mjs 3de440371beafa73a3f13824a62b368c9c759457
-          check tests/path-geometry.test.mjs 8e61fcfd802e26f459a1307fded5fbe5dd01903c
-          check tests/polish.test.mjs 0d041dded7b87ae89f967c0823af1f3949b1cc07
+          APP="$RUNNER_TEMP/linkline-app" bash linkline-full-validation/verify.sh
 
       - name: Run full app npm test
         shell: bash
