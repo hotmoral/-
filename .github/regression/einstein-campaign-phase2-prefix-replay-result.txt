@@ -1,0 +1,11 @@
+status=PASS
+workflow=Einstein Campaign Phase2 Prefix Replay Preflight V1
+run_id=41011878015
+run_attempt=1
+harness_trigger_sha=82901426aeedbb0c43f25c155f16831132d39ab8
+private_source_sha=d0a15bf71c0630a21fe2aa522b6b4071434909c6
+bank_branch=campaign-production-2000-bank-v1
+bank_head=f58b303283c3cd7696489b50d2964e01746ac0ab
+expected_prior_prefix_count=120
+acquisition_invoked=false
+bank_write_invoked=false
