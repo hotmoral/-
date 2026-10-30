@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: bc10183228cc836fa071b0778c472127a9d77a10
+      SOURCE_SHA: c730e9d1d03e8377802e5c2b6744992e6cb560ef
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: bc10183228cc836fa071b0778c472127a9d77a10
+          ref: c730e9d1d03e8377802e5c2b6744992e6cb560ef
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -52,4 +52,5 @@ jobs:
           echo STAGE125_SPARSE_L2_HUMAN_COMPILE=PASS
           export EINSTEIN_PHASE2_STAGE125_SPARSE_L2_HUMAN_READONLY=true
           java -Xmx6g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125SparseL2HumanAnalysisReadOnlyV1 | tee /tmp/stage125-sparse-l2-human.log
+          grep -F 'SPARSE_L2_STAGE125_COMBINED_WITNESS_AVAILABLE=true' /tmp/stage125-sparse-l2-human.log
           grep -F 'STAGE125_SPARSE_L2_HUMAN_ANALYSIS_READONLY=PASS' /tmp/stage125-sparse-l2-human.log
