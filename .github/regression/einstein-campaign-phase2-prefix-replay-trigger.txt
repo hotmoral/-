@@ -1,0 +1,4 @@
+trigger=phase2-prefix-replay-preflight-v1
+purpose=read-only-live-bank-1-120-cp12-replay
+bank_write=false
+acquisition=false
