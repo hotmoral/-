@@ -43,7 +43,7 @@ jobs:
           echo "Preview did not converge to pushed runtime bytes" >&2
           exit 1
 
-      - name: Verify hosted runtime, grading, assets and data exact-byte parity
+      - name: Verify hosted runtime, Settings, grading, assets and data exact-byte parity
         run: |
           set -euo pipefail
           files=(
@@ -62,9 +62,15 @@ jobs:
             src/performance.mjs
             src/clear-outcome.mjs
             src/clear-result-ui.mjs
+            src/visual-assets.mjs
+            src/settings-preferences.mjs
+            src/settings-about.mjs
             assets/performance-stamps/s-plus.png
             assets/performance-stamps/a-plus.png
             assets/performance-stamps/b-plus.png
+            assets/performance-stamps/s-plus-approved.svg
+            assets/performance-stamps/a-plus-approved.svg
+            assets/performance-stamps/b-plus-approved.svg
             data/performance-baseline-v1.json
             data/campaign-0001-1300.json
             data/campaign-0001-0260.chunk.json
@@ -84,7 +90,7 @@ jobs:
             curl -fsS --max-time 15 "$url" -o "/tmp/hosted/$rel"
             cmp "$APP_DIR/$rel" "/tmp/hosted/$rel"
           done
-          echo "Exact-byte parity PASS for ${#files[@]} hosted runtime/grading/assets/data files"
+          echo "Exact-byte parity PASS for ${#files[@]} hosted runtime/Settings/grading/assets/data files"
 
       - name: Validate Performance Baseline v1 identity
         run: |
