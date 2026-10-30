@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 5baa8c71b0cfd378d1ce20afaa11cc8a871b06e4
+      SOURCE_SHA: fd5abd11060a071a89eada2f62341d43a0d66c11
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
     steps:
@@ -42,7 +42,7 @@ jobs:
           git apply dev/manual-force-longpress.patch
           python3 dev/board-reset-preserve-resources.py
           python3 dev/board-render-resume-fix.py
-          python3 dev/tutorial-choice-onboarding.py
+          python3 dev/tutorial-choice-onboarding-v2.py
           git diff --check
 
       - name: Verify tutorial-mode contract
@@ -99,4 +99,4 @@ jobs:
           test -s app/build/outputs/apk/release/app-release-unsigned.apk
           echo TUTORIAL_CHOICE_ANDROID_COMPILE_PASS
 
-# trigger: v1
+# trigger: v2
