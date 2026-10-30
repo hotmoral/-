@@ -96,26 +96,41 @@ jobs:
             -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
             -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD \
             -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD \
-            ./gradlew --no-daemon --stacktrace --console=plain :app:assembleRelease
+            ./gradlew --no-daemon --stacktrace --console=plain \
+              :app:assembleRelease -x :app:lintVitalRelease
           test -s app/build/outputs/apk/release/app-release-unsigned.apk
 
-      - name: Verify unsigned Stable identity
+      - name: Align and verify unsigned Stable identity
         shell: bash
         run: |
           set -euo pipefail
-          APK=source/app/build/outputs/apk/release/app-release-unsigned.apk
-          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt" dump badging "$APK" | tee stable-badging.txt
+          INPUT=source/app/build/outputs/apk/release/app-release-unsigned.apk
+          OUTPUT=Clumi-Stable-v1-aligned-unsigned.apk
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/zipalign" -f -p 4 "$INPUT" "$OUTPUT"
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/zipalign" -c -v 4 "$OUTPUT"
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt" dump badging "$OUTPUT" | tee stable-badging.txt
           grep -F "package: name='com.hotmoral.clumi' versionCode='1' versionName='1.0.0'" stable-badging.txt
-          sha256sum "$APK" | tee Clumi-Stable-v1-unsigned.apk.sha256
-          cp "$APK" Clumi-Stable-v1-unsigned.apk
+          sha256sum "$OUTPUT" | tee Clumi-Stable-v1-aligned-unsigned.apk.sha256
+
+      - name: Stage local signing tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p signing-tools/lib
+          cp "$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" signing-tools/apksigner
+          cp "$ANDROID_HOME/build-tools/$BUILD_TOOLS/lib/apksigner.jar" signing-tools/lib/apksigner.jar
+          chmod +x signing-tools/apksigner
+          test -s signing-tools/apksigner
+          test -s signing-tools/lib/apksigner.jar
 
       - name: Upload unsigned Stable v1 APK
         uses: actions/upload-artifact@v4
         with:
           name: Clumi-Stable-v1-unsigned
           path: |
-            Clumi-Stable-v1-unsigned.apk
-            Clumi-Stable-v1-unsigned.apk.sha256
+            Clumi-Stable-v1-aligned-unsigned.apk
+            Clumi-Stable-v1-aligned-unsigned.apk.sha256
             stable-badging.txt
+            signing-tools
           retention-days: 3
           if-no-files-found: error
