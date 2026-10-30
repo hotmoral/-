@@ -1,6 +1,8 @@
 import { loadCampaign } from './catalog.mjs';
+import { loadPerformanceBaseline } from './performance.mjs';
+import { applyClearedAttempt } from './clear-outcome.mjs';
 import { legalCells, activateCell, createPuzzleRuntime } from './runtime.mjs';
-import { clearProgress, loadProgress, markCleared, saveProgress } from './progress.mjs';
+import { clearProgress, loadProgress, saveProgress } from './progress.mjs';
 import { completionPercent, continuePosition, pageRows, stagePage, stageState } from './navigation.mjs';
 import { roundedOrthogonalPath } from './path-geometry.mjs';
 
@@ -11,6 +13,7 @@ const campaignLabel = document.querySelector('#campaign-label');
 const resetProgressButton = document.querySelector('#reset-progress');
 
 let campaign;
+let performanceBaseline = null;
 let progress;
 let current;
 let runtime;
@@ -235,9 +238,20 @@ function onCell(cell) {
   if (runtime.solved) return;
   const previousSolved = runtime.solved;
   runtime = activateCell(current, runtime, cell);
-  if (!previousSolved && runtime.solved && current.position > progress.highestCleared) {
-    progress = markCleared(progress, current.position, campaign.puzzles.length);
-    saveProgress(localStorage, progress);
+  if (!previousSolved && runtime.solved) {
+    const previousProgress = progress;
+    const outcome = applyClearedAttempt(
+      progress,
+      current.position,
+      campaign.puzzles.length,
+      runtime.moves,
+      performanceBaseline,
+    );
+    progress = outcome.progress;
+    if (outcome.performanceResult && !outcome.performanceResult.ok) {
+      console.error('PERFORMANCE_GRADING_INTEGRITY', outcome.performanceResult);
+    }
+    if (progress !== previousProgress) saveProgress(localStorage, progress);
   }
   renderGame();
 }
@@ -388,7 +402,7 @@ function renderSettings() {
   const reset = button('danger-outline', 'RESET PROGRESS', () => {
     if (!globalThis.confirm || globalThis.confirm('진행 기록을 초기화할까요?')) {
       clearProgress(localStorage);
-      progress = loadProgress(localStorage, campaign.campaignId, campaign.puzzles.length);
+      progress = loadProgress(localStorage, campaign.campaignId, campaign.puzzles.length, performanceBaseline);
       renderHome();
     }
   });
@@ -398,7 +412,17 @@ function renderSettings() {
 
 async function boot() {
   campaign = await loadCampaign('./data/campaign-0001-1300.json');
-  progress = loadProgress(localStorage, campaign.campaignId, campaign.puzzles.length);
+  try {
+    performanceBaseline = await loadPerformanceBaseline(
+      './data/performance-baseline-v1.json',
+      campaign.campaignId,
+      campaign.puzzles.length,
+    );
+  } catch (error) {
+    performanceBaseline = null;
+    console.error('PERFORMANCE_BASELINE_UNAVAILABLE', error);
+  }
+  progress = loadProgress(localStorage, campaign.campaignId, campaign.puzzles.length, performanceBaseline);
   stagePageAnchor = continuePosition(progress, campaign.puzzles.length);
   resetProgressButton.hidden = true;
   renderHome();

@@ -5,6 +5,7 @@ export function createPuzzleRuntime(puzzle) {
     path: canonicalPath(puzzle.initial),
     selectedEndpoint: null,
     solved: false,
+    moves: 0,
   };
 }
 
@@ -39,5 +40,6 @@ export function activateCell(puzzle, runtime, cell) {
     path,
     selectedEndpoint: null,
     solved: isSolved(path, puzzle.targets),
+    moves: (runtime.moves || 0) + 1,
   };
 }
