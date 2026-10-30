@@ -1,0 +1,216 @@
+name: Clumi Manual Force Long-Press Validation
+
+on:
+  push:
+    branches:
+      - clumi/manual-force-longpress-dev
+    paths:
+      - '.github/workflows/einstein-clumi-manual-force-validate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FEATURE_SHA: 7f8bc5a62ebd9b071e678e3a86d93c1710c40721
+      EXPECTED_GAMESTATE_SHA256: b53e620b50457c7a8c1c7d75a5a99c19a850099b7561c6b57d092cb9bdc3b9a7
+      EXPECTED_GAMEVIEW_SHA256: a457a4e794df921750c685fbc7fb4addfc81b48353b1d7919016b9fdc5ada8a0
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+    steps:
+      - name: Require private source credential
+        shell: bash
+        run: test -n "$READ_TOKEN"
+
+      - name: Checkout public harness
+        uses: actions/checkout@v4
+        with:
+          path: harness
+          persist-credentials: false
+
+      - name: Checkout exact private feature checkpoint
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.FEATURE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify exact checkpoint and apply staged patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$FEATURE_SHA"
+          cd source
+          git apply --check dev/manual-force-longpress.patch
+          git apply dev/manual-force-longpress.patch
+          git diff --check
+          echo "$EXPECTED_GAMESTATE_SHA256  app/src/main/java/com/example/einsteingame/GameState.java" | sha256sum -c -
+          echo "$EXPECTED_GAMEVIEW_SHA256  app/src/main/java/com/example/einsteingame/GameView.java" | sha256sum -c -
+          grep -F 'public boolean forceCandidate(int slot)' app/src/main/java/com/example/einsteingame/GameState.java
+          grep -F 'ViewConfiguration.getLongPressTimeout()' app/src/main/java/com/example/einsteingame/GameView.java
+
+      - name: Record private credential permission without mutating repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request
+          req=urllib.request.Request('https://api.github.com/repos/hotmoral/EinsteinGame',headers={
+              'Authorization':'Bearer '+os.environ['READ_TOKEN'],
+              'Accept':'application/vnd.github+json',
+              'X-GitHub-Api-Version':'2022-11-28'})
+          with urllib.request.urlopen(req) as r: data=json.load(r)
+          print('private_token_push_permission='+str(bool(data.get('permissions',{}).get('push',False))).lower())
+          PY
+
+      - name: Add behavior probe to transient workspace
+        shell: bash
+        run: |
+          cat > source/app/src/main/java/com/example/einsteingame/ManualForceLongPressProbe.java <<'JAVA'
+          package com.example.einsteingame;
+
+          import java.io.StringReader;
+          import java.io.StringWriter;
+          import java.util.Properties;
+
+          public final class ManualForceLongPressProbe {
+              private static void check(boolean value,String message){
+                  if(!value) throw new AssertionError(message);
+              }
+              private static boolean[][][] snapshot(GameState s){
+                  boolean[][][] out=new boolean[GameState.SIZE][GameState.SIZE][GameState.SIZE];
+                  for(int r=0;r<GameState.SIZE;r++)for(int c=0;c<GameState.SIZE;c++)for(int i=0;i<GameState.SIZE;i++)
+                      out[r][c][i]=s.isUserCandidatePresent(r,c,i);
+                  return out;
+              }
+              private static void same(GameState s,boolean[][][] expected,String label){
+                  for(int r=0;r<GameState.SIZE;r++)for(int c=0;c<GameState.SIZE;c++)for(int i=0;i<GameState.SIZE;i++)
+                      check(s.isUserCandidatePresent(r,c,i)==expected[r][c][i],label+" @"+r+","+c+","+i);
+              }
+              private static int rawMask(GameState s,int row,int col){
+                  int mask=0;for(int i=0;i<GameState.SIZE;i++)if(s.isUserCandidatePresent(row,col,i))mask|=1<<i;return mask;
+              }
+              private static String legacyFourFieldSnapshot(String saved) throws Exception {
+                  Properties p=new Properties();p.load(new StringReader(saved));
+                  String history=p.getProperty("moves","");
+                  if(!history.isEmpty()){
+                      StringBuilder out=new StringBuilder();
+                      for(String entry:history.split(";")){
+                          String[] f=entry.split(",",-1);check(f.length==5,"expected new five-field history");
+                          if(out.length()>0)out.append(';');
+                          out.append(f[0]).append(',').append(f[1]).append(',').append(f[2]).append(',').append(f[3]);
+                      }
+                      p.setProperty("moves",out.toString());
+                  }
+                  StringWriter w=new StringWriter();p.store(w,"legacy-v6-probe");return w.toString();
+              }
+              public static void main(String[] args) throws Exception {
+                  GameState forced=new GameState();
+                  boolean[][][] before=snapshot(forced);
+                  forced.select(0,2);
+                  check(forced.forceCandidate(1),"fresh force should mutate");
+                  check(rawMask(forced,0,2)==(1<<1),"target must become singleton");
+                  for(int c=0;c<GameState.SIZE;c++)if(c!=2)
+                      check(!forced.isUserCandidatePresent(0,c,1),"same item must leave sibling col "+c);
+                  check(forced.canUndo(),"forced action must be undoable");
+                  check(forced.undo(),"one undo must restore whole force");
+                  same(forced,before,"whole force undo");
+                  check(!forced.canUndo(),"fresh force must consume exactly one undo transaction");
+
+                  GameState normal=new GameState();normal.select(0,2);
+                  check(normal.toggleCandidate(0),"ordinary tap mutation");
+                  check(!normal.isUserCandidatePresent(0,2,0),"ordinary tap removed candidate");
+                  check(normal.undo(),"ordinary tap remains one undo");
+                  check(normal.isUserCandidatePresent(0,2,0),"ordinary tap undo restored candidate");
+
+                  GameState wrong=new GameState();wrong.select(0,0);
+                  check(wrong.toggleCandidate(0),"prep 0");
+                  check(wrong.toggleCandidate(2),"prep 2");
+                  check(wrong.toggleCandidate(3),"prep 3");
+                  check(wrong.toggleCandidate(4),"prep 4");
+                  check(rawMask(wrong,0,0)==(1<<1),"prep sibling singleton");
+                  wrong.select(0,2);
+                  check(wrong.forceCandidate(1),"wrong force must still be accepted");
+                  check(rawMask(wrong,0,0)==0,"wrong force may create zero-domain sibling");
+                  check(wrong.hasPlacementContradiction(),"zero-domain wrong force must surface contradiction");
+                  String wrongSaved=wrong.saveBoard();
+                  GameState restored=new GameState();restored.restoreBoard(wrongSaved);
+                  check(rawMask(restored,0,0)==0,"zero-domain force must persist");
+                  check(restored.hasPlacementContradiction(),"restored zero-domain force remains contradiction");
+                  check(restored.undo(),"restored force transaction must undo in one call");
+                  check(rawMask(restored,0,0)==(1<<1),"one undo restores singleton sibling");
+                  check(rawMask(restored,0,2)==31,"one undo restores target candidates");
+
+                  GameState legacyWriter=new GameState();legacyWriter.select(0,2);
+                  check(legacyWriter.toggleCandidate(0),"legacy prep toggle");
+                  String legacySaved=legacyFourFieldSnapshot(legacyWriter.saveBoard());
+                  GameState legacyReader=new GameState();legacyReader.restoreBoard(legacySaved);
+                  check(!legacyReader.isUserCandidatePresent(0,2,0),"legacy v6 state restored");
+                  check(legacyReader.undo(),"legacy four-field history remains undoable");
+                  check(legacyReader.isUserCandidatePresent(0,2,0),"legacy undo semantics retained");
+
+                  System.out.println("MANUAL_FORCE_LONGPRESS_PROBE_PASS");
+              }
+          }
+          JAVA
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android platform
+        shell: bash
+        run: sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Compile patched app source
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD \
+            -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD \
+            -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD \
+            ./gradlew --no-daemon --console=plain :app:compileDebugJavaWithJavac
+
+      - name: Run manual-force behavior probe
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_CLASSES=app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes
+          CORE_CLASSES=puzzle-core/build/classes/java/main
+          test -d "$APP_CLASSES"
+          test -d "$CORE_CLASSES"
+          java -cp "$APP_CLASSES:$CORE_CLASSES:$ANDROID_HOME/platforms/android-34/android.jar" com.example.einsteingame.ManualForceLongPressProbe | tee ../manual-force-probe.txt
+          grep -F 'MANUAL_FORCE_LONGPRESS_PROBE_PASS' ../manual-force-probe.txt
+
+      - name: Verify patch scope
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only | sort | tee ../manual-force-changed-files.txt
+          test "$(git diff --name-only | grep -v '^app/src/main/java/com/example/einsteingame/ManualForceLongPressProbe.java$' | sort)" = $'app/src/main/java/com/example/einsteingame/GameState.java\napp/src/main/java/com/example/einsteingame/GameView.java'
+
+      - name: Upload validation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: clumi-manual-force-validation
+          path: |
+            manual-force-probe.txt
+            manual-force-changed-files.txt
+          retention-days: 3
+          if-no-files-found: error
