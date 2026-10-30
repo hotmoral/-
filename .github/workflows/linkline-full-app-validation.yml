@@ -33,6 +33,7 @@ jobs:
           cp -a linkline-full-validation/tests/. "$APP/tests/"
           cp linkline-settings-validation/src/settings-preferences.mjs "$APP/src/settings-preferences.mjs"
           cp linkline-settings-validation/src/settings-about.mjs "$APP/src/settings-about.mjs"
+          cp linkline-full-validation/visual-assets.mjs "$APP/src/visual-assets.mjs"
           cp linkline-full-validation/assets/s-plus-approved.svg "$APP/assets/performance-stamps/s-plus-approved.svg"
           cp linkline-full-validation/assets/a-plus-approved.svg "$APP/assets/performance-stamps/a-plus-approved.svg"
           cp linkline-full-validation/assets/b-plus-approved.svg "$APP/assets/performance-stamps/b-plus-approved.svg"
@@ -46,7 +47,6 @@ jobs:
           def git_blob_sha(data: bytes) -> str:
               return hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
 
-          # Reconstruct final clear-result source from two exact private-source chunks.
           part1 = Path('linkline-full-validation/chunks/clear-result-ui.01').read_bytes()
           part2 = Path('linkline-full-validation/chunks/clear-result-ui.02').read_bytes()
           expected_clear = 'c9235254d396661d26fc793e74c1d68282af2790'
@@ -58,7 +58,6 @@ jobs:
           else:
               raise SystemExit('CLEAR_RESULT_RECONSTRUCTION_SHA_MISMATCH')
 
-          # Apply the bounded post-H RETRY delta to the approved Preview app source.
           p = app / 'src/app.mjs'
           text = p.read_text(encoding='utf-8')
           old = 'let stagePageAnchor = 1;\n'
@@ -86,7 +85,6 @@ jobs:
           text = text.replace(old, new, 1)
           p.write_text(text, encoding='utf-8')
 
-          # Apply the accepted v4.4 lower-UI fade delta.
           p = app / 'src/polish.mjs'
           text = p.read_text(encoding='utf-8')
           old = '.linkline-incoming-ui{opacity:0;transform:translateY(4px);pointer-events:none;will-change:opacity,transform}\n.linkline-incoming-ui.is-visible{opacity:1;transform:translateY(0);pointer-events:auto;transition:opacity .22s .04s ease,transform .26s .04s cubic-bezier(.18,.76,.22,1)}'
@@ -100,15 +98,6 @@ jobs:
               raise SystemExit('POLISH_VERSION_REPLACEMENT_COUNT')
           text = text.replace(old, new, 1)
           p.write_text(text, encoding='utf-8')
-
-          # Wire Settings modules into the existing visual-assets entrypoint.
-          p = app / 'src/visual-assets.mjs'
-          text = p.read_text(encoding='utf-8')
-          anchor = "import './visual-assets-v61-core.mjs';"
-          prefix = "import './settings-preferences.mjs';\nimport './settings-about.mjs';\n"
-          if text.count(anchor) != 1 or 'settings-preferences.mjs' in text or 'settings-about.mjs' in text:
-              raise SystemExit('VISUAL_ASSETS_IMPORT_REPLACEMENT_COUNT')
-          p.write_text(prefix + text, encoding='utf-8')
           PY
 
       - name: Verify exact private-source identity
