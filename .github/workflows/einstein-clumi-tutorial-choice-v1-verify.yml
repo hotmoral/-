@@ -73,7 +73,6 @@ jobs:
           assert '한 번의 길게 누르기는 실행취소 한 번으로 전부 돌아가며' in gv
           assert 'else if(tutorialStep<10)tutorialStep++' in gv
           assert 'finishTutorialAndStartStageOne()' in gv
-          # Direct Stage 1 no longer owns onboarding: spotlight is called only behind tutorialMode.
           assert ma.count('game.spotlight(spotlight)') == 1
           print('TUTORIAL_CHOICE_CONTRACT_PASS')
           PY
@@ -99,3 +98,5 @@ jobs:
           env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD ./gradlew --no-daemon --console=plain :app:assembleRelease -x :app:lintVitalRelease
           test -s app/build/outputs/apk/release/app-release-unsigned.apk
           echo TUTORIAL_CHOICE_ANDROID_COMPILE_PASS
+
+# trigger: v1
