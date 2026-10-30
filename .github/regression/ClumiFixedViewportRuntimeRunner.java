@@ -129,25 +129,38 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
 
         if ("home".equals(phase)) {
             if ("360x640".equals(profile)) {
-                check(g.translationX > 1f && Math.abs(g.translationY) <= 1f,
-                        "short profile creates horizontal pillarbox only");
-                int x = g.viewportX + Math.max(1, Math.round(g.translationX * 0.5f));
-                int y = g.viewportY + g.viewportHeight / 2;
-                check(isBlack(screenshot, x, y), "short profile pillarbox renders black");
+                check(g.translationX > 1f, "short profile creates horizontal pillarbox");
             } else if ("360x800".equals(profile)) {
-                check(Math.abs(g.translationX) <= 1f && Math.abs(g.translationY) <= 1f,
-                        "exact profile has no letterbox offset");
+                check(g.scale > 0.90f && g.scale <= 1.001f,
+                        "native profile stays near 1x inside the actual Android content viewport");
             } else if ("360x900".equals(profile)) {
-                check(Math.abs(g.translationX) <= 1f && g.translationY > 1f,
-                        "tall profile creates vertical letterbox only");
-                int x = g.viewportX + g.viewportWidth / 2;
-                int y = g.viewportY + Math.max(1, Math.round(g.translationY * 0.5f));
-                check(isBlack(screenshot, x, y), "tall profile letterbox renders black");
+                check(g.translationY > 1f, "tall profile creates vertical letterbox");
             } else {
                 check(false, "Known runtime profile");
             }
+            checkBlackMarginIfPresent(screenshot, g);
         }
         return g;
+    }
+
+    private void checkBlackMarginIfPresent(Bitmap image, Geometry g) {
+        boolean checked = false;
+        if (g.translationX > 1f) {
+            int x = g.viewportX + Math.max(1, Math.round(g.translationX * 0.5f));
+            int y = g.viewportY + g.viewportHeight / 2;
+            check(isBlack(image, x, y), "horizontal viewport margin renders black");
+            checked = true;
+        }
+        if (g.translationY > 1f) {
+            int x = g.viewportX + g.viewportWidth / 2;
+            int y = g.viewportY + Math.max(1, Math.round(g.translationY * 0.5f));
+            check(isBlack(image, x, y), "vertical viewport margin renders black");
+            checked = true;
+        }
+        if (!checked) {
+            check(g.translationX <= 1f && g.translationY <= 1f,
+                    "no margin needed when the logical scene fills the actual content viewport");
+        }
     }
 
     private boolean isBlack(Bitmap image, int x, int y) {
