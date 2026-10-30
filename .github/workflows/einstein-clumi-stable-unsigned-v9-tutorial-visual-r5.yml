@@ -1,0 +1,70 @@
+name: Clumi Stable Unsigned V9 Tutorial Visual R5
+
+on:
+  push:
+    branches: [clumi/stable-v9-tutorial-visual-build]
+    paths: ['.github/workflows/einstein-clumi-stable-unsigned-v9-tutorial-visual-r5.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  build-v9:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_SHA: 1215f11f75bc9db57ee5b265127e24dd570b6814
+      BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      BUILD_TOOLS: '34.0.0'
+    steps:
+      - name: Require private credential
+        run: test -n "$READ_TOKEN"
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.SOURCE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Checkout Bank 1-120 snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.BANK_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: bank
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+      - name: Install Android build tools
+        run: sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+      - name: Build and verify Stable v9
+        working-directory: source
+        shell: bash
+        env:
+          BANK_DIR: ../bank
+        run: bash dev/build-stable-v9-unsigned.sh
+      - name: Upload Stable v9 unsigned candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Stable-v9-tutorial-visual-unsigned
+          path: |
+            Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk
+            Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk.sha256
+            stable-v9-badging.txt
+            Clumi-Stable-v9-bank120-integration.json
+            packaged-icon.webp
+            packaged-cta-tutorial.webp
+            generated-assets
+            signing-tools
+          retention-days: 3
+          if-no-files-found: error
