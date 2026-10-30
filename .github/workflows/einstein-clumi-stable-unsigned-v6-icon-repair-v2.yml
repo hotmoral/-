@@ -1,0 +1,226 @@
+name: Clumi Stable Unsigned V6 Icon Repair V2
+
+on:
+  push:
+    branches:
+      - clumi/stable-v6-icon-repair-build
+    paths:
+      - '.github/workflows/einstein-clumi-stable-unsigned-v6-icon-repair-v2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-v6:
+    if: github.event.head_commit.message == 'build: Clumi Stable unsigned v6 icon repair v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_SHA: 0a89d0a0a7371c92221082760dd496df1cda1a03
+      BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      BUILD_TOOLS: '34.0.0'
+      ICON_SHA256: 22cb92d4f9583d6b2f804ddfafbdddc5cc0bbe4303374985838c2826c47c8878
+
+    steps:
+      - name: Require private source credential
+        shell: bash
+        run: test -n "$READ_TOKEN"
+
+      - name: Checkout public harness
+        uses: actions/checkout@v4
+        with:
+          path: harness
+          persist-credentials: false
+
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.SOURCE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout exact Bank
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.BANK_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: bank
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify exact commits and materialize 1-120
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git -C bank rev-parse HEAD)" = "$BANK_SHA"
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          source=Path('source')
+          bank=Path('bank/production/campaign-2000-bank-v1/bank')
+          manifest=json.loads((bank/'manifest.json').read_text())
+          assert manifest['bankedCount']==120 and manifest['nextOrdinal']==121
+          assert manifest['failedOrQuarantinedCount']==0 and manifest['acquiredPending']==[]
+          stages=bank/'stages'
+          assert not (stages/'stage-0121.json').exists()
+          entries=[]
+          for n in range(1,121):
+              r=json.loads((stages/f'stage-{n:04d}.json').read_text())
+              assert r['state']=='BANKED' and r['ordinal']==n
+              expected=f'PZ_CAMPAIGN_{n:06d}'
+              assert r['publishedPuzzleId']==expected
+              e=r['runtimeEntry']
+              assert e['publishedPuzzleId']==expected and e['puzzle']['puzzleId']==expected
+              entries.append(e)
+          old=source/'app/src/main/assets/puzzles/campaign-pack-0010-v1.json'
+          old_pack=json.loads(old.read_text())
+          assert len(old_pack['puzzles'])==10
+          for i in range(10): assert old_pack['puzzles'][i]==entries[i]
+          pack={'runtimeSchemaVersion':'published-runtime-puzzle-v1','packId':'campaign-pack-0120-v6-icon-repair','puzzles':entries}
+          pack_bytes=(json.dumps(pack,separators=(',',':'),ensure_ascii=False)+'\n').encode()
+          old.write_bytes(pack_bytes)
+          cfgp=source/'app/src/main/assets/stages/campaign-stage-config-v1.properties'
+          cfg=cfgp.read_text()
+          assert 'stageCount=10' in cfg and cfg.count('starterUndoBoost=2')==1
+          prefix,rewards=cfg.split('starterUndoBoost=2',1)
+          prefix=prefix.replace('stageCount=10','stageCount=120',1)
+          lines=[prefix.rstrip()]
+          for n in range(11,121):
+              lines += [
+                f'stage.{n}.puzzleId=PZ_CAMPAIGN_{n:06d}',
+                f'stage.{n}.revision={entries[n-1]["revision"]}',
+                f'stage.{n}.referenceTime=300', f'stage.{n}.undoLimit=4',
+                f'stage.{n}.threeStarTime=300', f'stage.{n}.threeStarUndo=1',
+                f'stage.{n}.twoStarTime=420', f'stage.{n}.twoStarUndo=2',
+                f'stage.{n}.oneStarTime=540', f'stage.{n}.oneStarUndo=4']
+          cfg_new='\n'.join(lines)+'\n'+'starterUndoBoost=2'+rewards
+          cfgp.write_text(cfg_new)
+          Path('generated-assets').mkdir()
+          (Path('generated-assets')/'campaign-pack-0010-v1.json').write_bytes(pack_bytes)
+          (Path('generated-assets')/'campaign-stage-config-v1.properties').write_text(cfg_new)
+          evidence={'sourceSha':'0a89d0a0a7371c92221082760dd496df1cda1a03','bankSha':'f58b303283c3cd7696489b50d2964e01746ac0ab','stageCount':120,'excludedStage121':True,'runtimePackSha256':hashlib.sha256(pack_bytes).hexdigest(),'stageConfigSha256':hashlib.sha256(cfg_new.encode()).hexdigest(),'releaseChange':'repair launcher bitmap + restore 20dp safe-area inset'}
+          Path('Clumi-Stable-v6-icon-repair-bank120-integration.json').write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
+
+      - name: Prepare Stable v6 identity
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('app/build.gradle'); t=p.read_text()
+          assert t.count("applicationId 'com.example.einsteingame'")==1
+          assert t.count('versionCode 13')==1
+          assert t.count("versionName '0.2.7.1'")==1
+          t=t.replace("applicationId 'com.example.einsteingame'","applicationId 'com.hotmoral.clumi'",1)
+          t=t.replace('versionCode 13','versionCode 6',1)
+          t=t.replace("versionName '0.2.7.1'","versionName '1.0.5'",1)
+          p.write_text(t)
+          PY
+
+      - name: Verify source launcher bytes and decode
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y webp >/dev/null
+          grep -F 'android:insetLeft="20dp"' app/src/main/res/drawable/ic_launcher_foreground.xml
+          grep -F 'android:insetLeft="20dp"' app/src/main/res/mipmap/ic_launcher.xml
+          grep -F '#001452' app/src/main/res/values/icon_colors.xml
+          echo "$ICON_SHA256  app/src/main/res/drawable-nodpi/ic_launcher_art.webp" | sha256sum -c -
+          dwebp app/src/main/res/drawable-nodpi/ic_launcher_art.webp -o /tmp/source-icon.ppm >/dev/null
+          test -s /tmp/source-icon.ppm
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android build tools
+        shell: bash
+        run: sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Build and align Stable v6
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD ./gradlew --no-daemon --console=plain :app:assembleRelease -x :app:lintVitalRelease
+          test -s app/build/outputs/apk/release/app-release-unsigned.apk
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/zipalign" -f -p 4 app/build/outputs/apk/release/app-release-unsigned.apk ../Clumi-Stable-v6-icon-repair-aligned-unsigned.apk
+
+      - name: Verify packaged identity, campaign and exact icon bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=Clumi-Stable-v6-icon-repair-aligned-unsigned.apk
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/zipalign" -c -v 4 "$APK" >/dev/null
+          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt" dump badging "$APK" | tee stable-v6-icon-repair-badging.txt
+          grep -F "package: name='com.hotmoral.clumi' versionCode='6' versionName='1.0.5'" stable-v6-icon-repair-badging.txt
+          unzip -p "$APK" assets/puzzles/campaign-pack-0010-v1.json > packaged-runtime.json
+          unzip -p "$APK" assets/stages/campaign-stage-config-v1.properties > packaged-stage-config.properties
+          cmp packaged-runtime.json generated-assets/campaign-pack-0010-v1.json
+          cmp packaged-stage-config.properties generated-assets/campaign-stage-config-v1.properties
+          python3 - <<'PY'
+          import hashlib, json, os, zipfile
+          apk='Clumi-Stable-v6-icon-repair-aligned-unsigned.apk'
+          wanted=os.environ['ICON_SHA256']
+          found=[]
+          with zipfile.ZipFile(apk) as z:
+              for n in z.namelist():
+                  if n.startswith('res/') and n.endswith('.webp'):
+                      b=z.read(n)
+                      if hashlib.sha256(b).hexdigest()==wanted:
+                          found.append((n,b))
+          assert len(found)==1, [(n,len(b),hashlib.sha256(b).hexdigest()) for n,b in found]
+          name,b=found[0]
+          open('packaged-icon.webp','wb').write(b)
+          print('matched packaged icon:',name,len(b),wanted)
+          p=json.load(open('packaged-runtime.json'))
+          assert len(p['puzzles'])==120
+          assert p['puzzles'][0]['publishedPuzzleId']=='PZ_CAMPAIGN_000001'
+          assert p['puzzles'][-1]['publishedPuzzleId']=='PZ_CAMPAIGN_000120'
+          cfg=open('packaged-stage-config.properties').read()
+          assert 'stageCount=120' in cfg and 'stage.120.puzzleId=PZ_CAMPAIGN_000120' in cfg and 'stage.121.' not in cfg
+          PY
+          dwebp packaged-icon.webp -o /tmp/packaged-icon.ppm >/dev/null
+          test -s /tmp/packaged-icon.ppm
+          sha256sum "$APK" | tee Clumi-Stable-v6-icon-repair-aligned-unsigned.apk.sha256
+          sha256sum packaged-icon.webp | tee packaged-icon.sha256
+
+      - name: Stage local signing tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p signing-tools/lib
+          cp "$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" signing-tools/apksigner
+          cp "$ANDROID_HOME/build-tools/$BUILD_TOOLS/lib/apksigner.jar" signing-tools/lib/apksigner.jar
+          chmod +x signing-tools/apksigner
+
+      - name: Upload Stable v6 unsigned candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Stable-v6-icon-repair-unsigned
+          path: |
+            Clumi-Stable-v6-icon-repair-aligned-unsigned.apk
+            Clumi-Stable-v6-icon-repair-aligned-unsigned.apk.sha256
+            stable-v6-icon-repair-badging.txt
+            Clumi-Stable-v6-icon-repair-bank120-integration.json
+            packaged-icon.webp
+            packaged-icon.sha256
+            generated-assets
+            signing-tools
+          retention-days: 3
+          if-no-files-found: error
