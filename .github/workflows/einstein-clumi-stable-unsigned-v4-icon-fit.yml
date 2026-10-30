@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 05727dcacf2d20003be8ce86672d70c130c619f7
+      SOURCE_SHA: 21aade10d67f1b367179a0a868cf18c3560701b9
       BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
@@ -142,7 +142,7 @@ jobs:
 
           evidence={
               'schemaVersion':'clumi-stable-v5-borderless-icon-bank120-integration-v1',
-              'sourceSha':'05727dcacf2d20003be8ce86672d70c130c619f7',
+              'sourceSha':'21aade10d67f1b367179a0a868cf18c3560701b9',
               'bankSha':'f58b303283c3cd7696489b50d2964e01746ac0ab',
               'bankPrefixHash':manifest['bankPrefixHash'],
               'stageCount':120,
@@ -191,6 +191,7 @@ jobs:
           grep -F 'android:insetLeft="6dp"' app/src/main/res/mipmap/ic_launcher.xml
           test -s app/src/main/res/drawable-nodpi/ic_launcher_art.webp
           file app/src/main/res/drawable-nodpi/ic_launcher_art.webp | grep -F 'Web/P image'
+          echo '22cb92d4f9583d6b2f804ddfafbdddc5cc0bbe4303374985838c2826c47c8878  app/src/main/res/drawable-nodpi/ic_launcher_art.webp' | sha256sum -c -
           sha256sum app/src/main/res/drawable-nodpi/ic_launcher_art.webp | tee ../borderless-icon.sha256
           test -s app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
           test -s app/src/main/res/mipmap-anydpi-v33/ic_launcher.xml
