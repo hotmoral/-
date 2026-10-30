@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      SOURCE_SHA: 61eaa71e9de3440d68d0a127f0f154d87ce435de
+      SOURCE_SHA: 2423bd2f569dcaa907547475af007cf234d523c1
       BANK_BRANCH: campaign-production-2000-bank-v1
     steps:
       - name: Checkout exact guarded Phase 2 source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 61eaa71e9de3440d68d0a127f0f154d87ce435de
+          ref: 2423bd2f569dcaa907547475af007cf234d523c1
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
