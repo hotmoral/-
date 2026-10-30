@@ -1,0 +1,93 @@
+name: Linkline Settings Preview Promotion
+
+on:
+  push:
+    branches:
+      - linkline/settings-validation-v1
+    paths:
+      - 'linkline-preview-promotion/**'
+      - '.github/workflows/linkline-settings-preview-promotion.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  promote-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact validation commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Assemble validated public Preview payload
+        run: |
+          set -euo pipefail
+          APP="$RUNNER_TEMP/linkline-preview"
+          rm -rf "$APP"
+          mkdir -p "$APP/src" "$APP/assets/performance-stamps"
+          cp -a timing-defense-skilled-v2-harness/public/. "$APP/"
+          cp linkline-settings-validation/src/settings-preferences.mjs "$APP/src/settings-preferences.mjs"
+          cp linkline-settings-validation/src/settings-about.mjs "$APP/src/settings-about.mjs"
+          cp linkline-full-validation/assets/s-plus-approved.svg "$APP/assets/performance-stamps/s-plus-approved.svg"
+          cp linkline-full-validation/assets/a-plus-approved.svg "$APP/assets/performance-stamps/a-plus-approved.svg"
+          cp linkline-full-validation/assets/b-plus-approved.svg "$APP/assets/performance-stamps/b-plus-approved.svg"
+          APP="$APP" python3 linkline-full-validation/reconstruct.py
+          APP="$APP" python3 - <<'PY'
+          from pathlib import Path
+          import json, os
+          app = Path(os.environ['APP'])
+          p = app / 'src/visual-assets.mjs'
+          text = p.read_text(encoding='utf-8')
+          prefix = "import './settings-preferences.mjs';\nimport './settings-about.mjs';\n"
+          if 'settings-preferences.mjs' not in text and 'settings-about.mjs' not in text:
+              p.write_text(prefix + text, encoding='utf-8')
+          elif not text.startswith(prefix):
+              raise SystemExit('PUBLIC_VISUAL_ASSETS_SETTINGS_IMPORT_STATE')
+          manifest = json.loads((app / 'data/campaign-0001-1300.json').read_text(encoding='utf-8'))
+          allowed = {'catalogFingerprint','canonicalV4CatalogFingerprint','orderFingerprint','orderPrefixFingerprint'}
+          if set(manifest.get('source', {})) != allowed:
+              raise SystemExit('PUBLIC_MANIFEST_SANITIZATION_DRIFT')
+          PY
+
+      - name: Verify validated runtime identities
+        run: |
+          set -euo pipefail
+          APP="$RUNNER_TEMP/linkline-preview"
+          check() { actual="$(git hash-object "$APP/$1")"; test "$actual" = "$2" || { echo "$1 $actual != $2"; exit 1; }; }
+          check src/app.mjs f13819f925add4eb52f464ff58a626c4d438d9e6
+          check src/clear-result-ui.mjs c9235254d396661d26fc793e74c1d68282af2790
+          check src/polish.mjs d9efb1a0640fd9dc9a879462dc66ede216f8ff0f
+          check src/settings-preferences.mjs 22450f785bdbd3b29bbe87b0ef93ced054898b45
+          check src/settings-about.mjs 3c59b9e6a16d3b904221a89218748bf887516d27
+          check assets/performance-stamps/s-plus-approved.svg 20b99b53cc61ec63b40e9c9d6dc0555a52c5d7c6
+          check assets/performance-stamps/a-plus-approved.svg 1c298ff9dcee1ec4e28cbb583ce7ef7000d171f8
+          check assets/performance-stamps/b-plus-approved.svg fdf0fd885b4effa92c94260bb9f9bce3b1258b5a
+          grep -Fq "import './settings-preferences.mjs';" "$APP/src/visual-assets.mjs"
+          grep -Fq "import './settings-about.mjs';" "$APP/src/visual-assets.mjs"
+          node --check "$APP/src/app.mjs"
+          node --check "$APP/src/polish.mjs"
+          node --check "$APP/src/settings-preferences.mjs"
+          node --check "$APP/src/settings-about.mjs"
+
+      - name: Promote only to Cloudflare Preview branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TARGET="$RUNNER_TEMP/preview-target"
+          APP="$RUNNER_TEMP/linkline-preview"
+          git clone --depth=1 --branch linkline/cloudflare-product-v4-smoke-v1 "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$TARGET"
+          rm -rf "$TARGET/timing-defense-skilled-v2-harness/public"
+          mkdir -p "$TARGET/timing-defense-skilled-v2-harness/public"
+          cp -a "$APP/." "$TARGET/timing-defense-skilled-v2-harness/public/"
+          cd "$TARGET"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add timing-defense-skilled-v2-harness/public
+          if git diff --cached --quiet; then
+            echo 'Preview payload already current'
+            exit 0
+          fi
+          git commit -m "Linkline: stage Settings build on Cloudflare Preview"
+          git push origin HEAD:refs/heads/linkline/cloudflare-product-v4-smoke-v1
