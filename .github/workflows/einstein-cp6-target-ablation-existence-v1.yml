@@ -48,6 +48,7 @@ jobs:
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/PssOpportunityTest.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/PssGoldenSoundnessDeterminismTest.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/PssPathExplorerTest.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/path/ConfluenceStopContractProbe.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/PssCp6Test.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/analysis/RequirednessTargetAblationExistenceProofTest.java
           EOF
