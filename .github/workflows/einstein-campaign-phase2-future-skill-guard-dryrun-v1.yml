@@ -63,7 +63,10 @@ jobs:
           echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2FutureSkillGuardDryRunV1.java' >> "$SOURCES"
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
           echo PHASE2_FUTURE_SKILL_GUARD_COMPILE=PASS
-          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.curriculum.CampaignHumanPathEvidenceCompositionTest
+          (
+            cd puzzle-authoring
+            java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.curriculum.CampaignHumanPathEvidenceCompositionTest
+          )
 
           python3 - <<'PY'
           import importlib.util, json
