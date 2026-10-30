@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: bbb8dcd0d24d80b451a2eec3612d1907f00d1a67
+      SOURCE_SHA: 496c38c08006892cdf092823a10f71d8de1c1dbf
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: bbb8dcd0d24d80b451a2eec3612d1907f00d1a67
+          ref: 496c38c08006892cdf092823a10f71d8de1c1dbf
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
