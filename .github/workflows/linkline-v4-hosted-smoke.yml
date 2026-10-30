@@ -25,25 +25,25 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Wait for corrected campaign bytes to reach the stable Preview URL
+      - name: Wait for pushed runtime bytes to reach the stable Preview URL
         run: |
           set -euo pipefail
-          rel="data/campaign-0001-0260.chunk.json"
+          rel="src/app.mjs"
           expected="$(sha256sum "$APP_DIR/$rel" | awk '{print $1}')"
           for attempt in $(seq 1 90); do
-            if curl -fsS --max-time 10 "$PREVIEW_URL/$rel" -o /tmp/convergence.chunk.json; then
-              actual="$(sha256sum /tmp/convergence.chunk.json | awk '{print $1}')"
+            if curl -fsS --max-time 10 "$PREVIEW_URL/$rel" -o /tmp/convergence.app.mjs; then
+              actual="$(sha256sum /tmp/convergence.app.mjs | awk '{print $1}')"
               if [ "$actual" = "$expected" ]; then
-                echo "Preview serves corrected campaign bytes on attempt $attempt"
+                echo "Preview serves pushed runtime bytes on attempt $attempt"
                 exit 0
               fi
             fi
             sleep 2
           done
-          echo "Preview did not converge to corrected campaign bytes" >&2
+          echo "Preview did not converge to pushed runtime bytes" >&2
           exit 1
 
-      - name: Verify hosted runtime and data exact-byte parity
+      - name: Verify hosted runtime, grading, assets and data exact-byte parity
         run: |
           set -euo pipefail
           files=(
@@ -59,6 +59,13 @@ jobs:
             src/polish.mjs
             src/progress.mjs
             src/runtime.mjs
+            src/performance.mjs
+            src/clear-outcome.mjs
+            src/clear-result-ui.mjs
+            assets/performance-stamps/s-plus.png
+            assets/performance-stamps/a-plus.png
+            assets/performance-stamps/b-plus.png
+            data/performance-baseline-v1.json
             data/campaign-0001-1300.json
             data/campaign-0001-0260.chunk.json
             data/campaign-0261-0520.chunk.json
@@ -77,7 +84,23 @@ jobs:
             curl -fsS --max-time 15 "$url" -o "/tmp/hosted/$rel"
             cmp "$APP_DIR/$rel" "/tmp/hosted/$rel"
           done
-          echo "Exact-byte parity PASS for ${#files[@]} hosted runtime/data files"
+          echo "Exact-byte parity PASS for ${#files[@]} hosted runtime/grading/assets/data files"
+
+      - name: Validate Performance Baseline v1 identity
+        run: |
+          set -euo pipefail
+          expected="25e395b6761dba58f62514456857fbb7c16d4b25cb4e7b8f053532142f38c144"
+          actual="$(sha256sum /tmp/hosted/data/performance-baseline-v1.json | awk '{print $1}')"
+          test "$actual" = "$expected"
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const raw = JSON.parse(fs.readFileSync('/tmp/hosted/data/performance-baseline-v1.json', 'utf8'));
+          if (raw.schema !== 'LINKLINE_PERFORMANCE_BASELINE') throw new Error('BASELINE_SCHEMA');
+          if (raw.version !== '1.0.0') throw new Error('BASELINE_VERSION');
+          if (raw.metric !== 'M3_V1_SHORTEST_DISTANCE') throw new Error('BASELINE_METRIC');
+          if (raw.launchTotal !== 1300 || raw.rows?.length !== 1300) throw new Error('BASELINE_ROWS');
+          console.log('Performance Baseline v1 identity PASS');
+          JS
 
       - name: Validate sanitized manifest and chunk raw hashes
         run: |
