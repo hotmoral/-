@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Apply validated long-press then board-reset patches
+      - name: Apply validated long-press and board-reset source transforms
         shell: bash
         run: |
           set -euo pipefail
@@ -35,8 +35,44 @@ jobs:
           cd source
           git apply --check dev/manual-force-longpress.patch
           git apply dev/manual-force-longpress.patch
-          git apply --check dev/board-reset-preserve-items.patch
-          git apply dev/board-reset-preserve-items.patch
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p=Path(path); text=p.read_text()
+              count=text.count(old)
+              if count!=1: raise SystemExit(f'{path}: expected one match, got {count}')
+              p.write_text(text.replace(old,new))
+
+          gs='app/src/main/java/com/example/einsteingame/GameState.java'
+          replace(gs,
+              '        recompute();\n        return true;\n    }\n\n    private boolean moveCanParticipate(Move move) {',
+              '''        recompute();\n        return true;\n    }\n\n    /** Reset only direct player board edits while preserving immutable Given cells\n     * and every item-derived assisted confirmation. Item inventory/usage lives\n     * outside this board object and is intentionally untouched. */\n    public boolean resetPlayerBoardPreservingItems() {\n        if (solved) return false;\n        boolean changed=!undoStack.isEmpty();\n        for(int row=0;row<SIZE;row++)for(int col=0;col<SIZE;col++) {\n            if(isGiven(row,col)) continue;\n            for(int item=0;item<SIZE;item++) {\n                if(!userCandidate[row][col][item]) changed=true;\n                userCandidate[row][col][item]=true;\n            }\n        }\n        undoStack.clear();\n        nextUndoTransaction=1;\n        recompute();\n        return changed;\n    }\n\n    private boolean moveCanParticipate(Move move) {''')
+
+          ss='app/src/main/java/com/example/einsteingame/StageSession.java'
+          replace(ss,
+              '    public boolean undo(){if(!canUndo()||!board.undo())return false;undoCount++;return true;}\n    public boolean boost',
+              '''    public boolean undo(){if(!canUndo()||!board.undo())return false;undoCount++;return true;}\n    /** Board-only reset. Timer, spent Undo, boost usage, inventory consumption and\n     * assisted cell effects are deliberately retained. */\n    public boolean resetBoardPreservingItems(){\n        boolean wasTargeting=targetMode;targetMode=false;\n        return board.resetPlayerBoardPreservingItems()||wasTargeting;\n    }\n    public boolean boost''')
+
+          gv='app/src/main/java/com/example/einsteingame/GameView.java'
+          replace(gv,
+              '    private final RectF[] headerButtons = {new RectF(), new RectF(), new RectF(), new RectF()};',
+              '    private final RectF[] headerButtons = {new RectF(), new RectF(), new RectF(), new RectF(), new RectF()};')
+          replace(gv,
+              '        float x=width-margin-d(6)-3*buttonSize-2*buttonGap;\n        for(int i=1;i<=3;i++){headerButtons[i].set(x,buttonTop,x+buttonSize,buttonTop+buttonSize);x+=buttonSize+buttonGap;}',
+              '        float x=width-margin-d(6)-4*buttonSize-3*buttonGap;\n        for(int i=1;i<=4;i++){headerButtons[i].set(x,buttonTop,x+buttonSize,buttonTop+buttonSize);x+=buttonSize+buttonGap;}')
+          replace(gv,
+              '        String[] glyphs={"back","minus","fit","plus"};',
+              '        String[] glyphs={"back","reset","minus","fit","plus"};')
+          replace(gv,
+              '''                if (headerButtons[0].contains(x,y)){if(listener!=null)listener.back();else ((android.app.Activity)getContext()).finish();}\n                else if (headerButtons[1].contains(x,y)) zoom(1/1.25f, board.centerX(), board.centerY());\n                else if (headerButtons[2].contains(x,y)) fitBoard();\n                else if (headerButtons[3].contains(x,y)) zoom(1.25f, board.centerX(), board.centerY());''',
+              '''                if (headerButtons[0].contains(x,y)){if(listener!=null)listener.back();else ((android.app.Activity)getContext()).finish();}\n                else if (headerButtons[1].contains(x,y)) {\n                    boolean wasContradictory=state.hasPlacementContradiction();\n                    if(session!=null&&session.resetBoardPreservingItems()) {\n                        gameplay.finish();\n                        removeCallbacks(hidePlacementNotice);placementNoticeVisible=false;\n                        trace.capture(state);captureRaw();\n                        onCandidateChanged(wasContradictory);\n                        if(listener!=null)listener.changed();\n                        announceForAccessibility("보드를 초기화했습니다");\n                        ClumiUi.toast(getContext(),"보드만 초기화했어요. 아이템 사용 상태는 유지됩니다.",dark);\n                        invalidate();\n                    }\n                }\n                else if (headerButtons[2].contains(x,y)) zoom(1/1.25f, board.centerX(), board.centerY());\n                else if (headerButtons[3].contains(x,y)) fitBoard();\n                else if (headerButtons[4].contains(x,y)) zoom(1.25f, board.centerX(), board.centerY());''')
+
+          cg='app/src/main/java/com/example/einsteingame/ClumiGlyph.java'
+          replace(cg,
+              '        else if("fit".equals(name)){for(int i=0;i<4;i++){c.save();c.rotate(i*90);c.drawLine(-11,-4,-11,-11,p);c.drawLine(-11,-11,-4,-11,p);c.restore();}}',
+              '        else if("reset".equals(name)){c.drawArc(new RectF(-11,-11,11,11),-55,285,false,p);p.setStyle(Paint.Style.FILL);Path arrow=new Path();arrow.moveTo(8,-12);arrow.lineTo(13,-11);arrow.lineTo(11,-6);arrow.close();c.drawPath(arrow,p);}\n        else if("fit".equals(name)){for(int i=0;i<4;i++){c.save();c.rotate(i*90);c.drawLine(-11,-4,-11,-11,p);c.drawLine(-11,-11,-4,-11,p);c.restore();}}')
+          PY
           git diff --check
           grep -F 'public boolean resetPlayerBoardPreservingItems()' app/src/main/java/com/example/einsteingame/GameState.java
           grep -F 'public boolean resetBoardPreservingItems()' app/src/main/java/com/example/einsteingame/StageSession.java
@@ -48,47 +84,17 @@ jobs:
         run: |
           cat > source/app/src/main/java/com/example/einsteingame/BoardResetProbe.java <<'JAVA'
           package com.example.einsteingame;
-
           import java.lang.reflect.Field;
-
           public final class BoardResetProbe {
-              private static void check(boolean value,String message){if(!value)throw new AssertionError(message);}
-              private static int rawMask(GameState s,int row,int col){int mask=0;for(int i=0;i<GameState.SIZE;i++)if(s.isUserCandidatePresent(row,col,i))mask|=1<<i;return mask;}
-              public static void main(String[] args) throws Exception {
-                  GameState state=new GameState();
-                  state.select(0,2);
-                  check(state.toggleCandidate(0),"tap edit");
-                  check(state.forceCandidate(1),"manual force");
-                  check(state.canUndo(),"history exists before reset");
-                  check(state.resetPlayerBoardPreservingItems(),"reset must report mutation");
-                  for(int r=0;r<GameState.SIZE;r++)for(int c=0;c<GameState.SIZE;c++)
-                      check(rawMask(state,r,c)==31,"direct player board restored @"+r+","+c);
-                  check(!state.canUndo(),"board reset clears board Undo history");
-                  check(!state.hasPlacementContradiction(),"reset clears player contradiction");
-
-                  GameState assisted=new GameState();
-                  Field assistedField=GameState.class.getDeclaredField("assistedSlot");
-                  assistedField.setAccessible(true);
-                  int[][] assistedSlots=(int[][])assistedField.get(assisted);
-                  assistedSlots[1][1]=3;
-                  assisted.select(1,2);
-                  check(assisted.toggleCandidate(0),"edit around assisted item");
-                  check(assisted.resetPlayerBoardPreservingItems(),"reset with assisted item");
-                  check(assisted.isAssistedConfirmed(1,1),"CONFIRM CELL effect survives reset");
-                  check(assisted.singleCandidateSlot(1,1)==3,"assisted target identity survives");
-                  for(int c=0;c<GameState.SIZE;c++)if(c!=1)
-                      check(!assisted.isCandidatePresent(1,c,3),"assisted sibling exclusion survives @"+c);
-                  check(rawMask(assisted,1,2)==31,"raw player candidates reset under preserved item effect");
-
-                  GameState wrong=new GameState();
-                  wrong.select(0,0);
-                  check(wrong.toggleCandidate(0),"prep0");check(wrong.toggleCandidate(2),"prep2");
-                  check(wrong.toggleCandidate(3),"prep3");check(wrong.toggleCandidate(4),"prep4");
-                  wrong.select(0,2);check(wrong.forceCandidate(1),"wrong force");
-                  check(wrong.hasPlacementContradiction(),"wrong force contradiction");
-                  check(wrong.resetPlayerBoardPreservingItems(),"reset contradiction");
-                  check(!wrong.hasPlacementContradiction(),"reset restores valid board domain");
-
+              private static void check(boolean v,String m){if(!v)throw new AssertionError(m);}
+              private static int rawMask(GameState s,int r,int c){int m=0;for(int i=0;i<GameState.SIZE;i++)if(s.isUserCandidatePresent(r,c,i))m|=1<<i;return m;}
+              public static void main(String[] args)throws Exception{
+                  GameState state=new GameState();state.select(0,2);check(state.toggleCandidate(0),"tap");check(state.forceCandidate(1),"force");check(state.canUndo(),"history");check(state.resetPlayerBoardPreservingItems(),"reset");
+                  for(int r=0;r<GameState.SIZE;r++)for(int c=0;c<GameState.SIZE;c++)check(rawMask(state,r,c)==31,"board restored");
+                  check(!state.canUndo(),"reset clears board undo");check(!state.hasPlacementContradiction(),"valid after reset");
+                  GameState assisted=new GameState();Field f=GameState.class.getDeclaredField("assistedSlot");f.setAccessible(true);int[][] a=(int[][])f.get(assisted);a[1][1]=3;assisted.select(1,2);check(assisted.toggleCandidate(0),"edit");check(assisted.resetPlayerBoardPreservingItems(),"reset assisted");
+                  check(assisted.isAssistedConfirmed(1,1),"assist survives");check(assisted.singleCandidateSlot(1,1)==3,"assist identity");for(int c=0;c<GameState.SIZE;c++)if(c!=1)check(!assisted.isCandidatePresent(1,c,3),"assist exclusion");check(rawMask(assisted,1,2)==31,"raw reset");
+                  GameState wrong=new GameState();wrong.select(0,0);check(wrong.toggleCandidate(0),"p0");check(wrong.toggleCandidate(2),"p2");check(wrong.toggleCandidate(3),"p3");check(wrong.toggleCandidate(4),"p4");wrong.select(0,2);check(wrong.forceCandidate(1),"wrong force");check(wrong.hasPlacementContradiction(),"contradiction");check(wrong.resetPlayerBoardPreservingItems(),"reset contradiction");check(!wrong.hasPlacementContradiction(),"recovered");
                   System.out.println("BOARD_RESET_PRESERVE_ITEMS_PROBE_PASS");
               }
           }
@@ -99,14 +105,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
-
       - name: Install Android platform
         shell: bash
         run: sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
-
       - name: Compile combined feature source
         working-directory: source
         shell: bash
@@ -114,7 +117,6 @@ jobs:
           set -euo pipefail
           chmod +x gradlew
           env -u GITHUB_ACTIONS -u CI ./gradlew --no-daemon --console=plain :app:compileDebugJavaWithJavac
-
       - name: Run board-reset probe
         working-directory: source
         shell: bash
@@ -124,7 +126,6 @@ jobs:
           CORE_CLASSES=puzzle-core/build/classes/java/main
           java -cp "$APP_CLASSES:$CORE_CLASSES:$ANDROID_HOME/platforms/android-34/android.jar" com.example.einsteingame.BoardResetProbe | tee ../board-reset-probe.txt
           grep -F 'BOARD_RESET_PRESERVE_ITEMS_PROBE_PASS' ../board-reset-probe.txt
-
       - name: Verify exact feature scope
         working-directory: source
         shell: bash
@@ -132,7 +133,6 @@ jobs:
           set -euo pipefail
           git diff --name-only | sort | tee ../board-reset-changed-files.txt
           test "$(git diff --name-only | grep -v '^app/src/main/java/com/example/einsteingame/BoardResetProbe.java$' | sort)" = $'app/src/main/java/com/example/einsteingame/ClumiGlyph.java\napp/src/main/java/com/example/einsteingame/GameState.java\napp/src/main/java/com/example/einsteingame/GameView.java\napp/src/main/java/com/example/einsteingame/StageSession.java'
-
       - name: Stage validated source artifact
         shell: bash
         run: |
@@ -141,7 +141,6 @@ jobs:
           cp source/app/src/main/java/com/example/einsteingame/{GameState.java,GameView.java,StageSession.java,ClumiGlyph.java} validated/app/src/main/java/com/example/einsteingame/
           sha256sum validated/app/src/main/java/com/example/einsteingame/*.java | tee validated/source-sha256.txt
           cp board-reset-probe.txt board-reset-changed-files.txt validated/
-
       - name: Upload validated source and evidence
         uses: actions/upload-artifact@v4
         with:
