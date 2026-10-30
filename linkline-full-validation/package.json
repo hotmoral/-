@@ -1,0 +1,9 @@
+{
+  "name": "linkline-product-web-foundation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --check ./src/app.mjs && node --check ./src/polish.mjs && node --check ./src/performance.mjs && node --check ./src/settings-preferences.mjs && node --check ./src/settings-about.mjs && node ./tests/foundation.test.mjs && node ./tests/progress-reset.test.mjs && node ./tests/settings-preferences.test.mjs && node ./tests/settings-about.test.mjs && node ./tests/performance-stamp.test.mjs && node ./tests/clear-outcome.test.mjs && node ./tests/runtime.test.mjs && node ./tests/navigation.test.mjs && node ./tests/path-geometry.test.mjs && node ./tests/polish.test.mjs",
+    "serve": "python3 -m http.server 4173"
+  }
+}

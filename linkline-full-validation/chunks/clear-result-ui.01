@@ -1,0 +1,120 @@
+const CLEAR_RESULT_EVENT = 'linkline:clear-result-v1';
+const STAMP_ASSETS = Object.freeze({
+  'S+': '/assets/performance-stamps/s-plus-approved.svg?stamp=approved-v3',
+  'A+': '/assets/performance-stamps/a-plus-approved.svg?stamp=approved-v3',
+  'B+': '/assets/performance-stamps/b-plus-approved.svg?stamp=approved-v3',
+});
+const STAMP_FALLBACK_ASSETS = Object.freeze({
+  'S+': '/assets/performance-stamps/s-plus.png?stamp=fallback-v1',
+  'A+': '/assets/performance-stamps/a-plus.png?stamp=fallback-v1',
+  'B+': '/assets/performance-stamps/b-plus.png?stamp=fallback-v1',
+});
+
+const stampReadyGrades = new Set();
+const stampPreloads = new Map();
+let pendingSnapshot = null;
+
+function markStampReady(grade) {
+  if (stampReadyGrades.has(grade)) return;
+  stampReadyGrades.add(grade);
+  queueMicrotask(decorateClearResult);
+}
+
+function primeStampAssets() {
+  if (typeof globalThis.Image !== 'function') {
+    Object.keys(STAMP_ASSETS).forEach((grade) => stampReadyGrades.add(grade));
+    return;
+  }
+
+  for (const [grade, src] of Object.entries(STAMP_ASSETS)) {
+    const image = new globalThis.Image();
+    const fallback = STAMP_FALLBACK_ASSETS[grade];
+    let fallbackAttempted = false;
+    image.decoding = 'sync';
+    image.loading = 'eager';
+    if ('fetchPriority' in image) image.fetchPriority = 'high';
+    image.addEventListener('load', () => markStampReady(grade), { once: true });
+    image.addEventListener('error', () => {
+      if (!fallbackAttempted && fallback) {
+        fallbackAttempted = true;
+        image.src = fallback;
+        return;
+      }
+      markStampReady(grade);
+    });
+    image.src = src;
+    if (typeof image.decode === 'function') image.decode().then(() => markStampReady(grade), () => {});
+    if (image.complete && image.naturalWidth > 0) markStampReady(grade);
+    stampPreloads.set(grade, image);
+  }
+}
+
+function crownIcon() {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.classList.add('performance-crown');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M3.4 7.4 7.7 11l4.2-6 4.4 6 4.3-3.6-1.6 9.2H5zM5.4 19h13.2');
+  svg.append(path);
+  return svg;
+}
+
+function stat(label, value, className = '') {
+  const item = document.createElement('div');
+  item.className = `performance-stat ${className}`.trim();
+
+  const heading = document.createElement('div');
+  heading.className = 'performance-stat-label';
+  if (className.includes('best')) heading.append(crownIcon());
+  heading.append(document.createTextNode(label));
+
+  const number = document.createElement('div');
+  number.className = 'performance-stat-value';
+  number.textContent = Number.isInteger(value) ? String(value) : '—';
+
+  const unit = document.createElement('div');
+  unit.className = 'performance-stat-unit';
+  unit.textContent = 'MOVES';
+
+  item.append(heading, number, unit);
+  return item;
+}
+
+function stampSource(grade) {
+  const preload = stampPreloads.get(grade);
+  if (preload?.naturalWidth > 0) return preload.currentSrc || preload.src;
+  return STAMP_ASSETS[grade];
+}
+
+function installStampImage(rank, grade) {
+  const image = document.createElement('img');
+  image.className = 'performance-stamp';
+  image.alt = '';
+  image.decoding = 'sync';
+  image.loading = 'eager';
+  if ('fetchPriority' in image) image.fetchPriority = 'high';
+
+  let fallbackAttempted = false;
+  image.addEventListener('error', () => {
+    const fallback = STAMP_FALLBACK_ASSETS[grade];
+    if (!fallbackAttempted && fallback) {
+      fallbackAttempted = true;
+      image.src = fallback;
+      return;
+    }
+    image.remove();
+    if (!rank.querySelector('.performance-rank-fallback')) {
+      const text = document.createElement('span');
+      text.className = 'performance-rank-fallback';
+      text.textContent = grade;
+      rank.append(text);
+    }
+  });
+
+  image.src = stampSource(grade);
+  rank.append(image);
+}
+
+function createPerformanceResult(snapshot) {
+  const result = document.createElement('section');
