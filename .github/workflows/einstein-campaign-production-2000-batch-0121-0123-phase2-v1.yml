@@ -1,4 +1,4 @@
-name: Einstein Campaign Production 2000 Batch 0121-0123 Phase2 V1
+name: Einstein Campaign Production 2000 Batch 0124-0126 Phase2 V1
 
 on:
   push:
@@ -14,14 +14,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  produce-batch-0121-0123:
+  produce-batch-0124-0126:
     if: >-
-      github.event.head_commit.message == 'production: run Phase 2 batch 0121-0123 commit-head'
+      github.event.head_commit.message == 'production: run Phase 2 batch 0124-0126 commit-head'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
       RUNNER_SHA: 2c1d21ef4f6e22e5d2e5b24146dba98075b32a46
-      EXPECTED_BANK_HEAD: f58b303283c3cd7696489b50d2964e01746ac0ab
+      EXPECTED_BANK_HEAD: b2e260e4e757a8e3d0603e595c5b30a85b05e9ed
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       WRITE_TOKEN: ${{ secrets.EINSTEINGAME_EVIDENCE_WRITE_TOKEN }}
 
@@ -59,7 +59,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Execute bounded Phase 2 batch 121-123
+      - name: Execute bounded Phase 2 batch 124-126
         shell: bash
         env:
           EINSTEIN_RUNNER_SHA: 2c1d21ef4f6e22e5d2e5b24146dba98075b32a46
@@ -67,4 +67,4 @@ jobs:
           EINSTEIN_BANK_REMOTE_ROOT: production/campaign-2000-bank-v1
         run: |
           set -euo pipefail
-          bash EinsteinGame/tools/campaign-production-2000/run_compact_phase2_batch.sh 121 3 "$EXPECTED_BANK_HEAD"
+          bash EinsteinGame/tools/campaign-production-2000/run_compact_phase2_batch.sh 124 3 "$EXPECTED_BANK_HEAD"
