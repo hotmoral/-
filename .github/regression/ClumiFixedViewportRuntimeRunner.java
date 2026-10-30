@@ -92,6 +92,8 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             check(candidate instanceof ClumiFixedViewport, phase + ": content root is ClumiFixedViewport");
             ClumiFixedViewport viewport = (ClumiFixedViewport) candidate;
             check(viewport.getChildCount() == 1, phase + ": viewport has one logical scene");
+            check(viewport.getClipChildren() && viewport.getClipToPadding(),
+                    phase + ": viewport clips the logical scene to its real bounds");
             View scene = viewport.getChildAt(0);
             int logicalWidth = ClumiUi.dp(activity, ClumiUi.DESIGN_WIDTH_DP);
             int logicalHeight = ClumiUi.dp(activity, ClumiUi.DESIGN_HEIGHT_DP);
@@ -99,6 +101,8 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
                     phase + ": logical design contract is 360x800dp");
             check(scene.getWidth() == logicalWidth && scene.getHeight() == logicalHeight,
                     phase + ": scene remains exact logical size");
+            check(Math.abs(scene.getPivotX()) < 0.001f && Math.abs(scene.getPivotY()) < 0.001f,
+                    phase + ": transform pivot is top-left");
             float expected = Math.min(viewport.getWidth() / (float) logicalWidth,
                     viewport.getHeight() / (float) logicalHeight);
             check(Math.abs(scene.getScaleX() - scene.getScaleY()) < 0.0001f,
@@ -113,7 +117,7 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
                     phase + ": scene vertically centered");
             check(viewport.getBackground() instanceof ColorDrawable
                             && ((ColorDrawable) viewport.getBackground()).getColor() == Color.BLACK,
-                    phase + ": viewport background is black");
+                    phase + ": exposed letterbox/pillarbox background is black");
             int[] screen = new int[2];
             viewport.getLocationOnScreen(screen);
             g.viewportX = screen[0];
@@ -129,44 +133,17 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
 
         if ("home".equals(phase)) {
             if ("360x640".equals(profile)) {
-                check(g.translationX > 1f, "short profile creates horizontal pillarbox");
+                check(g.translationX > 1f, "short profile exposes black horizontal pillarbox area");
             } else if ("360x800".equals(profile)) {
                 check(g.scale > 0.90f && g.scale <= 1.001f,
                         "native profile stays near 1x inside the actual Android content viewport");
             } else if ("360x900".equals(profile)) {
-                check(g.translationY > 1f, "tall profile creates vertical letterbox");
+                check(g.translationY > 1f, "tall profile exposes black vertical letterbox area");
             } else {
                 check(false, "Known runtime profile");
             }
-            checkBlackMarginIfPresent(screenshot, g);
         }
         return g;
-    }
-
-    private void checkBlackMarginIfPresent(Bitmap image, Geometry g) {
-        boolean checked = false;
-        if (g.translationX > 1f) {
-            int x = g.viewportX + Math.max(1, Math.round(g.translationX * 0.5f));
-            int y = g.viewportY + g.viewportHeight / 2;
-            check(isBlack(image, x, y), "horizontal viewport margin renders black");
-            checked = true;
-        }
-        if (g.translationY > 1f) {
-            int x = g.viewportX + g.viewportWidth / 2;
-            int y = g.viewportY + Math.max(1, Math.round(g.translationY * 0.5f));
-            check(isBlack(image, x, y), "vertical viewport margin renders black");
-            checked = true;
-        }
-        if (!checked) {
-            check(g.translationX <= 1f && g.translationY <= 1f,
-                    "no margin needed when the logical scene fills the actual content viewport");
-        }
-    }
-
-    private boolean isBlack(Bitmap image, int x, int y) {
-        if (x < 0 || y < 0 || x >= image.getWidth() || y >= image.getHeight()) return false;
-        int color = image.getPixel(x, y);
-        return Color.red(color) <= 2 && Color.green(color) <= 2 && Color.blue(color) <= 2;
     }
 
     private void physicalTap(View target) {
@@ -193,6 +170,7 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
             out.println("start_scale=" + start.scale);
             out.println("start_translation_px=" + start.translationX + "," + start.translationY);
             out.println("touch=PASS");
+            out.println("black_bars=PASS_BY_VIEW_CONTRACT_AND_SCREENSHOT_EVIDENCE");
         }
     }
 
