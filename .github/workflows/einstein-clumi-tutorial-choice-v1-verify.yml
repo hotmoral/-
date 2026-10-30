@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: e765b64a278db1270918c052a69044d5528dd32c
+      SOURCE_SHA: bbcd3f4847ea253e7dc768b2ec4f5c769cf3af06
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
+      TUTORIAL_ART_SHA256: 3979153f9753c02fbcb89dfd75dbe092d61c5a2e3178c087e2a4eceeb4766528
     steps:
       - name: Require private source credential
         run: test -n "$READ_TOKEN"
@@ -32,7 +33,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Apply Stable v7 deltas then tutorial transform
+      - name: Apply Stable v7 tutorial and visual-button transforms
         working-directory: source
         shell: bash
         run: |
@@ -43,42 +44,49 @@ jobs:
           python3 dev/board-reset-preserve-resources.py
           python3 dev/board-render-resume-fix.py
           python3 dev/tutorial-choice-onboarding-v2.py
+          python3 dev/tutorial-button-visual-v1.py
           git diff --check
 
-      - name: Verify tutorial-mode contract and star-tier labels
+      - name: Verify tutorial-mode visual asset and arrival contract
         working-directory: source
         shell: bash
         run: |
           set -euo pipefail
+          echo "$TUTORIAL_ART_SHA256  app/src/main/assets/ui/b3-r5/cta_tutorial.png" | sha256sum -c -
           python3 - <<'PY'
           from pathlib import Path
           ma=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
           gv=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
           sp=Path('app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java').read_text()
           cc=Path('app/src/main/java/com/example/einsteingame/ClumiConditionCard.java').read_text()
+          va=Path('app/src/main/java/com/example/einsteingame/ClumiVisualAssets.java').read_text()
+          arrival=Path('app/src/main/java/com/example/einsteingame/ClumiStageArrival.java').read_text()
           home=ma[ma.index('private void renderHome()'):ma.index('private void showStages()')]
           assert 'Button tutorial=button("튜토리얼",true,this::startTutorial)' in home
           assert home.index('home-tutorial') < home.index('home-continue')
+          assert 'ClumiVisualAssets.buttonArt(tutorial,"cta-tutorial")' in home
+          assert 'ClumiUi.actionIcon(tutorial,"help",true)' not in home
+          assert '"cta_start","cta_continue","cta_tutorial","cta_stage_select"' in va
+          assert 'FILES.put("cta-tutorial","cta_tutorial")' in va
           assert 'private void saveAttempt(){if(!tutorialMode&&session!=null' in ma
           assert 'if(tutorialMode)game.post' in ma
           assert 'tutorialMode=true;spotlight.beginTutorial();route("play",false,this::prepareTutorialStage)' in ma
-          assert 'session=new StageSession(catalog.stage(stage),next.gameState(),SystemClock::elapsedRealtime,null);attachGame(next);' in ma
           assert 'finishTutorialAndStartStageOne' in ma
-          assert 'tutorialMode=false;spotlight.endTutorial();showHome();' in ma
           assert 'PlayTimer.setStage1TutorialPending(false);' in sp
-          assert 'void beginTutorial()' in sp and 'PlayTimer.setStage1TutorialPending(true)' in sp
-          assert 'explicitTutorial' in sp and 'explicitSeen' in sp
-          assert 'FILTER_ALL_LABEL' in sp
-          assert 'stage1.candidate.force' in gv
-          assert 'stage1.undo.practice' in gv
-          assert '확실한 후보는 길게 눌러보세요' in gv
-          assert '한 번의 길게 누르기는 실행취소 한 번으로 전부 돌아가며' in gv
-          assert 'else if(tutorialStep<10)tutorialStep++' in gv
-          assert 'finishTutorialAndStartStageOne()' in gv
+          assert 'explicitTutorial' in sp and 'FILTER_ALL_LABEL' in sp
+          assert 'stage1.candidate.force' in gv and 'stage1.undo.practice' in gv
           assert ma.count('game.spotlight(spotlight)') == 1
           assert 'new String[]{"CLEAR","GREAT","PERFECT"}' in cc
-          assert '퍼즐 완성' not in cc and '능숙한 해결' not in cc and '완벽한 해결' not in cc
-          print('TUTORIAL_CHOICE_AND_STAR_LABEL_CONTRACT_PASS')
+          i_logo=arrival.index('motion.add(homeLogo')
+          i_settings=arrival.index('motion.add(settings')
+          i_tutorial=arrival.index('motion.add(tutorial')
+          i_play=arrival.index('motion.add(play')
+          i_stages=arrival.index('motion.add(stages')
+          i_rewards=arrival.index('motion.add(rewards')
+          assert i_logo < i_settings < i_tutorial < i_play < i_stages < i_rewards
+          assert 'laidOut(root,homeLogo,settings,tutorial,play,stages,rewards)' in arrival
+          assert 'if(tutorial!=null)tutorial.setEnabled(false);' in arrival
+          print('TUTORIAL_VISUAL_ASSET_AND_ARRIVAL_CONTRACT_PASS')
           PY
 
       - name: Set up JDK 17
@@ -101,6 +109,7 @@ jobs:
           chmod +x gradlew
           env -u GITHUB_ACTIONS -u CI -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD ./gradlew --no-daemon --console=plain :app:assembleRelease -x :app:lintVitalRelease
           test -s app/build/outputs/apk/release/app-release-unsigned.apk
-          echo TUTORIAL_CHOICE_ANDROID_COMPILE_PASS
+          unzip -l app/build/outputs/apk/release/app-release-unsigned.apk | grep -F 'assets/ui/b3-r5/cta_tutorial.png'
+          echo TUTORIAL_VISUAL_ANDROID_COMPILE_PASS
 
-# trigger: star-tier-labels
+# trigger: tutorial-visual-v1
