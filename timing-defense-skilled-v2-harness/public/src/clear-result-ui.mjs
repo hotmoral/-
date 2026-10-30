@@ -5,7 +5,35 @@ const STAMP_ASSETS = Object.freeze({
   'B+': '/assets/performance-stamps/b-plus-approved.png?stamp=approved-v2',
 });
 
+const stampReadyGrades = new Set();
+const stampPreloads = new Map();
 let pendingSnapshot = null;
+
+function markStampReady(grade) {
+  if (stampReadyGrades.has(grade)) return;
+  stampReadyGrades.add(grade);
+  queueMicrotask(decorateClearResult);
+}
+
+function primeStampAssets() {
+  if (typeof globalThis.Image !== 'function') {
+    Object.keys(STAMP_ASSETS).forEach((grade) => stampReadyGrades.add(grade));
+    return;
+  }
+
+  for (const [grade, src] of Object.entries(STAMP_ASSETS)) {
+    const image = new globalThis.Image();
+    image.decoding = 'sync';
+    image.loading = 'eager';
+    if ('fetchPriority' in image) image.fetchPriority = 'high';
+    image.addEventListener('load', () => markStampReady(grade), { once: true });
+    image.addEventListener('error', () => markStampReady(grade), { once: true });
+    image.src = src;
+    if (typeof image.decode === 'function') image.decode().then(() => markStampReady(grade), () => {});
+    if (image.complete) markStampReady(grade);
+    stampPreloads.set(grade, image);
+  }
+}
 
 function crownIcon() {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -63,6 +91,7 @@ function createPerformanceResult(snapshot) {
     image.alt = `${snapshot.grade} 등급`;
     image.decoding = 'sync';
     image.loading = 'eager';
+    if ('fetchPriority' in image) image.fetchPriority = 'high';
     rank.append(image);
     center.append(rank);
   }
@@ -126,6 +155,8 @@ function positionRetryControl(control, boardWrap, success) {
 
 function decorateClearResult() {
   if (!pendingSnapshot || typeof document === 'undefined') return;
+  if (pendingSnapshot.grade && STAMP_ASSETS[pendingSnapshot.grade] && !stampReadyGrades.has(pendingSnapshot.grade)) return;
+
   const screen = document.querySelector('#screen');
   const success = screen?.querySelector('.success-panel');
   const boardWrap = screen?.querySelector('.board-wrap');
@@ -171,6 +202,10 @@ function installStyles() {
 .performance-retry-wrap{position:absolute;z-index:12;left:50%;transform:translateX(-50%);gap:5px;pointer-events:auto}
 .performance-retry{width:54px;height:54px;min-width:54px;min-height:54px;font-size:0;line-height:1}
 .performance-retry-wrap .round-action-label{font-size:8px;letter-spacing:.19em}
+.stage-node.performance-grade-ring::after{inset:-5px!important;border-width:3px!important;box-shadow:0 0 0 1px rgba(255,255,255,.78),0 2px 7px rgba(42,35,24,.14)!important}
+.stage-node.performance-grade-s{--performance-ring:#d3a11f!important}
+.stage-node.performance-grade-a{--performance-ring:#909aa6!important}
+.stage-node.performance-grade-b{--performance-ring:#b96c3f!important}
 .screen.polish-success .performance-result{animation:performanceOverlayReveal .26s .06s ease-out both}
 .screen.polish-success .performance-retry-wrap{animation:performanceRetryReveal .22s .16s ease-out both}
 @keyframes performanceOverlayReveal{from{opacity:0;transform:scale(.992)}to{opacity:1;transform:scale(1)}}
@@ -183,6 +218,7 @@ function installStyles() {
 }
 
 if (typeof document !== 'undefined') {
+  primeStampAssets();
   installStyles();
   document.addEventListener(CLEAR_RESULT_EVENT, (event) => {
     pendingSnapshot = event.detail ?? null;
