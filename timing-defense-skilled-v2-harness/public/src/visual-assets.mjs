@@ -1,3 +1,5 @@
+import './settings-preferences.mjs';
+import './settings-about.mjs';
 const V61_CORE_GIT_BLOB_SHA = '4b67aa8f6316bab513f23797e7a970f33f6e449f';
 const V61_CORE_PARTS = [
   './visual-assets-v6-core.part01.txt',

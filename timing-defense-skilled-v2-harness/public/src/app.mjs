@@ -18,6 +18,7 @@ let progress;
 let current;
 let runtime;
 let stagePageAnchor = 1;
+let persistentRetry = null;
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -227,6 +228,23 @@ function resetPuzzle() {
   renderGame();
 }
 
+function gameRetryControl() {
+  if (persistentRetry) return persistentRetry;
+  const retry = button('secondary round-action', '↻', resetPuzzle);
+  retry.setAttribute('aria-label', '현재 스테이지 다시 도전');
+  const label = el('span', 'round-action-label', 'RETRY');
+  const wrap = el('div', 'game-retry-control');
+  Object.assign(wrap.style, {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '8px',
+  });
+  wrap.append(retry, label);
+  persistentRetry = wrap;
+  return persistentRetry;
+}
+
 function openStage(position) {
   current = campaign.puzzles[position - 1];
   if (!current) throw new Error(`POSITION_UNAVAILABLE:${position}`);
@@ -303,7 +321,7 @@ function renderGame() {
     iconBackButton(renderHome, '홈으로'),
     button('ghost compact', 'STAGES', () => renderStageSelect(current.position)),
   );
-  screen.append(nav, renderBoard());
+  screen.append(nav, renderBoard(), gameRetryControl());
 
   if (runtime.solved) {
     const success = el('section', 'success-panel');
@@ -323,12 +341,7 @@ function renderGame() {
     return;
   }
 
-  const hint = el('div', 'play-hint', '끝점을 끌어 두 목표에 연결하세요.');
-  const restart = button('secondary round-action', '↻', resetPuzzle);
-  const label = el('span', 'round-action-label', 'RESTART');
-  const restartWrap = el('div', 'round-action-wrap');
-  restartWrap.append(restart, label);
-  screen.append(hint, restartWrap);
+  screen.append(el('div', 'play-hint', '끝점을 끌어 두 목표에 연결하세요.'));
 }
 
 function stageButton(position) {

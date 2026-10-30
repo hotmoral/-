@@ -40,8 +40,8 @@ celebrationStyle.textContent = `
 .linkline-board-ghost.is-leaving{animation:linklineGhostLeaveSmooth .30s cubic-bezier(.22,.72,.22,1) both}
 .board-wrap.linkline-incoming-board{opacity:0;transform:scale(.994);filter:blur(.35px);will-change:opacity,transform,filter}
 .board-wrap.linkline-incoming-board.is-visible{opacity:1;transform:scale(1);filter:blur(0);transition:opacity .28s ease,transform .30s cubic-bezier(.18,.76,.22,1),filter .24s ease}
-.linkline-incoming-ui{opacity:0;transform:translateY(4px);pointer-events:none;will-change:opacity,transform}
-.linkline-incoming-ui.is-visible{opacity:1;transform:translateY(0);pointer-events:auto;transition:opacity .22s .04s ease,transform .26s .04s cubic-bezier(.18,.76,.22,1)}
+.linkline-incoming-ui{opacity:0;pointer-events:none;will-change:opacity}
+.linkline-incoming-ui.is-visible{opacity:1;pointer-events:auto;transition:opacity .22s .04s ease}
 .stage-node.performance-grade-ring{position:relative}
 .stage-node.performance-grade-ring::after{content:"";position:absolute;inset:-4px;border:2px solid var(--performance-ring);border-radius:50%;pointer-events:none;box-shadow:0 1px 4px rgba(42,35,24,.08)}
 .stage-node.performance-grade-s{--performance-ring:#c9a13b}
@@ -366,4 +366,4 @@ document.addEventListener('click', (event) => {
   setTimeout(() => finishForwardVisual(pending, incoming), remaining);
 }, false);
 
-// Linkline polish v4.3 Stage Select grade rings + smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.
+// Linkline polish v4.4 fixed-position lower UI fade + Stage Select grade rings + smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.
