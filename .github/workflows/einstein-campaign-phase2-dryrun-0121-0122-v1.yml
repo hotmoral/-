@@ -1,0 +1,143 @@
+name: Einstein Campaign Phase2 DryRun 0121-0122 V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-phase2-dryrun-0121-0122-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  phase2-dryrun-0121-0122:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      SOURCE_SHA: ad46751547fe456692b82bd3fd2270351bf61295
+      BANK_BRANCH: campaign-production-2000-bank-v1
+    steps:
+      - name: Checkout public harness for durable result
+        uses: actions/checkout@v4
+        with:
+          path: Harness
+          fetch-depth: 1
+          persist-credentials: true
+
+      - name: Checkout exact Phase 2 dry-run source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ad46751547fe456692b82bd3fd2270351bf61295
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout live durable bank read-only
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile and run non-persistent 121-122 acquisition dry-run
+        id: dryrun
+        shell: bash
+        run: |
+          set -euo pipefail
+          BANK_HEAD="$(git -C "$GITHUB_WORKSPACE/ProductionStore" rev-parse HEAD)"
+          echo "bank_head=$BANK_HEAD" >> "$GITHUB_OUTPUT"
+          cd "$GITHUB_WORKSPACE/EinsteinGame"
+
+          CLASSES=/tmp/einstein-phase2-dryrun-classes
+          SOURCES=/tmp/einstein-phase2-dryrun-sources.txt
+          SCRATCH=/tmp/einstein-phase2-dryrun-bank
+          rm -rf "$CLASSES" "$SOURCES" "$SCRATCH"
+          mkdir -p "$CLASSES"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2ProducerV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2DryRun121122V1.java' >> "$SOURCES"
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
+          echo PHASE2_DRYRUN_COMPILE=PASS
+
+          python3 - <<'PY'
+          import importlib.util, json
+          p='tools/campaign-production-2000/campaign_production_2000.py'
+          spec=importlib.util.spec_from_file_location('cp2000',p)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          for n in (121,122):
+              stage=m.stage_plan(n)
+              with open(f'/tmp/einstein-stage-{n:04d}.json','w',encoding='utf-8') as f:
+                  json.dump(stage,f,sort_keys=True,separators=(',',':')); f.write('\n')
+          assert m.stage_plan(121)['primarySkill']=='DIRECT_RELATION'
+          assert m.stage_plan(122)['primarySkill']=='RELATION_TRANSFER'
+          print('PHASE2_DRYRUN_MACRO_REQUESTS=PASS')
+          PY
+
+          cp -a "$GITHUB_WORKSPACE/ProductionStore/production/campaign-2000-bank-v1/bank" "$SCRATCH"
+          touch "$SCRATCH/.phase2-dryrun-scratch"
+          export EINSTEIN_PHASE2_DRYRUN=true
+          export EINSTEIN_PRODUCTION_BANK_ROOT="$SCRATCH"
+          export EINSTEIN_STAGE_121_REQUEST=/tmp/einstein-stage-0121.json
+          export EINSTEIN_STAGE_122_REQUEST=/tmp/einstein-stage-0122.json
+
+          set +e
+          java -Xmx8g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2DryRun121122V1 \
+            | tee /tmp/einstein-phase2-dryrun-121-122.log
+          JAVA_STATUS=${PIPESTATUS[0]}
+          set -e
+          echo "java_status=$JAVA_STATUS" >> "$GITHUB_OUTPUT"
+          grep -E '^(CAMPAIGN_PRODUCTION_2000_PHASE2_DRYRUN_121_122|stage121Status|stage121TerminalReason|stage121Attempt=|stage121EnvelopeRejections|stage122Status|stage122TerminalReason|stage122Attempt=|stage122EnvelopeRejections|durableBankWriteInvoked|manifestWriteInvoked)=' /tmp/einstein-phase2-dryrun-121-122.log > /tmp/einstein-phase2-dryrun-summary.txt || true
+
+      - name: Persist dry-run result in public harness
+        if: always()
+        shell: bash
+        env:
+          BANK_HEAD: ${{ steps.dryrun.outputs.bank_head }}
+          JAVA_STATUS: ${{ steps.dryrun.outputs.java_status }}
+        run: |
+          set -euo pipefail
+          RESULT="$GITHUB_WORKSPACE/Harness/.github/regression/einstein-campaign-phase2-dryrun-0121-0122-result.txt"
+          mkdir -p "$(dirname "$RESULT")"
+          {
+            echo "workflow=Einstein Campaign Phase2 DryRun 0121-0122 V1"
+            echo "run_id=$GITHUB_RUN_ID"
+            echo "run_attempt=$GITHUB_RUN_ATTEMPT"
+            echo "private_source_sha=$SOURCE_SHA"
+            echo "bank_branch=$BANK_BRANCH"
+            echo "bank_head=$BANK_HEAD"
+            echo "java_status=${JAVA_STATUS:-missing}"
+            echo "durable_bank_write_authorized=false"
+            echo "manifest_write_authorized=false"
+            if [ -f /tmp/einstein-phase2-dryrun-summary.txt ]; then cat /tmp/einstein-phase2-dryrun-summary.txt; fi
+          } > "$RESULT"
+          cd "$GITHUB_WORKSPACE/Harness"
+          git config user.name 'Einstein Phase2 DryRun'
+          git config user.email 'noreply@localhost'
+          git add .github/regression/einstein-campaign-phase2-dryrun-0121-0122-result.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "evidence: Phase 2 dry-run 0121-0122 result"
+            git push origin HEAD:main
+          fi
+
+      - name: Require dry-run PASS
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ steps.dryrun.outputs.java_status }}" = 0
+          grep -F 'CAMPAIGN_PRODUCTION_2000_PHASE2_DRYRUN_121_122=PASS' /tmp/einstein-phase2-dryrun-121-122.log
+          grep -F 'durableBankWriteInvoked=false' /tmp/einstein-phase2-dryrun-121-122.log
+          grep -F 'manifestWriteInvoked=false' /tmp/einstein-phase2-dryrun-121-122.log
