@@ -1,0 +1,55 @@
+name: Einstein Campaign Phase2 Formal Producer Preflight V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-phase2-formal-producer-preflight-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  phase2-formal-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_SHA: 2c1d21ef4f6e22e5d2e5b24146dba98075b32a46
+    steps:
+      - name: Checkout exact private Phase 2 formal source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 2c1d21ef4f6e22e5d2e5b24146dba98075b32a46
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile formal producer and verify runner syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE/EinsteinGame"
+          bash -n tools/campaign-production-2000/run_compact_phase2_batch.sh
+          CLASSES=/tmp/einstein-phase2-formal-preflight-classes
+          SOURCES=/tmp/einstein-phase2-formal-preflight-sources.txt
+          rm -rf "$CLASSES" "$SOURCES"
+          mkdir -p "$CLASSES"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
+          cat >> "$SOURCES" <<'EOF'
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2ProducerV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2FormalProducerV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2WavePolicyV1Test.java
+          EOF
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
+          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2WavePolicyV1Test
+          echo PHASE2_FORMAL_PRODUCER_PREFLIGHT=PASS
