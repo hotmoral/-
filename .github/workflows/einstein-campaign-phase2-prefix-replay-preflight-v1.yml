@@ -5,13 +5,17 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/einstein-campaign-phase2-prefix-replay-preflight-v1.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/regression/einstein-campaign-phase2-prefix-replay-trigger.txt'
 
 permissions:
   contents: write
 
 jobs:
   phase2-prefix-replay:
-    if: github.event.head_commit.message == 'verify: Phase 2 prefix replay zero-draw preflight'
+    if: github.event_name == 'pull_request' || github.event.head_commit.message == 'verify: Phase 2 prefix replay zero-draw preflight'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -96,7 +100,7 @@ jobs:
           echo PHASE2_LIVE_PREFIX_REPLAY=PASS
 
       - name: Persist preflight result in public harness
-        if: always()
+        if: always() && github.event_name == 'push'
         shell: bash
         env:
           PREFLIGHT_OUTCOME: ${{ steps.preflight.outcome }}
