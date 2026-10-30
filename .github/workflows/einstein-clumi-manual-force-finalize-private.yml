@@ -68,3 +68,7 @@ jobs:
           test "$(git rev-parse FETCH_HEAD)" = "$FEATURE_SHA"
           git push origin HEAD:refs/heads/clumi-manual-force-longpress
           echo "final_source_sha=$FINAL_SOURCE_SHA"
+
+      - name: Finalization marker
+        shell: bash
+        run: echo 'CLUMI_MANUAL_FORCE_PRIVATE_FINALIZATION_COMPLETE'
