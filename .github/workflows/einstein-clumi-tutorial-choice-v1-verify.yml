@@ -55,8 +55,9 @@ jobs:
           ma=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
           gv=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
           sp=Path('app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java').read_text()
-          assert 'Button tutorial=button("튜토리얼",true,this::startTutorial)' in ma
-          assert ma.index('home-tutorial') < ma.index('home-continue')
+          home=ma[ma.index('private void renderHome()'):ma.index('private void showStages()')]
+          assert 'Button tutorial=button("튜토리얼",true,this::startTutorial)' in home
+          assert home.index('home-tutorial') < home.index('home-continue')
           assert 'private void saveAttempt(){if(!tutorialMode&&session!=null' in ma
           assert 'if(tutorialMode)game.post' in ma
           assert 'tutorialMode=true;spotlight.beginTutorial();route("play",false,this::prepareTutorialStage)' in ma
@@ -99,4 +100,4 @@ jobs:
           test -s app/build/outputs/apk/release/app-release-unsigned.apk
           echo TUTORIAL_CHOICE_ANDROID_COMPILE_PASS
 
-# trigger: v2
+# trigger: v3
