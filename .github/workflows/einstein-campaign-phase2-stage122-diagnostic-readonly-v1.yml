@@ -1,0 +1,67 @@
+name: Einstein Campaign Phase2 Stage122 Diagnostic ReadOnly V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-phase2-stage122-diagnostic-readonly-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  stage122-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 5c40f795a73e6d6889c2d9ef5891a26dee1a888e
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Diagnose stage 122 uncertainty
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE/EinsteinGame"
+          CLASSES=/tmp/einstein-phase2-stage122-diag-classes
+          SOURCES=/tmp/einstein-phase2-stage122-diag-sources.txt
+          SCRATCH=/tmp/einstein-phase2-stage122-diag-bank
+          mkdir -p "$CLASSES"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2ProducerV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage122DiagnosticV1.java' >> "$SOURCES"
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
+          python3 - <<'PY'
+          import importlib.util, json
+          p='tools/campaign-production-2000/campaign_production_2000.py'
+          spec=importlib.util.spec_from_file_location('cp2000',p)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          for n in (121,122):
+              with open(f'/tmp/einstein-stage-{n:04d}.json','w',encoding='utf-8') as f:
+                  json.dump(m.stage_plan(n),f,sort_keys=True,separators=(',',':')); f.write('\n')
+          PY
+          cp -a "$GITHUB_WORKSPACE/ProductionStore/production/campaign-2000-bank-v1/bank" "$SCRATCH"
+          touch "$SCRATCH/.phase2-dryrun-scratch"
+          export EINSTEIN_PHASE2_DRYRUN=true
+          export EINSTEIN_PRODUCTION_BANK_ROOT="$SCRATCH"
+          export EINSTEIN_STAGE_121_REQUEST=/tmp/einstein-stage-0121.json
+          export EINSTEIN_STAGE_122_REQUEST=/tmp/einstein-stage-0122.json
+          java -Xmx8g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage122DiagnosticV1
