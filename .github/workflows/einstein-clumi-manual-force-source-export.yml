@@ -1,0 +1,42 @@
+name: Clumi Manual Force Source Export
+
+on:
+  push:
+    branches:
+      - clumi/manual-force-longpress-dev
+    paths:
+      - '.github/workflows/einstein-clumi-manual-force-source-export.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact private v6 baseline
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 0a89d0a0a7371c92221082760dd496df1cda1a03
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify exact baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = '0a89d0a0a7371c92221082760dd496df1cda1a03'
+          test -s source/app/src/main/java/com/example/einsteingame/GameState.java
+          test -s source/app/src/main/java/com/example/einsteingame/GameView.java
+      - name: Upload exact source files
+        uses: actions/upload-artifact@v4
+        with:
+          name: clumi-manual-force-source-baseline
+          path: |
+            source/app/src/main/java/com/example/einsteingame/GameState.java
+            source/app/src/main/java/com/example/einsteingame/GameView.java
+          retention-days: 1
+          if-no-files-found: error
