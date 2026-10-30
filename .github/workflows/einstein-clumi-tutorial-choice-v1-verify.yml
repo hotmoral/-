@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: bbcd3f4847ea253e7dc768b2ec4f5c769cf3af06
+      SOURCE_SHA: fbbecb2a6bc5d8951d3e39b9da5aadeb6dcf63b4
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
       TUTORIAL_ART_SHA256: 3979153f9753c02fbcb89dfd75dbe092d61c5a2e3178c087e2a4eceeb4766528
@@ -68,6 +68,7 @@ jobs:
           assert 'ClumiUi.actionIcon(tutorial,"help",true)' not in home
           assert '"cta_start","cta_continue","cta_tutorial","cta_stage_select"' in va
           assert 'FILES.put("cta-tutorial","cta_tutorial")' in va
+          assert 'file.equals("cta_tutorial")' in va and 'return 1;' in va
           assert 'private void saveAttempt(){if(!tutorialMode&&session!=null' in ma
           assert 'if(tutorialMode)game.post' in ma
           assert 'tutorialMode=true;spotlight.beginTutorial();route("play",false,this::prepareTutorialStage)' in ma
@@ -112,4 +113,4 @@ jobs:
           unzip -l app/build/outputs/apk/release/app-release-unsigned.apk | grep -F 'assets/ui/b3-r5/cta_tutorial.png'
           echo TUTORIAL_VISUAL_ANDROID_COMPILE_PASS
 
-# trigger: tutorial-visual-v1
+# trigger: tutorial-visual-v1-resolution
