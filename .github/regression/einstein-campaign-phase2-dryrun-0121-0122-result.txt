@@ -1,0 +1,17 @@
+workflow=Einstein Campaign Phase2 DryRun 0121-0122 V1
+run_id=41014057793
+run_attempt=1
+private_source_sha=ad46751547fe456692b82bd3fd2270351bf61295
+bank_branch=campaign-production-2000-bank-v1
+bank_head=f58b303283c3cd7696489b50d2964e01746ac0ab
+java_status=0
+durable_bank_write_authorized=false
+manifest_write_authorized=false
+stage121Status=ACQUIRED
+stage121TerminalReason=CP12_PREFIX_VALID
+stage121EnvelopeRejections=[]
+stage122Status=INCOMPLETE_EVIDENCE
+stage122TerminalReason=BOUNDED_OR_REQUIREDNESS_UNCERTAINTY
+stage122EnvelopeRejections=[]
+CAMPAIGN_PRODUCTION_2000_PHASE2_DRYRUN_121_122=SAFE_STOP_STAGE122
+durableBankWriteInvoked=false
