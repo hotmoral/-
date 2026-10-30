@@ -15,7 +15,9 @@ permissions:
 
 jobs:
   phase2-prefix-replay:
-    if: github.event_name == 'pull_request' || github.event.head_commit.message == 'verify: Phase 2 prefix replay zero-draw preflight'
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.event.head_commit.message == 'verify: Phase 2 prefix replay zero-draw preflight'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
