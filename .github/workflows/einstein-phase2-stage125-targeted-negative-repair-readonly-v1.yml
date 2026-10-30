@@ -1,0 +1,82 @@
+name: Einstein Phase2 Stage125 Targeted Negative Repair ReadOnly V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-phase2-stage125-targeted-negative-repair-readonly-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_SHA: 8cb9dc97c30a734b87a6a5cc7c7c1b4b67f83c9c
+    steps:
+      - name: Checkout recovery source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: 8cb9dc97c30a734b87a6a5cc7c7c1b4b67f83c9c
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout Bank read-only
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile and run targeted negative repair search
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$GITHUB_WORKSPACE/EinsteinGame"
+          STORE="$GITHUB_WORKSPACE/ProductionStore"
+          CLASSES=/tmp/einstein-stage125-targeted-neg-repair-classes
+          SOURCES=/tmp/einstein-stage125-targeted-neg-repair-sources.txt
+
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
+          echo "LIVE_BANK_HEAD=$(git -C "$STORE" rev-parse HEAD)"
+          cd "$SRC"
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          store=Path('../ProductionStore/production/campaign-2000-bank-v1/bank')
+          manifest=json.loads((store/'manifest.json').read_text())
+          assert manifest['bankedCount']==124, manifest
+          assert manifest['nextOrdinal']==125, manifest
+          assert manifest['state']=='OPEN', manifest
+          assert manifest['acquiredPending']==[], manifest
+          print('LIVE_STAGE125_FRONTIER=PASS')
+          PY
+
+          rm -rf "$CLASSES" "$SOURCES"
+          mkdir -p "$CLASSES"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
+          cat >> "$SOURCES" <<'EOF'
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125TargetedNegativeRepairReadOnlyV1.java
+          EOF
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
+          echo STAGE125_TARGETED_NEGATIVE_REPAIR_COMPILE=PASS
+
+          export EINSTEIN_PHASE2_STAGE125_TARGETED_NEGATIVE_REPAIR_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125TargetedNegativeRepairReadOnlyV1
