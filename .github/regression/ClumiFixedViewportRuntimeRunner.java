@@ -8,8 +8,9 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import java.io.File;
@@ -146,18 +147,23 @@ public final class ClumiFixedViewportRuntimeRunner extends Instrumentation {
         return g;
     }
 
-    private void physicalTap(View target) throws Exception {
+    private void physicalTap(View target) {
         Rect rect = new Rect();
         ui(() -> check(target.getGlobalVisibleRect(rect) && rect.width() > 0 && rect.height() > 0,
                 "Home CTA has transformed physical bounds"));
-        int x = Math.round(rect.exactCenterX());
-        int y = Math.round(rect.exactCenterY());
-        ParcelFileDescriptor command = getUiAutomation().executeShellCommand("input tap " + x + " " + y);
-        try (ParcelFileDescriptor.AutoCloseInputStream input =
-                     new ParcelFileDescriptor.AutoCloseInputStream(command)) {
-            byte[] buffer = new byte[128];
-            while (input.read(buffer) != -1) { }
-        }
+        float x = rect.exactCenterX();
+        float y = rect.exactCenterY();
+        System.out.println("CLUMI_PHYSICAL_TAP x=" + x + " y=" + y + " profile=" + profile);
+        long downTime = SystemClock.uptimeMillis();
+        MotionEvent down = MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
+        down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        check(getUiAutomation().injectInputEvent(down, true), "Physical ACTION_DOWN injected");
+        down.recycle();
+        long upTime = SystemClock.uptimeMillis();
+        MotionEvent up = MotionEvent.obtain(downTime, upTime, MotionEvent.ACTION_UP, x, y, 0);
+        up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        check(getUiAutomation().injectInputEvent(up, true), "Physical ACTION_UP injected");
+        up.recycle();
     }
 
     private void writeSummary(Geometry home, Geometry start) throws Exception {
