@@ -1,8 +1,8 @@
 const CLEAR_RESULT_EVENT = 'linkline:clear-result-v1';
 const STAMP_ASSETS = Object.freeze({
-  'S+': './assets/performance-stamps/s-plus.png',
-  'A+': './assets/performance-stamps/a-plus.png',
-  'B+': './assets/performance-stamps/b-plus.png',
+  'S+': './assets/performance-stamps/s-plus-approved.png',
+  'A+': './assets/performance-stamps/a-plus-approved.png',
+  'B+': './assets/performance-stamps/b-plus-approved.png',
 });
 
 let pendingSnapshot = null;
