@@ -22,7 +22,7 @@ jobs:
         with:
           repository: hotmoral/EinsteinGame
           ref: ${{ env.SOURCE_SHA }}
-          token: ${{ secrets.EINSTEIN_PRIVATE_REPO_READ_TOKEN }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
           persist-credentials: false
@@ -32,7 +32,7 @@ jobs:
         with:
           repository: hotmoral/EinsteinGame
           ref: campaign-production-2000-bank-v1
-          token: ${{ secrets.EINSTEIN_PRIVATE_REPO_READ_TOKEN }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: ProductionStore
           fetch-depth: 1
           persist-credentials: false
