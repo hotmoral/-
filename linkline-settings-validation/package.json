@@ -1,0 +1,8 @@
+{
+  "name": "linkline-settings-validation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --check ./src/settings-preferences.mjs && node --check ./src/settings-about.mjs && node ./tests/settings-preferences.test.mjs && node ./tests/settings-about.test.mjs"
+  }
+}
