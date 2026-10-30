@@ -1,0 +1,96 @@
+name: Einstein Campaign Phase2 Prefix Replay Preflight V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-campaign-phase2-prefix-replay-preflight-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  phase2-prefix-replay:
+    if: github.event.head_commit.message == 'verify: Phase 2 prefix replay zero-draw preflight'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+      SOURCE_SHA: d0a15bf71c0630a21fe2aa522b6b4071434909c6
+      BANK_BRANCH: campaign-production-2000-bank-v1
+    steps:
+      - name: Checkout exact Phase 2 source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: d0a15bf71c0630a21fe2aa522b6b4071434909c6
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: EinsteinGame
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout current durable bank read-only
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: campaign-production-2000-bank-v1
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: ProductionStore
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile Phase 2 zero-draw producer scaffold
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          CLASSES=/tmp/einstein-phase2-prefix-classes
+          SOURCES=/tmp/einstein-phase2-prefix-sources.txt
+          rm -rf "$CLASSES" "$SOURCES"
+          mkdir -p "$CLASSES"
+          find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2ProducerV1.java' >> "$SOURCES"
+          java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
+          echo PHASE2_PREFIX_COMPILE=PASS
+
+      - name: Build exact stage 121 macro request
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          python3 - <<'PY'
+          import importlib.util, json
+          p='tools/campaign-production-2000/campaign_production_2000.py'
+          spec=importlib.util.spec_from_file_location('cp2000',p)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          stage=m.stage_plan(121)
+          with open('/tmp/einstein-stage-0121.json','w',encoding='utf-8') as f:
+              json.dump(stage,f,sort_keys=True,separators=(',',':')); f.write('\n')
+          assert stage['stageId']=='stage-0121'
+          assert stage['phase']=='N5_FOUNDATION_TRANSFER'
+          assert stage['primarySkill']=='DIRECT_RELATION'
+          print('STAGE121_MACRO_REQUEST=PASS')
+          PY
+
+      - name: Replay live BANKED 1-120 and prepare stage 121 without draws
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd EinsteinGame
+          export EINSTEIN_PRODUCTION_BANK_ROOT="$GITHUB_WORKSPACE/ProductionStore/production/campaign-2000-bank-v1/bank"
+          export EINSTEIN_STAGE_REQUEST=/tmp/einstein-stage-0121.json
+          java -Xmx4g -cp /tmp/einstein-phase2-prefix-classes com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2ProducerV1 | tee /tmp/phase2-prefix.log
+          grep -F 'CAMPAIGN_PRODUCTION_2000_PHASE2_ZERO_DRAW_PREFLIGHT=PASS' /tmp/phase2-prefix.log
+          grep -F 'priorPrefixCount=120' /tmp/phase2-prefix.log
+          grep -F 'priorReplayStatus=VALID_PREFIX' /tmp/phase2-prefix.log
+          grep -F 'acquisitionInvoked=false' /tmp/phase2-prefix.log
+          grep -F 'bankWriteInvoked=false' /tmp/phase2-prefix.log
+          echo PHASE2_LIVE_PREFIX_REPLAY=PASS
