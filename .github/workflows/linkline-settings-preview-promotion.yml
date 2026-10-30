@@ -27,6 +27,7 @@ jobs:
           rm -rf "$APP"
           mkdir -p "$APP/src" "$APP/assets/performance-stamps"
           cp -a timing-defense-skilled-v2-harness/public/. "$APP/"
+          cp linkline-preview-promotion/campaign-0001-1300.public.json "$APP/data/campaign-0001-1300.json"
           cp linkline-settings-validation/src/settings-preferences.mjs "$APP/src/settings-preferences.mjs"
           cp linkline-settings-validation/src/settings-about.mjs "$APP/src/settings-about.mjs"
           cp linkline-full-validation/assets/s-plus-approved.svg "$APP/assets/performance-stamps/s-plus-approved.svg"
@@ -63,6 +64,7 @@ jobs:
           check assets/performance-stamps/s-plus-approved.svg 20b99b53cc61ec63b40e9c9d6dc0555a52c5d7c6
           check assets/performance-stamps/a-plus-approved.svg 1c298ff9dcee1ec4e28cbb583ce7ef7000d171f8
           check assets/performance-stamps/b-plus-approved.svg fdf0fd885b4effa92c94260bb9f9bce3b1258b5a
+          check data/campaign-0001-1300.json 588689d2053118246122b78433420db78cc9861c
           grep -Fq "import './settings-preferences.mjs';" "$APP/src/visual-assets.mjs"
           grep -Fq "import './settings-about.mjs';" "$APP/src/visual-assets.mjs"
           node --check "$APP/src/app.mjs"
