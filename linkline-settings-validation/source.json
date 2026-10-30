@@ -1,0 +1,6 @@
+{
+  "privateRepository": "hotmoral/Linkline",
+  "privateIntegrationBranch": "production-web-target-pair-v4-integration-v2",
+  "privateIntegrationCheckpoint": "c9cc3db80ccb8ba7ed47281700cda05de3b7b878",
+  "scope": "settings-validation-v1"
+}
