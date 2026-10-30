@@ -1,0 +1,151 @@
+name: Clumi Board Reset Validation
+
+on:
+  push:
+    branches:
+      - clumi/manual-force-longpress-dev
+    paths:
+      - '.github/workflows/einstein-clumi-board-reset-validate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FEATURE_SHA: a96d483f437448a05f587980575aece9ce50a565
+    steps:
+      - name: Checkout exact private feature checkpoint
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.FEATURE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Apply validated long-press then board-reset patches
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$FEATURE_SHA"
+          cd source
+          git apply --check dev/manual-force-longpress.patch
+          git apply dev/manual-force-longpress.patch
+          git apply --check dev/board-reset-preserve-items.patch
+          git apply dev/board-reset-preserve-items.patch
+          git diff --check
+          grep -F 'public boolean resetPlayerBoardPreservingItems()' app/src/main/java/com/example/einsteingame/GameState.java
+          grep -F 'public boolean resetBoardPreservingItems()' app/src/main/java/com/example/einsteingame/StageSession.java
+          grep -F 'String[] glyphs={"back","reset","minus","fit","plus"};' app/src/main/java/com/example/einsteingame/GameView.java
+          grep -F 'else if("reset".equals(name))' app/src/main/java/com/example/einsteingame/ClumiGlyph.java
+
+      - name: Add board-reset behavior probe
+        shell: bash
+        run: |
+          cat > source/app/src/main/java/com/example/einsteingame/BoardResetProbe.java <<'JAVA'
+          package com.example.einsteingame;
+
+          import java.lang.reflect.Field;
+
+          public final class BoardResetProbe {
+              private static void check(boolean value,String message){if(!value)throw new AssertionError(message);}
+              private static int rawMask(GameState s,int row,int col){int mask=0;for(int i=0;i<GameState.SIZE;i++)if(s.isUserCandidatePresent(row,col,i))mask|=1<<i;return mask;}
+              public static void main(String[] args) throws Exception {
+                  GameState state=new GameState();
+                  state.select(0,2);
+                  check(state.toggleCandidate(0),"tap edit");
+                  check(state.forceCandidate(1),"manual force");
+                  check(state.canUndo(),"history exists before reset");
+                  check(state.resetPlayerBoardPreservingItems(),"reset must report mutation");
+                  for(int r=0;r<GameState.SIZE;r++)for(int c=0;c<GameState.SIZE;c++)
+                      check(rawMask(state,r,c)==31,"direct player board restored @"+r+","+c);
+                  check(!state.canUndo(),"board reset clears board Undo history");
+                  check(!state.hasPlacementContradiction(),"reset clears player contradiction");
+
+                  GameState assisted=new GameState();
+                  Field assistedField=GameState.class.getDeclaredField("assistedSlot");
+                  assistedField.setAccessible(true);
+                  int[][] assistedSlots=(int[][])assistedField.get(assisted);
+                  assistedSlots[1][1]=3;
+                  assisted.select(1,2);
+                  check(assisted.toggleCandidate(0),"edit around assisted item");
+                  check(assisted.resetPlayerBoardPreservingItems(),"reset with assisted item");
+                  check(assisted.isAssistedConfirmed(1,1),"CONFIRM CELL effect survives reset");
+                  check(assisted.singleCandidateSlot(1,1)==3,"assisted target identity survives");
+                  for(int c=0;c<GameState.SIZE;c++)if(c!=1)
+                      check(!assisted.isCandidatePresent(1,c,3),"assisted sibling exclusion survives @"+c);
+                  check(rawMask(assisted,1,2)==31,"raw player candidates reset under preserved item effect");
+
+                  GameState wrong=new GameState();
+                  wrong.select(0,0);
+                  check(wrong.toggleCandidate(0),"prep0");check(wrong.toggleCandidate(2),"prep2");
+                  check(wrong.toggleCandidate(3),"prep3");check(wrong.toggleCandidate(4),"prep4");
+                  wrong.select(0,2);check(wrong.forceCandidate(1),"wrong force");
+                  check(wrong.hasPlacementContradiction(),"wrong force contradiction");
+                  check(wrong.resetPlayerBoardPreservingItems(),"reset contradiction");
+                  check(!wrong.hasPlacementContradiction(),"reset restores valid board domain");
+
+                  System.out.println("BOARD_RESET_PRESERVE_ITEMS_PROBE_PASS");
+              }
+          }
+          JAVA
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android platform
+        shell: bash
+        run: sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Compile combined feature source
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI ./gradlew --no-daemon --console=plain :app:compileDebugJavaWithJavac
+
+      - name: Run board-reset probe
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_CLASSES=app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes
+          CORE_CLASSES=puzzle-core/build/classes/java/main
+          java -cp "$APP_CLASSES:$CORE_CLASSES:$ANDROID_HOME/platforms/android-34/android.jar" com.example.einsteingame.BoardResetProbe | tee ../board-reset-probe.txt
+          grep -F 'BOARD_RESET_PRESERVE_ITEMS_PROBE_PASS' ../board-reset-probe.txt
+
+      - name: Verify exact feature scope
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only | sort | tee ../board-reset-changed-files.txt
+          test "$(git diff --name-only | grep -v '^app/src/main/java/com/example/einsteingame/BoardResetProbe.java$' | sort)" = $'app/src/main/java/com/example/einsteingame/ClumiGlyph.java\napp/src/main/java/com/example/einsteingame/GameState.java\napp/src/main/java/com/example/einsteingame/GameView.java\napp/src/main/java/com/example/einsteingame/StageSession.java'
+
+      - name: Stage validated source artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p validated/app/src/main/java/com/example/einsteingame
+          cp source/app/src/main/java/com/example/einsteingame/{GameState.java,GameView.java,StageSession.java,ClumiGlyph.java} validated/app/src/main/java/com/example/einsteingame/
+          sha256sum validated/app/src/main/java/com/example/einsteingame/*.java | tee validated/source-sha256.txt
+          cp board-reset-probe.txt board-reset-changed-files.txt validated/
+
+      - name: Upload validated source and evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: clumi-manual-force-board-reset-validated-source
+          path: validated
+          retention-days: 3
+          if-no-files-found: error
