@@ -11,7 +11,8 @@ permissions:
 
 jobs:
   build-stable-unsigned-v1:
-    if: github.event.head_commit.message == 'build: Clumi Stable unsigned v1'
+    if: >-
+      github.event.head_commit.message == 'build: Clumi Stable unsigned v1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
