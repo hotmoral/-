@@ -42,6 +42,11 @@ celebrationStyle.textContent = `
 .board-wrap.linkline-incoming-board.is-visible{opacity:1;transform:scale(1);filter:blur(0);transition:opacity .28s ease,transform .30s cubic-bezier(.18,.76,.22,1),filter .24s ease}
 .linkline-incoming-ui{opacity:0;transform:translateY(4px);pointer-events:none;will-change:opacity,transform}
 .linkline-incoming-ui.is-visible{opacity:1;transform:translateY(0);pointer-events:auto;transition:opacity .22s .04s ease,transform .26s .04s cubic-bezier(.18,.76,.22,1)}
+.stage-node.performance-grade-ring{position:relative}
+.stage-node.performance-grade-ring::after{content:"";position:absolute;inset:-4px;border:2px solid var(--performance-ring);border-radius:50%;pointer-events:none;box-shadow:0 1px 4px rgba(42,35,24,.08)}
+.stage-node.performance-grade-s{--performance-ring:#c9a13b}
+.stage-node.performance-grade-a{--performance-ring:#a7adb4}
+.stage-node.performance-grade-b{--performance-ring:#b7794b}
 @keyframes linklineClearImpact{0%{transform:scale(1);box-shadow:var(--shadow)}18%{transform:scale(.988);box-shadow:0 12px 38px rgba(18,104,255,.08)}46%{transform:scale(1.018);box-shadow:0 20px 62px rgba(18,104,255,.22)}100%{transform:scale(1);box-shadow:var(--shadow)}}
 @keyframes linklineClearRing{0%{opacity:0;transform:translate(-50%,-50%) scale(.38)}16%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)}}
 @keyframes linklineClearFlash{0%{opacity:0;transform:scale(.92)}20%{opacity:1}100%{opacity:0;transform:scale(1.08)}}
@@ -137,10 +142,36 @@ function decorateSolvedBoard() {
   playClearCelebration(board);
 }
 
+function stagePerformanceRecords() {
+  try {
+    const raw = JSON.parse(globalThis.localStorage?.getItem('linkline.product.progress.v3') || 'null');
+    if (!raw || raw.schema !== 'LINKLINE_PRODUCT_PROGRESS' || raw.version !== 3) return {};
+    return raw.performance && typeof raw.performance === 'object' ? raw.performance : {};
+  } catch {
+    return {};
+  }
+}
+
+function decorateStageGradeRings() {
+  const records = stagePerformanceRecords();
+  for (const item of screen?.querySelectorAll('.stage-item') || []) {
+    const position = item.querySelector('.stage-number')?.textContent?.trim();
+    const node = item.querySelector('.stage-node');
+    const grade = records?.[position]?.grade;
+    if (!node || !['S+', 'A+', 'B+'].includes(grade)) continue;
+    node.classList.add('performance-grade-ring');
+    node.classList.add(grade === 'S+' ? 'performance-grade-s' : grade === 'A+' ? 'performance-grade-a' : 'performance-grade-b');
+    node.dataset.performanceGrade = grade;
+    const label = node.getAttribute('aria-label') || `Stage ${position}`;
+    if (!label.includes(`${grade} 등급`)) node.setAttribute('aria-label', `${label}, ${grade} 등급`);
+  }
+}
+
 function decorateStageSelect() {
   if (!screen?.classList.contains('view-stages') || screen.classList.contains('polish-stage-select')) return;
   screen.classList.add('polish-stage-select');
   screen.querySelector('.stage-map')?.style.setProperty('touch-action', 'pan-y');
+  decorateStageGradeRings();
   const current = screen.querySelector('.stage-node.current, .stage-node.completed-current');
   if (!current) return;
   current.setAttribute('aria-current', 'step');
@@ -335,4 +366,4 @@ document.addEventListener('click', (event) => {
   setTimeout(() => finishForwardVisual(pending, incoming), remaining);
 }, false);
 
-// Linkline polish v4.2 smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.
+// Linkline polish v4.3 Stage Select grade rings + smoother NEXT crossfade + one-shot clear celebration + native NEXT + stage-select swipe.
