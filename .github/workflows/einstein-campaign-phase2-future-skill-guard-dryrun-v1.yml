@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      SOURCE_SHA: 9bd9a1f586ce09641b2b7cd173f4ee018738695e
+      SOURCE_SHA: 61eaa71e9de3440d68d0a127f0f154d87ce435de
       BANK_BRANCH: campaign-production-2000-bank-v1
     steps:
       - name: Checkout exact guarded Phase 2 source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 9bd9a1f586ce09641b2b7cd173f4ee018738695e
+          ref: 61eaa71e9de3440d68d0a127f0f154d87ce435de
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -58,10 +58,12 @@ jobs:
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
           echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataCodecV1.java' >> "$SOURCES"
           echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignProductionMetadataProjectionV1.java' >> "$SOURCES"
+          echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/CampaignHumanPathEvidenceCompositionTest.java' >> "$SOURCES"
           echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2ProducerV1.java' >> "$SOURCES"
           echo 'puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2FutureSkillGuardDryRunV1.java' >> "$SOURCES"
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
           echo PHASE2_FUTURE_SKILL_GUARD_COMPILE=PASS
+          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.curriculum.CampaignHumanPathEvidenceCompositionTest
 
           python3 - <<'PY'
           import importlib.util, json
