@@ -7,7 +7,7 @@ on:
       - '.github/workflows/einstein-campaign-phase2-prefix-replay-preflight-v1.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   phase2-prefix-replay:
@@ -19,6 +19,13 @@ jobs:
       SOURCE_SHA: d0a15bf71c0630a21fe2aa522b6b4071434909c6
       BANK_BRANCH: campaign-production-2000-bank-v1
     steps:
+      - name: Checkout public harness for durable result
+        uses: actions/checkout@v4
+        with:
+          path: Harness
+          fetch-depth: 1
+          persist-credentials: true
+
       - name: Checkout exact Phase 2 source
         uses: actions/checkout@v4
         with:
@@ -45,10 +52,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile Phase 2 zero-draw producer scaffold
+      - name: Compile and replay current BANKED 1-120 without draws
+        id: preflight
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
+          echo "bank_head=$(git -C "$GITHUB_WORKSPACE/ProductionStore" rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           cd EinsteinGame
           CLASSES=/tmp/einstein-phase2-prefix-classes
           SOURCES=/tmp/einstein-phase2-prefix-sources.txt
@@ -61,11 +71,6 @@ jobs:
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
           echo PHASE2_PREFIX_COMPILE=PASS
 
-      - name: Build exact stage 121 macro request
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd EinsteinGame
           python3 - <<'PY'
           import importlib.util, json
           p='tools/campaign-production-2000/campaign_production_2000.py'
@@ -80,17 +85,54 @@ jobs:
           print('STAGE121_MACRO_REQUEST=PASS')
           PY
 
-      - name: Replay live BANKED 1-120 and prepare stage 121 without draws
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd EinsteinGame
           export EINSTEIN_PRODUCTION_BANK_ROOT="$GITHUB_WORKSPACE/ProductionStore/production/campaign-2000-bank-v1/bank"
           export EINSTEIN_STAGE_REQUEST=/tmp/einstein-stage-0121.json
-          java -Xmx4g -cp /tmp/einstein-phase2-prefix-classes com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2ProducerV1 | tee /tmp/phase2-prefix.log
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2ProducerV1 | tee /tmp/phase2-prefix.log
           grep -F 'CAMPAIGN_PRODUCTION_2000_PHASE2_ZERO_DRAW_PREFLIGHT=PASS' /tmp/phase2-prefix.log
           grep -F 'priorPrefixCount=120' /tmp/phase2-prefix.log
           grep -F 'priorReplayStatus=VALID_PREFIX' /tmp/phase2-prefix.log
           grep -F 'acquisitionInvoked=false' /tmp/phase2-prefix.log
           grep -F 'bankWriteInvoked=false' /tmp/phase2-prefix.log
           echo PHASE2_LIVE_PREFIX_REPLAY=PASS
+
+      - name: Persist preflight result in public harness
+        if: always()
+        shell: bash
+        env:
+          PREFLIGHT_OUTCOME: ${{ steps.preflight.outcome }}
+          BANK_HEAD: ${{ steps.preflight.outputs.bank_head }}
+        run: |
+          set -euo pipefail
+          if [ "$PREFLIGHT_OUTCOME" = success ]; then STATUS=PASS; else STATUS=FAIL; fi
+          RESULT="$GITHUB_WORKSPACE/Harness/.github/regression/einstein-campaign-phase2-prefix-replay-result.txt"
+          mkdir -p "$(dirname "$RESULT")"
+          {
+            echo "status=$STATUS"
+            echo "workflow=Einstein Campaign Phase2 Prefix Replay Preflight V1"
+            echo "run_id=$GITHUB_RUN_ID"
+            echo "run_attempt=$GITHUB_RUN_ATTEMPT"
+            echo "harness_trigger_sha=$GITHUB_SHA"
+            echo "private_source_sha=$SOURCE_SHA"
+            echo "bank_branch=$BANK_BRANCH"
+            echo "bank_head=$BANK_HEAD"
+            echo "expected_prior_prefix_count=120"
+            echo "acquisition_invoked=false"
+            echo "bank_write_invoked=false"
+          } > "$RESULT"
+          cd "$GITHUB_WORKSPACE/Harness"
+          git config user.name 'Einstein Phase2 Preflight'
+          git config user.email 'noreply@localhost'
+          git add .github/regression/einstein-campaign-phase2-prefix-replay-result.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "evidence: Phase 2 prefix replay preflight result"
+            git push origin HEAD:main
+          fi
+
+      - name: Require preflight PASS
+        if: always()
+        shell: bash
+        env:
+          PREFLIGHT_OUTCOME: ${{ steps.preflight.outcome }}
+        run: |
+          set -euo pipefail
+          test "$PREFLIGHT_OUTCOME" = success
