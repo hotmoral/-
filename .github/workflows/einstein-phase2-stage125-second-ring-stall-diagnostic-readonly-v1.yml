@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Case8 S4 Direct Repair ReadOnly V1
+name: Einstein Phase2 Stage125 Case8 L2 Bridge Inventory ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 236d1a401632234f08d7ae3ea3d033cd5252ab2c
+      SOURCE_SHA: 53d49b033d65142638583e1927a6b5bdce8e1980
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 236d1a401632234f08d7ae3ea3d033cd5252ab2c
+          ref: 53d49b033d65142638583e1927a6b5bdce8e1980
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and diagnose direct S4 repairs
+      - name: Compile and inventory L2 bridge repairs
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-case8-s4-repair-classes
-          SOURCES=/tmp/einstein-stage125-case8-s4-repair-sources.txt
+          CLASSES=/tmp/einstein-stage125-case8-l2-bridge-classes
+          SOURCES=/tmp/einstein-stage125-case8-l2-bridge-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -76,10 +76,10 @@ jobs:
           cat >> "$SOURCES" <<'EOF'
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8S4DirectRepairReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8L2BridgeInventoryReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_CASE8_S4_DIRECT_REPAIR_COMPILE=PASS
+          echo STAGE125_CASE8_L2_BRIDGE_INVENTORY_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_CASE8_S4_DIRECT_REPAIR_READONLY=true
-          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8S4DirectRepairReadOnlyV1
+          export EINSTEIN_PHASE2_STAGE125_CASE8_L2_BRIDGE_INVENTORY_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8L2BridgeInventoryReadOnlyV1
