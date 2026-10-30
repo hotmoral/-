@@ -1,0 +1,36 @@
+name: Linkline Settings Validation
+
+on:
+  push:
+    branches:
+      - linkline/settings-validation-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  settings-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact validation commit
+        uses: actions/checkout@v4
+
+      - name: Verify private-source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object linkline-settings-validation/src/settings-preferences.mjs)" = "22450f785bdbd3b29bbe87b0ef93ced054898b45"
+          test "$(git hash-object linkline-settings-validation/src/settings-about.mjs)" = "3c59b9e6a16d3b904221a89218748bf887516d27"
+          test "$(git hash-object linkline-settings-validation/tests/settings-preferences.test.mjs)" = "a40813a76229ad398e5b6af1d5caf39dd872ee49"
+          test "$(git hash-object linkline-settings-validation/tests/settings-about.test.mjs)" = "459328837383fba4fd98b460226c264be72f21df"
+          grep -F 'c9cc3db80ccb8ba7ed47281700cda05de3b7b878' linkline-settings-validation/source.json
+
+      - name: Run Settings validation
+        working-directory: linkline-settings-validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --version
+          npm --version
+          npm test
