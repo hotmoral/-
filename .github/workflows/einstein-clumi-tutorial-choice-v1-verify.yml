@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: fd5abd11060a071a89eada2f62341d43a0d66c11
+      SOURCE_SHA: e765b64a278db1270918c052a69044d5528dd32c
       READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
       BUILD_TOOLS: '34.0.0'
     steps:
@@ -45,7 +45,7 @@ jobs:
           python3 dev/tutorial-choice-onboarding-v2.py
           git diff --check
 
-      - name: Verify tutorial-mode contract
+      - name: Verify tutorial-mode contract and star-tier labels
         working-directory: source
         shell: bash
         run: |
@@ -55,6 +55,7 @@ jobs:
           ma=Path('app/src/main/java/com/example/einsteingame/MainActivity.java').read_text()
           gv=Path('app/src/main/java/com/example/einsteingame/GameView.java').read_text()
           sp=Path('app/src/main/java/com/example/einsteingame/ClumiSpotlightPolicy.java').read_text()
+          cc=Path('app/src/main/java/com/example/einsteingame/ClumiConditionCard.java').read_text()
           home=ma[ma.index('private void renderHome()'):ma.index('private void showStages()')]
           assert 'Button tutorial=button("튜토리얼",true,this::startTutorial)' in home
           assert home.index('home-tutorial') < home.index('home-continue')
@@ -75,7 +76,9 @@ jobs:
           assert 'else if(tutorialStep<10)tutorialStep++' in gv
           assert 'finishTutorialAndStartStageOne()' in gv
           assert ma.count('game.spotlight(spotlight)') == 1
-          print('TUTORIAL_CHOICE_CONTRACT_PASS')
+          assert 'new String[]{"CLEAR","GREAT","PERFECT"}' in cc
+          assert '퍼즐 완성' not in cc and '능숙한 해결' not in cc and '완벽한 해결' not in cc
+          print('TUTORIAL_CHOICE_AND_STAR_LABEL_CONTRACT_PASS')
           PY
 
       - name: Set up JDK 17
@@ -100,4 +103,4 @@ jobs:
           test -s app/build/outputs/apk/release/app-release-unsigned.apk
           echo TUTORIAL_CHOICE_ANDROID_COMPILE_PASS
 
-# trigger: v3
+# trigger: star-tier-labels
