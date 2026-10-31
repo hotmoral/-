@@ -1,4 +1,4 @@
-name: Linkline Android QA4 APK
+name: Linkline Android RC APK
 
 on:
   push:
@@ -54,18 +54,18 @@ jobs:
           from pathlib import Path
           path = Path('android-linkline/app/src/main/assets/www/index.html')
           text = path.read_text(encoding='utf-8')
-          marker = '''<style id="linkline-android-qa4-layout">
+          marker = '''<style id="linkline-android-app-layout">
           .app-shell[data-view="home"] .home-hero{transform:translateY(-15px)!important}
           .app-shell[data-view="home"] .signal-preview{width:min(84vw,395px)!important}
           .app-shell[data-view="home"] .home-actions{transform:translateY(4px)!important}
           </style>'''
-          if 'linkline-android-qa4-layout' in text:
-              raise SystemExit('QA4_LAYOUT_ALREADY_PRESENT')
+          if 'linkline-android-app-layout' in text:
+              raise SystemExit('APP_LAYOUT_ALREADY_PRESENT')
           if '</head>' not in text:
               raise SystemExit('HEAD_CLOSE_NOT_FOUND')
           path.write_text(text.replace('</head>', marker + '\n</head>', 1), encoding='utf-8')
           PY
-          grep -F 'linkline-android-qa4-layout' "${ANDROID_PROJECT}/app/src/main/assets/www/index.html"
+          grep -F 'linkline-android-app-layout' "${ANDROID_PROJECT}/app/src/main/assets/www/index.html"
 
       - name: Force validated bitmap launcher icon path
         run: |
@@ -133,7 +133,7 @@ jobs:
           apk="${ANDROID_PROJECT}/app/build/outputs/apk/debug/app-debug.apk"
           test -s "$apk"
           unzip -l "$apk" | grep -F "assets/www/index.html"
-          unzip -p "$apk" assets/www/index.html | grep -F "linkline-android-qa4-layout"
+          unzip -p "$apk" assets/www/index.html | grep -F "linkline-android-app-layout"
           icon_path="$(unzip -Z1 "$apk" | grep -E '^res/mipmap-nodpi-v[0-9]+/ic_launcher\.png$' | head -n 1)"
           test -n "$icon_path"
           unzip -p "$apk" "$icon_path" > /tmp/ic_launcher.png
@@ -166,19 +166,19 @@ jobs:
             exit 1
           fi
           badging="$("${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk")"
-          echo "$badging" | grep -F "package: name='com.linkline.game.qa4' versionCode='4' versionName='0.1.3-qa4'"
-          echo "$badging" | grep -F "application-label:'Linkline QA4'"
+          echo "$badging" | grep -F "package: name='com.linkline.game' versionCode='5' versionName='0.1.4-rc1'"
+          echo "$badging" | grep -F "application-label:'Linkline'"
           echo "$badging" | grep -F "application-icon-" | grep -F "ic_launcher.png"
           "${ANDROID_HOME}/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$apk"
           mkdir -p artifact
-          cp "$apk" artifact/Linkline-QA4-0.1.3-debug.apk
-          sha256sum artifact/Linkline-QA4-0.1.3-debug.apk | tee artifact/SHA256SUMS.txt
-          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game.qa4\nversion=0.1.3-qa4\nbuild_type=debug\nlayout_override=android-qa4\nlauncher_icon=validated-binary-png\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
+          cp "$apk" artifact/Linkline-0.1.4-rc1-debug.apk
+          sha256sum artifact/Linkline-0.1.4-rc1-debug.apk | tee artifact/SHA256SUMS.txt
+          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game\nversion=0.1.4-rc1\nbuild_type=debug\nlayout_override=android-app\nlauncher_icon=validated-binary-png\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
 
       - name: Upload installable APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Linkline-QA4-0.1.3-debug
+          name: Linkline-0.1.4-rc1-debug
           path: artifact/
           if-no-files-found: error
           retention-days: 14
