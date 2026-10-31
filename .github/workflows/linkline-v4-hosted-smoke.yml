@@ -25,22 +25,22 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
 
-      - name: Wait for pushed runtime bytes to reach the stable Preview URL
+      - name: Wait for pushed Settings bytes to reach the stable Preview URL
         run: |
           set -euo pipefail
-          rel="src/app.mjs"
+          rel="src/settings-preferences.mjs"
           expected="$(sha256sum "$APP_DIR/$rel" | awk '{print $1}')"
           for attempt in $(seq 1 90); do
-            if curl -fsS --max-time 10 "$PREVIEW_URL/$rel" -o /tmp/convergence.app.mjs; then
-              actual="$(sha256sum /tmp/convergence.app.mjs | awk '{print $1}')"
+            if curl -fsS --max-time 10 "$PREVIEW_URL/$rel" -o /tmp/convergence.settings-preferences.mjs; then
+              actual="$(sha256sum /tmp/convergence.settings-preferences.mjs | awk '{print $1}')"
               if [ "$actual" = "$expected" ]; then
-                echo "Preview serves pushed runtime bytes on attempt $attempt"
+                echo "Preview serves pushed Settings bytes on attempt $attempt"
                 exit 0
               fi
             fi
             sleep 2
           done
-          echo "Preview did not converge to pushed runtime bytes" >&2
+          echo "Preview did not converge to pushed Settings bytes" >&2
           exit 1
 
       - name: Verify hosted runtime, Settings, grading, assets and data exact-byte parity
