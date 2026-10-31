@@ -1,0 +1,125 @@
+name: Clumi Stable V9 Fixed Viewport Unsigned
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/einstein-clumi-stable-v9-fixed-viewport-unsigned.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-stable-v9-fixed-viewport:
+    if: github.event.head_commit.message == 'build: Stable v9 fixed viewport unsigned'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_SHA: 97c73563a1bed2502aac027d746e669ac4566027
+      STABLE_V9_BASE_SHA: 519362b7587ec8c592f1835f42b3468d348a9306
+      BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
+      BUILD_TOOLS: '34.0.0'
+
+    steps:
+      - name: Require private read credential
+        shell: bash
+        env:
+          READ_TOKEN: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+        run: test -n "$READ_TOKEN"
+
+      - name: Checkout exact private fixed viewport source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.SOURCE_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout exact Bank snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.BANK_SHA }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: bank
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify source lineage and bounded viewport delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git -C bank rev-parse HEAD)" = "$BANK_SHA"
+          test "$(git -C source merge-base "$STABLE_V9_BASE_SHA" "$SOURCE_SHA")" = "$STABLE_V9_BASE_SHA"
+          git -C source diff --name-only "$STABLE_V9_BASE_SHA" "$SOURCE_SHA" | sort > /tmp/fixed-files.txt
+          cat >/tmp/expected-files.txt <<'EOF'
+          app/src/main/java/com/example/einsteingame/ClumiFixedViewport.java
+          app/src/main/java/com/example/einsteingame/ClumiSceneReady.java
+          app/src/main/java/com/example/einsteingame/ClumiUi.java
+          app/src/main/java/com/example/einsteingame/MainActivity.java
+          dev/fixed-viewport-v1.py
+          EOF
+          sort -o /tmp/expected-files.txt /tmp/expected-files.txt
+          diff -u /tmp/expected-files.txt /tmp/fixed-files.txt
+          test -z "$(git -C source status --porcelain)"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android and WebP tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y webp >/dev/null
+
+      - name: Build and verify Stable v9 fixed viewport unsigned
+        working-directory: source
+        env:
+          BANK_DIR: ../bank
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD \
+              -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD \
+              bash dev/build-stable-v9-r7.sh
+
+      - name: Verify packaged identity and fixed viewport source pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F "package: name='com.hotmoral.clumi' versionCode='9' versionName='1.0.8'" source/../stable-v9-badging.txt
+          grep -F '"sourceSha": "97c73563a1bed2502aac027d746e669ac4566027"' source/../Clumi-Stable-v9-bank120-integration.json
+          grep -F '"stageCount": 120' source/../Clumi-Stable-v9-bank120-integration.json
+          grep -F '"excludedStage121": true' source/../Clumi-Stable-v9-bank120-integration.json
+          echo 'fixed_viewport_source=97c73563a1bed2502aac027d746e669ac4566027' > source/../fixed-viewport-build-summary.txt
+          echo 'stable_identity=com.hotmoral.clumi/9/1.0.8' >> source/../fixed-viewport-build-summary.txt
+          echo 'tutorial_cta_sha256=57403814574fc8e8b214acbbe891ad7fe7319989c8efb487a76eca17bb3db0a3' >> source/../fixed-viewport-build-summary.txt
+          echo 'permanent_signing_material=NOT_LOADED' >> source/../fixed-viewport-build-summary.txt
+
+      - name: Upload verified unsigned Stable v9 fixed viewport artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Stable-v9-fixed-viewport-unsigned
+          path: |
+            Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk
+            Clumi-Stable-v9-tutorial-visual-aligned-unsigned.apk.sha256
+            stable-v9-badging.txt
+            Clumi-Stable-v9-bank120-integration.json
+            packaged-cta-tutorial.webp
+            packaged-icon.webp
+            generated-assets
+            signing-tools
+            fixed-viewport-build-summary.txt
+          retention-days: 3
+          if-no-files-found: error
