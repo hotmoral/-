@@ -1,0 +1,89 @@
+name: Linkline Android QA APK
+
+on:
+  push:
+    branches:
+      - linkline/android-apk-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    env:
+      WEB_BASE: 1c17f6ae2899fc2c3c7420ecb81c0ca60e73a0e1
+      WEB_DIR: timing-defense-skilled-v2-harness/public
+      ANDROID_PROJECT: android-linkline
+      GRADLE_VERSION: 8.9
+    steps:
+      - name: Checkout exact pushed commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=40 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Verify frozen web bundle baseline
+        run: |
+          set -euo pipefail
+          git cat-file -e "${WEB_BASE}^{commit}"
+          git diff --exit-code "${WEB_BASE}" HEAD -- "${WEB_DIR}"
+          test -f "${WEB_DIR}/src/settings-preferences.mjs"
+          test -f "${WEB_DIR}/src/settings-about.mjs"
+          echo "Frozen Preview web bundle PASS: ${WEB_BASE}"
+
+      - name: Embed web bundle into Android assets
+        run: |
+          set -euo pipefail
+          rm -rf "${ANDROID_PROJECT}/app/src/main/assets/www"
+          mkdir -p "${ANDROID_PROJECT}/app/src/main/assets/www"
+          cp -R "${WEB_DIR}/." "${ANDROID_PROJECT}/app/src/main/assets/www/"
+          cmp "${WEB_DIR}/index.html" "${ANDROID_PROJECT}/app/src/main/assets/www/index.html"
+          cmp "${WEB_DIR}/src/settings-preferences.mjs" "${ANDROID_PROJECT}/app/src/main/assets/www/src/settings-preferences.mjs"
+          echo "Embedded web byte copy PASS"
+
+      - name: Prepare Android SDK and Gradle
+        run: |
+          set -euo pipefail
+          export JAVA_HOME="${JAVA_HOME_17_X64}"
+          export PATH="${JAVA_HOME}/bin:${PATH}"
+          java -version
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          curl -fsSL --retry 3 "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          "/tmp/gradle-${GRADLE_VERSION}/bin/gradle" --version
+
+      - name: Build debug-signed APK
+        run: |
+          set -euo pipefail
+          export JAVA_HOME="${JAVA_HOME_17_X64}"
+          export PATH="${JAVA_HOME}/bin:${PATH}"
+          "/tmp/gradle-${GRADLE_VERSION}/bin/gradle" -p "${ANDROID_PROJECT}" --no-daemon :app:assembleDebug
+
+      - name: Verify APK identity, signature and embedded assets
+        run: |
+          set -euo pipefail
+          apk="${ANDROID_PROJECT}/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$apk"
+          unzip -l "$apk" | grep -F "assets/www/index.html"
+          unzip -l "$apk" | grep -F "assets/www/src/settings-preferences.mjs"
+          unzip -l "$apk" | grep -F "assets/www/src/settings-about.mjs"
+          "${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "package: name='com.linkline.game' versionCode='1' versionName='0.1.0-preview'"
+          "${ANDROID_HOME}/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$apk"
+          mkdir -p artifact
+          cp "$apk" artifact/Linkline-0.1.0-preview-debug.apk
+          sha256sum artifact/Linkline-0.1.0-preview-debug.apk | tee artifact/SHA256SUMS.txt
+          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game\nversion=0.1.0-preview\nbuild_type=debug\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
+
+      - name: Upload installable APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linkline-0.1.0-preview-debug
+          path: artifact/
+          if-no-files-found: error
+          retention-days: 14
