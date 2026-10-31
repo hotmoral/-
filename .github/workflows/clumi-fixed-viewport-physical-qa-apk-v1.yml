@@ -1,0 +1,119 @@
+name: Clumi Fixed Viewport Physical QA APK V1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/clumi-fixed-viewport-physical-qa-apk-v1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clumi-fixed-viewport-physical-qa-apk-v1
+  cancel-in-progress: false
+
+jobs:
+  build-physical-qa-apk:
+    if: >-
+      github.event.head_commit.message == 'build: Clumi fixed viewport physical QA apk v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      SOURCE_BRANCH: clumi-fixed-viewport-v1
+      SOURCE_SHA: 28a8001173948d1797f7bc8b3ec0fb99c7a9dbc3
+      APK_NAME: Clumi-Fixed-Viewport-QA-28a8001-debug.apk
+
+    steps:
+      - name: Checkout public harness
+        uses: actions/checkout@v4
+        with:
+          path: harness
+          persist-credentials: false
+
+      - name: Checkout exact private fixed viewport source
+        uses: actions/checkout@v4
+        with:
+          repository: hotmoral/EinsteinGame
+          ref: ${{ env.SOURCE_BRANCH }}
+          token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Require exact private source HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git -C source branch --show-current)" = "$SOURCE_BRANCH"
+          test -z "$(git -C source status --porcelain)"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android API 34 build tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager 'platform-tools' 'platforms;android-34' 'build-tools;34.0.0' >/dev/null
+
+      - name: Build bounded QA debug APK
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          env -u GITHUB_ACTIONS -u CI \
+            -u CI_TEST_KEYSTORE_PATH -u CI_TEST_KEYSTORE_PASSWORD -u CI_TEST_KEY_ALIAS -u CI_TEST_KEY_PASSWORD \
+            -u CLUMI_RELEASE_KEYSTORE_PATH -u CLUMI_RELEASE_KEYSTORE_PASSWORD -u CLUMI_RELEASE_KEY_ALIAS -u CLUMI_RELEASE_KEY_PASSWORD \
+            ./gradlew --no-daemon --stacktrace --console=plain :app:assembleDebug | tee ../qa-build.log
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          grep -F '> Task :app:compileDebugJavaWithJavac' ../qa-build.log
+          grep -F 'BUILD SUCCESSFUL' ../qa-build.log
+
+      - name: Verify package signature and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qa-apk
+          cp source/app/build/outputs/apk/debug/app-debug.apk "qa-apk/$APK_NAME"
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose --print-certs "qa-apk/$APK_NAME" | tee qa-apk/apksigner.txt
+          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "qa-apk/$APK_NAME" | tee qa-apk/badging.txt
+          grep -F "package: name='com.example.einsteingame' versionCode='13' versionName='0.2.7.1'" qa-apk/badging.txt
+          sha256sum "qa-apk/$APK_NAME" | tee qa-apk/SHA256SUMS.txt
+          {
+            echo 'status=PASS'
+            echo "source_branch=$SOURCE_BRANCH"
+            echo "source_sha=$SOURCE_SHA"
+            echo 'build_type=debug'
+            echo 'package=com.example.einsteingame'
+            echo 'versionCode=13'
+            echo 'versionName=0.2.7.1'
+            echo 'release_keystore_used=false'
+            echo "artifact=$APK_NAME"
+            echo "artifact_sha256=$(cut -d' ' -f1 qa-apk/SHA256SUMS.txt)"
+          } | tee qa-apk/provenance.txt
+
+      - name: Require source workspace unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
+          test -z "$(git -C source status --porcelain)"
+
+      - name: Upload physical QA APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clumi-Fixed-Viewport-Physical-QA-APK-V1
+          path: |
+            qa-apk
+            qa-build.log
+          retention-days: 14
+          if-no-files-found: error
