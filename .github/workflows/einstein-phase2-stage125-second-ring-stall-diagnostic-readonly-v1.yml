@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Case8 Relation Gap ReadOnly V1
+name: Einstein Phase2 Stage125 Case8 Household Gap ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 8c0a2bb48332dff798b6ea1b74880c7eb53f952f
+      SOURCE_SHA: fa06f874a0c627cab960857154edb00a9286f949
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 8c0a2bb48332dff798b6ea1b74880c7eb53f952f
+          ref: fa06f874a0c627cab960857154edb00a9286f949
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and diagnose Case8 relation gap
+      - name: Compile and inventory Case8 household gap
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-case8-relation-gap-classes
-          SOURCES=/tmp/einstein-stage125-case8-relation-gap-sources.txt
+          CLASSES=/tmp/einstein-stage125-case8-household-gap-classes
+          SOURCES=/tmp/einstein-stage125-case8-household-gap-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -76,10 +76,10 @@ jobs:
           cat >> "$SOURCES" <<'EOF'
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8RelationGapReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8HouseholdGapReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_CASE8_RELATION_GAP_COMPILE=PASS
+          echo STAGE125_CASE8_HOUSEHOLD_GAP_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_CASE8_RELATION_GAP_READONLY=true
-          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8RelationGapReadOnlyV1
+          export EINSTEIN_PHASE2_STAGE125_CASE8_HOUSEHOLD_GAP_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8HouseholdGapReadOnlyV1
