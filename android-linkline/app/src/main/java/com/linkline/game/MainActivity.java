@@ -39,7 +39,7 @@ public final class MainActivity extends Activity {
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(247, 244, 236));
-        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
+        WebView.setWebContentsDebuggingEnabled(true);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
