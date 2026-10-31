@@ -1,4 +1,4 @@
-name: Linkline Android QA APK
+name: Linkline Android QA2 APK
 
 on:
   push:
@@ -47,6 +47,26 @@ jobs:
           cmp "${WEB_DIR}/src/settings-preferences.mjs" "${ANDROID_PROJECT}/app/src/main/assets/www/src/settings-preferences.mjs"
           echo "Embedded web byte copy PASS"
 
+      - name: Apply Android QA2 home layout override
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('android-linkline/app/src/main/assets/www/index.html')
+          text = path.read_text(encoding='utf-8')
+          marker = '''<style id="linkline-android-qa2-layout">
+          .app-shell[data-view="home"] .home-hero{transform:translateY(-15px)!important}
+          .app-shell[data-view="home"] .signal-preview{width:min(84vw,395px)!important}
+          .app-shell[data-view="home"] .home-actions{transform:translateY(4px)!important}
+          </style>'''
+          if 'linkline-android-qa2-layout' in text:
+              raise SystemExit('QA2_LAYOUT_ALREADY_PRESENT')
+          if '</head>' not in text:
+              raise SystemExit('HEAD_CLOSE_NOT_FOUND')
+          path.write_text(text.replace('</head>', marker + '\n</head>', 1), encoding='utf-8')
+          PY
+          grep -F 'linkline-android-qa2-layout' "${ANDROID_PROJECT}/app/src/main/assets/www/index.html"
+
       - name: Prepare Android SDK and Gradle
         run: |
           set -euo pipefail
@@ -70,25 +90,28 @@ jobs:
           export PATH="${JAVA_HOME}/bin:${PATH}"
           "/tmp/gradle-${GRADLE_VERSION}/bin/gradle" -p "${ANDROID_PROJECT}" --no-daemon :app:assembleDebug
 
-      - name: Verify APK identity, signature and embedded assets
+      - name: Verify APK identity, icon resources and Android override
         run: |
           set -euo pipefail
           apk="${ANDROID_PROJECT}/app/build/outputs/apk/debug/app-debug.apk"
           test -s "$apk"
           unzip -l "$apk" | grep -F "assets/www/index.html"
-          unzip -l "$apk" | grep -F "assets/www/src/settings-preferences.mjs"
-          unzip -l "$apk" | grep -F "assets/www/src/settings-about.mjs"
-          "${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "package: name='com.linkline.game' versionCode='1' versionName='0.1.0-preview'"
+          unzip -p "$apk" assets/www/index.html | grep -F "linkline-android-qa2-layout"
+          unzip -l "$apk" | grep -F "res/mipmap-anydpi-v26/ic_launcher.xml"
+          unzip -l "$apk" | grep -F "res/mipmap-anydpi-v26/ic_launcher_round.xml"
+          unzip -l "$apk" | grep -F "linkline_icon.png"
+          "${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "package: name='com.linkline.game.qa2' versionCode='2' versionName='0.1.1-qa2'"
+          "${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "application-label:'Linkline QA2'"
           "${ANDROID_HOME}/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$apk"
           mkdir -p artifact
-          cp "$apk" artifact/Linkline-0.1.0-preview-debug.apk
-          sha256sum artifact/Linkline-0.1.0-preview-debug.apk | tee artifact/SHA256SUMS.txt
-          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game\nversion=0.1.0-preview\nbuild_type=debug\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
+          cp "$apk" artifact/Linkline-QA2-0.1.1-debug.apk
+          sha256sum artifact/Linkline-QA2-0.1.1-debug.apk | tee artifact/SHA256SUMS.txt
+          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game.qa2\nversion=0.1.1-qa2\nbuild_type=debug\nlayout_override=android-qa2\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
 
       - name: Upload installable APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Linkline-0.1.0-preview-debug
+          name: Linkline-QA2-0.1.1-debug
           path: artifact/
           if-no-files-found: error
           retention-days: 14
