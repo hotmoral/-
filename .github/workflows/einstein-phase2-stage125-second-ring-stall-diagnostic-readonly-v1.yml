@@ -1,4 +1,4 @@
-name: Einstein Phase2 Supporting Skill Acceptance DryRun V1
+name: Einstein Phase2 Stage125 Supporting Benefit Measurement ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: c8b438027503d1257f4a23f274794220155fbaf9
+      SOURCE_SHA: 0c57490e4894f9b3ae98d61caba7da49525d182c
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: c8b438027503d1257f4a23f274794220155fbaf9
+          ref: 0c57490e4894f9b3ae98d61caba7da49525d182c
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and validate supporting-skill acceptance semantics
+      - name: Compile and measure Stage125 supporting-skill material benefit
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-phase2-supporting-acceptance-classes
-          SOURCES=/tmp/einstein-phase2-supporting-acceptance-sources.txt
+          CLASSES=/tmp/einstein-stage125-supporting-benefit-classes
+          SOURCES=/tmp/einstein-stage125-supporting-benefit-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -74,10 +74,12 @@ jobs:
           mkdir -p "$CLASSES"
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
           cat >> "$SOURCES" <<'EOF'
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2SupportingSkillAcceptanceDryRunV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SupportingBenefitMeasurementReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo PHASE2_SUPPORTING_SKILL_ACCEPTANCE_COMPILE=PASS
+          echo STAGE125_SUPPORTING_BENEFIT_MEASUREMENT_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_SUPPORTING_ACCEPTANCE_DRYRUN=true
-          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2SupportingSkillAcceptanceDryRunV1
+          export EINSTEIN_PHASE2_STAGE125_SUPPORTING_BENEFIT_MEASUREMENT_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125SupportingBenefitMeasurementReadOnlyV1
