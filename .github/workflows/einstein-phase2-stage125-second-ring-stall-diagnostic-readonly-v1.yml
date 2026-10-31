@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Deterministic L2-First Witness ReadOnly V1
+name: Einstein Phase2 Stage125 Replayed Combined Witness Gate ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 931aab6220b774a01f597511f3b9f7917ea8d9e6
+      SOURCE_SHA: 576e9e52b247da6353c3be9f94795fd90bc0a24e
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 931aab6220b774a01f597511f3b9f7917ea8d9e6
+          ref: 576e9e52b247da6353c3be9f94795fd90bc0a24e
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,7 +43,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and replay deterministic L2-first witness
+      - name: Compile replay and validate Stage125 combined gate
         shell: bash
         run: |
           set -euo pipefail
@@ -79,7 +79,7 @@ jobs:
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125L2FirstWitnessReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_L2_FIRST_WITNESS_COMPILE=PASS
+          echo STAGE125_REPLAYED_COMBINED_GATE_COMPILE=PASS
 
           export EINSTEIN_PHASE2_STAGE125_L2_FIRST_WITNESS_READONLY=true
           java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125L2FirstWitnessReadOnlyV1
