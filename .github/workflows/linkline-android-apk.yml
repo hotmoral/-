@@ -53,7 +53,12 @@ jobs:
           export JAVA_HOME="${JAVA_HOME_17_X64}"
           export PATH="${JAVA_HOME}/bin:${PATH}"
           java -version
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager_path="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$sdkmanager_path" ]; then
+            sdkmanager_path="$(find "${ANDROID_HOME}/cmdline-tools" -type f -name sdkmanager -perm -111 | head -n 1)"
+          fi
+          test -x "$sdkmanager_path"
+          "$sdkmanager_path" "platforms;android-35" "build-tools;35.0.0"
           curl -fsSL --retry 3 "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /tmp
           "/tmp/gradle-${GRADLE_VERSION}/bin/gradle" --version
