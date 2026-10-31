@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 L1-Only Shortest Baseline ReadOnly V1
+name: Einstein Phase2 Stage125 L1 Relation-Subset Soundness ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 287f1739e78efeb982dfd7f3cc1d2acc5f573509
+      SOURCE_SHA: 7ec81ed9c7c789431eeb6445024d05e9b64fc8b9
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 287f1739e78efeb982dfd7f3cc1d2acc5f573509
+          ref: 7ec81ed9c7c789431eeb6445024d05e9b64fc8b9
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and prove L1-only shortest baseline
+      - name: Compile and diagnose L1 relation-subset soundness
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-l1-shortest-classes
-          SOURCES=/tmp/einstein-stage125-l1-shortest-sources.txt
+          CLASSES=/tmp/einstein-stage125-l1-subset-classes
+          SOURCES=/tmp/einstein-stage125-l1-subset-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -76,10 +76,10 @@ jobs:
           cat >> "$SOURCES" <<'EOF'
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125L1OnlyShortestBaselineReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125L1RelationSubsetSoundnessReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_L1_ONLY_SHORTEST_BASELINE_COMPILE=PASS
+          echo STAGE125_L1_RELATION_SUBSET_SOUNDNESS_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_L1_ONLY_SHORTEST_BASELINE_READONLY=true
-          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125L1OnlyShortestBaselineReadOnlyV1
+          export EINSTEIN_PHASE2_STAGE125_L1_RELATION_SUBSET_SOUNDNESS_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125L1RelationSubsetSoundnessReadOnlyV1
