@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Replayed Combined Witness Gate ReadOnly V1
+name: Einstein Phase2 Supporting-Skill Gate Loophole Closure ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 576e9e52b247da6353c3be9f94795fd90bc0a24e
+      SOURCE_SHA: d1114186dcb86599b86011d96c984257df5a8ce1
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: 576e9e52b247da6353c3be9f94795fd90bc0a24e
+          ref: d1114186dcb86599b86011d96c984257df5a8ce1
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile replay and validate Stage125 combined gate
+      - name: Compile and validate reusable supporting-skill semantics
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-l2-first-witness-classes
-          SOURCES=/tmp/einstein-stage125-l2-first-witness-sources.txt
+          CLASSES=/tmp/einstein-supporting-skill-gate-classes
+          SOURCES=/tmp/einstein-supporting-skill-gate-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -74,12 +74,10 @@ jobs:
           mkdir -p "$CLASSES"
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
           cat >> "$SOURCES" <<'EOF'
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125L2FirstWitnessReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2SupportingSkillAcceptanceDryRunV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_REPLAYED_COMBINED_GATE_COMPILE=PASS
+          echo PHASE2_SUPPORTING_SKILL_GATE_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_L2_FIRST_WITNESS_READONLY=true
-          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125L2FirstWitnessReadOnlyV1
+          export EINSTEIN_PHASE2_SUPPORTING_ACCEPTANCE_DRYRUN=true
+          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2SupportingSkillAcceptanceDryRunV1
