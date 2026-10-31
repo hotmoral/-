@@ -16,12 +16,12 @@ concurrency:
 jobs:
   back-home-latency:
     if: >-
-      github.event.head_commit.message == 'diagnose: Clumi Back Home latency v1'
+      github.event.head_commit.message == 'diagnose: Clumi Back Home latency after readiness fix'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
       SOURCE_BRANCH: clumi-fixed-viewport-v1
-      SOURCE_SHA: 97c73563a1bed2502aac027d746e669ac4566027
+      SOURCE_SHA: fd5fed97c7c384e732287f6a25ce8d783d201a6d
       AVD_NAME: clumi-back-home-latency
 
     steps:
@@ -128,8 +128,10 @@ jobs:
           grep -F 'CLUMI_BACK_HOME_SAMPLE origin=rewards' latency.log
           grep -F 'CLUMI_BACK_HOME_SAMPLE origin=settings' latency.log
           grep -F 'CLUMI_BACK_HOME_SAMPLE origin=start' latency.log
+          grep -F 'ready_fallbacks=0' latency.log
 
       - name: Restore source workspace
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
@@ -139,11 +141,12 @@ jobs:
           test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
 
       - name: Upload latency evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Clumi-Back-Home-Latency-V1
+          name: Clumi-Back-Home-Latency-After-Readiness-Fix
           path: |
             latency.log
             emulator.log
           retention-days: 14
-          if-no-files-found: error
+          if-no-files-found: warn
