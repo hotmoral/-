@@ -1,0 +1,17 @@
+.visual-chain-shadow,.slide-chain-shadow{stroke:rgba(23,23,22,.13);stroke-width:3.95;filter:drop-shadow(0 1.2px 1.4px rgba(23,23,22,.10))}
+.visual-chain-body,.slide-chain-body{stroke:#1d1d1b;stroke-width:2.85}
+.visual-chain-joint,.slide-chain-joint{fill:#1d1d1b}
+.endpoint-dot{fill:#1d1d1b;stroke:rgba(255,255,255,.88);stroke-width:.40}
+.endpoint-dot.is-selected{stroke:#1268ff;stroke-width:.88}
+.endpoint-dot.is-docked{fill:#1268ff;stroke:#fff;stroke-width:.54}
+.target-ring{fill:rgba(18,104,255,.025);stroke:#1268ff;stroke-width:1.12}
+.target-core{fill:rgba(18,104,255,.30)}
+.target-mark.is-docked .target-ring{stroke-opacity:.42}
+.target-mark.is-docked .target-core{opacity:0}
+.linkline-v61-drag .board-wrap.visual-assets-v5 .visual-chain-overlay,
+.linkline-v61-drag .board-wrap.visual-assets-v5 .visual-board-assets .endpoint-dot{opacity:0}
+.linkline-v61-drag .board-wrap.visual-assets-v5 .target-ring{stroke-width:1.26;filter:drop-shadow(0 0 1.6px rgba(18,104,255,.16))}
+@media (prefers-reduced-motion:reduce){.linkline-v61-drag .board-wrap.visual-assets-v5 .target-ring{filter:none}}
+`;
+document.head.append(style);
+

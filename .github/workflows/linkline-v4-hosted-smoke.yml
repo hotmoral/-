@@ -1,0 +1,166 @@
+name: Linkline V4 hosted preview smoke
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-product-v4-smoke-v1
+
+permissions:
+  contents: read
+
+jobs:
+  hosted-smoke:
+    runs-on: ubuntu-latest
+    env:
+      PREVIEW_URL: https://linkline-cloudflare-product-v-timing-defense-skilled-v2-harness.sktjsek.workers.dev
+      APP_DIR: timing-defense-skilled-v2-harness/public
+    steps:
+      - name: Checkout exact pushed commit without third-party actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Wait for pushed Settings bytes to reach the stable Preview URL
+        run: |
+          set -euo pipefail
+          rel="src/settings-preferences.mjs"
+          expected="$(sha256sum "$APP_DIR/$rel" | awk '{print $1}')"
+          for attempt in $(seq 1 90); do
+            if curl -fsS --max-time 10 "$PREVIEW_URL/$rel" -o /tmp/convergence.settings-preferences.mjs; then
+              actual="$(sha256sum /tmp/convergence.settings-preferences.mjs | awk '{print $1}')"
+              if [ "$actual" = "$expected" ]; then
+                echo "Preview serves pushed Settings bytes on attempt $attempt"
+                exit 0
+              fi
+            fi
+            sleep 2
+          done
+          echo "Preview did not converge to pushed Settings bytes" >&2
+          exit 1
+
+      - name: Verify hosted runtime, Settings, grading, assets and data exact-byte parity
+        run: |
+          set -euo pipefail
+          files=(
+            index.html
+            manifest.webmanifest
+            polish.css
+            styles.css
+            src/app.mjs
+            src/catalog.mjs
+            src/mechanic.mjs
+            src/navigation.mjs
+            src/path-geometry.mjs
+            src/polish.mjs
+            src/progress.mjs
+            src/runtime.mjs
+            src/performance.mjs
+            src/clear-outcome.mjs
+            src/clear-result-ui.mjs
+            src/visual-assets.mjs
+            src/settings-preferences.mjs
+            src/settings-about.mjs
+            assets/performance-stamps/s-plus.png
+            assets/performance-stamps/a-plus.png
+            assets/performance-stamps/b-plus.png
+            assets/performance-stamps/s-plus-approved.svg
+            assets/performance-stamps/a-plus-approved.svg
+            assets/performance-stamps/b-plus-approved.svg
+            data/performance-baseline-v1.json
+            data/campaign-0001-1300.json
+            data/campaign-0001-0260.chunk.json
+            data/campaign-0261-0520.chunk.json
+            data/campaign-0521-0780.chunk.json
+            data/campaign-0781-1040.chunk.json
+            data/campaign-1041-1300.chunk.json
+          )
+          mkdir -p /tmp/hosted
+          for rel in "${files[@]}"; do
+            mkdir -p "/tmp/hosted/$(dirname "$rel")"
+            if [ "$rel" = "index.html" ]; then
+              url="$PREVIEW_URL/"
+            else
+              url="$PREVIEW_URL/$rel"
+            fi
+            curl -fsS --max-time 15 "$url" -o "/tmp/hosted/$rel"
+            cmp "$APP_DIR/$rel" "/tmp/hosted/$rel"
+          done
+          echo "Exact-byte parity PASS for ${#files[@]} hosted runtime/Settings/grading/assets/data files"
+
+      - name: Validate Performance Baseline v1 identity
+        run: |
+          set -euo pipefail
+          expected="25e395b6761dba58f62514456857fbb7c16d4b25cb4e7b8f053532142f38c144"
+          actual="$(sha256sum /tmp/hosted/data/performance-baseline-v1.json | awk '{print $1}')"
+          test "$actual" = "$expected"
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const raw = JSON.parse(fs.readFileSync('/tmp/hosted/data/performance-baseline-v1.json', 'utf8'));
+          if (raw.schema !== 'LINKLINE_PERFORMANCE_BASELINE') throw new Error('BASELINE_SCHEMA');
+          if (raw.version !== '1.0.0') throw new Error('BASELINE_VERSION');
+          if (raw.metric !== 'M3_V1_SHORTEST_DISTANCE') throw new Error('BASELINE_METRIC');
+          if (raw.launchTotal !== 1300 || raw.rows?.length !== 1300) throw new Error('BASELINE_ROWS');
+          console.log('Performance Baseline v1 identity PASS');
+          JS
+
+      - name: Validate sanitized manifest and chunk raw hashes
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+
+          root = Path('/tmp/hosted/data')
+          manifest = json.loads((root/'campaign-0001-1300.json').read_text())
+          assert manifest['schema'] == 'LINKLINE_PRODUCT_CAMPAIGN_CHUNKED'
+          assert manifest['launchTotal'] == 1300
+          assert manifest['materializedFromPosition'] == 1
+          assert manifest['materializedThroughPosition'] == 1300
+          assert len(manifest['chunks']) == 5
+          allowed_source = {
+              'catalogFingerprint',
+              'canonicalV4CatalogFingerprint',
+              'orderFingerprint',
+              'orderPrefixFingerprint',
+          }
+          assert set(manifest['source']) == allowed_source, manifest['source'].keys()
+          expected_from = 1
+          rows = 0
+          for desc in manifest['chunks']:
+              assert desc['fromPosition'] == expected_from
+              raw = (root/desc['path']).read_bytes()
+              assert hashlib.sha256(raw).hexdigest() == desc['sha256']
+              chunk = json.loads(raw)
+              assert chunk['fromPosition'] == desc['fromPosition']
+              assert chunk['throughPosition'] == desc['throughPosition']
+              assert chunk['rowEncoding'] == ['n','length','initial','targets']
+              assert len(chunk['rows']) == desc['throughPosition'] - desc['fromPosition'] + 1
+              rows += len(chunk['rows'])
+              expected_from = desc['throughPosition'] + 1
+          assert rows == 1300
+          assert expected_from == 1301
+          print('Sanitized manifest + 5 chunk SHA-256/range checks PASS')
+          PY
+
+      - name: Assemble and validate the hosted 1300-stage campaign
+        run: |
+          set -euo pipefail
+          PREVIEW_URL="$PREVIEW_URL" node --input-type=module <<'JS'
+          import { loadCampaign } from './timing-defense-skilled-v2-harness/public/src/catalog.mjs';
+          const campaign = await loadCampaign(`${process.env.PREVIEW_URL}/data/campaign-0001-1300.json`);
+          if (campaign.puzzles.length !== 1300) throw new Error('HOSTED_CAMPAIGN_COUNT');
+          for (const p of [campaign.puzzles[0], campaign.puzzles[649], campaign.puzzles[1299]]) {
+            if (!p || !Number.isInteger(p.position) || !Array.isArray(p.initial) || !Array.isArray(p.targets)) {
+              throw new Error('HOSTED_REPRESENTATIVE_STAGE');
+            }
+          }
+          if (campaign.puzzles[0].position !== 1 || campaign.puzzles[649].position !== 650 || campaign.puzzles[1299].position !== 1300) {
+            throw new Error('HOSTED_REPRESENTATIVE_POSITIONS');
+          }
+          console.log('Hosted campaign assembly PASS: 1300 stages; representative positions 1/650/1300 PASS');
+          JS

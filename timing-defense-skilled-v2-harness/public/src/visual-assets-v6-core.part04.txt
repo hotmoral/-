@@ -1,0 +1,110 @@
+  board.insertBefore(chain, info.grid);
+  board.insertBefore(marks, info.grid);
+}
+
+function authoritativeGeometry(cells, n) {
+  const controls = cells.map((cell) => cellCenterFromNumber(cell, n)).filter(Boolean);
+  if (controls.length < 2) return null;
+  const samples = roundedPolylineSamples(controls, (100 / n) * ROUTE_RADIUS_RATIO);
+  const metrics = pathMetrics(samples);
+  return { samples, metrics, points: sampleRange(samples, 0, metrics.total).points };
+}
+
+function createPersistentOverlay(n, chainCellCount) {
+  const metrics = visualMetrics(n);
+  const svg = svgNode('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, 'visual-slide-overlay visual-slide-overlay-v61');
+  svg.style.cssText = 'position:fixed;pointer-events:none;overflow:visible;z-index:30;';
+  const shadow = svgNode('path', { d: '' }, 'slide-chain-shadow');
+  const body = svgNode('path', { d: '' }, 'slide-chain-body');
+  svg.append(shadow, body);
+  const nodes = [];
+  for (let index = 0; index < chainCellCount; index++) {
+    const endpoint = index === 0 || index === chainCellCount - 1;
+    const node = endpoint
+      ? appendEndpoint(svg, { x: 0, y: 0 }, metrics, index === 0, false, 'slide-node')
+      : svgNode('circle', { cx: 0, cy: 0, r: metrics.jointRadius }, 'slide-chain-joint slide-node');
+    if (!endpoint) svg.append(node);
+    nodes.push(node);
+  }
+  document.body.append(svg);
+  return { svg, paths: [shadow, body], nodes };
+}
+
+function positionPersistentOverlay(rect) {
+  if (!slideState?.overlay?.svg || !rect?.width || !rect.height) return;
+  slideState.boardRect = rect;
+  const style = slideState.overlay.svg.style;
+  style.left = `${rect.left}px`;
+  style.top = `${rect.top}px`;
+  style.width = `${rect.width}px`;
+  style.height = `${rect.height}px`;
+}
+
+function updateOverlayGeometry(points) {
+  const overlay = slideState?.overlay;
+  if (!overlay || !points?.length) return;
+  const d = pointsToPath(points);
+  for (const path of overlay.paths) path.setAttribute('d', d);
+  const denominator = Math.max(1, overlay.nodes.length - 1);
+  for (let index = 0; index < overlay.nodes.length; index++) {
+    const sampleIndex = Math.round((index / denominator) * (points.length - 1));
+    const point = points[sampleIndex];
+    overlay.nodes[index].setAttribute('cx', point.x);
+    overlay.nodes[index].setAttribute('cy', point.y);
+  }
+}
+
+function clientToBoard(clientX, clientY) {
+  const rect = slideState?.boardRect;
+  if (!rect?.width || !rect.height) return null;
+  return {
+    x: ((clientX - rect.left) / rect.width) * 100,
+    y: ((clientY - rect.top) / rect.height) * 100,
+  };
+}
+
+function copyIntent(detail) {
+  if (!detail || detail.version !== 1 || detail.active !== true) return null;
+  if (!Number.isInteger(detail.pointerId) || !Number.isInteger(detail.endpointCell)) return null;
+  return {
+    version: 1,
+    phase: String(detail.phase || 'update'),
+    active: true,
+    pointerId: detail.pointerId,
+    endpointCell: detail.endpointCell,
+    traceCell: Number.isInteger(detail.traceCell) ? detail.traceCell : detail.endpointCell,
+    queue: Array.isArray(detail.queue) ? detail.queue.filter(Number.isInteger) : [],
+    waiting: Boolean(detail.waiting),
+    moved: Boolean(detail.moved),
+    released: Boolean(detail.released),
+    headingAxis: detail.headingAxis === 'H' || detail.headingAxis === 'V' ? detail.headingAxis : null,
+    clientX: Number(detail.clientX),
+    clientY: Number(detail.clientY),
+  };
+}
+
+function applyCommittedHead(nextHead) {
+  if (!slideState || !Number.isInteger(nextHead)) return false;
+  if (nextHead === slideState.authoritativeHeadCell) return true;
+  const chain = [...slideState.chainCells];
+  const head = chain[0];
+  if (!neighbors(slideState.n, head).includes(nextHead) || chain.includes(nextHead)) return false;
+  chain.unshift(nextHead);
+  chain.pop();
+  slideState.chainCells = chain;
+  slideState.authoritativeHeadCell = nextHead;
+  return true;
+}
+
+function reconcileFromBoard(board) {
+  if (!slideState || !board?.isConnected) return false;
+  const info = boardInfo(board);
+  if (!info || info.n !== slideState.n) return false;
+  decorateBoard(board);
+  positionPersistentOverlay(info.rect);
+  const actualCells = chainCellNumbers(board);
+  if (!sameCellSet(actualCells, slideState.chainCells)) return false;
+  if (!isEndpointCell(board, slideState.authoritativeHeadCell)) return false;
+  const source = sourcePathSamples(board);
+  const ordered = source && orderChainCellsBySource(board, info.n, source.points, slideState.authoritativeHeadCell);
+  if (!ordered?.length) return false;

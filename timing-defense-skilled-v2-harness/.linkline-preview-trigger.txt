@@ -1,0 +1,5 @@
+Linkline Target-pair V4 hosted-smoke preview trigger
+mode=STATIC_CANONICAL_ASSETS
+previewContract=PR4_PACKAGE_WRANGLER_PARITY
+pr=12
+scope=DRAFT_DO_NOT_MERGE
