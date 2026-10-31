@@ -325,7 +325,7 @@ function installBrowserSettings() {
   const screen = document.querySelector('#screen');
   if (!screen) return;
   const observer = new MutationObserver(renderSettingsPreferenceCard);
-  observer.observe(screen, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  observer.observe(screen, { childList: true, attributes: true, attributeFilter: ['class'] });
   document.addEventListener('pointerdown', () => { if (browserSettings.sound) ensureAudioContext(); }, { passive: true });
   document.addEventListener('keydown', () => { if (browserSettings.sound) ensureAudioContext(); });
   document.addEventListener('click', maybePlayClearSound);
