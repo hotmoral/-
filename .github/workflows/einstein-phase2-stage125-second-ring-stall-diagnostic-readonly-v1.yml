@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Material Benefit Bound Certificate ReadOnly V1
+name: Einstein Phase2 Stage125 L1-Only Lower Bound Certificate ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: b47467084396774eddf5733401641c0c89dabd1c
+      SOURCE_SHA: fc601abcdbea4e6c9b2f072b03a3b4aa52cfec7b
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: b47467084396774eddf5733401641c0c89dabd1c
+          ref: fc601abcdbea4e6c9b2f072b03a3b4aa52cfec7b
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and validate one-sided material-benefit bound theorem
+      - name: Compile and certify L1-only lower bound
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-benefit-bound-classes
-          SOURCES=/tmp/einstein-stage125-benefit-bound-sources.txt
+          CLASSES=/tmp/einstein-stage125-l1-lower-bound-classes
+          SOURCES=/tmp/einstein-stage125-l1-lower-bound-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -74,10 +74,12 @@ jobs:
           mkdir -p "$CLASSES"
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
           cat >> "$SOURCES" <<'EOF'
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125MaterialBenefitBoundCertificateReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125L1OnlyLowerBoundCertificateReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_MATERIAL_BENEFIT_BOUND_CERTIFICATE_COMPILE=PASS
+          echo STAGE125_L1_ONLY_LOWER_BOUND_CERTIFICATE_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_MATERIAL_BENEFIT_BOUND_CERTIFICATE_READONLY=true
-          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125MaterialBenefitBoundCertificateReadOnlyV1
+          export EINSTEIN_PHASE2_STAGE125_L1_ONLY_LOWER_BOUND_CERTIFICATE_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125L1OnlyLowerBoundCertificateReadOnlyV1
