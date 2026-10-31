@@ -1,4 +1,4 @@
-name: Einstein Phase2 Stage125 Case8 Pair Closure Gap ReadOnly V1
+name: Einstein Phase2 Stage125 Case8 Toothbrush L2 Replay ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: f8fcbcb84d181b6c437d1d86fd10c09f93d61c26
+      SOURCE_SHA: 222a62d795b0bb0a7629134d4c49ef437a331d2c
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: f8fcbcb84d181b6c437d1d86fd10c09f93d61c26
+          ref: 222a62d795b0bb0a7629134d4c49ef437a331d2c
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and diagnose Case8 pair closure gap
+      - name: Compile and replay Case8 toothbrush L2 closure
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-stage125-case8-pair-closure-gap-classes
-          SOURCES=/tmp/einstein-stage125-case8-pair-closure-gap-sources.txt
+          CLASSES=/tmp/einstein-stage125-case8-toothbrush-l2-classes
+          SOURCES=/tmp/einstein-stage125-case8-toothbrush-l2-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -76,10 +76,10 @@ jobs:
           cat >> "$SOURCES" <<'EOF'
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ScorerV1.java
           puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125SparseL2ReplayReadOnlyV1.java
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8PairClosureGapReadOnlyV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2Stage125Case8ToothbrushL2ReplayReadOnlyV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo STAGE125_CASE8_PAIR_CLOSURE_GAP_COMPILE=PASS
+          echo STAGE125_CASE8_TOOTHBRUSH_L2_REPLAY_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_STAGE125_CASE8_PAIR_CLOSURE_GAP_READONLY=true
-          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8PairClosureGapReadOnlyV1
+          export EINSTEIN_PHASE2_STAGE125_CASE8_TOOTHBRUSH_L2_REPLAY_READONLY=true
+          java -Xmx4g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2Stage125Case8ToothbrushL2ReplayReadOnlyV1
