@@ -1,4 +1,4 @@
-name: Linkline Android QA2 APK
+name: Linkline Android QA3 APK
 
 on:
   push:
@@ -47,25 +47,37 @@ jobs:
           cmp "${WEB_DIR}/src/settings-preferences.mjs" "${ANDROID_PROJECT}/app/src/main/assets/www/src/settings-preferences.mjs"
           echo "Embedded web byte copy PASS"
 
-      - name: Apply Android QA2 home layout override
+      - name: Apply Android home layout override
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
           path = Path('android-linkline/app/src/main/assets/www/index.html')
           text = path.read_text(encoding='utf-8')
-          marker = '''<style id="linkline-android-qa2-layout">
+          marker = '''<style id="linkline-android-qa3-layout">
           .app-shell[data-view="home"] .home-hero{transform:translateY(-15px)!important}
           .app-shell[data-view="home"] .signal-preview{width:min(84vw,395px)!important}
           .app-shell[data-view="home"] .home-actions{transform:translateY(4px)!important}
           </style>'''
-          if 'linkline-android-qa2-layout' in text:
-              raise SystemExit('QA2_LAYOUT_ALREADY_PRESENT')
+          if 'linkline-android-qa3-layout' in text:
+              raise SystemExit('QA3_LAYOUT_ALREADY_PRESENT')
           if '</head>' not in text:
               raise SystemExit('HEAD_CLOSE_NOT_FOUND')
           path.write_text(text.replace('</head>', marker + '\n</head>', 1), encoding='utf-8')
           PY
-          grep -F 'linkline-android-qa2-layout' "${ANDROID_PROJECT}/app/src/main/assets/www/index.html"
+          grep -F 'linkline-android-qa3-layout' "${ANDROID_PROJECT}/app/src/main/assets/www/index.html"
+
+      - name: Force bitmap launcher icon path
+        run: |
+          set -euo pipefail
+          res="${ANDROID_PROJECT}/app/src/main/res"
+          test -s "${res}/drawable-nodpi/linkline_icon.png"
+          rm -rf "${res}/mipmap-anydpi-v26"
+          rm -f "${res}/drawable/ic_launcher.xml" "${res}/drawable/ic_launcher_foreground.xml"
+          mkdir -p "${res}/mipmap-nodpi"
+          cp "${res}/drawable-nodpi/linkline_icon.png" "${res}/mipmap-nodpi/ic_launcher.png"
+          cmp "${res}/drawable-nodpi/linkline_icon.png" "${res}/mipmap-nodpi/ic_launcher.png"
+          echo "Single bitmap launcher icon prepared"
 
       - name: Prepare Android SDK and Gradle
         run: |
@@ -90,28 +102,32 @@ jobs:
           export PATH="${JAVA_HOME}/bin:${PATH}"
           "/tmp/gradle-${GRADLE_VERSION}/bin/gradle" -p "${ANDROID_PROJECT}" --no-daemon :app:assembleDebug
 
-      - name: Verify APK identity, icon resources and Android override
+      - name: Verify APK identity and single bitmap icon
         run: |
           set -euo pipefail
           apk="${ANDROID_PROJECT}/app/build/outputs/apk/debug/app-debug.apk"
           test -s "$apk"
           unzip -l "$apk" | grep -F "assets/www/index.html"
-          unzip -p "$apk" assets/www/index.html | grep -F "linkline-android-qa2-layout"
-          unzip -l "$apk" | grep -F "res/mipmap-anydpi-v26/ic_launcher.xml"
-          unzip -l "$apk" | grep -F "res/mipmap-anydpi-v26/ic_launcher_round.xml"
-          unzip -l "$apk" | grep -F "linkline_icon.png"
-          "${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "package: name='com.linkline.game.qa2' versionCode='2' versionName='0.1.1-qa2'"
-          "${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "application-label:'Linkline QA2'"
+          unzip -p "$apk" assets/www/index.html | grep -F "linkline-android-qa3-layout"
+          unzip -l "$apk" | grep -F "res/mipmap-nodpi-v4/ic_launcher.png"
+          if unzip -l "$apk" | grep -q "res/mipmap-anydpi-v26/ic_launcher"; then
+            echo "Unexpected adaptive launcher icon remained" >&2
+            exit 1
+          fi
+          badging="$("${ANDROID_HOME}/build-tools/35.0.0/aapt" dump badging "$apk")"
+          echo "$badging" | grep -F "package: name='com.linkline.game.qa3' versionCode='3' versionName='0.1.2-qa3'"
+          echo "$badging" | grep -F "application-label:'Linkline QA3'"
+          echo "$badging" | grep -F "application-icon-" | grep -F "ic_launcher.png"
           "${ANDROID_HOME}/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$apk"
           mkdir -p artifact
-          cp "$apk" artifact/Linkline-QA2-0.1.1-debug.apk
-          sha256sum artifact/Linkline-QA2-0.1.1-debug.apk | tee artifact/SHA256SUMS.txt
-          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game.qa2\nversion=0.1.1-qa2\nbuild_type=debug\nlayout_override=android-qa2\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
+          cp "$apk" artifact/Linkline-QA3-0.1.2-debug.apk
+          sha256sum artifact/Linkline-QA3-0.1.2-debug.apk | tee artifact/SHA256SUMS.txt
+          printf 'web_base=%s\nsource_commit=%s\npackage=com.linkline.game.qa3\nversion=0.1.2-qa3\nbuild_type=debug\nlayout_override=android-qa3\nlauncher_icon=single-bitmap-mipmap-nodpi\n' "$WEB_BASE" "$GITHUB_SHA" > artifact/PROVENANCE.txt
 
       - name: Upload installable APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Linkline-QA2-0.1.1-debug
+          name: Linkline-QA3-0.1.2-debug
           path: artifact/
           if-no-files-found: error
           retention-days: 14
