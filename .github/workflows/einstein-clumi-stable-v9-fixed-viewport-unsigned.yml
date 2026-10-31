@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: 97c73563a1bed2502aac027d746e669ac4566027
+      SOURCE_SHA: fd5fed97c7c384e732287f6a25ce8d783d201a6d
       STABLE_V9_BASE_SHA: 519362b7587ec8c592f1835f42b3468d348a9306
       BANK_SHA: f58b303283c3cd7696489b50d2964e01746ac0ab
       BUILD_TOOLS: '34.0.0'
@@ -96,10 +96,10 @@ jobs:
         run: |
           set -euo pipefail
           grep -F "package: name='com.hotmoral.clumi' versionCode='9' versionName='1.0.8'" stable-v9-badging.txt
-          grep -F '"sourceSha": "97c73563a1bed2502aac027d746e669ac4566027"' Clumi-Stable-v9-bank120-integration.json
+          grep -F '"sourceSha": "fd5fed97c7c384e732287f6a25ce8d783d201a6d"' Clumi-Stable-v9-bank120-integration.json
           grep -F '"stageCount": 120' Clumi-Stable-v9-bank120-integration.json
           grep -F '"excludedStage121": true' Clumi-Stable-v9-bank120-integration.json
-          echo 'fixed_viewport_source=97c73563a1bed2502aac027d746e669ac4566027' > fixed-viewport-build-summary.txt
+          echo 'fixed_viewport_source=fd5fed97c7c384e732287f6a25ce8d783d201a6d' > fixed-viewport-build-summary.txt
           echo 'stable_identity=com.hotmoral.clumi/9/1.0.8' >> fixed-viewport-build-summary.txt
           echo 'tutorial_cta_sha256=57403814574fc8e8b214acbbe891ad7fe7319989c8efb487a76eca17bb3db0a3' >> fixed-viewport-build-summary.txt
           echo 'permanent_signing_material=NOT_LOADED' >> fixed-viewport-build-summary.txt
