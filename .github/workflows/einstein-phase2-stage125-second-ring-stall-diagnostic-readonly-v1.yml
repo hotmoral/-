@@ -1,4 +1,4 @@
-name: Einstein Phase2 Supporting-Skill Gate Loophole Closure ReadOnly V1
+name: Einstein Supporting-Skill Evidence Construction ReadOnly V1
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SOURCE_SHA: d1114186dcb86599b86011d96c984257df5a8ce1
+      SOURCE_SHA: 822cf6a0cfcc54c775b0ed9651b7de344eb647f3
       EXPECTED_BANK_HEAD: b423073076594ca68f45681f40afec1cd9ed5ba9
     steps:
       - name: Checkout recovery source
         uses: actions/checkout@v4
         with:
           repository: hotmoral/EinsteinGame
-          ref: d1114186dcb86599b86011d96c984257df5a8ce1
+          ref: 822cf6a0cfcc54c775b0ed9651b7de344eb647f3
           token: ${{ secrets.EINSTEINGAME_READ_TOKEN }}
           path: EinsteinGame
           fetch-depth: 1
@@ -43,14 +43,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Compile and validate reusable supporting-skill semantics
+      - name: Compile and validate supporting-skill evidence construction
         shell: bash
         run: |
           set -euo pipefail
           SRC="$GITHUB_WORKSPACE/EinsteinGame"
           STORE="$GITHUB_WORKSPACE/ProductionStore"
-          CLASSES=/tmp/einstein-supporting-skill-gate-classes
-          SOURCES=/tmp/einstein-supporting-skill-gate-sources.txt
+          CLASSES=/tmp/einstein-supporting-evidence-classes
+          SOURCES=/tmp/einstein-supporting-evidence-sources.txt
 
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SOURCE_SHA"
           LIVE_BANK_HEAD="$(git -C "$STORE" rev-parse HEAD)"
@@ -74,10 +74,11 @@ jobs:
           mkdir -p "$CLASSES"
           find puzzle-core/src/main/java puzzle-authoring/src/main/java -type f -name '*.java' -print | sort > "$SOURCES"
           cat >> "$SOURCES" <<'EOF'
-          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/acquisition/CampaignProduction2000Phase2SupportingSkillAcceptanceDryRunV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/path/SupportingSkillBenefitPathFixtureFactoryV1.java
+          puzzle-authoring/src/test/java/com/example/einsteingame/authoring/pss/curriculum/SupportingSkillBenefitEvidenceConstructionDryRunV1.java
           EOF
           java -Xmx2g -m jdk.compiler/com.sun.tools.javac.Main -encoding UTF-8 --release 8 -d "$CLASSES" "@$SOURCES"
-          echo PHASE2_SUPPORTING_SKILL_GATE_COMPILE=PASS
+          echo SUPPORTING_SKILL_EVIDENCE_CONSTRUCTION_COMPILE=PASS
 
-          export EINSTEIN_PHASE2_SUPPORTING_ACCEPTANCE_DRYRUN=true
-          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.acquisition.CampaignProduction2000Phase2SupportingSkillAcceptanceDryRunV1
+          export EINSTEIN_SUPPORTING_SKILL_EVIDENCE_CONSTRUCTION_DRYRUN=true
+          java -Xmx2g -cp "$CLASSES" com.example.einsteingame.authoring.pss.curriculum.SupportingSkillBenefitEvidenceConstructionDryRunV1
