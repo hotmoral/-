@@ -1,0 +1,110 @@
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const DRAG_INTENT_EVENT = 'linkline:drag-intent-v1';
+const screen = document.querySelector('#screen');
+const stageLabel = document.querySelector('#stage-label');
+const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
+const ROUTE_RADIUS_RATIO = 0.22;
+const ROUTE_LINE_STEP = 0.72;
+const ROUTE_CURVE_STEPS = 8;
+const RENDER_SAMPLE_COUNT = 128;
+const SETTLE_MS = 84;
+
+let slideState = null;
+
+function svgNode(tag, attrs = {}, className = '') {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [name, value] of Object.entries(attrs)) node.setAttribute(name, String(value));
+  if (className) node.setAttribute('class', className);
+  return node;
+}
+
+function cellNumber(cell) {
+  const value = Number(cell?.dataset?.cell);
+  return Number.isInteger(value) ? value : null;
+}
+
+function cellCenterFromNumber(number, n) {
+  if (!Number.isInteger(number)) return null;
+  const row = Math.floor(number / n);
+  const col = number % n;
+  const step = 100 / n;
+  return { x: (col + 0.5) * step, y: (row + 0.5) * step };
+}
+
+function distanceSquared(a, b) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return dx * dx + dy * dy;
+}
+
+function distance(a, b) {
+  return Math.sqrt(distanceSquared(a, b));
+}
+
+function lerpPoint(a, b, t) {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
+
+function pointsToPath(points) {
+  if (!points?.length) return '';
+  return points.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(3)} ${point.y.toFixed(3)}`).join(' ');
+}
+
+function neighbors(n, cell) {
+  const row = Math.floor(cell / n);
+  const col = cell % n;
+  const out = [];
+  if (row > 0) out.push(cell - n);
+  if (row + 1 < n) out.push(cell + n);
+  if (col > 0) out.push(cell - 1);
+  if (col + 1 < n) out.push(cell + 1);
+  return out;
+}
+
+function pathMetrics(points) {
+  const cumulative = [0];
+  for (let index = 1; index < points.length; index++) {
+    cumulative.push(cumulative.at(-1) + distance(points[index - 1], points[index]));
+  }
+  return { cumulative, total: cumulative.at(-1) || 0 };
+}
+
+function pointAtDistance(points, metrics, target) {
+  if (!points.length) return null;
+  if (target <= 0) return { ...points[0] };
+  if (target >= metrics.total) return { ...points.at(-1) };
+  let low = 1;
+  let high = metrics.cumulative.length - 1;
+  while (low < high) {
+    const mid = (low + high) >> 1;
+    if (metrics.cumulative[mid] < target) low = mid + 1;
+    else high = mid;
+  }
+  const index = low;
+  const before = metrics.cumulative[index - 1];
+  const after = metrics.cumulative[index];
+  const span = Math.max(1e-9, after - before);
+  return lerpPoint(points[index - 1], points[index], (target - before) / span);
+}
+
+function sampleRange(points, fromDistance, length, count = RENDER_SAMPLE_COUNT) {
+  const metrics = pathMetrics(points);
+  const from = Math.max(0, Math.min(metrics.total, fromDistance));
+  const usable = Math.max(0, Math.min(length, metrics.total - from));
+  const out = [];
+  for (let index = 0; index < count; index++) {
+    const ratio = count === 1 ? 0 : index / (count - 1);
+    out.push(pointAtDistance(points, metrics, from + usable * ratio));
+  }
+  return { points: out, usableLength: usable, metrics };
+}
+
+function appendLineSamples(out, from, to) {
+  const length = distance(from, to);
+  const steps = Math.max(1, Math.ceil(length / ROUTE_LINE_STEP));
+  for (let step = 1; step <= steps; step++) out.push(lerpPoint(from, to, step / steps));
+}
+
+function appendQuadraticSamples(out, from, control, to) {
+  for (let step = 1; step <= ROUTE_CURVE_STEPS; step++) {

@@ -1,0 +1,224 @@
+const CLEAR_RESULT_EVENT = 'linkline:clear-result-v1';
+const STAMP_ASSETS = Object.freeze({
+  'S+': '/assets/performance-stamps/s-plus-approved.svg?stamp=approved-v3',
+  'A+': '/assets/performance-stamps/a-plus-approved.svg?stamp=approved-v3',
+  'B+': '/assets/performance-stamps/b-plus-approved.svg?stamp=approved-v3',
+});
+const STAMP_FALLBACK_ASSETS = Object.freeze({
+  'S+': '/assets/performance-stamps/s-plus.png?stamp=fallback-v1',
+  'A+': '/assets/performance-stamps/a-plus.png?stamp=fallback-v1',
+  'B+': '/assets/performance-stamps/b-plus.png?stamp=fallback-v1',
+});
+
+const stampReadyGrades = new Set();
+const stampPreloads = new Map();
+let pendingSnapshot = null;
+
+function markStampReady(grade) {
+  if (stampReadyGrades.has(grade)) return;
+  stampReadyGrades.add(grade);
+  queueMicrotask(decorateClearResult);
+}
+
+function primeStampAssets() {
+  if (typeof globalThis.Image !== 'function') {
+    Object.keys(STAMP_ASSETS).forEach((grade) => stampReadyGrades.add(grade));
+    return;
+  }
+
+  for (const [grade, src] of Object.entries(STAMP_ASSETS)) {
+    const image = new globalThis.Image();
+    const fallback = STAMP_FALLBACK_ASSETS[grade];
+    let fallbackAttempted = false;
+    image.decoding = 'sync';
+    image.loading = 'eager';
+    if ('fetchPriority' in image) image.fetchPriority = 'high';
+    image.addEventListener('load', () => markStampReady(grade), { once: true });
+    image.addEventListener('error', () => {
+      if (!fallbackAttempted && fallback) {
+        fallbackAttempted = true;
+        image.src = fallback;
+        return;
+      }
+      markStampReady(grade);
+    });
+    image.src = src;
+    if (typeof image.decode === 'function') image.decode().then(() => markStampReady(grade), () => {});
+    if (image.complete && image.naturalWidth > 0) markStampReady(grade);
+    stampPreloads.set(grade, image);
+  }
+}
+
+function crownIcon() {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.classList.add('performance-crown');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M3.4 7.4 7.7 11l4.2-6 4.4 6 4.3-3.6-1.6 9.2H5zM5.4 19h13.2');
+  svg.append(path);
+  return svg;
+}
+
+function stat(label, value, className = '') {
+  const item = document.createElement('div');
+  item.className = `performance-stat ${className}`.trim();
+
+  const heading = document.createElement('div');
+  heading.className = 'performance-stat-label';
+  if (className.includes('best')) heading.append(crownIcon());
+  heading.append(document.createTextNode(label));
+
+  const number = document.createElement('div');
+  number.className = 'performance-stat-value';
+  number.textContent = Number.isInteger(value) ? String(value) : '—';
+
+  const unit = document.createElement('div');
+  unit.className = 'performance-stat-unit';
+  unit.textContent = 'MOVES';
+
+  item.append(heading, number, unit);
+  return item;
+}
+
+function stampSource(grade) {
+  const preload = stampPreloads.get(grade);
+  if (preload?.naturalWidth > 0) return preload.currentSrc || preload.src;
+  return STAMP_ASSETS[grade];
+}
+
+function installStampImage(rank, grade) {
+  const image = document.createElement('img');
+  image.className = 'performance-stamp';
+  image.alt = '';
+  image.decoding = 'sync';
+  image.loading = 'eager';
+  if ('fetchPriority' in image) image.fetchPriority = 'high';
+
+  let fallbackAttempted = false;
+  image.addEventListener('error', () => {
+    const fallback = STAMP_FALLBACK_ASSETS[grade];
+    if (!fallbackAttempted && fallback) {
+      fallbackAttempted = true;
+      image.src = fallback;
+      return;
+    }
+    image.remove();
+    if (!rank.querySelector('.performance-rank-fallback')) {
+      const text = document.createElement('span');
+      text.className = 'performance-rank-fallback';
+      text.textContent = grade;
+      rank.append(text);
+    }
+  });
+
+  image.src = stampSource(grade);
+  rank.append(image);
+}
+
+function createPerformanceResult(snapshot) {
+  const result = document.createElement('section');
+  result.className = 'performance-result';
+  result.setAttribute('aria-label', '클리어 성적');
+
+  const title = document.createElement('div');
+  title.className = 'performance-frame-title';
+  title.append(
+    document.createTextNode('STAGE '),
+    Object.assign(document.createElement('strong'), { textContent: 'CLEAR' }),
+  );
+  result.append(title);
+
+  const center = document.createElement('div');
+  center.className = 'performance-frame-center';
+  if (snapshot.grade && STAMP_ASSETS[snapshot.grade]) {
+    const rank = document.createElement('div');
+    rank.className = 'performance-rank';
+    rank.setAttribute('aria-label', `${snapshot.grade} 등급`);
+    installStampImage(rank, snapshot.grade);
+    center.append(rank);
+  }
+  result.append(center);
+
+  const stats = document.createElement('div');
+  stats.className = 'performance-stats';
+  stats.append(
+    stat('목표', snapshot.shortestDistance),
+    stat('이번 기록', snapshot.moves, 'current'),
+    stat('최고 기록', snapshot.bestMoves, 'best'),
+  );
+  result.append(stats);
+  return result;
+}
+
+function decorateClearResult() {
+  if (!pendingSnapshot || typeof document === 'undefined') return;
+  if (pendingSnapshot.grade && STAMP_ASSETS[pendingSnapshot.grade] && !stampReadyGrades.has(pendingSnapshot.grade)) return;
+
+  const screen = document.querySelector('#screen');
+  const success = screen?.querySelector('.success-panel');
+  const boardWrap = screen?.querySelector('.board-wrap');
+  if (!success || !boardWrap) return;
+
+  if (!boardWrap.querySelector('.performance-result')) {
+    boardWrap.classList.add('performance-clear-active');
+    boardWrap.append(createPerformanceResult(pendingSnapshot));
+  }
+}
+
+function installStyles() {
+  if (document.querySelector('#performance-stamp-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'performance-stamp-styles';
+  style.textContent = `
+.screen.view-game{position:relative}
+.screen.view-game .play-nav>.ghost.compact{display:none}
+.screen.view-game .play-hint{height:130px;min-height:130px;padding-top:14px}
+.board-wrap.performance-clear-active>.board,.board-wrap.performance-clear-active>.links{filter:blur(1.7px) brightness(.80) saturate(.82);opacity:.56;transform:scale(1.004);transition:filter .22s ease,opacity .22s ease,transform .22s ease}
+.performance-result{position:absolute;inset:0;z-index:8;display:grid;grid-template-rows:auto minmax(0,1fr) auto;align-items:center;justify-items:center;padding:7.5% 6.5% 6.5%;overflow:hidden;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 50% 45%,rgba(255,253,248,.76) 0 27%,rgba(255,253,248,.52) 48%,rgba(250,247,239,.34) 72%,rgba(18,104,255,.065) 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.68),inset 0 0 34px rgba(18,104,255,.10)}
+.performance-result::before{content:"";position:absolute;width:104%;aspect-ratio:1;left:-14%;top:-48%;border:2px solid rgba(18,104,255,.42);border-radius:50%;box-shadow:0 0 24px rgba(18,104,255,.08);transform:rotate(-8deg);opacity:.72}
+.performance-result::after{content:"";position:absolute;width:58%;aspect-ratio:1;left:21%;top:19%;border:1px dashed rgba(70,67,61,.23);border-radius:50%;box-shadow:0 0 0 9px rgba(255,255,255,.30),0 0 0 11px rgba(18,104,255,.13);opacity:.86}
+.performance-frame-title{position:relative;z-index:2;margin-top:1%;transform:translateY(10px);color:var(--ink);font-family:"Helvetica Neue",Arial,system-ui,sans-serif;font-size:clamp(22px,6.1vw,31px);font-weight:320;line-height:1;letter-spacing:.25em;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.performance-frame-title strong{font-weight:670;letter-spacing:.20em}
+.performance-frame-center{position:relative;z-index:3;width:100%;height:100%;display:grid;place-items:center;min-height:0}
+.performance-rank{position:relative;width:min(40%,164px);aspect-ratio:1;display:grid;place-items:center;overflow:visible;border-radius:50%;background:rgba(255,253,248,.62);box-shadow:0 0 0 1px rgba(255,255,255,.78),0 0 0 7px rgba(18,104,255,.05),0 9px 26px rgba(42,35,24,.05)}
+.performance-rank::before{content:"";position:absolute;inset:-11%;border:1px solid rgba(18,104,255,.20);border-radius:50%}
+.performance-stamp{width:99%;height:99%;max-width:none;max-height:none;object-fit:contain;object-position:center;display:block;overflow:visible;filter:drop-shadow(0 5px 8px rgba(42,35,24,.10))}
+.performance-rank-fallback{position:relative;z-index:2;display:grid;place-items:center;width:76%;height:76%;border:3px double #969ca4;border-radius:50%;color:#6d747c;font-family:"Helvetica Neue",Arial,system-ui,sans-serif;font-size:clamp(34px,10vw,56px);font-weight:720;line-height:1;letter-spacing:-.06em;background:linear-gradient(145deg,rgba(255,255,255,.84),rgba(205,210,216,.74));box-shadow:inset 0 0 0 5px rgba(255,255,255,.45),0 5px 12px rgba(42,35,24,.08)}
+.performance-stats{position:relative;z-index:4;width:100%;min-height:82px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;padding:8px 6px;border:1px solid rgba(23,23,22,.17);border-radius:21px;background:rgba(255,253,248,.94);box-shadow:0 7px 22px rgba(42,35,24,.055),0 0 0 1px rgba(255,255,255,.7)}
+.performance-stat{position:relative;display:grid;justify-items:center;align-content:center;gap:1px;min-width:0;padding:0 7px;font-variant-numeric:tabular-nums}
+.performance-stat+.performance-stat::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:rgba(23,23,22,.18)}
+.performance-stat-label{min-height:16px;display:flex;align-items:center;justify-content:center;gap:4px;color:#696660;font-size:9px;font-weight:620;letter-spacing:.08em;white-space:nowrap}
+.performance-crown{width:13px;height:13px;flex:0 0 13px;fill:none;stroke:var(--blue);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.performance-stat-value{color:var(--ink);font-family:"Helvetica Neue",Arial,system-ui,sans-serif;font-size:29px;line-height:.98;font-weight:470;letter-spacing:-.035em}
+.performance-stat.current .performance-stat-value{color:var(--blue)}
+.performance-stat-unit{color:#8f8b84;font-size:7px;font-weight:620;letter-spacing:.18em}
+.stage-node.performance-grade-ring::after{inset:-5px!important;border-width:3px!important;box-shadow:0 0 0 1px rgba(255,255,255,.78),0 2px 7px rgba(42,35,24,.14)!important}
+.stage-node.performance-grade-s{--performance-ring:#d3a11f!important}
+.stage-node.performance-grade-a{--performance-ring:#909aa6!important}
+.stage-node.performance-grade-b{--performance-ring:#b96c3f!important}
+.screen.polish-success .performance-result{animation:performanceOverlayReveal .26s .06s ease-out both}
+@keyframes performanceOverlayReveal{from{opacity:0;transform:scale(.992)}to{opacity:1;transform:scale(1)}}
+@media(max-width:370px){.performance-result{padding:7% 5.5% 5.5%}.performance-frame-title{font-size:21px;transform:translateY(9px)}.performance-rank{width:min(38%,136px)}.performance-stats{min-height:76px;padding-left:3px;padding-right:3px}.performance-stat{padding:0 4px}.performance-stat-label{font-size:8px;letter-spacing:.05em}.performance-stat-value{font-size:26px}}
+@media(max-height:760px){.screen.view-game .play-hint{height:109px;min-height:109px;padding-top:10px}}
+@media(max-height:680px){.performance-result{padding:6% 5.5% 5%}.performance-frame-title{font-size:19px;transform:translateY(7px)}.performance-rank{width:min(36%,122px)}.performance-stats{min-height:66px;padding-top:5px;padding-bottom:5px}.performance-stat-label{font-size:8px}.performance-stat-value{font-size:23px}.performance-stat-unit{font-size:6.5px}}
+@media(max-height:620px){.screen.view-game .play-hint{height:98px;min-height:98px;padding-top:6px}}
+@media(min-height:900px){.screen.view-game .play-hint{height:136px;min-height:136px;padding-top:18px}}
+@media(prefers-reduced-motion:reduce){.screen.polish-success .performance-result{animation:none}.board-wrap.performance-clear-active>.board,.board-wrap.performance-clear-active>.links{transition:none}}
+`;
+  document.head.append(style);
+}
+
+if (typeof document !== 'undefined') {
+  primeStampAssets();
+  installStyles();
+  document.addEventListener(CLEAR_RESULT_EVENT, (event) => {
+    pendingSnapshot = event.detail ?? null;
+    queueMicrotask(decorateClearResult);
+  });
+  const screen = document.querySelector('#screen');
+  if (screen && typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(decorateClearResult);
+    observer.observe(screen, { childList: true, subtree: true });
+  }
+}
