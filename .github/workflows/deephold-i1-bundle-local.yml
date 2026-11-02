@@ -1,0 +1,65 @@
+name: DeepHold I1 bundle Phaser locally
+
+on:
+  push:
+    branches:
+      - timing-defense-skilled-v2-harness-v01
+    paths:
+      - '.github/workflows/deephold-i1-bundle-local.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: timing-defense-skilled-v2-harness-v01
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build self-contained DeepHold browser bundle
+        working-directory: timing-defense-skilled-v2-harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save phaser@3.90.0 esbuild@0.25.11
+          cp public/deephold-i1/app.js deephold-i1-entry.tmp.js
+          sed -i "s#import Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.esm.js';#import Phaser from 'phaser';#" deephold-i1-entry.tmp.js
+          grep -q "import Phaser from 'phaser';" deephold-i1-entry.tmp.js
+          npx esbuild deephold-i1-entry.tmp.js \
+            --bundle \
+            --format=iife \
+            --platform=browser \
+            --target=es2020 \
+            --minify \
+            --legal-comments=none \
+            --outfile=public/deephold-i1/app.js
+          rm deephold-i1-entry.tmp.js
+          grep -q '__DEEPHOLD_I1_QA__' public/deephold-i1/app.js
+          if grep -q 'cdn.jsdelivr.net/npm/phaser' public/deephold-i1/app.js; then
+            echo 'External Phaser CDN reference still present' >&2
+            exit 1
+          fi
+
+      - name: Commit bundled app
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add timing-defense-skilled-v2-harness/public/deephold-i1/app.js
+          if git diff --cached --quiet; then
+            echo 'No bundle change'
+            exit 0
+          fi
+          git commit -m 'Bundle DeepHold I1 Phaser locally for mobile browsers'
+          git push origin HEAD:timing-defense-skilled-v2-harness-v01
