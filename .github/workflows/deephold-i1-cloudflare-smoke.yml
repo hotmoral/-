@@ -1,0 +1,54 @@
+name: DeepHold I1 Cloudflare hosted smoke
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-product-v4-smoke-v1
+    paths:
+      - '.github/workflows/deephold-i1-cloudflare-smoke.yml'
+      - 'timing-defense-skilled-v2-harness/public/deephold-i1/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hosted-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      BASE_URL: https://linkline-cloudflare-product-v-timing-defense-skilled-v2-harness.sktjsek.workers.dev
+    steps:
+      - name: Wait for DeepHold subpath deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 90); do
+            if curl -fsS --max-time 10 "$BASE_URL/deephold-i1/index.html?ci=$GITHUB_SHA" -o /tmp/deephold-index.html && \
+               grep -q 'DeepHold I1 QA' /tmp/deephold-index.html; then
+              echo "DeepHold index deployed on attempt $attempt"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "DeepHold subpath did not deploy" >&2
+          exit 1
+
+      - name: Verify existing worker root remains healthy
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS --max-time 10 "$BASE_URL/api/health?ci=$GITHUB_SHA" -o /tmp/health.json
+          grep -q 'skilled-v2-harness-v0.1' /tmp/health.json
+          grep -q 'HARNESS_ONLY' /tmp/health.json
+
+      - name: Verify DeepHold runtime bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS --max-time 10 "$BASE_URL/deephold-i1/app.js?ci=$GITHUB_SHA" -o /tmp/deephold-app.js
+          curl -fsS --max-time 10 "$BASE_URL/deephold-i1/styles.css?ci=$GITHUB_SHA" -o /tmp/deephold-styles.css
+          grep -q '__DEEPHOLD_I1_QA__' /tmp/deephold-app.js
+          grep -q 'cloudflare-subpath-qa' /tmp/deephold-app.js
+          grep -q '#orientation-guard' /tmp/deephold-styles.css
+          echo "Existing Worker + DeepHold subpath hosted smoke PASS"
