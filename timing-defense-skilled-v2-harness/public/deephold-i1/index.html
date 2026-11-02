@@ -12,6 +12,7 @@
   <main id="app" aria-label="DeepHold I1 QA">
     <div id="game-root"></div>
     <div id="hud-root"><div class="boot-status">DEEPHOLD 로딩 중…</div></div>
+    <button id="fullscreen-toggle" type="button" style="position:absolute;left:50%;bottom:max(10px,calc(env(safe-area-inset-bottom) + 6px));z-index:120;transform:translateX(-50%);padding:9px 14px;border:1px solid rgba(232,240,236,.3);border-radius:999px;background:rgba(8,12,14,.86);color:#eef2ee;font:800 12px system-ui,sans-serif;touch-action:manipulation;">전체화면</button>
     <div id="orientation-guard" role="status">
       <div class="orientation-card">
         <strong>가로 화면으로 돌려주세요</strong>
@@ -19,6 +20,26 @@
       </div>
     </div>
   </main>
-  <script defer src="./app.js?v=20261102-2316"></script>
+  <script>
+    (() => {
+      const button = document.querySelector('#fullscreen-toggle');
+      const root = document.documentElement;
+      const sync = () => { if (button) button.hidden = !!document.fullscreenElement; };
+      button?.addEventListener('click', async () => {
+        if (!document.fullscreenElement && root.requestFullscreen) {
+          try {
+            await root.requestFullscreen({ navigationUI: 'hide' });
+          } catch {
+            try { await root.requestFullscreen(); } catch {}
+          }
+        }
+        try { await screen.orientation?.lock?.('landscape'); } catch {}
+        sync();
+      });
+      document.addEventListener('fullscreenchange', sync);
+      sync();
+    })();
+  </script>
+  <script defer src="./app.js?v=20261102-2320"></script>
 </body>
 </html>
