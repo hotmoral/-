@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/deephold-i1-production-hosted-smoke.yml'
       - 'timing-defense-skilled-v2-harness/public/deephold-i1/**'
+      - 'timing-defense-skilled-v2-harness/.cloudflare-deploy-trigger-20261022.txt'
   workflow_dispatch:
 
 permissions:
