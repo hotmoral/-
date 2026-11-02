@@ -1,3 +1,5 @@
 Purpose: trigger Cloudflare Workers Builds from the intended calibration branch after production-branch selection.
 
 No runtime behavior change.
+
+2026-11-02: trigger Workers Build after adding isolated DeepHold I1 QA assets under public/deephold-i1/.
