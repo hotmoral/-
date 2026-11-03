@@ -1,0 +1,35 @@
+name: DeepHold hosted deployment capability probe
+
+on:
+  push:
+    branches:
+      - deephold/i3g-hosted-preview-v1
+    paths:
+      - '.github/workflows/deephold-i3g-capability-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      HAS_GH_PAT: ${{ secrets.GH_PAT != '' }}
+      HAS_GITHUB_PAT: ${{ secrets.GITHUB_PAT != '' }}
+      HAS_PRIVATE_REPO_PAT: ${{ secrets.PRIVATE_REPO_PAT != '' }}
+      HAS_DEEPHOLD_PAT: ${{ secrets.DEEPHOLD_PAT != '' }}
+      HAS_PUBLIC_REPO_PAT: ${{ secrets.PUBLIC_REPO_PAT != '' }}
+      HAS_REPO_TOKEN: ${{ secrets.REPO_TOKEN != '' }}
+      HAS_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      HAS_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - name: Report boolean capability only
+        run: |
+          printf 'GH_PAT=%s\n' "$HAS_GH_PAT"
+          printf 'GITHUB_PAT=%s\n' "$HAS_GITHUB_PAT"
+          printf 'PRIVATE_REPO_PAT=%s\n' "$HAS_PRIVATE_REPO_PAT"
+          printf 'DEEPHOLD_PAT=%s\n' "$HAS_DEEPHOLD_PAT"
+          printf 'PUBLIC_REPO_PAT=%s\n' "$HAS_PUBLIC_REPO_PAT"
+          printf 'REPO_TOKEN=%s\n' "$HAS_REPO_TOKEN"
+          printf 'CLOUDFLARE_API_TOKEN=%s\n' "$HAS_CLOUDFLARE_API_TOKEN"
+          printf 'CLOUDFLARE_ACCOUNT_ID=%s\n' "$HAS_CLOUDFLARE_ACCOUNT_ID"
