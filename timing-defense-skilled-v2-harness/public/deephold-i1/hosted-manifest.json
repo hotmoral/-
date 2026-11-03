@@ -1,0 +1,8 @@
+{
+  "schema": "DEEPHOLD_HOSTED_BUNDLE",
+  "sourceMainSha": "2c89eb6cfb7ec97198aabb5dee4eab4f253bf5de",
+  "slice": "I3G_CLOSED_VALIDATED",
+  "appBytes": 1601278,
+  "appSha256": "9f1730cf58ab64beabff92ba0c4e5d428cab40f06b9a2ce8daafef02cb5b54af",
+  "cssSha256": "4685e1aed7f601440bc251018d4f91687a89864eabb71b858d40995f575a8b7f"
+}
