@@ -1,0 +1,30 @@
+{
+  "project": "DeepHold",
+  "build": "I3K-A2-ANDROID-PHYSICAL-QA",
+  "mode": "QA ONLY — opt in via ?crowd-qa=1",
+  "source": "hotmoral/DeepHold",
+  "sourceRef": "qa/i3k-android-crowd-device-harness-v1",
+  "sourceSHA": "6f227d2a03a2f8750f469cafcb35787f48d2052d",
+  "assetBranch": "qa/i3k-a2-built-assets-v1",
+  "packagingRun": "41737049153",
+  "browserQaRun": "41734887819",
+  "browserQA": "P1/P4/P5 AUTOMATED PASS, physical Android performance NOT MEASURED",
+  "entry": "./index.html?crowd-qa=1",
+  "scenarios": [
+    "control",
+    "p1",
+    "c5",
+    "c20s1",
+    "c50s3",
+    "p3",
+    "p4",
+    "p5"
+  ],
+  "notes": [
+    "Existing /deephold-i1/ preview and unrelated Worker routes are untouched",
+    "Special 5 means five independent S3 Ferrix souls, not five distinct species",
+    "QA hostiles are real world actors with boosted HP=5000 and on-demand replenishment",
+    "Android physical FPS/heat/input and 105-actor sustained frame budget remain PENDING",
+    "No external telemetry; report copied or downloaded manually"
+  ]
+}
