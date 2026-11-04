@@ -1,0 +1,3 @@
+sourceSha=bf9f95472b9c7d3f8a2c1b75fe4dcaccd53ff39f
+mode=VITE_DEEPHOLD_CROWD_QA=1
+scenarios=p4-soak,p5-soak
