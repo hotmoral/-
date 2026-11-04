@@ -1,0 +1,15 @@
+{
+  "title": "DeepHold I3K-C2 Player and Ferrix readability physical QA",
+  "sourceRepo": "hotmoral/DeepHold",
+  "sourceFeatureBranch": "implementation/i3k-c2-player-ferrix-readability-v1",
+  "sourceFeatureDraftPr": 59,
+  "dependsOnUnmergedDraftPr": 58,
+  "qaOnlyBranch": "qa/i3k-c2-player-ferrix-phone-preview-v1",
+  "sourceBuildSha": "7cea4121fae475b62722d8a5749863393fab86c2",
+  "validationRun": "https://github.com/hotmoral/DeepHold/actions/runs/41800983750",
+  "sourceValidationRun": "https://github.com/hotmoral/DeepHold/actions/runs/41800630900",
+  "scope": "Player gold diamond YOU marker above Special depth; Ferrix squad one named leader, next survives; others temporary HP when hit. C1 source species bodies unchanged.",
+  "frozen": "No physics/AI/combat/radius/MP/cap/recovery/economy changes, no left/right HUD changes; QA-only sustained enemy and Soulbound protection separate.",
+  "caveat": "p5-soak uses noncanonical 5000HP and protected survival, not normal durability; headless Chrome CI not phone; real Android visual and performance pending.",
+  "url": "https://timing-defense-skilled-v2-harness.sktjsek.workers.dev/deephold-i1/qa/i3k-c2/?crowd-qa=1&case=p5-soak&seconds=120"
+}
