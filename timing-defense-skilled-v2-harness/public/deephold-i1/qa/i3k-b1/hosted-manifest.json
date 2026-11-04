@@ -1,0 +1,22 @@
+{
+  "project": "DeepHold",
+  "mode": "I3K-B1 Soulbound Follow & Formation — PHYSICAL QA PENDING",
+  "source": "hotmoral/DeepHold",
+  "sourceBranch": "qa/i3k-b1-android-follow-preview-v1",
+  "sourceCommit": "f9928833cfe3ebb8a9acd2cf2e595cb0e3b3b07c",
+  "validatedBehaviorRun": "41744524663",
+  "androidPreviewCombinedQaRun": "41744851621",
+  "qaOnly": true,
+  "isolatedUrl": "https://timing-defense-skilled-v2-harness.sktjsek.workers.dev/deephold-i1/qa/i3k-b1/?crowd-qa=1",
+  "scenarios": [
+    "control",
+    "p1",
+    "c5",
+    "c20s1",
+    "c50s3",
+    "p3",
+    "p4",
+    "p5"
+  ],
+  "note": "Preview preserves original monster and Soulbound stop-before-attack; only Soulbound follow priority + stable 100 Common / 5 Special formation changed. P5 does not sustain 105 actors when real combat kills them. New physical device approval remains pending. No telemetry upload."
+}
