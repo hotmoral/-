@@ -1,0 +1,3 @@
+sourceSha=b827a678efa07d5281b67dc9258dccdd59cdf3b8
+mode=VITE_DEEPHOLD_CROWD_QA=1
+visual=i3k-c1-source-silhouette
