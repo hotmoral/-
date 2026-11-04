@@ -1,0 +1,19 @@
+{
+  "name": "DeepHold I3K-A2 sustained 105+30 Android QA",
+  "source": "hotmoral/DeepHold",
+  "qaBranch": "qa/i3k-a2-sustained-105-device-soak-v1",
+  "qaSourceCommit": "bf9f95472b9c7d3f8a2c1b75fe4dcaccd53ff39f",
+  "automatedRun": "https://github.com/hotmoral/DeepHold/actions/runs/41781211612",
+  "automatedResult": "PASS — 120s headless Chromium actor-count integrity only; not Android FPS",
+  "mode": "VITE_DEEPHOLD_CROWD_QA=1 and ?crowd-qa=1",
+  "cases": {
+    "p4Soak": "100 Common + 5 Ferrix S3 +30 real Gnawers held with QA-only protection",
+    "p5Soak": "same +synthetic pulse VFX",
+    "p4p5": "unprotected attrition comparison"
+  },
+  "loadPolicy": "Only SOAK: protect Soulbound from hostile damage; cap QA hostile HP minimum 1. Normal gameplay balance untouched.",
+  "report": "five-second timeline; rAF/hitches; input scheduling proxy; heap; manual heat",
+  "physicalAndroid": "PENDING",
+  "cloudflareScope": "new static assets in isolated qa/i3k-a2-soak only",
+  "url": "https://timing-defense-skilled-v2-harness.sktjsek.workers.dev/deephold-i1/qa/i3k-a2-soak/?crowd-qa=1&case=p5-soak&seconds=120"
+}
