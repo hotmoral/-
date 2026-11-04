@@ -1,0 +1,3 @@
+sourceSha=2c38d5b311e1668f7738000a7874d6e1646a7c03
+mode=VITE_DEEPHOLD_CROWD_QA=1
+visual=i3k-c3-hud-compact

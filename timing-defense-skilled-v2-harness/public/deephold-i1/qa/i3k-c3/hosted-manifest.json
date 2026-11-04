@@ -1,0 +1,17 @@
+{
+  "name": "DeepHold I3K-C3 compact mobile landscape HUD Android QA",
+  "privateSource": "hotmoral/DeepHold",
+  "sourceFeatureDraftPr": 60,
+  "dependsOnDraftPrs": [
+    58,
+    59
+  ],
+  "qaBranch": "qa/i3k-c3-compact-hud-phone-preview-v1",
+  "sourceBuildSha": "2c38d5b311e1668f7738000a7874d6e1646a7c03",
+  "sourceValidationRun": "https://github.com/hotmoral/DeepHold/actions/runs/41816745114",
+  "qaValidationRun": "https://github.com/hotmoral/DeepHold/actions/runs/41816849994",
+  "scope": "Narrow landscape left Core and right Guide AI compact with accessible local expand controls; player/movement/five skills/minimap/C1/C2 source appearances/B1/B2 unchanged.",
+  "qaMode": "protected 100 Common+5 Ferrix+30 QA hostiles; noncanonical 5000HP and death protection, actual target/attack and synthetic VFX",
+  "acceptance": "Strict normal + opt-in QA builds, C3/C2/B1/B2 & P1/P4/P5/SOAK Chromium browser PASS; real phone visual and frame-pacing pending; original game main untouched.",
+  "url": "https://timing-defense-skilled-v2-harness.sktjsek.workers.dev/deephold-i1/qa/i3k-c3/?crowd-qa=1&case=p5-soak&seconds=120"
+}
