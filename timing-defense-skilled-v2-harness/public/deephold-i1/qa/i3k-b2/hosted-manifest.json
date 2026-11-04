@@ -1,0 +1,15 @@
+{
+  "name": "DeepHold I3K-B2 physical squad assist preview",
+  "source": "hotmoral/DeepHold",
+  "implementationBranch": "implementation/i3k-b2-soulbound-team-assist-v1",
+  "qaSourceBranch": "qa/i3k-b2-android-team-assist-preview-v1",
+  "qaSourceSHA": "494d6d495145a8c8ecddd675ab01ccee51a956b3",
+  "sourceValidationRun": "41748599209",
+  "combinedQAandPackagingRun": "41748982170",
+  "scenarioSchema": "deephold-i3k-a2-physical-v1",
+  "inheritedB1": "player-follow priority and stable 100 Common/5 Special formation",
+  "b2": "prioritize actual player attacker, player recent attack, local personal enemies, then engaged allies; movement-follow stays higher; original monster stop-before-attack unchanged",
+  "scopeLimit": "QA artificial hostile HP 5000, 30 QA hostiles, synthetic VFX; normal Soulbound deaths remain; sustain=105 NOT yet verified",
+  "physicalAcceptance": "PENDING",
+  "url": "https://timing-defense-skilled-v2-harness.sktjsek.workers.dev/deephold-i1/qa/i3k-b2/?crowd-qa=1"
+}
