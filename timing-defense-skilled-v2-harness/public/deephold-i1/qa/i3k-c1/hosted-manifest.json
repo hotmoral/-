@@ -1,0 +1,16 @@
+{
+  "name": "DeepHold I3K-C1 source-monster revived appearance physical QA",
+  "source": "hotmoral/DeepHold",
+  "privateFeatureBranch": "implementation/i3k-c1-soulbound-source-appearance-v1",
+  "privateFeaturePr": 58,
+  "qaBuildBranch": "qa/i3k-c1-soulbound-appearance-device-preview-v1",
+  "sourceBuildSha": "b827a678efa07d5281b67dc9258dccdd59cdf3b8",
+  "qaValidationRun": "https://github.com/hotmoral/DeepHold/actions/runs/41789721180",
+  "sourceValidationRun": "https://github.com/hotmoral/DeepHold/actions/runs/41789247167",
+  "sourceVisuals": "Original live source geometries reused for 9 Common monster source species and Ferrix S3; cool tint+faction floor marker; Common label and HP on hit only; compact Ferrix Special.",
+  "unchanged": "B1/B2 combat systems, identity, stats/radius, physics, skills/MP and rewards.",
+  "workload": "p5-soak QA-only protection keeps 100 Common +5 Ferrix Special+30 real QA Gnawers for 120s; noncanonical HP protection and synthetic VFX, not full projectile stress.",
+  "acceptance": "Automated strict builds & B1/B2/P1/P4/P5/SOAK browser smoke PASS; user physical Android visual/FPS/heat PENDING; no main source merge.",
+  "scope": "seven newly-added static files in isolated qa/i3k-c1 directory; no changes to existing game/QA/worker routes",
+  "url": "https://timing-defense-skilled-v2-harness.sktjsek.workers.dev/deephold-i1/qa/i3k-c1/?crowd-qa=1&case=p5-soak&seconds=120"
+}
