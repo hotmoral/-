@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "synthetic-transfer-rules-v1",
+  "requirements": {
+    "minDistinctStimuli": 3,
+    "minRepresentationFamilies": 2,
+    "minHeldoutPerSkill": 1
+  },
+  "domains": {
+    "S1": {
+      "existing": [
+        {
+          "id": "s1-x0",
+          "stimulus": "topo1",
+          "representation": "dots",
+          "stageUpdateEligible": false
+        }
+      ],
+      "planned": [
+        {
+          "id": "s1-p1",
+          "stimulus": "topo2",
+          "representation": "edges",
+          "stageUpdateEligible": false
+        },
+        {
+          "id": "s1-p2",
+          "stimulus": "topo3",
+          "representation": "dots",
+          "stageUpdateEligible": false
+        }
+      ],
+      "heldout": [
+        {
+          "id": "s1-h1",
+          "stimulus": "topo4",
+          "representation": "edges",
+          "stageUpdateEligible": false
+        }
+      ]
+    },
+    "S2": {
+      "existing": [
+        {
+          "id": "s2-x0",
+          "stimulus": "turn1",
+          "representation": "tile",
+          "stageUpdateEligible": false
+        },
+        {
+          "id": "s2-x1",
+          "stimulus": "turn2",
+          "representation": "outline",
+          "stageUpdateEligible": false
+        }
+      ],
+      "planned": [
+        {
+          "id": "s2-p1",
+          "stimulus": "turn3",
+          "representation": "tile",
+          "stageUpdateEligible": false
+        }
+      ],
+      "heldout": [
+        {
+          "id": "s2-h1",
+          "stimulus": "turn4",
+          "representation": "outline",
+          "stageUpdateEligible": false
+        }
+      ]
+    }
+  }
+}

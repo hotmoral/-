@@ -1,2 +1,0 @@
-source_sha=6569598f37a794b7fb7837fbca0da4aaf205c7df
-trigger=2026-10-30T09:24:00Z

@@ -1,0 +1,35 @@
+name: Geometry Learning — Public Synthetic CI
+
+on:
+  push:
+    branches:
+      - geometry-learning-ci-v1
+    paths:
+      - 'geometry-learning-ci/**'
+      - '.github/workflows/geometry-learning-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: geometry-learning-synthetic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  synthetic-transfer-validation:
+    name: Public-safe transfer rule validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run isolated generic unit tests
+        run: python3 -m unittest discover -s geometry-learning-ci -p 'test_*.py' -v
+      - name: Validate only synthetic public fixture
+        run: python3 geometry-learning-ci/validate.py geometry-learning-ci/synthetic_fixture.json
+      - name: Explain verification scope
+        run: |
+          echo "Public synthetic rule checks completed."
+          echo "No private repository, tokens, learner data, or canonical bank used."
