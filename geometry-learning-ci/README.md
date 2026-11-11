@@ -18,3 +18,16 @@ public hosted runners.
 - No upload-artifact action; log-only output minimizes storage usage.
 - Changes on this branch must remain confined to this workflow and folder.
 - This branch is separate from all other games and projects in `hotmoral/-`.
+
+## Fresh-example educational prototype (public synthetic)
+
+`generic_newform.py` defines an independently written toy model for:
+- Distinguishing first-try independent training success from assisted success,
+- Requiring multiple stimuli and distinct representations,
+- Keeping a new unseen assessment probe separate from training,
+- Requiring an additional fresh and verified delayed probe for maintenance,
+- Rejecting already-seen examples as evidence of being unseen.
+
+These generic results are **not** authoritative current V1 `TransferConfidence`
+outputs and never establish a learner's spatial competence. The private repo
+alone owns the side-by-side reference vectors and real schema mapping.
