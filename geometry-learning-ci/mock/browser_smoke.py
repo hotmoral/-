@@ -59,6 +59,12 @@ def run():
             page.set_viewport_size({"width":width,"height":height})
             page.wait_for_timeout(50)
             report[name]=assert_no_canvas_overlay(page,name)
+            action=page.locator("#actions button").first.bounding_box()
+            assert action, f"{name}: missing main action"
+            report[name]["mainActionBottom"]=round(action["y"]+action["height"])
+            if name in ("mobile_portrait","mobile_landscape"):
+                assert action["y"]+action["height"]<=height+2, (
+                    f"{name}: key action needs scrolling before use")
         # Direct handling and allowed action isolation.
         page.set_viewport_size({"width":360,"height":800})
         assert page.get_by_role("heading",name="돌리면 무엇이 바뀔까?").is_visible()
