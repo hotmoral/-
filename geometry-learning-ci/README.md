@@ -44,3 +44,15 @@ alone owns the side-by-side reference vectors and real schema mapping.
 - Actual V1 source integration and authoritative correctness must only happen in the **private** GeometryLearningProgram repository
 
 Open the GitHub file, select **Raw**, and save it as `index.html` if your browser shows source instead of rendering. It contains all CSS and JavaScript inline and does not require network access.
+
+## Exposure and first-response rules (R1B-2)
+
+- Generic, newly authored **synthetic** event-ledger prototype: `generic_exposure_ledger.py`
+- Public-only negative tests: `test_generic_exposure_ledger.py` (20 test methods)
+- Distinguishes help requested from help displayed, preserves first clicked choice,
+  rejects stale/duplicate result payloads, and maintains exposure across technical aborts.
+- Unknown prior exposure or unverified stimulus identity **fails closed** for fresh-independent credit.
+- Passing this module **does not mean** that real V1 persistence, canonical Python runtime,
+  assessment validity or student privacy policies are implemented or verified.
+- GitHub Actions: https://github.com/hotmoral/-/actions/runs/43026203190
+  — 70/70 public synthetic tests + five-size browser mock smoke, **SUCCESS**.
