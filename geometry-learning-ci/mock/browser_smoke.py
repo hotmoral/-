@@ -72,14 +72,19 @@ def run():
         assert page.locator("button",has_text="변화 보기").count()==0
         page.get_by_role("button",name="가 보기").click()
         assert commit.is_enabled()
+        page.get_by_role("button",name="나 보기").click()
+        assert "처음 고른 가" in page.locator("#status").inner_text()
         page.get_by_role("button",name="선택 확정").click()
+        assert "처음 고른 가 · 확정한 나" in page.locator("#status").inner_text()
         assert page.get_by_role("button",name="변화 보기").is_visible()
         assert page.get_by_role("button",name="가 보기").is_disabled()
         page.get_by_role("button",name="변화 보기").click()
         assert "정답·오답을 채점하지 않고" in page.locator("#status").inner_text()
 
         # Switch reflection: reset source and keep mental replay locked.
-        page.get_by_role("tab",name="반사·대칭").click()
+        page.get_by_role("tab",name="회전").focus()
+        page.keyboard.press("ArrowRight")
+        assert page.get_by_role("tab",name="반사·대칭").get_attribute("aria-selected") == "true"
         assert page.get_by_role("button",name="좌우 뒤집기").is_visible()
         page.get_by_role("button",name="좌우 뒤집기").click()
         page.get_by_role("button",name="되돌리기").click()
@@ -100,7 +105,8 @@ def run():
     return {"status":"PASS_PUBLIC_MOCK_BROWSER_ONLY",
             "viewports":report,"lessonTabs":3,"modes":2,
             "checks":["no_canvas_control_overlap","no_horizontal_overflow",
-                      "mental_first_choice_commit_guard","after_commit_replay",
+                      "mental_first_choice_commit_guard","first_choice_retained_across_selection_change",
+                      "keyboard_tab_arrow_navigation","after_commit_replay",
                       "non_scored_synthetic_place_and_undo","no_JS_pageerrors"],
             "noPrivateSource":"confirmed by isolated public CI file scope"}
 
