@@ -34,9 +34,10 @@ def assert_no_canvas_overlay(page, label):
     for btn in page.locator("button:visible").all():
         box=btn.bounding_box()
         if box:
-            assert box["height"]>=35, f"{label}: min touch height failure {btn.inner_text()}"
+            assert box["height"]>=44, f"{label}: min touch height failure {btn.inner_text()}"
     return {"width":int(a["width"]),"height":int(a["height"]),
-            "canvasToControls":"side-by-side" if horizontally else "stacked"}
+            "canvasToControls":"side-by-side" if horizontally else "stacked",
+            "pageScrollHeight":page.evaluate("document.documentElement.scrollHeight") }
 
 
 def run():
