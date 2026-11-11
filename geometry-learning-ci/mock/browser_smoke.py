@@ -90,11 +90,11 @@ def run():
         page.get_by_role("tab",name="공간 제약").click()
         assert page.get_by_role("button",name="배치 바꾸기").is_visible()
         page.get_by_role("button",name="배치 바꾸기").click()
-        assert "배치 A" in page.locator("#geometry").inner_text()
+        assert "배치 A" in page.locator("#geometry").text_content()
         page.get_by_role("button",name="배치 바꾸기").click()
-        assert "배치 B" in page.locator("#geometry").inner_text()
+        assert "배치 B" in page.locator("#geometry").text_content()
         page.get_by_role("button",name="되돌리기").click()
-        assert "먼저 조각을 놓아 보세요" in page.locator("#geometry").inner_text()
+        assert "먼저 조각을 놓아 보세요" in page.locator("#geometry").text_content()
         assert not browser_errors, f"JS runtime exceptions: {browser_errors}"
         browser.close()
     return {"status":"PASS_PUBLIC_MOCK_BROWSER_ONLY",
