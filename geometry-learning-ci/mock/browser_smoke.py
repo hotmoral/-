@@ -62,7 +62,7 @@ def run():
             action=page.locator("#actions button").first.bounding_box()
             assert action, f"{name}: missing main action"
             report[name]["mainActionBottom"]=round(action["y"]+action["height"])
-            if name in ("mobile_portrait","mobile_landscape"):
+            if name in ("small_portrait","mobile_portrait","mobile_landscape"):
                 assert action["y"]+action["height"]<=height+2, (
                     f"{name}: key action needs scrolling before use")
         # Direct handling and allowed action isolation.
