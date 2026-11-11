@@ -31,3 +31,16 @@ public hosted runners.
 These generic results are **not** authoritative current V1 `TransferConfidence`
 outputs and never establish a learner's spatial competence. The private repo
 alone owns the side-by-side reference vectors and real schema mapping.
+
+## Responsive learning-player mock (R1A-2-3)
+
+- File: [mock/index.html](mock/index.html) — download or open as a local HTML file in a browser
+- Purpose: mobile-first geometry viewport, clear tool separation, synthetic rotation/reflection/placement interactions
+- All shapes and choices are fabricated UI samples: **no canonical problem bank, no scorer, no account storage, no student information**
+- Browser smoke: `python3 mock/browser_smoke.py` (Python Playwright + system Chrome)
+- Real public hosted Actions example: https://github.com/hotmoral/-/actions/runs/42972369928 (40 unit tests + five viewport browser smoke, SUCCESS)
+- Five browser sizes: 320×568, 360×800, 823×384, 768×1024, 1280×850
+- Primary action is visible without scrolling on the three phone layouts; no canvas/controls overlay or horizontal overflow
+- Actual V1 source integration and authoritative correctness must only happen in the **private** GeometryLearningProgram repository
+
+Open the GitHub file, select **Raw**, and save it as `index.html` if your browser shows source instead of rendering. It contains all CSS and JavaScript inline and does not require network access.
