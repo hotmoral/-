@@ -29,6 +29,10 @@ jobs:
         run: python3 -m unittest discover -s geometry-learning-ci -p 'test_*.py' -v
       - name: Validate only synthetic public fixture
         run: python3 geometry-learning-ci/validate.py geometry-learning-ci/synthetic_fixture.json
+      - name: Install public browser smoke dependency
+        run: python3 -m pip install --disable-pip-version-check playwright==1.56.0
+      - name: Smoke-test synthetic mobile player in Chrome
+        run: python3 geometry-learning-ci/mock/browser_smoke.py
       - name: Explain verification scope
         run: |
           echo "Public synthetic rule checks completed."
