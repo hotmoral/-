@@ -1,0 +1,64 @@
+name: Linkline NL6 Preview Static Materialization
+
+on:
+  push:
+    branches:
+      - linkline/cloudflare-nl6-repair-preview-v1
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact preview commit
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Materialize canonical static assets
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          ROOT=timing-defense-skilled-v2-harness
+          TOOLS=${ROOT}/preview-tools
+          PUB=${ROOT}/public
+          test "$(git hash-object ${TOOLS}/app.base.mjs)" = "43f6f366087464e0dc5d98ac453a4ec5093369c2"
+          test "$(git hash-object ${TOOLS}/protocol.base.mjs)" = "9e7c08d724395ecc3dfe83179e31cee56696b8d0"
+          python3 "${TOOLS}/materialize_static.py"
+          test "$(git hash-object ${PUB}/app.mjs)" = "4eb9fa0c7deded41d9e33074618873edd760c86a"
+          test "$(git hash-object ${PUB}/protocol.mjs)" = "bf076ae47a21c2aab7004b2ee5aa4bcb9d051868"
+          test "$(git hash-object ${PUB}/config.mjs)" = "324a104b180c56952edb496f16213d7e7b967482"
+          test "$(git hash-object ${PUB}/data/session_bundle.json)" = "e54a71fbae07218c7b0f469b00086be03db29ab8"
+          test "$(git hash-object ${PUB}/data/analysis_metadata.json)" = "a63c193eb6f17c58a914720a0e6f472e5387c8ad"
+          test "$(git hash-object ${PUB}/index.html)" = "2429cf72ceb18d1265a2f69656aafebe1aa11f2e"
+          test "$(git hash-object ${PUB}/mechanic.mjs)" = "c214cd077c102c4e007b045cc3d24d48febdab3a"
+          test "$(git hash-object ${PUB}/styles.css)" = "10d61a9696c004a53ea48916d266d9b2b5fac8b6"
+
+      - name: Commit static assets if needed
+        shell: bash
+        working-directory: repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git add timing-defense-skilled-v2-harness/public/app.mjs timing-defense-skilled-v2-harness/public/protocol.mjs
+          if git diff --cached --quiet; then
+            echo STATIC_ASSETS_ALREADY_CANONICAL
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Linkline: materialize static NL6 preview assets"
+          git push origin HEAD:refs/heads/linkline/cloudflare-nl6-repair-preview-v1

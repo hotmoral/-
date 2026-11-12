@@ -6,9 +6,10 @@
   "scripts": {
     "test": "node test/harness-selftest.mjs",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "preview": "wrangler preview"
   },
   "devDependencies": {
-    "wrangler": "^4.46.0"
+    "wrangler": "^4.135.0"
   }
 }
