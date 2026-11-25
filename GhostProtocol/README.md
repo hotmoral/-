@@ -1,6 +1,6 @@
 # GHOST PROTOCOL
 2026-11-25 기준 개발 인계. 한국어 모바일 가로형 싱글 HTML 게임. 실제 시스템 침투가 아닌 독립 논리 퍼즐과 가상 네트워크를 이용한 해킹 시뮬레이션.
-- 현재 실행 기준: `Ghost_Protocol_Integrated_Lab_v26.html` (v0.26). 브라우저에서 열어 실행한다. HTML 제목의 이전 버전 표기는 파일명보다 우선하지 않는다.
+- 현재 실행 기준: `Ghost_Protocol_Integrated_Lab_v27.html` (v0.27). 브라우저에서 열어 실행한다. HTML 제목의 이전 버전 표기는 파일명보다 우선하지 않는다.
 - `archive/`: 이전 실행본/독립 실험본. 최신본에 덮어쓰지 않는다.
 - `docs/DESIGN.md`: 승인된 게임 설계·UI 규칙.
 - `docs/CHARACTERS.md`: 세계관 및 NPC, 등장 규칙.
@@ -22,3 +22,5 @@
 - v0.25: 등급별 일반 의뢰 유형 개방, CIPHER의 명성 기반 특수 의뢰, 업적 9종 및 선택형 칭호. 세부 해금 수치는 검수용.
 
 - v0.26: 등급별 퍼즐 난도 확률, 의뢰 등급 혼합 및 네트워크 복잡도 연계. `docs/DIFFICULTY.md` 참조.
+
+- v0.27: 첫 시험 조작 강조, 추적 원인/대응 안내, 특수 의뢰 5종의 고유 사건과 LUNA 분석 통신. `docs/TRACE_AND_SPECIAL_CASES.md` 참조.
