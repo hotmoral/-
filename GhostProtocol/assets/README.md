@@ -9,3 +9,6 @@
   - npc_candidates_sheet_1.png, npc_candidates_sheet_2.png, npc_candidates_sheet_3.png — ECHO/ZERO/LUNA의 A/B/C 후보, 사용자 선택 대기. 시트 번호는 생성 순서.
 - ZIP 내 `assets/cipher_approved.webp` — 현재 게임에 내장된 크롭 원본.
 - 사용자 실기기 캡처와 화면 녹화는 공개 저장 대상에서 제외. 
+
+## 최종 선택 (2026-11-25)
+이전 통합 후보 시트와 별개인 최신 개별 선택 보드 기준: LUNA A (`루나_캐릭터_컨셉_후보_선택_보드.png`), ECHO B (`고스트_프로토콜_에코_컨셉_선택.png`), ZERO C (`고스트_프로토콜_제로_콘셉트_보드.png`). 원본은 대화 첨부에 있으며 GitHub 바이너리 미전송. 선택된 이미지 원본을 크롭하여 사용 예정. CIPHER 기존 A 유지.
