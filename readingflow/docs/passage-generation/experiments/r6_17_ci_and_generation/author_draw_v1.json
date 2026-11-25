@@ -1,0 +1,132 @@
+{
+  "passage_id": "RF-R617-SECONDARY-L4-001",
+  "selection_method": "python_mt19937_seeded_v1",
+  "experimental_seed": 2026112405,
+  "selected_at_utc": "2026-11-24T02:08:46.435986+00:00",
+  "candidate_pools_sha256": "b98fba13edbcf91a5fc8295ee6816af10ed4b6d70b9c02ca0cd7b83c81662460",
+  "author_attributes_24": {
+    "전문적 배경": "자연과학",
+    "직업적 시각": "시민 관찰자",
+    "관심 초점": "관계",
+    "사고 접근": "가설 검토",
+    "관찰 범위": "일상 상황",
+    "서술 목적": "판단 지원",
+    "독자와 거리": "공식적",
+    "어조": "유연함",
+    "어휘 성향": "구체어 중심",
+    "문장 길이": "길이 혼합",
+    "통사 구조": "병렬 구조",
+    "문장 리듬": "완급 조절",
+    "도입": "문제 상황",
+    "정보 전개": "사례에서 원리",
+    "문단 구성": "주제별",
+    "결말": "새 질문",
+    "종결 습관": "설명",
+    "접속 표현": "예시 중심",
+    "주어 표현": "주어 생략",
+    "수식어 배치": "뒷부분 보충",
+    "정보 제시 순서": "사례 먼저",
+    "구체화": "실제 사례",
+    "문단 연결": "직접 연결",
+    "설명 압축도": "높음"
+  },
+  "attribute_application_log": {
+    "전문적 배경": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "직업적 시각": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "관심 초점": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "사고 접근": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "관찰 범위": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "서술 목적": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "독자와 거리": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "어조": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "어휘 성향": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "문장 길이": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "통사 구조": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "문장 리듬": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "도입": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "정보 전개": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "문단 구성": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "결말": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "종결 습관": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "접속 표현": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "주어 표현": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "수식어 배치": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "정보 제시 순서": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "구체화": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "문단 연결": {
+      "status": "PENDING",
+      "reason": null
+    },
+    "설명 압축도": {
+      "status": "PENDING",
+      "reason": null
+    }
+  },
+  "release_approved": false
+}
