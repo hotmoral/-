@@ -1,0 +1,629 @@
+{
+  "schema_version": "readingflow.topic_domains.proposal.v2",
+  "status": "PROPOSED_NOT_APPROVED",
+  "supersedes": "readingflow.topic_domains.proposal.v1",
+  "rationale": "The old v1 lists four illustrative subfields per domain; v2 deliberately uses unequal counts based on each domain's real scope. Individual nonfiction topics remain unbounded.",
+  "purpose": "Subject classification for original nonfiction passages, not OECD/UNESCO-coded scientific or education statistics.",
+  "consulted_standards": [
+    {
+      "standard": "OECD Frascati Manual 2015 Fields of Research and Development (FORD)",
+      "url": "https://unstats.un.org/unsd/classifications/Family/Detail/1039",
+      "relationship": "Compared broad/narrow research-field coverage only; no official direct code mapping."
+    },
+    {
+      "standard": "UNESCO ISCED-F 2013",
+      "url": "https://unstats.un.org/unsd/classifications/Family/Detail/1046",
+      "relationship": "Compared educational field granularity only; this is not an ISCED-compatible taxonomy."
+    }
+  ],
+  "domains": [
+    {
+      "domain_id": "D01",
+      "name": "자연과학",
+      "scope": "자연 현상과 물질·생명·지구·우주의 작동 원리",
+      "subfields": [
+        "힘·운동·역학",
+        "에너지·열현상",
+        "파동·소리",
+        "빛·광학",
+        "전기·자기 현상",
+        "원자·입자·물질구조",
+        "물질의 성질·변화",
+        "화학 반응·반응속도",
+        "생물의 구조·기능",
+        "유전·진화",
+        "미생물과 생명현상",
+        "지구 내부·지질",
+        "지표·토양·암석",
+        "대기·기상",
+        "해양의 물리·화학",
+        "천문·우주현상",
+        "과학 탐구·실험 원리"
+      ],
+      "primary_selection_rule": "기후변화의 사회적 영향은 환경·생태, 공학적으로 만든 장치는 공학·기술을 우선",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D02",
+      "name": "수학·통계",
+      "scope": "수·공간·규칙·확률·데이터의 수리적 구조와 추론 방법",
+      "subfields": [
+        "수와 연산",
+        "대수·방정식·함수",
+        "기하·공간·도형",
+        "변화율·미적분의 원리",
+        "이산수학·조합·그래프",
+        "수학적 논리·증명",
+        "확률·우연",
+        "자료 수집·표본",
+        "기술통계·대표값",
+        "통계적 추정·불확실성",
+        "상관관계·인과 해석",
+        "데이터 시각화·표 읽기",
+        "조사·실험의 통계적 설계",
+        "수리모형·시뮬레이션",
+        "최적화·수학적 의사결정"
+      ],
+      "primary_selection_rule": "특정 산업의 경영지표는 경영·산업, 질병의 임상지표는 의학·건강도 함께 검토하되 통계 방법이 중심이면 본 분야",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D03",
+      "name": "공학·기술",
+      "scope": "인공 구조·장치·시설의 설계·작동·구축·안전",
+      "subfields": [
+        "기계 설계·운동전달",
+        "재료·신소재",
+        "전기전자 공학",
+        "전력·에너지 설비",
+        "화학공정·산업화학",
+        "토목·구조물",
+        "건축 시공·설비",
+        "제조공정·자동화",
+        "로봇·제어시스템",
+        "항공·우주 공학",
+        "모빌리티·교통기술",
+        "상하수도·수자원 시설",
+        "환경 처리·정화 기술",
+        "의료·생체공학",
+        "나노·미세제조 기술",
+        "기술표준·신뢰성·안전설계",
+        "설계 최적화·시제품 시험",
+        "통신 하드웨어·센서"
+      ],
+      "primary_selection_rule": "기술적 작동은 본 분야, 컴퓨터 알고리즘은 정보·컴퓨터, 공간의 예술적 구성은 예술·디자인",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D04",
+      "name": "정보·컴퓨터",
+      "scope": "디지털 정보의 표현·처리·저장·전송과 계산 시스템",
+      "subfields": [
+        "컴퓨터 구조·운영체제",
+        "프로그래밍·소프트웨어 설계",
+        "알고리즘·자료구조",
+        "데이터베이스·데이터 관리",
+        "네트워크·인터넷 원리",
+        "정보보안·암호·개인정보 기술",
+        "인공지능·기계학습",
+        "데이터 처리·정보 검색",
+        "클라우드·분산 시스템",
+        "사용자 인터페이스·HCI",
+        "디지털 접근성·보조기술",
+        "추천시스템·플랫폼 알고리즘",
+        "소프트웨어 품질·검증",
+        "정보 시스템·디지털 전환",
+        "가상현실·실감미디어 기술"
+      ],
+      "primary_selection_rule": "추천 알고리즘 자체는 본 분야, 추천이 사회관계에 미치는 영향은 사회·문화 또는 심리·교육",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D05",
+      "name": "환경·생태",
+      "scope": "생태계·환경 문제·자원의 지속가능성·인간 활동의 환경적 영향",
+      "subfields": [
+        "생태계 구성·상호작용",
+        "생물다양성·종 보전",
+        "서식지·생태복원",
+        "기후변화 원인·영향",
+        "기후변화 적응·완화",
+        "대기오염·대기질",
+        "수질오염·물환경",
+        "토양오염·토지환경",
+        "폐기물·자원순환",
+        "에너지와 환경영향",
+        "수자원·유역 환경",
+        "도시환경·녹지",
+        "해양환경·연안 보전",
+        "환경 측정·영향평가",
+        "자원 고갈·지속가능성",
+        "자연재해·환경 위험"
+      ],
+      "primary_selection_rule": "기상 자체의 물리적 원리는 자연과학, 환경시설 설계는 공학·기술, 환경 법규는 정치·법·행정",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D06",
+      "name": "역사·고고학",
+      "scope": "시간에 따른 인류와 사회 변화, 역사적 사건·사료·유물 해석",
+      "subfields": [
+        "선사·인류의 초기 생활",
+        "고대사",
+        "중세사",
+        "근대사",
+        "현대사",
+        "한국사의 주요 흐름",
+        "세계사·지역 간 교류",
+        "정치·외교사",
+        "경제·산업사",
+        "사회·생활사",
+        "과학·기술사",
+        "문화·예술사",
+        "사상·종교사",
+        "고고학·발굴·유물",
+        "사료 비판·역사 연구방법",
+        "문화유산·보존·박물관",
+        "지역사·구술사"
+      ],
+      "primary_selection_rule": "현재 제도 자체를 분석하면 정치·법·행정, 역사적 변화 경로가 핵심이면 본 분야",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D07",
+      "name": "지리·지역",
+      "scope": "장소·공간 분포·지역 차이·지리 정보와 이동",
+      "subfields": [
+        "지형·지질의 지역적 분포",
+        "기후대·자연환경 분포",
+        "하천·해안·산지 지리",
+        "지도·축척·방향",
+        "지리정보·원격탐사·GIS",
+        "인구·정주·이주 지리",
+        "도시·도시공간",
+        "농촌·지역 공동체 공간",
+        "교통망·이동의 공간구조",
+        "지역 산업·경제지리",
+        "국토·지역계획",
+        "관광지리·장소문화",
+        "국경·국제공간·지정학",
+        "지역 간 격차·접근성",
+        "재해 위험의 공간 분포"
+      ],
+      "primary_selection_rule": "공간 분석이 핵심이면 본 분야, 대중교통 정책의 규칙·예산이 핵심이면 정치·법·행정",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D08",
+      "name": "사회·문화",
+      "scope": "집단·관습·관계·제도적 생활양식과 사회 변화",
+      "subfields": [
+        "사회화·규범 형성",
+        "가족·친족·생활관계",
+        "세대·생애주기",
+        "사회계층·불평등",
+        "인구·저출생·고령화",
+        "이주·다문화 사회",
+        "지역 공동체·사회관계",
+        "사회규범·관습·의례",
+        "문화의 형성·변화",
+        "종교 문화·공동체",
+        "미디어·여론·사회적 영향",
+        "사회운동·시민참여",
+        "직업·노동의 사회적 경험",
+        "도시·농촌의 사회생활",
+        "사회문제·사회복지",
+        "스포츠·여가의 사회문화"
+      ],
+      "primary_selection_rule": "정책 자체의 결정 과정은 정치·법·행정, 개인 심리 기제는 심리·교육, 공간 분포는 지리·지역",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D09",
+      "name": "정치·법·행정",
+      "scope": "공적 권력·규칙·권리·정책·행정서비스의 형성과 적용",
+      "subfields": [
+        "정치제도·정부구조",
+        "민주주의·대표·선거제도",
+        "정치 참여·정치 과정",
+        "국제관계·외교",
+        "국방·안보·분쟁",
+        "헌법·기본권",
+        "민법·생활법률",
+        "형법·형사사법",
+        "노동·사회보장법",
+        "행정법·행정절차",
+        "공공서비스·정부조직",
+        "정책 형성·평가",
+        "지방자치·지역행정",
+        "규제·안전·환경정책",
+        "국가재정·조세행정",
+        "디지털 정부·공공정보",
+        "공적 갈등조정·협의"
+      ],
+      "primary_selection_rule": "경제 이론의 작동은 경제·금융, 법률의 도덕적 정당성 자체는 철학·윤리",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D10",
+      "name": "경제·금융",
+      "scope": "희소성·선택·시장·소득·금융거래의 경제적 관계",
+      "subfields": [
+        "희소성·기회비용·선택",
+        "수요·공급·가격",
+        "시장구조·경쟁",
+        "소비자 선택·행동경제",
+        "노동시장·임금",
+        "소득·부의 분배",
+        "거시경제·경기변동",
+        "생산성·경제성장",
+        "물가·통화정책",
+        "국제무역·환율",
+        "금융시장·금융기관",
+        "저축·투자·자산형성",
+        "대출·이자·신용",
+        "보험·위험관리",
+        "가계재무·재무문해",
+        "공공경제·경제정책",
+        "경제지표·경제 통계"
+      ],
+      "primary_selection_rule": "조직 내부의 경영 기법은 경영·산업, 개인 소비생활 실무는 생활·안전",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D11",
+      "name": "경영·산업",
+      "scope": "조직과 산업의 운영·생산·서비스·전략·관리",
+      "subfields": [
+        "조직 구조·조직행동",
+        "리더십·의사소통",
+        "인사·노무·인재관리",
+        "경영전략·경쟁우위",
+        "기업가정신·창업",
+        "비즈니스모델·사업기획",
+        "마케팅·고객경험",
+        "회계·재무관리",
+        "생산·운영관리",
+        "품질관리·성과측정",
+        "유통·물류·공급망",
+        "서비스경영·서비스설계",
+        "산업구조·산업변화",
+        "연구개발·기술혁신 경영",
+        "관광·문화·콘텐츠 산업",
+        "프로젝트·일정·위험관리",
+        "비영리·공공조직 운영",
+        "산업안전·작업환경"
+      ],
+      "primary_selection_rule": "기업 내부 운영과 산업 생태계는 본 분야, 국가 전체 시장·물가의 거시 작동은 경제·금융",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D12",
+      "name": "철학·윤리",
+      "scope": "개념·근거·정당화·가치 판단의 논리적 검토",
+      "subfields": [
+        "논리학·논증의 구조",
+        "인식론·지식의 기준",
+        "존재론·실재에 대한 질문",
+        "과학철학·과학적 설명",
+        "도덕철학·윤리이론",
+        "정의·공정성·분배윤리",
+        "정치철학·공공선",
+        "생명·의료윤리",
+        "기술·인공지능 윤리",
+        "환경윤리·동물윤리",
+        "종교철학·세계관",
+        "미학·예술철학",
+        "언어철학·의미의 문제",
+        "철학적 사고실험·판단"
+      ],
+      "primary_selection_rule": "철학적 문제 자체를 논하면 본 분야, 철학자·사상의 시기적 변화를 논하면 역사·고고학",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D13",
+      "name": "언어·의사소통",
+      "scope": "언어 구조·읽기·쓰기·대화·매체 메시지의 생성과 해석",
+      "subfields": [
+        "음운·발음·말소리",
+        "문자·표기·맞춤법",
+        "형태·어휘·단어형성",
+        "문법·문장 구조",
+        "의미론·단어의 뜻",
+        "화용론·발화 맥락",
+        "담화·텍스트 구성",
+        "언어 습득·발달",
+        "언어 변화·언어사",
+        "다언어·번역·통역",
+        "설득·토론·수사학",
+        "언론·기사·저널리즘",
+        "광고·홍보 메시지",
+        "디지털 소통·매체 문해",
+        "독서·출판·문해문화",
+        "문학작품·서사 분석"
+      ],
+      "primary_selection_rule": "문학 작품 자체를 학습 원고로 복제하지 않고 작품·서사에 관한 비문학 해설로만 다룬다. 학습 심리 기제는 심리·교육",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D14",
+      "name": "예술·디자인",
+      "scope": "시각·청각·공간·공연 예술과 조형 표현·설계·감상",
+      "subfields": [
+        "회화·드로잉·시각예술",
+        "조각·공예·재료예술",
+        "음악·작곡·연주",
+        "악기·음향·소리의 예술",
+        "연극·공연예술",
+        "무용·몸의 표현",
+        "영화·영상예술",
+        "사진·이미지 표현",
+        "애니메이션·시각서사",
+        "시각정보·그래픽디자인",
+        "제품·산업디자인",
+        "건축·공간디자인",
+        "공공·서비스디자인",
+        "패션·복식디자인",
+        "게임·인터랙티브 아트",
+        "예술 감상·비평",
+        "미술관·전시·문화유산"
+      ],
+      "primary_selection_rule": "구조물의 물리적 설계는 공학·기술, 예술 산업의 경영은 경영·산업",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D15",
+      "name": "의학·건강",
+      "scope": "인체·건강·질병·예방·진료 및 건강 정보의 이해",
+      "subfields": [
+        "인체 해부·생리",
+        "질병의 원인·병리",
+        "감염병·전염 예방",
+        "면역·예방접종",
+        "진단·검사·의료정보",
+        "약물·치료·안전사용",
+        "영양·대사·식생활 건강",
+        "운동생리·신체활동 건강",
+        "수면·생활습관·건강",
+        "정신건강·심신 건강",
+        "영유아·청소년 건강",
+        "노화·고령자 건강",
+        "재활·장애·보조기기",
+        "구강·눈·귀 건강",
+        "응급처치·생명구호",
+        "공중보건·역학",
+        "의료체계·의료접근성",
+        "건강통계·의학정보 해석",
+        "유전의학·첨단 의료"
+      ],
+      "primary_selection_rule": "질환·진료의 사실은 근거를 엄격히 요구. 심리학 이론은 심리·교육, 생명체 일반 작동은 자연과학",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D16",
+      "name": "심리·교육",
+      "scope": "인지·행동·정서·학습 및 교수와 교육환경",
+      "subfields": [
+        "주의·지각",
+        "기억·망각·회상",
+        "학습·연습·전이",
+        "동기·목표설정",
+        "정서·감정조절",
+        "의사결정·인지편향",
+        "발달심리·아동청소년",
+        "성격·개인차",
+        "사회심리·집단행동",
+        "행동변화·습관",
+        "교수법·학습전략",
+        "교육과정·교재설계",
+        "교육평가·피드백",
+        "특수교육·학습접근성",
+        "학교문화·교육사회",
+        "교육기술·디지털학습",
+        "상담·심리지원"
+      ],
+      "primary_selection_rule": "정신질환의 임상진단·치료는 의학·건강, 교육 행정 제도 자체는 정치·법·행정",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D17",
+      "name": "생활·안전",
+      "scope": "일상에서 실행 가능한 생활기술·안전·공공정보 활용",
+      "subfields": [
+        "가정생활·주거관리",
+        "생활도구·가전 사용",
+        "생활 속 시간·일정 관리",
+        "생활문서·안내문 읽기",
+        "소비생활·구매판단",
+        "소비자 권리·거래 실무",
+        "가계 지출·요금·고지서",
+        "교통수단 이용·이동 실무",
+        "화재·가스·전기 안전",
+        "재난 대비·대피 행동",
+        "생활 위생·감염 예방 행동",
+        "생활 속 수리·유지보수",
+        "공공시설·행정서비스 이용",
+        "디지털 생활기기 활용",
+        "여가·취미·스포츠 실천",
+        "일상환경·절약 실천"
+      ],
+      "primary_selection_rule": "현상의 과학적 원리가 중심이면 자연과학, 제도·권리 해석이면 정치·법·행정, 임상 건강정보면 의학·건강",
+      "approval": "PROPOSED"
+    },
+    {
+      "domain_id": "D18",
+      "name": "식품·농업",
+      "scope": "농림수산물의 생산·관리·가공과 식품 재료·안전·문화",
+      "subfields": [
+        "작물재배·원예",
+        "토양·비료·양분관리",
+        "농업기상·물관리",
+        "종자·육종·품종",
+        "스마트농업·농기계",
+        "농업생태·병해충관리",
+        "축산·동물사육",
+        "수의학·동물보건",
+        "수산업·양식",
+        "임업·산림자원",
+        "식량생산·식량안보",
+        "식품 재료·성분",
+        "식품가공·발효",
+        "조리과학·요리원리",
+        "식품 위생·안전",
+        "식품유통·보관·저장",
+        "음식문화·식생활 역사",
+        "농촌경제·농식품산업"
+      ],
+      "primary_selection_rule": "건강효과를 직접 논하면 의학·건강, 일반 자연의 광합성 원리는 자연과학",
+      "approval": "PROPOSED"
+    }
+  ],
+  "classification_rules": [
+    "First classify by the actual core question and dominant explanatory content of the passage, not by a keyword in the title.",
+    "Each topic has exactly one primary domain and primary subfield; optional secondary domains can cover genuine cross-disciplinary relationships.",
+    "Primary subfield is a navigational category, not a finite list of possible article topics; a subject may generate unlimited specific questions and passages.",
+    "Subfields are intentionally unequal in count and scope. Do not normalize each domain to a fixed number.",
+    "A new subfield or domain can be proposed without corrupting existing IDs; do not silently choose an incorrect category merely to force classification.",
+    "Where a subject is interdisciplinary, ask what the main reasoning and conclusion concern. Record editorial ambiguity for review; do not duplicate primary classification.",
+    "Names and IDs are versioned; preserve v1 records and store explicit taxonomy version when moving to v2.",
+    "Author 전문적 배경 is unrelated to topical category choice; author attributes remain independently uniformly sampled.",
+    "Coverage and duplication managers may balance production distribution, but never alter author-attribute random draw probabilities.",
+    "No statistical quota, curriculum-grade restriction, learning outcome, or copyright permission is implied by the taxonomy."
+  ],
+  "interdisciplinary_boundaries": [
+    {
+      "id": "B01",
+      "question": "학교 텃밭에서 작물의 생장 조건",
+      "primary": "식품·농업",
+      "secondary": [
+        "자연과학",
+        "심리·교육"
+      ],
+      "reason": "재배 선택이 핵심이면 식품·농업, 생물학적 메커니즘이 핵심이면 자연과학"
+    },
+    {
+      "id": "B02",
+      "question": "지도 축척·지리 정보 읽기",
+      "primary": "지리·지역",
+      "secondary": [
+        "수학·통계"
+      ],
+      "reason": "지도 공간 해석이 핵심이면 지리·지역; 축척의 비례·수리 성질은 수학·통계"
+    },
+    {
+      "id": "B03",
+      "question": "의료 통계의 자료 대표성",
+      "primary": "수학·통계",
+      "secondary": [
+        "의학·건강"
+      ],
+      "reason": "주된 질문이 통계적 추론이면 수학·통계"
+    },
+    {
+      "id": "B04",
+      "question": "건강한 식품의 영양 효과",
+      "primary": "의학·건강",
+      "secondary": [
+        "식품·농업"
+      ],
+      "reason": "몸에 미치는 효과면 의학·건강, 성분·가공 자체면 식품·농업"
+    },
+    {
+      "id": "B05",
+      "question": "도시 나무의 열섬 완화",
+      "primary": "환경·생태",
+      "secondary": [
+        "지리·지역",
+        "공학·기술"
+      ],
+      "reason": "환경 영향·관리 효과가 핵심이면 환경·생태"
+    },
+    {
+      "id": "B06",
+      "question": "건물의 구조 안정성",
+      "primary": "공학·기술",
+      "secondary": [
+        "예술·디자인"
+      ],
+      "reason": "구조 하중·안전 설계가 핵심이면 공학·기술, 시각·공간 구성은 예술·디자인"
+    },
+    {
+      "id": "B07",
+      "question": "추천 알고리즘이 제안 목록을 만드는 원리",
+      "primary": "정보·컴퓨터",
+      "secondary": [
+        "심리·교육",
+        "사회·문화"
+      ],
+      "reason": "알고리즘의 동작 원리는 정보·컴퓨터, 취향과 행동의 변화는 사회·문화나 심리·교육"
+    },
+    {
+      "id": "B08",
+      "question": "조직의 성과 지표가 업무 행동을 바꾸는 문제",
+      "primary": "경영·산업",
+      "secondary": [
+        "심리·교육",
+        "사회·문화"
+      ],
+      "reason": "조직 운영의 유인·관리 수단이 핵심이면 경영·산업"
+    },
+    {
+      "id": "B09",
+      "question": "지역 버스 노선 접근성",
+      "primary": "지리·지역",
+      "secondary": [
+        "생활·안전",
+        "정치·법·행정"
+      ],
+      "reason": "교통망 배치·공간 접근성이 핵심이면 지리·지역, 버스 이용법은 생활·안전"
+    },
+    {
+      "id": "B10",
+      "question": "위험의 비용 부담이 공정한지",
+      "primary": "철학·윤리",
+      "secondary": [
+        "경제·금융",
+        "정치·법·행정"
+      ],
+      "reason": "판단 기준과 정당성 자체를 논증하면 철학·윤리"
+    },
+    {
+      "id": "B11",
+      "question": "지역 도서관 유지의 공공 의사결정",
+      "primary": "정치·법·행정",
+      "secondary": [
+        "사회·문화",
+        "지리·지역"
+      ],
+      "reason": "공공서비스 의사결정·예산과 권한이 핵심이면 정치·법·행정"
+    },
+    {
+      "id": "B12",
+      "question": "전기요금 고지서를 실제로 읽는 방법",
+      "primary": "생활·안전",
+      "secondary": [
+        "경제·금융"
+      ],
+      "reason": "생활 실무 정보 추출이 핵심이면 생활·안전; 요금 시장·정책 구조면 경제·금융"
+    },
+    {
+      "id": "B13",
+      "question": "광합성의 원리",
+      "primary": "자연과학",
+      "secondary": [
+        "식품·농업"
+      ],
+      "reason": "식물의 일반적 물질·에너지 전환이면 자연과학, 재배 결정을 위한 응용이면 식품·농업"
+    },
+    {
+      "id": "B14",
+      "question": "문학 작품의 서술 방식 분석",
+      "primary": "언어·의사소통",
+      "secondary": [
+        "예술·디자인"
+      ],
+      "reason": "작품을 복제하지 않고 비문학 해설로 다룬다"
+    }
+  ],
+  "review_note": "This is a coverage-oriented editorial proposal; it does not guarantee exhaustive coverage of all future human knowledge."
+}

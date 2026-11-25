@@ -1,0 +1,609 @@
+{
+  "schema_version": "readingflow.normalized_catalog.v1",
+  "source_count": 4,
+  "passage_count": 30,
+  "normalization": "read-only view; original catalogs unchanged",
+  "issues": [],
+  "records": [
+    {
+      "passage_id": "RF-PILOT-LOWER-L1",
+      "title": "씨앗이 싹트려면",
+      "age_group": "초등 저학년",
+      "level": "L1",
+      "domain": "과학",
+      "topic": "씨앗이 싹트려면",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 182,
+        "chars_without_spaces": 134,
+        "eojeol_count": 49
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L2",
+      "title": "젖은 운동화는 왜 늦게 마를까",
+      "age_group": "초등 저학년",
+      "level": "L2",
+      "domain": "과학",
+      "topic": "젖은 운동화는 왜 늦게 마를까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 265,
+        "chars_without_spaces": 198,
+        "eojeol_count": 68
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L3",
+      "title": "학교 도서관의 책은 어디에 둘까",
+      "age_group": "초등 저학년",
+      "level": "L3",
+      "domain": "생활",
+      "topic": "학교 도서관의 책은 어디에 둘까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 314,
+        "chars_without_spaces": 234,
+        "eojeol_count": 81
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L4",
+      "title": "같은 비가 와도 물웅덩이는 다를까",
+      "age_group": "초등 저학년",
+      "level": "L4",
+      "domain": "과학",
+      "topic": "같은 비가 와도 물웅덩이는 다를까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 333,
+        "chars_without_spaces": 250,
+        "eojeol_count": 84
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L5",
+      "title": "학교 텃밭에서 어느 자리가 좋을까",
+      "age_group": "초등 저학년",
+      "level": "L5",
+      "domain": "과학",
+      "topic": "학교 텃밭에서 어느 자리가 좋을까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 391,
+        "chars_without_spaces": 290,
+        "eojeol_count": 102
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L6",
+      "title": "운동장 그늘막은 어디에 설치할까",
+      "age_group": "초등 저학년",
+      "level": "L6",
+      "domain": "사회",
+      "topic": "운동장 그늘막은 어디에 설치할까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 472,
+        "chars_without_spaces": 361,
+        "eojeol_count": 112
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L1",
+      "title": "새가 깃털을 고르는 까닭",
+      "age_group": "초등 고학년",
+      "level": "L1",
+      "domain": "과학",
+      "topic": "새가 깃털을 고르는 까닭",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 209,
+        "chars_without_spaces": 157,
+        "eojeol_count": 53
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L2",
+      "title": "종이컵에 맺힌 물방울",
+      "age_group": "초등 고학년",
+      "level": "L2",
+      "domain": "과학",
+      "topic": "종이컵에 맺힌 물방울",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 271,
+        "chars_without_spaces": 202,
+        "eojeol_count": 70
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L3",
+      "title": "버스 노선표를 읽는 두 가지 방법",
+      "age_group": "초등 고학년",
+      "level": "L3",
+      "domain": "사회",
+      "topic": "버스 노선표를 읽는 두 가지 방법",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 323,
+        "chars_without_spaces": 242,
+        "eojeol_count": 82
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L4",
+      "title": "빨래가 마르는 속도를 비교하려면",
+      "age_group": "초등 고학년",
+      "level": "L4",
+      "domain": "과학",
+      "topic": "빨래가 마르는 속도를 비교하려면",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 359,
+        "chars_without_spaces": 268,
+        "eojeol_count": 92
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L5",
+      "title": "도시의 나무가 모두 같은 효과를 낼까",
+      "age_group": "초등 고학년",
+      "level": "L5",
+      "domain": "환경",
+      "topic": "도시의 나무가 모두 같은 효과를 낼까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 390,
+        "chars_without_spaces": 290,
+        "eojeol_count": 101
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L6",
+      "title": "학교 급수대는 어디에 설치해야 할까",
+      "age_group": "초등 고학년",
+      "level": "L6",
+      "domain": "사회",
+      "topic": "학교 급수대는 어디에 설치해야 할까",
+      "source_catalog": "pilot_12_passages_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 531,
+        "chars_without_spaces": 400,
+        "eojeol_count": 132
+      },
+      "question_count_in_catalog": 0,
+      "question_source": "separate_or_unknown",
+      "training_data_in_catalog": true,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L1",
+      "title": "지도에서 축척을 읽는 이유",
+      "age_group": "중·고등학생",
+      "level": "L1",
+      "domain": "사회·지리",
+      "topic": "지도에서 축척을 읽는 이유",
+      "source_catalog": "secondary_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 382,
+        "chars_without_spaces": 287,
+        "eojeol_count": 96
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L2",
+      "title": "같은 온도인데 왜 다르게 느껴질까",
+      "age_group": "중·고등학생",
+      "level": "L2",
+      "domain": "과학",
+      "topic": "같은 온도인데 왜 다르게 느껴질까",
+      "source_catalog": "secondary_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 477,
+        "chars_without_spaces": 356,
+        "eojeol_count": 122
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L3",
+      "title": "평균이 같아도 다른 두 학급",
+      "age_group": "중·고등학생",
+      "level": "L3",
+      "domain": "수학·사회",
+      "topic": "평균이 같아도 다른 두 학급",
+      "source_catalog": "secondary_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 577,
+        "chars_without_spaces": 430,
+        "eojeol_count": 148
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L4",
+      "title": "도시의 빗물은 어디로 가는가",
+      "age_group": "중·고등학생",
+      "level": "L4",
+      "domain": "환경·기술",
+      "topic": "도시의 빗물은 어디로 가는가",
+      "source_catalog": "secondary_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 597,
+        "chars_without_spaces": 444,
+        "eojeol_count": 154
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L5",
+      "title": "추천 목록이 취향을 바꾸는 과정",
+      "age_group": "중·고등학생",
+      "level": "L5",
+      "domain": "기술·사회",
+      "topic": "추천 목록이 취향을 바꾸는 과정",
+      "source_catalog": "secondary_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 666,
+        "chars_without_spaces": 492,
+        "eojeol_count": 175
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L6",
+      "title": "효율적인 선택이 언제나 공정한가",
+      "age_group": "중·고등학생",
+      "level": "L6",
+      "domain": "사회·철학",
+      "topic": "효율적인 선택이 언제나 공정한가",
+      "source_catalog": "secondary_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 899,
+        "chars_without_spaces": 673,
+        "eojeol_count": 227
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L1",
+      "title": "전기요금 고지서에서 확인할 것",
+      "age_group": "성인",
+      "level": "L1",
+      "domain": "생활·경제",
+      "topic": "전기요금 고지서에서 확인할 것",
+      "source_catalog": "adult_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 399,
+        "chars_without_spaces": 299,
+        "eojeol_count": 101
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L2",
+      "title": "회의 시간이 길어지는 이유",
+      "age_group": "성인",
+      "level": "L2",
+      "domain": "조직·업무",
+      "topic": "회의 시간이 길어지는 이유",
+      "source_catalog": "adult_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 507,
+        "chars_without_spaces": 376,
+        "eojeol_count": 132
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L3",
+      "title": "대중교통 환승을 비교하는 기준",
+      "age_group": "성인",
+      "level": "L3",
+      "domain": "교통·정책",
+      "topic": "대중교통 환승을 비교하는 기준",
+      "source_catalog": "adult_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 536,
+        "chars_without_spaces": 396,
+        "eojeol_count": 141
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L4",
+      "title": "설문조사 결과를 해석하는 순서",
+      "age_group": "성인",
+      "level": "L4",
+      "domain": "사회·통계",
+      "topic": "설문조사 결과를 해석하는 순서",
+      "source_catalog": "adult_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 581,
+        "chars_without_spaces": 440,
+        "eojeol_count": 142
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L5",
+      "title": "성과 지표가 행동을 바꿀 때",
+      "age_group": "성인",
+      "level": "L5",
+      "domain": "경영·사회",
+      "topic": "성과 지표가 행동을 바꿀 때",
+      "source_catalog": "adult_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 657,
+        "chars_without_spaces": 487,
+        "eojeol_count": 171
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L6",
+      "title": "위험을 줄이는 선택과 비용의 분배",
+      "age_group": "성인",
+      "level": "L6",
+      "domain": "정책·윤리",
+      "topic": "위험을 줄이는 선택과 비용의 분배",
+      "source_catalog": "adult_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 910,
+        "chars_without_spaces": 676,
+        "eojeol_count": 235
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L1",
+      "title": "약 봉투의 날짜를 확인하는 이유",
+      "age_group": "고령층",
+      "level": "L1",
+      "domain": "생활·안전",
+      "topic": "약 봉투의 날짜를 확인하는 이유",
+      "source_catalog": "senior_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 309,
+        "chars_without_spaces": 232,
+        "eojeol_count": 78
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L2",
+      "title": "엘리베이터 점검 안내문 읽기",
+      "age_group": "고령층",
+      "level": "L2",
+      "domain": "생활·주거",
+      "topic": "엘리베이터 점검 안내문 읽기",
+      "source_catalog": "senior_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 369,
+        "chars_without_spaces": 284,
+        "eojeol_count": 86
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L3",
+      "title": "동네 버스 시간표의 빈칸",
+      "age_group": "고령층",
+      "level": "L3",
+      "domain": "교통·정보",
+      "topic": "동네 버스 시간표의 빈칸",
+      "source_catalog": "senior_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 446,
+        "chars_without_spaces": 334,
+        "eojeol_count": 113
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L4",
+      "title": "공공시설의 무인 안내기와 선택권",
+      "age_group": "고령층",
+      "level": "L4",
+      "domain": "사회·기술",
+      "topic": "공공시설의 무인 안내기와 선택권",
+      "source_catalog": "senior_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 576,
+        "chars_without_spaces": 436,
+        "eojeol_count": 141
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L5",
+      "title": "건강 정보에서 숫자를 읽는 법",
+      "age_group": "고령층",
+      "level": "L5",
+      "domain": "건강·통계",
+      "topic": "건강 정보에서 숫자를 읽는 법",
+      "source_catalog": "senior_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 495,
+        "chars_without_spaces": 373,
+        "eojeol_count": 123
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L6",
+      "title": "마을 도서관을 유지할 것인가",
+      "age_group": "고령층",
+      "level": "L6",
+      "domain": "지역사회·정책",
+      "topic": "마을 도서관을 유지할 것인가",
+      "source_catalog": "senior_L1-L6_metadata_v1.json",
+      "source_version": "v1",
+      "text_metrics": {
+        "chars_with_spaces": 827,
+        "chars_without_spaces": 626,
+        "eojeol_count": 202
+      },
+      "question_count_in_catalog": 3,
+      "question_source": "embedded",
+      "training_data_in_catalog": false,
+      "review_status": "초안",
+      "release_approved": false
+    }
+  ]
+}

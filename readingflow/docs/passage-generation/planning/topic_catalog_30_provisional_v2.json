@@ -1,0 +1,619 @@
+{
+  "schema_version": "readingflow.topic_taxonomy_baseline_mapping.v2",
+  "status": "READ_ONLY_PROVISIONAL_MAPPING",
+  "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+  "source_catalog_path": "docs/passage-generation/data/normalized_passage_catalog_30_v1.json",
+  "source_catalog_blob_sha": "3938eacf0d80e6c553d5b80216ded7985d7ff261",
+  "total": 30,
+  "records": [
+    {
+      "passage_id": "RF-PILOT-LOWER-L1",
+      "topic": "씨앗이 싹트려면",
+      "source_age_group": "초등 저학년",
+      "source_level": "L1",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "생물의 구조·기능",
+      "secondary_domains": [
+        "식품·농업"
+      ],
+      "classification_reason": "씨앗이 싹트는 원리와 재배 조건",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L2",
+      "topic": "젖은 운동화는 왜 늦게 마를까",
+      "source_age_group": "초등 저학년",
+      "source_level": "L2",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "물질의 성질·변화",
+      "secondary_domains": [
+        "생활·안전"
+      ],
+      "classification_reason": "젖은 운동화의 수분 증발 원리",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L3",
+      "topic": "학교 도서관의 책은 어디에 둘까",
+      "source_age_group": "초등 저학년",
+      "source_level": "L3",
+      "legacy_domain": "생활",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "언어·의사소통",
+      "primary_subfield": "독서·출판·문해문화",
+      "secondary_domains": [
+        "심리·교육",
+        "생활·안전"
+      ],
+      "classification_reason": "도서관의 책 분류·찾기 방식은 이용과 학습에 걸친다",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L4",
+      "topic": "같은 비가 와도 물웅덩이는 다를까",
+      "source_age_group": "초등 저학년",
+      "source_level": "L4",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "지표·토양·암석",
+      "secondary_domains": [
+        "환경·생태"
+      ],
+      "classification_reason": "물웅덩이 형성의 표면·배수 조건",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L5",
+      "topic": "학교 텃밭에서 어느 자리가 좋을까",
+      "source_age_group": "초등 저학년",
+      "source_level": "L5",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "식품·농업",
+      "primary_subfield": "작물재배·원예",
+      "secondary_domains": [
+        "자연과학",
+        "심리·교육"
+      ],
+      "classification_reason": "학교 텃밭의 재배 조건을 중심으로 가정",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-LOWER-L6",
+      "topic": "운동장 그늘막은 어디에 설치할까",
+      "source_age_group": "초등 저학년",
+      "source_level": "L6",
+      "legacy_domain": "사회",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "정치·법·행정",
+      "primary_subfield": "정책 형성·평가",
+      "secondary_domains": [
+        "심리·교육",
+        "공학·기술"
+      ],
+      "classification_reason": "학교시설 배치의 공정한 의사결정을 중심으로 가정",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L1",
+      "topic": "새가 깃털을 고르는 까닭",
+      "source_age_group": "초등 고학년",
+      "source_level": "L1",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "생물의 구조·기능",
+      "secondary_domains": [],
+      "classification_reason": "새의 깃털 기능과 관리",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L2",
+      "topic": "종이컵에 맺힌 물방울",
+      "source_age_group": "초등 고학년",
+      "source_level": "L2",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "대기·기상",
+      "secondary_domains": [
+        "생활·안전"
+      ],
+      "classification_reason": "응결·공기 중 수증기",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L3",
+      "topic": "버스 노선표를 읽는 두 가지 방법",
+      "source_age_group": "초등 고학년",
+      "source_level": "L3",
+      "legacy_domain": "사회",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "생활·안전",
+      "primary_subfield": "교통수단 이용·이동 실무",
+      "secondary_domains": [
+        "지리·지역"
+      ],
+      "classification_reason": "실생활 노선표를 읽는 것이 중심",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L4",
+      "topic": "빨래가 마르는 속도를 비교하려면",
+      "source_age_group": "초등 고학년",
+      "source_level": "L4",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "에너지·열현상",
+      "secondary_domains": [
+        "생활·안전"
+      ],
+      "classification_reason": "수분 증발과 열·공기 조건 비교",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L5",
+      "topic": "도시의 나무가 모두 같은 효과를 낼까",
+      "source_age_group": "초등 고학년",
+      "source_level": "L5",
+      "legacy_domain": "환경",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "환경·생태",
+      "primary_subfield": "도시환경·녹지",
+      "secondary_domains": [
+        "지리·지역"
+      ],
+      "classification_reason": "도시의 나무가 환경에 미치는 차별적 효과",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-UPPER-L6",
+      "topic": "학교 급수대는 어디에 설치해야 할까",
+      "source_age_group": "초등 고학년",
+      "source_level": "L6",
+      "legacy_domain": "사회",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "정치·법·행정",
+      "primary_subfield": "정책 형성·평가",
+      "secondary_domains": [
+        "심리·교육",
+        "공학·기술"
+      ],
+      "classification_reason": "학교 공공시설의 입지 판단 기준",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L1",
+      "topic": "지도에서 축척을 읽는 이유",
+      "source_age_group": "중·고등학생",
+      "source_level": "L1",
+      "legacy_domain": "사회·지리",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "지리·지역",
+      "primary_subfield": "지도·축척·방향",
+      "secondary_domains": [
+        "수학·통계"
+      ],
+      "classification_reason": "지도를 이용한 공간·거리 읽기",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L2",
+      "topic": "같은 온도인데 왜 다르게 느껴질까",
+      "source_age_group": "중·고등학생",
+      "source_level": "L2",
+      "legacy_domain": "과학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "자연과학",
+      "primary_subfield": "에너지·열현상",
+      "secondary_domains": [
+        "의학·건강"
+      ],
+      "classification_reason": "체감온도의 물리·인체 측면 경계",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L3",
+      "topic": "평균이 같아도 다른 두 학급",
+      "source_age_group": "중·고등학생",
+      "source_level": "L3",
+      "legacy_domain": "수학·사회",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "수학·통계",
+      "primary_subfield": "기술통계·대표값",
+      "secondary_domains": [
+        "심리·교육"
+      ],
+      "classification_reason": "두 집단의 평균 비교와 분포 해석",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L4",
+      "topic": "도시의 빗물은 어디로 가는가",
+      "source_age_group": "중·고등학생",
+      "source_level": "L4",
+      "legacy_domain": "환경·기술",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "공학·기술",
+      "primary_subfield": "상하수도·수자원 시설",
+      "secondary_domains": [
+        "환경·생태",
+        "지리·지역"
+      ],
+      "classification_reason": "도시 배수·시설 경로가 중심이라고 가정",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L5",
+      "topic": "추천 목록이 취향을 바꾸는 과정",
+      "source_age_group": "중·고등학생",
+      "source_level": "L5",
+      "legacy_domain": "기술·사회",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "심리·교육",
+      "primary_subfield": "의사결정·인지편향",
+      "secondary_domains": [
+        "정보·컴퓨터",
+        "사회·문화"
+      ],
+      "classification_reason": "추천 알고리즘이 취향 선택을 바꾸는 영향 중심 가정",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SECONDARY-L6",
+      "topic": "효율적인 선택이 언제나 공정한가",
+      "source_age_group": "중·고등학생",
+      "source_level": "L6",
+      "legacy_domain": "사회·철학",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "철학·윤리",
+      "primary_subfield": "정의·공정성·분배윤리",
+      "secondary_domains": [
+        "경제·금융",
+        "정치·법·행정"
+      ],
+      "classification_reason": "효율과 공정이라는 판단 기준 대조",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L1",
+      "topic": "전기요금 고지서에서 확인할 것",
+      "source_age_group": "성인",
+      "source_level": "L1",
+      "legacy_domain": "생활·경제",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "생활·안전",
+      "primary_subfield": "가계 지출·요금·고지서",
+      "secondary_domains": [
+        "경제·금융"
+      ],
+      "classification_reason": "고지서를 실제로 이해하고 확인",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L2",
+      "topic": "회의 시간이 길어지는 이유",
+      "source_age_group": "성인",
+      "source_level": "L2",
+      "legacy_domain": "조직·업무",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "경영·산업",
+      "primary_subfield": "조직 구조·조직행동",
+      "secondary_domains": [
+        "심리·교육"
+      ],
+      "classification_reason": "회의 운영 구조·습관",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L3",
+      "topic": "대중교통 환승을 비교하는 기준",
+      "source_age_group": "성인",
+      "source_level": "L3",
+      "legacy_domain": "교통·정책",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "생활·안전",
+      "primary_subfield": "교통수단 이용·이동 실무",
+      "secondary_domains": [
+        "지리·지역"
+      ],
+      "classification_reason": "환승을 생활에서 비교하고 선택",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L4",
+      "topic": "설문조사 결과를 해석하는 순서",
+      "source_age_group": "성인",
+      "source_level": "L4",
+      "legacy_domain": "사회·통계",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "수학·통계",
+      "primary_subfield": "자료 수집·표본",
+      "secondary_domains": [
+        "사회·문화"
+      ],
+      "classification_reason": "설문 자료의 대표성과 해석",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L5",
+      "topic": "성과 지표가 행동을 바꿀 때",
+      "source_age_group": "성인",
+      "source_level": "L5",
+      "legacy_domain": "경영·사회",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "경영·산업",
+      "primary_subfield": "품질관리·성과측정",
+      "secondary_domains": [
+        "심리·교육",
+        "사회·문화"
+      ],
+      "classification_reason": "조직 평가 지표와 구성원 행동",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-ADULT-L6",
+      "topic": "위험을 줄이는 선택과 비용의 분배",
+      "source_age_group": "성인",
+      "source_level": "L6",
+      "legacy_domain": "정책·윤리",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "철학·윤리",
+      "primary_subfield": "정의·공정성·분배윤리",
+      "secondary_domains": [
+        "경제·금융",
+        "정치·법·행정"
+      ],
+      "classification_reason": "위험 부담과 비용 배분의 공정성",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L1",
+      "topic": "약 봉투의 날짜를 확인하는 이유",
+      "source_age_group": "고령층",
+      "source_level": "L1",
+      "legacy_domain": "생활·안전",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "의학·건강",
+      "primary_subfield": "약물·치료·안전사용",
+      "secondary_domains": [
+        "생활·안전"
+      ],
+      "classification_reason": "의약품의 안전한 날짜 정보 확인",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L2",
+      "topic": "엘리베이터 점검 안내문 읽기",
+      "source_age_group": "고령층",
+      "source_level": "L2",
+      "legacy_domain": "생활·주거",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "생활·안전",
+      "primary_subfield": "생활문서·안내문 읽기",
+      "secondary_domains": [
+        "공학·기술"
+      ],
+      "classification_reason": "점검 안내문에서 생활상 필요한 내용 파악",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L3",
+      "topic": "동네 버스 시간표의 빈칸",
+      "source_age_group": "고령층",
+      "source_level": "L3",
+      "legacy_domain": "교통·정보",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "생활·안전",
+      "primary_subfield": "교통수단 이용·이동 실무",
+      "secondary_domains": [
+        "지리·지역"
+      ],
+      "classification_reason": "시간표의 예외·빈칸 해석",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L4",
+      "topic": "공공시설의 무인 안내기와 선택권",
+      "source_age_group": "고령층",
+      "source_level": "L4",
+      "legacy_domain": "사회·기술",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "정치·법·행정",
+      "primary_subfield": "공공서비스·정부조직",
+      "secondary_domains": [
+        "정보·컴퓨터",
+        "철학·윤리"
+      ],
+      "classification_reason": "공공 무인안내의 접근성과 선택권을 제도 관점으로 가정",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L5",
+      "topic": "건강 정보에서 숫자를 읽는 법",
+      "source_age_group": "고령층",
+      "source_level": "L5",
+      "legacy_domain": "건강·통계",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "의학·건강",
+      "primary_subfield": "건강통계·의학정보 해석",
+      "secondary_domains": [
+        "수학·통계"
+      ],
+      "classification_reason": "보건·의료 맥락의 수치 해석",
+      "editorial_review_status": "NEEDS_EDITORIAL_REVIEW",
+      "release_approved": false
+    },
+    {
+      "passage_id": "RF-PILOT-SENIOR-L6",
+      "topic": "마을 도서관을 유지할 것인가",
+      "source_age_group": "고령층",
+      "source_level": "L6",
+      "legacy_domain": "지역사회·정책",
+      "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+      "primary_domain": "정치·법·행정",
+      "primary_subfield": "정책 형성·평가",
+      "secondary_domains": [
+        "사회·문화",
+        "지리·지역"
+      ],
+      "classification_reason": "지역 도서관 유지를 위한 공공 선택 판단",
+      "editorial_review_status": "PROVISIONAL_MAPPED",
+      "release_approved": false
+    }
+  ],
+  "observations": [
+    "The 30 historical pilot passages form a small, nonrepresentative baseline; absent domains are not necessarily omissions in the taxonomy.",
+    "Original catalog domain values are preserved in legacy_domain. Original passage text and QA statuses are not modified.",
+    "Provisional mappings use topical titles and existing catalog metadata, not full semantic passage review.",
+    "Flagged ambiguous passages require editorial resolution before training, balancing or product allocation."
+  ],
+  "coverage_scenarios": [
+    {
+      "theme": "기초·응용 과학",
+      "examples": [
+        "광합성 작동 원리",
+        "응결과 수증기",
+        "재료의 열전도",
+        "센서가 압력을 측정하는 방법"
+      ],
+      "required_domains": [
+        "자연과학",
+        "공학·기술",
+        "식품·농업"
+      ]
+    },
+    {
+      "theme": "수학·데이터",
+      "examples": [
+        "중앙값과 평균의 차이",
+        "표본 추출",
+        "정보 시각화"
+      ],
+      "required_domains": [
+        "수학·통계"
+      ]
+    },
+    {
+      "theme": "디지털·현대 기술",
+      "examples": [
+        "추천 알고리즘",
+        "암호와 개인정보 기술",
+        "디지털 접근성"
+      ],
+      "required_domains": [
+        "정보·컴퓨터"
+      ]
+    },
+    {
+      "theme": "환경·기후·생태",
+      "examples": [
+        "도시녹지의 영향",
+        "수질오염",
+        "기후 적응"
+      ],
+      "required_domains": [
+        "환경·생태"
+      ]
+    },
+    {
+      "theme": "역사·사회·지리",
+      "examples": [
+        "유물 해석",
+        "지도 축척",
+        "가족 구조의 변화",
+        "지역 교통망"
+      ],
+      "required_domains": [
+        "역사·고고학",
+        "사회·문화",
+        "지리·지역"
+      ]
+    },
+    {
+      "theme": "제도·경제·경영",
+      "examples": [
+        "학교 급수대 배치",
+        "공공 서비스 선택",
+        "금융 위험",
+        "조직 지표"
+      ],
+      "required_domains": [
+        "정치·법·행정",
+        "경제·금융",
+        "경영·산업"
+      ]
+    },
+    {
+      "theme": "철학·의사소통·문화예술",
+      "examples": [
+        "공정성 판단",
+        "논증과 반론",
+        "영화의 편집 효과"
+      ],
+      "required_domains": [
+        "철학·윤리",
+        "언어·의사소통",
+        "예술·디자인"
+      ]
+    },
+    {
+      "theme": "건강·심리·교육",
+      "examples": [
+        "약물 안전사용",
+        "기억과 학습",
+        "건강통계 해석"
+      ],
+      "required_domains": [
+        "의학·건강",
+        "심리·교육"
+      ]
+    },
+    {
+      "theme": "생활·먹거리·농업",
+      "examples": [
+        "전기요금 읽기",
+        "요리의 발효 원리",
+        "텃밭 재배"
+      ],
+      "required_domains": [
+        "생활·안전",
+        "식품·농업"
+      ]
+    }
+  ]
+}
