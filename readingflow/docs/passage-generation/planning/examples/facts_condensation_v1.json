@@ -1,0 +1,140 @@
+{
+  "schema_version": "readingflow.fact_evidence_registry.proposal.v1",
+  "registry_id": "FACT-PILOT-CONDENSATION-001",
+  "topic_id": "TOPIC-PILOT-CONDENSATION-001",
+  "review_state": "PENDING_SOURCE_CHECK",
+  "sources": [
+    {
+      "source_id": "SRC-NOAA-JETSTREAM",
+      "organization": "NOAA",
+      "title": "JetStream: Sweatin' to the Coldies",
+      "url": "https://www.noaa.gov/jetstream/ll-sweatin",
+      "source_check_status": "NOT_CHECKED_IN_THIS_STAGE",
+      "checked_at": null,
+      "reviewer": null,
+      "rights_review_status": "NOT_CHECKED"
+    },
+    {
+      "source_id": "SRC-NOAA-HUMIDITY",
+      "organization": "NOAA NESDIS",
+      "title": "What Is Humidity?",
+      "url": "https://www.nesdis.noaa.gov/about/k-12-education/atmosphere/what-humidity",
+      "source_check_status": "NOT_CHECKED_IN_THIS_STAGE",
+      "checked_at": null,
+      "reviewer": null,
+      "rights_review_status": "NOT_CHECKED"
+    },
+    {
+      "source_id": "SRC-USGS-CONDENSATION",
+      "organization": "USGS",
+      "title": "Condensation and the Water Cycle",
+      "url": "https://www.usgs.gov/water-science-school/science/condensation-and-water-cycle",
+      "source_check_status": "NOT_CHECKED_IN_THIS_STAGE",
+      "checked_at": null,
+      "reviewer": null,
+      "rights_review_status": "NOT_CHECKED"
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "F1",
+      "claim": "공기에는 눈에 보이지 않는 수증기가 포함될 수 있다.",
+      "source_refs": [
+        {
+          "source_id": "SRC-NOAA-HUMIDITY",
+          "locator": null
+        }
+      ],
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "reviewer": null,
+      "reviewed_at": null,
+      "editorial_notes": "P1 참고 URL에 연결된 후보 주장. 해당 원문 위치·사실성 아직 재검증 전"
+    },
+    {
+      "fact_id": "F2",
+      "claim": "차가운 컵은 표면 가까이의 공기를 식힐 수 있다.",
+      "source_refs": [
+        {
+          "source_id": "SRC-NOAA-JETSTREAM",
+          "locator": null
+        }
+      ],
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "reviewer": null,
+      "reviewed_at": null,
+      "editorial_notes": "P1 참고 URL에 연결된 후보 주장. 해당 원문 위치·사실성 아직 재검증 전"
+    },
+    {
+      "fact_id": "F3",
+      "claim": "컵 가까운 공기가 이슬점에 이르면 수증기가 액체 물방울로 응결할 수 있다.",
+      "source_refs": [
+        {
+          "source_id": "SRC-NOAA-JETSTREAM",
+          "locator": null
+        },
+        {
+          "source_id": "SRC-USGS-CONDENSATION",
+          "locator": null
+        }
+      ],
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "reviewer": null,
+      "reviewed_at": null,
+      "editorial_notes": "P1 참고 URL에 연결된 후보 주장. 해당 원문 위치·사실성 아직 재검증 전"
+    },
+    {
+      "fact_id": "F4",
+      "claim": "컵 겉면의 응결 물방울은 보통 컵 내부에서 스며 나온 물이 아니라 공기 중 수증기에서 온다.",
+      "source_refs": [
+        {
+          "source_id": "SRC-NOAA-JETSTREAM",
+          "locator": null
+        },
+        {
+          "source_id": "SRC-USGS-CONDENSATION",
+          "locator": null
+        }
+      ],
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "reviewer": null,
+      "reviewed_at": null,
+      "editorial_notes": "P1 참고 URL에 연결된 후보 주장. 해당 원문 위치·사실성 아직 재검증 전"
+    },
+    {
+      "fact_id": "F5",
+      "claim": "다른 조건이 비슷하면 수증기가 많은 공기에서 물방울이 더 잘 생기거나 더 많이 나타날 수 있다.",
+      "source_refs": [
+        {
+          "source_id": "SRC-NOAA-JETSTREAM",
+          "locator": null
+        },
+        {
+          "source_id": "SRC-NOAA-HUMIDITY",
+          "locator": null
+        }
+      ],
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "reviewer": null,
+      "reviewed_at": null,
+      "editorial_notes": "P1 참고 URL에 연결된 후보 주장. 해당 원문 위치·사실성 아직 재검증 전"
+    },
+    {
+      "fact_id": "F6",
+      "claim": "컵이 충분히 차갑지 않거나 주변 공기가 건조하면 물방울이 거의 나타나지 않을 수 있다.",
+      "source_refs": [
+        {
+          "source_id": "SRC-NOAA-JETSTREAM",
+          "locator": null
+        }
+      ],
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "reviewer": null,
+      "reviewed_at": null,
+      "editorial_notes": "P1 참고 URL에 연결된 후보 주장. 해당 원문 위치·사실성 아직 재검증 전"
+    }
+  ],
+  "generation_gate": "EXPERIMENT_ONLY",
+  "external_facts_verified": false,
+  "release_approved": false,
+  "license_note": "External URLs identify proposed factual sources; do not copy original wording. Rights for verbatim extracts need separate review."
+}

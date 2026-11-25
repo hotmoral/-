@@ -1,0 +1,69 @@
+{
+  "schema_version": "readingflow.duplication_diversity_operations.v1",
+  "status": "DESIGN_NOT_DEPLOYED",
+  "scope": "COMPARISONS_AND_DISTRIBUTIONS_ONLY",
+  "units": [
+    "passage_id",
+    "passage_version",
+    "topic_id",
+    "topic_focus",
+    "core_question",
+    "primary_domain",
+    "primary_subfield",
+    "age_group",
+    "level",
+    "objective_ids",
+    "author_attributes_24",
+    "optional_text",
+    "session_exposure"
+  ],
+  "detection_dimensions": [
+    {
+      "key": "EXACT_TEXT",
+      "technique": "whitespace-and-Unicode-normalized exact comparison when full text available",
+      "automation": "REVIEW_FLAG_ONLY"
+    },
+    {
+      "key": "EXACT_TITLE",
+      "technique": "normalize spacing, punctuation and unicode; compare titles",
+      "automation": "REVIEW_FLAG_ONLY"
+    },
+    {
+      "key": "NEAR_TITLE",
+      "technique": "SequenceMatcher descriptive similarity >= 0.82 (candidate review threshold, not validated)",
+      "automation": "REVIEW_FLAG_ONLY"
+    },
+    {
+      "key": "EXPLICIT_KNOWN_TOPIC_OVERLAP",
+      "technique": "topic planning record links known overlapping older passage IDs",
+      "automation": "REVIEW_FLAG_ONLY"
+    },
+    {
+      "key": "MEANING_AND_CORE_CLAIM",
+      "technique": "editorial evaluation of central claim, facts, question, objectives",
+      "automation": "HUMAN_REQUIRED"
+    },
+    {
+      "key": "STYLISTIC_REPETITION",
+      "technique": "author-attribute distribution and prose-level intro/structure/ending comparison when provenance and full texts exist",
+      "automation": "UNIMPLEMENTED_SEMANTIC_CHECK"
+    },
+    {
+      "key": "AGE_LEVEL_COVERAGE",
+      "technique": "count age-group and level coverage, do not equalize topic-area counts by default",
+      "automation": "DESCRIPTIVE_ONLY"
+    }
+  ],
+  "no_auto_delete": true,
+  "no_auto_reject_on_title_match": true,
+  "no_forced_domain_quota": true,
+  "no_adjustment_to_author_rng": true,
+  "duplicate_may_be_allowed_when": [
+    "different reading objectives with substantively different evidence",
+    "age-differentiated explanation",
+    "legitimate revision with distinct passage version",
+    "same passage reused in independent learning sessions, if exposure rules allow"
+  ],
+  "exposure_rule": "Repeated use of same passage_id in different session_id/slot_index is training scheduling, not duplication of source content; unseen-passage assessment must inspect exposure history separately.",
+  "limitations": "This audit does not establish semantic paraphrase similarity, originality, usage rights or study validity."
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": "readingflow.topic_record.proposal.v2",
+  "topic_id": "TOPIC-PILOT-CONDENSATION-001",
+  "title": "차가운 컵 겉면의 물방울은 어디서 왔는가",
+  "primary_domain": "자연과학",
+  "secondary_domains": [
+    "생활·안전"
+  ],
+  "subfield": "대기·기상",
+  "core_question": "물방울의 근원과 발생 조건은 무엇인가?",
+  "core_concepts": [
+    "응결",
+    "이슬점",
+    "수증기",
+    "습도"
+  ],
+  "age_group": "중·고등학생",
+  "level": "L3",
+  "selection_mode": "EXPERIMENT_FIXED",
+  "classification_status": "PROVISIONAL_CLASSIFIED",
+  "overlap_review": {
+    "status": "NEEDS_SEMANTIC_REVIEW",
+    "possible_matches": [
+      {
+        "passage_id": "RF-PILOT-UPPER-L2",
+        "title": "종이컵에 맺힌 물방울"
+      }
+    ]
+  },
+  "release_approved": false,
+  "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+  "topic_focus": "응결과 공기 중 수증기",
+  "subfield_classification_status": "EXISTING_SUBFIELD",
+  "selection_trace": [
+    {
+      "step": "PRIMARY_DOMAIN",
+      "value": "자연과학"
+    },
+    {
+      "step": "SUBFIELD",
+      "value": "대기·기상"
+    },
+    {
+      "step": "INDIVIDUAL_TOPIC",
+      "value": "응결과 공기 중 수증기"
+    },
+    {
+      "step": "CORE_QUESTION",
+      "value": "물방울의 근원과 발생 조건은 무엇인가?"
+    }
+  ],
+  "selection_trace_status": "ILLUSTRATIVE_ORDER_NOT_AUTOMATED"
+}

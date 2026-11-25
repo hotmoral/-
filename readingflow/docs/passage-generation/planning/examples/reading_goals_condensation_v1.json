@@ -1,0 +1,40 @@
+{
+  "schema_version": "readingflow.reading_goal_plan.proposal.v1",
+  "plan_id": "GOAL-PILOT-CONDENSATION-001",
+  "topic_id": "TOPIC-PILOT-CONDENSATION-001",
+  "age_group": "중·고등학생",
+  "level": "L3",
+  "status": "PROPOSED_NEEDS_CONTENT_REVIEW",
+  "objectives": [
+    {
+      "objective_id": "OBJ-COND-01",
+      "operation": "인과",
+      "learner_target": "주변 공기의 냉각과 이슬점을 연결해 컵 겉면 물방울의 근원을 설명한다",
+      "key_question": "컵 안의 물이 새지 않아도 겉면이 젖는 이유는 무엇인가?",
+      "expected_reasoning": "냉각된 표면 근처 공기가 이슬점에 도달하면 공기 중 수증기가 응결할 수 있다",
+      "required_fact_ids": [
+        "F1",
+        "F2",
+        "F3",
+        "F4"
+      ],
+      "answer_must_be_supported_in_passage": true
+    },
+    {
+      "objective_id": "OBJ-COND-02",
+      "operation": "비교",
+      "learner_target": "컵 온도와 주변 공기의 수증기 조건이 물방울 형성에 미치는 영향을 구분한다",
+      "key_question": "같은 컵도 환경에 따라 물방울 양이 달라지는 조건은 무엇인가?",
+      "expected_reasoning": "조건이 비슷하면 더 습한 환경에서 응결이 더 잘 나타나지만, 컵이 충분히 차갑지 않거나 공기가 건조할 때는 거의 보이지 않을 수 있다",
+      "required_fact_ids": [
+        "F3",
+        "F5",
+        "F6"
+      ],
+      "answer_must_be_supported_in_passage": true
+    }
+  ],
+  "objective_selection_mode": "CURATOR_DEFINED_FOR_EXPERIMENT",
+  "release_approved": false,
+  "learner_difficulty_validated": false
+}

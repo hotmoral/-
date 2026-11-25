@@ -1,0 +1,129 @@
+{
+  "schema_version": "readingflow.passage_quality_review_contract.v1",
+  "status": "DESIGN_NOT_DEPLOYED",
+  "principles": [
+    "Quality and duplication/diversity are separate operating systems",
+    "Structural checks cannot validate factual truth, educational level, originality or MCQ semantics",
+    "Fact check precedes comprehension objectives, age/level, logical coherence, style, then reference length",
+    "Missing external evidence and reviewer acceptance must not be coerced into PASS",
+    "Internal QA PASS never sets release_approved; release needs independent decision"
+  ],
+  "categories": [
+    {
+      "code": "FACTUAL_ACCURACY",
+      "title": "사실·근거 정확성",
+      "method": "HUMAN_WITH_SOURCE_CHECK",
+      "hard_block_if_unverified": true,
+      "required_evidence": "주장 ID·출처 위치·검증자·검증일"
+    },
+    {
+      "code": "READING_OBJECTIVES",
+      "title": "독해 목표 충족",
+      "method": "EDITORIAL_AND_QUESTION_REVIEW",
+      "hard_block_if_unverified": true,
+      "required_evidence": "원고 내 목표별 필수 단서 위치 및 문항 연결"
+    },
+    {
+      "code": "AGE_LEVEL_FIT",
+      "title": "연령·상대 L의 적합성",
+      "method": "EDITORIAL_THEN_LEARNER_STUDY",
+      "hard_block_if_unverified": true,
+      "required_evidence": "관계 수·추론 거리·배경 지식 접근성과 실제 학습자 검증 여부 분리"
+    },
+    {
+      "code": "LOGIC_COHERENCE",
+      "title": "논리·자연스러움",
+      "method": "EDITORIAL_REVIEW",
+      "hard_block_if_unverified": true,
+      "required_evidence": "전제·문단 연결·과잉 반복·비약 검토"
+    },
+    {
+      "code": "ORIGINALITY_COPYRIGHT",
+      "title": "독창성·저작물 이용",
+      "method": "EDITORIAL_AND_RIGHTS_REVIEW",
+      "hard_block_if_unverified": true,
+      "required_evidence": "외부 원문 유사도 및 인용·복제 권한 판단 기록"
+    },
+    {
+      "code": "QUESTION_EVIDENCE",
+      "title": "문항과 본문 근거",
+      "method": "EDITORIAL_PLUS_STRUCTURAL",
+      "hard_block_if_unverified": true,
+      "required_evidence": "정답 유일성·본문 근거·오답 변별력·문항 버전"
+    },
+    {
+      "code": "AUTHOR_ATTRIBUTE_FIT",
+      "title": "필자 속성 반영",
+      "method": "EDITORIAL_REVIEW",
+      "hard_block_if_unverified": false,
+      "required_evidence": "24개 속성의 적용·부분반영·제한 기록과 이유"
+    },
+    {
+      "code": "LENGTH_AND_FORMAT",
+      "title": "분량·형식·문자 구조",
+      "method": "DETERMINISTIC_ONLY",
+      "hard_block_if_unverified": false,
+      "required_evidence": "실측 길이·문단·문장·인용 구분. 권장 분량 이탈만으로 자동 탈락 금지"
+    }
+  ],
+  "review_states": [
+    "NOT_REVIEWED",
+    "IN_REVIEW",
+    "PASS",
+    "REVISE",
+    "REJECT",
+    "NEEDS_HUMAN_REVIEW"
+  ],
+  "default_review_status": "NEEDS_HUMAN_REVIEW",
+  "release_approval_separate": true,
+  "version_impact": [
+    "passage_text_modified => questions_and_offsets_recheck",
+    "passage_text_modified => semantic_training_derivatives_recheck",
+    "reviewer_result_references_passage_version"
+  ],
+  "prohibited": [
+    "autopass_by_field_presence",
+    "autopass_by_word_count",
+    "auto_publish_on_internal_PASS",
+    "interpret_unchecked_links_as_verified"
+  ],
+  "editorial_subchecks_contract": "editorial_subchecks_v1.json",
+  "editorial_subchecks": [
+    {
+      "code": "AGE_FORM_AND_REGISTER",
+      "parent_category": "AGE_LEVEL_FIT",
+      "scope": "PASSAGE"
+    },
+    {
+      "code": "QUESTION_STEM_GRAMMAR",
+      "parent_category": "QUESTION_EVIDENCE",
+      "scope": "PER_QUESTION"
+    },
+    {
+      "code": "QUESTION_SCOPE_AND_OPTIONS",
+      "parent_category": "QUESTION_EVIDENCE",
+      "scope": "PER_QUESTION"
+    },
+    {
+      "code": "TEXTBOOK_STYLE_REFERENCE",
+      "parent_category": "QUESTION_EVIDENCE",
+      "scope": "PASSAGE"
+    },
+    {
+      "code": "CLAIM_MODALITY",
+      "parent_category": "FACTUAL_ACCURACY",
+      "scope": "PASSAGE"
+    },
+    {
+      "code": "CORRELATION_CAUSATION",
+      "parent_category": "LOGIC_COHERENCE",
+      "scope": "PASSAGE"
+    },
+    {
+      "code": "NONFICTION_SOURCE_ORIGINALITY",
+      "parent_category": "ORIGINALITY_COPYRIGHT",
+      "scope": "PASSAGE"
+    }
+  ],
+  "editorial_subchecks_policy": "Any missing/unverified required editorial subcheck blocks overall quality PASS; no automatic language or factual correctness inference. AGE_FORM_AND_REGISTER also requires the ~다 written body baseline; sentence endings alone are advisory, not autonomous human approval."
+}
