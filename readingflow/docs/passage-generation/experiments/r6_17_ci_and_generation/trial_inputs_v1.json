@@ -1,0 +1,221 @@
+{
+  "schema_version": "readingflow.r617.before_draw_trial.v1",
+  "passage_id": "RF-R617-SECONDARY-L4-001",
+  "passage_version": "r6-17-generated-v1",
+  "topic": {
+    "schema_version": "readingflow.topic_record.proposal.v2",
+    "topic_id": "TOPIC-R617-SEARCH-RELEVANCE-001",
+    "title": "검색어가 가장 많이 나오는 글이 가장 적절한 글일까",
+    "primary_domain": "정보·컴퓨터",
+    "secondary_domains": [
+      "언어·의사소통"
+    ],
+    "subfield": "데이터 처리·정보 검색",
+    "core_question": "검색어의 출현 횟수와 실제 정보 요구를 충족하는 정도는 어떻게 다른가?",
+    "core_concepts": [
+      "검색어",
+      "정보 요구",
+      "관련성",
+      "단어 출현 빈도",
+      "질문과 근거의 대응"
+    ],
+    "age_group": "중·고등학생",
+    "level": "L4",
+    "selection_mode": "EXPERIMENT_FIXED",
+    "classification_status": "PROVISIONAL_CLASSIFIED",
+    "overlap_review": {
+      "status": "NEEDS_SEMANTIC_REVIEW",
+      "possible_matches": []
+    },
+    "release_approved": false,
+    "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+    "topic_focus": "검색 결과의 단어 일치와 정보 요구 충족의 구분",
+    "subfield_classification_status": "EXISTING_SUBFIELD",
+    "selection_trace": [
+      {
+        "step": "PRIMARY_DOMAIN",
+        "value": "정보·컴퓨터"
+      },
+      {
+        "step": "SUBFIELD",
+        "value": "데이터 처리·정보 검색"
+      },
+      {
+        "step": "INDIVIDUAL_TOPIC",
+        "value": "검색 결과의 단어 일치와 정보 요구 충족의 구분"
+      },
+      {
+        "step": "CORE_QUESTION",
+        "value": "검색어의 출현 횟수와 실제 정보 요구를 충족하는 정도는 어떻게 다른가?"
+      }
+    ],
+    "selection_trace_status": "ILLUSTRATIVE_ORDER_NOT_AUTOMATED"
+  },
+  "goals": {
+    "schema_version": "readingflow.reading_goal_plan.proposal.v1",
+    "plan_id": "GOAL-R617-SEARCH-RELEVANCE-001",
+    "topic_id": "TOPIC-R617-SEARCH-RELEVANCE-001",
+    "age_group": "중·고등학생",
+    "level": "L4",
+    "status": "PROPOSED_NEEDS_CONTENT_REVIEW",
+    "objectives": [
+      {
+        "objective_id": "OBJ-R617-01",
+        "operation": "비교",
+        "learner_target": "단어 반복과 정보 관련성의 판단 기준을 구별한다",
+        "key_question": "검색어가 많이 나온 문서와 질문에 답한 문서는 무엇이 다른가?",
+        "expected_reasoning": "검색어 출현 횟수는 표면적 단서이고 질문의 정보 요구를 충족하는지는 별도 확인해야 한다",
+        "required_fact_ids": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "answer_must_be_supported_in_passage": true
+      },
+      {
+        "objective_id": "OBJ-R617-02",
+        "operation": "추론",
+        "learner_target": "두 가상 문서의 조건을 근거로 질문에 알맞은 문서를 선택한다",
+        "key_question": "검색어 반복 글과 실제 원인 설명 글 중 어떤 글이 필요한가?",
+        "expected_reasoning": "원인을 물은 질문에는 표현 일치보다 원인-결과 관계를 밝힌 글이 더 적절하다",
+        "required_fact_ids": [
+          "F2",
+          "F3",
+          "F4"
+        ],
+        "answer_must_be_supported_in_passage": true
+      },
+      {
+        "objective_id": "OBJ-R617-03",
+        "operation": "근거 평가",
+        "learner_target": "질문이 달라질 때 문서 관련성 평가가 변하는 이유를 판단한다",
+        "key_question": "같은 문서라도 질문을 바꾸면 평가가 달라질 수 있는가?",
+        "expected_reasoning": "관련성은 문서 자체의 고정 점수가 아니라 특정 정보 요구와의 관계다",
+        "required_fact_ids": [
+          "F1",
+          "F5"
+        ],
+        "answer_must_be_supported_in_passage": true
+      }
+    ],
+    "objective_selection_mode": "CURATOR_DEFINED_FOR_EXPERIMENT",
+    "release_approved": false,
+    "learner_difficulty_validated": false
+  },
+  "evidence": {
+    "schema_version": "readingflow.fact_evidence_registry.proposal.v1",
+    "registry_id": "FACT-R617-SEARCH-RELEVANCE-001",
+    "topic_id": "TOPIC-R617-SEARCH-RELEVANCE-001",
+    "review_state": "PENDING_SOURCE_CHECK",
+    "sources": [
+      {
+        "source_id": "SRC-STANFORD-IR",
+        "organization": "Stanford NLP Group / Cambridge University Press",
+        "title": "Introduction to Information Retrieval (online edition)",
+        "url": "https://nlp.stanford.edu/IR-book/",
+        "source_check_status": "NOT_CHECKED_IN_THIS_STAGE",
+        "checked_at": null,
+        "reviewer": null,
+        "rights_review_status": "REFERENCES_ONLY"
+      },
+      {
+        "source_id": "SRC-NIST-TREC",
+        "organization": "NIST TREC",
+        "title": "Data - English Relevance Judgements",
+        "url": "https://trec.nist.gov/data/reljudge_eng.html",
+        "source_check_status": "NOT_CHECKED_IN_THIS_STAGE",
+        "checked_at": null,
+        "reviewer": null,
+        "rights_review_status": "REFERENCES_ONLY"
+      }
+    ],
+    "facts": [
+      {
+        "fact_id": "F1",
+        "claim": "정보 검색의 유용성은 이용자가 해결하려는 정보 요구에 비추어 판단해야 한다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-NIST-TREC",
+            "locator": null
+          },
+          {
+            "source_id": "SRC-STANFORD-IR",
+            "locator": null
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "웹 검색에서 기관 페이지를 확인했으나 원문 전수 확인·독립 인간 승인 전"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "검색어가 문서에 나타나는 빈도는 검색 결과의 순위를 추정하는 데 쓰일 수 있지만 빈도만으로 관련성을 확정할 수 없다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-STANFORD-IR",
+            "locator": null
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "웹 검색에서 기관 페이지를 확인했으나 원문 전수 확인·독립 인간 승인 전"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "검색어가 자주 반복되는 글이라도 질문이 요구하는 원인이나 설명을 제공하지 않으면 그 질문에 적합하지 않을 수 있다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-NIST-TREC",
+            "locator": null
+          },
+          {
+            "source_id": "SRC-STANFORD-IR",
+            "locator": null
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "웹 검색에서 기관 페이지를 확인했으나 원문 전수 확인·독립 인간 승인 전"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "같은 개념을 다른 표현으로 설명한 문서는 검색어가 적게 등장해도 이용자의 정보 요구에 관련될 수 있다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-STANFORD-IR",
+            "locator": null
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "웹 검색에서 기관 페이지를 확인했으나 원문 전수 확인·독립 인간 승인 전"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "문서의 관련성은 평가 대상인 질문 또는 정보 요구가 바뀌면 달라질 수 있다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-NIST-TREC",
+            "locator": null
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "웹 검색에서 기관 페이지를 확인했으나 원문 전수 확인·독립 인간 승인 전"
+      }
+    ],
+    "generation_gate": "EXPERIMENT_ONLY",
+    "external_facts_verified": false,
+    "release_approved": false,
+    "license_note": "Official source pages are factual leads only. Do not reproduce protected original expression. Human source/rights review outstanding."
+  },
+  "seed": 2026112405,
+  "author_draw_required_before_authorship": true,
+  "source_verification_pending": true,
+  "release_approved": false
+}

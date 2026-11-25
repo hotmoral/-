@@ -1,0 +1,32 @@
+name: ReadingFlow - Public Stage5 Generator CI
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'readingflow/**'
+      - '.github/workflows/readingflow-validation.yml'
+  pull_request:
+    paths:
+      - 'readingflow/**'
+      - '.github/workflows/readingflow-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generator-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile source
+        run: python -m compileall -q readingflow/docs/passage-generation/tools
+      - name: Run canonical generation regressions
+        run: |
+          python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_new_passage_generation_pipeline.py' -v
+          python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_r616*.py' -v
+          python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_r617*.py' -v
+      - name: Run R6.17 grounded candidate through Stage5 and 17 QA
+        run: python readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/run_trial.py
