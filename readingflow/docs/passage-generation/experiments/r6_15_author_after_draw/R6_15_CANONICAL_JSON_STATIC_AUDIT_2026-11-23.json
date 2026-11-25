@@ -1,0 +1,344 @@
+{
+  "schema_version": "readingflow.r615_canonical_github_json_static_audit.v1",
+  "checked_at_utc": "2026-11-23",
+  "source": "GitHub connector original JSON files at feature-branch commit 862087dd45790c7d08157a449308a708dc894da5",
+  "scope": "Exact canonical JSON STATIC contract-replica crosscheck in JavaScript; not a Python Stage5 execution; does not validate facts or semantics.",
+  "inputs": [
+    {
+      "path": "docs/passage-generation/planning/topic_taxonomy_proposal_v2.json",
+      "blob_sha": "ee3cc8b90ec7abdb6da0d1870b8c4f44269bc3a3"
+    },
+    {
+      "path": "docs/passage-generation/planning/topic_catalog_30_provisional_v2.json",
+      "blob_sha": "d5642600977bff467b0249c28705a66e396885f3"
+    },
+    {
+      "path": "docs/passage-generation/data/normalized_passage_catalog_30_v1.json",
+      "blob_sha": "3938eacf0d80e6c553d5b80216ded7985d7ff261"
+    },
+    {
+      "path": "docs/passage-generation/data/author_attribute_candidate_pools_proposal_v1.json",
+      "blob_sha": "5359637ebe9574e3a097a98e39ef156d207c1fd2"
+    },
+    {
+      "path": "docs/passage-generation/operations/quality/quality_policy_v1.json",
+      "blob_sha": "e5364541a524541e98a9177d18d6cd7717a3690a"
+    },
+    {
+      "path": "docs/passage-generation/operations/diversity/diversity_policy_v1.json",
+      "blob_sha": "20cdcfc8e48a85667f5dbf0e7a7ad2cca82b5d52"
+    },
+    {
+      "path": "docs/passage-generation/operations/quality/new_passage_question_creation_checklist_v1.json",
+      "blob_sha": "d28fef00c0156f4f69b40b9fd6cea60134dc6a81"
+    },
+    {
+      "path": "docs/passage-generation/experiments/r6_12_door_torque/trial_inputs_v1.json",
+      "blob_sha": "daecf2abec3bbd49b77d7aaff30182d2f559226b"
+    },
+    {
+      "path": "docs/passage-generation/experiments/r6_15_author_after_draw/experimental_candidate_v1.json",
+      "blob_sha": "c8d7602266f803a1d125f7d1f14d08cb8151b638"
+    },
+    {
+      "path": "docs/passage-generation/experiments/r6_15_author_after_draw/author_draw_and_application_v1.json",
+      "blob_sha": "ad862498286d97170fefb15e7409960c01494d79"
+    },
+    {
+      "path": "docs/passage-generation/experiments/r6_15_author_after_draw/style_application_ai_review_v1.json",
+      "blob_sha": "d92fa466cf2aac52b78b7307ff9015a29c4814e0"
+    }
+  ],
+  "summary": {
+    "checks": 54,
+    "passed": 54,
+    "failed": 0,
+    "domains": 18,
+    "subfields": 298,
+    "legacy_count": 30,
+    "author_pools": 24,
+    "author_options": 172,
+    "candidate_paragraphs": 4,
+    "questions": 3,
+    "distractor_records": 9
+  },
+  "checks": [
+    {
+      "code": "T01",
+      "passed": true,
+      "detail": "taxonomy source & unapproved state"
+    },
+    {
+      "code": "T02",
+      "passed": true,
+      "detail": "18 primary domains"
+    },
+    {
+      "code": "T03",
+      "passed": true,
+      "detail": "unique domain names and ids"
+    },
+    {
+      "code": "T04",
+      "passed": true,
+      "detail": "all domain records valid"
+    },
+    {
+      "code": "T05",
+      "passed": true,
+      "detail": "interdisciplinary boundaries have valid references"
+    },
+    {
+      "code": "T06",
+      "passed": true,
+      "detail": "trial topic taxonomy reference valid"
+    },
+    {
+      "code": "T07",
+      "passed": true,
+      "detail": "trial topic subfield in primary"
+    },
+    {
+      "code": "T08",
+      "passed": true,
+      "detail": "trial topic secondaries registered"
+    },
+    {
+      "code": "T09",
+      "passed": true,
+      "detail": "topic selection ordered"
+    },
+    {
+      "code": "T10",
+      "passed": true,
+      "detail": "topic ordered values unchanged"
+    },
+    {
+      "code": "T11",
+      "passed": true,
+      "detail": "topic duplication unresolved"
+    },
+    {
+      "code": "L01",
+      "passed": true,
+      "detail": "30 frozen pilot baseline records"
+    },
+    {
+      "code": "L02",
+      "passed": true,
+      "detail": "mapping taxonomy version"
+    },
+    {
+      "code": "L03",
+      "passed": true,
+      "detail": "mapping title and ID exact match"
+    },
+    {
+      "code": "L04",
+      "passed": true,
+      "detail": "age/level/domain mapping exact match"
+    },
+    {
+      "code": "L05",
+      "passed": true,
+      "detail": "all 30 mapped fields registered"
+    },
+    {
+      "code": "L06",
+      "passed": true,
+      "detail": "all 30 mapping records unapproved"
+    },
+    {
+      "code": "L07",
+      "passed": true,
+      "detail": "coverage scenarios registered"
+    },
+    {
+      "code": "L08",
+      "passed": true,
+      "detail": "new pilot not in frozen 30"
+    },
+    {
+      "code": "L09",
+      "passed": true,
+      "detail": "frozen pilots are not falsely approved"
+    },
+    {
+      "code": "P01",
+      "passed": true,
+      "detail": "24 author pool names"
+    },
+    {
+      "code": "P02",
+      "passed": true,
+      "detail": "172 options"
+    },
+    {
+      "code": "P03",
+      "passed": true,
+      "detail": "pool members nonempty distinct"
+    },
+    {
+      "code": "P04",
+      "passed": true,
+      "detail": "seed provenance for actual prewriting draw"
+    },
+    {
+      "code": "P05",
+      "passed": true,
+      "detail": "24 selected values belong to canonical pools"
+    },
+    {
+      "code": "P06",
+      "passed": true,
+      "detail": "draw application log pending independent review"
+    },
+    {
+      "code": "P07",
+      "passed": true,
+      "detail": "draw has no false approval claims"
+    },
+    {
+      "code": "G01",
+      "passed": true,
+      "detail": "1-3 objective linkage"
+    },
+    {
+      "code": "G02",
+      "passed": true,
+      "detail": "goal age/level linkage"
+    },
+    {
+      "code": "G03",
+      "passed": true,
+      "detail": "goal operation and evidence required"
+    },
+    {
+      "code": "G04",
+      "passed": true,
+      "detail": "goal fact IDs registered"
+    },
+    {
+      "code": "G05",
+      "passed": true,
+      "detail": "goal ids unique"
+    },
+    {
+      "code": "E01",
+      "passed": true,
+      "detail": "evidence registry linked & unapproved"
+    },
+    {
+      "code": "E02",
+      "passed": true,
+      "detail": "sources format and state"
+    },
+    {
+      "code": "E03",
+      "passed": true,
+      "detail": "fact links to sources"
+    },
+    {
+      "code": "E04",
+      "passed": true,
+      "detail": "fact verification state"
+    },
+    {
+      "code": "E05",
+      "passed": true,
+      "detail": "explicit source default HOLD"
+    },
+    {
+      "code": "Q01",
+      "passed": true,
+      "detail": "quality baseline category inventory"
+    },
+    {
+      "code": "Q02",
+      "passed": true,
+      "detail": "quality release separated / 7 editorial subchecks"
+    },
+    {
+      "code": "Q03",
+      "passed": true,
+      "detail": "editorial subcheck parent and scope"
+    },
+    {
+      "code": "D01",
+      "passed": true,
+      "detail": "no style RNG / duplicate autoreject"
+    },
+    {
+      "code": "D02",
+      "passed": true,
+      "detail": "17 question QA items"
+    },
+    {
+      "code": "D03",
+      "passed": true,
+      "detail": "excludes prior-knowledge guessability"
+    },
+    {
+      "code": "C01",
+      "passed": true,
+      "detail": "fresh experiment four paragraphs three questions"
+    },
+    {
+      "code": "C02",
+      "passed": true,
+      "detail": "candidate identity and topic aligned"
+    },
+    {
+      "code": "C03",
+      "passed": true,
+      "detail": "experiment isolated from publishing / not live API"
+    },
+    {
+      "code": "C04",
+      "passed": true,
+      "detail": "four distinct answer options each"
+    },
+    {
+      "code": "C05",
+      "passed": true,
+      "detail": "keys and exact correct quote"
+    },
+    {
+      "code": "C06",
+      "passed": true,
+      "detail": "nine wrong answer quote links"
+    },
+    {
+      "code": "C07",
+      "passed": true,
+      "detail": "no uniquely shortest/longest correct"
+    },
+    {
+      "code": "C08",
+      "passed": true,
+      "detail": "prohibited nonsensical wording absent"
+    },
+    {
+      "code": "R01",
+      "passed": true,
+      "detail": "24 style self-assessment records"
+    },
+    {
+      "code": "R02",
+      "passed": true,
+      "detail": "all style excerpts literal and selected values matched"
+    },
+    {
+      "code": "R03",
+      "passed": true,
+      "detail": "style self-assessment never overstates approval"
+    }
+  ],
+  "conclusions": {
+    "source_verified_by_human": false,
+    "stage5_python_canonical_inputs_executed": false,
+    "real_api_called": false,
+    "style_human_validated": false,
+    "release_approved": false
+  }
+}

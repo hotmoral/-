@@ -1,0 +1,233 @@
+{
+  "schema_version": "readingflow.r612_trial_inputs.v1",
+  "topic": {
+    "schema_version": "readingflow.topic_record.proposal.v2",
+    "topic_id": "TOPIC-R612-DOOR-TORQUE-001",
+    "title": "문손잡이는 왜 경첩에서 멀리 있을까",
+    "primary_domain": "자연과학",
+    "secondary_domains": [
+      "공학·기술"
+    ],
+    "subfield": "힘·운동·역학",
+    "core_question": "문을 여는 돌림힘은 힘의 작용 위치와 방향에 따라 어떻게 달라지는가?",
+    "core_concepts": [
+      "돌림힘",
+      "회전 중심",
+      "힘의 방향",
+      "조건 통제"
+    ],
+    "age_group": "초등 고학년",
+    "level": "L4",
+    "selection_mode": "CURATED_PROPOSAL",
+    "classification_status": "PROVISIONAL_CLASSIFIED",
+    "overlap_review": {
+      "status": "NEEDS_SEMANTIC_REVIEW",
+      "possible_matches": []
+    },
+    "release_approved": false,
+    "taxonomy_version": "readingflow.topic_domains.proposal.v2",
+    "topic_focus": "문손잡이의 위치와 돌림힘 비교",
+    "subfield_classification_status": "EXISTING_SUBFIELD",
+    "selection_trace": [
+      {
+        "step": "PRIMARY_DOMAIN",
+        "value": "자연과학"
+      },
+      {
+        "step": "SUBFIELD",
+        "value": "힘·운동·역학"
+      },
+      {
+        "step": "INDIVIDUAL_TOPIC",
+        "value": "문손잡이의 위치와 돌림힘 비교"
+      },
+      {
+        "step": "CORE_QUESTION",
+        "value": "문을 여는 돌림힘은 힘의 작용 위치와 방향에 따라 어떻게 달라지는가?"
+      }
+    ],
+    "selection_trace_status": "ILLUSTRATIVE_ORDER_NOT_AUTOMATED"
+  },
+  "goals": {
+    "schema_version": "readingflow.reading_goal_plan.proposal.v1",
+    "plan_id": "GOAL-R612-DOOR-TORQUE-001",
+    "topic_id": "TOPIC-R612-DOOR-TORQUE-001",
+    "age_group": "초등 고학년",
+    "level": "L4",
+    "status": "PROPOSED_NEEDS_CONTENT_REVIEW",
+    "objectives": [
+      {
+        "objective_id": "OBJ-R612-01",
+        "operation": "인과",
+        "learner_target": "손잡이 위치와 돌림힘의 관계를 설명한다",
+        "key_question": "손잡이를 경첩에서 먼 곳에 두는 이유는 무엇인가?",
+        "expected_reasoning": "같은 세기·방향의 힘이면 회전 중심에서 먼 곳이 더 큰 돌림힘을 만든다",
+        "required_fact_ids": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "answer_must_be_supported_in_passage": true
+      },
+      {
+        "objective_id": "OBJ-R612-02",
+        "operation": "비교",
+        "learner_target": "위치와 방향이 함께 달라질 때 비교 가능한 정보의 한계를 판단한다",
+        "key_question": "먼 곳을 비스듬히 미는 경우와 가까운 곳을 직각으로 미는 경우를 어떻게 비교할까?",
+        "expected_reasoning": "거리와 방향 효과는 서로 다른 변수이므로 각 조건의 양적 정보 없이 한쪽이 더 크다고 단정할 수 없다",
+        "required_fact_ids": [
+          "F2",
+          "F3",
+          "F4",
+          "F5"
+        ],
+        "answer_must_be_supported_in_passage": true
+      },
+      {
+        "objective_id": "OBJ-R612-03",
+        "operation": "근거 평가",
+        "learner_target": "작용 위치 하나의 효과를 확인하는 실험 조건을 판단한다",
+        "key_question": "위치만의 효과를 알아보려면 어떤 조건을 통제해야 할까?",
+        "expected_reasoning": "같은 문·힘의 세기·방향을 유지하며 힘을 주는 위치만 변경해야 한다",
+        "required_fact_ids": [
+          "F3",
+          "F6",
+          "F7"
+        ],
+        "answer_must_be_supported_in_passage": true
+      }
+    ],
+    "objective_selection_mode": "CURATOR_DEFINED_FOR_EXPERIMENT",
+    "release_approved": false,
+    "learner_difficulty_validated": false
+  },
+  "evidence": {
+    "schema_version": "readingflow.fact_evidence_registry.proposal.v1",
+    "registry_id": "FACT-R612-DOOR-TORQUE-001",
+    "topic_id": "TOPIC-R612-DOOR-TORQUE-001",
+    "review_state": "PENDING_HUMAN_SOURCE_CHECK",
+    "sources": [
+      {
+        "source_id": "SRC-R612-UCSB-TORQUE",
+        "organization": "University of California, Santa Barbara, Physics Lecture Demonstrations",
+        "title": "28.18 — Open door to demonstration preparation area",
+        "url": "https://web.physics.ucsb.edu/~lecturedemonstrations/Composer/Pages/28.18.html",
+        "source_check_status": "NOT_CHECKED_IN_THIS_STAGE",
+        "checked_at": null,
+        "reviewer": null,
+        "rights_review_status": "REFERENCES_ONLY",
+        "ai_web_precheck": "2026-11-23, explanation checked for torque relation; NOT a REVIEWED_BY_HUMAN determination"
+      }
+    ],
+    "facts": [
+      {
+        "fact_id": "F1",
+        "claim": "문은 경첩을 회전 중심으로 움직인다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraph 3"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "대학 물리 교육자료 내용으로 AI 참고 대조, 독립 사람 검수 아님"
+      },
+      {
+        "fact_id": "F2",
+        "claim": "다른 조건이 같다면 경첩에서 더 먼 곳에 주는 힘의 돌림힘이 더 크다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraphs 1 and 8"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "거리 효과는 방향·힘 세기 일정 조건에서 성립"
+      },
+      {
+        "fact_id": "F3",
+        "claim": "돌림힘은 힘의 세기, 작용 위치, 방향에 영향을 받는다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraphs 1-4"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "대학 물리 교육자료 설명과 대조"
+      },
+      {
+        "fact_id": "F4",
+        "claim": "같은 위치·힘의 세기에서 문의 면과 직각으로 미는 힘이 문의 면을 따르는 방향보다 더 큰 돌림힘을 낸다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraph 4"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "각도 효과 조건을 명시"
+      },
+      {
+        "fact_id": "F5",
+        "claim": "문의 면을 따라 경첩을 향하는 힘은 돌림힘이 매우 작거나 0에 가깝다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraph 4"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "정확히 경첩 방향이면 0, '거의 나란히'는 작은 양의 값 가능"
+      },
+      {
+        "fact_id": "F6",
+        "claim": "하나의 조건의 효과를 비교할 때는 나머지 조건을 일정하게 유지해야 한다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraph 8"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "UCSB 예시에서 일정한 힘으로 위치·방향을 바꾸는 실험 원리를 반영한 추론"
+      },
+      {
+        "fact_id": "F7",
+        "claim": "작용 위치와 방향이 동시에 바뀌면 두 상황의 돌림힘 크기를 추가 정보 없이 단정할 수 없다.",
+        "source_refs": [
+          {
+            "source_id": "SRC-R612-UCSB-TORQUE",
+            "locator": "paragraphs 3-8"
+          }
+        ],
+        "verification_status": "PENDING_EXTERNAL_REVIEW",
+        "reviewer": null,
+        "reviewed_at": null,
+        "editorial_notes": "거리와 방향의 상쇄 관계로부터 도출되는 논리적 귀결"
+      }
+    ],
+    "generation_gate": "EXPERIMENT_ONLY",
+    "external_facts_verified": false,
+    "release_approved": false,
+    "license_note": "Facts-only reference and independently worded Korean explanation. No direct copied educational source text; human rights and source review remain pending."
+  },
+  "mode": "EXPERIMENT_ONLY",
+  "seed": 2026112301,
+  "passage_id": "RF-NEW-R612-UPPER-L4-001",
+  "passage_version": "r6-12-draft-v1",
+  "allow_unverified_sources": true,
+  "release_approved": false
+}
