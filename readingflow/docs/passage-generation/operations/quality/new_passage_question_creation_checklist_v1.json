@@ -1,0 +1,218 @@
+{
+  "schema_version": "readingflow.new_passage_question_QA_checks.v1",
+  "date": "2026-11-22",
+  "authority": "LATEST_CONFIRMED_USER_DIRECTIVE_OVER_OLD_PROPOSALS",
+  "canonical_path": "docs/passage-generation/NEW_PASSAGE_AUTHORING_AND_MCQ_CANONICAL_2026-11-22.md",
+  "scope": "NEW_NONFICTION_PASSAGES_AND_NEW_QUESTIONS",
+  "status": "EXPERIMENTAL_GENERATOR_INTERFACE_AND_STAGE5_STRUCTURAL_QA_WIRED_HUMAN_SEMANTIC_VALIDATION_PENDING",
+  "age_groups": [
+    "초등 저학년",
+    "초등 고학년",
+    "중·고등학생",
+    "성인",
+    "고령층"
+  ],
+  "levels": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "nonfiction_only": true,
+  "main_narrative_style": "KOREAN_PLAIN_WRITTEN_DA",
+  "author_attributes": {
+    "count": 24,
+    "approved_candidates": 172,
+    "selection": "INDEPENDENT_UNIFORM_NO_REROLL",
+    "new_candidates_pending": 12
+  },
+  "topic_taxonomy": {
+    "main": 18,
+    "sub": 298,
+    "status": "EXPANDABLE_PROPOSAL"
+  },
+  "plan_order": [
+    "DOMAIN",
+    "SUBDOMAIN",
+    "TOPIC",
+    "CORE_QUESTION",
+    "GOALS_1_TO_3",
+    "VERIFIED_FACTS",
+    "AUTHOR_24_DRAW",
+    "PASSAGE",
+    "MCQ_AND_EVIDENCE"
+  ],
+  "quality_priorities": [
+    "FACTUAL_ACCURACY",
+    "READING_GOAL",
+    "AGE_LEVEL",
+    "NATURALNESS",
+    "AUTHOR_STYLE",
+    "RECOMMENDED_LENGTH"
+  ],
+  "required": [
+    {
+      "id": "G01",
+      "scope": "PASSAGE",
+      "name": "NONFICTION_ORIGINALITY",
+      "verify": "자체 창작·외부 보호 표현 복제 금지",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "G02",
+      "scope": "PASSAGE",
+      "name": "FACT_AND_MODALITY",
+      "verify": "출처/수치/사실·추정/상관·인과 검증",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "G03",
+      "scope": "PASSAGE",
+      "name": "AGE_LEVEL_AND_VOICE",
+      "verify": "본문 문어체, 5개 연령군 × L1~L6 내용 접근성",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "G04",
+      "scope": "PASSAGE",
+      "name": "NATURAL_PROSE",
+      "verify": "비문·어색한 결합·서술 논리/반복 없음",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "G05",
+      "scope": "PASSAGE",
+      "name": "24_AUTHOR_ATTRIBUTE_APPLICATION",
+      "verify": "24 독립 추출/재추첨 금지/실제 표현 반영 로그",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "G06",
+      "scope": "CORPUS",
+      "name": "SUBJECT_AND_ARGUMENT_DIVERSITY",
+      "verify": "내용/기작/논증/독해목표 중복 확인, 심화는 허용",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q01",
+      "scope": "QUESTION",
+      "name": "STEM_GRAMMAR_AGE_FIT",
+      "verify": "완결 질문·조사/시제/주어/대상/인과·선지 호응",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q02",
+      "scope": "QUESTION",
+      "name": "PASSAGE_EVIDENCE_AND_UNIQUE_ANSWER",
+      "verify": "정답 1개·직접/복합 원문 근거·필수 정보 모두 지문에 존재",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q03",
+      "scope": "THREE_WRONG_OPTIONS",
+      "name": "PLAUSIBLE_PASSAGE_NEAR_DISTRACTORS",
+      "verify": "3보기 모두 지문 관련·결정적으로 틀림·정확한 배제 근거",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q04",
+      "scope": "THREE_WRONG_OPTIONS",
+      "name": "NATURAL_KOREAN_AND_NO_ABSURDITY",
+      "verify": "무의미한 결합/엉뚱한 소재/비문 금지",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q05",
+      "scope": "QUESTION",
+      "name": "LENGTH_SHORTEST_AND_LONGEST",
+      "verify": "정답 유일 최단·유일 최장 단서 모두 점검, 억지 길이 동등화 금지",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q06",
+      "scope": "QUESTION",
+      "name": "ABSOLUTE_WORDS_AND_STEREOTYPES",
+      "verify": "오답 절대 단정형 과도한 편중 금지",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q07",
+      "scope": "PASSAGE_QUESTION_SET",
+      "name": "QUESTION_GOAL_DISTINCTION",
+      "verify": "문항별 정보/근거/인지작업 실질 분리",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q08",
+      "scope": "QUESTION",
+      "name": "NO_UNSAFE_DISTRACTOR_OPTIMIZATION",
+      "verify": "복약·계단 이동 등 위험 행동을 그럴듯하게 미화 금지",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "Q09",
+      "scope": "QUESTION",
+      "name": "TEXTBOOK_STYLE_NOT_COPY",
+      "verify": "교재 관습만 참고·'글에 따르면' 과잉 반복 금지",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "V01",
+      "scope": "PACKAGE",
+      "name": "VERSION_AND_CORRECT_IMMUTABILITY",
+      "verify": "과거 문항 정답/슬롯 고정, 신규 수정은 종속 자료 재검증",
+      "state": "NOT_REVIEWED"
+    },
+    {
+      "id": "V02",
+      "scope": "PACKAGE",
+      "name": "REVIEW_EVIDENCE_STATUS",
+      "verify": "AI/코드/사람/학습자/배포 승인 각각 분리 기록",
+      "state": "NOT_REVIEWED"
+    }
+  ],
+  "explicitly_excluded": [
+    {
+      "id": "EX01",
+      "name": "BACKGROUND_KNOWLEDGE_BLIND_GUESSABILITY",
+      "rule": "배경지식/상식으로 지문 없이 맞힐 수 있다는 점은 결함·감점·수정 사유가 아님"
+    }
+  ],
+  "still_mandatory": [
+    "REQUIRED_FACTS_AND_DEFINITIONS_INSIDE_PASSAGE",
+    "UNIQUE_CORRECT_ANSWER_RELATIVE_TO_PASSAGE"
+  ],
+  "safe_wrong_patterns": [
+    "PARTIAL_TRUE_CRITICAL_CONDITION_WRONG",
+    "WRONG_TIME_SUBJECT_OBJECT_ORDER",
+    "CAUSAL_DIRECTION_WRONG",
+    "COMPARISON_OR_QUANTITY_MISREAD",
+    "TWO_FACTS_INCORRECTLY_COMBINED"
+  ],
+  "fail_or_hold": [
+    "TWO_SOURCE_SUPPORTED_ANSWERS",
+    "ABSENT_SOURCE_EVIDENCE",
+    "NONSENSICAL_LANGUAGE",
+    "UNSAFE_DISTRACTOR",
+    "UNAUTHORIZED_CORRECT_EDIT"
+  ],
+  "max_small_batch_QA_passages": 5,
+  "human_review": "NOT_RUN",
+  "learner_validation": "NOT_RUN",
+  "release_approved": false,
+  "automation_connection": "EXPERIMENTAL_PROVIDER_INTERFACE_TO_STAGE5_AND_17_ITEM_GATE_WIRED_PRODUCTION_NOT_IMPLEMENTED",
+  "structural_gate": "tools/new_passage_qa_gate.py",
+  "stage5_connection": "tools/passage_stage5_integration.py:integrate(question_bundle=...)",
+  "review_state_rule": "17 editorial_state values remain NOT_REVIEWED until independent semantic review",
+  "return_decisions": [
+    "HOLD",
+    "REVISE",
+    "READY_FOR_EDITORIAL_REVIEW"
+  ],
+  "provider_contract": "tools/new_passage_generation_pipeline.py",
+  "optional_live_provider": "tools/openai_new_passage_adapter.py",
+  "source_gate": "DEFAULT_HOLD_UNVERIFIED_SOURCES_ALLOW_ONLY_EXPLICIT_EXPERIMENT",
+  "author_rng": "DRAW_ONCE_AND_REUSE_SELECTION_NO_REROLL"
+}
