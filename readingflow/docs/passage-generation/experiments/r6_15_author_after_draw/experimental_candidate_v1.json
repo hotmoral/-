@@ -1,0 +1,162 @@
+{
+  "schema_version": "readingflow.new_passage_candidate.experimental.v1",
+  "passage_id": "RF-NEW-R615-UPPER-L4-001",
+  "passage_version": "r6-15-author-draw-v1",
+  "topic_id": "TOPIC-R612-DOOR-TORQUE-001",
+  "title": "문을 미는 위치와 방향을 비교하려면",
+  "age_group": "초등 고학년",
+  "level": "L4",
+  "source_text": "교실에서 학생 두 명이 같은 문을 열었다. 한 학생은 경첩 가까운 곳을 밀었고, 다른 학생은 손잡이가 있는 쪽을 밀었다. 비슷한 힘을 주었는데도 문이 돌아가는 정도는 달랐다. 이 차이를 설명하려면 무엇을 비교해야 할까? 먼저 문을 회전시키는 조건을 살펴볼 필요가 있다.\n\n문은 경첩을 중심으로 회전한다. 문을 돌리려는 힘의 효과를 ‘돌림힘’이라고 하며, 이는 힘의 세기뿐 아니라 힘을 주는 위치와 방향에도 영향을 받는다. 두 사람이 같은 방향으로 같은 세기의 힘을 준다면 경첩에서 먼 곳을 민 사람이 더 큰 돌림힘을 낸다. 손잡이가 경첩에서 먼 쪽에 있는 데에는 이런 원리가 작용한다. 힘 자체가 더 강해지는 것은 아니다.\n\n그러나 위치만으로 돌림힘을 결정할 수는 없다. 경첩에서 먼 곳을 밀더라도 힘을 문의 면과 거의 나란히 주면 돌림힘이 작아진다. 반대로 경첩에서 가까운 곳이라도 문의 면에 직각으로 미는 힘은 문을 회전시키는 데 기여한다. 한쪽은 거리가 유리하고 다른 쪽은 방향이 유리하다면, 거리와 방향이 각각 얼마나 다른지 알아야 두 돌림힘의 크기를 비교할 수 있다.\n\n처음의 두 학생은 미는 위치의 영향만 알아보기로 했다. 이때는 같은 문에 같은 세기와 방향으로 힘을 주고, 경첩에서의 거리만 바꾸어 비교해야 한다. 방향이나 힘의 세기까지 바꾸면 위치 때문에 결과가 달라졌는지 알 수 없다. 방향의 영향을 알아보려면 반대로 미는 위치를 같게 하고 방향만 바꾸면 된다. 그렇다면 위치와 방향을 동시에 바꾼 결과만으로는 무엇을 확실히 말할 수 있을까?",
+  "questions": [
+    {
+      "question_id": "RF-NEW-R615-UPPER-L4-001-Q1",
+      "question": "손잡이를 대체로 경첩에서 먼 쪽에 두는 이유로 가장 알맞은 것은?",
+      "question_type": "인과",
+      "question_goal": "경첩에서의 거리와 돌림힘의 관계",
+      "answer": "같은 힘을 같은 방향으로 줄 때 경첩에서 멀수록 돌림힘이 커지기 때문이다.",
+      "correct_option": "B",
+      "source_version": "r6-15-author-draw-v1",
+      "format": "single_choice",
+      "evidence": "두 사람이 같은 방향으로 같은 세기의 힘을 준다면 경첩에서 먼 곳을 민 사람이 더 큰 돌림힘을 낸다.",
+      "explanation": "같은 세기·방향의 힘에서 경첩으로부터 멀수록 돌림힘이 커진다는 원리를 적용한다.",
+      "options": [
+        {
+          "id": "A",
+          "text": "손잡이 쪽을 밀면 같은 힘을 주어도 힘 자체가 더 강해지기 때문이다."
+        },
+        {
+          "id": "B",
+          "text": "같은 힘을 같은 방향으로 줄 때 경첩에서 멀수록 돌림힘이 커지기 때문이다."
+        },
+        {
+          "id": "C",
+          "text": "경첩에서 멀수록 힘의 방향이 돌림힘에 주는 영향이 사라지기 때문이다."
+        },
+        {
+          "id": "D",
+          "text": "손잡이가 경첩에서 멀면 문의 회전 중심도 반대쪽으로 옮겨지기 때문이다."
+        }
+      ],
+      "distractor_grounding": [
+        {
+          "option_id": "A",
+          "evidence": "힘 자체가 더 강해지는 것은 아니다.",
+          "false_reason": "지문은 힘의 세기는 같아도 돌림힘이 달라짐을 설명한다."
+        },
+        {
+          "option_id": "C",
+          "evidence": "그러나 위치만으로 돌림힘을 결정할 수는 없다.",
+          "false_reason": "손잡이가 멀어도 방향이 달라지면 돌림힘이 달라질 수 있다."
+        },
+        {
+          "option_id": "D",
+          "evidence": "문은 경첩을 중심으로 회전한다.",
+          "false_reason": "경첩이 회전 중심인 것은 바뀌지 않는다. 손잡이 위치가 회전 중심을 옮기는 것은 아니다."
+        }
+      ]
+    },
+    {
+      "question_id": "RF-NEW-R615-UPPER-L4-001-Q2",
+      "question": "같은 세기로 문을 밀었다. 한 사람은 경첩에서 먼 곳을 문의 면과 거의 나란히 밀었고, 다른 사람은 가까운 곳을 문의 면에 직각으로 밀었다. 글에 따른 판단으로 가장 적절한 것은?",
+      "question_type": "비교",
+      "question_goal": "작용 위치와 방향이 상충할 때 돌림힘 비교의 한계",
+      "answer": "거리와 방향이 모두 다르므로 구체적인 정도를 알아야 돌림힘을 비교할 수 있다.",
+      "correct_option": "D",
+      "source_version": "r6-15-author-draw-v1",
+      "format": "single_choice",
+      "evidence": "한쪽은 거리가 유리하고 다른 쪽은 방향이 유리하다면, 거리와 방향이 각각 얼마나 다른지 알아야 두 돌림힘의 크기를 비교할 수 있다.",
+      "explanation": "위치와 방향을 동시에 바꾸었을 때는 두 효과의 구체적인 크기를 알지 못하므로 어느 쪽이 큰지 결론을 내릴 수 없다.",
+      "options": [
+        {
+          "id": "A",
+          "text": "먼 위치에서 밀었으므로 힘의 방향이 어느 정도 달라지더라도 먼 쪽의 돌림힘이 더 크다."
+        },
+        {
+          "id": "B",
+          "text": "직각으로 밀었으므로 거리가 달라도 가까운 쪽 돌림힘이 더 크다."
+        },
+        {
+          "id": "C",
+          "text": "거리와 방향의 차이가 서로 상쇄되므로 두 경우의 돌림힘은 같다."
+        },
+        {
+          "id": "D",
+          "text": "거리와 방향이 모두 다르므로 구체적인 정도를 알아야 돌림힘을 비교할 수 있다."
+        }
+      ],
+      "distractor_grounding": [
+        {
+          "option_id": "A",
+          "evidence": "그러나 위치만으로 돌림힘을 결정할 수는 없다.",
+          "false_reason": "거리에만 주목해 방향 효과를 무시했다."
+        },
+        {
+          "option_id": "B",
+          "evidence": "한쪽은 거리가 유리하고 다른 쪽은 방향이 유리하다면, 거리와 방향이 각각 얼마나 다른지 알아야 두 돌림힘의 크기를 비교할 수 있다.",
+          "false_reason": "방향에만 주목해 거리 효과를 무시했다."
+        },
+        {
+          "option_id": "C",
+          "evidence": "거리와 방향이 각각 얼마나 다른지 알아야 두 돌림힘의 크기를 비교할 수 있다.",
+          "false_reason": "두 효과가 정확히 상쇄된다는 사실은 주어지지 않았다."
+        }
+      ]
+    },
+    {
+      "question_id": "RF-NEW-R615-UPPER-L4-001-Q3",
+      "question": "미는 위치가 돌림힘에 주는 영향만 알아보려 한다. 가장 적절한 실험 방법은?",
+      "question_type": "근거 평가",
+      "question_goal": "미는 위치의 효과를 분리하는 실험 방법 평가",
+      "answer": "같은 문을 같은 세기와 방향으로 밀고, 힘을 주는 위치만 바꾸어 비교한다.",
+      "correct_option": "A",
+      "source_version": "r6-15-author-draw-v1",
+      "format": "single_choice",
+      "evidence": "이때는 같은 문에 같은 세기와 방향으로 힘을 주고, 경첩에서의 거리만 바꾸어 비교해야 한다.",
+      "explanation": "동일한 문·힘의 세기·방향 조건에서 거리만 변화시켜야 한다.",
+      "options": [
+        {
+          "id": "A",
+          "text": "같은 문을 같은 세기와 방향으로 밀고, 힘을 주는 위치만 바꾸어 비교한다."
+        },
+        {
+          "id": "B",
+          "text": "같은 문을 같은 세기로 밀고, 위치와 방향을 함께 바꾸어 비교한다."
+        },
+        {
+          "id": "C",
+          "text": "같은 문을 같은 방향으로 밀고, 힘을 주는 위치와 세기를 함께 바꾸어 비교한다."
+        },
+        {
+          "id": "D",
+          "text": "서로 다른 두 문을 같은 세기와 방향으로 밀고, 힘을 주는 위치만 바꾸어 비교한다."
+        }
+      ],
+      "distractor_grounding": [
+        {
+          "option_id": "B",
+          "evidence": "방향이나 힘의 세기까지 바꾸면 위치 때문에 결과가 달라졌는지 알 수 없다.",
+          "false_reason": "힘의 방향도 바꾸어 위치 하나의 영향만 비교할 수 없다."
+        },
+        {
+          "option_id": "C",
+          "evidence": "방향이나 힘의 세기까지 바꾸면 위치 때문에 결과가 달라졌는지 알 수 없다.",
+          "false_reason": "힘의 세기도 바꾸어 위치 하나의 영향만 비교할 수 없다."
+        },
+        {
+          "option_id": "D",
+          "evidence": "이때는 같은 문에 같은 세기와 방향으로 힘을 주고, 경첩에서의 거리만 바꾸어 비교해야 한다.",
+          "false_reason": "서로 다른 문은 문 자체의 조건이 달라 위치에 따른 효과만 분리하기 어렵다."
+        }
+      ]
+    }
+  ],
+  "source_fact_status": "PENDING_EXTERNAL_REVIEW",
+  "origin": "CHATGPT_MODEL_MANUALLY_AUTHORED_AFTER_DOCUMENTED_PYTHON_AUTHOR_DRAW",
+  "author_draw_ref": "author_draw_and_application_v1.json",
+  "question_set_version": "r6-15-mcq-v1",
+  "release_approved": false,
+  "can_publish": false,
+  "editorial_review_status": "NOT_REVIEWED",
+  "style_application_review_status": "AI_PRECHECK_ONLY",
+  "live_api_generation": false
+}

@@ -1,0 +1,180 @@
+{
+  "schema_version": "readingflow.author_style_ai_self_assessment.v1",
+  "source_author_draw_ref": "author_draw_and_application_v1.json",
+  "passage_id": "RF-NEW-R615-UPPER-L4-001",
+  "passage_version": "r6-15-author-draw-v1",
+  "assessor": "chat_model_self_review_NOT_HUMAN",
+  "items": [
+    {
+      "attribute": "전문적 배경",
+      "selected_value": "인문학",
+      "status": "LIMITED_DUE_TO_SCIENCE_PRIORITY",
+      "example_quote": null,
+      "reason": "인문학적 필자 배경은 물리 설명의 사실성과 독해 목표를 희생하지 않기 위해 강제하지 않음"
+    },
+    {
+      "attribute": "직업적 시각",
+      "selected_value": "교사",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "교실에서 학생 두 명이 같은 문을 열었다.",
+      "reason": "학생 비교 장면과 실험 설계가 교사 시각과 일치할 가능성"
+    },
+    {
+      "attribute": "관심 초점",
+      "selected_value": "원리",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "손잡이가 경첩에서 먼 쪽에 있는 데에는 이런 원리가 작용한다.",
+      "reason": "원리 설명 중심"
+    },
+    {
+      "attribute": "사고 접근",
+      "selected_value": "비교",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "한쪽은 거리가 유리하고 다른 쪽은 방향이 유리하다면",
+      "reason": "거리와 방향의 비교"
+    },
+    {
+      "attribute": "관찰 범위",
+      "selected_value": "미시적",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "한 학생은 경첩 가까운 곳을 밀었고, 다른 학생은 손잡이가 있는 쪽을 밀었다.",
+      "reason": "밀기 위치의 구체적인 비교"
+    },
+    {
+      "attribute": "서술 목적",
+      "selected_value": "과정 소개",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "먼저 문을 회전시키는 조건을 살펴볼 필요가 있다.",
+      "reason": "조건 확인 과정을 보여줌"
+    },
+    {
+      "attribute": "독자와 거리",
+      "selected_value": "공식적",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "이때는 같은 문에 같은 세기와 방향으로 힘을 주고",
+      "reason": "공식적 설명체; 독립 어감 판단 전"
+    },
+    {
+      "attribute": "어조",
+      "selected_value": "명료",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "힘 자체가 더 강해지는 것은 아니다.",
+      "reason": "개념을 간명하게 구분"
+    },
+    {
+      "attribute": "어휘 성향",
+      "selected_value": "전문어 중심",
+      "status": "LIMITED_DUE_TO_AGE",
+      "example_quote": "문을 돌리려는 힘의 효과를 ‘돌림힘’이라고 하며",
+      "reason": "전문어 중심 추첨이지만 초등 고학년 이해도를 위해 전문어 남용은 피함"
+    },
+    {
+      "attribute": "문장 길이",
+      "selected_value": "중간 문장 중심",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "두 사람이 같은 방향으로 같은 세기의 힘을 준다면 경첩에서 먼 곳을 민 사람이 더 큰 돌림힘을 낸다.",
+      "reason": "중간 길이 문장 중심이라는 AI 사전 관찰"
+    },
+    {
+      "attribute": "통사 구조",
+      "selected_value": "삽입절",
+      "status": "LIMITED_DUE_TO_AGE",
+      "example_quote": null,
+      "reason": "삽입절을 강제하면 발문·원고 가독성이 떨어질 수 있어 미적용"
+    },
+    {
+      "attribute": "문장 리듬",
+      "selected_value": "장단 교차",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "힘 자체가 더 강해지는 것은 아니다.",
+      "reason": "긴 설명 뒤 짧은 문장 교차; 검수 전"
+    },
+    {
+      "attribute": "도입",
+      "selected_value": "문제 상황",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "교실에서 학생 두 명이 같은 문을 열었다.",
+      "reason": "문을 여는 데 차이가 발생하는 문제 상황"
+    },
+    {
+      "attribute": "정보 전개",
+      "selected_value": "문제에서 검토",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "이 차이를 설명하려면 무엇을 비교해야 할까?",
+      "reason": "처음 문제를 내고 원리·검토로 이동"
+    },
+    {
+      "attribute": "문단 구성",
+      "selected_value": "긴 문단",
+      "status": "LIMITED_DUE_TO_AGE",
+      "example_quote": null,
+      "reason": "긴 문단 추첨은 초등 가독성과 충돌할 수 있어 4문단으로 조절"
+    },
+    {
+      "attribute": "결말",
+      "selected_value": "새 질문",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "그렇다면 위치와 방향을 동시에 바꾼 결과만으로는 무엇을 확실히 말할 수 있을까?",
+      "reason": "새 질문으로 끝냄"
+    },
+    {
+      "attribute": "종결 습관",
+      "selected_value": "조건부 서술",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "두 사람이 같은 방향으로 같은 세기의 힘을 준다면",
+      "reason": "조건부 관계를 명확히 제시"
+    },
+    {
+      "attribute": "접속 표현",
+      "selected_value": "대조 중심",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "그러나 위치만으로 돌림힘을 결정할 수는 없다.",
+      "reason": "대조 표현"
+    },
+    {
+      "attribute": "주어 표현",
+      "selected_value": "행위자 중심",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "처음의 두 학생은 미는 위치의 영향만 알아보기로 했다.",
+      "reason": "행위자 중심"
+    },
+    {
+      "attribute": "수식어 배치",
+      "selected_value": "필요한 곳에 집중",
+      "status": "LIMITED_NEEDS_EDITORIAL_REVIEW",
+      "example_quote": null,
+      "reason": "수식어 위치는 자동 문장 판단이나 독립 사람 검수 전"
+    },
+    {
+      "attribute": "정보 제시 순서",
+      "selected_value": "조건 먼저",
+      "status": "LIMITED_DUE_TO_GOAL",
+      "example_quote": null,
+      "reason": "조건 먼저 추첨이나 문제 상황 도입의 자연스러움과 설명 목표를 우선"
+    },
+    {
+      "attribute": "구체화",
+      "selected_value": "실제 사례",
+      "status": "LIMITED_NOT_A_DOCUMENTED_TRUE_CASE",
+      "example_quote": "교실에서 학생 두 명이 같은 문을 열었다.",
+      "reason": "일상에서 있을 법한 장면이나 실제로 관찰·기록된 사건이 아니므로 '실제 사례'라고 인증하지 않음"
+    },
+    {
+      "attribute": "문단 연결",
+      "selected_value": "앞 문단 회귀",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "처음의 두 학생은 미는 위치의 영향만 알아보기로 했다.",
+      "reason": "도입의 학생 상황으로 회귀"
+    },
+    {
+      "attribute": "설명 압축도",
+      "selected_value": "낮음",
+      "status": "OBSERVED_IN_DRAFT",
+      "example_quote": "방향의 영향을 알아보려면 반대로 미는 위치를 같게 하고 방향만 바꾸면 된다.",
+      "reason": "조건의 분리 절차를 풀어 설명"
+    }
+  ],
+  "human_reviewed": false,
+  "semantic_style_validated": false,
+  "approval": false
+}

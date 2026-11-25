@@ -1,0 +1,143 @@
+{
+  "schema_version": "readingflow.author_after_draw_trial.v1",
+  "passage_id": "RF-NEW-R615-UPPER-L4-001",
+  "passage_version": "r6-15-author-draw-v1",
+  "seed": 202611232249,
+  "selection_method": "python_mt19937_seeded_v1",
+  "method_note": "Local Python random.Random(seed); exactly one .choice(pool) per attribute in repository ATTRIBUTE_NAMES order; drawn BEFORE authoring experimental prose; not live OpenAI API.",
+  "selected_at_utc": null,
+  "attribute_candidate_pools_sha256": "b98fba13edbcf91a5fc8295ee6816af10ed4b6d70b9c02ca0cd7b83c81662460",
+  "selection_values": {
+    "전문적 배경": "인문학",
+    "직업적 시각": "교사",
+    "관심 초점": "원리",
+    "사고 접근": "비교",
+    "관찰 범위": "미시적",
+    "서술 목적": "과정 소개",
+    "독자와 거리": "공식적",
+    "어조": "명료",
+    "어휘 성향": "전문어 중심",
+    "문장 길이": "중간 문장 중심",
+    "통사 구조": "삽입절",
+    "문장 리듬": "장단 교차",
+    "도입": "문제 상황",
+    "정보 전개": "문제에서 검토",
+    "문단 구성": "긴 문단",
+    "결말": "새 질문",
+    "종결 습관": "조건부 서술",
+    "접속 표현": "대조 중심",
+    "주어 표현": "행위자 중심",
+    "수식어 배치": "필요한 곳에 집중",
+    "정보 제시 순서": "조건 먼저",
+    "구체화": "실제 사례",
+    "문단 연결": "앞 문단 회귀",
+    "설명 압축도": "낮음"
+  },
+  "author_pool_source": "docs/passage-generation/data/author_attribute_candidate_pools_proposal_v1.json",
+  "candidate_pools_status": "PROPOSAL_NOT_APPROVED",
+  "attribute_application_log": {
+    "전문적 배경": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "직업적 시각": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "관심 초점": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "사고 접근": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "관찰 범위": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "서술 목적": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "독자와 거리": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "어조": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "어휘 성향": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "문장 길이": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "통사 구조": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "문장 리듬": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "도입": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "정보 전개": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "문단 구성": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "결말": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "종결 습관": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "접속 표현": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "주어 표현": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "수식어 배치": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "정보 제시 순서": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "구체화": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "문단 연결": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    },
+    "설명 압축도": {
+      "status": "PENDING_INDEPENDENT_REVIEW",
+      "reason": null
+    }
+  },
+  "reroll_count": 0,
+  "passage_written_after_selection": true,
+  "real_api_model_invoked": false,
+  "human_validated": false,
+  "style_realization_verified": false,
+  "release_approved": false,
+  "selection_time_note": "UTC timestamp was not captured at exact Python draw moment; the seeded draw is deterministically reproducible; no exact clock claim."
+}
