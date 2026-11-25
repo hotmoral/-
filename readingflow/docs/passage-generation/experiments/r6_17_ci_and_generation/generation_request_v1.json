@@ -1,0 +1,235 @@
+{
+  "request_schema": "readingflow.new_passage_generation_request.v1",
+  "mode": "EXPERIMENT_ONLY",
+  "passage_id": "RF-R617-SECONDARY-L4-001",
+  "passage_version": "r6-17-generated-v1",
+  "age_group": "중·고등학생",
+  "level": "L4",
+  "topic": {
+    "topic_id": "TOPIC-R617-SEARCH-RELEVANCE-001",
+    "primary_domain": "정보·컴퓨터",
+    "subfield": "데이터 처리·정보 검색",
+    "topic_focus": "검색 결과의 단어 일치와 정보 요구 충족의 구분",
+    "core_question": "검색어의 출현 횟수와 실제 정보 요구를 충족하는 정도는 어떻게 다른가?"
+  },
+  "reading_goals": [
+    {
+      "objective_id": "OBJ-R617-01",
+      "operation": "비교",
+      "learner_target": "단어 반복과 정보 관련성의 판단 기준을 구별한다",
+      "key_question": "검색어가 많이 나온 문서와 질문에 답한 문서는 무엇이 다른가?",
+      "expected_reasoning": "검색어 출현 횟수는 표면적 단서이고 질문의 정보 요구를 충족하는지는 별도 확인해야 한다",
+      "required_fact_ids": [
+        "F1",
+        "F2",
+        "F3"
+      ]
+    },
+    {
+      "objective_id": "OBJ-R617-02",
+      "operation": "추론",
+      "learner_target": "두 가상 문서의 조건을 근거로 질문에 알맞은 문서를 선택한다",
+      "key_question": "검색어 반복 글과 실제 원인 설명 글 중 어떤 글이 필요한가?",
+      "expected_reasoning": "원인을 물은 질문에는 표현 일치보다 원인-결과 관계를 밝힌 글이 더 적절하다",
+      "required_fact_ids": [
+        "F2",
+        "F3",
+        "F4"
+      ]
+    },
+    {
+      "objective_id": "OBJ-R617-03",
+      "operation": "근거 평가",
+      "learner_target": "질문이 달라질 때 문서 관련성 평가가 변하는 이유를 판단한다",
+      "key_question": "같은 문서라도 질문을 바꾸면 평가가 달라질 수 있는가?",
+      "expected_reasoning": "관련성은 문서 자체의 고정 점수가 아니라 특정 정보 요구와의 관계다",
+      "required_fact_ids": [
+        "F1",
+        "F5"
+      ]
+    }
+  ],
+  "source_fact_candidates": [
+    {
+      "fact_id": "F1",
+      "claim": "정보 검색의 유용성은 이용자가 해결하려는 정보 요구에 비추어 판단해야 한다.",
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "source_references": [
+        {
+          "source_id": "SRC-NIST-TREC",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        },
+        {
+          "source_id": "SRC-STANFORD-IR",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        }
+      ]
+    },
+    {
+      "fact_id": "F2",
+      "claim": "검색어가 문서에 나타나는 빈도는 검색 결과의 순위를 추정하는 데 쓰일 수 있지만 빈도만으로 관련성을 확정할 수 없다.",
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "source_references": [
+        {
+          "source_id": "SRC-STANFORD-IR",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        }
+      ]
+    },
+    {
+      "fact_id": "F3",
+      "claim": "검색어가 자주 반복되는 글이라도 질문이 요구하는 원인이나 설명을 제공하지 않으면 그 질문에 적합하지 않을 수 있다.",
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "source_references": [
+        {
+          "source_id": "SRC-NIST-TREC",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        },
+        {
+          "source_id": "SRC-STANFORD-IR",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        }
+      ]
+    },
+    {
+      "fact_id": "F4",
+      "claim": "같은 개념을 다른 표현으로 설명한 문서는 검색어가 적게 등장해도 이용자의 정보 요구에 관련될 수 있다.",
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "source_references": [
+        {
+          "source_id": "SRC-STANFORD-IR",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        }
+      ]
+    },
+    {
+      "fact_id": "F5",
+      "claim": "문서의 관련성은 평가 대상인 질문 또는 정보 요구가 바뀌면 달라질 수 있다.",
+      "verification_status": "PENDING_EXTERNAL_REVIEW",
+      "source_references": [
+        {
+          "source_id": "SRC-NIST-TREC",
+          "locator": null,
+          "source_check_status": "NOT_CHECKED_IN_THIS_STAGE"
+        }
+      ]
+    }
+  ],
+  "facts_verified_by_this_pipeline": false,
+  "unverified_fact_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5"
+  ],
+  "author_attributes_24": {
+    "전문적 배경": "자연과학",
+    "직업적 시각": "시민 관찰자",
+    "관심 초점": "관계",
+    "사고 접근": "가설 검토",
+    "관찰 범위": "일상 상황",
+    "서술 목적": "판단 지원",
+    "독자와 거리": "공식적",
+    "어조": "유연함",
+    "어휘 성향": "구체어 중심",
+    "문장 길이": "길이 혼합",
+    "통사 구조": "병렬 구조",
+    "문장 리듬": "완급 조절",
+    "도입": "문제 상황",
+    "정보 전개": "사례에서 원리",
+    "문단 구성": "주제별",
+    "결말": "새 질문",
+    "종결 습관": "설명",
+    "접속 표현": "예시 중심",
+    "주어 표현": "주어 생략",
+    "수식어 배치": "뒷부분 보충",
+    "정보 제시 순서": "사례 먼저",
+    "구체화": "실제 사례",
+    "문단 연결": "직접 연결",
+    "설명 압축도": "높음"
+  },
+  "author_selection_method": "python_mt19937_seeded_v1",
+  "author_candidate_pools_sha256": "b98fba13edbcf91a5fc8295ee6816af10ed4b6d70b9c02ca0cd7b83c81662460",
+  "instructions": {
+    "genre": "original_Korean_nonfiction_only",
+    "age_appropriate_nonfiction": true,
+    "plain_writing_ending": "~다/~이다/~한다",
+    "word_count": "reference_only_natural_flow_first",
+    "question_count_range": [
+      3,
+      6
+    ],
+    "one_correct_four_choices": true,
+    "question_goals_distinct": true,
+    "every_distractor_must_be_falsifiable_by_passage": true,
+    "each_wrong_option_reason_required": true,
+    "literal_quotes_for_correct_and_wrong_reasons": true,
+    "avoid_absurd_wrong_choices_and_ungrammatical_combinations": true,
+    "check_correct_uniquely_shortest_and_longest": true,
+    "safety_over_distractor_attractiveness": true,
+    "no_copying_textbook_exam_copyrighted_passages": true,
+    "no_invented_sources_or_verified_fact_claims": true,
+    "prior_knowledge_guessability_is_not_quality_criterion": true,
+    "final_release_approved": false
+  },
+  "required_response": {
+    "source_text": "new original Korean nonfiction full text",
+    "questions": [
+      {
+        "question_id": "unique ID",
+        "question": "age-appropriate complete question?",
+        "question_type": "reading objective label",
+        "question_goal": "distinct reading task",
+        "answer": "exact correct option text",
+        "correct_option": "A|B|C|D",
+        "format": "single_choice",
+        "source_version": "r6-17-generated-v1",
+        "evidence": "exact substring of source_text",
+        "explanation": "reason relative to passage",
+        "options": [
+          {
+            "id": "A",
+            "text": "plausible but source-incompatible wrong choice"
+          },
+          {
+            "id": "B",
+            "text": "correct answer text"
+          },
+          {
+            "id": "C",
+            "text": "different plausible wrong choice"
+          },
+          {
+            "id": "D",
+            "text": "third plausible wrong choice"
+          }
+        ],
+        "distractor_grounding": [
+          {
+            "option_id": "A",
+            "evidence": "exact source quote",
+            "false_reason": "why A is wrong"
+          },
+          {
+            "option_id": "C",
+            "evidence": "exact source quote",
+            "false_reason": "why C is wrong"
+          },
+          {
+            "option_id": "D",
+            "evidence": "exact source quote",
+            "false_reason": "why D is wrong"
+          }
+        ]
+      }
+    ]
+  },
+  "release_approved": false
+}

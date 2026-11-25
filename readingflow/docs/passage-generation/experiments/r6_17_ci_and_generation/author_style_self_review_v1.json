@@ -1,0 +1,205 @@
+{
+  "schema_version": "readingflow.r617.author_style_ai_self_review.v1",
+  "passage_id": "RF-R617-SECONDARY-L4-001",
+  "source_author_draw_ref": "author_draw_v1.json",
+  "assessor": "CHAT_MODEL_SELF_REVIEW_NOT_INDEPENDENT_HUMAN",
+  "attribute_count": 24,
+  "items": [
+    {
+      "attribute": "전문적 배경",
+      "selected_value": "자연과학",
+      "self_assessed_status": "PARTIAL_CONTENT_PRIORITY",
+      "example_quote": "태양·지구·달의 상대적 위치",
+      "reason": "자연과학 예시는 있으나 실제 필자의 전문성을 입증하지 않는다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "직업적 시각",
+      "selected_value": "시민 관찰자",
+      "self_assessed_status": "PARTIAL_NOT_OBSERVED_FACT",
+      "example_quote": "발표를 준비하던 학생이",
+      "reason": "시민 관찰자의 일상 장면을 상정했지만 실제 관찰 기록은 아니다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "관심 초점",
+      "selected_value": "관계",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "문서의 내용이 달라진 것이 아니라 질문이 바뀌었기 때문이다.",
+      "reason": "정보 요구와 문서 관련성 사이의 관계를 서술한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "사고 접근",
+      "selected_value": "가설 검토",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "그 횟수만으로 독자가 원하는 답이 있는지는 확인할 수 없다.",
+      "reason": "단어가 많이 나오는 글이 더 적합하다는 가설을 예시와 대조한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "관찰 범위",
+      "selected_value": "일상 상황",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "발표를 준비하던 학생이",
+      "reason": "일상 검색 상황으로 문제를 제시한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "서술 목적",
+      "selected_value": "판단 지원",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "발표 목적에 더 적합하다.",
+      "reason": "검색 결과 판단의 기준을 제공한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "독자와 거리",
+      "selected_value": "공식적",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "검색에서 중요한 것은 단어의 일치뿐 아니라 그 뒤에 놓인 ‘정보 요구’다.",
+      "reason": "격식을 유지하되 전문용어를 설명한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "어조",
+      "selected_value": "유연함",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "보조 자료가 될 수 있다.",
+      "reason": "절대화하지 않고 가능한 판단을 제시한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "어휘 성향",
+      "selected_value": "구체어 중심",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "날짜별 사진을 모아 놓았다.",
+      "reason": "사진, 발표, 문서 등 구체어 중심이다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "문장 길이",
+      "selected_value": "길이 혼합",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "문서의 내용이 달라진 것이 아니라 질문이 바뀌었기 때문이다.",
+      "reason": "긴 설명 사이에 짧은 대비 문장을 배치한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "통사 구조",
+      "selected_value": "병렬 구조",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "문서의 내용이 달라진 것이 아니라 질문이 바뀌었기 때문이다.",
+      "reason": "두 대상의 관계를 병렬 대조한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "문장 리듬",
+      "selected_value": "완급 조절",
+      "self_assessed_status": "PARTIAL_NEEDS_INDEPENDENT_REVIEW",
+      "example_quote": "검색어 일치 횟수와 답의 적합성은 함께 살펴볼 수 있지만 같은 기준은 아니다.",
+      "reason": "긴 설명과 짧은 결론이 섞였으나 리듬의 실제 효과는 미검증이다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "도입",
+      "selected_value": "문제 상황",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "발표를 준비하던 학생이",
+      "reason": "검색 결과의 선택 문제를 먼저 제기한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "정보 전개",
+      "selected_value": "사례에서 원리",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "위 학생에게 필요한 것은 달 사진의 목록이 아니라",
+      "reason": "구체적 검색 사례에서 정보 요구의 원리로 이동한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "문단 구성",
+      "selected_value": "주제별",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "그런데 발표의 목적을",
+      "reason": "사례·판단 기준·선택 근거·조건 변경을 문단별로 구분한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "결말",
+      "selected_value": "새 질문",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "그렇다면 검색 결과의 순위를 평가할 때 먼저 분명히 해야 할 것은 무엇일까?",
+      "reason": "추가 판단 질문으로 마무리한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "종결 습관",
+      "selected_value": "설명",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "그 횟수만으로 독자가 원하는 답이 있는지는 확인할 수 없다.",
+      "reason": "설명형 문어체로 대체로 끝난다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "접속 표현",
+      "selected_value": "예시 중심",
+      "self_assessed_status": "PARTIAL_WRITING_PRIORITY",
+      "example_quote": "이처럼 관련된 개념을 다른 표현으로 설명한 글도 질문에 답할 수 있다.",
+      "reason": "예시에서 일반화하지만 예시 중심 접속사를 과도하게 쓰지 않는다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "주어 표현",
+      "selected_value": "주어 생략",
+      "self_assessed_status": "PARTIAL_NEEDS_INDEPENDENT_REVIEW",
+      "example_quote": "따라서 첫 번째 글은",
+      "reason": "한국어의 자연스러운 주어 처리에 따라 생략보다 명시가 우세하다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "수식어 배치",
+      "selected_value": "뒷부분 보충",
+      "self_assessed_status": "NOT_VERIFIED_BY_SELF_CHECK",
+      "example_quote": null,
+      "reason": "수식어의 뒤쪽 보충 습관은 본문만으로 확실히 나타났다고 판정하지 않는다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "정보 제시 순서",
+      "selected_value": "사례 먼저",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "첫 번째 결과는",
+      "reason": "질문과 사례를 먼저 제시한 후 판단 기준을 설명한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "구체화",
+      "selected_value": "실제 사례",
+      "self_assessed_status": "PARTIAL_ILLUSTRATIVE_NOT_REAL",
+      "example_quote": "발표를 준비하던 학생이",
+      "reason": "실제 사례처럼 보일 수 있으나 기록된 실사례가 아닌 가정 장면임을 밝혀 사용한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "문단 연결",
+      "selected_value": "직접 연결",
+      "self_assessed_status": "AI_SELF_OBSERVED",
+      "example_quote": "위 학생에게 필요한 것은",
+      "reason": "직전 내용과 다음 설명을 명시적으로 연결한다.",
+      "independent_approval": false
+    },
+    {
+      "attribute": "설명 압축도",
+      "selected_value": "높음",
+      "self_assessed_status": "PARTIAL_NEEDS_INDEPENDENT_REVIEW",
+      "example_quote": "검색어 일치 횟수와 답의 적합성은 함께 살펴볼 수 있지만 같은 기준은 아니다.",
+      "reason": "개념 정의·비교를 압축하되 정보 누락 없는지 사람 검수 필요.",
+      "independent_approval": false
+    }
+  ],
+  "human_style_approved": false,
+  "algorithmic_style_pass": false,
+  "content_release_approved": false,
+  "note": "Model used the preselected profile as writing guidance. Self-observation is not evidence of independently verified style differentiation."
+}
