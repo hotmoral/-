@@ -1,30 +1,33 @@
 # ReadingFlow — 공동 개발 작업공간
 
-ReadingFlow 속독·독해 학습 프로그램의 **신규 한국어 비문학 지문/문항 생성기** 작업공간입니다.
+**공용 저장소:** [hotmoral/-](https://github.com/hotmoral/-) 의 `readingflow/`  
+**현재 작업:** R6.17 신규 한국어 비문학/독해 문항 자동 생성기 및 검수 시스템.
 
-- 위치: `hotmoral/-/readingflow/` (공개 공용 저장소)
-- 원본: `hotmoral/ReadingFlow` (Private), `feature/author-attribute-rng-audit-20261119` at `60b52baa9fe21095d880d8804d5e98787acf2ecc`
-- 범위: R6.17의 생성기·Stage5·17항목 QA, 필자 속성 24개 추첨·재사용, 신규 실험 원고
-- 원본 Private 저장소는 보존합니다. **기존 30편 지문·90문항의 본문과 대량 수정 이력은 이 공간으로 복사하지 않습니다.** 회귀검사를 위해 필요한 읽기 전용 지문 *메타데이터*만 이전합니다.
-- 현재 자료는 개발·검수 후보이며 배포 승인과 독립 사람/학습자 검증을 의미하지 않습니다.
-- 외부 자료의 저작권 및 유료 API 키는 공개 저장소에 저장하지 않습니다.
+## 이전 상태
 
-## 실무 위치
+- 원본 비공개 저장소 `hotmoral/ReadingFlow`, 브랜치 `feature/author-attribute-rng-audit-20261119`, 커밋 `60b52baa9fe21095d880d8804d5e98787acf2ecc`에서 **선별 파일 68개를 그대로 복사**했습니다.
+- **Git 객체 SHA 68개 일치**, 누락·변형 0건. 전체 목록은 `MIGRATION_MANIFEST.json`.
+- **공용 GitHub Actions 실제 성공:** [ReadingFlow Stage5 Generator CI](https://github.com/hotmoral/-/actions/runs/45551005100) — Python 회귀 16개 모두 통과, R6.17 Stage5/17 QA 실행 완료.
+- 이 작업공간에서는 앞으로 **`readingflow/` 하위만 수정**하고 다른 공용 프로젝트 폴더는 건드리지 않습니다.
+- 비공개 원본 저장소는 보존합니다. 기존 30편·90문항의 원고 본문/대량 수정 이력은 복사하지 않고, 구조검사용 30편 **메타데이터**만 가져왔습니다.
 
-`docs/passage-generation/tools/`: Stage5, 생성 인터페이스, 필자 난수추첨, QA 테스트
+## 폴더
 
-`docs/passage-generation/planning/`, `data/`, `operations/`: 규칙 및 검수용 계약·메타데이터
-
-`docs/passage-generation/experiments/`: R6.12~R6.17 실험과 검증 증거
+- `docs/passage-generation/tools/` — 실제 Stage5 생성/검수 코드와 Python 테스트
+- `docs/passage-generation/planning/`, `data/`, `operations/` — 읽기 목표, 사실, 무작위 필자 속성, 검수 계약
+- `docs/passage-generation/experiments/` — R6.12~R6.17 원고 및 재현 실험 자료
+- `MIGRATION_STATUS.md`, `MIGRATION_MANIFEST.json` — 검증/이전 근거
+- `AGENTS.md` — 공동 작업 규칙
 
 ## 실행
 
-작업공간 루트를 기준으로:
+공용 저장소 루트에서:
 
 ```bash
-python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_r617_*.py' -v
 python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_new_passage_generation_pipeline.py' -v
+python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_r616*.py' -v
+python -m unittest discover -s readingflow/docs/passage-generation/tools -p 'test_r617*.py' -v
 python readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/run_trial.py
 ```
 
-이 코드는 시험용 생성 함수로 실행되며, 인증·모델을 직접 설정하지 않으면 유료 OpenAI API는 호출하지 않습니다. `README` 작성 당시의 경로이며 파일 동기화 완료 상태는 `MIGRATION_STATUS.md`에서 확인하세요.
+**범위:** 자동 Python 구조 검증과 실험용 모델 작성 후보입니다. 실제 실시간 OpenAI API 호출, 독립 사실 확인, 사람의 문항 의미·문체 검수, 학습자 실측 및 배포 승인은 아직 별개입니다. 비밀 키·유료 API 출력·보호된 외부 저작물은 공개 저장소에 저장하지 않습니다.

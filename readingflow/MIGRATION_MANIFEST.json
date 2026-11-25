@@ -1,0 +1,580 @@
+{
+  "schema_version": "readingflow.public_workspace_migration_manifest.v1",
+  "as_of": "2026-11-25",
+  "source": {
+    "repository": "hotmoral/ReadingFlow",
+    "visibility": "private",
+    "ref": "feature/author-attribute-rng-audit-20261119",
+    "commit": "60b52baa9fe21095d880d8804d5e98787acf2ecc"
+  },
+  "destination": {
+    "repository": "hotmoral/-",
+    "visibility": "public",
+    "branch": "main",
+    "directory": "readingflow/",
+    "verified_commit": "581f6d16a89dad66a2715a12cb27aeb04ade2291"
+  },
+  "safety": {
+    "excluded": "Original private Git history; all legacy pilot passage full texts and large revision snapshots; all API secrets",
+    "included": "Original code, contract JSON, pilot title/level metadata, R6.12–R6.17 independently authored experiment records"
+  },
+  "verification": {
+    "selected_files": 68,
+    "blob_sha_matched": 68,
+    "mismatches": 0,
+    "pre_fix_qa": false,
+    "public_ci": {
+      "run_id": 45551005100,
+      "conclusion": "success",
+      "regression_tests_passed": 16,
+      "stage5_candidate_success": true,
+      "live_api_called": false
+    }
+  },
+  "files": [
+    {
+      "source_path": "docs/passage-generation/AGE_GROUP_WRITING_AND_QUESTION_LANGUAGE_RULES_v1.md",
+      "public_path": "readingflow/docs/passage-generation/AGE_GROUP_WRITING_AND_QUESTION_LANGUAGE_RULES_v1.md",
+      "source_sha": "b1c7f040d428df343dad8967374612e9265aa71e",
+      "public_sha": "b1c7f040d428df343dad8967374612e9265aa71e",
+      "bytes": 9695,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/CURRENT_WORK_SCOPE_AND_NEXT_STEPS_2026-11-22.md",
+      "public_path": "readingflow/docs/passage-generation/CURRENT_WORK_SCOPE_AND_NEXT_STEPS_2026-11-22.md",
+      "source_sha": "03ecf23e5dfa174259c78c7276864f6d1d96b1c9",
+      "public_sha": "03ecf23e5dfa174259c78c7276864f6d1d96b1c9",
+      "bytes": 5088,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/INTEGRATED_RULES_v3.md",
+      "public_path": "readingflow/docs/passage-generation/INTEGRATED_RULES_v3.md",
+      "source_sha": "56e6b66cd1ec86f1f3b9f429c357dd6428c26be2",
+      "public_sha": "56e6b66cd1ec86f1f3b9f429c357dd6428c26be2",
+      "bytes": 8177,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/NEW_PASSAGE_AUTHORING_AND_MCQ_CANONICAL_2026-11-22.md",
+      "public_path": "readingflow/docs/passage-generation/NEW_PASSAGE_AUTHORING_AND_MCQ_CANONICAL_2026-11-22.md",
+      "source_sha": "3761e632140731c8d457f1585604f6be41450c32",
+      "public_sha": "3761e632140731c8d457f1585604f6be41450c32",
+      "bytes": 13180,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/data/author_attribute_candidate_pools_proposal_v1.json",
+      "public_path": "readingflow/docs/passage-generation/data/author_attribute_candidate_pools_proposal_v1.json",
+      "source_sha": "5359637ebe9574e3a097a98e39ef156d207c1fd2",
+      "public_sha": "5359637ebe9574e3a097a98e39ef156d207c1fd2",
+      "bytes": 7365,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/data/normalized_passage_catalog_30_v1.json",
+      "public_path": "readingflow/docs/passage-generation/data/normalized_passage_catalog_30_v1.json",
+      "source_sha": "3938eacf0d80e6c553d5b80216ded7985d7ff261",
+      "public_sha": "3938eacf0d80e6c553d5b80216ded7985d7ff261",
+      "bytes": 20245,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/R6_12_NEW_PASSAGE_PILOT_2026-11-23.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/R6_12_NEW_PASSAGE_PILOT_2026-11-23.md",
+      "source_sha": "ad9691d6ec58db53a4372dc53c50f3730ab2a729",
+      "public_sha": "ad9691d6ec58db53a4372dc53c50f3730ab2a729",
+      "bytes": 4318,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/R6_12_PYTHON_QA_AND_EDITORIAL_RECHECK_2026-11-23.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/R6_12_PYTHON_QA_AND_EDITORIAL_RECHECK_2026-11-23.md",
+      "source_sha": "2759849559df426298ee68f4f8fa6f5c93b9c94f",
+      "public_sha": "2759849559df426298ee68f4f8fa6f5c93b9c94f",
+      "bytes": 4367,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/R6_13_STAGE5_AND_AUTHOR_INTEGRATION_TESTS_2026-11-23.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/R6_13_STAGE5_AND_AUTHOR_INTEGRATION_TESTS_2026-11-23.md",
+      "source_sha": "8bca3be4be12084299fc313e677d4e69ddb55cb0",
+      "public_sha": "8bca3be4be12084299fc313e677d4e69ddb55cb0",
+      "bytes": 2903,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/R6_14_ACTUAL_STAGE5_PYTHON_FIXTURE_EXECUTION_2026-11-23.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/R6_14_ACTUAL_STAGE5_PYTHON_FIXTURE_EXECUTION_2026-11-23.md",
+      "source_sha": "e883029f2eb002966ad8a5834272c6983a3abd56",
+      "public_sha": "e883029f2eb002966ad8a5834272c6983a3abd56",
+      "bytes": 3822,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/model_authored_output_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/model_authored_output_v1.json",
+      "source_sha": "1ee1a7cdf7d00ae94b3cede4015ee9d315391216",
+      "public_sha": "1ee1a7cdf7d00ae94b3cede4015ee9d315391216",
+      "bytes": 10752,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/run_trial.py",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/run_trial.py",
+      "source_sha": "5080afa88332f5c82be4a1f0daa6c68e3bbf103b",
+      "public_sha": "5080afa88332f5c82be4a1f0daa6c68e3bbf103b",
+      "bytes": 4828,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/test_r612_trial.py",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/test_r612_trial.py",
+      "source_sha": "55ff9175ed48cf531746473a83afacd0da376a53",
+      "public_sha": "55ff9175ed48cf531746473a83afacd0da376a53",
+      "bytes": 4566,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/test_r614_real_stage5_draw_spy.py",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/test_r614_real_stage5_draw_spy.py",
+      "source_sha": "e1ece44ddcce21af7cc6fc49bcf505cfdc2efa83",
+      "public_sha": "e1ece44ddcce21af7cc6fc49bcf505cfdc2efa83",
+      "bytes": 3998,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_12_door_torque/trial_inputs_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_12_door_torque/trial_inputs_v1.json",
+      "source_sha": "daecf2abec3bbd49b77d7aaff30182d2f559226b",
+      "public_sha": "daecf2abec3bbd49b77d7aaff30182d2f559226b",
+      "bytes": 8867,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_15_author_after_draw/R6_15_CANONICAL_JSON_STATIC_AUDIT_2026-11-23.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_15_author_after_draw/R6_15_CANONICAL_JSON_STATIC_AUDIT_2026-11-23.json",
+      "source_sha": "4dfe3c7e5a92bdb4f24f42acdb055f661521f492",
+      "public_sha": "4dfe3c7e5a92bdb4f24f42acdb055f661521f492",
+      "bytes": 8556,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_15_author_after_draw/R6_15_POST_DRAW_MANUAL_MODEL_PILOT_2026-11-23.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_15_author_after_draw/R6_15_POST_DRAW_MANUAL_MODEL_PILOT_2026-11-23.md",
+      "source_sha": "630bc27ba238ffd8361e788c88854039dff5266a",
+      "public_sha": "630bc27ba238ffd8361e788c88854039dff5266a",
+      "bytes": 3676,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_15_author_after_draw/author_draw_and_application_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_15_author_after_draw/author_draw_and_application_v1.json",
+      "source_sha": "ad862498286d97170fefb15e7409960c01494d79",
+      "public_sha": "ad862498286d97170fefb15e7409960c01494d79",
+      "bytes": 4349,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_15_author_after_draw/experimental_candidate_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_15_author_after_draw/experimental_candidate_v1.json",
+      "source_sha": "c8d7602266f803a1d125f7d1f14d08cb8151b638",
+      "public_sha": "c8d7602266f803a1d125f7d1f14d08cb8151b638",
+      "bytes": 9927,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_15_author_after_draw/style_application_ai_review_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_15_author_after_draw/style_application_ai_review_v1.json",
+      "source_sha": "d92fa466cf2aac52b78b7307ff9015a29c4814e0",
+      "public_sha": "d92fa466cf2aac52b78b7307ff9015a29c4814e0",
+      "bytes": 7289,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_15_author_after_draw/test_r615_after_draw.py",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_15_author_after_draw/test_r615_after_draw.py",
+      "source_sha": "c36aa83294bd34ece3d26a22e6aba5e768c429d8",
+      "public_sha": "c36aa83294bd34ece3d26a22e6aba5e768c429d8",
+      "bytes": 2646,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_16_canonical_e2e/R6_16_ACTUAL_GITHUB_INPUT_STAGE5_E2E_2026-11-24.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_16_canonical_e2e/R6_16_ACTUAL_GITHUB_INPUT_STAGE5_E2E_2026-11-24.md",
+      "source_sha": "92d341527e35e91b23c43351e51be7d56cc596d6",
+      "public_sha": "92d341527e35e91b23c43351e51be7d56cc596d6",
+      "bytes": 3657,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_16_canonical_e2e/r616_execution_result_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_16_canonical_e2e/r616_execution_result_v1.json",
+      "source_sha": "3f9a12b1eb29a8fcd91e9acb211a8a89e16fba31",
+      "public_sha": "3f9a12b1eb29a8fcd91e9acb211a8a89e16fba31",
+      "bytes": 1246,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/R6_17_GENERATED_NONFICTION_AND_QA_2026-11-24.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/R6_17_GENERATED_NONFICTION_AND_QA_2026-11-24.md",
+      "source_sha": "7309c252305d1d3fc0b46359cac61a5140ddb650",
+      "public_sha": "7309c252305d1d3fc0b46359cac61a5140ddb650",
+      "bytes": 6977,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/R6_17_GITHUB_ACTIONS_RUNNER_DIAGNOSIS_2026-11-24.md",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/R6_17_GITHUB_ACTIONS_RUNNER_DIAGNOSIS_2026-11-24.md",
+      "source_sha": "0797e9caa48276830bd3c2042fb889c14e70ed52",
+      "public_sha": "0797e9caa48276830bd3c2042fb889c14e70ed52",
+      "bytes": 3016,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/author_draw_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/author_draw_v1.json",
+      "source_sha": "b6d36ca0480c5227ab9a746382a3242ce6895009",
+      "public_sha": "b6d36ca0480c5227ab9a746382a3242ce6895009",
+      "bytes": 3139,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/author_style_self_review_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/author_style_self_review_v1.json",
+      "source_sha": "42c65e224b2af049b2d8ddcf75e0435a50518180",
+      "public_sha": "42c65e224b2af049b2d8ddcf75e0435a50518180",
+      "bytes": 8989,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/generation_request_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/generation_request_v1.json",
+      "source_sha": "a9e6a56086716373980dad8c60d28ae226235d31",
+      "public_sha": "a9e6a56086716373980dad8c60d28ae226235d31",
+      "bytes": 8309,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/model_authored_output_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/model_authored_output_v1.json",
+      "source_sha": "f422fbc4cb83cb57399d2883dac14510d00a508a",
+      "public_sha": "f422fbc4cb83cb57399d2883dac14510d00a508a",
+      "bytes": 10719,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/r617_verified_offline_summary_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/r617_verified_offline_summary_v1.json",
+      "source_sha": "d86c227cedab296c341f648ca468a5d618f70899",
+      "public_sha": "d86c227cedab296c341f648ca468a5d618f70899",
+      "bytes": 1182,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/run_trial.py",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/run_trial.py",
+      "source_sha": "2570de317a5c5e088058296c7ee89329bb9891b2",
+      "public_sha": "2570de317a5c5e088058296c7ee89329bb9891b2",
+      "bytes": 6159,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/experiments/r6_17_ci_and_generation/trial_inputs_v1.json",
+      "public_path": "readingflow/docs/passage-generation/experiments/r6_17_ci_and_generation/trial_inputs_v1.json",
+      "source_sha": "dc4d16ec306a24df343c8293471bfbb953d8860e",
+      "public_sha": "dc4d16ec306a24df343c8293471bfbb953d8860e",
+      "bytes": 8612,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/operations/diversity/diversity_policy_v1.json",
+      "public_path": "readingflow/docs/passage-generation/operations/diversity/diversity_policy_v1.json",
+      "source_sha": "20cdcfc8e48a85667f5dbf0e7a7ad2cca82b5d52",
+      "public_sha": "20cdcfc8e48a85667f5dbf0e7a7ad2cca82b5d52",
+      "bytes": 2573,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/operations/quality/new_passage_question_creation_checklist_v1.json",
+      "public_path": "readingflow/docs/passage-generation/operations/quality/new_passage_question_creation_checklist_v1.json",
+      "source_sha": "d28fef00c0156f4f69b40b9fd6cea60134dc6a81",
+      "public_sha": "d28fef00c0156f4f69b40b9fd6cea60134dc6a81",
+      "bytes": 6653,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/operations/quality/quality_policy_v1.json",
+      "public_path": "readingflow/docs/passage-generation/operations/quality/quality_policy_v1.json",
+      "source_sha": "e5364541a524541e98a9177d18d6cd7717a3690a",
+      "public_sha": "e5364541a524541e98a9177d18d6cd7717a3690a",
+      "bytes": 4652,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/FACT_EVIDENCE_RULES_v1.md",
+      "public_path": "readingflow/docs/passage-generation/planning/FACT_EVIDENCE_RULES_v1.md",
+      "source_sha": "51896b10a1368ba01af1c7d452d9babeeca73b32",
+      "public_sha": "51896b10a1368ba01af1c7d452d9babeeca73b32",
+      "bytes": 1487,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/READING_OBJECTIVES_RULES_v1.md",
+      "public_path": "readingflow/docs/passage-generation/planning/READING_OBJECTIVES_RULES_v1.md",
+      "source_sha": "c1d9e9c1d55457f819941ad18e8c03c08b404469",
+      "public_sha": "c1d9e9c1d55457f819941ad18e8c03c08b404469",
+      "bytes": 1444,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/TOPIC_SELECTION_RULES_v2.md",
+      "public_path": "readingflow/docs/passage-generation/planning/TOPIC_SELECTION_RULES_v2.md",
+      "source_sha": "152213b2101810220d3ddcea46de2e7774f99aa8",
+      "public_sha": "152213b2101810220d3ddcea46de2e7774f99aa8",
+      "bytes": 5262,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/examples/facts_condensation_v1.json",
+      "public_path": "readingflow/docs/passage-generation/planning/examples/facts_condensation_v1.json",
+      "source_sha": "287264372b8a220ca80ec8beb8810f3d451ba96d",
+      "public_sha": "287264372b8a220ca80ec8beb8810f3d451ba96d",
+      "bytes": 4930,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/examples/reading_goals_condensation_v1.json",
+      "public_path": "readingflow/docs/passage-generation/planning/examples/reading_goals_condensation_v1.json",
+      "source_sha": "f875b9877f8f9dd1adb8870cedd615138f4dae27",
+      "public_sha": "f875b9877f8f9dd1adb8870cedd615138f4dae27",
+      "bytes": 1656,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/examples/topic_condensation_v2.json",
+      "public_path": "readingflow/docs/passage-generation/planning/examples/topic_condensation_v2.json",
+      "source_sha": "53e27fec92240ccc78a2857a517982a2772da99d",
+      "public_sha": "53e27fec92240ccc78a2857a517982a2772da99d",
+      "bytes": 1461,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/topic_catalog_30_provisional_v2.json",
+      "public_path": "readingflow/docs/passage-generation/planning/topic_catalog_30_provisional_v2.json",
+      "source_sha": "d5642600977bff467b0249c28705a66e396885f3",
+      "public_sha": "d5642600977bff467b0249c28705a66e396885f3",
+      "bytes": 22352,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/planning/topic_taxonomy_proposal_v2.json",
+      "public_path": "readingflow/docs/passage-generation/planning/topic_taxonomy_proposal_v2.json",
+      "source_sha": "ee3cc8b90ec7abdb6da0d1870b8c4f44269bc3a3",
+      "public_sha": "ee3cc8b90ec7abdb6da0d1870b8c4f44269bc3a3",
+      "bytes": 24813,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/author_attribute_sampler.py",
+      "public_path": "readingflow/docs/passage-generation/tools/author_attribute_sampler.py",
+      "source_sha": "dcd16779d03fa67dc21c00aae51d080d498fd076",
+      "public_sha": "dcd16779d03fa67dc21c00aae51d080d498fd076",
+      "bytes": 3790,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/new_passage_generation_pipeline.py",
+      "public_path": "readingflow/docs/passage-generation/tools/new_passage_generation_pipeline.py",
+      "source_sha": "2b669c0b09ca27f89cd6b27d5eddc3c866b2209f",
+      "public_sha": "2b669c0b09ca27f89cd6b27d5eddc3c866b2209f",
+      "bytes": 9688,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/new_passage_qa_gate.py",
+      "public_path": "readingflow/docs/passage-generation/tools/new_passage_qa_gate.py",
+      "source_sha": "827a1af31bf6f52cff2413efdc6adafd2e6017ad",
+      "public_sha": "827a1af31bf6f52cff2413efdc6adafd2e6017ad",
+      "bytes": 11499,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/openai_new_passage_adapter.py",
+      "public_path": "readingflow/docs/passage-generation/tools/openai_new_passage_adapter.py",
+      "source_sha": "de95053739490a5fcf7a47464665620ed5632d0e",
+      "public_sha": "de95053739490a5fcf7a47464665620ed5632d0e",
+      "bytes": 3012,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/passage_duplication_diversity.py",
+      "public_path": "readingflow/docs/passage-generation/tools/passage_duplication_diversity.py",
+      "source_sha": "51aff47bf3e857385e18a93046a8b88de5170ba4",
+      "public_sha": "51aff47bf3e857385e18a93046a8b88de5170ba4",
+      "bytes": 5205,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/passage_evidence_contract.py",
+      "public_path": "readingflow/docs/passage-generation/tools/passage_evidence_contract.py",
+      "source_sha": "ee1a335bfaad0c691fcce9093931144ace8a8bef",
+      "public_sha": "ee1a335bfaad0c691fcce9093931144ace8a8bef",
+      "bytes": 4031,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/passage_goal_contract.py",
+      "public_path": "readingflow/docs/passage-generation/tools/passage_goal_contract.py",
+      "source_sha": "5693f61bc719d82cf62440f30d6b6883d293f48f",
+      "public_sha": "5693f61bc719d82cf62440f30d6b6883d293f48f",
+      "bytes": 2369,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/passage_planning_contract.py",
+      "public_path": "readingflow/docs/passage-generation/tools/passage_planning_contract.py",
+      "source_sha": "dea26e122c3f522d74e0826dfdd0d0d2121673d6",
+      "public_sha": "dea26e122c3f522d74e0826dfdd0d0d2121673d6",
+      "bytes": 2765,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/passage_quality_gate.py",
+      "public_path": "readingflow/docs/passage-generation/tools/passage_quality_gate.py",
+      "source_sha": "3a45d55c3f2565cba5ad5b84ac5db6a02f17e610",
+      "public_sha": "3a45d55c3f2565cba5ad5b84ac5db6a02f17e610",
+      "bytes": 7123,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/passage_stage5_integration.py",
+      "public_path": "readingflow/docs/passage-generation/tools/passage_stage5_integration.py",
+      "source_sha": "241e815c846a5b111b69988aa6c6e9af84ce053d",
+      "public_sha": "241e815c846a5b111b69988aa6c6e9af84ce053d",
+      "bytes": 14278,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/run_new_passage_experiment.py",
+      "public_path": "readingflow/docs/passage-generation/tools/run_new_passage_experiment.py",
+      "source_sha": "e30748e37057371958ed0b26fa97465c0911e62b",
+      "public_sha": "e30748e37057371958ed0b26fa97465c0911e62b",
+      "bytes": 2167,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_author_attribute_sampler.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_author_attribute_sampler.py",
+      "source_sha": "060187b754dbe9b70315bf7abe13039db895a1e8",
+      "public_sha": "060187b754dbe9b70315bf7abe13039db895a1e8",
+      "bytes": 2346,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_new_passage_generation_pipeline.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_new_passage_generation_pipeline.py",
+      "source_sha": "8b7073ad7df4d9b06c6e4ee9b961ed70288acd19",
+      "public_sha": "8b7073ad7df4d9b06c6e4ee9b961ed70288acd19",
+      "bytes": 7012,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_new_passage_qa_gate.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_new_passage_qa_gate.py",
+      "source_sha": "5a963cf876afeabedb40617e6bf1a07886ae92ba",
+      "public_sha": "5a963cf876afeabedb40617e6bf1a07886ae92ba",
+      "bytes": 5940,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_duplication_diversity.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_duplication_diversity.py",
+      "source_sha": "74fc088530c82ebe66160953a40803f2b3491210",
+      "public_sha": "74fc088530c82ebe66160953a40803f2b3491210",
+      "bytes": 3276,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_planning_contract.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_planning_contract.py",
+      "source_sha": "26530e4e15836d862389eb8faf7b901bf36c6133",
+      "public_sha": "26530e4e15836d862389eb8faf7b901bf36c6133",
+      "bytes": 1664,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_planning_evidence.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_planning_evidence.py",
+      "source_sha": "2538a39bae86ec726ae4d3d35ac71741fc677a15",
+      "public_sha": "2538a39bae86ec726ae4d3d35ac71741fc677a15",
+      "bytes": 2606,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_planning_goals.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_planning_goals.py",
+      "source_sha": "26795da61fc8d7dfdf869424fb8b6dfcc17f20da",
+      "public_sha": "26795da61fc8d7dfdf869424fb8b6dfcc17f20da",
+      "bytes": 1872,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_planning_taxonomy_v2.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_planning_taxonomy_v2.py",
+      "source_sha": "834741ebe0f8a8b19e0adad67a7e25b4ca8a70d5",
+      "public_sha": "834741ebe0f8a8b19e0adad67a7e25b4ca8a70d5",
+      "bytes": 4309,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_quality_gate.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_quality_gate.py",
+      "source_sha": "8fcbde4b7ee26d9c7c0ff13bd4dafd77e530ff69",
+      "public_sha": "8fcbde4b7ee26d9c7c0ff13bd4dafd77e530ff69",
+      "bytes": 2505,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_passage_stage5_integration.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_passage_stage5_integration.py",
+      "source_sha": "e76a8ad7f6548ac4878dd59cda8f9600800c3f0e",
+      "public_sha": "e76a8ad7f6548ac4878dd59cda8f9600800c3f0e",
+      "bytes": 7236,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_r616_canonical_stage5_end_to_end.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_r616_canonical_stage5_end_to_end.py",
+      "source_sha": "b4917a7f112f3ca1d862d25959585f2a83010a0a",
+      "public_sha": "b4917a7f112f3ca1d862d25959585f2a83010a0a",
+      "bytes": 5452,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_r617_mocked_live_adapter_contract.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_r617_mocked_live_adapter_contract.py",
+      "source_sha": "63ce79831e81d9fac4543a6aeabc5b7ddb347671",
+      "public_sha": "63ce79831e81d9fac4543a6aeabc5b7ddb347671",
+      "bytes": 4177,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/test_r617_preselected_author_and_generated_candidate.py",
+      "public_path": "readingflow/docs/passage-generation/tools/test_r617_preselected_author_and_generated_candidate.py",
+      "source_sha": "d2b31a351edae5b40087d0fdf31fc5df8469a8c7",
+      "public_sha": "d2b31a351edae5b40087d0fdf31fc5df8469a8c7",
+      "bytes": 4048,
+      "exact_blob_sha_match": true
+    },
+    {
+      "source_path": "docs/passage-generation/tools/topic_taxonomy_v2_contract.py",
+      "public_path": "readingflow/docs/passage-generation/tools/topic_taxonomy_v2_contract.py",
+      "source_sha": "edbc206c23264e1244199619a0acbadecee27c94",
+      "public_sha": "edbc206c23264e1244199619a0acbadecee27c94",
+      "bytes": 7540,
+      "exact_blob_sha_match": true
+    }
+  ]
+}
