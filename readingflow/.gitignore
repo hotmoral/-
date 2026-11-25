@@ -1,0 +1,18 @@
+# Public collaborative workspace: do not commit secrets, virtualenvs or generated output.
+.env
+.env.*
+!.env.example
+**/__pycache__/
+**/*.py[cod]
+.venv/
+venv/
+.cache/
+.pytest_cache/
+.output/
+results/
+*.log
+*.pem
+*.p12
+*.pfx
+*.key
+*_live_api_response.json
