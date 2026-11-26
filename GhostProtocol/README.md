@@ -1,9 +1,9 @@
 # GHOST PROTOCOL
 
-**후속 퍼즐 개발 필수 기준:** `docs/PUZZLE_DEVELOPMENT_STANDARD.md` (v1.6, v0.51 기준). 모든 디자인 제안·독립 시범·설명 제작·통합 전에 읽고 체크리스트를 적용한다. 이전 버전의 시안/25종 목록/설명 단계 수는 역사 기록이며 최신 결정과 충돌 시 이 기준을 우선한다.
+**후속 퍼즐 개발 필수 기준:** `docs/PUZZLE_DEVELOPMENT_STANDARD.md` (v1.7, v0.52 기준). 모든 디자인 제안·독립 시범·설명 제작·통합 전에 읽고 체크리스트를 적용한다. 이전 버전의 시안/25종 목록/설명 단계 수는 역사 기록이며 최신 결정과 충돌 시 이 기준을 우선한다.
 
 2026-11-26 기준 개발 인계. 한국어 모바일 가로형 싱글 HTML 게임. 실제 시스템 침투가 아닌 독립 논리 퍼즐과 가상 네트워크를 이용한 해킹 시뮬레이션.
-- 현재 실행 기준: `Ghost_Protocol_Integrated_Lab_v51.html` (v0.51). 브라우저에서 열어 실행한다. HTML 제목의 이전 버전 표기는 파일명보다 우선하지 않는다.
+- 현재 실행 기준: `Ghost_Protocol_Integrated_Lab_v52.html` (v0.52). 브라우저에서 열어 실행한다. HTML 제목의 이전 버전 표기는 파일명보다 우선하지 않는다.
 - `archive/`: 이전 실행본/독립 실험본. 최신본에 덮어쓰지 않는다.
 - `docs/DESIGN.md`: 승인된 게임 설계·UI 규칙.
 - `docs/CHARACTERS.md`: 세계관 및 NPC, 등장 규칙.
@@ -88,3 +88,6 @@ ID01/02 완료 효과 보강: 강화 스캔, 정답 칸 동시 점등, 빛 확�
 
 ## 완료 연출 디자인 기준 (v1.6)
 `docs/COMPLETION_EFFECT_FAMILIES.md` 및 `docs/assets/completion_frame_comparison.svg`: 계열별 완료 연출 공유 원칙, 박스형 테두리 비교 시안, 인증 자물쇠 유지. 실행본 v0.51 변경 없음. 다음 ID01/02 완료 박스 테두리 개선·검수 후 ID03 진행. 최신 ROADMAP 우선.
+
+## v0.52 최신 현황
+ID01/02 완료 박스 절삭형 이중 프레임 및 네 모서리 그리기 효과 구현. 기존 효과 및 타이밍, 인증 자물쇠 유지. 공통 기준 v1.7, COMPLETION_EFFECT_FAMILIES.md 참조. 원본 일치 Git blob c2ea0c664c9b595a95c5c3f543bde3f57f40c618. 실기기 확인 대기, 다음 ID03. 최신 ROADMAP 우선.
