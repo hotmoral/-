@@ -1,9 +1,9 @@
 # GHOST PROTOCOL
 
-**후속 퍼즐 개발 필수 기준:** `docs/PUZZLE_DEVELOPMENT_STANDARD.md` (v1.9, v0.54 기준). 모든 디자인 제안·독립 시범·설명 제작·통합 전에 읽고 체크리스트를 적용한다. 이전 버전의 시안/25종 목록/설명 단계 수는 역사 기록이며 최신 결정과 충돌 시 이 기준을 우선한다.
+**후속 퍼즐 개발 필수 기준:** `docs/PUZZLE_DEVELOPMENT_STANDARD.md` (v1.10, v0.55 기준). 모든 디자인 제안·독립 시범·설명 제작·통합 전에 읽고 체크리스트를 적용한다. 이전 버전의 시안/25종 목록/설명 단계 수는 역사 기록이며 최신 결정과 충돌 시 이 기준을 우선한다.
 
 2026-11-26 기준 개발 인계. 한국어 모바일 가로형 싱글 HTML 게임. 실제 시스템 침투가 아닌 독립 논리 퍼즐과 가상 네트워크를 이용한 해킹 시뮬레이션.
-- 현재 실행 기준: `Ghost_Protocol_Integrated_Lab_v54.html` (v0.54). 브라우저에서 열어 실행한다. HTML 제목의 이전 버전 표기는 파일명보다 우선하지 않는다.
+- 현재 실행 기준: `Ghost_Protocol_Integrated_Lab_v55.html` (v0.55). 브라우저에서 열어 실행한다. HTML 제목의 이전 버전 표기는 파일명보다 우선하지 않는다.
 - `archive/`: 이전 실행본/독립 실험본. 최신본에 덮어쓰지 않는다.
 - `docs/DESIGN.md`: 승인된 게임 설계·UI 규칙.
 - `docs/CHARACTERS.md`: 세계관 및 NPC, 등장 규칙.
@@ -97,3 +97,6 @@ ID01/02 완료 박스 절삭형 이중 프레임 및 네 모서리 그리기 효
 
 ## v0.54 최신 현황
 오류 검출(ID03) R4 사용자 승인 및 통합. 8열 데이터 채널, 전문 용어와 간결한 시연, 기존 판정과 스캐너 4.9초 완료 연출 유지. 공통 기준 v1.9, docs/BIT_INSPECTION_V54.md, archive/Ghost_Protocol_Bit_Inspection_R4.html 참조. 4/24종 개선 통합, 다음 ID04 패턴 탐색. Git blob 80ada1620e36bbb6cf3d1c2a53a1024fb1aa9b2b 원본 일치. 실기기 및 전체 회귀 별도.
+
+## v0.55 최신 현황
+동일 데이터 연결(ID04) R2 및 최종 대사 승인·통합. 최근 연결선 강조·교차 구분·연결 신호 완료 연출 유지. 공통 기준 v1.10, docs/PAIR_LINK_V55.md, archive/Ghost_Protocol_Pair_Link_R3.html 참조. 5/24종, 다음 ID05 실제 명칭과 규칙 확인 후 독립 시범. Git blob 35553aa733baa99f2a695dca8366317605e73f55 원본 일치. 실제 스마트폰 및 전체 회귀 별도.
