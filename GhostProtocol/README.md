@@ -100,3 +100,6 @@ ID01/02 완료 박스 절삭형 이중 프레임 및 네 모서리 그리기 효
 
 ## v0.55 최신 현황
 동일 데이터 연결(ID04) R2 및 최종 대사 승인·통합. 최근 연결선 강조·교차 구분·연결 신호 완료 연출 유지. 공통 기준 v1.10, docs/PAIR_LINK_V55.md, archive/Ghost_Protocol_Pair_Link_R3.html 참조. 5/24종, 다음 ID05 실제 명칭과 규칙 확인 후 독립 시범. Git blob 35553aa733baa99f2a695dca8366317605e73f55 원본 일치. 실제 스마트폰 및 전체 회귀 별도.
+
+## 공통 디자인 재검수(v1.11)
+기존 5종 수정 검수본 `archive/Ghost_Protocol_Integrated_Lab_v56_Review.html` 및 ID05 독립 `archive/Ghost_Protocol_Packet_Classify_R2.html` 보존. 기준 문서 v1.11, docs/VISUAL_DIALOGUE_REVIEW_V56.md 참조. 사용자 검수 및 전체 임무 연동 검수 대기. 승인 통합본 v0.55와 5/24 진행률 유지.
